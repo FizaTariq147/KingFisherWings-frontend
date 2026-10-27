@@ -110,6 +110,21 @@ export type InvoiceFormatUiDemo = {
   sellerLines?: string[];
   buyerLines?: string[];
   ksaMetaRows?: InvoiceFormatUiKv[];
+  /** Hero / document title override (summaryHero, formatBadge). */
+  heroTitle?: string;
+  formatBadgeLabel?: string;
+  /** HBL / sea-doc cargo table. */
+  hblCargoHeaders?: string[];
+  hblCargoRows?: string[][];
+  hblFreightText?: string;
+  hblOnboardDate?: string;
+  hblPlaceDate?: string;
+  hblCarrierAgent?: string;
+  /** HAWB route strip. */
+  hawbRouteFields?: InvoiceFormatUiKv[];
+  /** Arrival notice optional charges note. */
+  arrivalChargesNote?: string;
+  arrivalShowCharges?: boolean;
 };
 
 export type InvoiceFormatUiBlock =
@@ -138,11 +153,11 @@ export type InvoiceFormatUiBlock =
   | { type: 'wireBox' }
   | { type: 'usaNumberedFields' }
   | { type: 'arabicHeader' }
-  | { type: 'summaryHero' }
+  | { type: 'summaryHero'; title?: string }
   | { type: 'landRoute' }
   | { type: 'totalsOnly' }
   | { type: 'colorfulFooter' }
-  | { type: 'formatBadge' }
+  | { type: 'formatBadge'; label?: string }
   | { type: 'letterBody' }
   | { type: 'signatureRow' }
   | { type: 'agingSummary' }
@@ -172,7 +187,19 @@ export type InvoiceFormatUiBlock =
   | { type: 'ksaTotals' }
   | { type: 'taxAmountBox' }
   | { type: 'outstandingTable' }
-  | { type: 'officeAddressBand' };
+  | { type: 'officeAddressBand' }
+  /** Classic HBL-style cargo / container table (not invoice chargeTable). */
+  | { type: 'hblCargoTable' }
+  /** HBL freight + signature closing. */
+  | { type: 'hblFreightSignature' }
+  /** Shipper / Consignee / Notify three-column party block for sea docs. */
+  | { type: 'partyNotifyGrid' }
+  /** HAWB origin/destination/flight strip. */
+  | { type: 'hawbRouteGrid' }
+  /** Arrival notice body with optional charges section. */
+  | { type: 'arrivalChargesOptional'; showCharges?: boolean }
+  /** Delivery order release instruction strip. */
+  | { type: 'deliveryOrderRelease' };
 
 /** Permanent declarative UI layout for one Invoice Report Format-*. */
 export type InvoiceFormatUiLayout = {

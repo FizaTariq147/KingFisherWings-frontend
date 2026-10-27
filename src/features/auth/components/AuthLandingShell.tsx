@@ -1,8 +1,15 @@
-import { useState, type ComponentType, type FormEvent, type ReactNode } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useMemo, useState, type ComponentType, type FormEvent, type ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { ChevronRight, LogIn, Package, Search, Shield } from 'lucide-react'
 import loginBg from '@/assets/login-bg.mp4'
 import logo from '@/assets/logo.png'
+import { ApiDataView } from '@/features/jobs/components/ApiDataView'
+import { publicTrackService } from '@/features/public-track/services/publicTrack.service'
+import {
+  rememberPublicTrackTenantSlug,
+  resolveTenantSlugFromLocation,
+} from '@/features/public-track/utils/publicTrackContext'
+import { normalizePublicTrack } from '@/features/public-track/utils/normalizePublicTrack'
 
 const NAVY = '#0A2942'
 
@@ -72,13 +79,38 @@ export function AuthLandingShell({
   /** Hide hub UI — video + overlay stay visible (e.g. while a login popup is open). */
   videoOnly?: boolean
 }) {
-  const navigate = useNavigate()
+  const defaultTenant = useMemo(() => resolveTenantSlugFromLocation(), [])
   const [trackRef, setTrackRef] = useState('')
+  const [tenantSlug, setTenantSlug] = useState(defaultTenant)
+  const [pending, setPending] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const [rawPayload, setRawPayload] = useState<unknown>(null)
+  const summary = rawPayload ? normalizePublicTrack(rawPayload) : null
 
-  const onTrack = (e: FormEvent) => {
+  const onTrack = async (e: FormEvent) => {
     e.preventDefault()
     const ref = trackRef.trim()
-    navigate(ref ? `/track?ref=${encodeURIComponent(ref)}` : '/track')
+    if (ref.length < 2) {
+      setError('Enter at least 2 characters.')
+      return
+    }
+    const slug = tenantSlug.trim()
+    if (!slug) {
+      setError('Enter your workspace (tenant slug) to track without login.')
+      return
+    }
+    setError(null)
+    setRawPayload(null)
+    setPending(true)
+    rememberPublicTrackTenantSlug(slug)
+    try {
+      const data = await publicTrackService.trackRaw(slug, ref)
+      setRawPayload(data)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Track lookup failed.')
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -100,7 +132,7 @@ export function AuthLandingShell({
 
       {!videoOnly && (
       <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-10">
-        <div className="w-full max-w-[440px]">
+        <div className={`w-full ${rawPayload ? 'max-w-3xl' : 'max-w-[440px]'}`}>
           <div className="mx-auto mb-4 flex w-fit items-center justify-center rounded-2xl bg-white px-4 py-2.5 shadow-lg">
             <img src={logo} alt="KingFisher Wings" className="h-12 w-auto sm:h-14" />
           </div>
@@ -111,7 +143,7 @@ export function AuthLandingShell({
             Seamless logistics management for shipments, invoices, and operations
           </p>
 
-          <div className="flex flex-col gap-3">
+          <div className="mx-auto flex max-w-[440px] flex-col gap-3">
             <HubCard
               icon={LogIn}
               iconBg="#DBEAFE"
@@ -139,18 +171,27 @@ export function AuthLandingShell({
           </div>
 
           <form
-            onSubmit={onTrack}
-            className="mt-4 rounded-2xl bg-white/18 px-4 py-4 shadow-[0_8px_32px_rgba(10,41,66,0.12)] backdrop-blur-md ring-1 ring-white/25"
+            onSubmit={(e) => void onTrack(e)}
+            className="mx-auto mt-4 max-w-[440px] rounded-2xl bg-white/18 px-4 py-4 shadow-[0_8px_32px_rgba(10,41,66,0.12)] backdrop-blur-md ring-1 ring-white/25"
           >
             <div className="mb-2.5 flex items-start gap-2 text-white">
               <Search size={15} className="mt-0.5 shrink-0 opacity-90" />
               <div>
                 <p className="text-[13.5px] font-semibold">Track a Shipment</p>
                 <p className="text-[11.5px] leading-snug text-white/75">
-                  Enter a job number, HAWB, MAWB, or booking ref — no login needed.
+                  Job, shipment, HAWB/MAWB/HBL — results stay on this page.
                 </p>
               </div>
             </div>
+            {!defaultTenant ? (
+              <input
+                type="text"
+                value={tenantSlug}
+                onChange={(e) => setTenantSlug(e.target.value)}
+                placeholder="Workspace (tenant slug)"
+                className="mb-2 h-10 w-full rounded-lg border-0 bg-white/90 px-3 text-[13px] text-slate-800 outline-none placeholder:text-slate-400"
+              />
+            ) : null}
             <div className="flex gap-2">
               <input
                 type="text"
@@ -161,12 +202,34 @@ export function AuthLandingShell({
               />
               <button
                 type="submit"
-                className="h-10 shrink-0 rounded-lg bg-white px-4 text-[13px] font-semibold text-slate-800 transition hover:bg-slate-100"
+                disabled={pending || trackRef.trim().length < 2}
+                className="h-10 shrink-0 rounded-lg bg-white px-4 text-[13px] font-semibold text-slate-800 transition hover:bg-slate-100 disabled:opacity-60"
               >
-                Track
+                {pending ? '…' : 'Track'}
               </button>
             </div>
+            {error ? (
+              <p role="alert" className="mt-2 text-[12px] text-red-100">
+                {error}
+              </p>
+            ) : null}
           </form>
+
+          {rawPayload ? (
+            <div className="mt-4 max-h-[50vh] overflow-y-auto rounded-2xl bg-white p-4 shadow-[0_8px_32px_rgba(10,41,66,0.18)]">
+              {summary ? (
+                <div className="mb-3">
+                  <p className="text-lg font-semibold text-slate-900">{summary.reference}</p>
+                  <p className="text-sm text-slate-500">
+                    {[summary.origin, summary.destination].filter(Boolean).join(' → ') ||
+                      summary.status ||
+                      '—'}
+                  </p>
+                </div>
+              ) : null}
+              <ApiDataView data={rawPayload} emptyLabel="No tracking data returned." />
+            </div>
+          ) : null}
         </div>
       </main>
       )}

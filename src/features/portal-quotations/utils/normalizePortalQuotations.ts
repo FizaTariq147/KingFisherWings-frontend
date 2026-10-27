@@ -247,6 +247,8 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
         asRecord(data.action_flags) ??
         asRecord(data.actionFlags) ??
         asRecord(data.available_actions) ??
+        asRecord(data.quotationActionFlags) ??
+        asRecord(data.quotation_action_flags) ??
         {};
       const actionsRaw: Record<string, unknown> = { ...nested };
       // Promote root-level can_* when nested omitted (BE may flatten flags).
@@ -291,6 +293,17 @@ export function normalizeQuotationDetail(raw: unknown): PortalQuotationDetail | 
         can_negotiation_reject: flag('can_negotiation_reject', 'canNegotiationReject'),
         can_mark_won: flag('can_mark_won', 'canMarkWon') ?? false,
         can_mark_lost: flag('can_mark_lost', 'canMarkLost') ?? false,
+        can_generate_pdf: flag(
+          'can_generate_pdf',
+          'canGeneratePdf',
+          'generate_pdf',
+          'can_pdf',
+        ),
+        can_download_pdf: flag(
+          'can_download_pdf',
+          'canDownloadPdf',
+          'download_pdf',
+        ),
         raw: actionsRaw,
       };
     })(),

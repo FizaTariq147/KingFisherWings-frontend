@@ -1,7 +1,207 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — deliveryOrderFormatUiLayouts. */
+/** Auto-generated Delivery Order formats — run: node scripts/build-delivery-order-format-ui-layouts.mjs */
 export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_1",
+    "formatNumber": 0,
+    "name": "Delivery Order Report Format-1",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "inquiry@kingfishertec.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
+      "partyLeft": {
+        "title": "Client",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "NUNGAMBAKKAM CHENNAI TAMIL NADU 600084"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE",
+          "AL NABHA SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "NUNGAMBAKKAM CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Job Ref.",
+          "v": "CEXP190150 / 29-JAN-19"
+        },
+        {
+          "k": "Shipment Ref.",
+          "v": "B/EXP/19/0254 / 23-JAN-19"
+        },
+        {
+          "k": "B/E NO.",
+          "v": "—"
+        },
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87667888 / 28-JAN-19"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLMAAJEA00081 / 28-JAN-19"
+        },
+        {
+          "k": "ETD",
+          "v": "29-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "07-FEB-19"
+        },
+        {
+          "k": "Carrier",
+          "v": "CMA CGM"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "EVERGREEN MARINE / 9887"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "BOE No",
+          "v": "SBILLNO767 / 27-JAN-19"
+        },
+        {
+          "k": "Declaration No.",
+          "v": "DECNO9812345 / 26-JAN-19"
+        }
+      ],
+      "tableHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "tableRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
+      "remarks": "Job default Delivery Order Report Format-1 — release cargo to consignee.",
+      "termsLines": [
+        "Job default Delivery Order Report Format-1 — release cargo to consignee."
+      ]
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
+        "type": "docTitle",
+        "text": "DELIVERY ORDER",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
   {
     "code": "DELIVERY_CONFIRMATION_REPORT_FORMAT",
     "formatNumber": 1,
@@ -9,19 +209,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -31,6 +231,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "CEXP190150",
       "invoiceDate": "07-FEB-19",
+      "billToName": "AL NASER TRADING COMPANY LLC",
       "partyLeft": {
         "title": "Consignee",
         "lines": [
@@ -77,6 +278,18 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "Received in good order"
         ]
       ],
+      "hblCargoHeaders": [
+        "Description",
+        "Qty",
+        "Condition"
+      ],
+      "hblCargoRows": [
+        [
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "125 PKGS",
+          "Received in good order"
+        ]
+      ],
       "termsLines": [
         "We confirm receipt of the above shipment in full and good order.",
         "This is a computer generated document."
@@ -88,39 +301,27 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Delivery Confirmation"
+      },
+      {
         "type": "docTitle",
         "text": "DELIVERY CONFIRMATION",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "totalsOnly"
-      },
-      {
-        "type": "termsBank"
+        "type": "hblCargoTable"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -134,19 +335,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -212,43 +413,26 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "DELIVERY CONFIRMATION OSA",
+        "text": "DELIVERY CONFIRMATION (OSA)",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "twoColumn",
-        "showBillTo": true,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "letterBody"
       },
       {
-        "type": "summaryHero"
+        "type": "partyTriple"
       },
       {
-        "type": "agingSummary"
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -262,19 +446,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -405,14 +589,15 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
+        "type": "twoColumn",
+        "showBillTo": true
+      },
+      {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
@@ -436,19 +621,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -573,7 +758,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER (FCL VIETNAM)",
         "align": "center",
         "band": true
       },
@@ -585,20 +770,14 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "accent"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "stampSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -612,19 +791,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -694,32 +873,24 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER (LCL VIETNAM)",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -733,19 +904,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -807,36 +978,17 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG DELIVERY NOTE",
+        "text": "DELIVERY NOTE",
         "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "partyTriple"
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "subtotalBar",
-        "variant": "tax"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
+        "headerColor": "primary"
       },
       {
         "type": "signatureRow"
@@ -853,19 +1005,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -929,7 +1081,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG DELIVERY NOTE FORMAT-1",
+        "text": "DELIVERY NOTE — FORMAT 1",
         "align": "center",
         "band": true
       },
@@ -938,32 +1090,14 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "totalsOnly"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -977,19 +1111,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1054,40 +1188,21 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG DELIVERY NOTE FORMAT UK",
+        "text": "DELIVERY NOTE (UK)",
         "align": "center",
         "band": true
       },
       {
         "type": "twoColumn",
-        "showBillTo": true,
-        "rightMetaFrom": "metaRows"
+        "showBillTo": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
+        "headerColor": "primary"
       },
       {
         "type": "signatureRow"
@@ -1104,19 +1219,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1177,36 +1292,20 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CONSIGNMENT DELIVERY NOTE",
+        "text": "CONSIGNMENT DELIVERY NOTE",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 1
       },
       {
         "type": "partyTriple"
       },
       {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "subtotalBar",
-        "variant": "tax"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "termsBank"
+        "headerColor": "accent"
       },
       {
         "type": "signatureRow"
@@ -1223,19 +1322,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1292,44 +1391,24 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CONSIGNMENT DELIVERY NOTE FORMAT-1",
+        "text": "CONSIGNMENT DELIVERY NOTE — FORMAT 1",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "totalsOnly"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -1343,19 +1422,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1403,43 +1482,22 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG DELIVERY NOC LETTER",
+        "text": "DELIVERY NOC LETTER",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "twoColumn",
-        "showBillTo": true,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "letterBody"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "partyTriple"
       },
       {
-        "type": "containerStrip"
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -1453,19 +1511,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1474,6 +1532,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -1562,6 +1622,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "remarks": "House delivery order — release against house bill of lading.",
       "termsLines": [
         "House delivery order — release against house bill of lading."
@@ -1573,33 +1655,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — HOUSE B/L",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -1613,19 +1695,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1634,6 +1716,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -1746,6 +1830,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "remarks": "Abu Dhabi delivery order sample layout.",
       "termsLines": [
         "Abu Dhabi delivery order sample layout."
@@ -1757,36 +1863,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — ABU DHABI",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -1800,19 +1903,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1821,6 +1924,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -1903,6 +2008,22 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "—"
         ]
       ],
+      "hblCargoHeaders": [
+        "HAWB",
+        "Description",
+        "Pkgs",
+        "Weight",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "PLMAAJEA00081",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "125",
+          "18,000.000",
+          "—"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -1913,36 +2034,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — AIR",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -1956,19 +2074,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1977,6 +2095,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -2061,6 +2181,20 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "As per HAWB"
         ]
       ],
+      "hblCargoHeaders": [
+        "Particulars",
+        "Qty",
+        "Weight",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "VALVE MATERIALS FOR MACHINERY PARTS",
+          "125",
+          "18,000.000",
+          "As per HAWB"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -2071,36 +2205,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — AIR FORMAT 1",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2114,19 +2245,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2135,6 +2266,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -2219,6 +2352,20 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "18,000.000"
         ]
       ],
+      "hblCargoHeaders": [
+        "Line",
+        "Goods Description",
+        "Pkgs",
+        "G.Wt"
+      ],
+      "hblCargoRows": [
+        [
+          "1",
+          "VALVE MATERIALS FOR MACHINERY PARTS",
+          "125",
+          "18,000.000"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -2229,24 +2376,27 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — AIR FORMAT 2",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
@@ -2255,13 +2405,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2275,19 +2419,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2296,6 +2440,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -2404,6 +2550,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -2414,39 +2582,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — SEA FORMAT 8",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2460,19 +2622,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2481,6 +2643,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -2589,6 +2753,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -2599,39 +2785,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — FORMAT 10",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -2645,19 +2825,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2666,6 +2846,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -2774,6 +2956,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -2784,42 +2988,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — SEA FORMAT 10",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -2833,19 +3028,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2854,6 +3049,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -2962,6 +3159,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -2972,42 +3191,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — SEA FORMAT 3",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -3021,19 +3231,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3042,6 +3252,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -3150,6 +3362,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -3160,42 +3394,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — SEA FORMAT 5",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -3209,19 +3434,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3230,6 +3455,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -3338,6 +3565,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -3348,24 +3597,27 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — SEA FORMAT 6",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
@@ -3374,19 +3626,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3400,19 +3640,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3421,6 +3661,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -3529,6 +3771,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -3539,45 +3803,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — SEA FORMAT 7",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -3591,19 +3843,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3612,6 +3864,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -3720,6 +3974,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -3730,45 +4006,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — FORMAT 8",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -3782,19 +4046,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3803,6 +4067,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -3911,6 +4177,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -3921,48 +4209,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — FORMAT 9",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3976,19 +4249,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3997,6 +4270,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -4105,6 +4380,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -4115,48 +4412,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — FORMAT 13",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -4170,19 +4452,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4191,6 +4473,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -4299,6 +4583,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -4309,48 +4615,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — FORMAT 14",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -4364,19 +4655,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4385,6 +4676,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -4493,6 +4786,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -4503,51 +4818,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — FORMAT 15",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -4561,19 +4858,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4582,6 +4879,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -4690,6 +4989,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -4700,51 +5021,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — FORMAT 16",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -4758,19 +5061,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4779,6 +5082,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -4887,6 +5192,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -4897,24 +5224,27 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — FORMAT 18",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
@@ -4923,25 +5253,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "jobDescription"
-      },
-      {
         "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4955,19 +5267,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4976,6 +5288,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -5084,6 +5398,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -5094,54 +5430,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — SEA FORMAT 1",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -5155,19 +5470,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5176,6 +5491,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -5284,6 +5601,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -5294,54 +5633,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — FORMAT 3",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -5355,19 +5673,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5376,7 +5694,9 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
       "letterBody": "USA air delivery order — present ID and pay applicable terminal charges.",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -5467,6 +5787,22 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "USA air DO"
         ]
       ],
+      "hblCargoHeaders": [
+        "HAWB",
+        "Description",
+        "Pkgs",
+        "Weight",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "PLMAAJEA00081",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "125",
+          "18,000.000",
+          "USA air DO"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -5477,54 +5813,36 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — AIR USA",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "letterBody"
+      },
+      {
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5538,19 +5856,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5559,6 +5877,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -5623,6 +5943,20 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "Trucker release copy"
         ]
       ],
+      "hblCargoHeaders": [
+        "Qty",
+        "Description",
+        "Weight",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "125",
+          "VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000",
+          "Trucker release copy"
+        ]
+      ],
       "remarks": "For transporter use — present at gate with valid ID.",
       "termsLines": [
         "For transporter use — present at gate with valid ID."
@@ -5634,57 +5968,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "DELIVERY ORDER — TRUCKER COPY",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -5698,19 +6008,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5719,7 +6029,9 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
       "letterBody": "Electronic delivery order — valid when released in Fresa Gold with digital authorization.",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -5784,6 +6096,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -5794,57 +6128,36 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "E-DELIVERY ORDER",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "letterBody"
+      },
+      {
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -5858,19 +6171,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5879,6 +6192,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -5959,6 +6274,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "termsLines": [
         "Present endorsed documents and pay applicable charges."
       ]
@@ -5969,57 +6306,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "E-DELIVERY ORDER — SEA FORMAT 1",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -6033,19 +6346,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6054,6 +6367,8 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "demo": {
       "invoiceNo": "DO-CEXP190150",
+      "billToName": "AL NASER TRADING COMPANY LLC",
+      "formatBadgeLabel": "SEA DO",
       "partyLeft": {
         "title": "Client",
         "lines": [
@@ -6146,6 +6461,28 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "FREIGHT PREPAID"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Pkgs",
+        "Volume",
+        "Net Weight",
+        "Gross Weight",
+        "Description",
+        "Remarks"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666",
+          "20' DC",
+          "125",
+          "24.000",
+          "17,000.000",
+          "18,000.000",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FREIGHT PREPAID"
+        ]
+      ],
       "remarks": "Export delivery order — customs export release.",
       "termsLines": [
         "Export delivery order — customs export release."
@@ -6157,60 +6494,33 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "SEA DO"
+      },
+      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
+        "text": "EXPORT DELIVERY ORDER",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "deliveryOrderRelease"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6224,19 +6534,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6284,43 +6594,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG NOTICE OF DELIVERY",
+        "text": "NOTICE OF DELIVERY",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "twoColumn",
-        "showBillTo": true,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "letterBody"
       },
       {
-        "type": "summaryHero"
+        "type": "partyTriple"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
         "type": "colorfulFooter"
@@ -6334,19 +6620,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6414,34 +6700,22 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 1
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
-        "type": "partyTriple"
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "subtotalBar",
-        "variant": "tax"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "termsBank"
+        "headerColor": "primary"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -6455,19 +6729,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6608,14 +6882,13 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "PROOF OF DELIVERY / HBL NO - PLMAAJEA00081",
         "align": "center",
         "band": true
       },
       {
         "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -6625,13 +6898,17 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -6645,19 +6922,19 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6713,40 +6990,20 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PROOF OF DELIVERY (RPM SAMPLE)",
+        "text": "PROOF OF DELIVERY",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true,
-        "rightMetaFrom": "metaRows"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
+        "headerColor": "accent"
       },
       {
         "type": "signatureRow"

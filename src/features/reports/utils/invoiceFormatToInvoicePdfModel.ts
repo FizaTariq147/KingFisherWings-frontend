@@ -50,6 +50,12 @@ export type InvoiceFormatPdfData = {
   incoterm?: string;
   currencyCode?: string;
   lines?: InvoiceFormatPdfLine[];
+  /**
+   * Prefer these over charge-line remapping — HBL / container grids
+   * (e.g. FG_HBL_HKG BL draft).
+   */
+  tableHeaders?: string[];
+  tableRows?: string[][];
   subtotal?: string;
   tax?: string;
   total?: string;

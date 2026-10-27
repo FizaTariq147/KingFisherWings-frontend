@@ -4,6 +4,8 @@ import { ArrowLeft, Download, Package, Scale, Box } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
+import { ApiDataView } from '@/features/jobs/components/ApiDataView';
+import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import {
   PortalAnimatedGrid,
   PortalAnimatedGridItem,
@@ -24,6 +26,7 @@ import {
   usePortalShipmentContainerRequests,
   usePortalShipmentDocuments,
   usePortalShipmentMilestones,
+  usePortalShipmentTracking,
 } from '../hooks/usePortalShipments';
 
 export default function PortalShipmentDetailPage() {
@@ -32,6 +35,8 @@ export default function PortalShipmentDetailPage() {
   const { data, isLoading, isError, error, refetch } = usePortalShipment(id);
   const milestonesQuery = usePortalShipmentMilestones(id, Boolean(data) && !data?.milestones?.length);
   const documentsQuery = usePortalShipmentDocuments(id, Boolean(data));
+  const [showTracking, setShowTracking] = useState(false);
+  const trackingQuery = usePortalShipmentTracking(id, showTracking && Boolean(data));
   const isAirExport = data?.jobType === 'AIR_EXPORT';
   const isAirImport = data?.jobType === 'AIR_IMPORT';
   const isAir =
@@ -124,13 +129,18 @@ export default function PortalShipmentDetailPage() {
               type="button"
               size="sm"
               variant="secondary"
-              onClick={() =>
-                navigate('/portal/track', {
-                  state: { ref: data.reference || id },
-                })
-              }
+              onClick={() => {
+                setShowTracking((v) => !v);
+                if (!showTracking) {
+                  window.setTimeout(() => {
+                    document
+                      .getElementById('portal-shipment-track-trace')
+                      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                  }, 80);
+                }
+              }}
             >
-              Track & Trace
+              {showTracking ? 'Hide Tracking' : 'Track & Trace'}
             </Button>
             <Button
               type="button"
@@ -340,6 +350,34 @@ export default function PortalShipmentDetailPage() {
               Request draft BL
             </Button>
           </div>
+        </PortalPanel>
+      ) : null}
+
+      {showTracking ? (
+        <PortalPanel padded>
+          <div
+            id="portal-shipment-track-trace"
+            className="mb-3 flex items-center justify-between gap-2"
+          >
+            <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">
+              Track &amp; Trace
+            </h2>
+            <Button type="button" size="sm" variant="secondary" onClick={() => setShowTracking(false)}>
+              Hide
+            </Button>
+          </div>
+          {trackingQuery.isLoading ? (
+            <p className="text-sm text-[var(--color-neutral-500)]">Loading tracking…</p>
+          ) : trackingQuery.isError ? (
+            <p className="text-sm text-[var(--color-danger-600)]">
+              {getErrorMessage(trackingQuery.error, 'Could not load tracking.')}
+            </p>
+          ) : (
+            <ApiDataView
+              data={trackingQuery.data ?? {}}
+              emptyLabel="No tracking data returned."
+            />
+          )}
         </PortalPanel>
       ) : null}
 

@@ -21,6 +21,7 @@ import {
 import { JobDocumentGenerationStatusCard } from '../JobDocumentGenerationStatusCard';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { resolveJobDocumentPdfMeta } from '../../utils/jobDocumentPdfMeta';
+import { prepareJobDocumentCatalogPdf } from '../../utils/prepareJobDocumentCatalogPdf';
 import { prepareJobDocumentDisplayPdf } from '../../utils/prepareJobDocumentDisplayPdf';
 import { jobDisplayNumber } from '../../utils/jobRoute';
 import {
@@ -155,6 +156,7 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
     fileUrl?: string | null,
     waitForUrl = false,
     fallbackUrls?: string[] | null,
+    documentId?: string | null,
   ) => {
     setError(null);
     setPdfBusy(true);
@@ -168,9 +170,26 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
     setPdfReadyTitle(`${meta.documentTitle} PDF ready`);
     setPdfReadyOpen(true);
     try {
+      const catalog = await prepareJobDocumentCatalogPdf({
+        jobId,
+        documentKey,
+        quotationId: job?.quotation_id,
+        shipmentId: job?.shipment_id,
+      });
+      if (catalog?.blob) {
+        setPdfReadyBlob(catalog.blob);
+        setMessage(
+          `${meta.documentTitle} PDF ready (${
+            catalog.source === 'classic-bl' ? 'classic HBL layout' : 'catalog layout'
+          }: ${catalog.formatCode}).`,
+        );
+        return;
+      }
+
       const blob = await prepareJobDocumentDisplayPdf({
         jobId,
         tenantId,
+        documentId,
         fileUrl,
         fallbackUrls,
         waitForUrl,
@@ -232,6 +251,10 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                 s3Key?: string;
                 download_url?: string;
                 downloadUrl?: string;
+                download_path?: string;
+                downloadPath?: string;
+                can_download?: boolean;
+                canDownload?: boolean;
                 status?: string;
                 is_finalized?: boolean;
                 reference_number?: string;
@@ -244,11 +267,17 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                 d.visible_to_customer === true || d.visibleToCustomer === true;
               const visibleToVendor =
                 d.visible_to_vendor === true || d.visibleToVendor === true;
+              const canDownload =
+                d.can_download !== false && d.canDownload !== false;
               const docRef = {
                 file_url: d.file_url || d.fileUrl,
                 s3_key: d.s3_key || d.s3Key,
                 file_name: d.file_name || d.fileName,
                 download_url: d.download_url || d.downloadUrl,
+                download_path:
+                  d.download_path ||
+                  d.downloadPath ||
+                  (d.id ? `/jobs/${jobId}/documents/${d.id}/download` : undefined),
               };
               const docTenant = tenantId || d.tenant_id;
               const urlCandidates = resolveJobDocumentFileUrlCandidates(docRef, docTenant);
@@ -258,8 +287,9 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                   d.document_type || 'DOCUMENT',
                   d.file_name || d.document_type,
                   storedUrl,
-                  false,
+                  true,
                   urlCandidates.slice(1),
+                  d.id,
                 );
               return (
                 <div
@@ -319,8 +349,9 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                     <Button
                       type="button"
                       size="sm"
-                      disabled={pdfBusy}
+                      disabled={pdfBusy || !canDownload}
                       onClick={openDocPdf}
+                      title={canDownload ? undefined : 'Download not available for this document'}
                     >
                       {pdfBusy ? 'Building…' : 'View PDF'}
                     </Button>
@@ -328,12 +359,13 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                       type="button"
                       size="sm"
                       variant="secondary"
-                      disabled={pdfBusy}
+                      disabled={pdfBusy || !canDownload}
                       onClick={openDocPdf}
+                      title={canDownload ? undefined : 'Download not available for this document'}
                     >
                       Download PDF
                     </Button>
-                    {storedUrl ? (
+                    {storedUrl && canDownload ? (
                       <StoredFileLink
                         url={storedUrl}
                         label="Stored file"

@@ -106,15 +106,25 @@ function layout(partial) {
 }
 
 function hawbLayout(title, opts = {}) {
-  const { headerColor = 'primary', badge, extraGrid = [], draft = true } = opts;
+  const { headerColor = 'primary', badge, extraGrid = [], draft = true, preprinted = false } = opts;
   return layout({
     demo: {
       invoiceNo: 'PLMAAJEA00081',
       invoiceDate: '29-JAN-19',
+      formatBadgeLabel: badge,
+      heroTitle: draft ? 'HAWB DRAFT' : 'HAWB ORIGINAL',
       partyLeft: SHIPPER,
       partyMid: CONSIGNEE,
       partyNotify: AGENT,
       fieldGrid: [...HAWB_META, ...extraGrid],
+      hawbRouteFields: [
+        { k: 'Airport of Departure', v: 'CHENNAI (MAA)' },
+        { k: 'Airport of Destination', v: 'DUBAI (DXB)' },
+        { k: 'Flight / Date', v: 'EK-512 / 29-JAN-19' },
+        { k: 'Pieces', v: '125' },
+        { k: 'Gross Weight', v: '18,000.0 K' },
+        { k: 'Chargeable Weight', v: '18,000.0 K' },
+      ],
       tableHeaders: GOODS_HEADERS,
       tableRows: [GOODS_ROW],
       termsLines: [
@@ -126,10 +136,11 @@ function hawbLayout(title, opts = {}) {
       remarks: badge,
     },
     blocks: [
-      { type: 'companyHeader', showContact: true },
-      ...(badge ? [{ type: 'formatBadge' }] : []),
+      { type: 'companyHeader', showContact: true, title: preprinted ? 'AIR WAYBILL' : undefined },
+      ...(badge ? [{ type: 'formatBadge', label: badge }] : []),
       { type: 'docTitle', text: title, align: 'center', band: true },
-      { type: 'partyTriple' },
+      { type: 'partyNotifyGrid' },
+      { type: 'hawbRouteGrid' },
       { type: 'fieldGrid', cols: 2 },
       { type: 'chargeTable', headerColor },
       { type: 'termsBank' },
@@ -166,6 +177,7 @@ const KINDS = {
   hawb_original_pre_printed_1: () =>
     hawbLayout('HOUSE AIR WAYBILL — ORIGINAL (PRE-PRINTED) FORMAT 1', {
       draft: false,
+      preprinted: true,
       headerColor: 'orange',
       badge: 'Original Pre Printed Format-1',
       extraGrid: [{ k: 'Stock', v: 'Pre-printed Format-1' }],
@@ -174,6 +186,7 @@ const KINDS = {
   hawb_original_pre_printed_2: () =>
     hawbLayout('HOUSE AIR WAYBILL — ORIGINAL (PRE-PRINTED) FORMAT 2', {
       draft: false,
+      preprinted: true,
       headerColor: 'cyan',
       badge: 'Original Pre Printed Format-2',
       extraGrid: [{ k: 'Stock', v: 'Pre-printed Format-2' }],

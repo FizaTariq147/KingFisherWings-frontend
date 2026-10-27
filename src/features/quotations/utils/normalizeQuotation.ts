@@ -95,6 +95,25 @@ function normalizeQuotationActions(raw: unknown): QuotationActions | undefined {
     can_copy: flag('can_copy', 'canCopy', 'copy'),
     can_change_status: flag('can_change_status', 'canChangeStatus', 'change_status'),
     can_booking_form: flag('can_booking_form', 'canBookingForm', 'booking_form'),
+    can_bl_draft: flag(
+      'can_bl_draft',
+      'canBlDraft',
+      'bl_draft',
+      'can_bl_entry',
+      'canBlEntry',
+      'bl_entry',
+    ),
+    can_generate_pdf: flag(
+      'can_generate_pdf',
+      'canGeneratePdf',
+      'generate_pdf',
+      'can_pdf',
+    ),
+    can_download_pdf: flag(
+      'can_download_pdf',
+      'canDownloadPdf',
+      'download_pdf',
+    ),
     raw: r,
   };
 }
@@ -418,9 +437,25 @@ export function normalizeQuotation(raw: unknown): Quotation | null {
         })
       : undefined,
     approvals: Array.isArray(r.approvals) ? (r.approvals as Quotation['approvals']) : undefined,
-    actions: normalizeQuotationActions(
-      r.actions ?? r.action_flags ?? r.actionFlags ?? r.available_actions,
-    ),
+    actions: (() => {
+      const nested =
+        asRecord(r.actions) ??
+        asRecord(r.action_flags) ??
+        asRecord(r.actionFlags) ??
+        asRecord(r.available_actions) ??
+        asRecord(r.quotationActionFlags) ??
+        asRecord(r.quotation_action_flags) ??
+        {};
+      const merged: Record<string, unknown> = { ...nested };
+      // Promote root-level can_* (BE may flatten quotationActionFlags onto detail).
+      for (const key of Object.keys(r)) {
+        if (!/^can[_A-Z]/i.test(key)) continue;
+        if (merged[key] === undefined) merged[key] = r[key];
+      }
+      return normalizeQuotationActions(
+        Object.keys(merged).length ? merged : r.actions ?? r.action_flags,
+      );
+    })(),
     ...pickDetailHints(r),
   };
 }

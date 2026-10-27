@@ -87,6 +87,7 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
     fileUrl?: string | null,
     waitForUrl = false,
     fallbackUrls?: string[] | null,
+    documentId?: string | null,
   ) => {
     setError(null);
     setPdfBusy(true);
@@ -104,6 +105,7 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
         jobId,
         fallbackUrls,
         tenantId,
+        documentId,
         fileUrl,
         waitForUrl,
       });
@@ -157,19 +159,34 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
                 file_name?: string;
                 file_url?: string;
                 s3_key?: string;
+                download_path?: string;
+                downloadPath?: string;
+                download_url?: string;
+                can_download?: boolean;
+                canDownload?: boolean;
                 status?: string;
               };
+              const canDownload =
+                d.can_download !== false && d.canDownload !== false;
+              const docRef = {
+                ...d,
+                download_path:
+                  d.download_path ||
+                  d.downloadPath ||
+                  (d.id ? `/jobs/${jobId}/documents/${d.id}/download` : undefined),
+              };
               const docTenant = tenantId || d.tenant_id;
-              const urlCandidates = resolveJobDocumentFileUrlCandidates(d, docTenant);
+              const urlCandidates = resolveJobDocumentFileUrlCandidates(docRef, docTenant);
               const storedUrl =
-                urlCandidates[0] ?? resolveJobDocumentFileUrl(d, docTenant);
+                urlCandidates[0] ?? resolveJobDocumentFileUrl(docRef, docTenant);
               const openDocPdf = () =>
                 void openKingFisherPdf(
                   d.document_type || 'DOCUMENT',
                   d.file_name || d.document_type,
                   storedUrl,
-                  false,
+                  true,
                   urlCandidates.slice(1),
+                  d.id,
                 );
               return (
                 <div
@@ -186,8 +203,9 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
                     <Button
                       type="button"
                       size="sm"
-                      disabled={pdfBusy}
+                      disabled={pdfBusy || !canDownload}
                       onClick={openDocPdf}
+                      title={canDownload ? undefined : 'Download not available for this document'}
                     >
                       {pdfBusy ? 'Building…' : 'View PDF'}
                     </Button>
@@ -195,8 +213,9 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
                       type="button"
                       size="sm"
                       variant="secondary"
-                      disabled={pdfBusy}
+                      disabled={pdfBusy || !canDownload}
                       onClick={openDocPdf}
+                      title={canDownload ? undefined : 'Download not available for this document'}
                     >
                       Download PDF
                     </Button>

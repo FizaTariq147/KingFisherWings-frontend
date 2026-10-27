@@ -5,8 +5,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { diversifyOpsBlocks } from './lib/fresaLayoutDiversity.mjs';
-
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const BRAND = {
@@ -165,6 +163,7 @@ function layout(partial) {
   };
 }
 
+/** Classic HBL structure (not invoice chargeTable / ops diversity). */
 function standardHbl(docTitle, opts = {}) {
   const {
     extraGrid = [],
@@ -172,20 +171,55 @@ function standardHbl(docTitle, opts = {}) {
     letterBody,
     termsExtra,
     isDraft = true,
-    seed = 0,
+    variant = 0,
   } = opts;
-  const blocks = diversifyOpsBlocks(seed, { title: docTitle });
+  const titleAlign = variant % 3 === 0 ? 'center' : variant % 3 === 1 ? 'start' : 'end';
+  const band = variant % 2 === 0;
+  const blocks = [
+    { type: 'companyHeader', showContact: true },
+    ...(badge ? [{ type: 'formatBadge', label: badge }] : []),
+    { type: 'docTitle', text: docTitle, align: titleAlign, band },
+    ...(letterBody ? [{ type: 'letterBody' }] : []),
+    { type: 'partyNotifyGrid' },
+    { type: 'fieldGrid', cols: variant % 2 === 0 ? 2 : 3 },
+    { type: 'hblCargoTable' },
+    { type: 'hblFreightSignature' },
+    { type: 'termsBank' },
+    ...(variant % 4 === 0 ? [{ type: 'signatureRow' }] : []),
+    { type: 'colorfulFooter' },
+  ];
   return layout({
     demo: {
       invoiceNo: 'PLMAAJEA00081',
       invoiceDate: '28-JAN-19',
       letterBody,
+      formatBadgeLabel: badge,
       partyLeft: SHIPPER,
       partyMid: CONSIGNEE,
       partyNotify: NOTIFY,
       fieldGrid: [...HBL_META, ...extraGrid],
+      hblCargoHeaders: [
+        'Container No. / Seal No. / Mark & No.',
+        'No. of Pkgs',
+        'Description of Goods',
+        'Gross Weight',
+        'Measurement',
+      ],
+      hblCargoRows: [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          '125 PACKAGES',
+          'FCL STC: VALVE MATERIALS FOR MACHINERY PARTS',
+          '18,000.000 KGS',
+          '24.000 CBM',
+        ],
+      ],
       tableHeaders: CONTAINER_HEADERS,
       tableRows: [CONTAINER_ROW],
+      hblFreightText: 'FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED',
+      hblOnboardDate: '16-JAN-19',
+      hblPlaceDate: 'CHENNAI 28-JAN-19',
+      hblCarrierAgent: 'CMA CGM',
       termsLines: [
         isDraft
           ? 'DRAFT — Not negotiable unless marked original.'
@@ -202,7 +236,7 @@ function standardHbl(docTitle, opts = {}) {
 function draftFormat(n, headerColor = 'primary') {
   void headerColor;
   return standardHbl(`HOUSE BILL OF LADING — DRAFT FORMAT ${n}`, {
-    seed: n * 17,
+    variant: n,
     extraGrid: [{ k: 'Layout', v: `HBL Draft Report Format-${n}` }],
     badge: `Format-${n}`,
   });
@@ -216,11 +250,83 @@ const KINDS = {
       badge: 'Jasper Draft',
     }),
 
+  /** Exact Fresa sample: fg_hbl_hkg_rpm_ref_245.pdf — KingFisher logo in companyHeader. */
   fg_hbl_hkg: () =>
-    standardHbl('FG HBL — HONG KONG', {
-      headerColor: 'accent',
-      extraGrid: [{ k: 'Region', v: 'HKG' }],
-      badge: 'FG HBL HKG',
+    layout({
+      demo: {
+        invoiceNo: 'PLMAAJEA00081',
+        invoiceDate: '28-JAN-19',
+        formatBadgeLabel: 'DRAFT',
+        heroTitle: 'BILL OF LADING',
+        partyLeft: SHIPPER,
+        partyMid: CONSIGNEE,
+        partyNotify: {
+          title: 'Notify Party',
+          lines: [
+            'AL NASER TRADING COMPANY LLC',
+            'POST BOX : 12356',
+            '30 AL MAKTHOOM BUILDING',
+            'AL NABHA SHARJAH UAE',
+          ],
+        },
+        fieldGrid: [
+          { k: 'Bill of Lading No.', v: 'PLMAAJEA00081' },
+          { k: 'Job No.', v: 'CEXP190150' },
+          { k: 'Place of Receipt', v: 'CHENNAI (EX MADRAS), INDIA' },
+          { k: 'Port of Loading', v: 'CHENNAI (EX MADRAS), INDIA' },
+          { k: 'Vessel / Voyage No.', v: 'CMA CGM / 9887' },
+          { k: 'Port of Discharge', v: 'JEBEL ALI, UNITED ARAB EMIRATES' },
+          { k: 'Place of Delivery', v: 'JEBEL ALI, UNITED ARAB EMIRATES' },
+          { k: 'No. of Bills of Lading', v: '1(ONE)' },
+          { k: 'Freight', v: 'PREPAID' },
+          { k: 'Payable At', v: 'CHENNAI AS ARRANGED' },
+          { k: 'Onboard Date', v: '16-JAN-19' },
+          { k: 'Place and Date of Issue', v: 'CHENNAI 28-JAN-19' },
+        ],
+        hblCargoHeaders: [
+          'Container No. / Seal No. / Mark & No.',
+          'No. of Pkgs or Shipping Units',
+          'Description of Goods & Pkgs.',
+          'Gross Weight',
+          'Measurement',
+        ],
+        hblCargoRows: [
+          [
+            "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+            '125 PACKAGES',
+            "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
+            '18,000.000 KGS',
+            '24.000 CBM',
+          ],
+        ],
+        containerNote: "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
+        hblFreightText: 'FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED',
+        hblOnboardDate: '16-JAN-19',
+        hblPlaceDate: 'CHENNAI 28-JAN-19',
+        hblCarrierAgent: 'CMA CGM',
+        termsLines: [
+          'DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED "TO ORDER"',
+          'RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.',
+          'AS AGENT FOR THE CARRIER',
+        ],
+        remarks: 'DRAFT',
+      },
+      blocks: [
+        { type: 'companyHeader', showContact: true },
+        { type: 'formatBadge', label: 'DRAFT' },
+        {
+          type: 'docTitle',
+          text: 'BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED "TO ORDER"',
+          align: 'center',
+          band: true,
+        },
+        { type: 'partyNotifyGrid' },
+        { type: 'fieldGrid', cols: 2 },
+        { type: 'hblCargoTable' },
+        { type: 'hblFreightSignature' },
+        { type: 'termsBank' },
+        { type: 'colorfulFooter' },
+      ],
     }),
 
   fg_hbl_format_1: () =>

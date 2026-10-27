@@ -104,7 +104,14 @@ export function DashboardPage() {
   });
   const monthlySales = useCrmReportQuery('monthly_sales', revenueRange);
   const topCustomers = useCrmReportQuery('top_customers', revenueRange);
+  const customerRevenue = useCrmReportQuery('customer_revenue', revenueRange);
   const tradeLane = useCrmReportQuery('trade_lane', tradeLaneRange);
+
+  const topCustomerRows = useMemo(() => {
+    const primary = topCustomers.data?.rows ?? [];
+    if (primary.length) return primary;
+    return customerRevenue.data?.rows ?? [];
+  }, [topCustomers.data?.rows, customerRevenue.data?.rows]);
   const followUps = useCrmFollowUps({ page: 1, limit: 10, from: today, to: today });
   const patchFollowUp = usePatchCrmFollowUp();
   const notifications = useNotifications({ page: 1, limit: 8 });
@@ -240,9 +247,14 @@ export function DashboardPage() {
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
           <RevenueVsTargetPanel
             monthlyRows={monthlySales.data?.rows ?? []}
-            customerRows={topCustomers.data?.rows ?? []}
-            isLoading={monthlySales.isLoading || topCustomers.isLoading}
-            isError={monthlySales.isError && topCustomers.isError}
+            customerRows={topCustomerRows}
+            isLoading={
+              monthlySales.isLoading ||
+              (topCustomers.isLoading && customerRevenue.isLoading)
+            }
+            isError={
+              monthlySales.isError && topCustomers.isError && customerRevenue.isError
+            }
           />
           <TradeLanePanel
             rows={tradeLane.data?.rows ?? []}

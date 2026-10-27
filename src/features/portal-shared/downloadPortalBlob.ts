@@ -8,7 +8,7 @@ import {
 } from '@/features/portal-shared/normalize';
 import { triggerBlobDownload, triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
-import { isPdfBlob, type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
+import { type PdfBrandingOptions } from '@/features/files/utils/pdfBranding';
 import { formatPdfFilename, stripPdfExtension } from '@/features/files/utils/pdfFilename';
 import { isApiOriginUrl } from '@/lib/safeHttpUrl';
 
@@ -122,12 +122,37 @@ function base64PdfFromJson(parsed: unknown): Blob | null {
   }
 }
 
+function looksLikePdfName(name: string): boolean {
+  return /\.pdf$/i.test(name.trim());
+}
+
+/** Explicit non-PDF downloads (CSV export, etc.) — never rewrite to `.pdf`. */
+function looksLikeNonPdfFilename(name: string): boolean {
+  return /\.(csv|xlsx?|xls|zip|txt|json|xml|png|jpe?g|gif|webp|docx?|ya?ml)$/i.test(
+    name.trim(),
+  );
+}
+
 function resolveDownloadFilename(
   serverOrFallback: string,
   fallbackName: string,
   branding?: PdfBrandingOptions,
 ): string {
-  const serverName = safeDownloadFilename(serverOrFallback, fallbackName);
+  const serverName = safeDownloadFilename(serverOrFallback || fallbackName, fallbackName);
+  // Caller asked for CSV/XLSX/etc. — keep that extension even if Content-Disposition
+  // is missing or wrongly ends in `.pdf` (was causing portal Export CSV failures).
+  if (looksLikeNonPdfFilename(fallbackName)) {
+    return looksLikeNonPdfFilename(serverName)
+      ? serverName
+      : safeDownloadFilename(fallbackName, fallbackName);
+  }
+
+  const expectPdf =
+    Boolean(branding) || looksLikePdfName(fallbackName) || looksLikePdfName(serverName);
+
+  // Other non-PDF attachments must keep their real extension — never force .pdf.
+  if (!expectPdf) return serverName;
+
   const fallbackRef = stripPdfExtension(fallbackName);
   const genericFallback = ['quotation', 'invoice', 'document', 'download'].includes(
     fallbackRef.toLowerCase(),
@@ -138,7 +163,7 @@ function resolveDownloadFilename(
   if (!genericFallback && fallbackRef) {
     return formatPdfFilename(fallbackRef, 'document');
   }
-  return serverName;
+  return looksLikePdfName(serverName) ? serverName : formatPdfFilename(serverName, 'document');
 }
 
 async function savePdfBlob(
@@ -281,12 +306,19 @@ export async function downloadPortalBlob(
       : { params: paramsOrOptions as Record<string, unknown> | undefined };
 
   const { blob, filename } = await fetchPortalBlob(url, fallbackName, paramsOrOptions);
+  const expectPdf =
+    !looksLikeNonPdfFilename(fallbackName) &&
+    (Boolean(options.branding) ||
+      looksLikePdfName(fallbackName) ||
+      looksLikePdfName(filename));
 
   if (await blobLooksLikePdf(blob)) {
     await savePdfBlob(blob, filename, options.branding);
     return;
   }
-  if (isPdfBlob(blob, filename)) {
+  // Only enforce PDF when the caller asked for a PDF (name / branding).
+  // CSV export and other attachments must download as-is.
+  if (expectPdf) {
     throw new PortalApiError(
       'Download was expected to be a PDF but the server returned a non-PDF response.',
       400,

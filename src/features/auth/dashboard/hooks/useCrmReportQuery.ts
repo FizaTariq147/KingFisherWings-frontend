@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
 import { crmDashboardService } from '@/features/crm/services/crmDashboard.service';
 import type { CrmReportType } from '@/features/crm/constants/crm.constants';
+import { normalizeCrmReportRows } from '@/features/crm/utils/normalizeCrmReport';
 import { unwrapReportRows } from '../utils/dashboardFormat';
 
 export function useCrmReportQuery(
@@ -19,7 +20,10 @@ export function useCrmReportQuery(
         to: params.to,
         period: params.period,
       });
-      return { rows: unwrapReportRows(raw), raw };
+      // Prefer CRM normalizer (by_month / by_customer maps); fall back to dashboard unwrap.
+      const normalized = normalizeCrmReportRows(raw);
+      const rows = normalized.length ? normalized : unwrapReportRows(raw);
+      return { rows, raw };
     },
     enabled: Boolean(accessToken) && enabled,
     staleTime: 60_000,

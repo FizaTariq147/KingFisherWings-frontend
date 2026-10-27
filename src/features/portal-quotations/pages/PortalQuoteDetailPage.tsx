@@ -82,8 +82,11 @@ export default function PortalQuoteDetailPage() {
   );
   const shipmentQuery = usePortalShipment(jobId);
 
-  // Client KingFisher layout builds from quote detail — always available.
-  const canTryPdf = Boolean(data);
+  // Prefer BE quotationActionFlags; omit only when both flags are explicitly false.
+  const canTryPdf =
+    Boolean(data) &&
+    (data?.actions?.can_download_pdf !== false ||
+      data?.actions?.can_generate_pdf !== false);
 
   const openQuotePdf = (quoteId: string, name: string) => {
     setPdfError(null);

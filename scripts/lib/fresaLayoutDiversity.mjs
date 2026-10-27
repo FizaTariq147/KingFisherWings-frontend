@@ -5,6 +5,7 @@
  */
 
 import { fresaNameProfile } from './fresaNameProfiles.mjs';
+import { themeForFresaFormat } from './fresaThemePalettes.mjs';
 
 export const HEADER_ROTATION = ['primary', 'accent', 'fill', 'orange', 'cyan'];
 
@@ -375,11 +376,14 @@ export function diversifyLayoutRow(row, index, usedSignatures) {
   }
   usedSignatures.add(sig);
 
+  const theme = themeForFresaFormat(name, code, seed);
+
   return {
     ...row,
     paper,
     rtl,
     demo,
+    theme,
     blocks,
     branding: {
       company: 'KingFisher Wings',

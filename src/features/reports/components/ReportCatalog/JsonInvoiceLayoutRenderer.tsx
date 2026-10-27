@@ -185,8 +185,23 @@ function Block({
           {block.text}
         </p>
       );
-    case 'formatBadge':
-      return null;
+    case 'formatBadge': {
+      const badge =
+        block.label ||
+        demo.formatBadgeLabel ||
+        demo.docSubtitle ||
+        (layout.formatNumber ? `Format-${layout.formatNumber}` : layout.code);
+      return (
+        <div className="flex justify-end px-3 py-1">
+          <span
+            className="rounded-sm border px-2 py-0.5 text-[8px] font-bold uppercase tracking-wide"
+            style={{ borderColor: theme.primary, color: theme.primary, backgroundColor: theme.panel }}
+          >
+            {badge}
+          </span>
+        </div>
+      );
+    }
     case 'twoColumn':
       return <TwoColumn block={block} theme={theme} demo={demo} />;
     case 'fieldGrid':
@@ -209,7 +224,15 @@ function Block({
       return <UsaNumberedFields theme={theme} demo={demo} />;
     case 'arabicHeader':
       return <ArabicHeader theme={theme} branding={branding} layout={layout} />;
-    case 'summaryHero':
+    case 'summaryHero': {
+      const heroTitle =
+        block.title ||
+        demo.heroTitle ||
+        demo.docSubtitle ||
+        (layout.name?.toLowerCase().includes('summary')
+          ? 'SUMMARY INVOICE'
+          : layout.name?.replace(/\s*Report Format.*$/i, '').trim() ||
+            (layout.formatNumber ? `DOCUMENT FORMAT-${layout.formatNumber}` : 'DOCUMENT'));
       return (
         <div>
           <ThemeBar theme={theme} size="lg" />
@@ -225,13 +248,34 @@ function Block({
               >
                 ALL MODES OF TRANSPORT
               </p>
-              <p className="text-base font-bold">SUMMARY INVOICE</p>
-              <p className="text-[7px] text-white/70">Format-{layout.formatNumber}</p>
+              <p className="text-base font-bold uppercase">{heroTitle}</p>
+              <p className="text-[7px] text-white/70">
+                {layout.formatNumber ? `Format-${layout.formatNumber}` : layout.code}
+              </p>
             </div>
           </div>
           <ThemeBar theme={theme} size="sm" />
         </div>
       );
+    }
+    case 'hblCargoTable':
+      return <HblCargoTable theme={theme} demo={demo} />;
+    case 'hblFreightSignature':
+      return <HblFreightSignature theme={theme} demo={demo} branding={branding} />;
+    case 'partyNotifyGrid':
+      return <PartyNotifyGrid theme={theme} demo={demo} />;
+    case 'hawbRouteGrid':
+      return <HawbRouteGrid theme={theme} demo={demo} />;
+    case 'arrivalChargesOptional':
+      return (
+        <ArrivalChargesOptional
+          theme={theme}
+          demo={demo}
+          showCharges={block.showCharges ?? demo.arrivalShowCharges !== false}
+        />
+      );
+    case 'deliveryOrderRelease':
+      return <DeliveryOrderRelease theme={theme} demo={demo} />;
     case 'landRoute':
       return (
         <div className="mx-3 my-2 grid grid-cols-4 gap-1 rounded p-2" style={{ backgroundColor: theme.panel }}>
@@ -550,10 +594,12 @@ function ChargeTable({
 }) {
   const headers = demo.tableHeaders ?? [];
   const rows = demo.tableRows ?? [];
-  const bg = themeColor(theme, headerColor, theme.fill);
+  // Fresa samples default charge headers to cyan (#9AD7FF).
+  const resolved = headerColor ?? 'cyan';
+  const bg = themeColor(theme, resolved, theme.cyan);
   // Light fills / Fresa cyan (#9AD7FF) need dark ink; navy/orange/red get white.
   const fg =
-    headerColor === 'fill' || headerColor === 'cyan' ? theme.ink : theme.white;
+    resolved === 'fill' || resolved === 'cyan' ? theme.ink : theme.white;
   return (
     <div className="overflow-x-auto">
       <table className="w-full min-w-[560px] border-collapse text-[9px] leading-normal">
@@ -1348,6 +1394,221 @@ function OfficeAddressBand({ theme, demo }: { theme: InvoiceFormatUiTheme; demo:
       {lines.map((line) => (
         <p key={line}>{line}</p>
       ))}
+    </div>
+  );
+}
+
+/** Classic HBL shipper / consignee / notify grid (Fresa FG HBL style). */
+function PartyNotifyGrid({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: InvoiceFormatUiDemo }) {
+  const cols = [
+    demo.partyLeft ?? { title: 'Shipper', lines: [] as string[] },
+    demo.partyMid ?? { title: 'Consignee', lines: [] as string[] },
+    demo.partyNotify ?? demo.partyThird ?? { title: 'Notify Party', lines: [] as string[] },
+  ];
+  return (
+    <div className="grid grid-cols-3 border-b" style={{ borderColor: theme.primary }}>
+      {cols.map((col, i) => (
+        <div
+          key={col.title || i}
+          className={`min-h-[72px] p-2 ${i < 2 ? 'border-r' : ''}`}
+          style={{ borderColor: theme.primary }}
+        >
+          <p className="mb-1 text-[8px] font-bold uppercase" style={{ color: theme.primary }}>
+            {col.title}
+          </p>
+          {(col.lines ?? []).map((line) => (
+            <p key={line} className="text-[8.5px] leading-snug">
+              {line}
+            </p>
+          ))}
+        </div>
+      ))}
+    </div>
+  );
+}
+
+/** HBL cargo table: Container/Seal | Pkgs | Description | Weight | Measurement */
+function HblCargoTable({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: InvoiceFormatUiDemo }) {
+  const headers =
+    demo.hblCargoHeaders ??
+    demo.tableHeaders ?? [
+      'Container No. / Seal No. / Mark & No.',
+      'No. of Pkgs',
+      'Description of Goods',
+      'Gross Weight',
+      'Measurement',
+    ];
+  const rows = demo.hblCargoRows ?? demo.tableRows ?? [];
+  return (
+    <div className="border-b" style={{ borderColor: theme.primary }}>
+      <table className="w-full border-collapse text-[8px] leading-normal">
+        <thead>
+          <tr style={{ backgroundColor: theme.fill }}>
+            {headers.map((h) => (
+              <th
+                key={h}
+                className="border px-1 py-1 text-start font-bold uppercase"
+                style={{ borderColor: theme.primary, color: theme.primary }}
+              >
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {(rows.length
+            ? rows
+            : [Array.from({ length: headers.length }, () => '')]
+          ).map((row, ri) => (
+            <tr key={ri}>
+              {headers.map((_, ci) => (
+                <td
+                  key={ci}
+                  className="border px-1 py-2 align-top"
+                  style={{ borderColor: theme.primary, minHeight: 48 }}
+                >
+                  {row[ci] ?? ''}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      {demo.containerNote ? (
+        <p className="border-t px-2 py-1 text-[8px]" style={{ borderColor: theme.primary }}>
+          {demo.containerNote}
+        </p>
+      ) : null}
+    </div>
+  );
+}
+
+function HblFreightSignature({
+  theme,
+  demo,
+  branding,
+}: {
+  theme: InvoiceFormatUiTheme;
+  demo: InvoiceFormatUiDemo;
+  branding: InvoiceFormatUiLayout['branding'];
+}) {
+  return (
+    <div className="border-b text-[8.5px] leading-normal" style={{ borderColor: theme.primary }}>
+      <div className="grid grid-cols-2 border-b" style={{ borderColor: theme.primary }}>
+        <div className="border-r p-2" style={{ borderColor: theme.primary }}>
+          <p className="font-bold" style={{ color: theme.primary }}>
+            Freight Details, Charges etc :
+          </p>
+          <p className="mt-1">{demo.hblFreightText || demo.remarks || 'FREIGHT PREPAID AS ARRANGED'}</p>
+          {demo.hblOnboardDate ? <p className="mt-1">ONBOARD DATE : {demo.hblOnboardDate}</p> : null}
+        </div>
+        <div className="p-2">
+          <p className="font-bold" style={{ color: theme.primary }}>
+            Place and Date of Issue
+          </p>
+          <p className="mt-1">{demo.hblPlaceDate || `${demo.invoiceDate || ''}`}</p>
+          <p className="mt-3 font-bold uppercase" style={{ color: theme.primary }}>
+            Signed on behalf of the Carrier
+          </p>
+          <p className="mt-6 font-bold">{branding.company}</p>
+          <p className="mt-1 text-[8px]" style={{ color: theme.gray }}>
+            AS AGENT FOR THE CARRIER
+          </p>
+          <p className="font-semibold">{demo.hblCarrierAgent || ''}</p>
+        </div>
+      </div>
+      <p className="px-2 py-1.5 text-[7.5px]" style={{ color: theme.gray }}>
+        RECEIVED by the Carrier the Goods as specified above in apparent good order and condition
+        unless otherwise stated, to be transported subject to the terms of the Bill of Lading.
+      </p>
+    </div>
+  );
+}
+
+function HawbRouteGrid({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: InvoiceFormatUiDemo }) {
+  const fields =
+    demo.hawbRouteFields ??
+    (demo.fieldGrid ?? []).slice(0, 6) ??
+    [];
+  const cells = fields.length
+    ? fields
+    : [
+        { k: 'Airport of Departure', v: '' },
+        { k: 'Airport of Destination', v: '' },
+        { k: 'Flight / Date', v: '' },
+        { k: 'Pieces', v: '' },
+        { k: 'Gross Weight', v: '' },
+        { k: 'Chargeable Weight', v: '' },
+      ];
+  return (
+    <div
+      className="grid grid-cols-3 border-b"
+      style={{ borderColor: theme.primary, backgroundColor: theme.panel }}
+    >
+      {cells.map((f) => (
+        <div key={f.k} className="border-b border-r p-2" style={{ borderColor: theme.primary }}>
+          <p className="text-[7.5px] font-bold uppercase" style={{ color: theme.primary }}>
+            {f.k}
+          </p>
+          <p className="mt-0.5 text-[9px] font-semibold">{f.v}</p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ArrivalChargesOptional({
+  theme,
+  demo,
+  showCharges,
+}: {
+  theme: InvoiceFormatUiTheme;
+  demo: InvoiceFormatUiDemo;
+  showCharges: boolean;
+}) {
+  if (!showCharges) {
+    return (
+      <div className="border-b px-3 py-2 text-[8.5px]" style={{ borderColor: theme.primary }}>
+        <p className="font-bold" style={{ color: theme.primary }}>
+          Charges
+        </p>
+        <p style={{ color: theme.gray }}>
+          {demo.arrivalChargesNote || 'Charges omitted on this arrival notice format.'}
+        </p>
+      </div>
+    );
+  }
+  return <ChargeTable theme={theme} demo={demo} headerColor="cyan" />;
+}
+
+function DeliveryOrderRelease({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: InvoiceFormatUiDemo }) {
+  return (
+    <div
+      className="mx-3 my-2 border p-3 text-[9px] leading-normal"
+      style={{ borderColor: theme.primary, backgroundColor: theme.fill }}
+    >
+      <p className="text-[10px] font-bold uppercase tracking-wide" style={{ color: theme.primary }}>
+        Delivery Order — Please release cargo to
+      </p>
+      <p className="mt-2 font-semibold">{demo.billToName || demo.partyMid?.lines?.[0] || ''}</p>
+      {(demo.partyMid?.lines ?? []).slice(1).map((line) => (
+        <p key={line}>{line}</p>
+      ))}
+      <div className="mt-3 grid grid-cols-3 gap-2 text-[8px]">
+        {(demo.fieldGrid ?? []).slice(0, 3).map((f) => (
+          <div key={f.k}>
+            <p className="font-bold" style={{ color: theme.gray }}>
+              {f.k}
+            </p>
+            <p className="font-semibold">{f.v}</p>
+          </div>
+        ))}
+      </div>
+      {demo.remarks ? (
+        <p className="mt-2 border-t pt-2" style={{ borderColor: theme.primary }}>
+          {demo.remarks}
+        </p>
+      ) : null}
     </div>
   );
 }

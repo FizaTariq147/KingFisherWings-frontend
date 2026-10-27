@@ -1,27 +1,27 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — arrivalNoticeFormatUiLayouts. */
+/** Auto-generated Arrival Notice formats — permanent JSON store. */
 export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
-    "formatNumber": 1,
-    "name": "Arrival Notice Report Format-1 Cargo Arrival Notice Jasper",
+    "code": "CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1",
+    "formatNumber": 0,
+    "name": "Cargo Arrival Notice Report Format-1",
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -143,6 +143,25 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "20.000"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container No. / Type",
+        "Seal",
+        "Commodity Desc",
+        "No of Pcs",
+        "G.Weight",
+        "Volume"
+      ],
+      "hblCargoRows": [
+        [
+          "TENU9876666 20' DC",
+          "SL988888",
+          "STC: VALVE MATERIALS",
+          "100",
+          "18,000.000",
+          "20.000"
+        ]
+      ],
+      "arrivalShowCharges": true,
       "osTableTitle": "Charges",
       "osTableHeaders": [
         "Charge",
@@ -217,24 +236,34 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-1 Jasper"
+      },
+      {
         "type": "docTitle",
         "text": "ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "letterBody"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "arrivalChargesOptional",
+        "showCharges": true
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
@@ -243,7 +272,278 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+    "formatNumber": 1,
+    "name": "Arrival Notice Report Format-1 Cargo Arrival Notice Jasper",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Logistic",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "inquiry@kingfishertec.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLJEAMAA00001",
+      "currency": "INR",
+      "total": "10,332.67",
+      "totalLabel": "Total :",
+      "letterBody": "Attention: Ocean Import - Shipping Dept.\nPlease come before 12:30pm or after 2:00pm",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
+          "AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "NUNGAMBAKKAM CHENNAI TAMIL NADU 600084 INDIA",
+          "EMAIL: ram@fresatechnologies.com"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify1",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "NUNGAMBAKKAM CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "MBL No.",
+          "v": "MBLCOPY87666666 / 16-JAN-19"
+        },
+        {
+          "k": "HBL No.",
+          "v": "PLJEAMAA00001 / 16-JAN-19"
+        },
+        {
+          "k": "ETD / ETA",
+          "v": "16-JAN-19 / 25-JAN-19"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "MSC MELINA / 987"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Final Destination",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.00 KGS"
+        },
+        {
+          "k": "Measurement",
+          "v": "20.000 CBM"
+        },
+        {
+          "k": "No. of Pcs",
+          "v": "100"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "BL Status",
+          "v": "CREATED"
+        },
+        {
+          "k": "Shipment No.",
+          "v": "B/SFI/19/0166 / 22-JAN-19"
+        },
+        {
+          "k": "Goods Available At",
+          "v": "—"
+        }
+      ],
+      "tableHeaders": [
+        "Container No. / Type",
+        "Seal",
+        "Commodity Desc",
+        "No of Pcs",
+        "G.Weight",
+        "Volume"
+      ],
+      "tableRows": [
+        [
+          "TENU9876666 20' DC",
+          "SL988888",
+          "STC: VALVE MATERIALS",
+          "100",
+          "18,000.000",
+          "20.000"
+        ],
+        [
+          "Total :",
+          "",
+          "",
+          "100",
+          "18,000.000",
+          "20.000"
+        ]
+      ],
+      "hblCargoHeaders": [
+        "Container No. / Type",
+        "Seal",
+        "Commodity Desc",
+        "No of Pcs",
+        "G.Weight",
+        "Volume"
+      ],
+      "hblCargoRows": [
+        [
+          "TENU9876666 20' DC",
+          "SL988888",
+          "STC: VALVE MATERIALS",
+          "100",
+          "18,000.000",
+          "20.000"
+        ]
+      ],
+      "arrivalShowCharges": true,
+      "osTableTitle": "Charges",
+      "osTableHeaders": [
+        "Charge",
+        "Unit",
+        "Qty",
+        "Currency",
+        "Ex.Rate",
+        "Amount",
+        "Tax",
+        "Tax Amt",
+        "Total"
+      ],
+      "osTableRows": [
+        [
+          "TERMINAL HANDLING CHARGES",
+          "20' DRY CONTAINER",
+          "1",
+          "INR",
+          "1.00000",
+          "5,000.00",
+          "GST18",
+          "900.00",
+          "5,900.00"
+        ],
+        [
+          "DELIVERY ORDER FEE",
+          "PER SHIPMENT",
+          "1",
+          "INR",
+          "1.00000",
+          "3,000.00",
+          "GST18",
+          "540.00",
+          "3,540.00"
+        ],
+        [
+          "ALL INCL - FCL IMPORT",
+          "PER SHIPMENT",
+          "1",
+          "INR",
+          "1.00000",
+          "756.50",
+          "GST18",
+          "136.17",
+          "892.67"
+        ],
+        [
+          "TOTAL",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "",
+          "10,332.67"
+        ]
+      ],
+      "termsLines": [
+        "1. Kindly contact our Imports Department/Customer Service for Actual Arrival.",
+        "2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.",
+        "3. Cheque in favor of “KingFisher Logistic”.",
+        "4. Partial Payments are not acceptable.",
+        "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
+        "6. After Free days storage charges applicable."
+      ],
+      "remarks": "Marks: CM MARKS NO.2"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-1 Jasper"
+      },
+      {
+        "type": "docTitle",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "arrivalChargesOptional",
+        "showCharges": true
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -257,19 +557,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -478,9 +778,12 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
@@ -490,23 +793,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -517,22 +814,22 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "code": "ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA",
     "formatNumber": 3,
     "name": "Arrival Notice Report Format-3 Arrival Notice USA",
-    "paper": "Letter",
+    "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -697,23 +994,26 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "ARRIVAL NOTICE / FREIGHT BILL",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "partyTriple"
+      },
+      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
@@ -727,22 +1027,22 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "code": "ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA",
     "formatNumber": 4,
     "name": "Arrival Notice Report Format-4 Arrival Notice USA",
-    "paper": "Letter",
+    "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -906,12 +1206,9 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "ARRIVAL NOTICE & INVOICE",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "partyTriple"
@@ -922,13 +1219,16 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -942,19 +1242,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1166,9 +1466,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE / HBL No. - PLJEAMAA00001",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -1178,26 +1482,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -1211,19 +1506,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1416,7 +1711,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -1428,23 +1723,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -1458,19 +1747,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1668,7 +1957,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -1680,23 +1969,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -1710,19 +1993,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -1836,6 +2119,26 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "18,000.00"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Goods Description",
+        "No. of Pkgs",
+        "Volume",
+        "Gross Weight"
+      ],
+      "hblCargoRows": [
+        [
+          "TENU9876666",
+          "20' DC",
+          "STC: VALVE MATERIALS",
+          "100",
+          "20.00",
+          "18,000.00"
+        ]
+      ],
+      "arrivalShowCharges": false,
+      "arrivalChargesNote": "Charges omitted — SEA arrival notice without charges.",
       "termsLines": [
         "Note: Should you need our service to clear the cargoes on your behalf, please do not hesitate to contact the undermentioned.",
         "1. Kindly contact our Imports Department/Customer Service for Actual Arrival.",
@@ -1845,8 +2148,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
       ],
-      "remarks": "CHENNAI ARRIVAL 1X20",
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      "remarks": "CHENNAI ARRIVAL 1X20"
     },
     "blocks": [
       {
@@ -1854,26 +2156,31 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Without Charges"
+      },
+      {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "letterBody"
+        "type": "arrivalChargesOptional",
+        "showCharges": false
       },
       {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -1887,19 +2194,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2024,6 +2331,26 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "18,000.00"
         ]
       ],
+      "hblCargoHeaders": [
+        "Container",
+        "Type",
+        "Goods Description",
+        "No. of Pkgs",
+        "Volume",
+        "Gross Weight"
+      ],
+      "hblCargoRows": [
+        [
+          "TENU9876666",
+          "20' DC",
+          "STC: VALVE MATERIALS",
+          "100",
+          "20.00",
+          "18,000.00"
+        ]
+      ],
+      "arrivalShowCharges": false,
+      "arrivalChargesNote": "Charges omitted — SEA arrival notice without charges (Format-9).",
       "remarks": "CHENNAI ARRIVAL 1X20",
       "termsLines": [
         "1. Kindly contact our Imports Department/Customer Service for Actual Arrival.",
@@ -2032,8 +2359,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "4. Partial Payments are not acceptable.",
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
-      ],
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      ]
     },
     "blocks": [
       {
@@ -2041,29 +2367,35 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-9 Without Charges"
+      },
+      {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE / HBL No. - PLJEAMAA00001",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "twoColumn",
+        "showBillTo": true
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "letterBody"
+        "type": "arrivalChargesOptional",
+        "showCharges": false
       },
       {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -2077,19 +2409,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2229,7 +2561,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "ARRIVAL NOTICE (THÔNG BÁO HÀNG ĐẾN)",
         "align": "center",
         "band": true
       },
@@ -2241,26 +2573,14 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "outstandingTable"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -2274,19 +2594,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2424,43 +2744,16 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL CONFIRMATION",
+        "text": "ARRIVAL CONFIRMATION / BL NO - AWB91384768",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true,
-        "rightMetaFrom": "metaRows"
-      },
-      {
         "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "formatBadge"
+        "cols": 2
       },
       {
         "type": "letterBody"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -2474,19 +2767,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2655,9 +2948,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE AIR",
+        "text": "CARGO ARRIVAL NOTICE / HAWB - AWB91384768",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -2667,26 +2964,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2700,19 +2988,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -2873,39 +3161,21 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "partyTriple"
+      },
+      {
         "type": "docTitle",
-        "text": "ARRIVAL CONFIRMATION FORMAT-1",
+        "text": "ARRIVAL CONFIRMATION / BL NO - PLMAAJEA00081",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
-      },
-      {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
-      },
-      {
-        "type": "totalsOnly"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -2919,19 +3189,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3126,38 +3396,18 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true,
-        "rightMetaFrom": "metaRows"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "containerStrip"
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -3171,19 +3421,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3302,13 +3552,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG ARRIVAL INFORMATION",
+        "text": "ARRIVAL INFORMATION",
         "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "partyTriple"
@@ -3316,25 +3566,6 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "fill"
-      },
-      {
-        "type": "subtotalBar",
-        "variant": "tax"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -3348,19 +3579,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3492,41 +3723,29 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG ARRIVAL NOTICE",
+        "text": "ARRIVAL NOTICE / FREIGHT BILL",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "partyTriple"
       },
       {
         "type": "chargeTable",
         "headerColor": "primary"
       },
       {
+        "type": "taxAmountBox"
+      },
+      {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -3540,19 +3759,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3685,41 +3904,23 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG ARRIVAL NOTICE FORMAT-2",
+        "text": "ARRIVAL NOTICE & INVOICE",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -3733,19 +3934,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -3859,8 +4060,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "4. Partial Payments are not acceptable.",
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
-      ],
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      ]
     },
     "blocks": [
       {
@@ -3869,31 +4069,23 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG ARRIVAL NOTICE WITHOUT CHARGES",
+        "text": "ARRIVAL NOTICE & INVOICE",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "partyTriple"
       },
       {
-        "type": "letterBody"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -3907,19 +4099,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4032,44 +4224,26 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG ARRIVAL NOTICE FORMAT-3",
+        "text": "ARRIVAL NOTICE",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "partyTriple"
       },
       {
         "type": "chargeTable",
         "headerColor": "primary"
       },
       {
+        "type": "taxAmountBox"
+      },
+      {
         "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -4083,19 +4257,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4215,8 +4389,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "4. Partial Payments are not acceptable.",
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
-      ],
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      ]
     },
     "blocks": [
       {
@@ -4225,9 +4398,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE AIR WITHOUT CHARGES",
+        "text": "CARGO ARRIVAL NOTICE / HAWB - AWB91384768",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -4237,16 +4414,11 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -4260,19 +4432,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4373,9 +4545,12 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CARGO ARRIVAL NOTICE",
+        "text": "ARRIVAL NOTICE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
@@ -4385,29 +4560,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -4421,19 +4574,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4546,47 +4699,26 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CARGO ARRIVAL NOTICE FORMAT-1",
+        "text": "EXPORT CONTAINER RELEASE ORDER",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "partyTriple"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -4600,19 +4732,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4776,9 +4908,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CARGO ARRIVAL NOTICE SEA",
+        "text": "CARGO ARRIVAL NOTICE / HBL NO. - PLMAAJEA00081",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -4788,32 +4924,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4827,19 +4948,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -4989,7 +5110,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE SEA FORMAT-2",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -5001,32 +5122,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -5040,19 +5146,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5223,9 +5329,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE SEA FORMAT-3",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -5235,38 +5345,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -5280,19 +5369,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5389,7 +5478,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE SEA FORMAT-1",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -5401,35 +5490,11 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -5443,19 +5508,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5539,8 +5604,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "4. Partial Payments are not acceptable.",
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
-      ],
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      ]
     },
     "blocks": [
       {
@@ -5549,7 +5613,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE SEA WITHOUT CHARGES FORMAT-1",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -5561,22 +5625,11 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -5590,19 +5643,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5710,7 +5763,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "SEA ARRIVAL NOTICE LCL VIETNAM",
+        "text": "ARRIVAL NOTICE (THÔNG BÁO HÀNG ĐẾN) — LCL",
         "align": "center",
         "band": true
       },
@@ -5722,41 +5775,14 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
+        "headerColor": "fill"
       },
       {
         "type": "outstandingTable"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -5770,19 +5796,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -5882,9 +5908,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CARGO ARRIVAL NOTICE SEA FORMAT-3",
+        "text": "CARGO ARRIVAL NOTICE / HBL NO. - BOMMAADXB0332",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -5894,38 +5924,11 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -5939,19 +5942,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -6074,8 +6077,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
       ],
-      "remarks": "CHENNAI ARRIVAL 1X20 — WITHOUT CHARGES",
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      "remarks": "CHENNAI ARRIVAL 1X20 — WITHOUT CHARGES"
     },
     "blocks": [
       {
@@ -6084,7 +6086,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE –SEA WITHOUT CHARGES",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -6094,4654 +6096,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "fieldGrid",
         "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_11",
-    "formatNumber": 11,
-    "name": "Arrival Notice Report Format-11",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-11"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-11"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_12",
-    "formatNumber": 12,
-    "name": "Arrival Notice Report Format-12",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-12"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-12"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_13",
-    "formatNumber": 13,
-    "name": "Arrival Notice Report Format-13",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-13"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-13"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_14",
-    "formatNumber": 14,
-    "name": "Arrival Notice Report Format-14",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-14"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-14"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_15",
-    "formatNumber": 15,
-    "name": "Arrival Notice Report Format-15",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-15"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-15"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_16",
-    "formatNumber": 16,
-    "name": "Arrival Notice Report Format-16",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-16"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-16"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_17",
-    "formatNumber": 17,
-    "name": "Arrival Notice Report Format-17",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-17"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-17"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_18",
-    "formatNumber": 18,
-    "name": "Arrival Notice Report Format-18",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-18"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-18"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_19",
-    "formatNumber": 19,
-    "name": "Arrival Notice Report Format-19",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-19"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-19"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_20",
-    "formatNumber": 20,
-    "name": "Arrival Notice Report Format-20",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-20"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-20"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_21",
-    "formatNumber": 21,
-    "name": "Arrival Notice Report Format-21",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-21"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-21"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_22",
-    "formatNumber": 22,
-    "name": "Arrival Notice Report Format-22",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-22"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-22"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_23",
-    "formatNumber": 23,
-    "name": "Arrival Notice Report Format-23",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-23"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-23"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_24",
-    "formatNumber": 24,
-    "name": "Arrival Notice Report Format-24",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-24"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-24"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_25",
-    "formatNumber": 25,
-    "name": "Arrival Notice Report Format-25",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-25"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-25"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_26",
-    "formatNumber": 26,
-    "name": "Arrival Notice Report Format-26",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-26"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-26"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_27",
-    "formatNumber": 27,
-    "name": "Arrival Notice Report Format-27",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-27"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-27"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_28",
-    "formatNumber": 28,
-    "name": "Arrival Notice Report Format-28",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-28"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-28"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_29",
-    "formatNumber": 29,
-    "name": "Arrival Notice Report Format-29",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-29"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-29"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_30",
-    "formatNumber": 30,
-    "name": "Arrival Notice Report Format-30",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-30"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-30"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_31",
-    "formatNumber": 31,
-    "name": "Arrival Notice Report Format-31",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-31"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-31"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_32",
-    "formatNumber": 32,
-    "name": "Arrival Notice Report Format-32",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-32"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-32"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_33",
-    "formatNumber": 33,
-    "name": "Arrival Notice Report Format-33",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-33"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-33"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_34",
-    "formatNumber": 34,
-    "name": "Arrival Notice Report Format-34",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-34"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-34"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_35",
-    "formatNumber": 35,
-    "name": "Arrival Notice Report Format-35",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "Arrival Notice Report Format-35"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-35"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"

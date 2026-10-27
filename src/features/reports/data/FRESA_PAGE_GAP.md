@@ -41,6 +41,19 @@ Layout chrome is complete; the product gap is **live data** into layout slots wh
 - Backend Puppeteer pack binding for every code
 - Changing default `POST /quotations|invoices/:id/pdf` paths
 
+## Phase 1A+2B (production-critical) — 2026-10-27
+
+| Surface | Status |
+|---------|--------|
+| Invoice Formats 1–21 | **21 unique block signatures**; Format-3 `summaryHero` title is SUMMARY INVOICE only (no longer hard-coded on other docs) |
+| FG_HBL_HKG / HBL drafts | Classic HBL blocks (`partyNotifyGrid`, `hblCargoTable`, `hblFreightSignature`); stopped `diversifyOpsBlocks` invoice clones |
+| HAWB | Core drafts use `hawbRouteGrid` + `partyNotifyGrid`; job default `HAWB_DRAFT_REPORT_FORMAT_1` |
+| Arrival Notice | `CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1` + Format-1 Jasper / without-charges use `arrivalChargesOptional` |
+| Delivery Order | `DELIVERY_ORDER_REPORT_FORMAT_1` + standard DO use `deliveryOrderRelease` |
+| Quotation | Format-3 air quote uses `hawbRouteGrid`; 15 distinct quotation structures |
+| Job documents (2B) | `prepareJobDocumentCatalogPdf` + `JobDocumentsPanel` prefer catalog/classic layout; BE PDF remains fallback |
+| Branding / T&C | KF chrome via shared layout; customer T&C still appended for sea/air docs only |
+
 ## Related
 
 - [`REPORT_GAP_MATRIX.md`](./REPORT_GAP_MATRIX.md) — family counts + document vs analytics coverage

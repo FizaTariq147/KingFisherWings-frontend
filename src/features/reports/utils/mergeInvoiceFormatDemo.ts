@@ -23,7 +23,7 @@ function overlayKvRows(
 
 /** Labels we map from live entity data — when bound and unmatched, force N/A. */
 const KNOWN_FIELD_LABEL =
-  /invoice\s*no|invoice\s*number|quote\s*no|quotation\s*no|job\s*no|job\s*number|shipment\s*no|^shipment$|invoice\s*date|date\s*of\s*invoice|^date$|due\s*date|payment\s*due|valid|validity|etd|eta|origin\s*etd|destination\s*eta|departure|arrival|reference\s*no|^currency$|^pol$|^pod$|origin|destination|loading|discharge/i;
+  /invoice\s*no|invoice\s*number|quote\s*no|quotation\s*no|job\s*no|job\s*number|shipment\s*no|^shipment$|invoice\s*date|date\s*of\s*invoice|^date$|due\s*date|payment\s*due|valid|validity|etd|eta|origin\s*etd|destination\s*eta|departure|arrival|reference\s*no|^currency$|^pol$|^pod$|origin|destination|loading|discharge|bill of lading|hbl\s*no|mbl\s*no|place of receipt|place of delivery|vessel|voyage|freight|payable|onboard|place and date of issue/i;
 
 function applyNaToKnownRows(rows: Kv[] | undefined, entityBound: boolean): Kv[] | undefined {
   if (!entityBound || !rows?.length) return rows;
@@ -57,6 +57,8 @@ function buildMetaRules(
     rules.push(
       { test: /^invoice\s*no\.?$/i, value: docNo },
       { test: /^invoice\s*number$/i, value: docNo },
+      { test: /bill of lading\s*no/i, value: docNo },
+      { test: /^hbl\s*no\.?$/i, value: docNo },
     );
   }
   if (quoteNo) {
@@ -69,6 +71,7 @@ function buildMetaRules(
     rules.push(
       { test: /^job\s*no\.?$/i, value: jobNo },
       { test: /^job\s*number$/i, value: jobNo },
+      { test: /^job\s*ref/i, value: jobNo },
     );
   }
   if (shipNo) {
@@ -79,6 +82,8 @@ function buildMetaRules(
       { test: /^invoice\s*date$/i, value: invDate },
       { test: /^date\s*of\s*invoice$/i, value: invDate },
       { test: /^date$/i, value: invDate },
+      { test: /place and date of issue/i, value: invDate },
+      { test: /date of issue/i, value: invDate },
     );
   }
   if (due) {
@@ -102,7 +107,11 @@ function buildMetaRules(
     );
   }
   if (ref) {
-    rules.push({ test: /^reference\s*no\.?$/i, value: ref });
+    rules.push(
+      { test: /^reference\s*no\.?$/i, value: ref },
+      { test: /^booking\s*ref/i, value: ref },
+      { test: /^mbl\s*no\.?$/i, value: ref },
+    );
   }
   if (currency) {
     rules.push({ test: /^currency$/i, value: currency });
@@ -187,11 +196,31 @@ export function mergeInvoiceFormatDemo(
   const commodity = pick(data.commodity);
   const vessel = pick(data.vesselFlight);
   const incoterm = pick(data.incoterm);
-  if (pol) fieldExtras.push({ test: /^pol$|origin|loading|place of receipt/i, value: pol });
-  if (pod) fieldExtras.push({ test: /^pod$|destination|discharge|place of delivery/i, value: pod });
-  if (commodity) fieldExtras.push({ test: /commodity|goods|cargo|description of goods/i, value: commodity });
-  if (vessel) fieldExtras.push({ test: /vessel|flight|voyage/i, value: vessel });
-  if (incoterm) fieldExtras.push({ test: /incoterm|terms of shipment/i, value: incoterm });
+  const onboard = pick(formatReportLayoutDate(data.etd));
+  if (pol) {
+    fieldExtras.push(
+      { test: /^pol$|port of loading|place of receipt|origin/i, value: pol },
+    );
+  }
+  if (pod) {
+    fieldExtras.push(
+      { test: /^pod$|port of discharge|place of delivery|destination/i, value: pod },
+    );
+  }
+  if (commodity) {
+    fieldExtras.push({ test: /commodity|goods|cargo|description of goods/i, value: commodity });
+  }
+  if (vessel) {
+    fieldExtras.push({ test: /vessel|flight|voyage/i, value: vessel });
+  }
+  if (incoterm) {
+    fieldExtras.push(
+      { test: /incoterm|terms of shipment|^freight$|payable at/i, value: incoterm },
+    );
+  }
+  if (onboard && onboard !== REPORT_FIELD_NA) {
+    fieldExtras.push({ test: /onboard\s*date/i, value: onboard });
+  }
 
   demo.metaRows = applyNaToKnownRows(overlayKvRows(demo.metaRows, metaRules), entityBound);
   demo.referenceRows = applyNaToKnownRows(
@@ -318,7 +347,12 @@ export function mergeInvoiceFormatDemo(
     demo.grandTotalDue = REPORT_FIELD_NA;
   }
 
-  if (data.lines?.length) {
+  if (data.tableHeaders?.length) {
+    demo.tableHeaders = data.tableHeaders.map((h) => String(h));
+  }
+  if (data.tableRows?.length) {
+    demo.tableRows = data.tableRows.map((row) => row.map((c) => String(c ?? '')));
+  } else if (data.lines?.length) {
     const headers = demo.tableHeaders?.length
       ? demo.tableHeaders
       : ['Description', 'Qty', 'Rate', 'Amount'];
@@ -326,10 +360,14 @@ export function mergeInvoiceFormatDemo(
     demo.tableRows = data.lines.map((line) => {
       const cells = headers.map((h) => {
         const key = h.toLowerCase();
-        if (/desc|charge|particular|service|item/i.test(key))
+        if (/desc|charge|particular|service|item|goods/i.test(key))
           return line.description || (entityBound ? REPORT_FIELD_NA : '');
-        if (/qty|quantity|unit$/i.test(key) && !/amount|rate|price/i.test(key))
+        if (/container|seal|mark/i.test(key))
+          return line.description || (entityBound ? REPORT_FIELD_NA : '');
+        if (/pkg|pkgs|pieces|qty|quantity|unit$/i.test(key) && !/amount|rate|price/i.test(key))
           return line.qty ?? (entityBound ? REPORT_FIELD_NA : '1');
+        if (/weight|kgs|measurement|cbm|volume|type/i.test(key))
+          return line.rate ?? (entityBound ? REPORT_FIELD_NA : '');
         if (/rate|price|amount\s*\/\s*qty/i.test(key))
           return line.rate ?? (entityBound ? REPORT_FIELD_NA : '');
         if (/amount|total|fcy/i.test(key))

@@ -14,6 +14,8 @@ export const portalShipmentKeys = {
   detail: (scope: string, id: string) => [...portalShipmentKeys.all(scope), 'detail', id] as const,
   milestones: (scope: string, id: string) =>
     [...portalShipmentKeys.all(scope), 'milestones', id] as const,
+  tracking: (scope: string, id: string) =>
+    [...portalShipmentKeys.all(scope), 'tracking', id] as const,
   documents: (scope: string, id: string) =>
     [...portalShipmentKeys.all(scope), 'documents', id] as const,
   acknowledgement: (scope: string, id: string) =>
@@ -74,6 +76,18 @@ export function usePortalShipmentMilestones(id: string, enabled = true) {
   return useQuery({
     queryKey: portalShipmentKeys.milestones(scope, id),
     queryFn: () => portalShipmentsService.milestones(id),
+    enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
+    staleTime: 0,
+  });
+}
+
+/** GET /portal/shipments/:id/tracking — same-page Track & Trace. */
+export function usePortalShipmentTracking(id: string, enabled = false) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  return useQuery({
+    queryKey: portalShipmentKeys.tracking(scope, id),
+    queryFn: () => portalShipmentsService.tracking(id),
     enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
     staleTime: 0,
   });
@@ -185,6 +199,13 @@ export function useExportPortalShipmentsCsv() {
 export function usePortalShipmentLookup() {
   return useMutation({
     mutationFn: (ref: string) => portalShipmentsService.lookup(ref),
+  });
+}
+
+/** Same-page Track & Trace — lookup + tracking / quotation, no navigation. */
+export function usePortalTrackByReference() {
+  return useMutation({
+    mutationFn: (ref: string) => portalShipmentsService.trackByReference(ref),
   });
 }
 

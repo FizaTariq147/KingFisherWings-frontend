@@ -4,7 +4,9 @@ import { Search } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { usePublicTrackEmbed, usePublicTrackLookup } from '../hooks/usePublicTrack';
+import { ApiDataView } from '@/features/jobs/components/ApiDataView';
+import { usePublicTrackEmbed } from '../hooks/usePublicTrack';
+import { publicTrackService } from '../services/publicTrack.service';
 import type { PublicTrackResult } from '../types/publicTrack.types';
 import {
   rememberPublicTrackTenantSlug,
@@ -12,6 +14,7 @@ import {
   resolveTenantSlugFromLocation,
 } from '../utils/publicTrackContext';
 import { isSafeHttpUrl } from '@/lib/safeHttpUrl';
+import { normalizePublicTrack } from '../utils/normalizePublicTrack';
 
 export default function PublicTrackPage() {
   const [searchParams] = useSearchParams();
@@ -25,10 +28,11 @@ export default function PublicTrackPage() {
   const [ref, setRef] = useState(initialRef);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PublicTrackResult | null>(null);
+  const [rawPayload, setRawPayload] = useState<unknown>(null);
+  const [pending, setPending] = useState(false);
   const [autoRan, setAutoRan] = useState(false);
 
   const embed = usePublicTrackEmbed(tenantSlug || undefined);
-  const lookup = usePublicTrackLookup();
 
   const branding = embed.data;
   const resolvedTenant = branding?.tenantSlug || tenantSlug.trim();
@@ -39,20 +43,22 @@ export default function PublicTrackPage() {
   const runLookup = async () => {
     setError(null);
     setResult(null);
+    setRawPayload(null);
     const slug = (resolvedTenant || tenantSlug).trim();
     if (!slug) {
       setError('Enter your workspace (tenant slug) to look up a shipment.');
       return;
     }
     rememberPublicTrackTenantSlug(slug);
+    setPending(true);
     try {
-      const data = await lookup.mutateAsync({
-        tenantSlug: slug,
-        ref: ref.trim(),
-      });
-      setResult(data);
+      const raw = await publicTrackService.trackRaw(slug, ref.trim());
+      setRawPayload(raw);
+      setResult(normalizePublicTrack(raw));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Lookup failed.');
+    } finally {
+      setPending(false);
     }
   };
 
@@ -74,7 +80,7 @@ export default function PublicTrackPage() {
       className="min-h-screen bg-[var(--color-surface)]"
       style={branding?.primaryColor ? { ['--color-primary' as string]: branding.primaryColor } : undefined}
     >
-      <div className="mx-auto max-w-xl px-4 py-12 sm:px-6">
+      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
         {branding?.logoUrl && isSafeHttpUrl(branding.logoUrl) ? (
           <img
             src={branding.logoUrl}
@@ -85,9 +91,12 @@ export default function PublicTrackPage() {
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-neutral-500)]">
           Track &amp; Trace
         </p>
-        <h2 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--color-neutral-900)]">{title}</h2>
+        <h1 className="mt-2 text-2xl font-semibold tracking-tight text-[var(--color-neutral-900)]">
+          {title}
+        </h1>
         <p className="mt-1 text-sm text-[var(--color-neutral-500)]">
-          Enter your shipment reference (job number, HAWB, MAWB, HBL, MBL, or booking #).
+          Enter a job, shipment, HAWB, MAWB, HBL, MBL, booking, or container number — results stay
+          on this page.
         </p>
 
         <div className="mt-8 rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
@@ -131,47 +140,38 @@ export default function PublicTrackPage() {
               onChange={(e) => setRef(e.target.value)}
               placeholder="e.g. KFW-J-00042"
             />
-            <Button type="submit" className="w-full" disabled={lookup.isPending || !canSearch}>
-              {lookup.isPending ? 'Searching…' : 'Track shipment'}
+            <Button type="submit" className="w-full" disabled={pending || !canSearch}>
+              {pending ? 'Searching…' : 'Track'}
             </Button>
           </form>
         </div>
 
-        {result && (
+        {(result || rawPayload) && (
           <div className="mt-6 space-y-4 rounded-xl border border-[var(--color-neutral-200)] bg-white p-5">
-            <div className="flex items-start justify-between gap-3">
-              <div>
-                <div className="text-lg font-semibold">{result.reference}</div>
-                <div className="text-sm text-[var(--color-neutral-500)]">
-                  {[result.origin, result.destination].filter(Boolean).join(' → ') ||
-                    result.jobType ||
-                    '—'}
+            {result ? (
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <div className="text-lg font-semibold">{result.reference}</div>
+                  <div className="text-sm text-[var(--color-neutral-500)]">
+                    {[result.origin, result.destination].filter(Boolean).join(' → ') ||
+                      result.jobType ||
+                      '—'}
+                  </div>
+                  {result.partyName ? (
+                    <div className="mt-1 text-xs text-[var(--color-neutral-500)]">
+                      {result.partyName}
+                    </div>
+                  ) : null}
                 </div>
-                {result.partyName ? (
-                  <div className="mt-1 text-xs text-[var(--color-neutral-500)]">{result.partyName}</div>
+                {result.status ? (
+                  <Badge variant="info">{result.status.replaceAll('_', ' ')}</Badge>
                 ) : null}
               </div>
-              {result.status ? (
-                <Badge variant="info">{result.status.replaceAll('_', ' ')}</Badge>
-              ) : null}
-            </div>
-            <div>
-              <h2 className="mb-3 text-sm font-semibold">Milestones</h2>
-              {result.milestones.length === 0 ? (
-                <p className="text-sm text-[var(--color-neutral-400)]">No milestones yet.</p>
-              ) : (
-                <ol className="space-y-3">
-                  {result.milestones.map((m) => (
-                    <li key={m.id} className="border-l-2 border-[var(--color-secondary)] pl-3">
-                      <div className="text-sm font-medium">{m.label}</div>
-                      <div className="text-xs text-[var(--color-neutral-500)]">
-                        {[m.occurredAt, m.location, m.status].filter(Boolean).join(' · ') || '—'}
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              )}
-            </div>
+            ) : null}
+            <ApiDataView
+              data={rawPayload ?? result ?? {}}
+              emptyLabel="No tracking data returned."
+            />
           </div>
         )}
       </div>

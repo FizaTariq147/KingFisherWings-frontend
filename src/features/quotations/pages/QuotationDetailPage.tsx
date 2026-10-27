@@ -5,6 +5,7 @@ import {
   Briefcase,
   CheckCircle2,
   Copy,
+  FileCheck,
   FileText,
   Pencil,
   Plane,
@@ -24,6 +25,7 @@ import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
 import { QuotationLinesEditor } from '../components/QuotationLinesEditor';
 import { QuotationNegotiationPanel } from '../components/QuotationNegotiationPanel';
+import { QuotationBlDraftPanel } from '../components/QuotationBlDraftPanel';
 import { QuotationBookingFormPanel } from '../components/QuotationBookingFormPanel';
 import { QuotationOverviewPanel } from '../components/QuotationOverviewPanel';
 import { QuotationPdfModal } from '../components/QuotationPdfModal';
@@ -79,6 +81,7 @@ import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
   canArchiveQuotation,
   canConvertQuotationToJob,
+  canShowQuotationBlDraft,
   canStartAirOpsJobFromQuote,
   canStaffInternallyApprove,
   canStaffSendToCustomer,
@@ -151,6 +154,8 @@ export default function QuotationDetailPage() {
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [pdfOpen, setPdfOpen] = useState(false);
   const [emailOpen, setEmailOpen] = useState(false);
+  /** Switch DetailPageTemplate tab (e.g. BL Draft action → bl_draft tab). */
+  const [focusTab, setFocusTab] = useState<string | undefined>(undefined);
   const [changeStatusOpen, setChangeStatusOpen] = useState(false);
   const [changeStatusValue, setChangeStatusValue] = useState('VERIFIED');
   const [addStatusOpen, setAddStatusOpen] = useState(false);
@@ -618,6 +623,7 @@ export default function QuotationDetailPage() {
       />
       <DetailPageTemplate
         reserveContinuumRail
+        defaultTab={focusTab}
         eyebrow="Quotation details"
         title={title}
         subtitle={
@@ -1039,16 +1045,40 @@ export default function QuotationDetailPage() {
                 Continue on NVOCC bookings
               </Button>
             ) : null}
-            <Button
-              size="sm"
-              type="button"
-              variant="report"
-              leftIcon={<FileText />}
-              disabled={pending}
-              onClick={() => setPdfOpen(true)}
-            >
-              PDF
-            </Button>
+            {quotation.actions?.can_download_pdf !== false ||
+            quotation.actions?.can_generate_pdf !== false ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="report"
+                leftIcon={<FileText />}
+                disabled={pending}
+                onClick={() => setPdfOpen(true)}
+                title={
+                  quotation.actions?.can_download_pdf === false
+                    ? 'Generate quotation PDF'
+                    : 'Generate / download quotation PDF'
+                }
+              >
+                {quotation.actions?.can_download_pdf === false &&
+                quotation.actions?.can_generate_pdf !== false
+                  ? 'Generate PDF'
+                  : 'Download PDF'}
+              </Button>
+            ) : null}
+            {canShowQuotationBlDraft(quotation.job_type, quotation.actions) ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="create"
+                leftIcon={<FileCheck />}
+                disabled={pending}
+                onClick={() => setFocusTab('bl_draft')}
+                title="Preview / generate HBL draft from booking-form fields (same as shipment BL Entry)"
+              >
+                BL Draft
+              </Button>
+            ) : null}
             <Button
               size="sm"
               type="button"
@@ -1241,6 +1271,15 @@ export default function QuotationDetailPage() {
                   key: 'booking_form',
                   label: 'Booking form',
                   content: <QuotationBookingFormPanel quotation={quotation} />,
+                },
+              ]
+            : []),
+          ...(canShowQuotationBlDraft(quotation.job_type, quotation.actions)
+            ? [
+                {
+                  key: 'bl_draft',
+                  label: 'BL Draft',
+                  content: <QuotationBlDraftPanel quotation={quotation} />,
                 },
               ]
             : []),

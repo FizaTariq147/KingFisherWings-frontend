@@ -34,6 +34,17 @@ export interface PortalShipmentListItem {
   raw?: Record<string, unknown>;
 }
 
+/** Same-page Track & Trace result (portal lookup → tracking / quotation). */
+export type PortalTrackKind = 'shipment' | 'quotation';
+
+export interface PortalTrackByRefResult {
+  kind: PortalTrackKind;
+  reference: string;
+  id: string;
+  /** Raw API payload from tracking / quotation detail — render as-is. */
+  data: unknown;
+}
+
 export interface PortalShipmentListResult {
   items: PortalShipmentListItem[];
   meta: PortalPaginationMeta;
