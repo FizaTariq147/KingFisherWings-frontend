@@ -149,6 +149,37 @@ export function usesGatedFreightQuoteFlow(jobType?: string): boolean {
   );
 }
 
+/** Sea / NVOCC quotes where HBL draft from booking form applies (same as shipment BL Entry). */
+export function isSeaQuotationJobType(jobType?: string): boolean {
+  const jt = String(jobType ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  if (!jt) return false;
+  return (
+    jt.startsWith('SEA_') ||
+    jt === 'SEA' ||
+    jt === 'SEA_FCL' ||
+    jt === 'SEA_LCL' ||
+    jt === 'SEA_EXPORT' ||
+    jt === 'SEA_IMPORT' ||
+    jt === 'NVOCC' ||
+    jt.startsWith('NVOCC_')
+  );
+}
+
+/**
+ * Show quotation BL Draft action/tab — BE `can_bl_draft` when set; otherwise sea/NVOCC modes.
+ */
+export function canShowQuotationBlDraft(
+  jobType?: string,
+  actions?: { can_bl_draft?: boolean } | null,
+): boolean {
+  if (actions?.can_bl_draft === false) return false;
+  if (actions?.can_bl_draft === true) return true;
+  return isSeaQuotationJobType(jobType);
+}
+
 /**
  * Sea FCL/LCL, Land, Road Freight, Courier, Warehouse, Customs Clearance:
  * customer approve leaves quote APPROVED; staff continuum Generate Shipment →

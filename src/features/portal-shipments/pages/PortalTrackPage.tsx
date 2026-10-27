@@ -1,24 +1,22 @@
-import { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { PortalPageHeader, PortalPanel } from '@/features/portal-auth/components/portal-ui';
-import { usePortalShipmentLookup } from '../hooks/usePortalShipments';
+import { ApiDataView } from '@/features/jobs/components/ApiDataView';
+import { usePortalTrackByReference } from '../hooks/usePortalShipments';
+import type { PortalTrackByRefResult } from '../types/portalShipments.types';
 
 export default function PortalTrackPage() {
-  const navigate = useNavigate();
   const location = useLocation();
   const [ref, setRef] = useState('');
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const lookup = usePortalShipmentLookup();
-
-  useEffect(() => {
-    const preset = (location.state as { ref?: string } | null)?.ref?.trim();
-    if (preset) setRef(preset);
-  }, [location.state]);
+  const [result, setResult] = useState<PortalTrackByRefResult | null>(null);
+  const track = usePortalTrackByReference();
+  const autoRanFor = useRef<string | null>(null);
 
   const validateRef = (value: string): string | null => {
     const trimmed = value.trim();
@@ -28,31 +26,41 @@ export default function PortalTrackPage() {
     return null;
   };
 
-  const runLookup = async () => {
+  const runLookup = async (value?: string) => {
+    const next = (value ?? ref).trim();
     setError(null);
-    const validation = validateRef(ref);
+    setResult(null);
+    const validation = validateRef(next);
     setFieldError(validation);
     if (validation) return;
 
     try {
-      const result = await lookup.mutateAsync(ref.trim());
-      if (!result) {
-        setError('No shipment found for that reference.');
-        return;
-      }
-      navigate(`/portal/shipments/${result.id}`);
+      const data = await track.mutateAsync(next);
+      setResult(data);
     } catch (err) {
       setError(
-        err instanceof PortalApiError || err instanceof Error ? err.message : 'Lookup failed.',
+        err instanceof PortalApiError || err instanceof Error
+          ? err.message
+          : 'Lookup failed.',
       );
     }
   };
 
+  useEffect(() => {
+    const preset = (location.state as { ref?: string } | null)?.ref?.trim();
+    if (!preset || preset.length < 2) return;
+    setRef(preset);
+    if (autoRanFor.current === preset) return;
+    autoRanFor.current = preset;
+    void runLookup(preset);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- auto-run once per preset ref
+  }, [location.state]);
+
   return (
-    <div className="mx-auto max-w-xl space-y-5">
+    <div className="mx-auto max-w-3xl space-y-5">
       <PortalPageHeader
         title="Track & Trace"
-        description="Enter a job or document reference (job no, HBL, MBL, HAWB, booking) to open the matching job."
+        description="Enter a job, shipment, or quotation number to see status and full history on this page."
       />
 
       <PortalPanel padded>
@@ -84,19 +92,38 @@ export default function PortalTrackPage() {
               if (fieldError) setFieldError(validateRef(e.target.value));
             }}
             onBlur={() => setFieldError(validateRef(ref))}
-            placeholder="e.g. KFW-J-00042"
+            placeholder="Job, shipment, HBL/HAWB, booking, or quotation no."
             error={fieldError ?? undefined}
-            hint="At least 2 characters"
+            hint="At least 2 characters — results stay on this page"
           />
           <Button
             type="submit"
             className="w-full"
-            disabled={lookup.isPending || ref.trim().length < 2}
+            disabled={track.isPending || ref.trim().length < 2}
           >
-            {lookup.isPending ? 'Searching…' : 'Track job'}
+            {track.isPending ? 'Searching…' : 'Track'}
           </Button>
         </form>
       </PortalPanel>
+
+      {result ? (
+        <PortalPanel padded>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+                {result.kind === 'quotation' ? 'Quotation' : 'Shipment track & trace'}
+              </p>
+              <p className="text-lg font-semibold text-[var(--color-neutral-900)]">
+                {result.reference}
+              </p>
+            </div>
+          </div>
+          <ApiDataView
+            data={result.data ?? {}}
+            emptyLabel="No tracking data returned."
+          />
+        </PortalPanel>
+      ) : null}
     </div>
   );
 }

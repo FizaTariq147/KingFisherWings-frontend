@@ -64,8 +64,8 @@ export default function PortalShipmentsPage() {
   return (
     <div className="space-y-5">
       <PortalPageHeader
-        title="Shipments"
-        description="Browse consignments and open a shipment for milestones and documents."
+        title="Jobs"
+        description="Browse consignments and open a job for milestones and documents."
         actions={
           <div className="flex flex-wrap gap-2">
             <Button type="button" variant="secondary" size="sm" onClick={() => refetch()}>

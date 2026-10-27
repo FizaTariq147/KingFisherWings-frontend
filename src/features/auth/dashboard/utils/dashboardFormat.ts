@@ -353,15 +353,46 @@ export function unwrapReportRows(raw: unknown): Record<string, unknown>[] {
   }
   const r = asRecord(raw);
   if (!r) return [];
-  for (const key of ['rows', 'items', 'data', 'results', 'lanes', 'customers', 'months']) {
+  for (const key of [
+    'rows',
+    'items',
+    'data',
+    'results',
+    'lanes',
+    'customers',
+    'months',
+    'series',
+    'breakdown',
+    'by_month',
+    'by_customer',
+    'byMonth',
+    'byCustomer',
+  ]) {
     const v = r[key];
     if (Array.isArray(v)) {
       return v.filter((x): x is Record<string, unknown> => Boolean(asRecord(x)));
     }
+    // Object map e.g. { "2026-01": 12000, "Jan": 8000 }
+    const asObj = asRecord(v);
+    if (asObj && !Array.isArray(v)) {
+      const entries = Object.entries(asObj);
+      if (
+        entries.length > 0 &&
+        entries.every(([, cell]) => typeof cell === 'number' || typeof cell === 'string' || cell == null)
+      ) {
+        return entries.map(([label, valueCell]) => ({
+          label,
+          month: label,
+          revenue: valueCell ?? 0,
+          amount: valueCell ?? 0,
+          value: valueCell ?? 0,
+        }));
+      }
+    }
   }
   const nested = asRecord(r.data);
   if (nested) {
-    for (const key of ['rows', 'items']) {
+    for (const key of ['rows', 'items', 'by_month', 'by_customer', 'months', 'series']) {
       const v = nested[key];
       if (Array.isArray(v)) {
         return v.filter((x): x is Record<string, unknown> => Boolean(asRecord(x)));

@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — quotationFormatUiLayouts. */
+/** Auto-generated Quotation formats — run: node scripts/build-quotation-format-ui-layouts.mjs */
 export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "QUOTATION_REPORT_FORMAT_1",
@@ -9,13 +9,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -119,8 +119,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Classic sea quotation — rates subject to space."
-      ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      ]
     },
     "blocks": [
       {
@@ -128,13 +127,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "docTitle",
-        "text": "QUOTATION",
-        "align": "center",
-        "band": true
+        "type": "formatBadge"
       },
       {
-        "type": "letterBody"
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 1",
+        "align": "center",
+        "band": true
       },
       {
         "type": "partyTriple"
@@ -168,13 +167,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -216,7 +215,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,380.00",
       "words": "USD One Thousand Three Hundred Eighty Only",
       "remarks": "Format-2",
-      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "letterBody": "Thank you for your enquiry. Please find our competitive quotation as below.",
       "fieldGrid": [
         {
           "k": "POL",
@@ -283,8 +282,11 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "QUOTATION — FORMAT 2",
         "align": "center",
         "band": true
       },
@@ -296,23 +298,17 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -326,13 +322,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -396,6 +392,32 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "450 KGS"
         }
       ],
+      "hawbRouteFields": [
+        {
+          "k": "Origin Airport",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Dest. Airport",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Chargeable Wt",
+          "v": "450 KGS"
+        },
+        {
+          "k": "Incoterm",
+          "v": "CPT"
+        },
+        {
+          "k": "Validity",
+          "v": "15 Days"
+        },
+        {
+          "k": "Service",
+          "v": "Air Freight"
+        }
+      ],
       "tableHeaders": [
         "#",
         "Charge",
@@ -433,7 +455,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "termsLines": [
         "Air quotation layout — chargeable weight based."
       ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      "formatBadgeLabel": "Air Quotation Format-3"
     },
     "blocks": [
       {
@@ -441,16 +463,19 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "AIR QUOTATION — FORMAT 3",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "partyTriple"
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -458,19 +483,16 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "termsBank"
-      },
-      {
         "type": "signatureRow"
       },
       {
-        "type": "jobDescription"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -484,13 +506,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -594,8 +616,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "US Letter paper quotation format."
-      ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      ]
     },
     "blocks": [
       {
@@ -603,24 +624,24 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "docTitle",
-        "text": "QUOTATION",
-        "align": "center",
-        "band": true
+        "type": "formatBadge"
       },
       {
-        "type": "letterBody"
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 4",
+        "align": "center",
+        "band": true
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "chargeTable",
+        "headerColor": "orange"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
         "type": "wordsAndTotal"
@@ -630,9 +651,6 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -646,13 +664,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -740,8 +758,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Compact 3-column charge summary."
-      ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      ]
     },
     "blocks": [
       {
@@ -749,16 +766,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "QUOTATION — FORMAT 5",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -766,22 +780,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "termsBank"
-      },
-      {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -795,13 +800,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -843,7 +848,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,380.00",
       "words": "USD One Thousand Three Hundred Eighty Only",
       "remarks": "Format-6",
-      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "letterBody": "Quotation valid for 30 days from date of issue.",
       "fieldGrid": [
         {
           "k": "POL",
@@ -930,8 +935,11 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "QUOTATION — FORMAT 6",
         "align": "center",
         "band": true
       },
@@ -939,30 +947,24 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "partyTriple"
+        "type": "fieldGrid",
+        "cols": 3
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "partyTriple"
       },
       {
         "type": "chargeTable",
         "headerColor": "primary"
       },
       {
+        "type": "agingSummary"
+      },
+      {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -976,13 +978,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1098,8 +1100,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Four-party notify layout with insurance line."
-      ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      ]
     },
     "blocks": [
       {
@@ -1107,13 +1108,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "docTitle",
-        "text": "QUOTATION",
-        "align": "center",
-        "band": true
+        "type": "formatBadge"
       },
       {
-        "type": "letterBody"
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 7",
+        "align": "center",
+        "band": true
       },
       {
         "type": "partyTriple"
@@ -1124,7 +1125,10 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "wordsAndTotal"
@@ -1134,12 +1138,6 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -1153,13 +1151,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1267,8 +1265,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Buy/Sell/Profit quotation sheet."
-      ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      ]
     },
     "blocks": [
       {
@@ -1276,16 +1273,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "QUOTATION WITH MARGIN — FORMAT 8",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -1293,7 +1287,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
@@ -1303,15 +1297,6 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1325,13 +1310,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1373,7 +1358,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,947.50",
       "words": "USD One Thousand Nine Hundred Forty Seven And 50/100",
       "remarks": "Format-9",
-      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "letterBody": "Please confirm acceptance by return email to proceed with booking.",
       "fieldGrid": [
         {
           "k": "Origin Airport",
@@ -1440,8 +1425,11 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "QUOTATION — FORMAT 9",
         "align": "center",
         "band": true
       },
@@ -1449,33 +1437,21 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "partyTriple"
+        "type": "chargeTable",
+        "headerColor": "orange"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "partyTriple"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "termsBank"
-      },
-      {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -1489,13 +1465,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1601,8 +1577,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Includes bank settlement details."
-      ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      ]
     },
     "blocks": [
       {
@@ -1610,13 +1585,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "docTitle",
-        "text": "QUOTATION",
-        "align": "center",
-        "band": true
+        "type": "formatBadge"
       },
       {
-        "type": "letterBody"
+        "type": "docTitle",
+        "text": "QUOTATION — FORMAT 10",
+        "align": "center",
+        "band": true
       },
       {
         "type": "partyTriple"
@@ -1627,7 +1602,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -1636,16 +1611,10 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
         "type": "wireBox"
       },
       {
-        "type": "usaNumberedFields"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -1659,13 +1628,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1783,8 +1752,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Shipment + container planning quotation."
-      ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      ]
     },
     "blocks": [
       {
@@ -1792,45 +1760,33 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "QUOTATION — FORMAT 11",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
         "headerColor": "primary"
       },
       {
+        "type": "partyTriple"
+      },
+      {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1844,13 +1800,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1943,8 +1899,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Simple particulars list — India trade style."
-      ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      ]
     },
     "blocks": [
       {
@@ -1952,45 +1907,33 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "QUOTATION — FORMAT 12",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
+        "type": "partyTriple"
       },
       {
-        "type": "partyTriple"
+        "type": "chargeTable",
+        "headerColor": "accent"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
         "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
       },
       {
         "type": "signatureRow"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -2004,13 +1947,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2052,7 +1995,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,380.00",
       "words": "USD One Thousand Three Hundred Eighty Only",
       "remarks": "Format-13",
-      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "letterBody": "This quotation supersedes all previous offers for the same shipment.",
       "fieldGrid": [
         {
           "k": "POL",
@@ -2123,8 +2066,11 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "QUOTATION — FORMAT 13",
         "align": "center",
         "band": true
       },
@@ -2132,15 +2078,15 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "partyTriple"
-      },
-      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "wordsAndTotal"
@@ -2150,18 +2096,6 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -2175,13 +2109,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2281,8 +2215,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "VAT-inclusive air quotation."
-      ],
-      "letterBody": "Thank you for your enquiry. Please find our quotation below."
+      ]
     },
     "blocks": [
       {
@@ -2290,13 +2223,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "docTitle",
-        "text": "QUOTATION",
-        "align": "center",
-        "band": true
+        "type": "formatBadge"
       },
       {
-        "type": "letterBody"
+        "type": "docTitle",
+        "text": "QUOTATION WITH TAX — FORMAT 14",
+        "align": "center",
+        "band": true
       },
       {
         "type": "partyTriple"
@@ -2307,31 +2240,17 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
+      },
+      {
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -2345,13 +2264,13 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2393,7 +2312,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,380.00",
       "words": "USD One Thousand Three Hundred Eighty Only",
       "remarks": "Format-15",
-      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
+      "letterBody": "We look forward to your confirmation to proceed with booking.",
       "fieldGrid": [
         {
           "k": "POL",
@@ -2473,8 +2392,11 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge"
+      },
+      {
         "type": "docTitle",
-        "text": "QUOTATION",
+        "text": "QUOTATION — FORMAT 15",
         "align": "center",
         "band": true
       },
@@ -2486,11 +2408,11 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -2500,21 +2422,6 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"

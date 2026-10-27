@@ -651,6 +651,11 @@ export interface JobDocument {
   mime_type?: string;
   status?: string;
   is_finalized?: boolean;
+  /** Relative API path e.g. /jobs/:id/documents/:documentId/download */
+  download_path?: string;
+  download_url?: string;
+  /** When false, View/Download PDF should be disabled. */
+  can_download?: boolean;
 }
 
 export interface JobBillOfLading {

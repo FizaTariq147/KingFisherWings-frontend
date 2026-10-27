@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — seaDocsExtraFormatUiLayouts. */
+/** Permanent JSON UI layouts — Fresa sky-blue themes. */
 export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "JOB_HOUSES_RECORD_LIST_REPORT_FORMAT",
@@ -9,13 +9,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2788C9",
+      "fill": "#EDF5FE",
+      "panel": "#DFF1FD",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -98,7 +98,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "JOB HOUSES RECORD LIST",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -106,7 +106,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "colorfulFooter"
@@ -120,13 +120,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0A3D7A",
+      "accent": "#2185C7",
+      "fill": "#F5F7F9",
+      "panel": "#E6F2FA",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -236,8 +236,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -245,7 +245,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -265,14 +265,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#36BBF6",
+      "fill": "#EBF4FA",
+      "panel": "#DDEFFB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7CD2FB",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -381,8 +381,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -390,7 +390,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -413,13 +413,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#2286C8",
+      "accent": "#0D4B94",
+      "fill": "#E9F2F8",
+      "panel": "#DBEDF9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -530,7 +530,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -538,7 +538,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -561,13 +561,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2589CB",
+      "fill": "#F0FCFF",
+      "panel": "#DCF4FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -677,8 +677,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -686,7 +686,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -709,13 +709,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#298ACB",
+      "fill": "#F9F9F9",
+      "panel": "#EFF4F8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -825,8 +825,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -834,7 +834,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -860,13 +860,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#EFF4F8",
+      "panel": "#EEF3F7",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -977,7 +977,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -985,7 +985,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -1011,13 +1011,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#2387C9",
+      "fill": "#F5F5F5",
+      "panel": "#F4F4F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1127,8 +1127,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -1136,7 +1136,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -1162,13 +1162,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0A3D7A",
+      "accent": "#2286C8",
+      "fill": "#ECFEFF",
+      "panel": "#E8F4FC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1278,8 +1278,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -1287,7 +1287,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -1316,13 +1316,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#EEF7FD",
+      "panel": "#E7F3FB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1433,7 +1433,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -1441,7 +1441,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -1470,13 +1470,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2687C8",
+      "fill": "#EAF2FB",
+      "panel": "#DDEFFB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1586,8 +1586,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -1595,7 +1595,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -1624,13 +1624,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E2EEF6",
+      "panel": "#D2EAF7",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1740,8 +1740,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -1749,7 +1749,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -1781,13 +1781,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1F83C5",
+      "fill": "#E8F1F7",
+      "panel": "#E2EEF6",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1898,7 +1898,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -1906,7 +1906,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -1938,13 +1938,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#FFFFFF",
+      "panel": "#F0F5F9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2054,8 +2054,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -2063,7 +2063,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -2095,13 +2095,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#EDF9FF",
+      "panel": "#DAF2FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2211,8 +2211,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -2220,7 +2220,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -2255,13 +2255,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#F1F5FF",
+      "panel": "#EAF6FE",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2372,7 +2372,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -2380,7 +2380,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -2415,13 +2415,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1A8A94",
+      "fill": "#E9F5FD",
+      "panel": "#D7EFFC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2531,8 +2531,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -2540,7 +2540,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -2575,13 +2575,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#EFF8FE",
+      "panel": "#E7F3FB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2691,8 +2691,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -2700,7 +2700,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -2738,13 +2738,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#FCF5ED",
+      "panel": "#E9EEF2",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2855,7 +2855,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -2863,7 +2863,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -2901,13 +2901,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2586C7",
+      "fill": "#E9F1FA",
+      "panel": "#DDEFFB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3017,8 +3017,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -3026,7 +3026,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -3064,13 +3064,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E1EDF5",
+      "panel": "#D1E9F6",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3180,8 +3180,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -3189,7 +3189,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -3230,14 +3230,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0587CA",
+      "fill": "#F8FFFF",
+      "panel": "#E6F8FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7FD5FE",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -3346,19 +3346,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -3381,14 +3381,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0486C9",
+      "fill": "#F6FFFF",
+      "panel": "#E4F6FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7FD5FE",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -3497,19 +3497,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -3535,14 +3535,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0385C8",
+      "fill": "#F4FDFF",
+      "panel": "#E3F5FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7ED4FD",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -3652,18 +3652,18 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "MAWB",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -3689,14 +3689,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0385C8",
+      "fill": "#F2FBFF",
+      "panel": "#E1F3FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7ED4FD",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -3805,19 +3805,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -3843,14 +3843,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0284C7",
+      "fill": "#F0F9FF",
+      "panel": "#E0F2FE",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7DD3FC",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -3959,19 +3959,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -4000,14 +4000,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0183C6",
+      "fill": "#EEF7FD",
+      "panel": "#DFF1FD",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7DD3FC",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -4117,18 +4117,18 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "MAWB",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -4157,14 +4157,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0183C6",
+      "fill": "#ECF5FB",
+      "panel": "#DDEFFB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7CD2FB",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -4273,19 +4273,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -4314,14 +4314,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0082C5",
+      "fill": "#EAF3F9",
+      "panel": "#DCEEFA",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7CD2FB",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -4430,19 +4430,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -4474,14 +4474,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0081C4",
+      "fill": "#E8F1F7",
+      "panel": "#DAECF8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7BD1FA",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -4591,18 +4591,18 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "MAWB",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -4634,14 +4634,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0486C9",
+      "fill": "#F7FFFF",
+      "panel": "#E5F7FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7FD5FE",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -4750,19 +4750,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -4794,14 +4794,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0486C9",
+      "fill": "#F5FEFF",
+      "panel": "#E4F6FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7ED4FD",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -4910,19 +4910,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -4957,14 +4957,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0385C8",
+      "fill": "#F3FCFF",
+      "panel": "#E2F4FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7ED4FD",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -5074,18 +5074,18 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "MAWB",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -5120,14 +5120,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0284C7",
+      "fill": "#F1FAFF",
+      "panel": "#E1F3FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7DD3FC",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -5236,19 +5236,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -5283,14 +5283,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0284C7",
+      "fill": "#EFF8FE",
+      "panel": "#DFF1FD",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7DD3FC",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -5399,19 +5399,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -5449,14 +5449,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#0183C6",
+      "fill": "#EDF6FC",
+      "panel": "#DEF0FC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
+      "cyan": "#7CD2FB",
+      "ink": "#0C4A6E",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
@@ -5566,18 +5566,18 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "MAWB",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
@@ -5615,13 +5615,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2586C7",
+      "fill": "#E9F1FA",
+      "panel": "#DDEFFB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5731,7 +5731,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -5739,14 +5739,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "termsBank"
@@ -5766,13 +5766,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2586C7",
+      "fill": "#E7EFF8",
+      "panel": "#DBEDF9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5883,21 +5883,21 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DELIVERY ORDER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "termsBank"
@@ -5920,13 +5920,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2A8BCC",
+      "fill": "#F6FEFF",
+      "panel": "#E6F8FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6036,22 +6036,22 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "termsBank"
@@ -6074,13 +6074,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#298ACB",
+      "fill": "#F4FCFF",
+      "panel": "#E4F6FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6190,22 +6190,22 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "termsBank"
@@ -6228,13 +6228,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2889CA",
+      "fill": "#F2FAFF",
+      "panel": "#E3F5FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6345,21 +6345,21 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DELIVERY ORDER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "termsBank"
@@ -6385,13 +6385,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2889CA",
+      "fill": "#F0F8FF",
+      "panel": "#E1F3FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6501,7 +6501,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -6509,14 +6509,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "termsBank"
@@ -6539,13 +6539,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2788C9",
+      "fill": "#EEF6FF",
+      "panel": "#E0F2FE",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6655,7 +6655,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -6663,14 +6663,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "termsBank"

@@ -1,39 +1,33 @@
-/** Shared browse-strip chrome so every family section matches Invoice / HBL cards. */
+/** Shared browse-strip chrome — Fresa sky-blue system (kept for legacy imports). */
 
 export const CATALOG_STRIP_CARD_TONES = [
   {
-    bg: 'bg-[var(--color-primary-100)]',
-    border: 'border-[var(--color-primary-500)]/30',
-    accent: 'bg-[var(--color-primary-500)]',
-    label: 'text-[var(--color-primary-600)]',
-  },
-  {
-    bg: 'bg-[var(--color-secondary-100)]',
-    border: 'border-[var(--color-secondary)]/35',
-    accent: 'bg-[var(--color-secondary)]',
-    label: 'text-[var(--color-secondary-700)]',
-  },
-  {
-    bg: 'bg-[var(--color-success-50)]',
-    border: 'border-[var(--color-success-500)]/30',
-    accent: 'bg-[var(--color-success-500)]',
-    label: 'text-[var(--color-success-500)]',
-  },
-  {
-    bg: 'bg-[var(--color-warning-50)]',
-    border: 'border-[var(--color-warning-500)]/30',
-    accent: 'bg-[var(--color-warning-500)]',
-    label: 'text-[var(--color-warning-500)]',
-  },
-  {
-    bg: 'bg-[var(--color-danger-50)]',
-    border: 'border-[var(--color-danger-500)]/25',
-    accent: 'bg-[var(--color-danger-500)]',
-    label: 'text-[var(--color-danger-600)]',
-  },
-  {
     bg: 'bg-[#E8F4FC]',
     border: 'border-[#2286C8]/35',
+    accent: 'bg-[#2286C8]',
+    label: 'text-[#0F4D96]',
+  },
+  {
+    bg: 'bg-[#EEF6FF]',
+    border: 'border-[#0F4D96]/30',
+    accent: 'bg-[#0F4D96]',
+    label: 'text-[#0F4D96]',
+  },
+  {
+    bg: 'bg-[#F0F9FF]',
+    border: 'border-[#38BDF8]/40',
+    accent: 'bg-[#2788C9]',
+    label: 'text-[#0C4A6E]',
+  },
+  {
+    bg: 'bg-[#EBF0F4]',
+    border: 'border-[#0F4D96]/25',
+    accent: 'bg-[#0F4D96]',
+    label: 'text-[#0F4D96]',
+  },
+  {
+    bg: 'bg-[#D6EEFB]',
+    border: 'border-[#2286C8]/40',
     accent: 'bg-[#2286C8]',
     label: 'text-[#0F4D96]',
   },
@@ -44,12 +38,12 @@ export function catalogStripTone(index: number) {
 }
 
 export const CATALOG_STRIP_SHELL =
-  'space-y-2.5 rounded-xl border border-[var(--color-neutral-200)] bg-[var(--color-surface)] p-3.5 shadow-sm';
+  'space-y-2.5 overflow-hidden rounded-xl border border-[#2286C8]/25 bg-white p-3.5 shadow-sm';
 
 export const CATALOG_STRIP_TITLE =
-  'text-xs font-semibold uppercase tracking-wide text-[var(--color-primary-600)]';
+  'text-xs font-semibold uppercase tracking-[0.08em] text-[#2286C8]';
 
-export const CATALOG_STRIP_META = 'text-[10px] text-[var(--color-neutral-400)]';
+export const CATALOG_STRIP_META = 'text-[10px] tabular-nums text-[#64748b]';
 
 export const CATALOG_STRIP_SCROLL =
   '-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]';
@@ -60,7 +54,7 @@ export function catalogStripCardClass(active: boolean, tone: { bg: string; borde
     tone.bg,
     tone.border,
     active
-      ? 'ring-2 ring-[var(--color-secondary)] ring-offset-1 shadow-md'
+      ? 'ring-2 ring-[#2286C8] ring-offset-1 shadow-md'
       : 'hover:-translate-y-0.5 hover:shadow-sm',
   ].join(' ');
 }

@@ -52,13 +52,55 @@ function pushUnique(out: string[], value: string | null | undefined, opts?: { al
  * R2/S3 `file_url` / `download_url` so Bearer JWT works; keep presigned URLs as
  * fallbacks when `/files` is unavailable.
  */
+/** Recover s3_key from stored file URLs when the key column is empty. */
+function s3KeyFromStoredUrl(url: string): string | null {
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  // /files/{tenant}/{filename…}
+  const filesMatch = trimmed.match(/\/files\/([^/?#]+)\/(.+?)(?:\?|#|$)/i);
+  if (filesMatch?.[1] && filesMatch[2]) {
+    return `${filesMatch[1]}/${decodeURIComponent(filesMatch[2])}`;
+  }
+  // Path-style S3 / R2: …/{bucket}/{tenant}/{filename}
+  try {
+    if (/^https?:\/\//i.test(trimmed)) {
+      const path = new URL(trimmed).pathname.replace(/^\/+/, '');
+      const parts = path.split('/').filter(Boolean);
+      if (parts.length >= 2) {
+        // Drop first segment when it looks like a bucket, keep tenant/file
+        const maybeKey = parts.length >= 3 ? parts.slice(1).join('/') : parts.join('/');
+        if (maybeKey.includes('/')) return decodeURIComponent(maybeKey);
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return null;
+}
+
 export function resolveJobDocumentFileUrlCandidates(
   doc: JobDocumentFileRef,
   tenantId?: string | null,
 ): string[] {
   const out: string[] = [];
 
-  const key = (doc.s3_key || doc.s3Key || '').trim();
+  let key = (doc.s3_key || doc.s3Key || '').trim();
+  if (!key) {
+    for (const raw of [
+      doc.file_url,
+      doc.fileUrl,
+      doc.download_url,
+      doc.downloadUrl,
+      doc.download_path,
+      doc.downloadPath,
+    ]) {
+      const recovered = s3KeyFromStoredUrl(String(raw || ''));
+      if (recovered) {
+        key = recovered;
+        break;
+      }
+    }
+  }
   if (key) {
     pushUnique(out, fromS3Key(key, tenantId));
   }

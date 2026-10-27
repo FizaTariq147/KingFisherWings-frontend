@@ -30,11 +30,57 @@ const STEEL = '#2C557A';
 
 const CUSTOMER_BAR_COLORS = ['#0A2942', '#8B2942', '#5B3E8C', '#1F8A8A', '#1F8A57'];
 
-function monthIndex(label: string): number | null {
-  const n = Number(label);
-  if (n >= 1 && n <= 12) return n - 1;
-  const i = MONTHS.findIndex((m) => label.toLowerCase().startsWith(m.toLowerCase()));
-  return i >= 0 ? i : null;
+function monthIndex(label: string, yearHint?: number): { month: number; year?: number } | null {
+  const raw = label.trim();
+  if (!raw) return null;
+
+  // 2026-05 / 2026/05 / 05-2026
+  const iso = /^(\d{4})[-/](\d{1,2})$/.exec(raw);
+  if (iso) {
+    const month = Number(iso[2]) - 1;
+    if (month >= 0 && month <= 11) return { month, year: Number(iso[1]) };
+  }
+  const rev = /^(\d{1,2})[-/](\d{4})$/.exec(raw);
+  if (rev) {
+    const month = Number(rev[1]) - 1;
+    if (month >= 0 && month <= 11) return { month, year: Number(rev[2]) };
+  }
+
+  const n = Number(raw);
+  if (n >= 1 && n <= 12) return { month: n - 1, year: yearHint };
+
+  const lower = raw.toLowerCase();
+  const named = MONTHS.findIndex(
+    (m) => lower.startsWith(m.toLowerCase()) || lower.includes(m.toLowerCase()),
+  );
+  if (named >= 0) {
+    const yearMatch = /(\d{4})/.exec(raw);
+    return { month: named, year: yearMatch ? Number(yearMatch[1]) : yearHint };
+  }
+  return null;
+}
+
+function rowMonthYear(row: Record<string, unknown>): { month: number; year?: number } | null {
+  const year = pickNumber(row, ['year', 'yr', 'fiscal_year', 'fy']);
+  const monthNum = pickNumber(row, ['month_number', 'month_num', 'month_index', 'monthIndex']);
+  if (monthNum != null) {
+    const mi = monthNum >= 1 && monthNum <= 12 ? monthNum - 1 : monthNum;
+    if (mi >= 0 && mi <= 11) return { month: mi, year: year ?? undefined };
+  }
+  const label =
+    pickString(row, [
+      'month',
+      'period',
+      'label',
+      'name',
+      'month_name',
+      'month_label',
+      'month_key',
+      'ym',
+      'year_month',
+      'yearMonth',
+    ]) ?? '';
+  return monthIndex(label, year ?? undefined);
 }
 
 function lastSixMonths(now = new Date()) {
@@ -106,14 +152,28 @@ export function RevenueVsTargetPanel({
   const months = lastSixMonths(now);
   const currentMonthIndex = now.getMonth();
 
+  const nowYear = now.getFullYear();
   const bars = months.map(({ monthIndex: mi, label }, idx) => {
+    const expectedYear = mi > currentMonthIndex ? nowYear - 1 : nowYear;
     const row = monthlyRows.find((r) => {
-      const raw = pickString(r, ['month', 'period', 'label', 'name', 'month_name', 'month_label']) ?? '';
-      const parsed = monthIndex(raw);
-      return parsed === mi || raw.toLowerCase() === label.toLowerCase();
+      const parsed = rowMonthYear(r);
+      if (!parsed) return false;
+      if (parsed.month !== mi) return false;
+      if (parsed.year != null) return parsed.year === expectedYear;
+      return true;
     });
     const value =
-      pickNumber(row ?? {}, ['revenue', 'amount', 'actual', 'total', 'sales', 'value', 'gross_revenue']) ?? 0;
+      pickNumber(row ?? {}, [
+        'revenue',
+        'amount',
+        'actual',
+        'total',
+        'sales',
+        'value',
+        'gross_revenue',
+        'grossRevenue',
+        'net_revenue',
+      ]) ?? 0;
     const target =
       pickNumber(row ?? {}, [
         'target',
@@ -136,35 +196,87 @@ export function RevenueVsTargetPanel({
     };
   });
 
-  const hasBars = bars.some((b) => b.value > 0);
-  const totalRevenue = bars.reduce((sum, b) => sum + b.value, 0);
-  const totalTarget = bars.reduce((sum, b) => sum + (b.target ?? 0), 0);
+  // If month labels did not match, still plot the last 6 numeric rows in order.
+  const fallbackBars =
+    !bars.some((b) => b.value > 0) && monthlyRows.length > 0
+      ? monthlyRows.slice(-6).map((row, idx, arr) => {
+          const label =
+            pickString(row, ['month', 'period', 'label', 'name', 'month_name']) ||
+            MONTHS[(currentMonthIndex - (arr.length - 1 - idx) + 12) % 12];
+          return {
+            label: label.slice(0, 8),
+            value:
+              pickNumber(row, [
+                'revenue',
+                'amount',
+                'actual',
+                'total',
+                'sales',
+                'value',
+                'gross_revenue',
+              ]) ?? 0,
+            target: pickNumber(row, ['target', 'plan', 'budget', 'monthly_target']),
+            achievement: pickNumber(row, ['achievement_pct', 'achievement', 'pct_of_target']),
+            isCurrent: idx === arr.length - 1,
+          };
+        })
+      : null;
+  const chartBars =
+    fallbackBars && fallbackBars.some((b) => b.value > 0) ? fallbackBars : bars;
+  const hasBars = chartBars.some((b) => b.value > 0);
+  const totalRevenue = chartBars.reduce((sum, b) => sum + b.value, 0);
+  const totalTarget = chartBars.reduce((sum, b) => sum + (b.target ?? 0), 0);
   const monthlyTarget =
-    bars.find((b) => b.target != null && b.target > 0)?.target ??
-    (totalTarget > 0 ? Math.round(totalTarget / Math.max(bars.filter((b) => b.target).length, 1)) : undefined);
-  const currentAchievement = bars.find((b) => b.isCurrent)?.achievement;
+    chartBars.find((b) => b.target != null && b.target > 0)?.target ??
+    (totalTarget > 0
+      ? Math.round(totalTarget / Math.max(chartBars.filter((b) => b.target).length, 1))
+      : undefined);
+  const currentAchievement = chartBars.find((b) => b.isCurrent)?.achievement;
   const planPct =
     currentAchievement != null
       ? Math.round(currentAchievement <= 1 ? currentAchievement * 100 : currentAchievement)
       : totalTarget > 0
         ? Math.round((totalRevenue / totalTarget) * 100)
         : monthlyTarget && totalRevenue > 0
-          ? Math.round((totalRevenue / (monthlyTarget! * bars.length)) * 100)
+          ? Math.round((totalRevenue / (monthlyTarget! * chartBars.length)) * 100)
           : null;
 
-  const chartMax = Math.max(...bars.map((b) => b.value), monthlyTarget ?? 0, 1);
-  const currentBar = bars[bars.length - 1];
+  const chartMax = Math.max(...chartBars.map((b) => b.value), monthlyTarget ?? 0, 1);
+  const currentBar = chartBars[chartBars.length - 1];
 
-  const customers = customerRows.slice(0, 5).map((row, i) => {
-    const rawName =
-      pickString(row, ['customer', 'customer_name', 'name', 'party', 'party_name', 'shipper', 'label']) ||
-      `Customer ${i + 1}`;
-    return {
-      name: sanitizeDisplayLabel(rawName) ?? `Customer ${i + 1}`,
-      amount: pickNumber(row, ['revenue', 'amount', 'total', 'sales', 'value']) ?? 0,
-      jobs: pickNumber(row, ['jobs', 'job_count', 'count', 'shipments', 'volume']),
-    };
-  });
+  const customers = customerRows
+    .map((row, i) => {
+      const rawName =
+        pickString(row, [
+          'customer',
+          'customer_name',
+          'name',
+          'party',
+          'party_name',
+          'shipper',
+          'label',
+          'company',
+          'company_name',
+          'account',
+          'account_name',
+        ]) || `Customer ${i + 1}`;
+      return {
+        name: sanitizeDisplayLabel(rawName) ?? `Customer ${i + 1}`,
+        amount:
+          pickNumber(row, [
+            'revenue',
+            'amount',
+            'total',
+            'sales',
+            'value',
+            'gross_revenue',
+            'turnover',
+          ]) ?? 0,
+        jobs: pickNumber(row, ['jobs', 'job_count', 'count', 'shipments', 'volume']),
+      };
+    })
+    .sort((a, b) => b.amount - a.amount)
+    .slice(0, 5);
   const customerTotal = customers.reduce((sum, c) => sum + c.amount, 0);
   const customerMax = Math.max(...customers.map((c) => c.amount), 1);
 
@@ -213,7 +325,7 @@ export function RevenueVsTargetPanel({
             ) : null}
 
             <div className="relative z-0 flex h-full items-end gap-2 sm:gap-3">
-              {bars.map((bar) => {
+              {chartBars.map((bar) => {
                 const heightPct = Math.max(6, Math.round((bar.value / chartMax) * 100));
                 const meetsTarget =
                   bar.target != null ? bar.value >= bar.target : monthlyTarget != null ? bar.value >= monthlyTarget : true;

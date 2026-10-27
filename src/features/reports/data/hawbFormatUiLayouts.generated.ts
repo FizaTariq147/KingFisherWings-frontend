@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — hawbFormatUiLayouts. */
+/** Auto-generated HAWB formats — permanent JSON store. */
 export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "HAWB_DRAFT_REPORT_FORMAT",
@@ -9,19 +9,19 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -31,6 +31,8 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
+      "formatBadgeLabel": "Draft Report Format",
+      "heroTitle": "HAWB DRAFT",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -120,6 +122,32 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "As per AWB"
         }
       ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ],
       "tableHeaders": [
         "No. of Pieces",
         "Gross Weight",
@@ -146,13 +174,20 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Draft Report Format"
+      },
+      {
         "type": "docTitle",
-        "text": "HAWB",
+        "text": "HOUSE AIR WAYBILL — HAWB DRAFT",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -161,9 +196,6 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "primary"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "termsBank"
@@ -183,19 +215,19 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -205,6 +237,8 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
+      "formatBadgeLabel": "Draft Report Format-1",
+      "heroTitle": "HAWB DRAFT",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -298,6 +332,32 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "Draft Format-1"
         }
       ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ],
       "tableHeaders": [
         "No. of Pieces",
         "Gross Weight",
@@ -324,13 +384,20 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Draft Report Format-1"
+      },
+      {
         "type": "docTitle",
-        "text": "HAWB",
+        "text": "HOUSE AIR WAYBILL — HAWB DRAFT FORMAT 1",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -338,19 +405,13 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "accent"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -364,19 +425,19 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -386,6 +447,8 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
+      "formatBadgeLabel": "Draft Report Format-2",
+      "heroTitle": "HAWB DRAFT",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -479,6 +542,32 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "Draft Format-2"
         }
       ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ],
       "tableHeaders": [
         "No. of Pieces",
         "Gross Weight",
@@ -505,13 +594,20 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Draft Report Format-2"
+      },
+      {
         "type": "docTitle",
-        "text": "HAWB",
+        "text": "HOUSE AIR WAYBILL — HAWB DRAFT FORMAT 2",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -519,19 +615,13 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -545,19 +635,19 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -567,6 +657,8 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
+      "formatBadgeLabel": "Original Pre Printed Format-1",
+      "heroTitle": "HAWB ORIGINAL",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -660,6 +752,32 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "Pre-printed Format-1"
         }
       ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ],
       "tableHeaders": [
         "No. of Pieces",
         "Gross Weight",
@@ -683,19 +801,24 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "blocks": [
       {
         "type": "companyHeader",
-        "showContact": true
+        "showContact": true,
+        "title": "AIR WAYBILL"
+      },
+      {
+        "type": "formatBadge",
+        "label": "Original Pre Printed Format-1"
       },
       {
         "type": "docTitle",
-        "text": "HAWB",
+        "text": "HOUSE AIR WAYBILL — ORIGINAL (PRE-PRINTED) FORMAT 1",
         "align": "center",
         "band": true
       },
       {
-        "type": "formatBadge"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "partyTriple"
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -703,10 +826,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "orange"
       },
       {
         "type": "termsBank"
@@ -726,19 +846,19 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -748,6 +868,8 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
+      "formatBadgeLabel": "Original Pre Printed Format-2",
+      "heroTitle": "HAWB ORIGINAL",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -841,6 +963,32 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "Pre-printed Format-2"
         }
       ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ],
       "tableHeaders": [
         "No. of Pieces",
         "Gross Weight",
@@ -864,19 +1012,24 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "blocks": [
       {
         "type": "companyHeader",
-        "showContact": true
+        "showContact": true,
+        "title": "AIR WAYBILL"
+      },
+      {
+        "type": "formatBadge",
+        "label": "Original Pre Printed Format-2"
       },
       {
         "type": "docTitle",
-        "text": "HAWB",
+        "text": "HOUSE AIR WAYBILL — ORIGINAL (PRE-PRINTED) FORMAT 2",
         "align": "center",
         "band": true
       },
       {
-        "type": "formatBadge"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "partyTriple"
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -884,19 +1037,13 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "cyan"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -1016,12 +1163,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-3"
+      "remarks": "Format-3",
+      "formatBadgeLabel": "Format-3",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-3"
       },
       {
         "type": "docTitle",
@@ -1030,7 +1208,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -1041,16 +1222,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -1170,12 +1345,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-4"
+      "remarks": "Format-4",
+      "formatBadgeLabel": "Format-4",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-4"
       },
       {
         "type": "docTitle",
@@ -1184,7 +1390,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -1195,16 +1404,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -1324,12 +1527,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-5"
+      "remarks": "Format-5",
+      "formatBadgeLabel": "Format-5",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-5"
       },
       {
         "type": "docTitle",
@@ -1338,7 +1572,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -1349,16 +1586,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -1478,12 +1709,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-6"
+      "remarks": "Format-6",
+      "formatBadgeLabel": "Format-6",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-6"
       },
       {
         "type": "docTitle",
@@ -1492,7 +1754,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -1503,19 +1768,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -1635,12 +1891,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-7"
+      "remarks": "Format-7",
+      "formatBadgeLabel": "Format-7",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-7"
       },
       {
         "type": "docTitle",
@@ -1649,7 +1936,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -1660,19 +1950,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1792,12 +2073,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-8"
+      "remarks": "Format-8",
+      "formatBadgeLabel": "Format-8",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-8"
       },
       {
         "type": "docTitle",
@@ -1806,7 +2118,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -1817,19 +2132,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -1949,12 +2255,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-9"
+      "remarks": "Format-9",
+      "formatBadgeLabel": "Format-9",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-9"
       },
       {
         "type": "docTitle",
@@ -1963,7 +2300,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -1974,22 +2314,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -2109,12 +2437,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-10"
+      "remarks": "Format-10",
+      "formatBadgeLabel": "Format-10",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-10"
       },
       {
         "type": "docTitle",
@@ -2123,7 +2482,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -2134,22 +2496,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2269,12 +2619,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-11"
+      "remarks": "Format-11",
+      "formatBadgeLabel": "Format-11",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-11"
       },
       {
         "type": "docTitle",
@@ -2283,7 +2664,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -2294,22 +2678,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -2429,12 +2801,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-12"
+      "remarks": "Format-12",
+      "formatBadgeLabel": "Format-12",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-12"
       },
       {
         "type": "docTitle",
@@ -2443,7 +2846,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -2454,25 +2860,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -2592,12 +2983,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-13"
+      "remarks": "Format-13",
+      "formatBadgeLabel": "Format-13",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-13"
       },
       {
         "type": "docTitle",
@@ -2606,7 +3028,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -2617,25 +3042,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -2755,12 +3165,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-14"
+      "remarks": "Format-14",
+      "formatBadgeLabel": "Format-14",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-14"
       },
       {
         "type": "docTitle",
@@ -2769,7 +3210,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -2780,25 +3224,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -2918,12 +3347,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-15"
+      "remarks": "Format-15",
+      "formatBadgeLabel": "Format-15",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-15"
       },
       {
         "type": "docTitle",
@@ -2932,7 +3392,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -2943,28 +3406,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3084,12 +3529,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-16"
+      "remarks": "Format-16",
+      "formatBadgeLabel": "Format-16",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-16"
       },
       {
         "type": "docTitle",
@@ -3098,7 +3574,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -3109,28 +3588,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -3250,12 +3711,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-17"
+      "remarks": "Format-17",
+      "formatBadgeLabel": "Format-17",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-17"
       },
       {
         "type": "docTitle",
@@ -3264,7 +3756,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -3275,28 +3770,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -3416,12 +3893,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-18"
+      "remarks": "Format-18",
+      "formatBadgeLabel": "Format-18",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-18"
       },
       {
         "type": "docTitle",
@@ -3430,7 +3938,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -3441,31 +3952,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -3585,12 +4075,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-19"
+      "remarks": "Format-19",
+      "formatBadgeLabel": "Format-19",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-19"
       },
       {
         "type": "docTitle",
@@ -3599,7 +4120,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -3610,31 +4134,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -3754,12 +4257,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-20"
+      "remarks": "Format-20",
+      "formatBadgeLabel": "Format-20",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-20"
       },
       {
         "type": "docTitle",
@@ -3768,7 +4302,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -3779,31 +4316,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -3923,12 +4439,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-21"
+      "remarks": "Format-21",
+      "formatBadgeLabel": "Format-21",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-21"
       },
       {
         "type": "docTitle",
@@ -3937,7 +4484,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -3948,34 +4498,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -4095,12 +4621,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-22"
+      "remarks": "Format-22",
+      "formatBadgeLabel": "Format-22",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-22"
       },
       {
         "type": "docTitle",
@@ -4109,7 +4666,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -4120,34 +4680,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -4267,12 +4803,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-23"
+      "remarks": "Format-23",
+      "formatBadgeLabel": "Format-23",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-23"
       },
       {
         "type": "docTitle",
@@ -4281,7 +4848,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -4292,34 +4862,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4439,12 +4985,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-24"
+      "remarks": "Format-24",
+      "formatBadgeLabel": "Format-24",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-24"
       },
       {
         "type": "docTitle",
@@ -4453,7 +5030,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -4464,37 +5044,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -4614,12 +5167,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-25"
+      "remarks": "Format-25",
+      "formatBadgeLabel": "Format-25",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-25"
       },
       {
         "type": "docTitle",
@@ -4628,7 +5212,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -4639,37 +5226,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -4789,12 +5349,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-26"
+      "remarks": "Format-26",
+      "formatBadgeLabel": "Format-26",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-26"
       },
       {
         "type": "docTitle",
@@ -4803,7 +5394,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -4814,37 +5408,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -4964,12 +5531,43 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "KingFisher layout preview — FRESA Gold report format sample.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-27"
+      "remarks": "Format-27",
+      "formatBadgeLabel": "Format-27",
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        }
+      ]
     },
     "blocks": [
       {
         "type": "companyHeader",
         "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "Format-27"
       },
       {
         "type": "docTitle",
@@ -4978,7 +5576,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -4989,40 +5590,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"

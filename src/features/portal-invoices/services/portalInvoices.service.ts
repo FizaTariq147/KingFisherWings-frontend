@@ -223,12 +223,15 @@ export const portalInvoicesService = {
   },
   async exportCsv(params: PortalInvoiceListParams = {}): Promise<void> {
     await downloadPortalBlob(PORTAL_INVOICES_API.exportCsv, 'invoices.csv', {
-      search: params.search,
-      status: params.status,
-      job_id: params.job_id,
-      from_date: params.from_date,
-      to_date: params.to_date,
-      limit: 100,
+      accept: 'text/csv,application/octet-stream,*/*',
+      params: {
+        search: params.search,
+        status: params.status,
+        job_id: params.job_id,
+        from_date: params.from_date,
+        to_date: params.to_date,
+        limit: 100,
+      },
     });
   },
   async getById(id: string): Promise<PortalInvoiceDetail> {

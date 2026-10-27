@@ -6,6 +6,8 @@ export const PORTAL_SHIPMENTS_API = {
   /** GET /portal/jobs/:id/costing — customer portal job costing view */
   jobCosting: (id: string) => `/portal/jobs/${encodeURIComponent(id)}/costing`,
   detail: (id: string) => `/portal/shipments/${encodeURIComponent(id)}`,
+  /** GET /portal/shipments/:id/tracking — full track & trace (status + history) */
+  tracking: (id: string) => `/portal/shipments/${encodeURIComponent(id)}/tracking`,
   milestones: (id: string) => `/portal/shipments/${encodeURIComponent(id)}/milestones`,
   documents: (id: string) => `/portal/shipments/${encodeURIComponent(id)}/documents`,
   downloadDocument: (id: string, docId: string) =>

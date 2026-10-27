@@ -10,6 +10,8 @@ import { buildTaxFormatsExtraBatch } from './tax-formats-extra-batch.mjs';
 import { buildArabicFcyRegionBatch } from './arabic-fcy-region-batch.mjs';
 import { buildIndiaTaxWarehouseBatch } from './india-tax-warehouse-batch.mjs';
 import { applyOfficialFresaPageMapping } from './official-fresa-page-mapping.mjs';
+import { blockSignature } from './lib/fresaLayoutDiversity.mjs';
+import { themeForFresaFormat, themeForOfficialInvoiceFormat } from './lib/fresaThemePalettes.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const root = path.resolve(__dirname, '..');
@@ -603,11 +605,12 @@ const DISTINCT = {
       containerRow: ['TTNU0712894', "40' FLAT", 'GENERAL CARGO', '3 PACKAGES', '22,700.00 KGS', '22,700.00'],
     }),
     blocks: [
-      { type: 'companyHeader' },
-      { type: 'docTitle', text: 'TAX INVOICE', align: 'center' },
-      { type: 'twoColumn', showBillTo: true },
-      { type: 'fieldGrid', cols: 2 },
-      { type: 'chargeTable', headerColor: 'fill' },
+      { type: 'companyHeader', showContact: true },
+      { type: 'docTitle', text: 'TAX INVOICE', align: 'start', band: true },
+      { type: 'twoColumn', showBillTo: true, showCreditTerm: true },
+      { type: 'fieldGrid', cols: 3 },
+      { type: 'chargeTable', headerColor: 'cyan' },
+      { type: 'subtotalBar', variant: 'tax' },
       { type: 'taxAmountBox' },
       { type: 'wordsAndTotal' },
       { type: 'containerStrip' },
@@ -725,15 +728,14 @@ const DISTINCT = {
       words: 'Rupee Four Thousand Two Hundred Only',
       total: '4,200.00',
       taxAmountLines: ['GST18', 'GST 15%'],
+      docSubtitle: 'Simple Invoice',
     }),
     blocks: [
-      { type: 'companyHeader' },
-      { type: 'officeAddressBand' },
-      { type: 'docTitle', text: `TAX INVOICE - ${BOMINV.no}`, align: 'center' },
+      { type: 'companyHeader', showContact: true },
+      { type: 'docTitle', text: 'INVOICE', align: 'center', band: true },
       { type: 'twoColumn', showBillTo: true, showCreditTerm: true },
-      { type: 'chargeTable', headerColor: 'fill' },
+      { type: 'chargeTable', headerColor: 'cyan' },
       { type: 'totalsOnly' },
-      { type: 'taxAmountBox' },
       { type: 'wordsAndTotal' },
       { type: 'termsBank' },
       { type: 'colorfulFooter' },
@@ -938,11 +940,17 @@ const DISTINCT = {
 };
 
 /**
- * Pin official Fresa Tax Invoice India Format-1 / Format-2 before later batches
- * overwrite slots 1–2 (tax-formats-extra-batch parks alts at 85+).
+ * Pin official Fresa Format-1…21 structures before later batches overwrite slots.
+ * Batches park PDF alts at 72+; without these snapshots Format-6/7 etc. collapse.
  */
-const OFFICIAL_FORMAT_1 = JSON.parse(JSON.stringify(DISTINCT[1]));
-const OFFICIAL_FORMAT_2 = JSON.parse(JSON.stringify(DISTINCT[2]));
+const OFFICIAL_SNAPSHOTS = {};
+for (const n of Object.keys(DISTINCT).map(Number)) {
+  if (n >= 1 && n <= 21 && DISTINCT[n]) {
+    OFFICIAL_SNAPSHOTS[n] = JSON.parse(JSON.stringify(DISTINCT[n]));
+  }
+}
+const OFFICIAL_FORMAT_1 = OFFICIAL_SNAPSHOTS[1];
+const OFFICIAL_FORMAT_2 = OFFICIAL_SNAPSHOTS[2];
 
 const KIND_TEMPLATES = {
   tax_india: () => DISTINCT[1],
@@ -985,7 +993,42 @@ const KIND_TEMPLATES = {
     }),
   simple: () => DISTINCT[7],
   arabic_rtl: () => DISTINCT[8],
-  usa: () => DISTINCT[9],
+  /** Standard Invoice USA — Letter, numbered fields (not DISTINCT[9] placeholder). */
+  usa: () =>
+    layout({
+      theme: THEME_TAX,
+      paper: 'Letter',
+      demo: simpleClientDemo({
+        billToLabel: 'Bill To',
+        tableHeaders: ['Particulars', 'SAC', 'Rate', 'Qty', 'Curr', 'Amount', 'Tax', 'Total'],
+        tableRows: [
+          ['FREIGHT CHARGE', '996511', '1,500.00', '1', 'USD', '1,500.00', '0.00', '1,500.00'],
+          ['LOCAL CHARGES', '996511', '800.00', '1', 'USD', '800.00', '0.00', '800.00'],
+          ['SEA FREIGHT CHARGE', '996511', '900.00', '1', 'USD', '900.00', '0.00', '900.00'],
+          ['CONTAINER CLEANING FEE', '996511', '1,000.00', '1', 'USD', '1,000.00', '0.00', '1,000.00'],
+        ],
+        words: 'US Dollar Four Thousand Two Hundred Only',
+        total: '4,200.00',
+        currency: 'USD',
+        docSubtitle: 'Standard Invoice USA',
+        metaRows: [
+          { k: 'Invoice No.', v: `${BOMINV.no} / 17-MAY-23` },
+          { k: 'Date', v: '17-MAY-23' },
+          { k: 'Due Date', v: '17-MAY-23' },
+          { k: 'PO No.', v: '—' },
+        ],
+      }),
+      blocks: [
+        { type: 'companyHeader', showContact: true },
+        { type: 'docTitle', text: 'INVOICE', align: 'center' },
+        { type: 'usaNumberedFields' },
+        { type: 'twoColumn', showBillTo: true },
+        { type: 'chargeTable', headerColor: 'primary' },
+        { type: 'wordsAndTotal' },
+        { type: 'termsBank' },
+        { type: 'colorfulFooter' },
+      ],
+    }),
   land: () =>
     layout({
       theme: THEME_TAX,
@@ -1917,15 +1960,25 @@ const officialMapResult = applyOfficialFresaPageMapping({
   DISTINCT,
   deepClone,
   KIND_TEMPLATES,
+  officialSnapshots: OFFICIAL_SNAPSHOTS,
 });
-// Restore PDF-matched Format-1 / Format-2 after batches + official mapping.
+// Hard-restore PDF-matched Format-1 / Format-2 after batches + official mapping.
 DISTINCT[1] = deepClone(OFFICIAL_FORMAT_1);
 DISTINCT[2] = deepClone(OFFICIAL_FORMAT_2);
+// Hard-restore Format-4 / 6 / 7 — must stay structurally distinct (not clones).
+if (OFFICIAL_SNAPSHOTS[4]) DISTINCT[4] = deepClone(OFFICIAL_SNAPSHOTS[4]);
+if (OFFICIAL_SNAPSHOTS[6]) DISTINCT[6] = deepClone(OFFICIAL_SNAPSHOTS[6]);
+if (OFFICIAL_SNAPSHOTS[7]) DISTINCT[7] = deepClone(OFFICIAL_SNAPSHOTS[7]);
+if (DISTINCT[6]?.demo) DISTINCT[6].demo.docSubtitle = 'Simple Invoice (India)';
+if (DISTINCT[7]?.demo) DISTINCT[7].demo.docSubtitle = 'Simple Invoice';
+for (const n of [1, 2, 4, 6, 7]) {
+  if (DISTINCT[n]) DISTINCT[n].theme = themeForOfficialInvoiceFormat(n);
+}
 console.log(
   'Official Fresa page mapping applied; parked sample layouts at',
   Object.keys(officialMapResult.parkedFrom).join(','),
 );
-console.log('Restored Format-1 / Format-2 Tax Invoice India from Fresa sample PDFs');
+console.log('Restored Format-1/2/4/6/7 from pre-batch Fresa snapshots');
 
 const EXTRA_COMMERCIAL = {
   proforma1: layout({

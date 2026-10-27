@@ -22,11 +22,8 @@ export const JOB_API = {
   detail: (id: string) => `/jobs/${id}/detail`,
   detailTab: (id: string, tab: string) =>
     `/jobs/${id}/detail/${encodeURIComponent(tab)}`,
-  /**
-   * Track & Trace for a job has no dedicated `/jobs/:id/tracking` route.
-   * Staff UI uses linked `GET /shipments/:id/tracking`, else public
-   * `GET /track?ref={job_number}`, else `GET /jobs/:id/milestones`.
-   */
+  /** GET /jobs/:id/tracking — current status, progress, full history */
+  tracking: (id: string) => `/jobs/${id}/tracking`,
   changeStatus: (id: string) => `/jobs/${id}/change-status`,
   reopen: (id: string) => `/jobs/${id}/reopen`,
   stop: (id: string) => `/jobs/${id}/stop`,

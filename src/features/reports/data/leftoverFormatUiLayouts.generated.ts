@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — leftoverFormatUiLayouts. */
+/** Permanent JSON UI layouts — Fresa sky-blue themes. */
 export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "LEFTOVER_HBL_DRAFT_JASPER",
@@ -9,13 +9,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0A3D7A",
+      "accent": "#2185C7",
+      "fill": "#F4F6F8",
+      "panel": "#E5F1F9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -125,8 +125,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -161,13 +161,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0A3D7A",
+      "accent": "#2084C6",
+      "fill": "#F2F4F6",
+      "panel": "#E4F0F8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -277,7 +277,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "BILL OF LADING",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -316,13 +316,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1F83C5",
+      "fill": "#E0ECF4",
+      "panel": "#D0E8F5",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -434,19 +434,19 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE FORMAT1 –JASPER",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "totalsOnly"
@@ -484,13 +484,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#EFFBFF",
+      "panel": "#DBF3FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -602,18 +602,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE FORMAT12 –JASPER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "subtotalBar",
@@ -646,13 +646,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#EDF9FF",
+      "panel": "#DAF2FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -776,7 +776,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE FORMAT14 –JASPER",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -791,7 +791,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -823,13 +823,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#FCFDFE",
+      "panel": "#EDF2F6",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -980,13 +980,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#E9F5FD",
+      "panel": "#D7EFFC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1098,18 +1098,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE FORMAT15 –JASPER STANDARD",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "subtotalBar",
@@ -1142,13 +1142,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#EDF1FE",
+      "panel": "#E7F3FB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1259,8 +1259,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE / DEBIT NOTE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "shipmentDetails",
@@ -1291,13 +1291,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#E5F1F9",
+      "panel": "#D4ECF9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1413,7 +1413,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE FORMAT3 –JASPER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -1424,7 +1424,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "subtotalBar",
@@ -1457,13 +1457,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E9EDFA",
+      "panel": "#E5F1F9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1588,7 +1588,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "subtotalBar",
@@ -1613,13 +1613,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E7EBF8",
+      "panel": "#E3EFF7",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1743,7 +1743,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE / DEBIT NOTE",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -1753,7 +1753,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "subtotalBar",
@@ -1778,13 +1778,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2589CB",
+      "fill": "#F0FCFF",
+      "panel": "#DCF4FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1895,7 +1895,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE FORMAT5 –JASPER",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -1906,11 +1906,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "termsBank"
@@ -1942,13 +1942,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#F6FFFF",
+      "panel": "#ECF8FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2068,11 +2068,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "termsBank"
@@ -2101,13 +2101,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#ECF8FF",
+      "panel": "#D9F1FE",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2231,11 +2231,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "letterBody"
@@ -2267,13 +2267,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#EDF2F6",
+      "panel": "#ECF1F5",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2385,8 +2385,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "usaNumberedFields"
@@ -2398,7 +2398,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -2418,13 +2418,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#E8F4FC",
+      "panel": "#D6EEFB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2539,8 +2539,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE FORMAT8 WITH QR/IRN –JASPER",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -2565,7 +2565,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -2588,13 +2588,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#E6F2FA",
+      "panel": "#D5EDFA",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2719,7 +2719,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE FORMAT9 WITH QR/IRN –JASPER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -2730,7 +2730,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "orange"
       },
       {
         "type": "subtotalBar",
@@ -2763,13 +2763,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#E4F0F8",
+      "panel": "#D3EBF8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2885,18 +2885,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE SINGAPORE –JASPER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -2929,13 +2929,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#F9F2EA",
+      "panel": "#E7ECF0",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3058,7 +3058,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "grandTotalDue"
@@ -3078,13 +3078,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1F83C5",
+      "fill": "#E8F1F7",
+      "panel": "#E2EEF6",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3195,8 +3195,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DEBIT NOTE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -3205,11 +3205,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -3229,13 +3229,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#EFFBFF",
+      "panel": "#DBF3FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3347,19 +3347,19 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PROFORMA INVOICE FORMAT 1",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -3397,13 +3397,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1C8C96",
+      "fill": "#EDF9FF",
+      "panel": "#DAF2FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3518,8 +3518,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "فاتورة / INVOICE",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -3552,13 +3552,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2889CA",
+      "fill": "#F6F6F6",
+      "panel": "#EDF2F6",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3674,8 +3674,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "format6Totals"
@@ -3711,13 +3711,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2788C9",
+      "fill": "#F4F4F4",
+      "panel": "#ECF1F5",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3843,7 +3843,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "format6Totals"
@@ -3882,13 +3882,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2788C9",
+      "fill": "#F2F2F2",
+      "panel": "#EAEFF3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4000,8 +4000,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "format6Totals"
@@ -4040,13 +4040,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2687C8",
+      "fill": "#F0F0F0",
+      "panel": "#E9EEF2",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4159,8 +4159,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "format6Totals"
@@ -4199,13 +4199,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2586C7",
+      "fill": "#EEEEEE",
+      "panel": "#E8EDF1",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4318,7 +4318,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "format6Totals"
@@ -4360,13 +4360,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2586C7",
+      "fill": "#ECECEC",
+      "panel": "#E6EBEF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4482,8 +4482,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "format6Totals"
@@ -4525,13 +4525,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2A8BCC",
+      "fill": "#FBFBFB",
+      "panel": "#F1F6FA",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4656,8 +4656,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "format6Totals"
@@ -4699,13 +4699,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#F6FFFF",
+      "panel": "#ECF8FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4817,18 +4817,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "STANDARD INVOICE -LAND",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -4861,13 +4861,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#ECF8FF",
+      "panel": "#D9F1FE",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4979,19 +4979,19 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -5029,13 +5029,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#EAF6FE",
+      "panel": "#D7EFFC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5146,19 +5146,19 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT10",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "totalsOnly"
@@ -5196,13 +5196,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#E8F4FC",
+      "panel": "#D6EEFB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5334,7 +5334,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -5354,13 +5354,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#E6F2FA",
+      "panel": "#D5EDFA",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5498,7 +5498,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -5515,13 +5515,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#E4F0F8",
+      "panel": "#D3EBF8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5645,7 +5645,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT14 QR CODE",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -5660,7 +5660,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -5692,13 +5692,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E2EEF6",
+      "panel": "#D2EAF7",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5830,7 +5830,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -5850,13 +5850,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1F83C5",
+      "fill": "#E0ECF4",
+      "panel": "#D0E8F5",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6000,7 +6000,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -6017,13 +6017,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#EFFBFF",
+      "panel": "#DBF3FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6134,7 +6134,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT17 (WITH HOLDING TAX)",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -6149,7 +6149,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -6178,13 +6178,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#EDF9FF",
+      "panel": "#DAF2FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6320,7 +6320,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -6340,13 +6340,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#EBF7FF",
+      "panel": "#D8F0FD",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6502,7 +6502,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -6519,13 +6519,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#E9F5FD",
+      "panel": "#D7EFFC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6636,7 +6636,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT20 –UAE LOCAL CURRENCY",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -6651,7 +6651,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -6683,13 +6683,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#E7F3FB",
+      "panel": "#D5EDFA",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6822,7 +6822,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -6842,13 +6842,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#E5F1F9",
+      "panel": "#D4ECF9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6991,7 +6991,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -7008,13 +7008,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E3EFF7",
+      "panel": "#D3EBF8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7150,7 +7150,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -7170,13 +7170,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E1EDF5",
+      "panel": "#D1E9F6",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7329,7 +7329,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -7346,13 +7346,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2589CB",
+      "fill": "#F0FCFF",
+      "panel": "#DCF4FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7463,7 +7463,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER FORMAT5",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -7478,7 +7478,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -7513,13 +7513,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#EEFAFF",
+      "panel": "#DAF2FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7652,7 +7652,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -7672,13 +7672,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#ECF8FF",
+      "panel": "#D9F1FE",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7810,7 +7810,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -7843,13 +7843,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#EAF6FE",
+      "panel": "#D7EFFC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7973,19 +7973,19 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE –JASPER TANZANIA",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -8023,13 +8023,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#E8F4FC",
+      "panel": "#D6EEFB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8140,8 +8140,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE 3 DECIMAL",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -8150,7 +8150,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "formatBadge"
@@ -8166,7 +8166,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -8189,13 +8189,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#198993",
+      "fill": "#E6F2FA",
+      "panel": "#D5EDFA",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8312,7 +8312,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "فاتورة / INVOICE",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -8348,13 +8348,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#198993",
+      "fill": "#E4F0F8",
+      "panel": "#D3EBF8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8470,7 +8470,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "فاتورة / INVOICE",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -8484,7 +8484,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
@@ -8507,13 +8507,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#188892",
+      "fill": "#E2EEF6",
+      "panel": "#D2EAF7",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8629,8 +8629,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "فاتورة / INVOICE",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -8639,11 +8639,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -8666,13 +8666,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#178791",
+      "fill": "#E0ECF4",
+      "panel": "#D0E8F5",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8801,7 +8801,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "فاتورة / INVOICE",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -8840,13 +8840,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1C8C96",
+      "fill": "#EFFBFF",
+      "panel": "#DBF3FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8961,7 +8961,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "فاتورة / INVOICE",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -8971,11 +8971,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -8998,13 +8998,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1C8C96",
+      "fill": "#EDF9FF",
+      "panel": "#DAF2FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9133,11 +9133,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -9160,13 +9160,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1B8B95",
+      "fill": "#EBF7FF",
+      "panel": "#D8F0FD",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9294,7 +9294,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "فاتورة / INVOICE",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -9304,11 +9304,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -9331,13 +9331,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1A8A94",
+      "fill": "#E9F5FD",
+      "panel": "#D7EFFC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9452,7 +9452,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "فاتورة / INVOICE",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -9462,11 +9462,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -9492,13 +9492,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": true,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#1A8A94",
+      "fill": "#E7F3FB",
+      "panel": "#D5EDFA",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9613,8 +9613,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "فاتورة / INVOICE",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -9623,11 +9623,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -9653,13 +9653,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#E5F1F9",
+      "panel": "#D4ECF9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9771,18 +9771,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "STANDARD INVOICE COURIER –JASPER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -9815,13 +9815,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E3EFF7",
+      "panel": "#D3EBF8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9933,7 +9933,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE CUM ARRIVAL NOTICE –JASPER FORMAT16",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -9971,13 +9971,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E7EBF8",
+      "panel": "#E3EFF7",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10088,8 +10088,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE / DEBIT NOTE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "shipmentDetails",
@@ -10098,7 +10098,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -10123,13 +10123,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2589CB",
+      "fill": "#F6FAFF",
+      "panel": "#EEFAFF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10245,7 +10245,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE / DEBIT NOTE",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "shipmentDetails",
@@ -10254,7 +10254,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -10279,13 +10279,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#EEFAFF",
+      "panel": "#DAF2FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10409,19 +10409,19 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE-MALAYSIA",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -10459,13 +10459,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#EFF4F8",
+      "panel": "#EEF3F7",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10577,7 +10577,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -10590,7 +10590,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -10613,13 +10613,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#EAF6FE",
+      "panel": "#D7EFFC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10732,18 +10732,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "STANDARD TAX INVOICE –JASPER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -10779,13 +10779,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#000000",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "panel": "#F3F3F3",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10898,7 +10898,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TAX INVOICE",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "exportMetaStrip"
@@ -10913,7 +10913,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -10934,13 +10934,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#2185C7",
+      "fill": "#F1F1F1",
+      "panel": "#F2F2F2",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11056,8 +11056,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "exportMetaStrip"
@@ -11072,7 +11072,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -11096,13 +11096,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#2185C7",
+      "fill": "#EFEFEF",
+      "panel": "#F0F0F0",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11216,7 +11216,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TAX INVOICE",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "exportMetaStrip"
@@ -11231,7 +11231,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "subtotalBar",
@@ -11255,13 +11255,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#2084C6",
+      "fill": "#EDEDED",
+      "panel": "#EFEFEF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11373,8 +11373,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "exportMetaStrip"
@@ -11389,7 +11389,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "subtotalBar",
@@ -11416,13 +11416,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#1F83C5",
+      "fill": "#EBEBEB",
+      "panel": "#EDEDED",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11534,7 +11534,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "start",
+        "align": "end",
         "band": true
       },
       {
@@ -11550,7 +11550,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "subtotalBar",
@@ -11574,13 +11574,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#2488CA",
+      "fill": "#FAFAFA",
+      "panel": "#F8F8F8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11693,8 +11693,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "exportMetaStrip"
@@ -11733,13 +11733,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#2488CA",
+      "fill": "#F8F8F8",
+      "panel": "#F7F7F7",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11852,7 +11852,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TAX INVOICE",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "exportMetaStrip"
@@ -11891,13 +11891,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#2387C9",
+      "fill": "#F6F6F6",
+      "panel": "#F5F5F5",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12013,8 +12013,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "exportMetaStrip"
@@ -12053,13 +12053,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#2286C8",
+      "fill": "#F4F4F4",
+      "panel": "#F4F4F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12171,8 +12171,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "exportMetaStrip"
@@ -12187,7 +12187,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -12211,13 +12211,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#000000",
+      "accent": "#2286C8",
+      "fill": "#F2F2F2",
+      "panel": "#F2F2F2",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12346,7 +12346,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -12370,13 +12370,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2185C7",
+      "fill": "#E5F1F9",
+      "panel": "#D4ECF9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12487,8 +12487,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE MALAYSIA –JASPER",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -12497,7 +12497,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "formatBadge"
@@ -12513,7 +12513,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -12536,13 +12536,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E3EFF7",
+      "panel": "#D3EBF8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12658,18 +12658,18 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TAX INVOICE SINGAPORE –JASPER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -12705,13 +12705,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "Letter",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2084C6",
+      "fill": "#E1EDF5",
+      "panel": "#D1E9F6",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12827,7 +12827,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TAX INVOICE WITH QR –INDIA FORMAT3 JASPER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -12838,7 +12838,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "subtotalBar",
@@ -12871,13 +12871,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2589CB",
+      "fill": "#F0FCFF",
+      "panel": "#DCF4FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -13001,8 +13001,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE WITH QR/IRN –INDIA FORMAT4 JASPER",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
@@ -13013,7 +13013,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "totalsOnly"
@@ -13048,13 +13048,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#EEFAFF",
+      "panel": "#DAF2FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -13165,8 +13165,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE WITH QR/IRN –INDIA FORMAT5 JASPER",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -13191,7 +13191,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
@@ -13214,13 +13214,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#F4FDFF",
+      "panel": "#EBF7FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -13331,19 +13331,19 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "VIETNAM INVOICE",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -13381,13 +13381,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#F2FBFF",
+      "panel": "#E9F5FD",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -13468,16 +13468,16 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "WAREHOUSE INVOICE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"

@@ -3817,19 +3817,34 @@ export const jobService = {
   },
 
   /**
-   * Track & Trace for a job (OpenAPI has no GET /jobs/:id/tracking):
-   * 1. Linked shipment → GET /shipments/:id/tracking (Bearer) — preferred
-   * 2. Else resolve shipment via GET /jobs/:id/shipments → tracking
-   * 3. Else job number → GET /track?ref=… (public Track & Trace)
-   * 4. Else GET /jobs/:id/milestones (Bearer fallback)
+   * Track & Trace for a job (OpenAPI):
+   * 1. GET /jobs/:id/tracking (Bearer) — preferred
+   * 2. Linked shipment → GET /shipments/:id/tracking
+   * 3. Job number → GET /track?ref=… (public Track & Trace)
+   * 4. GET /jobs/:id/milestones (Bearer fallback)
    */
   async trackAndTrace(opts: {
     jobId: string;
     jobNumber?: string;
     shipmentId?: string;
     tenantSlug?: string;
-  }): Promise<{ source: 'shipment' | 'public' | 'milestones'; data: unknown }> {
+  }): Promise<{
+    source: 'job' | 'shipment' | 'public' | 'milestones';
+    data: unknown;
+  }> {
     assertId(opts.jobId);
+
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.tracking(opts.jobId)),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      if (data != null && data !== '') {
+        return { source: 'job', data };
+      }
+    } catch {
+      /* fall through */
+    }
 
     let shipmentId =
       opts.shipmentId && isUuid(opts.shipmentId) ? opts.shipmentId : undefined;

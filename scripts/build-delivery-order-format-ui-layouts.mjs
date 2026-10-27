@@ -32,6 +32,8 @@ const THEME = {
 
 /** [code, name, kind, sortOrder] — synced with deliveryOrderFormatCatalog.ts */
 const CATALOG = [
+  /** Job-document default (resolveJobDocumentFormatCode → delivery-order). */
+  ['DELIVERY_ORDER_REPORT_FORMAT_1', 'Delivery Order Report Format-1', 'delivery_order_format_1', 0],
   ['DELIVERY_CONFIRMATION_REPORT_FORMAT', 'Delivery Confirmation Report Format', 'delivery_confirmation', 1],
   ['DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT', 'Delivery Confirmation OSA Report Format', 'delivery_confirmation_osa', 2],
   ['DELIVERY_ORDER_REPORT_FORMAT_17', 'Delivery Order Report Format-17', 'delivery_order_format_17', 3],
@@ -195,7 +197,7 @@ const AIR_META = [
   { k: 'Chargeable Weight', v: '18,000.000 KGS' },
 ];
 
-/** Shared sea/air delivery order body (dynamic header/footer via branding blocks). */
+/** Shared sea/air delivery order body — DO release strip + cargo table (not invoice clone). */
 function standardDeliveryOrder(title, opts = {}) {
   const {
     fieldGrid = DO_META,
@@ -205,17 +207,20 @@ function standardDeliveryOrder(title, opts = {}) {
     extraBlocks = [],
     letterBody,
     remarks,
+    air = false,
   } = opts;
+  void headerColor;
   const blocks = [
     { type: 'companyHeader', showContact: true },
+    { type: 'formatBadge', label: air ? 'AIR DO' : 'SEA DO' },
     { type: 'docTitle', text: title, align: 'center', band: true },
   ];
   if (letterBody) blocks.push({ type: 'letterBody' });
   blocks.push(
-    { type: 'twoColumn', showBillTo: true },
-    { type: 'partyTriple' },
+    { type: 'deliveryOrderRelease' },
+    { type: 'partyNotifyGrid' },
     { type: 'fieldGrid', cols: 2 },
-    { type: 'chargeTable', headerColor },
+    { type: 'hblCargoTable' },
     { type: 'termsBank' },
     { type: 'signatureRow' },
     ...extraBlocks,
@@ -224,13 +229,17 @@ function standardDeliveryOrder(title, opts = {}) {
   return layout({
     demo: {
       invoiceNo: 'DO-CEXP190150',
+      billToName: CONSIGNEE.lines[0],
       letterBody,
+      formatBadgeLabel: air ? 'AIR DO' : 'SEA DO',
       partyLeft: CLIENT,
       partyMid: CONSIGNEE,
       partyNotify: SHIPPER,
       fieldGrid,
       tableHeaders,
       tableRows,
+      hblCargoHeaders: tableHeaders,
+      hblCargoRows: tableRows,
       remarks,
       termsLines: remarks ? [remarks] : ['Present endorsed documents and pay applicable charges.'],
     },
@@ -239,11 +248,17 @@ function standardDeliveryOrder(title, opts = {}) {
 }
 
 const KINDS = {
+  delivery_order_format_1: () =>
+    standardDeliveryOrder('DELIVERY ORDER', {
+      remarks: 'Job default Delivery Order Report Format-1 — release cargo to consignee.',
+    }),
+
   delivery_confirmation: () =>
     layout({
       demo: {
         invoiceNo: 'CEXP190150',
         invoiceDate: '07-FEB-19',
+        billToName: CONSIGNEE.lines[0],
         partyLeft: CONSIGNEE,
         partyMid: SHIPPER,
         fieldGrid: [
@@ -256,6 +271,10 @@ const KINDS = {
         tableRows: [
           ['STC: VALVE MATERIALS FOR MACHINERY PARTS', '125 PKGS', 'Received in good order'],
         ],
+        hblCargoHeaders: ['Description', 'Qty', 'Condition'],
+        hblCargoRows: [
+          ['STC: VALVE MATERIALS FOR MACHINERY PARTS', '125 PKGS', 'Received in good order'],
+        ],
         termsLines: [
           'We confirm receipt of the above shipment in full and good order.',
           'This is a computer generated document.',
@@ -263,10 +282,11 @@ const KINDS = {
       },
       blocks: [
         { type: 'companyHeader', showContact: true },
+        { type: 'formatBadge', label: 'Delivery Confirmation' },
         { type: 'docTitle', text: 'DELIVERY CONFIRMATION', align: 'center', band: true },
-        { type: 'twoColumn', showBillTo: true },
+        { type: 'deliveryOrderRelease' },
         { type: 'fieldGrid', cols: 2 },
-        { type: 'chargeTable', headerColor: 'primary' },
+        { type: 'hblCargoTable' },
         { type: 'signatureRow' },
         { type: 'colorfulFooter' },
       ],

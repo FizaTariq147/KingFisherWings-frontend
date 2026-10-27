@@ -14,6 +14,7 @@ import type {
   PortalShipmentListParams,
   PortalShipmentListResult,
   PortalShipmentSummary,
+  PortalTrackByRefResult,
   PortalUldRequest,
 } from '../types/portalShipments.types';
 import {
@@ -42,14 +43,18 @@ export const portalShipmentsService = {
   },
 
   async exportCsv(params: PortalShipmentListParams = {}): Promise<void> {
+    // GET /portal/shipments/export.csv — must not go through PDF filename logic.
     await downloadPortalBlob(PORTAL_SHIPMENTS_API.exportCsv, 'shipments.csv', {
-      search: params.search,
-      status: params.status,
-      job_type: params.job_type,
-      from_date: params.from_date,
-      to_date: params.to_date,
-      order: params.order,
-      limit: 100,
+      accept: 'text/csv,application/octet-stream,*/*',
+      params: {
+        search: params.search,
+        status: params.status,
+        job_type: params.job_type,
+        from_date: params.from_date,
+        to_date: params.to_date,
+        order: params.order,
+        limit: 100,
+      },
     });
   },
 
@@ -58,6 +63,67 @@ export const portalShipmentsService = {
       params: { ref: ref.trim() },
     });
     return normalizeShipmentListItem(unwrapData(res.data) ?? res.data);
+  },
+
+  /** GET /portal/shipments/:id/tracking — full track & trace payload. */
+  async tracking(id: string): Promise<unknown> {
+    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.tracking(id));
+    return unwrapData(res.data) ?? res.data;
+  },
+
+  /**
+   * Same-page Track & Trace for the customer portal.
+   * 1. GET /portal/shipments/lookup?ref=…
+   * 2. GET /portal/shipments/:id/tracking (fallback: shipment detail)
+   * 3. Else GET /portal/quotations?search=… → quotation detail
+   */
+  async trackByReference(ref: string): Promise<PortalTrackByRefResult> {
+    const reference = ref.trim();
+    if (reference.length < 2) throw new Error('Reference is required.');
+
+    try {
+      const item = await this.lookup(reference);
+      if (item?.id) {
+        let data: unknown;
+        try {
+          data = await this.tracking(item.id);
+        } catch {
+          data = await this.getById(item.id);
+        }
+        return {
+          kind: 'shipment',
+          id: item.id,
+          reference: item.reference || reference,
+          data,
+        };
+      }
+    } catch {
+      /* try quotation below */
+    }
+
+    const { portalQuotationsService } = await import(
+      '@/features/portal-quotations/services/portalQuotations.service'
+    );
+    const listed = await portalQuotationsService.list({
+      search: reference,
+      limit: 10,
+    });
+    const needle = reference.toLowerCase();
+    const match =
+      listed.items.find((q) => (q.number || '').toLowerCase() === needle) ||
+      listed.items.find((q) => (q.number || '').toLowerCase().includes(needle)) ||
+      listed.items[0];
+    if (match?.id) {
+      const detail = await portalQuotationsService.getById(match.id);
+      return {
+        kind: 'quotation',
+        id: detail.id,
+        reference: detail.number || reference,
+        data: detail.raw ?? detail,
+      };
+    }
+
+    throw new Error('No shipment, job, or quotation found for that reference.');
   },
 
   async getById(id: string): Promise<PortalShipmentDetail> {

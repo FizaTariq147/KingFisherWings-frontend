@@ -19,6 +19,7 @@ export const quotationBookingFormKeys = {
 /** Normalize GET/PUT /quotations/:id/booking-form into ModeBookingForm shape. */
 export function quotationBookingFormToMode(raw: unknown): ModeBookingForm {
   const data = resolveBookingFormPayloadRecord(raw);
+  const linkedJobId = pickJobIdFromQuotationBookingForm(raw);
   const statusToken = String(
     data.status ?? data.form_status ?? data.formStatus ?? data.state ?? '',
   )
@@ -37,6 +38,15 @@ export function quotationBookingFormToMode(raw: unknown): ModeBookingForm {
     statusToken.includes('COMPLETE');
   return {
     ...(data as ModeBookingForm),
+    // Keep envelope job / provisional_job ids so BL draft + View Job can resolve them.
+    ...(linkedJobId
+      ? {
+          job_id: linkedJobId,
+          provisional_job_id:
+            String(data.provisional_job_id ?? data.provisionalJobId ?? '').trim() ||
+            linkedJobId,
+        }
+      : {}),
     mark_complete: markComplete || Boolean((data as ModeBookingForm).mark_complete),
     consent_accepted:
       data.consent_accepted === true ||

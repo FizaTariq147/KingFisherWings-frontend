@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — hblFormatUiLayouts. */
+/** Auto-generated HBL formats — permanent JSON store. */
 export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
@@ -9,13 +9,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -31,6 +31,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Jasper Draft",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -117,6 +118,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format Jasper"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -135,6 +152,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -147,27 +168,27 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Jasper Draft"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT (JASPER)",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
@@ -187,13 +208,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -209,6 +230,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "DRAFT",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -229,26 +252,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -259,65 +287,53 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
-        },
-        {
-          "k": "Region",
-          "v": "HKG"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         }
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
+        "Gross Weight",
+        "Measurement"
       ],
-      "tableRows": [
+      "hblCargoRows": [
         [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
+          "18,000.000 KGS",
+          "24.000 CBM"
         ]
       ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "FG HBL HKG"
+      "remarks": "DRAFT"
     },
     "blocks": [
       {
@@ -325,31 +341,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "DRAFT"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -363,13 +378,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -385,6 +400,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "FG Format-1",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -471,6 +487,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "FG HBL Format-1"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -489,6 +521,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -501,33 +537,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "FG Format-1"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "FG HBL — FORMAT 1",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -541,13 +577,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -563,6 +599,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Magiclogisys",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -649,6 +686,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "Magiclogisys"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -667,6 +720,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -679,36 +736,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Magiclogisys"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "FG HBL — MAGICLOGISYS",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -722,13 +776,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -744,6 +798,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-2",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -830,6 +885,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-2"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -848,6 +919,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -860,34 +935,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-2"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 2",
+        "align": "end",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -901,13 +972,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -923,6 +994,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-4",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -1009,6 +1081,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-4"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -1027,6 +1115,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -1039,36 +1131,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-4"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 4",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -1082,13 +1171,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1104,6 +1193,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-5",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -1190,6 +1280,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-5"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -1208,6 +1314,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -1220,39 +1330,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-5"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 5",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -1266,13 +1367,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1288,6 +1389,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-6",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -1374,6 +1476,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-6"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -1392,6 +1510,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -1404,37 +1526,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-6"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 6",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -1448,13 +1563,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1470,6 +1585,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-7",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -1556,6 +1672,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-7"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -1574,6 +1706,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -1586,39 +1722,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-7"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 7",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -1632,13 +1759,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1654,6 +1781,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-8",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -1740,6 +1868,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-8"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -1758,6 +1902,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -1770,42 +1918,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-8"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 8",
+        "align": "end",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -1819,13 +1958,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -1841,6 +1980,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-9",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -1927,6 +2067,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-9"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -1945,6 +2101,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -1957,40 +2117,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-9"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 9",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2004,13 +2154,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2026,6 +2176,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-10",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2112,6 +2263,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-10"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -2130,6 +2297,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -2142,42 +2313,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-10"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 10",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -2191,13 +2350,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2213,6 +2372,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-11",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2299,6 +2459,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-11"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -2317,6 +2493,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -2329,45 +2509,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-11"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 11",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2381,13 +2546,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2403,6 +2568,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-12",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2489,6 +2655,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-12"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -2507,6 +2689,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -2519,43 +2705,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-12"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 12",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -2569,13 +2745,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2591,6 +2767,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-13",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2677,6 +2854,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-13"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -2695,6 +2888,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -2707,45 +2904,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-13"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 13",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -2759,13 +2941,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2781,6 +2963,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-14",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2867,6 +3050,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-14"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -2885,6 +3084,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -2897,48 +3100,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-14"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 14",
+        "align": "end",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2952,13 +3137,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2974,6 +3159,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-15",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -3060,6 +3246,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-15"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -3078,6 +3280,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -3090,46 +3296,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-15"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 15",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -3143,13 +3333,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3165,6 +3355,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-16",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -3251,6 +3442,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-16"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -3269,6 +3476,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -3281,48 +3492,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-16"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 16",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -3336,13 +3532,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3358,6 +3554,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-17",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -3444,6 +3641,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-17"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -3462,6 +3675,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -3474,51 +3691,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-17"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 17",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -3532,13 +3728,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3554,6 +3750,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-18",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -3640,6 +3837,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-18"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -3658,6 +3871,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -3670,49 +3887,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-18"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 18",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -3726,13 +3924,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3748,6 +3946,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-19",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -3834,6 +4033,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-19"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -3852,6 +4067,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -3864,51 +4083,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-19"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 19",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -3922,13 +4120,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -3944,6 +4142,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-20",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -4030,6 +4229,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-20"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -4048,6 +4263,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -4060,54 +4279,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-20"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 20",
+        "align": "end",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -4121,13 +4319,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4143,6 +4341,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-23",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -4229,6 +4428,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-23"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -4247,6 +4462,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -4259,52 +4478,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-23"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 23",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -4318,13 +4515,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4340,6 +4537,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-25",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -4426,6 +4624,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-25"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -4444,6 +4658,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -4456,54 +4674,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-25"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 25",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4517,13 +4711,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4539,6 +4733,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-26",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -4625,6 +4820,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-26"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -4643,6 +4854,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -4655,57 +4870,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-26"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 26",
+        "align": "end",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -4719,13 +4907,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4741,6 +4929,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-27",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -4827,6 +5016,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-27"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -4845,6 +5050,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -4857,55 +5066,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-27"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 27",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4919,13 +5103,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4942,6 +5126,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
       "letterBody": "HTML-rendered draft HBL — sample export from Fresa Gold.",
+      "formatBadgeLabel": "HTML Format-29",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -5032,6 +5217,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HTML draft layout"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -5050,6 +5251,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "Generated from HTML draft template.",
@@ -5063,8 +5268,12 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "HTML Format-29"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 29 (HTML)",
         "align": "center",
         "band": true
       },
@@ -5072,48 +5281,23 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -5127,13 +5311,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5149,6 +5333,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-33",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -5235,6 +5420,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-33"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -5253,6 +5454,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -5265,60 +5470,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-33"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 33",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -5332,13 +5507,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5354,6 +5529,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-40",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -5440,6 +5616,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-40"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -5458,6 +5650,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -5470,58 +5666,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-40"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 40",
+        "align": "start",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5535,13 +5706,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5557,6 +5728,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-41",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -5643,6 +5815,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-41"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -5661,6 +5849,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -5673,60 +5865,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-41"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 41",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -5740,13 +5902,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5762,6 +5924,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-42",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -5848,6 +6011,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-42"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -5866,6 +6045,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -5878,63 +6061,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-42"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 42",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -5948,13 +6098,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5970,6 +6120,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-43",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -6056,6 +6207,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-43"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -6074,6 +6241,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -6086,61 +6257,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-43"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 43",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -6154,13 +6294,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6176,6 +6316,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-44",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -6262,6 +6403,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-44"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -6280,6 +6437,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -6292,63 +6453,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-44"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 44",
+        "align": "end",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -6362,13 +6493,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6384,6 +6515,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-45",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -6470,6 +6602,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-45"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -6488,6 +6636,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -6500,66 +6652,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-45"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 45",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -6573,13 +6689,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6595,6 +6711,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-46",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -6681,6 +6798,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-46"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -6699,6 +6832,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -6711,64 +6848,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-46"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 46",
+        "align": "start",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -6782,13 +6885,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6804,6 +6907,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-47",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -6890,6 +6994,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-47"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -6908,6 +7028,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -6920,66 +7044,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-47"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 47",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6993,13 +7081,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7015,6 +7103,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-48",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -7101,6 +7190,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-48"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -7119,6 +7224,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -7131,69 +7240,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-48"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 48",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -7207,13 +7280,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7229,6 +7302,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-49",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -7315,6 +7389,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-49"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -7333,6 +7423,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -7345,67 +7439,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-49"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 49",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -7419,13 +7476,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7441,6 +7498,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-50",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -7527,6 +7585,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-50"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -7545,6 +7619,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -7557,69 +7635,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-50"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 50",
+        "align": "end",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -7633,13 +7672,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7655,6 +7694,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-51",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -7741,6 +7781,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-51"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -7759,6 +7815,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -7771,72 +7831,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-51"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 51",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -7850,13 +7868,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7872,6 +7890,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-52",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -7958,6 +7977,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-52"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -7976,6 +8011,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -7988,70 +8027,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-52"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 52",
+        "align": "start",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -8065,13 +8067,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8087,6 +8089,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-53",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -8173,6 +8176,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-53"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -8191,6 +8210,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -8203,72 +8226,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-53"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 53",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -8282,13 +8263,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8304,6 +8285,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-54",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -8390,6 +8372,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-54"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -8408,6 +8406,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -8420,75 +8422,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-54"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 54",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -8502,13 +8459,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8524,6 +8481,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-55",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -8610,6 +8568,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-55"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -8628,6 +8602,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -8640,73 +8618,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-55"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 55",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -8720,13 +8655,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8742,6 +8677,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-56",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -8828,6 +8764,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-56"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -8846,6 +8798,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -8858,75 +8814,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-56"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 56",
+        "align": "end",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -8940,13 +8854,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -8962,6 +8876,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-59",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -9048,6 +8963,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-59"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -9066,6 +8997,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -9078,78 +9013,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-59"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 59",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -9163,13 +9050,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9185,6 +9072,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-60",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -9271,6 +9159,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-60"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -9289,6 +9193,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -9301,76 +9209,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-60"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 60",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -9384,13 +9249,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9406,6 +9271,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-61",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -9492,6 +9358,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-61"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -9510,6 +9392,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -9522,78 +9408,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-61"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 61",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -9607,13 +9445,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9629,6 +9467,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-63",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -9715,6 +9554,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-63"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -9733,6 +9588,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -9745,81 +9604,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-63"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 63",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -9833,13 +9641,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -9855,6 +9663,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-64",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -9941,6 +9750,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-64"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -9959,6 +9784,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -9971,79 +9800,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-64"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 64",
+        "align": "start",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -10057,13 +9840,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10079,6 +9862,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-65",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -10165,6 +9949,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-65"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -10183,6 +9983,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -10195,81 +9999,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-65"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 65",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -10283,13 +10036,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10305,6 +10058,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-66",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -10391,6 +10145,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-66"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -10409,6 +10179,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -10421,84 +10195,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-66"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 66",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -10512,13 +10232,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10534,6 +10254,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-67",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -10620,6 +10341,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-67"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -10638,6 +10375,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -10650,82 +10391,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-67"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 67",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -10739,13 +10428,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10761,6 +10450,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-68",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -10847,6 +10537,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-68"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -10865,6 +10571,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -10877,84 +10587,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-68"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 68",
+        "align": "end",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -10968,13 +10627,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -10990,6 +10649,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-69",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11076,6 +10736,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-69"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -11094,6 +10770,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -11106,87 +10786,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-69"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 69",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -11200,13 +10823,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11222,6 +10845,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-70",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11308,6 +10932,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-70"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -11326,6 +10966,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -11338,85 +10982,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-70"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 70",
+        "align": "start",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -11430,13 +11019,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11452,6 +11041,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-72",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11538,6 +11128,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-72"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -11556,6 +11162,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -11568,34 +11178,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-72"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 72",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -11609,13 +11218,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11631,6 +11240,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-73",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11717,6 +11327,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-73"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -11735,6 +11361,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -11747,36 +11377,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-73"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 73",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -11790,13 +11414,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11812,6 +11436,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-75",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -11898,6 +11523,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-75"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -11916,6 +11557,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -11928,36 +11573,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-75"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 75",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -11971,13 +11610,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -11993,6 +11632,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-77",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -12079,6 +11719,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-77"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -12097,6 +11753,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -12109,37 +11769,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-77"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 77",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -12153,13 +11806,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12175,6 +11828,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-83",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -12261,6 +11915,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-83"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -12279,6 +11949,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -12291,39 +11965,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-83"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 83",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -12337,13 +12002,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12359,6 +12024,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-84",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -12445,6 +12111,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-84"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -12463,6 +12145,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -12475,39 +12161,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-84"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 84",
         "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -12521,13 +12201,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12543,6 +12223,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-85",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -12629,6 +12310,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-85"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -12647,6 +12344,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -12659,40 +12360,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-85"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 85",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -12706,13 +12397,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12728,6 +12419,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-86",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -12814,6 +12506,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-86"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -12832,6 +12540,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -12844,42 +12556,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-86"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 86",
+        "align": "end",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -12893,13 +12593,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -12915,6 +12615,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-87",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -13001,6 +12702,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-87"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -13019,6 +12736,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -13031,42 +12752,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-87"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 87",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -13080,13 +12789,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -13102,6 +12811,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Original Format-87",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -13192,6 +12902,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "ORIGINAL"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -13210,6 +12936,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "ORIGINAL — Negotiable when duly endorsed.",
         "FG HBL original sample (Format-87).",
@@ -13223,43 +12953,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Original Format-87"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — ORIGINAL FORMAT 87",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -13273,13 +12993,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -13295,6 +13015,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-88",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -13381,6 +13102,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-88"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -13399,6 +13136,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -13411,90 +13152,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-88"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 88",
+        "align": "start",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -13508,13 +13192,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -13530,6 +13214,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-89",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -13616,6 +13301,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-89"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -13634,6 +13335,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -13646,88 +13351,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-89"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 89",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -13741,13 +13388,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -13763,6 +13410,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-90",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -13849,6 +13497,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-90"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -13867,6 +13531,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -13879,87 +13547,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-90"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 90",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -13973,13 +13584,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -13995,6 +13606,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-92",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -14081,6 +13693,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-92"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -14099,6 +13727,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -14111,93 +13743,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-92"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 92",
+        "align": "end",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -14211,13 +13783,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -14233,6 +13805,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-95",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -14319,6 +13892,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-95"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -14337,6 +13926,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -14349,91 +13942,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-95"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 95",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -14447,13 +13979,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -14469,6 +14001,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-96",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -14555,6 +14088,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-96"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -14573,6 +14122,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -14585,90 +14138,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-96"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 96",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -14682,13 +14178,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -14704,6 +14200,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-97",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -14790,6 +14287,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-97"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -14808,6 +14321,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -14820,96 +14337,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-97"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 97",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -14923,13 +14374,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -14945,6 +14396,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-99",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -15031,6 +14483,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-99"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -15049,6 +14517,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -15061,94 +14533,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-99"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 99",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -15162,13 +14570,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -15184,6 +14592,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-100",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -15270,6 +14679,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-100"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -15288,6 +14713,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -15300,93 +14729,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-100"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 100",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -15400,13 +14769,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -15422,6 +14791,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-101",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -15508,6 +14878,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-101"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -15526,6 +14912,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -15538,99 +14928,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-101"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 101",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -15644,13 +14965,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -15666,6 +14987,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-102",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -15752,6 +15074,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-102"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -15770,6 +15108,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -15782,97 +15124,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-102"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 102",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -15886,13 +15161,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -15908,6 +15183,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-107",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -15994,6 +15270,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-107"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -16012,6 +15304,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -16024,96 +15320,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-107"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 107",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -16127,13 +15357,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -16149,6 +15379,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-109",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -16235,6 +15466,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-109"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -16253,6 +15500,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -16265,102 +15516,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-109"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 109",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -16374,13 +15553,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -16396,6 +15575,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-114",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -16482,6 +15662,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-114"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -16500,6 +15696,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -16512,100 +15712,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-114"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 114",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -16619,13 +15749,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -16641,6 +15771,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-116",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -16727,6 +15858,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-116"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -16745,6 +15892,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -16757,99 +15908,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-116"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 116",
+        "align": "end",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -16863,13 +15948,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -16885,6 +15970,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-117",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -16971,6 +16057,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-117"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -16989,6 +16091,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -17001,105 +16107,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-117"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 117",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -17113,13 +16144,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -17135,6 +16166,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-118",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -17221,6 +16253,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-118"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -17239,6 +16287,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -17251,103 +16303,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-118"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 118",
+        "align": "start",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -17361,13 +16340,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -17383,6 +16362,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-120",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -17469,6 +16449,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-120"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -17487,6 +16483,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -17499,102 +16499,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-120"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 120",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -17608,13 +16539,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -17630,6 +16561,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-122",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -17716,6 +16648,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-122"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -17734,6 +16682,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -17746,108 +16698,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-122"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 122",
+        "align": "end",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -17861,13 +16735,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -17883,6 +16757,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-127",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -17969,6 +16844,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-127"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -17987,6 +16878,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -17999,106 +16894,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-127"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 127",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -18112,13 +16931,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -18134,6 +16953,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-128",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -18220,6 +17040,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-128"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -18238,6 +17074,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -18250,105 +17090,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-128"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 128",
+        "align": "end",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -18362,13 +17130,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -18384,6 +17152,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-129",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -18470,6 +17239,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-129"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -18488,6 +17273,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -18500,111 +17289,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-129"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 129",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -18618,13 +17326,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -18640,6 +17348,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-130",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -18726,6 +17435,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-130"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -18744,6 +17469,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -18756,109 +17485,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-130"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 130",
+        "align": "start",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -18872,13 +17522,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -18894,6 +17544,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-132",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -18980,6 +17631,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-132"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -18998,6 +17665,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -19010,108 +17681,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-132"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 132",
         "align": "center",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -19125,13 +17721,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -19147,6 +17743,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-134",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -19233,6 +17830,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-134"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -19251,6 +17864,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -19263,114 +17880,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-134"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 134",
+        "align": "end",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -19384,13 +17917,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -19406,6 +17939,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-135",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -19492,6 +18026,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-135"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -19510,6 +18060,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -19522,112 +18076,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-135"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 135",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -19641,13 +18113,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -19663,6 +18135,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-136",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -19749,6 +18222,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-136"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -19767,6 +18256,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -19779,111 +18272,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-136"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 136",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -19897,13 +18312,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -19919,6 +18334,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-137",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -20005,6 +18421,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-137"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -20023,6 +18455,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -20035,117 +18471,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-137"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 137",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -20159,13 +18508,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -20181,6 +18530,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-138",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -20267,6 +18617,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-138"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -20285,6 +18651,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -20297,115 +18667,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-138"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 138",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -20419,13 +18704,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -20441,6 +18726,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-139",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -20527,6 +18813,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-139"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -20545,6 +18847,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -20557,114 +18863,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-139"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 139",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -20678,13 +18900,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -20700,6 +18922,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-140",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -20786,6 +19009,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-140"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -20804,6 +19043,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -20816,120 +19059,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-140"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 140",
+        "align": "end",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -20943,13 +19099,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -20965,6 +19121,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-141",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -21051,6 +19208,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-141"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -21069,6 +19242,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -21081,118 +19258,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-141"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 141",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -21206,13 +19295,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -21228,6 +19317,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-142",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -21314,6 +19404,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-142"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -21332,6 +19438,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -21344,117 +19454,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-142"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 142",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -21468,13 +19491,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -21490,6 +19513,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-143",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -21576,6 +19600,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-143"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -21594,6 +19634,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -21606,123 +19650,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-143"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 143",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -21736,13 +19687,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -21758,6 +19709,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-144",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -21844,6 +19796,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-144"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -21862,6 +19830,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -21874,121 +19846,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-144"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 144",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -22002,13 +19886,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -22024,6 +19908,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-145",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -22110,6 +19995,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-145"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -22128,6 +20029,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -22140,120 +20045,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-145"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 145",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -22267,13 +20082,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -22289,6 +20104,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-146",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -22375,6 +20191,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-146"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -22393,6 +20225,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -22405,126 +20241,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-146"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 146",
+        "align": "end",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -22538,13 +20278,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -22560,6 +20300,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-147",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -22646,6 +20387,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-147"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -22664,6 +20421,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -22676,124 +20437,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-147"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 147",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -22807,13 +20474,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -22829,6 +20496,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-148",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -22915,6 +20583,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-148"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -22933,6 +20617,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -22945,123 +20633,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-148"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 148",
+        "align": "start",
         "band": true
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -23075,13 +20673,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -23097,6 +20695,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-149",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -23183,6 +20782,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-149"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -23201,6 +20816,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -23213,129 +20832,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-149"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 149",
+        "align": "end",
+        "band": false
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"
@@ -23349,13 +20869,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -23371,6 +20891,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-151",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -23457,6 +20978,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-151"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -23475,6 +21012,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -23487,127 +21028,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-151"
+      },
+      {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 151",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -23621,13 +21065,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -23643,6 +21087,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-171",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -23729,6 +21174,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-171"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -23747,6 +21208,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -23759,126 +21224,30 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Format-171"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 171",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -23892,13 +21261,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#0A2942",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -23914,6 +21283,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "Format-172",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -24000,6 +21370,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "HBL Draft Report Format-172"
         }
       ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs",
+        "Description of Goods",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
       "tableHeaders": [
         "Container No.",
         "Type",
@@ -24018,6 +21404,10 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "24.000"
         ]
       ],
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
       "termsLines": [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
@@ -24030,2469 +21420,33 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "formatBadge",
+        "label": "Format-172"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 172",
+        "align": "start",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_21",
-    "formatNumber": 21,
-    "name": "HBL Draft Report Format-21",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-21"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-21"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "containerStrip"
+        "type": "hblFreightSignature"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_22",
-    "formatNumber": 22,
-    "name": "HBL Draft Report Format-22",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-22"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-22"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_24",
-    "formatNumber": 24,
-    "name": "HBL Draft Report Format-24",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-24"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-24"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_28",
-    "formatNumber": 28,
-    "name": "HBL Draft Report Format-28",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-28"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-28"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_30",
-    "formatNumber": 30,
-    "name": "HBL Draft Report Format-30",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-30"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-30"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_31",
-    "formatNumber": 31,
-    "name": "HBL Draft Report Format-31",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-31"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-31"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_32",
-    "formatNumber": 32,
-    "name": "HBL Draft Report Format-32",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-32"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-32"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_34",
-    "formatNumber": 34,
-    "name": "HBL Draft Report Format-34",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-34"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-34"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_35",
-    "formatNumber": 35,
-    "name": "HBL Draft Report Format-35",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-35"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-35"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_36",
-    "formatNumber": 36,
-    "name": "HBL Draft Report Format-36",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-36"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-36"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_37",
-    "formatNumber": 37,
-    "name": "HBL Draft Report Format-37",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-37"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-37"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_38",
-    "formatNumber": 38,
-    "name": "HBL Draft Report Format-38",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-38"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-38"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_39",
-    "formatNumber": 39,
-    "name": "HBL Draft Report Format-39",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0A2942",
-      "accent": "#0A2942",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#0A2942",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "B/EXP/19/0254",
-      "invoiceDate": "28-JAN-19",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "Job / Shipment",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-39"
-        }
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "termsLines": [
-        "KingFisher layout preview — FRESA Gold report format sample.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-39"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyTriple"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "colorfulFooter"

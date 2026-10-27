@@ -1,13 +1,17 @@
-/** Default FRESA / catalog template codes for job document format-payload lookups. */
+/**
+ * Default FRESA / catalog template codes for job document layout PDF + format-payload.
+ * Codes must exist in *FormatUiLayouts.json (or classic BL path for FG_HBL_HKG).
+ */
 const FORMAT_CODE_BY_KEY: Record<string, string> = {
   hawb: 'HAWB_DRAFT_REPORT_FORMAT_1',
   mawb: 'MAWB_DRAFT_REPORT_FORMAT_1',
   'hawb-draft-gated': 'HAWB_DRAFT_REPORT_FORMAT_1',
   'hawb-final-gated': 'HAWB_DRAFT_REPORT_FORMAT_1',
-  hbl: 'HBL_DRAFT_REPORT_FORMAT_1',
-  'hbl-er': 'HBL_DRAFT_REPORT_FORMAT_1',
-  'hbl-draft': 'HBL_DRAFT_REPORT_FORMAT_1',
-  'hbl-original': 'HBL_ORIGINAL_REPORT_FORMAT_1',
+  hbl: 'FG_HBL_HKG',
+  'hbl-er': 'FG_HBL_HKG',
+  'hbl-draft': 'FG_HBL_HKG',
+  'bl-draft': 'FG_HBL_HKG',
+  'hbl-original': 'FG_HBL_ORIGINAL_FORMAT_87',
   mbl: 'MBL_DRAFT_REPORT_FORMAT_1',
   can: 'CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1',
   'pre-can': 'CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1',
@@ -15,6 +19,7 @@ const FORMAT_CODE_BY_KEY: Record<string, string> = {
   'pre-can-gated': 'CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1',
   'delivery-order': 'DELIVERY_ORDER_REPORT_FORMAT_1',
   'do-gated': 'DELIVERY_ORDER_REPORT_FORMAT_1',
+  do: 'DELIVERY_ORDER_REPORT_FORMAT_1',
   si: 'SHIPPING_INSTRUCTION_REPORT_FORMAT_1',
   'cargo-mf': 'CARGO_MANIFEST_REPORT_FORMAT_1',
   'freight-mf': 'FREIGHT_MANIFEST_REPORT_FORMAT_1',
@@ -24,6 +29,30 @@ const FORMAT_CODE_BY_KEY: Record<string, string> = {
   'job-card': 'JOB_CARD_REPORT_FORMAT_1',
   'job-pnl': 'JOB_PNL_REPORT_FORMAT_1',
 };
+
+/** Document keys that prefer the classic FG HBL HKG React form over JSON layout. */
+export const CLASSIC_BL_DRAFT_DOCUMENT_KEYS = new Set([
+  'hbl',
+  'hbl-er',
+  'hbl-draft',
+  'bl-draft',
+]);
+
+/** Critical job docs that should try catalog/classic layout PDF before BE chrome stamp. */
+export const CATALOG_LAYOUT_JOB_DOCUMENT_KEYS = new Set([
+  ...CLASSIC_BL_DRAFT_DOCUMENT_KEYS,
+  'hbl-original',
+  'hawb',
+  'hawb-draft-gated',
+  'hawb-final-gated',
+  'can',
+  'pre-can',
+  'can-gated',
+  'pre-can-gated',
+  'delivery-order',
+  'do-gated',
+  'do',
+]);
 
 function normalizeKey(raw: string): string {
   return raw.trim().toLowerCase().replace(/[\s_]+/g, '-');

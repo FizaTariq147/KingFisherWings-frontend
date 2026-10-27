@@ -96,6 +96,17 @@ export interface QuotationActions {
   can_change_status?: boolean;
   /** Booking form tab (provisional / converted job). */
   can_booking_form?: boolean;
+  /**
+   * Staff BL draft from booking form (same continuum as shipment BL Entry).
+   * When omitted, FE shows for sea quotes with booking-form flow.
+   */
+  can_bl_draft?: boolean;
+  /**
+   * Optional BE gates for quotation PDF (GET /quotations/:id `actions`).
+   * When omitted, the FE still shows PDF / Download (client layout + store).
+   */
+  can_generate_pdf?: boolean;
+  can_download_pdf?: boolean;
   /** Portal DRAFT + owned CUSTOMER_PORTAL quote. */
   can_edit?: boolean;
   can_replace?: boolean;
