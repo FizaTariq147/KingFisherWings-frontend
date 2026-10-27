@@ -266,10 +266,11 @@ export function TariffForm({
         render={({ field }) => (
           <MasterPlaceSelect
             name="origin_port_id"
+            kind="ports"
             label={isAir ? 'Origin airport' : 'Origin port'}
             value={field.value ?? ''}
             onChange={field.onChange}
-            kind={isAir ? 'airports' : 'ports'}
+            jobType={isAir ? 'AIR_EXPORT' : undefined}
             excludeId={destPortId}
           />
         )}
@@ -280,10 +281,11 @@ export function TariffForm({
         render={({ field }) => (
           <MasterPlaceSelect
             name="dest_port_id"
+            kind="ports"
             label={isAir ? 'Destination airport' : 'Destination port'}
             value={field.value ?? ''}
             onChange={field.onChange}
-            kind={isAir ? 'airports' : 'ports'}
+            jobType={isAir ? 'AIR_EXPORT' : undefined}
             excludeId={originPortId}
             error={fieldError('dest_port_id')}
           />

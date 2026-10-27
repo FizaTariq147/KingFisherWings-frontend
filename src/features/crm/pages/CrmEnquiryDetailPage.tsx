@@ -238,9 +238,9 @@ export default function CrmEnquiryDetailPage() {
   const actions = enquiry.actions;
   const status = enquiry.status;
   const serviceType = watch('service_type') || enquiry.service_type;
-  const isAir = serviceType === 'AIR_EXPORT' || serviceType === 'AIR_IMPORT';
   const isFcl = serviceType === 'SEA_FCL_EXPORT' || serviceType === 'SEA_FCL_IMPORT';
-  const placeKind = isAir ? 'airports' : 'ports';
+  // Quote/job FKs are ports-master UUIDs (AIR = ports with mode=AIR), not airports table.
+  const placeKind = 'ports' as const;
   const isTerminal = status === 'CANCELLED' || status === 'LOST';
   const hasQuotation = Boolean(enquiry.quotation_id && isUuid(enquiry.quotation_id));
   const hasShipment = Boolean(enquiry.shipment_id && isUuid(enquiry.shipment_id));

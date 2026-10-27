@@ -3,6 +3,9 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { getServerErrorMessage } from '@/lib/validation/mapApiErrors';
+import { MASTER_PATHS } from '../api/masterPaths';
+import { useMasterMutations } from '../hooks/useMasterResource';
+import type { MasterRecord } from '../types/master.types';
 
 export type CreatePortInlineDto = {
   un_locode: string;
@@ -18,31 +21,40 @@ export type CreatePortInlineDto = {
 export type AddPortModalProps = {
   open: boolean;
   onClose: () => void;
-  /** Prefill mode from job type (AIR → AIR, else SEA). */
+  /** ports → POST /masters/ports; airports → POST /masters/airports */
+  resource?: 'ports' | 'airports';
+  /** Prefill mode for ports (AIR when job type is air). */
   defaultMode?: CreatePortInlineDto['mode'];
   title?: string;
-  /**
-   * Called with CreatePortDto fields for inline create_origin_port / create_dest_port
-   * (or POST /masters/ports if the parent prefers).
-   */
-  onSubmit: (dto: CreatePortInlineDto) => void;
+  /** Use when opening over another modal. */
+  nested?: boolean;
+  /** Called after successful POST — parent should select the new id. */
+  onCreated: (record: MasterRecord) => void;
 };
 
 const FIELD =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]';
 
 /**
- * Collect CreatePortDto for quote/job inline create_origin_port / create_dest_port.
- * Staff/admin only — portal/vendor stay read-only.
+ * In-place create for Masters → Ports or Airports.
+ * POST /masters/ports|airports via useMasterMutations — invalidates place option caches.
  */
 export function AddPortModal({
   open,
   onClose,
+  resource = 'ports',
   defaultMode = 'SEA',
-  title = 'Add port',
-  onSubmit,
+  title,
+  nested = false,
+  onCreated,
 }: AddPortModalProps) {
-  const [unLocode, setUnLocode] = useState('');
+  const isAirport = resource === 'airports';
+  const { create } = useMasterMutations(
+    isAirport ? 'airports' : 'ports',
+    isAirport ? MASTER_PATHS.airports : MASTER_PATHS.ports,
+  );
+
+  const [code, setCode] = useState('');
   const [name, setName] = useState('');
   const [city, setCity] = useState('');
   const [country, setCountry] = useState('');
@@ -51,7 +63,7 @@ export function AddPortModal({
 
   useEffect(() => {
     if (!open) return;
-    setUnLocode('');
+    setCode('');
     setName('');
     setCity('');
     setCountry('');
@@ -59,16 +71,25 @@ export function AddPortModal({
     setError(null);
   }, [open, defaultMode]);
 
-  const submit = () => {
+  const placeWord = isAirport ? 'airport' : 'port';
+  const modalTitle = title ?? (isAirport ? 'Add airport' : 'Add port');
+
+  const submit = async () => {
     setError(null);
-    const un_locode = unLocode.trim().toUpperCase();
-    const portName = name.trim();
+    const codeTrim = code.trim().toUpperCase();
+    const placeName = name.trim();
     const country_code = country.trim().toUpperCase();
-    if (un_locode.length < 3) {
+
+    if (isAirport) {
+      if (codeTrim.length < 3 || codeTrim.length > 4) {
+        setError('IATA code is required (e.g. DXB).');
+        return;
+      }
+    } else if (codeTrim.length < 3) {
       setError('UN/LOCODE is required (e.g. AEJEA).');
       return;
     }
-    if (portName.length < 2) {
+    if (placeName.length < 2) {
       setError('Name is required.');
       return;
     }
@@ -76,18 +97,30 @@ export function AddPortModal({
       setError('Country code must be 2 letters (e.g. AE).');
       return;
     }
+
+    const dto: Record<string, unknown> = isAirport
+      ? {
+          iata_code: codeTrim.slice(0, 3),
+          name: placeName,
+          country_code,
+          ...(city.trim() ? { city: city.trim() } : {}),
+          is_active: true,
+        }
+      : {
+          un_locode: codeTrim,
+          name: placeName,
+          country_code,
+          ...(city.trim() ? { city: city.trim() } : {}),
+          mode: mode ?? defaultMode,
+          is_active: true,
+        };
+
     try {
-      onSubmit({
-        un_locode,
-        name: portName,
-        country_code,
-        ...(city.trim() ? { city: city.trim() } : {}),
-        mode: mode ?? defaultMode,
-        is_active: true,
-      });
+      const created = await create.mutateAsync(dto);
+      onCreated(created);
       onClose();
     } catch (err) {
-      setError(getServerErrorMessage(err));
+      setError(getServerErrorMessage(err) || `Could not create ${placeWord}.`);
     }
   };
 
@@ -95,25 +128,34 @@ export function AddPortModal({
     <Modal
       open={open}
       onClose={onClose}
-      title={title}
+      title={modalTitle}
       size="md"
+      layer={nested ? 'nested' : 'base'}
       footer={
         <div className="flex justify-end gap-2">
-          <Button type="button" size="sm" variant="secondary" onClick={onClose}>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={onClose}
+            disabled={create.isPending}
+          >
             Cancel
           </Button>
-          <Button type="button" size="sm" onClick={submit}>
-            Use on form
+          <Button
+            type="button"
+            size="sm"
+            onClick={() => void submit()}
+            disabled={create.isPending}
+          >
+            {create.isPending ? 'Saving…' : `Save ${placeWord}`}
           </Button>
         </div>
       }
     >
       <div className="space-y-3 text-sm">
         <p className="text-[var(--color-neutral-600)]">
-          Creates the port when you save the quote/job (
-          <code className="text-[11px]">create_origin_port</code> /{' '}
-          <code className="text-[11px]">create_dest_port</code>). Existing UN/LOCODE
-          is reused by the server.
+          Creates a master {placeWord} immediately. It will appear in this dropdown after save.
         </p>
         {error ? (
           <p className="rounded-md border border-[var(--color-danger-200)] bg-[var(--color-danger-50)] px-3 py-2 text-[var(--color-danger-700)]">
@@ -121,17 +163,17 @@ export function AddPortModal({
           </p>
         ) : null}
         <Input
-          label="UN/LOCODE"
-          value={unLocode}
-          onChange={(e) => setUnLocode(e.target.value)}
-          placeholder="AEJEA"
+          label={isAirport ? 'IATA code' : 'UN/LOCODE'}
+          value={code}
+          onChange={(e) => setCode(e.target.value)}
+          placeholder={isAirport ? 'DXB' : 'AEJEA'}
           className="font-mono uppercase"
         />
         <Input
           label="Name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="Jebel Ali"
+          placeholder={isAirport ? 'Dubai International' : 'Jebel Ali'}
         />
         <Input
           label="City"
@@ -146,22 +188,24 @@ export function AddPortModal({
           placeholder="AE"
           className="font-mono uppercase"
         />
-        <label className="block space-y-1">
-          <span className="text-xs font-medium text-[var(--color-neutral-600)]">Mode</span>
-          <select
-            className={FIELD}
-            value={mode ?? 'SEA'}
-            onChange={(e) =>
-              setMode(e.target.value as CreatePortInlineDto['mode'])
-            }
-          >
-            <option value="SEA">Sea</option>
-            <option value="AIR">Air</option>
-            <option value="LAND">Land</option>
-            <option value="ROAD">Road</option>
-            <option value="COURIER">Courier</option>
-          </select>
-        </label>
+        {!isAirport ? (
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-[var(--color-neutral-600)]">Mode</span>
+            <select
+              className={FIELD}
+              value={mode ?? 'SEA'}
+              onChange={(e) =>
+                setMode(e.target.value as CreatePortInlineDto['mode'])
+              }
+            >
+              <option value="SEA">Sea</option>
+              <option value="AIR">Air</option>
+              <option value="LAND">Land</option>
+              <option value="ROAD">Road</option>
+              <option value="COURIER">Courier</option>
+            </select>
+          </label>
+        ) : null}
       </div>
     </Modal>
   );
