@@ -210,7 +210,7 @@ export default function PartyDetailPage() {
         subtitle={`${party.code} · ${PARTY_TYPE_LABELS[party.party_type]}`}
         statusLabel={active ? 'Active' : 'Inactive'}
         statusTone={active ? 'emerald' : 'slate'}
-        onBack={() => navigate('/parties')}
+        backTo={'/parties'}
         backLabel="Back to parties"
         actions={[
           { label: 'Edit', onClick: () => navigate(`/parties/${id}/edit`), variant: 'secondary' },

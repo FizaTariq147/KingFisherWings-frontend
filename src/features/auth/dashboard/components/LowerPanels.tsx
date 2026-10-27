@@ -113,7 +113,11 @@ export function LiveActivityPanel({
     const fallback = notificationHref(n);
     try {
       const opened = await openNotification.mutateAsync(n.id);
-      const path = opened.linkPath || fallback;
+      const path = notificationHref({
+        ...n,
+        linkPath: opened.linkPath || n.linkPath,
+        href: opened.linkPath || n.href,
+      }) || fallback;
       if (path) navigate(path);
       else toast.info('No linked screen for this notification.', { title: 'Notifications' });
     } catch {

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -80,13 +81,31 @@ function partyDisplay(row: WmsStockRow, partyLabels: Map<string, string>): strin
   return '—';
 }
 
+function stockTabFromSearch(raw: string | null): StockTab {
+  const v = (raw || '').trim().toLowerCase();
+  if (v === 'movements' || v === 'movement') return 'movements';
+  if (v === 'low-stock' || v === 'lowstock' || v === 'low_stock') return 'low-stock';
+  if (v === 'lot-aging' || v === 'aging' || v === 'lot_aging') return 'lot-aging';
+  if (v === 'adjust' || v === 'adjustment') return 'adjust';
+  if (v === 'transfers' || v === 'transfer') return 'transfers';
+  return 'on-hand';
+}
+
 export default function WmsStockPage() {
-  const [tab, setTab] = useState<StockTab>('on-hand');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [tab, setTab] = useState<StockTab>(() => stockTabFromSearch(searchParams.get('tab')));
   const [warehouseId, setWarehouseId] = useState('');
   const [itemId, setItemId] = useState('');
   const [storageStatus, setStorageStatus] = useState('');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+
+  const selectTab = (next: StockTab) => {
+    setTab(next);
+    const nextParams = new URLSearchParams(searchParams);
+    nextParams.set('tab', next);
+    setSearchParams(nextParams, { replace: true });
+  };
 
   const { options: warehouseOptions } = useWmsWarehouseOptions();
   const { options: itemOptions } = useWmsItemOptions();
@@ -205,7 +224,7 @@ export default function WmsStockPage() {
           <button
             key={t.id}
             type="button"
-            onClick={() => setTab(t.id)}
+            onClick={() => selectTab(t.id)}
             className={`rounded-full px-3 py-1 text-xs font-medium ${
               tab === t.id
                 ? 'bg-[var(--color-primary-600)] text-white'

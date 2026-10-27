@@ -178,7 +178,7 @@ export default function PaymentRequestDetailPage() {
                 ? 'amber'
                 : 'slate'
         }
-        onBack={() => navigate(PAYMENT_REQUEST_ROUTE_PREFIX)}
+        backTo={PAYMENT_REQUEST_ROUTE_PREFIX}
         backLabel="Payment Requests"
         actions={headerActions}
         actionsDisabled={pending}

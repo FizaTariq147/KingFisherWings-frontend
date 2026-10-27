@@ -1,19 +1,22 @@
 import type { ReactNode } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getReturnPath } from '@/lib/navigation/returnNavigation';
+import { smartGoBack } from '@/lib/navigation/returnNavigation';
 
 const BACK_LINK_CLASS =
   'text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] transition-colors';
 
 export interface PageBackLinkProps {
   /**
-   * Explicit destination (module list / detail). Used when provided so Back
-   * matches the labeled route instead of an arbitrary history entry.
-   * If omitted, uses `location.state.from` then history (`-1`).
+   * Fallback destination when there is no previous in-app screen
+   * (e.g. deep link / refresh). History / `state.from` always win first.
    */
   to?: string;
   /** Shown after ← ; defaults to "Back". */
   label?: string;
+  /**
+   * Optional override. Prefer omitting this so Back follows history
+   * (Dashboard → Jobs → Back → Dashboard).
+   */
   onClick?: () => void;
   className?: string;
   children?: ReactNode;
@@ -21,7 +24,7 @@ export interface PageBackLinkProps {
 
 /**
  * App-wide text back control.
- * Order: onClick → explicit `to` → `state.from` → history (-1).
+ * Order: previous screen (state.from / history) → fallback `to` → onClick → /dashboard.
  */
 export function PageBackLink({
   to,
@@ -37,24 +40,15 @@ export function PageBackLink({
   const text = children ?? (displayLabel.startsWith('←') ? displayLabel : `← ${displayLabel}`);
 
   const goBack = () => {
-    if (onClick) {
+    // When only onClick is provided (e.g. FormPageHeader + useReturnNavigation.goBack),
+    // delegate — goBack already prefers history / return-state.
+    if (onClick && !to) {
       onClick();
       return;
     }
-    if (to) {
-      navigate(to);
-      return;
-    }
-    const from = getReturnPath(location, '');
-    if (from) {
-      navigate(from);
-      return;
-    }
-    if (location.key !== 'default') {
-      navigate(-1);
-      return;
-    }
-    navigate(-1);
+    // When `to` is a module fallback, prefer history so Dashboard → list → Back
+    // returns to Dashboard instead of a hardcoded sibling route.
+    smartGoBack(navigate, location, to || '/dashboard');
   };
 
   return (

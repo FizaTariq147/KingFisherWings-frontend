@@ -3,6 +3,10 @@ import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { asRecord, pickString } from '@/features/portal-shared/normalize';
 import { safeInternalPath } from '@/lib/safeInternalPath';
 import type { AppNotification } from '../types/notifications.types';
+import {
+  inferStaffNotificationPath,
+  remapStaffNotificationPath,
+} from './remapStaffNotificationPath';
 
 const TYPE_ALIASES: Record<string, string> = {
   JOB: 'JOB',
@@ -40,9 +44,17 @@ const TYPE_ALIASES: Record<string, string> = {
   HR: 'HR',
   LEAVE: 'HR',
   LEAVE_REQUEST: 'HR',
+  TIMESHEET: 'TIMESHEET',
+  TIMESHEETS: 'TIMESHEET',
+  MISSING_TIMESHEET: 'TIMESHEET',
   EMPLOYEE: 'EMPLOYEE',
   REPORT: 'REPORT',
   SYSTEM: 'SYSTEM',
+  WMS: 'WMS',
+  WAREHOUSE: 'WMS',
+  LOW_STOCK: 'LOW_STOCK',
+  WMS_LOW_STOCK: 'LOW_STOCK',
+  STOCK_ALERT: 'LOW_STOCK',
 };
 
 export function normalizeStaffNotificationType(type?: string): string {
@@ -72,12 +84,18 @@ export function staffNotificationTypeLabel(type?: string): string {
       return 'Party';
     case 'HR':
       return 'HR';
+    case 'TIMESHEET':
+      return 'Timesheet';
     case 'EMPLOYEE':
       return 'Employee';
     case 'REPORT':
       return 'Report';
     case 'SYSTEM':
       return 'System';
+    case 'WMS':
+      return 'Warehouse';
+    case 'LOW_STOCK':
+      return 'Low stock';
     default:
       return type ? type.replaceAll('_', ' ') : 'Alert';
   }
@@ -88,7 +106,8 @@ function safeStaffHref(candidate: unknown): string | null {
   if (typeof candidate !== 'string' || !candidate.trim()) return null;
   const trimmed = candidate.trim();
   if (trimmed.startsWith('/portal') || trimmed.startsWith('/vendor')) return null;
-  const safe = safeInternalPath(trimmed, { prefix: '', fallback: '' });
+  const remapped = remapStaffNotificationPath(trimmed) || trimmed;
+  const safe = safeInternalPath(remapped, { prefix: '', fallback: '' });
   return safe || null;
 }
 
@@ -100,7 +119,18 @@ function metaBag(n: AppNotification): Record<string, unknown> {
 /** Deep-link a staff notification / alert to the matching admin screen. */
 export function notificationHref(n: AppNotification): string | null {
   const fromApi = safeStaffHref(n.linkPath) || safeStaffHref(n.href);
-  if (fromApi) return fromApi;
+  if (fromApi) {
+    // Prefer remapped real routes even when API path was "safe" but wrong.
+    return remapStaffNotificationPath(fromApi) || fromApi;
+  }
+
+  const inferred = inferStaffNotificationPath({
+    type: n.type,
+    kind: n.kind,
+    title: n.title,
+    body: n.body,
+  });
+  if (inferred) return inferred;
 
   const type = normalizeStaffNotificationType(n.type || n.kind);
   const meta = asRecord(n.raw) ?? {};
@@ -226,8 +256,18 @@ export function notificationHref(n: AppNotification): string | null {
     const id = employeeId || entityId;
     return id ? `/hr/employee-master/${id}` : '/hr/employee-master';
   }
+  if (type === 'TIMESHEET') return '/hr/timesheets';
+  if (type === 'LOW_STOCK') return '/warehouse/stock?tab=low-stock';
+  if (type === 'WMS') return '/warehouse/stock';
   if (type === 'HR') {
     if (employeeId) return `/hr/employee-master/${employeeId}`;
+    const hrInferred = inferStaffNotificationPath({
+      type: n.type,
+      kind: n.kind,
+      title: n.title,
+      body: n.body,
+    });
+    if (hrInferred) return hrInferred;
     return '/hr/leave-request';
   }
   if (type === 'REPORT') return '/reports';

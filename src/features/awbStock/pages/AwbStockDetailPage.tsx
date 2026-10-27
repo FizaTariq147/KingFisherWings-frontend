@@ -325,7 +325,7 @@ export default function AwbStockDetailPage() {
           },
         ]}
         actionsDisabled={pending}
-        onBack={() => navigate(AWB_STOCK_ROUTE_PREFIX)}
+        backTo={AWB_STOCK_ROUTE_PREFIX}
         backLabel="AWB stock"
       />
       {confirmDelete && (

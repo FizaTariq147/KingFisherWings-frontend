@@ -141,7 +141,7 @@ export default function CreditNoteDetailPage() {
                 ? 'amber'
                 : 'slate'
         }
-        onBack={() => navigate(CREDIT_NOTE_ROUTE_PREFIX)}
+        backTo={CREDIT_NOTE_ROUTE_PREFIX}
         backLabel="Credit Notes"
         actions={headerActions}
         actionsDisabled={pending}

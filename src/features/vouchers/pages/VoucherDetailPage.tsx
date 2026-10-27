@@ -178,7 +178,7 @@ export default function VoucherDetailPage() {
                 ? 'rose'
                 : 'amber'
         }
-        onBack={() => navigate(VOUCHER_ROUTE_PREFIX)}
+        backTo={VOUCHER_ROUTE_PREFIX}
         backLabel="Vouchers"
         actions={headerActions}
         actionsDisabled={pending}

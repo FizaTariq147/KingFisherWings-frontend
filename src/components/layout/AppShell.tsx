@@ -36,7 +36,7 @@ export function AppShell({ title }: { title: string }) {
     return {
       title: item.title || 'Admin notification',
       message: item.body || item.title || undefined,
-      href: item.linkPath || notificationHref(item),
+      href: notificationHref(item) || item.linkPath || undefined,
     };
   }, []);
 

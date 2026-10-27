@@ -372,21 +372,51 @@ export function unwrapReportRows(raw: unknown): Record<string, unknown>[] {
     if (Array.isArray(v)) {
       return v.filter((x): x is Record<string, unknown> => Boolean(asRecord(x)));
     }
-    // Object map e.g. { "2026-01": 12000, "Jan": 8000 }
+    // Object map e.g. { "2026-01": 12000, "Jan": 8000 } or customer objects
     const asObj = asRecord(v);
     if (asObj && !Array.isArray(v)) {
       const entries = Object.entries(asObj);
+      if (!entries.length) continue;
       if (
-        entries.length > 0 &&
-        entries.every(([, cell]) => typeof cell === 'number' || typeof cell === 'string' || cell == null)
+        entries.every(
+          ([, cell]) => typeof cell === 'number' || typeof cell === 'string' || cell == null,
+        )
       ) {
         return entries.map(([label, valueCell]) => ({
           label,
           month: label,
+          customer: label,
+          customer_id: label,
           revenue: valueCell ?? 0,
           amount: valueCell ?? 0,
           value: valueCell ?? 0,
         }));
+      }
+      if (entries.every(([, cell]) => Boolean(asRecord(cell)))) {
+        return entries.map(([key, cell]) => {
+          const row = asRecord(cell) ?? {};
+          const name = pickString(row, [
+            'customer_name',
+            'customer',
+            'name',
+            'party_name',
+            'company_name',
+            'label',
+          ]);
+          const amount =
+            pickNumber(row, ['revenue', 'amount', 'total', 'sales', 'value', 'gross_revenue']) ?? 0;
+          return {
+            ...row,
+            label: name || key,
+            customer: name || key,
+            customer_name: name,
+            customer_id: pickString(row, ['customer_id', 'party_id', 'id']) || key,
+            party_id: pickString(row, ['party_id', 'customer_id', 'id']) || key,
+            revenue: amount,
+            amount,
+            value: amount,
+          };
+        });
       }
     }
   }

@@ -152,7 +152,7 @@ export default function ChequeDetailPage() {
         subtitle={`${CHEQUE_TYPE_LABELS[cheque.cheque_type]} · ${cheque.currency_code} ${cheque.amount.toLocaleString()}`}
         statusLabel={CHEQUE_STATUS_LABELS[cheque.status]}
         statusTone={statusTone(cheque.status)}
-        onBack={() => navigate(CHEQUE_ROUTE_PREFIX)}
+        backTo={CHEQUE_ROUTE_PREFIX}
         backLabel="Cheques / PDC"
         actions={headerActions}
         actionsDisabled={pending}

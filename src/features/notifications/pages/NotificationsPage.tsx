@@ -34,10 +34,19 @@ export default function NotificationsPage() {
   const items = data?.items ?? [];
   const meta = data?.meta;
 
-  const handleOpen = async (id: string, fallbackHref: string | null) => {
+  const handleOpen = async (
+    n: { id: string; linkPath?: string | null; href?: string | null; type?: string; kind?: string; title?: string; body?: string },
+    fallbackHref: string | null,
+  ) => {
     try {
-      const opened = await openNotification.mutateAsync(id);
-      const path = opened.linkPath || fallbackHref;
+      const opened = await openNotification.mutateAsync(n.id);
+      const path =
+        notificationHref({
+          ...n,
+          id: n.id,
+          linkPath: opened.linkPath || n.linkPath,
+          href: opened.linkPath || n.href,
+        } as Parameters<typeof notificationHref>[0]) || fallbackHref;
       if (path) navigate(path);
       else toast.info('No linked screen for this notification.', { title: 'Notifications' });
     } catch {
@@ -111,7 +120,7 @@ export default function NotificationsPage() {
                     type="button"
                     className="min-w-0 flex-1 text-left"
                     disabled={openNotification.isPending}
-                    onClick={() => void handleOpen(n.id, href)}
+                    onClick={() => void handleOpen(n, href)}
                   >
                     <div className="flex flex-wrap items-center gap-2">
                       <div className="text-sm font-semibold">{n.title}</div>

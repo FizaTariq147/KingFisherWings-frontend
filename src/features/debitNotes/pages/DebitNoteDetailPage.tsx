@@ -141,7 +141,7 @@ export default function DebitNoteDetailPage() {
                 ? 'amber'
                 : 'slate'
         }
-        onBack={() => navigate(DEBIT_NOTE_ROUTE_PREFIX)}
+        backTo={DEBIT_NOTE_ROUTE_PREFIX}
         backLabel="Debit Notes"
         actions={headerActions}
         actionsDisabled={pending}

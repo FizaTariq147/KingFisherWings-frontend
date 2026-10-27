@@ -634,7 +634,7 @@ export default function QuotationDetailPage() {
         }
         statusLabel={STATUS_LABELS[status] ?? status}
         statusTone={statusTone(status)}
-        onBack={() => navigate('/quotations/all')}
+        backTo={'/quotations/all'}
         backLabel="All quotations"
         actions={headerActions}
         actionsDisabled={pending}

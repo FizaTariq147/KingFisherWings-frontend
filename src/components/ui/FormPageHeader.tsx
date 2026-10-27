@@ -23,7 +23,12 @@ export function FormPageHeader({
 }: FormPageHeaderProps) {
   return (
     <div className="space-y-3">
-      <PageBackLink to={backTo} label={backLabel} onClick={onBack} />
+      {/* Prefer history; `onBack` (e.g. useReturnNavigation.goBack) is already history-aware. */}
+      <PageBackLink
+        to={backTo}
+        label={backLabel}
+        onClick={onBack}
+      />
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h1 className={appType.pageTitle}>{title}</h1>

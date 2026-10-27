@@ -11,11 +11,13 @@ import {
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import type { MasterRecord } from '@/features/masters/types/master.types';
+import { useParties } from '@/features/parties/hooks/useParties';
 import { isUuid } from '@/lib/isUuid';
 import { DashCard, DashCardHeader, DashEmpty, DashSkeleton } from './DashCard';
 import {
   asRecord,
   compactMoney,
+  looksLikeUuid,
   pickNumber,
   pickString,
   sanitizeDisplayLabel,
@@ -244,24 +246,51 @@ export function RevenueVsTargetPanel({
   const chartMax = Math.max(...chartBars.map((b) => b.value), monthlyTarget ?? 0, 1);
   const currentBar = chartBars[chartBars.length - 1];
 
+  const partiesQuery = useParties({ page: 1, limit: 200 });
+  const partyNameById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const party of partiesQuery.data?.items ?? []) {
+      const id = String(party.id || '').trim();
+      const name = String(party.name || party.short_name || '').trim();
+      if (id && name) map.set(id, name);
+    }
+    return map;
+  }, [partiesQuery.data?.items]);
+
   const customers = customerRows
-    .map((row, i) => {
+    .map((row) => {
+      const partyId =
+        pickString(row, [
+          'party_id',
+          'customer_id',
+          'account_id',
+          'id',
+          'partyId',
+          'customerId',
+        ]) ?? '';
       const rawName =
         pickString(row, [
-          'customer',
           'customer_name',
-          'name',
-          'party',
           'party_name',
+          'company_name',
+          'account_name',
+          'customer',
+          'party',
+          'company',
+          'account',
+          'name',
           'shipper',
           'label',
-          'company',
-          'company_name',
-          'account',
-          'account_name',
-        ]) || `Customer ${i + 1}`;
+        ]) ?? '';
+      const fromParty =
+        (partyId && looksLikeUuid(partyId) ? partyNameById.get(partyId) : undefined) ||
+        (rawName && looksLikeUuid(rawName) ? partyNameById.get(rawName) : undefined);
+      const cleaned = sanitizeDisplayLabel(fromParty || rawName);
+      // Skip placeholder "Customer N" — only keep real names (or resolved parties).
+      if (!cleaned) return null;
+      if (/^customer\s+\d+$/i.test(cleaned)) return null;
       return {
-        name: sanitizeDisplayLabel(rawName) ?? `Customer ${i + 1}`,
+        name: cleaned,
         amount:
           pickNumber(row, [
             'revenue',
@@ -275,6 +304,7 @@ export function RevenueVsTargetPanel({
         jobs: pickNumber(row, ['jobs', 'job_count', 'count', 'shipments', 'volume']),
       };
     })
+    .filter((row): row is { name: string; amount: number; jobs: number | undefined } => Boolean(row))
     .sort((a, b) => b.amount - a.amount)
     .slice(0, 5);
   const customerTotal = customers.reduce((sum, c) => sum + c.amount, 0);

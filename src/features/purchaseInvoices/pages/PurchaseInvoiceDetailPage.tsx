@@ -197,7 +197,7 @@ export default function PurchaseInvoiceDetailPage() {
                 ? 'amber'
                 : 'slate'
         }
-        onBack={() => navigate(PURCHASE_INVOICE_ROUTE_PREFIX)}
+        backTo={PURCHASE_INVOICE_ROUTE_PREFIX}
         backLabel="Purchase Invoices"
         actions={headerActions}
         actionsDisabled={pending || post.isPending}

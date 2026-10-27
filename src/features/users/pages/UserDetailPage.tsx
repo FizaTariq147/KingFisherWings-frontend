@@ -225,7 +225,7 @@ export default function UserDetailPage() {
         subtitle={`${formatUserRole(user.role)} · ${user.email}`}
         statusLabel={isDeleted ? 'Deleted' : user.status}
         statusTone={statusTone}
-        onBack={() => navigate(userPath())}
+        backTo={userPath()}
         backLabel="Back to users"
         actions={actions}
         actionsDisabled={pendingAction}
