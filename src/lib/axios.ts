@@ -99,7 +99,12 @@ axiosInstance.interceptors.response.use(
 
     const authState = useAuthStore.getState()
     if (!authState.refreshToken) {
-      useAuthStore.getState().forceLogoutDueToInactivity()
+      // Only hard-redirect when an ERP session existed. Anonymous / Super Admin
+      // surfaces share AppShell and may hit ERP APIs without staff tokens —
+      // forceLogoutDueToInactivity would bounce Super Admin to /login.
+      if (authState.isAuthenticated) {
+        useAuthStore.getState().forceLogoutDueToInactivity()
+      }
       return rejectWithToast(error)
     }
 

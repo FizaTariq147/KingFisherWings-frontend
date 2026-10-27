@@ -22,9 +22,10 @@ export function AppShell({ title }: { title: string }) {
   const mobileSidebarOpen = useUIStore((s) => s.mobileSidebarOpen);
   const closeMobileSidebar = useUIStore((s) => s.closeMobileSidebar);
   const location = useLocation();
-  const unread = useNotificationUnreadCount();
   const isSuperAdminArea =
     location.pathname.startsWith('/superadmin') && !location.pathname.includes('/login');
+  // ERP staff notifications — never poll on Super Admin (no ERP token after clearSession).
+  const unread = useNotificationUnreadCount(Boolean(user) && !isSuperAdminArea);
 
   const fetchLatestNotification = useCallback(async () => {
     const list = await notificationsService.list(
