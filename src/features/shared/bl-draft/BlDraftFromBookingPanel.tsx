@@ -1,7 +1,10 @@
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import {
+  triggerBlobDownload,
+  triggerBrandedPdfDownload,
+} from '@/features/files/utils/triggerBlobDownload';
 import { jobService } from '@/features/jobs/services/job.service';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { shipmentService } from '@/features/shipments/services/shipment.service';
@@ -37,6 +40,7 @@ export function BlDraftFromBookingPanel({
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [downloadBusy, setDownloadBusy] = useState(false);
   const [readyOpen, setReadyOpen] = useState(false);
   const [readyBlob, setReadyBlob] = useState<Blob | null>(null);
   const [readyFileName, setReadyFileName] = useState('HBL-draft.pdf');
@@ -104,14 +108,23 @@ export function BlDraftFromBookingPanel({
     }
   };
 
-  const handleDirectDownload = () => {
+  const handleDirectDownload = async () => {
     if (!readyBlob) {
       setError('Generate an HBL draft first.');
       return;
     }
     setError(null);
-    // Same bytes as Preview (PdfReadyModal skipBranding) — no branded stamp.
-    triggerBlobDownload(readyBlob, fileName);
+    setDownloadBusy(true);
+    try {
+      await triggerBrandedPdfDownload(readyBlob, fileName, {
+        filename: fileName,
+        branding: { title: 'HBL draft', documentNumber: fileName.replace(/\.pdf$/i, '') },
+      });
+    } catch {
+      triggerBlobDownload(readyBlob, fileName);
+    } finally {
+      setDownloadBusy(false);
+    }
   };
 
   return (
@@ -132,7 +145,7 @@ export function BlDraftFromBookingPanel({
               type="button"
               size="sm"
               variant="report"
-              disabled={loading}
+              disabled={loading || downloadBusy}
               onClick={() => void generate()}
             >
               {loading ? 'Building…' : 'Generate HBL draft'}
@@ -141,7 +154,7 @@ export function BlDraftFromBookingPanel({
               type="button"
               size="sm"
               variant="secondary"
-              disabled={loading || !canDownload}
+              disabled={loading || downloadBusy || !canDownload}
               onClick={() => setReadyOpen(true)}
             >
               Preview
@@ -150,10 +163,10 @@ export function BlDraftFromBookingPanel({
               type="button"
               size="sm"
               variant="secondary"
-              disabled={loading || !canDownload}
-              onClick={handleDirectDownload}
+              disabled={loading || downloadBusy || !canDownload}
+              onClick={() => void handleDirectDownload()}
             >
-              Download PDF
+              {downloadBusy ? '…' : 'Download PDF'}
             </Button>
           </div>
         </div>

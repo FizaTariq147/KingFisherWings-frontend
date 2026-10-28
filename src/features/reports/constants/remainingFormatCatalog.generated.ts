@@ -3639,11 +3639,381 @@ export const REMAINING_FORMAT_CATALOG: RemainingFormatCatalogRow[] = [
     ]
   },
   {
-    "code": "CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
-    "name": "Cargo Arrival Notice –Sea Without Charges",
+    "code": "HBL_DRAFT_REPORT_FORMAT_21",
+    "name": "HBL Draft Report Format-21",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 21,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_22",
+    "name": "HBL Draft Report Format-22",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 22,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_24",
+    "name": "HBL Draft Report Format-24",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 24,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_28",
+    "name": "HBL Draft Report Format-28",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 28,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_30",
+    "name": "HBL Draft Report Format-30",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 30,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_31",
+    "name": "HBL Draft Report Format-31",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 31,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_32",
+    "name": "HBL Draft Report Format-32",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 32,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_34",
+    "name": "HBL Draft Report Format-34",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 34,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_35",
+    "name": "HBL Draft Report Format-35",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 35,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_36",
+    "name": "HBL Draft Report Format-36",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 36,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_37",
+    "name": "HBL Draft Report Format-37",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 37,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_38",
+    "name": "HBL Draft Report Format-38",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 38,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_39",
+    "name": "HBL Draft Report Format-39",
+    "family": "sea_docs",
+    "bucket": "hbl",
+    "sortOrder": 39,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_11",
+    "name": "Arrival Notice Report Format-11",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 11,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_12",
+    "name": "Arrival Notice Report Format-12",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 12,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_13",
+    "name": "Arrival Notice Report Format-13",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 13,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_14",
+    "name": "Arrival Notice Report Format-14",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 14,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_15",
+    "name": "Arrival Notice Report Format-15",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 15,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_16",
+    "name": "Arrival Notice Report Format-16",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 16,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_17",
+    "name": "Arrival Notice Report Format-17",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 17,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_18",
+    "name": "Arrival Notice Report Format-18",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 18,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_19",
+    "name": "Arrival Notice Report Format-19",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 19,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_20",
+    "name": "Arrival Notice Report Format-20",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 20,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_21",
+    "name": "Arrival Notice Report Format-21",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 21,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_22",
+    "name": "Arrival Notice Report Format-22",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 22,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_23",
+    "name": "Arrival Notice Report Format-23",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 23,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_24",
+    "name": "Arrival Notice Report Format-24",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 24,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_25",
+    "name": "Arrival Notice Report Format-25",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 25,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_26",
+    "name": "Arrival Notice Report Format-26",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 26,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_27",
+    "name": "Arrival Notice Report Format-27",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 27,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_28",
+    "name": "Arrival Notice Report Format-28",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 28,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_29",
+    "name": "Arrival Notice Report Format-29",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 29,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_30",
+    "name": "Arrival Notice Report Format-30",
     "family": "sea_docs",
     "bucket": "arrival",
     "sortOrder": 30,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_31",
+    "name": "Arrival Notice Report Format-31",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 31,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_32",
+    "name": "Arrival Notice Report Format-32",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 32,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_33",
+    "name": "Arrival Notice Report Format-33",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 33,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_34",
+    "name": "Arrival Notice Report Format-34",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 34,
+    "contexts": [
+      "job"
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_35",
+    "name": "Arrival Notice Report Format-35",
+    "family": "sea_docs",
+    "bucket": "arrival",
+    "sortOrder": 35,
     "contexts": [
       "job"
     ]

@@ -24,18 +24,7 @@
     "doctor": "npx react-doctor@latest",
     "build:invoice-ui-layouts": "node scripts/build-invoice-format-ui-layouts.mjs",
     "gen:api-schema": "node scripts/generate-api-schema.mjs",
-    "audit:api-coverage": "node scripts/audit-api-coverage.mjs",
-    "fresa:discover": "node scripts/discover-fresa-sample-reports.mjs",
-    "fresa:inventory": "node scripts/finalize-fresa-inventory-from-downloads.mjs",
-    "fresa:fingerprint": "node scripts/fingerprint-reference-pdfs.mjs",
-    "fresa:audit-shells": "node scripts/analyze-visual-shell-collisions.mjs",
-    "fresa:fix-shells": "node scripts/quarantine-destructive-fresa-script.mjs fix-shells",
-    "fresa:validate": "node scripts/validate-layout-distinctness.mjs",
-    "fresa:purge-leftover": "node scripts/quarantine-destructive-fresa-script.mjs purge-leftover",
-    "fresa:uniquify": "node scripts/quarantine-destructive-fresa-script.mjs uniquify",
-    "fresa:reconcile": "node scripts/reconcile-fresa-registry.mjs",
-    "fresa:visual-diff": "node scripts/visual-diff-fresa-batch.mjs",
-    "fresa:restore-hawb-hbl": "node scripts/restore-hawb-hbl-registry-from-head.mjs"
+    "audit:api-coverage": "node scripts/audit-api-coverage.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",

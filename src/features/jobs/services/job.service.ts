@@ -3257,46 +3257,6 @@ export const jobService = {
     );
   },
 
-  /**
-   * Optional GET …/hawb-draft|mawb-draft|awb-draft/preview (BL-parity).
-   * Tries kind-specific path then shared awb-draft. Soft-404 → caller uses booking-form.
-   */
-  async getAwbDraftPreview(
-    id: string,
-    kind: 'hawb' | 'mawb' | 'awb' = 'hawb',
-  ): Promise<unknown> {
-    assertId(id);
-    const paths =
-      kind === 'mawb'
-        ? [JOB_API.mawbDraftPreview(id), JOB_API.awbDraftPreview(id)]
-        : kind === 'awb'
-          ? [JOB_API.awbDraftPreview(id), JOB_API.hawbDraftPreview(id)]
-          : [JOB_API.hawbDraftPreview(id), JOB_API.awbDraftPreview(id)];
-    let lastError: unknown;
-    for (const path of paths) {
-      try {
-        return await request(() => axiosInstance.get(path));
-      } catch (err) {
-        lastError = err;
-        const status = (err as { response?: { status?: number } })?.response?.status;
-        if (status !== 404 && status !== 405) throw err;
-      }
-    }
-    throw lastError;
-  },
-
-  /** Optional POST …/hawb-draft|mawb-draft/generate — register only; client PDF is SoT. */
-  async generateAwbDraft(
-    id: string,
-    kind: 'hawb' | 'mawb' | 'awb' = 'hawb',
-    body: Record<string, unknown> = {},
-  ): Promise<unknown> {
-    assertId(id);
-    const path =
-      kind === 'mawb' ? JOB_API.mawbDraftGenerate(id) : JOB_API.hawbDraftGenerate(id);
-    return request(() => axiosInstance.post(path, body));
-  },
-
   /** GET /jobs/job-offers */
   async listJobOffers(params: Record<string, unknown> = {}): Promise<unknown> {
     return request(() => axiosInstance.get(JOB_API.jobOffersList, { params }));

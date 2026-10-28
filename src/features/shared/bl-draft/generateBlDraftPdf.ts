@@ -9,6 +9,7 @@ import { resolveCatalogContextPdfData } from '@/features/reports/utils/resolveCa
 import { sanitizeHtml2CanvasClone } from '@/features/reports/utils/html2canvasSafeColors';
 import { shouldAppendCustomerTermsPage } from '@/features/reports/utils/shouldAppendCustomerTermsPage';
 import { appendOfficialCustomerTermsPdf } from '@/features/reports/utils/appendOfficialCustomerTermsPdf';
+import { resolveCustomerTermsBranding } from '@/features/reports/utils/resolveCustomerTermsBranding';
 import {
   BlDraftClassicDocument,
   type BlDraftClassicModel,
@@ -371,7 +372,8 @@ async function renderClassicBlDraftPdf(model: BlDraftClassicModel): Promise<Blob
     const layoutBlob = pdf.output('blob');
 
     if (!shouldAppendCustomerTermsPage(BL_DRAFT_FORMAT_CODE)) return layoutBlob;
-    return appendOfficialCustomerTermsPdf(layoutBlob);
+    const branding = await resolveCustomerTermsBranding();
+    return appendOfficialCustomerTermsPdf(layoutBlob, branding);
   } finally {
     try {
       root?.unmount();

@@ -238,47 +238,43 @@ export function fresaNameProfile(name, code, seed = 0) {
     };
   }
 
-  // ——— HBL / HAWB / MAWB (classic Fresa document grids — not invoice clones) ———
+  // ——— HBL / HAWB / MAWB ———
   if (/HBL|HOUSE BILL|FG_HBL/i.test(n + c)) {
     const original = /Original/i.test(n + c);
-    const title = original ? 'BILL OF LADING — ORIGINAL' : 'HOUSE BILL OF LADING — DRAFT';
     const variants = [
       [
         ...HEADER,
-        titleBlock(title),
-        { type: 'partyNotifyGrid' },
+        { type: 'formatBadge' },
+        titleBlock(original ? 'BILL OF LADING — ORIGINAL' : 'HOUSE BILL OF LADING — DRAFT'),
+        { type: 'partyTriple' },
         { type: 'fieldGrid', cols: 2 },
-        { type: 'hblCargoTable' },
-        { type: 'hblFreightSignature' },
+        { type: 'chargeTable', headerColor: 'primary' },
+        { type: 'containerStrip' },
+        { type: 'termsBank' },
+        { type: 'signatureRow' },
         ...FOOT,
       ],
       [
         ...HEADER,
-        { type: 'formatBadge' },
-        titleBlock(title),
-        { type: 'partyNotifyGrid' },
-        { type: 'hblCargoTable' },
+        titleBlock(original ? 'BILL OF LADING — ORIGINAL' : 'HOUSE BILL OF LADING — DRAFT'),
+        { type: 'letterBody' },
+        { type: 'partyTriple' },
+        { type: 'fieldGrid', cols: 3 },
         { type: 'containerStrip' },
-        { type: 'hblFreightSignature' },
+        { type: 'chargeTable', headerColor: 'accent' },
+        { type: 'termsBank' },
+        { type: 'stampSignature' },
         ...FOOT,
       ],
       [
         ...HEADER,
         titleBlock('BILL OF LADING'),
-        { type: 'partyNotifyGrid' },
-        { type: 'fieldGrid', cols: 3 },
-        { type: 'hblCargoTable' },
+        { type: 'twoColumn', showBillTo: false, rightMetaFrom: 'metaRows' },
+        { type: 'partyTriple' },
+        { type: 'fieldGrid', cols: 2 },
+        { type: 'containerStrip' },
         { type: 'termsBank' },
-        { type: 'hblFreightSignature' },
-        ...FOOT,
-      ],
-      [
-        ...HEADER,
-        titleBlock(title, 'start'),
-        { type: 'partyNotifyGrid' },
-        { type: 'exportMetaStrip' },
-        { type: 'hblCargoTable' },
-        { type: 'hblFreightSignature' },
+        { type: 'signatureRow' },
         ...FOOT,
       ],
     ];
@@ -286,42 +282,20 @@ export function fresaNameProfile(name, code, seed = 0) {
   }
   if (/HAWB|MAWB|AIR_WAYBILL/i.test(n + c)) {
     const preprinted = /Pre Printed|Preprinted|Original/i.test(n);
-    const isMawb = /MAWB/i.test(n + c);
-    const variants = [
-      [
+    return {
+      blocks: [
         ...HEADER,
-        titleBlock(isMawb ? 'MAWB' : 'HAWB'),
+        titleBlock(/MAWB/i.test(n + c) ? 'MAWB' : 'HAWB'),
         ...(preprinted ? [{ type: 'formatBadge' }] : []),
-        { type: 'partyNotifyGrid' },
-        { type: 'hawbRouteGrid' },
-        { type: 'chargeTable', headerColor: preprinted ? 'fill' : 'primary' },
-        { type: 'signatureRow' },
-        ...FOOT,
-      ],
-      [
-        ...HEADER,
-        titleBlock(isMawb ? 'MAWB DRAFT' : 'HAWB DRAFT'),
-        { type: 'formatBadge' },
-        { type: 'partyNotifyGrid' },
-        { type: 'hawbRouteGrid' },
+        { type: 'partyTriple' },
         { type: 'fieldGrid', cols: 2 },
-        { type: 'chargeTable', headerColor: 'cyan' },
+        { type: 'chargeTable', headerColor: preprinted ? 'fill' : 'primary' },
+        { type: 'containerStrip' },
         { type: 'termsBank' },
         { type: 'signatureRow' },
         ...FOOT,
       ],
-      [
-        ...HEADER,
-        titleBlock(isMawb ? 'MAWB' : 'HAWB', 'start'),
-        { type: 'partyNotifyGrid' },
-        { type: 'hawbRouteGrid' },
-        { type: 'containerStrip' },
-        { type: 'chargeTable', headerColor: 'accent' },
-        { type: 'stampSignature' },
-        ...FOOT,
-      ],
-    ];
-    return { blocks: variants[seed % variants.length] };
+    };
   }
 
   // ——— WMS ASN ———

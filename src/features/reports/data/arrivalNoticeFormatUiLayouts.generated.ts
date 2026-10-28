@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — arrivalNoticeFormatUiLayouts. */
+/** Auto-generated Arrival Notice formats — permanent JSON store. */
 export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1",
@@ -527,7 +527,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "hblCargoTable"
@@ -778,9 +778,12 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
@@ -790,20 +793,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -814,7 +814,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "code": "ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA",
     "formatNumber": 3,
     "name": "Arrival Notice Report Format-3 Arrival Notice USA",
-    "paper": "Letter",
+    "paper": "A4",
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
@@ -994,23 +994,26 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "ARRIVAL NOTICE / FREIGHT BILL",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "partyTriple"
+      },
+      {
         "type": "chargeTable",
         "headerColor": "primary"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
@@ -1024,7 +1027,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "code": "ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA",
     "formatNumber": 4,
     "name": "Arrival Notice Report Format-4 Arrival Notice USA",
-    "paper": "Letter",
+    "paper": "A4",
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
@@ -1203,29 +1206,29 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "ARRIVAL NOTICE & INVOICE",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "usaNumberedFields"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -1463,9 +1466,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE / HBL No. - PLJEAMAA00001",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -1475,20 +1482,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -1707,7 +1711,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -1716,23 +1720,20 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "containerStrip"
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -1956,7 +1957,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -1965,23 +1966,20 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "containerStrip"
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -2563,8 +2561,8 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ARRIVAL NOTICE",
-        "align": "start",
+        "text": "ARRIVAL NOTICE (THÔNG BÁO HÀNG ĐẾN)",
+        "align": "center",
         "band": true
       },
       {
@@ -2572,26 +2570,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "containerStrip"
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "outstandingTable"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -2959,9 +2948,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE AIR",
-        "align": "start",
+        "text": "CARGO ARRIVAL NOTICE / HAWB - AWB91384768",
+        "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -2971,23 +2964,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "cyan"
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -3736,38 +3723,29 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG ARRIVAL NOTICE",
-        "align": "start",
+        "text": "ARRIVAL NOTICE / FREIGHT BILL",
+        "align": "center",
         "band": true
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "partyTriple"
       },
       {
         "type": "chargeTable",
         "headerColor": "primary"
       },
       {
+        "type": "taxAmountBox"
+      },
+      {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3926,35 +3904,23 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG ARRIVAL NOTICE FORMAT-2",
-        "align": "start",
+        "text": "ARRIVAL NOTICE & INVOICE",
+        "align": "center",
         "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -4094,8 +4060,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "4. Partial Payments are not acceptable.",
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
-      ],
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      ]
     },
     "blocks": [
       {
@@ -4104,25 +4069,23 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG ARRIVAL NOTICE WITHOUT CHARGES",
+        "text": "ARRIVAL NOTICE & INVOICE",
         "align": "center",
         "band": true
-      },
-      {
-        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "partyTriple"
       },
       {
-        "type": "letterBody"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -4261,38 +4224,26 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG ARRIVAL NOTICE FORMAT-3",
+        "text": "ARRIVAL NOTICE",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4438,8 +4389,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "4. Partial Payments are not acceptable.",
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
-      ],
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      ]
     },
     "blocks": [
       {
@@ -4448,28 +4398,27 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE AIR WITHOUT CHARGES",
-        "align": "start",
+        "text": "CARGO ARRIVAL NOTICE / HAWB - AWB91384768",
+        "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -4596,38 +4545,22 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CARGO ARRIVAL NOTICE",
-        "align": "start",
+        "text": "ARRIVAL NOTICE",
+        "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "wordsAndTotal"
+        "cols": 2
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4766,41 +4699,26 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CARGO ARRIVAL NOTICE FORMAT-1",
+        "text": "EXPORT CONTAINER RELEASE ORDER",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "containerStrip"
+        "type": "letterBody"
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
-      },
-      {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -4990,38 +4908,33 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CARGO ARRIVAL NOTICE SEA",
-        "align": "start",
+        "text": "CARGO ARRIVAL NOTICE / HBL NO. - PLMAAJEA00081",
+        "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "containerStrip"
+        "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "primary"
       },
       {
+        "type": "outstandingTable"
+      },
+      {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -5197,7 +5110,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE SEA FORMAT-2",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -5206,29 +5119,20 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
-      },
-      {
-        "type": "containerStrip"
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -5425,9 +5329,13 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE SEA FORMAT-3",
-        "align": "start",
+        "text": "CARGO ARRIVAL NOTICE",
+        "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
@@ -5437,32 +5345,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "outstandingTable"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -5585,7 +5478,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE SEA FORMAT-1",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -5597,26 +5490,11 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -5726,8 +5604,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "4. Partial Payments are not acceptable.",
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
-      ],
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      ]
     },
     "blocks": [
       {
@@ -5736,7 +5613,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE SEA WITHOUT CHARGES FORMAT-1",
+        "text": "CARGO ARRIVAL NOTICE",
         "align": "center",
         "band": true
       },
@@ -5745,16 +5622,14 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "signatureRow"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -5888,8 +5763,8 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "SEA ARRIVAL NOTICE LCL VIETNAM",
-        "align": "start",
+        "text": "ARRIVAL NOTICE (THÔNG BÁO HÀNG ĐẾN) — LCL",
+        "align": "center",
         "band": true
       },
       {
@@ -5897,38 +5772,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "containerStrip"
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "outstandingTable"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -6054,41 +5908,27 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "FG CARGO ARRIVAL NOTICE SEA FORMAT-3",
+        "text": "CARGO ARRIVAL NOTICE / HBL NO. - BOMMAADXB0332",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": true
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "containerStrip"
+        "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "wordsAndTotal"
-      },
-      {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6237,8 +6077,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
         "6. After Free days storage charges applicable."
       ],
-      "remarks": "CHENNAI ARRIVAL 1X20 — WITHOUT CHARGES",
-      "letterBody": "Cargo arrived — charges not included on this notice."
+      "remarks": "CHENNAI ARRIVAL 1X20 — WITHOUT CHARGES"
     },
     "blocks": [
       {
@@ -6247,8 +6086,8 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO ARRIVAL NOTICE –SEA WITHOUT CHARGES",
-        "align": "start",
+        "text": "CARGO ARRIVAL NOTICE",
+        "align": "center",
         "band": true
       },
       {
@@ -6259,16 +6098,11 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"

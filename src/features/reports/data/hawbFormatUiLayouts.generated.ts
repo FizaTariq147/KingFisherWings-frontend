@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — hawbFormatUiLayouts. */
+/** Auto-generated HAWB formats — permanent JSON store. */
 export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "HAWB_DRAFT_REPORT_FORMAT",
@@ -21,7 +21,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -31,10 +31,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
-      "formatBadgeLabel": "HAWB Draft Report Format",
+      "formatBadgeLabel": "Draft Report Format",
       "heroTitle": "HAWB DRAFT",
       "partyLeft": {
-        "title": "Shipper's Name and Address",
+        "title": "Shipper",
         "lines": [
           "4G LOGISTICS INDIA PVT LTD",
           "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
@@ -42,7 +42,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyMid": {
-        "title": "Consignee's Name and Address",
+        "title": "Consignee",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
           "30 AL MAKTHOOM BUILDING",
@@ -50,11 +50,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyNotify": {
-        "title": "Issuing Carrier’s Agent Name and City",
+        "title": "Issuing Carrier Agent",
         "lines": [
-          "KingFisher Wings",
-          "Dubai, United Arab Emirates",
-          "IATA Code : 16-4 1234 / 0123"
+          "KingFisher Logistic",
+          "Dubai, United Arab Emirates"
         ]
       },
       "fieldGrid": [
@@ -67,45 +66,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "176-12345678"
         },
         {
-          "k": "Shipper’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Consignee’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Accounting Information",
-          "v": "FREIGHT PREPAID"
-        },
-        {
-          "k": "Reference Number",
-          "v": "CEXP190150"
-        },
-        {
-          "k": "Declared Value for Carriage",
-          "v": "NVD"
-        },
-        {
-          "k": "Declared Value for Customs",
-          "v": "NCV"
-        },
-        {
-          "k": "Amount of Insurance",
-          "v": "XXX"
-        },
-        {
-          "k": "Handling Information",
-          "v": "HANDLE WITH CARE"
-        },
-        {
-          "k": "SCI",
-          "v": ""
-        }
-      ],
-      "hawbRouteFields": [
-        {
-          "k": "Airport of Departure (Addr. of First Carrier) and Requested Routing",
+          "k": "Airport of Departure",
           "v": "CHENNAI (MAA)"
         },
         {
@@ -117,66 +78,108 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "EK-512 / 29-JAN-19"
         },
         {
-          "k": "To / By First Carrier",
-          "v": "DXB / EK"
-        },
-        {
           "k": "Currency",
           "v": "USD"
         },
         {
-          "k": "CHGS Code",
-          "v": "PP"
+          "k": "WT/VAL",
+          "v": "PPD"
+        },
+        {
+          "k": "Other",
+          "v": "PPD"
+        },
+        {
+          "k": "Declared Value Carriage",
+          "v": "NVD"
+        },
+        {
+          "k": "Declared Value Customs",
+          "v": "NCV"
+        },
+        {
+          "k": "Amount of Insurance",
+          "v": "XXX"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Rate / Charge",
+          "v": "As agreed"
+        },
+        {
+          "k": "Total",
+          "v": "As per AWB"
+        }
+      ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
         }
       ],
       "tableHeaders": [
-        "No. of Pieces RCP",
+        "No. of Pieces",
         "Gross Weight",
-        "kg lb",
         "Rate Class",
-        "Commodity Item No.",
-        "Chargeable Weight",
-        "Rate / Charge",
-        "Total",
-        "Nature and Quantity of Goods"
+        "Nature of Goods"
       ],
       "tableRows": [
         [
           "125",
-          "18000.0",
-          "K",
+          "18,000.0 K",
           "Q",
-          "",
-          "18000.0",
-          "AS AGREED",
-          "AS PER AWB",
           "STC: VALVE MATERIALS FOR MACHINERY PARTS"
         ]
       ],
       "termsLines": [
-        "DRAFT — Not valid for carriage until issued as original Air Waybill.",
-        "It is agreed that the goods described herein are accepted for carriage subject to the conditions of contract.",
-        "Shipper certifies that the particulars on the face hereof are correct."
+        "DRAFT — Not valid for carriage until issued as original AWB.",
+        "Shipper certifies that particulars on the face hereof are correct."
       ],
-      "remarks": "HAWB Draft Report Format",
-      "signatureLabels": [
-        "Signature of Shipper or Agent",
-        "Signature of Issuing Carrier or Agent"
-      ]
+      "remarks": "Draft Report Format"
     },
     "blocks": [
       {
         "type": "companyHeader",
-        "showContact": true,
-        "title": "HOUSE AIR WAYBILL"
+        "showContact": true
       },
       {
         "type": "formatBadge",
-        "label": "DRAFT"
+        "label": "Draft Report Format"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE AIR WAYBILL — DRAFT",
+        "text": "HOUSE AIR WAYBILL — HAWB DRAFT",
         "align": "center",
         "band": true
       },
@@ -212,8 +215,8 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0A3D73",
-      "accent": "#1A6FA8",
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
@@ -224,7 +227,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -234,10 +237,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
-      "formatBadgeLabel": "HAWB Draft Report Format-1",
+      "formatBadgeLabel": "Draft Report Format-1",
       "heroTitle": "HAWB DRAFT",
       "partyLeft": {
-        "title": "Shipper's Name and Address",
+        "title": "Shipper",
         "lines": [
           "4G LOGISTICS INDIA PVT LTD",
           "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
@@ -245,7 +248,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyMid": {
-        "title": "Consignee's Name and Address",
+        "title": "Consignee",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
           "30 AL MAKTHOOM BUILDING",
@@ -253,11 +256,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyNotify": {
-        "title": "Issuing Carrier’s Agent Name and City",
+        "title": "Issuing Carrier Agent",
         "lines": [
-          "KingFisher Wings",
-          "Dubai, United Arab Emirates",
-          "IATA Code : 16-4 1234 / 0123"
+          "KingFisher Logistic",
+          "Dubai, United Arab Emirates"
         ]
       },
       "fieldGrid": [
@@ -270,49 +272,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "176-12345678"
         },
         {
-          "k": "Shipper’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Consignee’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Accounting Information",
-          "v": "FREIGHT PREPAID"
-        },
-        {
-          "k": "Reference Number",
-          "v": "CEXP190150"
-        },
-        {
-          "k": "Declared Value for Carriage",
-          "v": "NVD"
-        },
-        {
-          "k": "Declared Value for Customs",
-          "v": "NCV"
-        },
-        {
-          "k": "Amount of Insurance",
-          "v": "XXX"
-        },
-        {
-          "k": "Handling Information",
-          "v": "HANDLE WITH CARE"
-        },
-        {
-          "k": "SCI",
-          "v": ""
-        },
-        {
-          "k": "Layout",
-          "v": "Draft Format-1"
-        }
-      ],
-      "hawbRouteFields": [
-        {
-          "k": "Airport of Departure (Addr. of First Carrier) and Requested Routing",
+          "k": "Airport of Departure",
           "v": "CHENNAI (MAA)"
         },
         {
@@ -324,52 +284,99 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "EK-512 / 29-JAN-19"
         },
         {
-          "k": "To / By First Carrier",
-          "v": "DXB / EK"
-        },
-        {
           "k": "Currency",
           "v": "USD"
         },
         {
-          "k": "CHGS Code",
-          "v": "PP"
+          "k": "WT/VAL",
+          "v": "PPD"
+        },
+        {
+          "k": "Other",
+          "v": "PPD"
+        },
+        {
+          "k": "Declared Value Carriage",
+          "v": "NVD"
+        },
+        {
+          "k": "Declared Value Customs",
+          "v": "NCV"
+        },
+        {
+          "k": "Amount of Insurance",
+          "v": "XXX"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Rate / Charge",
+          "v": "As agreed"
+        },
+        {
+          "k": "Total",
+          "v": "As per AWB"
+        },
+        {
+          "k": "Layout",
+          "v": "Draft Format-1"
+        }
+      ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
         }
       ],
       "tableHeaders": [
-        "No. of Pieces RCP",
+        "No. of Pieces",
         "Gross Weight",
-        "kg lb",
         "Rate Class",
-        "Commodity Item No.",
-        "Chargeable Weight",
-        "Rate / Charge",
-        "Total",
-        "Nature and Quantity of Goods"
+        "Nature of Goods"
       ],
       "tableRows": [
         [
           "125",
-          "18000.0",
-          "K",
+          "18,000.0 K",
           "Q",
-          "",
-          "18000.0",
-          "AS AGREED",
-          "AS PER AWB",
           "STC: VALVE MATERIALS FOR MACHINERY PARTS"
         ]
       ],
       "termsLines": [
-        "DRAFT — Not valid for carriage until issued as original Air Waybill.",
-        "It is agreed that the goods described herein are accepted for carriage subject to the conditions of contract.",
-        "Shipper certifies that the particulars on the face hereof are correct."
+        "DRAFT — Not valid for carriage until issued as original AWB.",
+        "Shipper certifies that particulars on the face hereof are correct."
       ],
-      "remarks": "HAWB Draft Report Format-1",
-      "signatureLabels": [
-        "Signature of Shipper or Agent",
-        "Signature of Issuing Carrier or Agent"
-      ]
+      "remarks": "Draft Report Format-1"
     },
     "blocks": [
       {
@@ -378,16 +385,13 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "formatBadge",
-        "label": "DRAFT FORMAT-1"
+        "label": "Draft Report Format-1"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE AIR WAYBILL — DRAFT FORMAT 1",
-        "align": "start",
+        "text": "HOUSE AIR WAYBILL — HAWB DRAFT FORMAT 1",
+        "align": "center",
         "band": true
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "partyNotifyGrid"
@@ -397,7 +401,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -427,13 +431,13 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#7EC8F0",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -443,10 +447,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
-      "formatBadgeLabel": "HAWB Draft Report Format-2",
+      "formatBadgeLabel": "Draft Report Format-2",
       "heroTitle": "HAWB DRAFT",
       "partyLeft": {
-        "title": "Shipper's Name and Address",
+        "title": "Shipper",
         "lines": [
           "4G LOGISTICS INDIA PVT LTD",
           "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
@@ -454,7 +458,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyMid": {
-        "title": "Consignee's Name and Address",
+        "title": "Consignee",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
           "30 AL MAKTHOOM BUILDING",
@@ -462,11 +466,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyNotify": {
-        "title": "Issuing Carrier’s Agent Name and City",
+        "title": "Issuing Carrier Agent",
         "lines": [
-          "KingFisher Wings",
-          "Dubai, United Arab Emirates",
-          "IATA Code : 16-4 1234 / 0123"
+          "KingFisher Logistic",
+          "Dubai, United Arab Emirates"
         ]
       },
       "fieldGrid": [
@@ -479,49 +482,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "176-12345678"
         },
         {
-          "k": "Shipper’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Consignee’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Accounting Information",
-          "v": "FREIGHT PREPAID"
-        },
-        {
-          "k": "Reference Number",
-          "v": "CEXP190150"
-        },
-        {
-          "k": "Declared Value for Carriage",
-          "v": "NVD"
-        },
-        {
-          "k": "Declared Value for Customs",
-          "v": "NCV"
-        },
-        {
-          "k": "Amount of Insurance",
-          "v": "XXX"
-        },
-        {
-          "k": "Handling Information",
-          "v": "HANDLE WITH CARE"
-        },
-        {
-          "k": "SCI",
-          "v": ""
-        },
-        {
-          "k": "Layout",
-          "v": "Draft Format-2"
-        }
-      ],
-      "hawbRouteFields": [
-        {
-          "k": "Airport of Departure (Addr. of First Carrier) and Requested Routing",
+          "k": "Airport of Departure",
           "v": "CHENNAI (MAA)"
         },
         {
@@ -533,65 +494,112 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "EK-512 / 29-JAN-19"
         },
         {
-          "k": "To / By First Carrier",
-          "v": "DXB / EK"
-        },
-        {
           "k": "Currency",
           "v": "USD"
         },
         {
-          "k": "CHGS Code",
-          "v": "PP"
+          "k": "WT/VAL",
+          "v": "PPD"
+        },
+        {
+          "k": "Other",
+          "v": "PPD"
+        },
+        {
+          "k": "Declared Value Carriage",
+          "v": "NVD"
+        },
+        {
+          "k": "Declared Value Customs",
+          "v": "NCV"
+        },
+        {
+          "k": "Amount of Insurance",
+          "v": "XXX"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Rate / Charge",
+          "v": "As agreed"
+        },
+        {
+          "k": "Total",
+          "v": "As per AWB"
+        },
+        {
+          "k": "Layout",
+          "v": "Draft Format-2"
+        }
+      ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
         }
       ],
       "tableHeaders": [
-        "No. of Pieces RCP",
+        "No. of Pieces",
         "Gross Weight",
-        "kg lb",
         "Rate Class",
-        "Commodity Item No.",
-        "Chargeable Weight",
-        "Rate / Charge",
-        "Total",
-        "Nature and Quantity of Goods"
+        "Nature of Goods"
       ],
       "tableRows": [
         [
           "125",
-          "18000.0",
-          "K",
+          "18,000.0 K",
           "Q",
-          "",
-          "18000.0",
-          "AS AGREED",
-          "AS PER AWB",
           "STC: VALVE MATERIALS FOR MACHINERY PARTS"
         ]
       ],
       "termsLines": [
-        "DRAFT — Not valid for carriage until issued as original Air Waybill.",
-        "It is agreed that the goods described herein are accepted for carriage subject to the conditions of contract.",
-        "Shipper certifies that the particulars on the face hereof are correct."
+        "DRAFT — Not valid for carriage until issued as original AWB.",
+        "Shipper certifies that particulars on the face hereof are correct."
       ],
-      "remarks": "HAWB Draft Report Format-2",
-      "signatureLabels": [
-        "Signature of Shipper or Agent",
-        "Signature of Issuing Carrier or Agent"
-      ],
-      "docSubtitle": "HAWB DRAFT FORMAT-2"
+      "remarks": "Draft Report Format-2"
     },
     "blocks": [
-      {
-        "type": "summaryHero"
-      },
       {
         "type": "companyHeader",
         "showContact": true
       },
       {
+        "type": "formatBadge",
+        "label": "Draft Report Format-2"
+      },
+      {
         "type": "docTitle",
-        "text": "HOUSE AIR WAYBILL — DRAFT FORMAT 2",
+        "text": "HOUSE AIR WAYBILL — HAWB DRAFT FORMAT 2",
         "align": "center",
         "band": true
       },
@@ -607,16 +615,13 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -630,11 +635,11 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#1A1A1A",
+      "primary": "#0F4D96",
       "accent": "#2286C8",
-      "fill": "#FAFAFA",
+      "fill": "#F3F3F3",
       "panel": "#EBF0F4",
-      "orange": "#C45C00",
+      "orange": "#F7A21C",
       "red": "#DE1F26",
       "cyan": "#9AD7FF",
       "ink": "#101010",
@@ -642,7 +647,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -652,10 +657,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
-      "formatBadgeLabel": "HAWB Original Pre Printed Report Format-1",
+      "formatBadgeLabel": "Original Pre Printed Format-1",
       "heroTitle": "HAWB ORIGINAL",
       "partyLeft": {
-        "title": "Shipper's Name and Address",
+        "title": "Shipper",
         "lines": [
           "4G LOGISTICS INDIA PVT LTD",
           "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
@@ -663,7 +668,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyMid": {
-        "title": "Consignee's Name and Address",
+        "title": "Consignee",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
           "30 AL MAKTHOOM BUILDING",
@@ -671,11 +676,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyNotify": {
-        "title": "Issuing Carrier’s Agent Name and City",
+        "title": "Issuing Carrier Agent",
         "lines": [
-          "KingFisher Wings",
-          "Dubai, United Arab Emirates",
-          "IATA Code : 16-4 1234 / 0123"
+          "KingFisher Logistic",
+          "Dubai, United Arab Emirates"
         ]
       },
       "fieldGrid": [
@@ -688,53 +692,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "176-12345678"
         },
         {
-          "k": "Shipper’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Consignee’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Accounting Information",
-          "v": "FREIGHT PREPAID"
-        },
-        {
-          "k": "Reference Number",
-          "v": "CEXP190150"
-        },
-        {
-          "k": "Declared Value for Carriage",
-          "v": "NVD"
-        },
-        {
-          "k": "Declared Value for Customs",
-          "v": "NCV"
-        },
-        {
-          "k": "Amount of Insurance",
-          "v": "XXX"
-        },
-        {
-          "k": "Handling Information",
-          "v": "HANDLE WITH CARE"
-        },
-        {
-          "k": "SCI",
-          "v": ""
-        },
-        {
-          "k": "Stock",
-          "v": "Pre-printed Format-1"
-        },
-        {
-          "k": "Document Type",
-          "v": "ORIGINAL"
-        }
-      ],
-      "hawbRouteFields": [
-        {
-          "k": "Airport of Departure (Addr. of First Carrier) and Requested Routing",
+          "k": "Airport of Departure",
           "v": "CHENNAI (MAA)"
         },
         {
@@ -746,52 +704,99 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "EK-512 / 29-JAN-19"
         },
         {
-          "k": "To / By First Carrier",
-          "v": "DXB / EK"
-        },
-        {
           "k": "Currency",
           "v": "USD"
         },
         {
-          "k": "CHGS Code",
-          "v": "PP"
+          "k": "WT/VAL",
+          "v": "PPD"
+        },
+        {
+          "k": "Other",
+          "v": "PPD"
+        },
+        {
+          "k": "Declared Value Carriage",
+          "v": "NVD"
+        },
+        {
+          "k": "Declared Value Customs",
+          "v": "NCV"
+        },
+        {
+          "k": "Amount of Insurance",
+          "v": "XXX"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Rate / Charge",
+          "v": "As agreed"
+        },
+        {
+          "k": "Total",
+          "v": "As per AWB"
+        },
+        {
+          "k": "Stock",
+          "v": "Pre-printed Format-1"
+        }
+      ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
         }
       ],
       "tableHeaders": [
-        "No. of Pieces RCP",
+        "No. of Pieces",
         "Gross Weight",
-        "kg lb",
         "Rate Class",
-        "Commodity Item No.",
-        "Chargeable Weight",
-        "Rate / Charge",
-        "Total",
-        "Nature and Quantity of Goods"
+        "Nature of Goods"
       ],
       "tableRows": [
         [
           "125",
-          "18000.0",
-          "K",
+          "18,000.0 K",
           "Q",
-          "",
-          "18000.0",
-          "AS AGREED",
-          "AS PER AWB",
           "STC: VALVE MATERIALS FOR MACHINERY PARTS"
         ]
       ],
       "termsLines": [
-        "ORIGINAL — For carrier pre-printed stock / negotiable when duly signed.",
-        "It is agreed that the goods described herein are accepted for carriage subject to the conditions of contract.",
-        "Shipper certifies that the particulars on the face hereof are correct."
+        "ORIGINAL PRE-PRINTED — For carrier pre-printed stock.",
+        "Shipper certifies that particulars on the face hereof are correct."
       ],
-      "remarks": "HAWB Original Pre Printed Report Format-1",
-      "signatureLabels": [
-        "Signature of Shipper or Agent",
-        "Signature of Issuing Carrier or Agent"
-      ]
+      "remarks": "Original Pre Printed Format-1"
     },
     "blocks": [
       {
@@ -801,7 +806,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "formatBadge",
-        "label": "ORIGINAL PRE-PRINTED 1"
+        "label": "Original Pre Printed Format-1"
       },
       {
         "type": "docTitle",
@@ -843,7 +848,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "theme": {
       "primary": "#0F4D96",
       "accent": "#2286C8",
-      "fill": "#EEF4FA",
+      "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
@@ -853,7 +858,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Wings",
+      "company": "KingFisher Logistic",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -863,10 +868,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "29-JAN-19",
-      "formatBadgeLabel": "HAWB Original Pre Printed Report Format-2",
+      "formatBadgeLabel": "Original Pre Printed Format-2",
       "heroTitle": "HAWB ORIGINAL",
       "partyLeft": {
-        "title": "Shipper's Name and Address",
+        "title": "Shipper",
         "lines": [
           "4G LOGISTICS INDIA PVT LTD",
           "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
@@ -874,7 +879,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyMid": {
-        "title": "Consignee's Name and Address",
+        "title": "Consignee",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
           "30 AL MAKTHOOM BUILDING",
@@ -882,11 +887,10 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyNotify": {
-        "title": "Issuing Carrier’s Agent Name and City",
+        "title": "Issuing Carrier Agent",
         "lines": [
-          "KingFisher Wings",
-          "Dubai, United Arab Emirates",
-          "IATA Code : 16-4 1234 / 0123"
+          "KingFisher Logistic",
+          "Dubai, United Arab Emirates"
         ]
       },
       "fieldGrid": [
@@ -899,53 +903,7 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "176-12345678"
         },
         {
-          "k": "Shipper’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Consignee’s Account Number",
-          "v": "—"
-        },
-        {
-          "k": "Accounting Information",
-          "v": "FREIGHT PREPAID"
-        },
-        {
-          "k": "Reference Number",
-          "v": "CEXP190150"
-        },
-        {
-          "k": "Declared Value for Carriage",
-          "v": "NVD"
-        },
-        {
-          "k": "Declared Value for Customs",
-          "v": "NCV"
-        },
-        {
-          "k": "Amount of Insurance",
-          "v": "XXX"
-        },
-        {
-          "k": "Handling Information",
-          "v": "HANDLE WITH CARE"
-        },
-        {
-          "k": "SCI",
-          "v": ""
-        },
-        {
-          "k": "Stock",
-          "v": "Pre-printed Format-2"
-        },
-        {
-          "k": "Document Type",
-          "v": "ORIGINAL"
-        }
-      ],
-      "hawbRouteFields": [
-        {
-          "k": "Airport of Departure (Addr. of First Carrier) and Requested Routing",
+          "k": "Airport of Departure",
           "v": "CHENNAI (MAA)"
         },
         {
@@ -957,57 +915,101 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "EK-512 / 29-JAN-19"
         },
         {
-          "k": "To / By First Carrier",
-          "v": "DXB / EK"
-        },
-        {
           "k": "Currency",
           "v": "USD"
         },
         {
-          "k": "CHGS Code",
-          "v": "PP"
+          "k": "WT/VAL",
+          "v": "PPD"
+        },
+        {
+          "k": "Other",
+          "v": "PPD"
+        },
+        {
+          "k": "Declared Value Carriage",
+          "v": "NVD"
+        },
+        {
+          "k": "Declared Value Customs",
+          "v": "NCV"
+        },
+        {
+          "k": "Amount of Insurance",
+          "v": "XXX"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Rate / Charge",
+          "v": "As agreed"
+        },
+        {
+          "k": "Total",
+          "v": "As per AWB"
+        },
+        {
+          "k": "Stock",
+          "v": "Pre-printed Format-2"
+        }
+      ],
+      "hawbRouteFields": [
+        {
+          "k": "Airport of Departure",
+          "v": "CHENNAI (MAA)"
+        },
+        {
+          "k": "Airport of Destination",
+          "v": "DUBAI (DXB)"
+        },
+        {
+          "k": "Flight / Date",
+          "v": "EK-512 / 29-JAN-19"
+        },
+        {
+          "k": "Pieces",
+          "v": "125"
+        },
+        {
+          "k": "Gross Weight",
+          "v": "18,000.0 K"
+        },
+        {
+          "k": "Chargeable Weight",
+          "v": "18,000.0 K"
         }
       ],
       "tableHeaders": [
-        "No. of Pieces RCP",
+        "No. of Pieces",
         "Gross Weight",
-        "kg lb",
         "Rate Class",
-        "Commodity Item No.",
-        "Chargeable Weight",
-        "Rate / Charge",
-        "Total",
-        "Nature and Quantity of Goods"
+        "Nature of Goods"
       ],
       "tableRows": [
         [
           "125",
-          "18000.0",
-          "K",
+          "18,000.0 K",
           "Q",
-          "",
-          "18000.0",
-          "AS AGREED",
-          "AS PER AWB",
           "STC: VALVE MATERIALS FOR MACHINERY PARTS"
         ]
       ],
       "termsLines": [
-        "ORIGINAL — For carrier pre-printed stock / negotiable when duly signed.",
-        "It is agreed that the goods described herein are accepted for carriage subject to the conditions of contract.",
-        "Shipper certifies that the particulars on the face hereof are correct."
+        "ORIGINAL PRE-PRINTED — For carrier pre-printed stock.",
+        "Shipper certifies that particulars on the face hereof are correct."
       ],
-      "remarks": "HAWB Original Pre Printed Report Format-2",
-      "signatureLabels": [
-        "Signature of Shipper or Agent",
-        "Signature of Issuing Carrier or Agent"
-      ]
+      "remarks": "Original Pre Printed Format-2"
     },
     "blocks": [
-      {
-        "type": "colorBar"
-      },
       {
         "type": "companyHeader",
         "showContact": true,
@@ -1015,12 +1017,12 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "formatBadge",
-        "label": "ORIGINAL PRE-PRINTED 2"
+        "label": "Original Pre Printed Format-2"
       },
       {
         "type": "docTitle",
         "text": "HOUSE AIR WAYBILL — ORIGINAL (PRE-PRINTED) FORMAT 2",
-        "align": "end",
+        "align": "center",
         "band": true
       },
       {
@@ -1030,21 +1032,18 @@ export const HAWB_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "hawbRouteGrid"
       },
       {
-        "type": "exportMetaStrip"
-      },
-      {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"

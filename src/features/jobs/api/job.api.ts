@@ -265,15 +265,6 @@ export const JOB_API = {
   /** GET /jobs/:id/bl-draft/preview · POST generate (is_original: false) */
   blDraftPreview: (id: string) => `/jobs/${id}/bl-draft/preview`,
   blDraftGenerate: (id: string) => `/jobs/${id}/bl-draft/generate`,
-  /**
-   * Optional air draft preview (BL-parity). Prefer hawb-draft, then awb-draft.
-   * Soft-404 → FE merges /air-booking-form + air_details.
-   */
-  hawbDraftPreview: (id: string) => `/jobs/${id}/hawb-draft/preview`,
-  mawbDraftPreview: (id: string) => `/jobs/${id}/mawb-draft/preview`,
-  awbDraftPreview: (id: string) => `/jobs/${id}/awb-draft/preview`,
-  hawbDraftGenerate: (id: string) => `/jobs/${id}/hawb-draft/generate`,
-  mawbDraftGenerate: (id: string) => `/jobs/${id}/mawb-draft/generate`,
 
   cargo: (id: string) => `/jobs/${id}/cargo`,
   cargoItem: (id: string, cargoId: string) => `/jobs/${id}/cargo/${cargoId}`,

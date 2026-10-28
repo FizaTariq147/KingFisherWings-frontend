@@ -49,16 +49,6 @@ export type InvoiceFormatPdfData = {
   vesselFlight?: string;
   incoterm?: string;
   currencyCode?: string;
-  /** Air AWB — live booking-form / air_details (not demo). */
-  hawbNumber?: string;
-  mawbNumber?: string;
-  originAirport?: string;
-  destAirport?: string;
-  pieces?: string;
-  grossWeight?: string;
-  chargeableWeight?: string;
-  volumeCbm?: string;
-  freightType?: string;
   lines?: InvoiceFormatPdfLine[];
   /**
    * Prefer these over charge-line remapping — HBL / container grids
@@ -71,20 +61,15 @@ export type InvoiceFormatPdfData = {
   total?: string;
 };
 
-/** @deprecated Prefer empty string for entity-bound missing fields (no dummy / no N/A). */
 export const REPORT_FIELD_NA = 'N/A';
 
-/**
- * Live value when present. Entity-bound missing → empty string (never demo, never N/A).
- * Catalog browse (not bound) → undefined so callers keep layout demos.
- */
 export function reportFieldOrNa(
   value: string | null | undefined,
   entityBound: boolean,
 ): string | undefined {
   const v = String(value ?? '').trim();
   if (v) return v;
-  return entityBound ? '' : undefined;
+  return entityBound ? REPORT_FIELD_NA : undefined;
 }
 
 function parseMoney(raw?: string): number | undefined {
@@ -298,26 +283,17 @@ export function invoiceFormatToInvoicePdfModel(
             amount: amount ?? (qty != null && rate != null ? qty * rate : undefined),
           };
         })
-      : data.entityBound
-        ? []
-        : DEMO_LINES;
+      : DEMO_LINES;
 
   const subtotal =
     parseMoney(data.subtotal) ??
-    (lines.length ? lines.reduce((sum, line) => sum + (line.amount ?? 0), 0) : 0);
+    lines.reduce((sum, line) => sum + (line.amount ?? 0), 0);
   const vatAmount =
     parseMoney(data.tax) ??
-    (data.entityBound
-      ? 0
-      : meta.vatRate > 0
-        ? Math.round(subtotal * (meta.vatRate / 100) * 100) / 100
-        : 0);
-  const grandTotal = parseMoney(data.total) ?? (data.entityBound ? subtotal : subtotal + vatAmount);
+    (meta.vatRate > 0 ? Math.round(subtotal * (meta.vatRate / 100) * 100) / 100 : 0);
+  const grandTotal = parseMoney(data.total) ?? subtotal + vatAmount;
 
   const formatLabel = preview.name.replace(/Fresa/gi, 'KingFisher');
-  const empty = '';
-  const etdEta = [data.etd, data.eta].filter(Boolean).join(' / ');
-  const grossWtCbm = [data.grossWeight, data.volumeCbm].filter(Boolean).join(' / ');
 
   return {
     pageSize: meta.pageSize,
@@ -330,46 +306,49 @@ export function invoiceFormatToInvoicePdfModel(
     invoiceNumber:
       data.invoiceNumber ||
       (data.entityBound
-        ? empty
+        ? REPORT_FIELD_NA
         : `KFW-INV-2026-00${String(preview.formatNumber).padStart(2, '0')}`),
-    invoiceDate: data.invoiceDate || (data.entityBound ? empty : '14-Sep-2026'),
+    invoiceDate:
+      data.invoiceDate || (data.entityBound ? REPORT_FIELD_NA : '14-Sep-2026'),
     dueDate:
       data.dueDate ||
       data.validUntil ||
-      (data.entityBound ? empty : '28-Sep-2026'),
+      (data.entityBound ? REPORT_FIELD_NA : '28-Sep-2026'),
     jobRef:
       data.jobNumber ||
       data.shipmentNumber ||
-      (data.entityBound ? empty : `JOB-2026-${1000 + preview.formatNumber}`),
+      (data.entityBound ? REPORT_FIELD_NA : `JOB-2026-${1000 + preview.formatNumber}`),
     currencyCode: currency,
     vatRate: meta.vatRate,
     billTo: {
-      client: data.billToName || (data.entityBound ? empty : 'Demo Customer Trading Co.'),
-      attn: data.entityBound ? empty : 'Accounts Payable',
-      phone: data.billToPhone || (data.entityBound ? empty : '+971 4 000 0000'),
-      email: data.billToEmail || (data.entityBound ? empty : 'ap@demo-customer.example'),
+      client:
+        data.billToName ||
+        (data.entityBound ? REPORT_FIELD_NA : 'Demo Customer Trading Co.'),
+      attn: data.entityBound ? REPORT_FIELD_NA : 'Accounts Payable',
+      phone: data.entityBound ? REPORT_FIELD_NA : '+971 4 000 0000',
+      email: data.entityBound ? REPORT_FIELD_NA : 'ap@demo-customer.example',
       addressLines: data.billToAddress
         ? [data.billToAddress]
         : data.entityBound
-          ? []
+          ? [REPORT_FIELD_NA]
           : ['Plot 12, JAFZA', 'Dubai, UAE'],
-      vatNumber: preview.showGst ? (data.entityBound ? empty : '29AAAAA0000A1Z5') : undefined,
+      vatNumber: preview.showGst
+        ? data.entityBound
+          ? REPORT_FIELD_NA
+          : '29AAAAA0000A1Z5'
+        : undefined,
     },
     shipment: data.entityBound
       ? {
-          blAwb:
-            data.hawbNumber ||
-            data.mawbNumber ||
-            data.referenceNo ||
-            data.shipmentNumber ||
-            empty,
-          vesselFlight: data.vesselFlight || empty,
-          pol: data.pol || data.originAirport || empty,
-          pod: data.pod || data.destAirport || empty,
-          containerNo: empty,
-          etdEta: etdEta || empty,
-          commodity: data.commodity || empty,
-          grossWtCbm: grossWtCbm || empty,
+          blAwb: REPORT_FIELD_NA,
+          vesselFlight: REPORT_FIELD_NA,
+          pol: REPORT_FIELD_NA,
+          pod: REPORT_FIELD_NA,
+          containerNo: REPORT_FIELD_NA,
+          etdEta:
+            [data.etd, data.eta].filter(Boolean).join(' / ') || REPORT_FIELD_NA,
+          commodity: REPORT_FIELD_NA,
+          grossWtCbm: REPORT_FIELD_NA,
         }
       : {
           blAwb: 'BL-DEMO-0042',
@@ -381,7 +360,9 @@ export function invoiceFormatToInvoicePdfModel(
           commodity: meta.shipmentCommodity,
           grossWtCbm: '12,500 kg / 28.4 CBM',
         },
-    lines: data.entityBound && !data.lines?.length ? [] : lines,
+    lines: data.entityBound && !data.lines?.length
+      ? [{ description: REPORT_FIELD_NA }]
+      : lines,
     subtotal,
     discount: 0,
     taxableAmount: subtotal,
@@ -390,16 +371,15 @@ export function invoiceFormatToInvoicePdfModel(
     grandTotal,
     advanceReceived: 0,
     balanceDue: grandTotal,
-    remarks: data.entityBound
-      ? empty
-      : `KingFisher layout for Format-${preview.formatNumber} (${formatLabel}). ` +
-        'This is a computer-generated tax invoice / statement of charges. Payment is due by the due date.',
+    remarks:
+      `KingFisher layout for Format-${preview.formatNumber} (${formatLabel}). ` +
+      'This is a computer-generated tax invoice / statement of charges. Payment is due by the due date.',
     company: {
-      name: data.companyName || 'KingFisher Logistic',
+      name: 'KingFisher Logistic',
       tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
-      phone: data.companyPhone || '+971 55 5355 286',
-      email: data.companyEmail || 'inquiry@kingfishertec.com',
-      website: data.companyWeb || 'www.kingfisherwingsgroup.com',
+      phone: '+971 55 5355 286',
+      email: 'inquiry@kingfishertec.com',
+      website: 'www.kingfisherwingsgroup.com',
     },
   };
 }

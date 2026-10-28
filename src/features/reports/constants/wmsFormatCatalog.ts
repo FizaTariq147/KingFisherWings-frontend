@@ -3,7 +3,6 @@
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
 import { listWmsFormatUiLayouts } from '../data/wmsFormatUiLayouts';
-import { buildLayoutBackedFormatCatalog } from '../utils/buildLayoutBackedFormatCatalog';
 import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
 
 export type WmsFormatKind = string;
@@ -48,29 +47,32 @@ export const WMS_FORMAT_CATALOG: WmsFormatSpec[] = [
   },
 ];
 
-/** Name/sort metadata only — strip lists layout-backed codes exclusively. */
-const WMS_SEED: WmsFormatSpec[] = [
-  ...WMS_FORMAT_CATALOG,
-  ...REMAINING_FORMAT_CATALOG.filter(
-    (r) => r.bucket === 'wms' || r.bucket === 'wms_extra',
-  ).map((r, i) => ({
-    code: r.code,
-    name: r.name,
-    kind: `wms_extra_${r.sortOrder || i + 1}`,
-    sortOrder: 1000 + (r.sortOrder || i + 1),
-  })),
-];
+const WMS_EXTRA: WmsFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
+  (r) => r.bucket === 'wms' || r.bucket === 'wms_extra',
+).map((r, i) => ({
+  code: r.code,
+  name: r.name,
+  kind: `wms_extra_${r.sortOrder || i + 1}`,
+  sortOrder: 1000 + (r.sortOrder || i + 1),
+}));
 
-const ALL_WMS_FORMATS: WmsFormatSpec[] = buildLayoutBackedFormatCatalog(
-  listWmsFormatUiLayouts(),
-  WMS_SEED,
-  (layout, seed, i) => ({
-    code: layout.code,
-    name: layout.name || seed?.name || layout.code,
-    kind: seed?.kind || `wms_${layout.formatNumber || i + 1}`,
-    sortOrder: seed?.sortOrder ?? layout.formatNumber ?? 2000 + i,
-  }),
-);
+function buildAllWmsFormats(): WmsFormatSpec[] {
+  const by = new Map<string, WmsFormatSpec>();
+  for (const row of [...WMS_FORMAT_CATALOG, ...WMS_EXTRA]) by.set(row.code.toUpperCase(), row);
+  listWmsFormatUiLayouts().forEach((layout, i) => {
+    const key = layout.code.toUpperCase();
+    const existing = by.get(key);
+    by.set(key, {
+      code: layout.code,
+      name: layout.name || existing?.name || layout.code,
+      kind: existing?.kind || `wms_${layout.formatNumber || i + 1}`,
+      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+    });
+  });
+  return [...by.values()].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name));
+}
+
+const ALL_WMS_FORMATS: WmsFormatSpec[] = buildAllWmsFormats();
 
 const byCode = new Map(ALL_WMS_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 

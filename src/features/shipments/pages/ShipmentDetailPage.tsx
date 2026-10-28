@@ -31,12 +31,7 @@ import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclCont
 import { FclContinuumRail } from '@/features/shared/continuum/FclContinuumRail';
 import { FavouriteToggle } from '@/features/favourites/components/FavouriteToggle';
 import { OpsContinuumRail } from '@/features/ops-activity';
-import {
-  AwbDraftFromBookingPanel,
-  hasAwbDraftPathHint,
-} from '@/features/shared/awb-draft';
 import { BlDraftFromBookingPanel } from '@/features/shared/bl-draft/BlDraftFromBookingPanel';
-import { isAirJobType } from '@/features/jobs/constants/job.constants';
 import { GenerateEdiPanel } from '@/features/shared/edi/GenerateEdiPanel';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { AddStatusCatalogModal } from '@/features/shared/status-catalog';
@@ -268,11 +263,6 @@ export default function ShipmentDetailPage() {
     });
   }, [query.data, perms.canWriteUpdate]);
 
-  /** Auto-open AWB when BE path_hints include hawb/mawb/awb-draft routes. */
-  useEffect(() => {
-    if (hasAwbDraftPathHint(query.data?.path_hints)) setShowAwb(true);
-  }, [query.data?.path_hints]);
-
   if (!perms.canReadApi) {
     return (
       <div className="space-y-3 p-2">
@@ -345,11 +335,7 @@ export default function ShipmentDetailPage() {
   const canKpi = perms.canView && actions?.can_kpi !== false;
   const canTracking = perms.canView && actions?.can_tracking !== false;
   const canBlEntry = perms.canView && actions?.can_bl_entry === true;
-  /** BE `can_awb` when set; otherwise show for air jobs (same FE fallback pattern as quote AWB Draft). */
-  const canAwb =
-    perms.canView &&
-    (actions?.can_awb === true ||
-      (actions?.can_awb == null && isAirJobType(jobType)));
+  const canAwb = perms.canView && actions?.can_awb === true;
   const canBookingForm = perms.canView && actions?.can_booking_form !== false;
   const canHblDoc =
     perms.canWriteGenerate && hasJob && actions?.can_hbl_document === true;
@@ -992,18 +978,16 @@ export default function ShipmentDetailPage() {
         <section className={erpForm.section}>
           <div className={erpForm.sectionHeader}>AWB</div>
           <div className={erpForm.sectionBody}>
-            {awbQuery.isError ? (
-              <p className="mb-3 text-[13px] text-red-700">
-                {getErrorMessage(awbQuery.error)}
-              </p>
-            ) : null}
-            <AwbDraftFromBookingPanel
-              shipmentId={shipment.id}
-              jobId={shipment.job_id}
-              onGenerated={() => {
-                void awbQuery.refetch();
-              }}
-            />
+            {awbQuery.isLoading ? (
+              <p className="text-[13px] text-[#64748b]">Loading AWB…</p>
+            ) : awbQuery.isError ? (
+              <p className="text-[13px] text-red-700">{getErrorMessage(awbQuery.error)}</p>
+            ) : (
+              <ShipmentApiPayloadView
+                data={awbQuery.data ?? {}}
+                emptyMessage="No AWB data returned."
+              />
+            )}
           </div>
         </section>
       )}

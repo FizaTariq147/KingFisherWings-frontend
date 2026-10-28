@@ -4,16 +4,12 @@ import {
   generateInvoiceFormatLayoutPdf,
   type InvoiceFormatPdfData,
 } from './generateInvoiceFormatLayoutPdf';
-import { generateClassicTransportCatalogPdf } from './catalogClassicTransportPdf';
 
 /**
  * Client layout PDF for any catalogue / registry code that has a permanent JSON layout.
  * Used for entity-bound live data (quotation / invoice / job / party) and as fallback
  * when POST /reports/generate is unavailable. Never replaces POST /invoices/:id/pdf
  * or /quotations/:id/pdf.
- *
- * HAWB / HBL official drafts use classic IATA / BL face renderers (not JsonInvoice),
- * matching Fresa sample structure aside from KingFisher branding + project T&C.
  */
 export async function generateCatalogLayoutPdf(
   code: string,
@@ -32,9 +28,6 @@ export async function generateCatalogLayoutPdf(
     rtl: layout.rtl,
     sections: [],
   };
-
-  const classic = await generateClassicTransportCatalogPdf(code, layout, data);
-  if (classic) return { blob: classic, preview };
 
   const blob = await generateInvoiceFormatLayoutPdf(preview, data);
   return { blob, preview };
