@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — wmsFormatUiLayouts. */
+/** Permanent JSON UI layouts — Fresa sky-blue themes. */
 export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "ADVANCE_SHIPPING_NOTE_FORMAT_1",
@@ -515,7 +515,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -523,11 +523,11 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -536,7 +536,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -745,16 +745,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE — LOCATION",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -971,17 +971,17 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
       },
       {
-        "type": "formatBadge"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -1190,7 +1190,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE — SUMMARY",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -1302,13 +1302,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE — LOCATION · V1",
+        "text": "ADVANCE SHIPPING NOTE — LOCATION",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -1316,6 +1316,9 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "containerStrip"
+      },
+      {
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -1415,16 +1418,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE · V1",
-        "align": "center",
-        "band": true
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -1435,6 +1438,9 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1535,8 +1541,8 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
@@ -1547,7 +1553,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -1556,7 +1562,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -1658,18 +1664,18 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -1678,7 +1684,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -1780,14 +1786,14 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -1800,7 +1806,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -1901,15 +1910,15 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -1922,7 +1931,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -2022,8 +2034,8 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE · V2",
-        "align": "start",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "center",
         "band": false
       },
       {
@@ -2035,13 +2047,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -2143,7 +2161,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
@@ -2154,7 +2172,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -2163,10 +2181,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "containerStrip"
       },
       {
-        "type": "summaryHero"
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -2267,19 +2288,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -2288,7 +2309,10 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "summaryHero"
@@ -2392,19 +2416,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -2413,10 +2437,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "outstandingTable"
       },
       {
-        "type": "summaryHero"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2648,8 +2675,8 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
@@ -2660,7 +2687,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -2669,13 +2696,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "summaryHero"
       },
       {
-        "type": "agingSummary"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2777,18 +2807,18 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -2797,13 +2827,16 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
         "type": "stampSignature"
       },
       {
-        "type": "summaryHero"
-      },
-      {
-        "type": "agingSummary"
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -3038,19 +3071,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -3059,16 +3092,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "summaryHero"
       },
       {
-        "type": "agingSummary"
+        "type": "exportMetaStrip"
       },
       {
-        "type": "wireBox"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -3170,7 +3206,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "partyTriple"
@@ -3181,7 +3217,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -3190,16 +3226,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
         "type": "stampSignature"
       },
       {
-        "type": "summaryHero"
+        "type": "taxAmountBox"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -3299,26 +3338,44 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE · V3",
-        "align": "end",
-        "band": true
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "start",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -3419,19 +3476,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -3440,19 +3497,22 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "summaryHero"
       },
       {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -3553,19 +3613,19 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
@@ -3574,19 +3634,22 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
         "type": "stampSignature"
       },
       {
-        "type": "summaryHero"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
+        "type": "taxAmountBox"
       },
       {
         "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -3686,8 +3749,8 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE · V4",
-        "align": "center",
+        "text": "ADVANCE SHIPPING NOTE",
+        "align": "start",
         "band": false
       },
       {
@@ -3695,17 +3758,38 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "jobDescription"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3806,8 +3890,8 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "ADVANCE SHIPPING NOTE",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "partyTriple"
@@ -3827,22 +3911,25 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "agingSummary"
       },
       {
         "type": "wireBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -4497,12 +4584,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2185C7",
-      "fill": "#EEF7FD",
-      "panel": "#E7F3FB",
+      "accent": "#2084C6",
+      "fill": "#EAF3F9",
+      "panel": "#E4F0F8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#9AD7FF",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4582,8 +4669,8 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS STOCK · V1",
-        "align": "center",
+        "text": "WMS STOCK",
+        "align": "end",
         "band": true
       },
       {
@@ -4594,20 +4681,26 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "jobDescription"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "containerNote"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4622,12 +4715,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2084C6",
-      "fill": "#EAF3F9",
-      "panel": "#E4F0F8",
+      "accent": "#1F83C5",
+      "fill": "#E8F1F7",
+      "panel": "#E2EEF6",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#99D6FE",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -4707,29 +4800,38 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS STOCK · V2",
-        "align": "start",
-        "band": false
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "letterBody"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "jobDescription"
       },
       {
-        "type": "signatureRow"
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -4829,8 +4931,8 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS STOCK · V3",
-        "align": "end",
+        "text": "WMS STOCK",
+        "align": "start",
         "band": true
       },
       {
@@ -4840,18 +4942,30 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "partyTriple"
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "jobDescription"
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
+        "type": "containerNote"
+      },
+      {
         "type": "termsBank"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -5000,9 +5114,9 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2488CA",
-      "fill": "#F5FEFF",
-      "panel": "#ECF8FF",
+      "accent": "#2387C9",
+      "fill": "#F3FCFF",
+      "panel": "#EAF6FE",
       "orange": "#F7A21C",
       "red": "#DE1F26",
       "cyan": "#9BD8FF",
@@ -5085,29 +5199,41 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS STOCK · V2",
-        "align": "start",
-        "band": false
+        "text": "WMS STOCK",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "letterBody"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "jobDescription"
       },
       {
-        "type": "signatureRow"
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -5123,8 +5249,8 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "theme": {
       "primary": "#0F4D96",
       "accent": "#2286C8",
-      "fill": "#EFF8FE",
-      "panel": "#E7F3FB",
+      "fill": "#F1FAFF",
+      "panel": "#E9F5FD",
       "orange": "#F7A21C",
       "red": "#DE1F26",
       "cyan": "#9AD7FF",
@@ -5207,26 +5333,44 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS STOCK · V4",
-        "align": "center",
-        "band": false
+        "text": "WMS STOCK",
+        "align": "start",
+        "band": true
       },
       {
-        "type": "agingSummary"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "outstandingTable"
       },
       {
-        "type": "fieldGrid",
-        "cols": 1
+        "type": "jobDescription"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -5241,12 +5385,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2185C7",
-      "fill": "#EDF6FC",
-      "panel": "#E6F2FA",
+      "accent": "#2286C8",
+      "fill": "#EFF8FE",
+      "panel": "#E7F3FB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#99D6FE",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -5326,26 +5470,44 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS STOCK · V4",
-        "align": "center",
-        "band": false
+        "text": "WMS STOCK",
+        "align": "end",
+        "band": true
       },
       {
         "type": "formatBadge"
       },
       {
-        "type": "summaryHero"
+        "type": "letterBody"
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerNote"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -6253,12 +6415,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2387C9",
-      "fill": "#F4FDFF",
-      "panel": "#EBF7FF",
+      "accent": "#2286C8",
+      "fill": "#F0F9FF",
+      "panel": "#E8F4FC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#9BD8FF",
+      "cyan": "#9AD7FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6338,9 +6500,9 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS GRN · V1",
-        "align": "center",
-        "band": true
+        "text": "WMS GRN",
+        "align": "start",
+        "band": false
       },
       {
         "type": "summaryHero"
@@ -6350,11 +6512,14 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "containerStrip"
@@ -6729,12 +6894,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2185C7",
-      "fill": "#ECF5FB",
-      "panel": "#E5F1F9",
+      "accent": "#1F83C5",
+      "fill": "#E8F1F7",
+      "panel": "#E2EEF6",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#99D6FE",
+      "cyan": "#98D5FD",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -6814,9 +6979,9 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS GRN · V1",
-        "align": "center",
-        "band": true
+        "text": "WMS GRN",
+        "align": "end",
+        "band": false
       },
       {
         "type": "formatBadge"
@@ -6826,14 +6991,17 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "containerStrip"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -7089,12 +7257,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2488CA",
-      "fill": "#F7FFFF",
-      "panel": "#EDF9FF",
+      "accent": "#2387C9",
+      "fill": "#F3FCFF",
+      "panel": "#EAF6FE",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#9CD9FF",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7174,9 +7342,9 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS GDO · V1",
-        "align": "center",
-        "band": true
+        "text": "WMS GDO",
+        "align": "start",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -7189,14 +7357,17 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -7583,9 +7754,9 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2185C7",
-      "fill": "#EDF6FC",
-      "panel": "#E6F2FA",
+      "accent": "#2084C6",
+      "fill": "#EBF4FA",
+      "panel": "#E5F1F9",
       "orange": "#F7A21C",
       "red": "#DE1F26",
       "cyan": "#99D6FE",
@@ -7668,18 +7839,18 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS GDO · V2",
-        "align": "start",
+        "text": "WMS GDO",
+        "align": "end",
         "band": false
       },
       {
-        "type": "formatBadge"
+        "type": "letterBody"
       },
       {
-        "type": "containerStrip"
+        "type": "exportMetaStrip"
       },
       {
-        "type": "partyTriple"
+        "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
@@ -7687,10 +7858,13 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
-        "type": "termsBank"
+        "type": "signatureRow"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -7830,12 +8004,12 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2084C6",
-      "fill": "#EBF4FA",
-      "panel": "#E5F1F9",
+      "accent": "#2589CB",
+      "fill": "#F8FFFF",
+      "panel": "#EEFAFF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#99D6FE",
+      "cyan": "#9CD9FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7915,9 +8089,9 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "WMS GDO · V1",
-        "align": "center",
-        "band": true
+        "text": "WMS GDO",
+        "align": "start",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -7930,14 +8104,17 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"

@@ -1,9 +1,0 @@
-{
-  "generatedAt": "2026-10-28T09:12:40.021Z",
-  "totalLayouts": 702,
-  "uniqueVisualShells": 702,
-  "collisionGroups": 0,
-  "layoutsInCollisions": 0,
-  "rootCause": "Optional uniquify blocks (formatBadge/letterBody/stampSignature) change blockSignature but leave the same visual shell (companyHeader→docTitle→fieldGrid→chargeTable). Users perceive these as identical reports.",
-  "topCollisions": []
-}

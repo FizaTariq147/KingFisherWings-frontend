@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — accountsFormatUiLayouts. */
+/** Auto-generated Accounts formats — permanent JSON store. */
 export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "JOURNAL_VOUCHER_REPORT_FORMAT_1",
@@ -154,8 +154,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOURNAL VOUCHER",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -163,7 +163,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -317,16 +317,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOURNAL VOUCHER",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -335,7 +335,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "stampSignature"
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -455,16 +455,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PAYMENT VOUCHER",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -473,7 +473,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "letterBody"
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -763,7 +763,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "PAYMENT VOUCHER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -771,7 +771,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -780,7 +780,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "letterBody"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -921,7 +921,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "PAYMENT VOUCHER",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -929,7 +929,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -938,10 +938,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "letterBody"
+        "type": "taxAmountBox"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -1109,8 +1109,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PROFIT AND LOSS",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "summaryHero"
@@ -1121,7 +1121,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
         "type": "totalsOnly"
@@ -1561,14 +1561,14 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "PROFIT AND LOSS",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "summaryHero"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -1578,7 +1578,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "totalsOnly"
       },
       {
-        "type": "containerStrip"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1682,16 +1682,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "RECEIPT VOUCHER",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -1700,7 +1700,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -1819,7 +1819,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "RECEIPT VOUCHER",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -1828,7 +1828,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -1837,7 +1837,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2072,16 +2072,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TRIAL BALANCE",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "totalsOnly"
@@ -2282,22 +2282,22 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TRIAL BALANCE",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "agingSummary"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2522,17 +2522,17 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "agingSummary"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -2792,7 +2792,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TRIAL BALANCE",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -2801,13 +2801,13 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "agingSummary"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -3004,7 +3004,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TRIAL BALANCE",
-        "align": "start",
+        "align": "end",
         "band": true
       },
       {
@@ -3019,10 +3019,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "totalsOnly"
       },
       {
-        "type": "agingSummary"
+        "type": "stampSignature"
       },
       {
-        "type": "wireBox"
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -3441,7 +3441,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -3454,7 +3454,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
@@ -3632,7 +3632,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "start",
+        "align": "end",
         "band": true
       },
       {
@@ -3657,7 +3657,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "summaryHero"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -3818,7 +3818,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
@@ -3831,7 +3831,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
@@ -3843,7 +3843,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "summaryHero"
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -4036,7 +4036,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -4049,7 +4049,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
@@ -4061,10 +4061,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "summaryHero"
-      },
-      {
-        "type": "wireBox"
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -4186,7 +4183,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -4199,7 +4196,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
@@ -4211,13 +4208,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "summaryHero"
+        "type": "containerStrip"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "formatBadge"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -4353,12 +4347,12 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "AP AGING SUMMARY",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "agingSummary"
@@ -4368,7 +4362,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "colorfulFooter"
@@ -4479,12 +4473,12 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "AR AGING SUMMARY",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "agingSummary"
@@ -4494,10 +4488,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
-        "type": "jobDescription"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -4881,12 +4875,12 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "BANK CASH BOOK SUMMARY LIST",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -5367,11 +5361,11 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -5380,10 +5374,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "outstandingTable"
       },
       {
-        "type": "containerStrip"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -5612,8 +5606,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "GL REPORT CURRENCY WISE VOUCHER",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -5621,7 +5615,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -5630,7 +5624,13 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "stampSignature"
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -5849,7 +5849,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "GL REPORT VOUCHER",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -5858,7 +5858,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
@@ -5867,7 +5867,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "agingSummary"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6098,8 +6098,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STATEMENT OF ACCOUNTS",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -6108,7 +6108,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
@@ -6229,7 +6229,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "letterBody"
@@ -6253,7 +6253,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -6365,7 +6365,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "letterBody"
@@ -6377,7 +6377,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -6389,10 +6389,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "formatBadge"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -6502,8 +6499,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "OUTSTANDING LETTER · V2",
-        "align": "start",
+        "text": "OUTSTANDING LETTER",
+        "align": "end",
         "band": false
       },
       {
@@ -6516,7 +6513,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -6526,6 +6523,9 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -6637,7 +6637,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "letterBody"
@@ -6649,7 +6649,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -6661,13 +6661,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "jobDescription"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "exportMetaStrip"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -6778,8 +6775,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -6791,7 +6788,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -6803,16 +6800,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
+        "type": "agingSummary"
+      },
+      {
         "type": "wireBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -6923,8 +6914,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -6948,19 +6939,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "letterBody"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "jobDescription"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -7071,8 +7053,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -7084,7 +7066,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -7096,22 +7078,13 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "jobDescription"
       },
       {
         "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -7364,8 +7337,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -7377,7 +7350,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -7389,22 +7362,13 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "letterBody"
       },
       {
-        "type": "formatBadge"
+        "type": "summaryHero"
       },
       {
         "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -7516,7 +7480,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "letterBody"
@@ -7528,7 +7492,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -7540,25 +7504,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "jobDescription"
       },
       {
         "type": "stampSignature"
       },
       {
-        "type": "summaryHero"
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -7814,8 +7769,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -7827,7 +7782,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -7839,25 +7794,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "letterBody"
       },
       {
-        "type": "formatBadge"
+        "type": "summaryHero"
       },
       {
         "type": "exportMetaStrip"
       },
       {
         "type": "containerStrip"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -7968,8 +7914,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -7993,25 +7939,19 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "jobDescription"
       },
       {
         "type": "stampSignature"
       },
       {
-        "type": "summaryHero"
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -8121,9 +8061,9 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "OUTSTANDING LETTER · V3",
-        "align": "end",
-        "band": true
+        "text": "OUTSTANDING LETTER",
+        "align": "start",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -8135,7 +8075,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -8145,6 +8085,21 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -8255,8 +8210,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "OUTSTANDING LETTER",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "letterBody"
@@ -8268,7 +8223,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
@@ -8280,10 +8235,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "letterBody"
       },
       {
-        "type": "formatBadge"
+        "type": "summaryHero"
       },
       {
         "type": "exportMetaStrip"
@@ -8292,13 +8247,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "containerStrip"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "summaryHero"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -8409,7 +8358,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PROFIT AND LOSS",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -8421,13 +8370,13 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "formatBadge"
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -8538,7 +8487,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PROFIT AND LOSS",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
@@ -8546,17 +8495,17 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "formatBadge"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -8675,11 +8624,11 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -8804,7 +8753,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -8814,10 +8763,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "totalsOnly"
       },
       {
-        "type": "formatBadge"
+        "type": "outstandingTable"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -8928,7 +8877,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PROFIT AND LOSS",
-        "align": "start",
+        "align": "end",
         "band": true
       },
       {
@@ -8946,10 +8895,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "totalsOnly"
       },
       {
-        "type": "formatBadge"
+        "type": "containerStrip"
       },
       {
-        "type": "letterBody"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -9060,7 +9009,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PROFIT AND LOSS",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
@@ -9068,7 +9017,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -9200,23 +9149,23 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "formatBadge"
+        "type": "outstandingTable"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -9327,7 +9276,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PROFIT AND LOSS",
-        "align": "start",
+        "align": "end",
         "band": true
       },
       {
@@ -9335,23 +9284,23 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "formatBadge"
+        "type": "containerStrip"
       },
       {
-        "type": "letterBody"
+        "type": "agingSummary"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -9462,7 +9411,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PROFIT AND LOSS",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
@@ -9474,7 +9423,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -9486,7 +9435,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -9597,7 +9546,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PROFIT AND LOSS",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -9609,22 +9558,22 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "formatBadge"
+        "type": "outstandingTable"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "stampSignature"
       },
       {
-        "type": "containerStrip"
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -9881,11 +9830,11 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -9897,10 +9846,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "summaryHero"
       },
       {
-        "type": "containerStrip"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -10011,22 +9960,22 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TRIAL BALANCE",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "summaryHero"
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -10264,21 +10213,21 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TRIAL BALANCE",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "summaryHero"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -10390,24 +10339,24 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TRIAL BALANCE",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "cyan"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "summaryHero"
+        "type": "taxAmountBox"
       },
       {
-        "type": "agingSummary"
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -10647,8 +10596,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TRIAL BALANCE",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -10656,16 +10605,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "cyan"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "summaryHero"
+        "type": "exportMetaStrip"
       },
       {
-        "type": "agingSummary"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -10777,7 +10726,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TRIAL BALANCE",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -10785,19 +10734,19 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "summaryHero"
+        "type": "taxAmountBox"
       },
       {
-        "type": "agingSummary"
+        "type": "formatBadge"
       },
       {
-        "type": "wireBox"
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -10907,9 +10856,9 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "TRIAL BALANCE · V1",
-        "align": "center",
-        "band": true
+        "text": "TRIAL BALANCE",
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -10917,10 +10866,19 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "totalsOnly"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -11031,28 +10989,28 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TRIAL BALANCE",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "summaryHero"
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -11163,31 +11121,31 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TRIAL BALANCE",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "totalsOnly"
       },
       {
-        "type": "summaryHero"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
+        "type": "taxAmountBox"
       },
       {
         "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -11299,7 +11257,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "JOURNAL VOUCHER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -11307,7 +11265,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -11316,7 +11274,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -11426,23 +11384,26 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOURNAL VOUCHER · V1",
-        "align": "center",
-        "band": true
+        "text": "JOURNAL VOUCHER",
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -11553,16 +11514,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOURNAL VOUCHER",
-        "align": "center",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -11571,7 +11532,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -11681,23 +11645,29 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOURNAL VOUCHER · V2",
-        "align": "start",
+        "text": "JOURNAL VOUCHER",
+        "align": "center",
         "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -11809,7 +11779,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "JOURNAL VOUCHER",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -11826,10 +11796,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "agingSummary"
       },
       {
-        "type": "formatBadge"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -11940,12 +11910,12 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOURNAL VOUCHER",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
@@ -11958,10 +11928,13 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "letterBody"
       },
       {
-        "type": "formatBadge"
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -12072,16 +12045,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOURNAL VOUCHER",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -12090,13 +12063,13 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "jobDescription"
       },
       {
-        "type": "formatBadge"
+        "type": "stampSignature"
       },
       {
-        "type": "letterBody"
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -12342,8 +12315,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOURNAL VOUCHER",
-        "align": "start",
-        "band": true
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -12351,7 +12324,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -12360,13 +12333,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
         "type": "letterBody"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -12478,7 +12454,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "JOURNAL VOUCHER",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -12486,7 +12462,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -12495,16 +12471,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "wireBox"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -12614,8 +12590,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PAYMENT VOUCHER · V3",
-        "align": "end",
+        "text": "PAYMENT VOUCHER",
+        "align": "start",
         "band": true
       },
       {
@@ -12624,13 +12600,22 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -12741,16 +12726,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PAYMENT VOUCHER",
-        "align": "center",
+        "align": "end",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -12759,7 +12744,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "termsBank"
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -12869,23 +12857,26 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PAYMENT VOUCHER · V4",
+        "text": "PAYMENT VOUCHER",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -13005,7 +12996,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -13014,10 +13005,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "termsBank"
+        "type": "outstandingTable"
       },
       {
-        "type": "summaryHero"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -13128,16 +13125,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PAYMENT VOUCHER",
-        "align": "start",
+        "align": "end",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -13146,10 +13143,13 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "termsBank"
+        "type": "containerStrip"
       },
       {
-        "type": "summaryHero"
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -13260,16 +13260,16 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PAYMENT VOUCHER",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -13278,10 +13278,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "termsBank"
+        "type": "formatBadge"
       },
       {
-        "type": "summaryHero"
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -13397,7 +13397,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
@@ -13410,13 +13410,19 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "termsBank"
+        "type": "outstandingTable"
       },
       {
-        "type": "summaryHero"
+        "type": "jobDescription"
       },
       {
-        "type": "agingSummary"
+        "type": "stampSignature"
+      },
+      {
+        "type": "taxAmountBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -13661,7 +13667,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "STATEMENT OF ACCOUNTS",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -13670,7 +13676,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
         "type": "agingSummary"
@@ -13682,7 +13688,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -13794,7 +13800,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "STATEMENT OF ACCOUNTS",
         "align": "start",
-        "band": true
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -13815,10 +13821,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "jobDescription"
+        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -14065,8 +14068,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STATEMENT OF ACCOUNTS",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -14075,7 +14078,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
         "type": "agingSummary"
@@ -14087,13 +14090,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "exportMetaStrip"
+      },
+      {
         "type": "containerStrip"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -14204,8 +14204,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STATEMENT OF ACCOUNTS",
-        "align": "center",
-        "band": true
+        "align": "start",
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -14214,7 +14214,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
         "type": "agingSummary"
@@ -14226,13 +14226,10 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "containerStrip"
+        "type": "taxAmountBox"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -14342,8 +14339,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "STATEMENT OF ACCOUNTS · V2",
-        "align": "start",
+        "text": "STATEMENT OF ACCOUNTS",
+        "align": "end",
         "band": false
       },
       {
@@ -14353,7 +14350,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
         "type": "agingSummary"
@@ -14363,6 +14360,15 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "outstandingTable"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -14474,7 +14480,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "STATEMENT OF ACCOUNTS",
         "align": "center",
-        "band": true
+        "band": false
       },
       {
         "type": "twoColumn",
@@ -14483,7 +14489,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "agingSummary"
@@ -14495,16 +14501,13 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "exportMetaStrip"
+      },
+      {
         "type": "containerStrip"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "summaryHero"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"

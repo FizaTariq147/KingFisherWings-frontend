@@ -180,42 +180,6 @@ export function canShowQuotationBlDraft(
   return isSeaQuotationJobType(jobType);
 }
 
-function isAirQuotationJobType(jobType?: string): boolean {
-  const jt = String(jobType ?? '')
-    .trim()
-    .toUpperCase()
-    .replace(/[\s-]+/g, '_');
-  return (
-    jt === 'AIR' ||
-    jt === 'AIR_EXPORT' ||
-    jt === 'AIR_IMPORT' ||
-    jt.startsWith('AIR_')
-  );
-}
-
-/**
- * Show quotation AWB Draft action/tab — same continuum as BL Draft for air.
- * BE `can_awb_draft` when set; otherwise AIR_EXPORT / AIR_IMPORT.
- * Path hints for AWB draft routes (converted job) also unlock the action.
- */
-export function canShowQuotationAwbDraft(
-  jobType?: string,
-  actions?: { can_awb_draft?: boolean; can_bl_draft?: boolean } | null,
-  pathHints?: string[] | Record<string, string> | null,
-): boolean {
-  if (actions?.can_awb_draft === false) return false;
-  if (actions?.can_awb_draft === true) return true;
-  if (
-    pathHints &&
-    (Array.isArray(pathHints) ? pathHints : Object.keys(pathHints)).some((h) =>
-      /(?:hawb|mawb|awb)[-_/]?draft/i.test(String(h || '')),
-    )
-  ) {
-    return true;
-  }
-  return isAirQuotationJobType(jobType);
-}
-
 /**
  * Sea FCL/LCL, Land, Road Freight, Courier, Warehouse, Customs Clearance:
  * customer approve leaves quote APPROVED; staff continuum Generate Shipment →

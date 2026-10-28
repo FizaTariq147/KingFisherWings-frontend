@@ -4,7 +4,6 @@
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
 import { listAccountsFormatUiLayouts } from '../data/accountsFormatUiLayouts';
-import { buildLayoutBackedFormatCatalog } from '../utils/buildLayoutBackedFormatCatalog';
 import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
 
 export type AccountsFormatKind = string;
@@ -217,29 +216,34 @@ export const ACCOUNTS_FORMAT_CATALOG: AccountsFormatSpec[] = [
   },
 ];
 
-/** Name/sort metadata only — strip lists layout-backed codes exclusively. */
-const ACCOUNTS_SEED: AccountsFormatSpec[] = [
-  ...ACCOUNTS_FORMAT_CATALOG,
-  ...REMAINING_FORMAT_CATALOG.filter(
-    (r) => r.bucket === 'accounts' || r.bucket === 'accounts_extra',
-  ).map((r, i) => ({
-    code: r.code,
-    name: r.name,
-    kind: `accounts_extra_${r.sortOrder || i + 1}`,
-    sortOrder: 1000 + (r.sortOrder || i + 1),
-  })),
-];
+const ACCOUNTS_EXTRA: AccountsFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
+  (r) => r.bucket === 'accounts' || r.bucket === 'accounts_extra',
+).map((r, i) => ({
+  code: r.code,
+  name: r.name,
+  kind: `accounts_extra_${r.sortOrder || i + 1}`,
+  sortOrder: 1000 + (r.sortOrder || i + 1),
+}));
 
-const ALL_ACCOUNTS_FORMATS: AccountsFormatSpec[] = buildLayoutBackedFormatCatalog(
-  listAccountsFormatUiLayouts(),
-  ACCOUNTS_SEED,
-  (layout, seed, i) => ({
-    code: layout.code,
-    name: layout.name || seed?.name || layout.code,
-    kind: seed?.kind || `accounts_${layout.formatNumber || i + 1}`,
-    sortOrder: seed?.sortOrder ?? layout.formatNumber ?? 2000 + i,
-  }),
-);
+function buildAllAccountsFormats(): AccountsFormatSpec[] {
+  const by = new Map<string, AccountsFormatSpec>();
+  for (const row of [...ACCOUNTS_FORMAT_CATALOG, ...ACCOUNTS_EXTRA]) {
+    by.set(row.code.toUpperCase(), row);
+  }
+  listAccountsFormatUiLayouts().forEach((layout, i) => {
+    const key = layout.code.toUpperCase();
+    const existing = by.get(key);
+    by.set(key, {
+      code: layout.code,
+      name: layout.name || existing?.name || layout.code,
+      kind: existing?.kind || `accounts_${layout.formatNumber || i + 1}`,
+      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+    });
+  });
+  return [...by.values()].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name));
+}
+
+const ALL_ACCOUNTS_FORMATS: AccountsFormatSpec[] = buildAllAccountsFormats();
 
 const byCode = new Map(ALL_ACCOUNTS_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 

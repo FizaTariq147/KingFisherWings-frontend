@@ -35,26 +35,6 @@ import {
   getLeftoverFormatUiLayout,
 } from './leftoverFormatUiLayouts';
 import { getRegistryByCode } from './fresaReportRegistry';
-import { layoutBlockSignature } from '../utils/layoutBlockSignature';
-
-/**
- * Exact https://fresatechnologies.com/sample-report-formats/ HAWB / HBL codes.
- * Catalogue listing uses these only (extras live in leftover / deep-link fallbacks).
- */
-const FRESA_PAGE_HAWB = new Set([
-  'HAWB_DRAFT_REPORT_FORMAT',
-  'HAWB_DRAFT_REPORT_FORMAT_1',
-  'HAWB_DRAFT_REPORT_FORMAT_2',
-  'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1',
-  'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2',
-]);
-const FRESA_PAGE_HBL = new Set([
-  'HBL_DRAFT_REPORT_FORMAT_JASPER',
-  'HBL_DRAFT_REPORT_FORMAT_2',
-  ...[4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20].map(
-    (n) => `HBL_DRAFT_REPORT_FORMAT_${n}`,
-  ),
-]);
 
 export type RegisteredFormatCatalogEntry = {
   code: string;
@@ -76,106 +56,58 @@ function contextsFromCode(code: string, fallback: ReportContext[]): ReportContex
   return fallback;
 }
 
-type LayoutCatalogSource = {
-  layouts: InvoiceFormatUiLayout[];
-  family: ReportFamily;
-  contexts: ReportContext[];
-  kindPrefix: string;
-};
+function fromLayouts(
+  layouts: InvoiceFormatUiLayout[],
+  family: ReportFamily,
+  contexts: ReportContext[],
+  kindPrefix: string,
+): RegisteredFormatCatalogEntry[] {
+  return layouts.map((row) => ({
+    code: row.code,
+    name: row.name,
+    family: familyFromCode(row.code, family),
+    contexts: contextsFromCode(row.code, contexts),
+    kind: `${kindPrefix}_${row.formatNumber || row.code}`,
+  }));
+}
 
-/**
- * Every permanent JSON layout as a catalogue entry (openable PDF).
- * Dedupes by visual block signature so clone templates are not listed twice.
- */
+/** Every permanent JSON layout as a catalogue entry (openable PDF). */
 export function listAllRegisteredFormatCatalogEntries(): RegisteredFormatCatalogEntry[] {
-  const sources: LayoutCatalogSource[] = [
-    { layouts: listInvoiceFormatUiLayouts(), family: 'commercial', contexts: ['invoice'], kindPrefix: 'invoice' },
-    { layouts: listAccountsFormatUiLayouts(), family: 'finance', contexts: ['gl'], kindPrefix: 'accounts' },
-    { layouts: listWmsFormatUiLayouts(), family: 'wms', contexts: ['wms'], kindPrefix: 'wms' },
-    { layouts: listArrivalNoticeFormatUiLayouts(), family: 'sea_docs', contexts: ['job'], kindPrefix: 'arrival' },
-    { layouts: listDeliveryOrderFormatUiLayouts(), family: 'sea_docs', contexts: ['job'], kindPrefix: 'delivery' },
-    {
-      layouts: listHawbFormatUiLayouts().filter((r) => FRESA_PAGE_HAWB.has(r.code.toUpperCase())),
-      family: 'air_docs',
-      contexts: ['job'],
-      kindPrefix: 'hawb',
-    },
-    {
-      layouts: listHblFormatUiLayouts().filter((r) => FRESA_PAGE_HBL.has(r.code.toUpperCase())),
-      family: 'sea_docs',
-      contexts: ['job'],
-      kindPrefix: 'hbl',
-    },
-    { layouts: listOtherReportsFormatUiLayouts(), family: 'other', contexts: ['job'], kindPrefix: 'other' },
-    { layouts: listQuotationFormatUiLayouts(), family: 'quotation', contexts: ['quotation'], kindPrefix: 'quotation' },
-    { layouts: listOpsListFormatUiLayouts(), family: 'ops_list', contexts: ['list', 'job'], kindPrefix: 'ops' },
-    {
-      layouts: listCommercialExtraFormatUiLayouts(),
-      family: 'commercial',
-      contexts: ['invoice'],
-      kindPrefix: 'commercial',
-    },
-    { layouts: listSeaDocsExtraFormatUiLayouts(), family: 'sea_docs', contexts: ['job'], kindPrefix: 'sea_air' },
-  ];
-
-  type Cand = {
-    entry: RegisteredFormatCatalogEntry;
-    sig: string;
-    formatNumber: number;
-  };
-  const candidates: Cand[] = [];
-
-  for (const src of sources) {
-    for (const row of src.layouts) {
-      candidates.push({
-        entry: {
-          code: row.code,
-          name: row.name,
-          family: familyFromCode(row.code, src.family),
-          contexts: contextsFromCode(row.code, src.contexts),
-          kind: `${src.kindPrefix}_${row.formatNumber || row.code}`,
-        },
-        sig: layoutBlockSignature(row.blocks) || `code:${row.code.toUpperCase()}`,
-        formatNumber: Number(row.formatNumber) || 9999,
-      });
-    }
-  }
-
-  for (const row of listLeftoverFormatUiLayouts()) {
-    const isHbl = /^HBL/i.test(row.name) || /HBL/i.test(row.code);
-    const family = familyFromCode(row.code, isHbl ? 'sea_docs' : 'commercial');
-    const contexts = contextsFromCode(row.code, isHbl ? ['job'] : ['invoice']);
-    candidates.push({
-      entry: {
+  const rows: RegisteredFormatCatalogEntry[] = [
+    ...fromLayouts(listInvoiceFormatUiLayouts(), 'commercial', ['invoice'], 'invoice'),
+    ...fromLayouts(listAccountsFormatUiLayouts(), 'finance', ['gl'], 'accounts'),
+    ...fromLayouts(listWmsFormatUiLayouts(), 'wms', ['wms'], 'wms'),
+    ...fromLayouts(listArrivalNoticeFormatUiLayouts(), 'sea_docs', ['job'], 'arrival'),
+    ...fromLayouts(listDeliveryOrderFormatUiLayouts(), 'sea_docs', ['job'], 'delivery'),
+    ...fromLayouts(listHawbFormatUiLayouts(), 'air_docs', ['job'], 'hawb'),
+    ...fromLayouts(listHblFormatUiLayouts(), 'sea_docs', ['job'], 'hbl'),
+    ...fromLayouts(listOtherReportsFormatUiLayouts(), 'other', ['job'], 'other'),
+    ...fromLayouts(listQuotationFormatUiLayouts(), 'quotation', ['quotation'], 'quotation'),
+    ...fromLayouts(listOpsListFormatUiLayouts(), 'ops_list', ['list', 'job'], 'ops'),
+    ...fromLayouts(listCommercialExtraFormatUiLayouts(), 'commercial', ['invoice'], 'commercial'),
+    ...fromLayouts(listSeaDocsExtraFormatUiLayouts(), 'sea_docs', ['job'], 'sea_air'),
+    ...listLeftoverFormatUiLayouts().map((row) => {
+      const isHbl = /^HBL/i.test(row.name) || /HBL/i.test(row.code);
+      const family = familyFromCode(row.code, isHbl ? 'sea_docs' : 'commercial');
+      const contexts = contextsFromCode(row.code, isHbl ? ['job'] : ['invoice']);
+      return {
         code: row.code,
         name: row.name,
         family,
         contexts,
         kind: `leftover_${row.formatNumber || row.code}`,
-      },
-      sig: layoutBlockSignature(row.blocks) || `code:${row.code.toUpperCase()}`,
-      formatNumber: Number(row.formatNumber) || 9999,
-    });
+      };
+    }),
+  ];
+
+  const byCode = new Map<string, RegisteredFormatCatalogEntry>();
+  for (const row of rows) {
+    const key = row.code.toUpperCase();
+    if (!byCode.has(key)) byCode.set(key, row);
   }
-
-  candidates.sort((a, b) => {
-    if (a.formatNumber !== b.formatNumber) return a.formatNumber - b.formatNumber;
-    return a.entry.name.localeCompare(b.entry.name, undefined, { numeric: true, sensitivity: 'base' });
-  });
-
-  const byCode = new Map<string, Cand>();
-  const bySig = new Map<string, Cand>();
-  for (const cand of candidates) {
-    const key = cand.entry.code.toUpperCase();
-    if (byCode.has(key)) continue;
-    if (bySig.has(cand.sig)) continue;
-    byCode.set(key, cand);
-    bySig.set(cand.sig, cand);
-  }
-
-  return [...byCode.values()]
-    .map((c) => c.entry)
-    .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+  return [...byCode.values()].sort((a, b) =>
+    a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }),
+  );
 }
 
 /** Resolve a permanent JSON layout for any FRESA catalog / registry report code. */

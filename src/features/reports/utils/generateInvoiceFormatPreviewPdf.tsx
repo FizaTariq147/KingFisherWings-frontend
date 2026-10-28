@@ -6,6 +6,7 @@ import { InvoiceFormatLayoutByKind } from '../components/ReportCatalog/invoiceLa
 import type { InvoiceFormatPdfData } from './invoiceFormatToInvoicePdfModel';
 import { shouldAppendCustomerTermsPage } from './shouldAppendCustomerTermsPage';
 import { appendOfficialCustomerTermsPdf } from './appendOfficialCustomerTermsPdf';
+import { resolveCustomerTermsBranding } from './resolveCustomerTermsBranding';
 import {
   SHARED_LAYOUT_CHROME,
   type SharedLayoutChrome,
@@ -68,8 +69,16 @@ export async function generateInvoiceFormatPreviewPdf(
 
   let root: Root | null = null;
   try {
-    // Shared header/footer chrome (same for every format).
-    const chrome: SharedLayoutChrome = SHARED_LAYOUT_CHROME;
+    // Shared header/footer chrome from org profile (same for every format).
+    let chrome: SharedLayoutChrome = SHARED_LAYOUT_CHROME;
+    try {
+      const termsBrand = await resolveCustomerTermsBranding();
+      if (termsBrand.companyName?.trim()) {
+        chrome = { ...SHARED_LAYOUT_CHROME, company: termsBrand.companyName.trim() };
+      }
+    } catch {
+      /* keep default chrome */
+    }
     const liveData = {
       ...data,
       companyName: data.companyName || chrome.company,
@@ -139,7 +148,9 @@ export async function generateInvoiceFormatPreviewPdf(
 
     const layoutBlob = pdf.output('blob');
     if (!appendTerms) return layoutBlob;
-    return appendOfficialCustomerTermsPdf(layoutBlob);
+
+    const branding = await resolveCustomerTermsBranding();
+    return appendOfficialCustomerTermsPdf(layoutBlob, branding);
   } finally {
     try {
       root?.unmount();

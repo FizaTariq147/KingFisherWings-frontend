@@ -19,10 +19,6 @@ export interface ShipmentActions {
   can_kpi?: boolean;
   can_tracking?: boolean;
   can_bl_entry?: boolean;
-  /**
-   * Air AWB continuum. When omitted, FE shows for air job types.
-   * Pair with path_hints for `/shipments/:id/hawb-draft|awb-draft/*`.
-   */
   can_awb?: boolean;
   can_booking_form?: boolean;
   can_hbl_document?: boolean;

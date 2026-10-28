@@ -68,19 +68,25 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
   return (
     <div
       dir={rtl ? 'rtl' : 'ltr'}
-      className={`mx-auto flex ${minH} ${maxW} flex-col overflow-visible border bg-white text-[10px] leading-normal shadow-sm ${className}`}
+      className={`mx-auto flex ${minH} ${maxW} flex-col overflow-hidden border bg-white text-[10px] leading-normal shadow-sm ${className}`}
       style={{
         borderWidth: 1,
         borderStyle: 'solid',
         borderColor: theme.primary === '#000000' ? '#999999' : theme.primary,
         color: theme.ink,
+        breakInside: 'avoid',
+        pageBreakInside: 'avoid',
       }}
       data-invoice-sheet="true"
     >
-      <div className="flex flex-1 flex-col">
+      <div className="flex min-h-0 flex-1 flex-col" style={{ breakInside: 'avoid' }}>
         {!hasTopChrome ? <ThemeBar theme={theme} size="lg" reverse={!!rtl} /> : null}
         {bodyBlocks.map((block, i) => (
-          <div key={`${block.type}-${i}`} data-keep-together="true" className="min-w-0">
+          <div
+            key={`${block.type}-${i}`}
+            data-keep-together="true"
+            style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+          >
             <Block
               block={block}
               layout={layout}
@@ -443,7 +449,7 @@ function FieldGrid({
       style={{ borderColor: theme.primary }}
     >
       {fields.map((f) => (
-        <p key={`${f.k}-${f.v}`} className="min-w-0 break-words leading-normal">
+        <p key={`${f.k}-${f.v}`} className="leading-normal">
           <span className="font-bold">{f.k} :</span> {f.v}
         </p>
       ))}
@@ -458,30 +464,27 @@ function PartyTriple({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: Invoi
       className={`grid border-b text-[9.5px] leading-normal ${cols === 4 ? 'grid-cols-4' : 'grid-cols-3'}`}
       style={{ borderColor: theme.primary }}
     >
-      <div className="min-w-0 break-words border-r p-3" style={{ borderColor: theme.primary }}>
-        <p className="mb-1 font-bold leading-normal" style={{ color: theme.primary }}>
+      <div className="border-r p-3" style={{ borderColor: theme.primary }}>
+        <p className="mb-1 font-bold" style={{ color: theme.primary }}>
           {demo.partyLeft?.title || 'Shipper'}
         </p>
         {(demo.partyLeft?.lines ?? []).map((line) => (
-          <p key={line} className="mt-0.5 break-words leading-normal">
+          <p key={line} className="mt-0.5">
             {line}
           </p>
         ))}
       </div>
-      <div className="min-w-0 break-words border-r p-3" style={{ borderColor: theme.primary }}>
-        <p className="mb-1 font-bold leading-normal" style={{ color: theme.primary }}>
+      <div className="border-r p-3" style={{ borderColor: theme.primary }}>
+        <p className="mb-1 font-bold" style={{ color: theme.primary }}>
           {demo.partyMid?.title || 'Consignee'}
         </p>
         {(demo.partyMid?.lines ?? []).map((line) => (
-          <p key={line} className="mt-0.5 break-words leading-normal">
+          <p key={line} className="mt-0.5">
             {line}
           </p>
         ))}
       </div>
-      <div
-        className={`min-w-0 break-words ${demo.partyNotify ? 'border-r' : ''} p-3`}
-        style={{ borderColor: theme.primary }}
-      >
+      <div className={`${demo.partyNotify ? 'border-r' : ''} p-3`} style={{ borderColor: theme.primary }}>
         {demo.partyThird ? (
           <>
             <p className="mb-1 font-bold" style={{ color: theme.primary }}>
@@ -613,11 +616,7 @@ function ChargeTable({
           {rows.map((row, ri) => (
             <tr key={ri} style={{ backgroundColor: ri % 2 ? theme.panel : theme.white }}>
               {row.map((cell, ci) => (
-                <td
-                  key={ci}
-                  className="break-words border px-1.5 py-1.5 align-top leading-normal"
-                  style={{ borderColor: theme.primary }}
-                >
+                <td key={ci} className="border px-1.5 py-1.5" style={{ borderColor: theme.primary }}>
                   {cell}
                 </td>
               ))}
@@ -1411,14 +1410,14 @@ function PartyNotifyGrid({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: I
       {cols.map((col, i) => (
         <div
           key={col.title || i}
-          className={`min-h-[72px] min-w-0 break-words p-2 ${i < 2 ? 'border-r' : ''}`}
+          className={`min-h-[72px] p-2 ${i < 2 ? 'border-r' : ''}`}
           style={{ borderColor: theme.primary }}
         >
-          <p className="mb-1 text-[8px] font-bold uppercase leading-normal" style={{ color: theme.primary }}>
+          <p className="mb-1 text-[8px] font-bold uppercase" style={{ color: theme.primary }}>
             {col.title}
           </p>
           {(col.lines ?? []).map((line) => (
-            <p key={line} className="break-words text-[8.5px] leading-normal">
+            <p key={line} className="text-[8.5px] leading-snug">
               {line}
             </p>
           ))}
@@ -1547,11 +1546,11 @@ function HawbRouteGrid({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: Inv
       style={{ borderColor: theme.primary, backgroundColor: theme.panel }}
     >
       {cells.map((f) => (
-        <div key={f.k} className="min-w-0 break-words border-b border-r p-2" style={{ borderColor: theme.primary }}>
-          <p className="text-[7.5px] font-bold uppercase leading-normal" style={{ color: theme.primary }}>
+        <div key={f.k} className="border-b border-r p-2" style={{ borderColor: theme.primary }}>
+          <p className="text-[7.5px] font-bold uppercase" style={{ color: theme.primary }}>
             {f.k}
           </p>
-          <p className="mt-0.5 break-words text-[9px] font-semibold leading-normal">{f.v}</p>
+          <p className="mt-0.5 text-[9px] font-semibold">{f.v}</p>
         </div>
       ))}
     </div>

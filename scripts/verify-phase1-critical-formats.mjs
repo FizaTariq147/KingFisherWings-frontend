@@ -5,7 +5,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { blockSignature } from './lib/fresaLayoutDiversity.mjs';
 
 const data = path.join(
   path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..'),
@@ -17,7 +16,9 @@ function load(name) {
 }
 
 function sig(layout) {
-  return blockSignature(layout?.blocks);
+  return (layout.blocks || [])
+    .map((b) => b.type + (b.title ? `:${b.title}` : b.text ? `:${b.text.slice(0, 24)}` : ''))
+    .join('>');
 }
 
 const invoice = load('invoiceFormatUiLayouts.json');
@@ -58,26 +59,7 @@ ok(
 
 const hawb1 = hawb.find((l) => l.code === 'HAWB_DRAFT_REPORT_FORMAT_1');
 ok('HAWB_DRAFT_REPORT_FORMAT_1 hawbRouteGrid', hawb1?.blocks?.some((b) => b.type === 'hawbRouteGrid'));
-ok(
-  'HAWB store = Fresa sample page (5)',
-  hawb.length === 5 &&
-    hawb.every((r) =>
-      [
-        'HAWB_DRAFT_REPORT_FORMAT',
-        'HAWB_DRAFT_REPORT_FORMAT_1',
-        'HAWB_DRAFT_REPORT_FORMAT_2',
-        'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1',
-        'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2',
-      ].includes(r.code),
-    ),
-  `count=${hawb.length}`,
-);
-ok(
-  'HBL store = Fresa page (19) + FG_HBL_HKG',
-  hbl.filter((r) => r.code !== 'FG_HBL_HKG').length === 19 &&
-    hbl.some((r) => r.code === 'FG_HBL_HKG'),
-  `official=${hbl.filter((r) => r.code !== 'FG_HBL_HKG').length} total=${hbl.length}`,
-);
+ok('HAWB store restored', hawb.length >= 30, `count=${hawb.length}`);
 
 const can1 = arrival.find((l) => l.code === 'CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1');
 ok(

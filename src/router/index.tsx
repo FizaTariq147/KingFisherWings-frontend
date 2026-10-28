@@ -26,7 +26,6 @@ import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
 import ReportsMenuPage from '../pages/reports/ReportsMenuPage'
 import ReportCatalogPage from '../features/reports/pages/ReportCatalogPage'
-import ReportVisualDiffHarnessPage from '../features/reports/pages/ReportVisualDiffHarnessPage'
 
 import CustomerServiceMenuPage from '../pages/customers/CustomerServiceMenuPage'
 import VendorServiceMenuPage from '../pages/vendors/VendorServiceMenuPage'
@@ -333,16 +332,11 @@ export const router = createBrowserRouter([
   { path: '/', element: <Navigate to="/login" replace /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/accept-invite', element: <LoginPage /> },
-  /**
-   * Staff invite emails may use /login/accept-invite?token=…
-   * (same handler as /accept-invite).
-   */
+  /** Staff invite emails may use /login/accept-invite?token=… */
   { path: '/login/accept-invite', element: <LoginPage /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password', element: <ResetPasswordPage /> },
   { path: '/403', element: <Forbidden /> },
-  /** Unauthenticated PDF generation for visual-diff CI (no business UI). */
-  { path: '/dev/report-visual-diff', element: <ReportVisualDiffHarnessPage /> },
 
   { path: '/superadmin/login', element: <SuperAdminLoginPage /> },
   {
@@ -380,7 +374,6 @@ export const router = createBrowserRouter([
   /**
    * Customer portal invitation emails use:
    *   /login/portal/accept-invite?token=<INVITATION_TOKEN>
-   * Canonical UI also lives at /portal/accept-invite.
    */
   { path: '/login/portal/accept-invite', element: <PortalLoginPage /> },
   { path: '/login/portal', element: <Navigate to="/portal/login" replace /> },

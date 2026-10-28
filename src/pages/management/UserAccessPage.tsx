@@ -73,7 +73,7 @@ export default function UserAccessPage() {
 
         <div className="px-5 py-2.5 border-b border-gray-200">
           <p className="text-sm text-gray-800">
-            <span className="font-semibold">Subscription Key : </span>
+            <span className="font-semibold">Fresa Subscription Key : </span>
             {subscriptionQuery.isLoading ? 'Loading…' : subscriptionQuery.data || '—'}
           </p>
         </div>

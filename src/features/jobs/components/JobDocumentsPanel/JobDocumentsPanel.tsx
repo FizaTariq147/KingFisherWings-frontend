@@ -6,11 +6,10 @@ import { NvoccJobDocumentsPanel } from '@/features/nvocc/components/NvoccJobDocu
 import { isNvoccJobType } from '@/features/nvocc/hooks/useNvoccJobs';
 import { CcEntryPackCard } from '@/features/customs-clearance/components/CcEntryPackCard';
 import { isCcJobType } from '@/features/customs-clearance/constants/ccWorkflow';
-import { AwbDraftFromBookingPanel } from '@/features/shared/awb-draft';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
-import { isAirJobType, JOB_DOCUMENT_TYPES } from '../../constants/job.constants';
+import { JOB_DOCUMENT_TYPES } from '../../constants/job.constants';
 import { useJobActions } from '../../hooks/useJobActions';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import {
@@ -109,12 +108,7 @@ export function JobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
 
 function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
   const isAirImport = jobType === 'AIR_IMPORT';
-  const isAir = isAirJobType(jobType);
   const { data: job } = useJob(jobId);
-  /** BE `can_awb` when set; otherwise show for air jobs (shipment / quote parity). */
-  const canAwbDraft =
-    job?.actions?.can_awb === true ||
-    (job?.actions?.can_awb == null && isAir);
   const { data: documents = [], refetch } = useJobDocuments(jobId);
   const emailSuggestQuery = useJobEmailRecipientsSuggest(jobId, true);
   const accessToken = useAuthStore((s) => s.accessToken);
@@ -235,15 +229,6 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
       {message && <p className="text-sm text-[var(--color-success-700)]">{message}</p>}
 
       {isCcJobType(jobType) ? <CcEntryPackCard jobId={jobId} /> : null}
-
-      {canAwbDraft ? (
-        <AwbDraftFromBookingPanel
-          jobId={jobId}
-          onGenerated={() => {
-            void refetch();
-          }}
-        />
-      ) : null}
 
       <Card>
         <CardHeader>

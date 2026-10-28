@@ -735,11 +735,6 @@ export interface JobActions {
   can_cc_declaration?: boolean;
   can_cc_queries?: boolean;
   can_cc_finance?: boolean;
-  /**
-   * Air AWB continuum (HAWB/MAWB draft). When omitted, FE shows for air job types.
-   * Pair with path_hints for `/jobs/:id/hawb-draft|mawb-draft|awb-draft/*`.
-   */
-  can_awb?: boolean;
   /** Permitted status values when provided by backend. */
   allowed_statuses?: string[];
   raw?: Record<string, unknown>;
