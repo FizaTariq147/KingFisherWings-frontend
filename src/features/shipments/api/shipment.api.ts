@@ -85,6 +85,14 @@ export const SHIPMENT_API = {
   /** GET /shipments/:id/bl-draft/preview · POST generate */
   blDraftPreview: (id: string) => `/shipments/${id}/bl-draft/preview`,
   blDraftGenerate: (id: string) => `/shipments/${id}/bl-draft/generate`,
+  /**
+   * AWB draft (live BE). Soft-404 on preview → FE merges job air-booking-form.
+   * GET …/hawb-draft|awb-draft/preview · POST …/hawb-draft|mawb-draft/generate
+   */
+  hawbDraftPreview: (id: string) => `/shipments/${id}/hawb-draft/preview`,
+  awbDraftPreview: (id: string) => `/shipments/${id}/awb-draft/preview`,
+  hawbDraftGenerate: (id: string) => `/shipments/${id}/hawb-draft/generate`,
+  mawbDraftGenerate: (id: string) => `/shipments/${id}/mawb-draft/generate`,
   documentBookingConfirmation: (id: string) =>
     `/shipments/${id}/documents/booking-confirmation`,
   documentHbl: (id: string) => `/shipments/${id}/documents/hbl`,

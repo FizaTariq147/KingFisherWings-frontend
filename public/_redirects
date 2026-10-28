@@ -1,0 +1,4 @@
+# SPA fallback for static hosts (Render / Netlify-style).
+# Keeps deep links like /login/portal/accept-invite working on refresh
+# without shadowing API proxies (those are usually a different origin).
+/*    /index.html   200

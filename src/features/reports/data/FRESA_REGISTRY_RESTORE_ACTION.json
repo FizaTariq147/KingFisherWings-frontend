@@ -1,0 +1,17 @@
+{
+  "generatedAt": "2026-10-28T09:34:58.503Z",
+  "action": "restored_hawb_hbl_from_HEAD",
+  "hawb": {
+    "head": 30,
+    "before": 5,
+    "after": 30,
+    "keptCurrentOfficialBodies": 5
+  },
+  "hbl": {
+    "head": 109,
+    "before": 20,
+    "after": 109,
+    "keptCurrentOfficialBodies": 20
+  },
+  "note": "Catalogue TS restored from HEAD. Official Fresa-page layout JSON bodies kept from working tree where present. Visual fidelity NOT claimed."
+}

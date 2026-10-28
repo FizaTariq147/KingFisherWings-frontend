@@ -531,16 +531,16 @@ export function JobVendorOffersPanel({ jobId, currencyCode }: JobVendorOffersPan
           full_name: party.name,
           phone: values.phone?.trim() || undefined,
           send_email: true,
-          invite_mode: true,
+          invite_mode: false,
         });
         if (created.temporaryPassword) {
           tempPw = created.temporaryPassword;
-          portalNote = ' Vendor portal invite created.';
+          portalNote = ' Vendor portal login created with a temporary password.';
         } else {
-          portalNote = ' Vendor portal invite sent.';
+          portalNote = ' Vendor portal login created.';
         }
       } catch (err) {
-        portalNote = ` Party created, but portal invite failed: ${getServerErrorMessage(err)}`;
+        portalNote = ` Party created, but portal login failed: ${getServerErrorMessage(err)}`;
       } finally {
         setPortalInvitePending(false);
       }

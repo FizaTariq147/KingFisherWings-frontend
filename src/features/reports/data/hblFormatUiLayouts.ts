@@ -6,16 +6,13 @@ export const HBL_FORMAT_UI_LAYOUT_LIST: InvoiceFormatUiLayout[] = HBL_FORMAT_UI_
 const byCode = new Map(HBL_FORMAT_UI_LAYOUT_LIST.map((row) => [row.code.toUpperCase(), row]));
 
 const FALLBACK = 'HBL_DRAFT_REPORT_FORMAT_20';
+const FALLBACK_FG = 'FG_HBL_HKG';
 
 function resolveLayoutCode(code: string): string {
   const needle = code.trim().toUpperCase();
   if (byCode.has(needle)) return needle;
   if (/^HBL_DRAFT_REPORT_FORMAT(_\d+|_JASPER)?$/.test(needle)) return FALLBACK;
-  if (needle.startsWith('FG_HBL_')) {
-    if (needle.includes('HKG')) return 'FG_HBL_HKG';
-    if (needle.includes('MAGIC')) return 'FG_HBL_MAGICLOGISYS';
-    return 'FG_HBL_FORMAT_1';
-  }
+  if (needle.startsWith('FG_HBL_')) return FALLBACK_FG;
   return needle;
 }
 

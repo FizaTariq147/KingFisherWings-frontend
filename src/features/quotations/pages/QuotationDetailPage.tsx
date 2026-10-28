@@ -25,6 +25,7 @@ import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
 import { QuotationLinesEditor } from '../components/QuotationLinesEditor';
 import { QuotationNegotiationPanel } from '../components/QuotationNegotiationPanel';
+import { QuotationAwbDraftPanel } from '../components/QuotationAwbDraftPanel';
 import { QuotationBlDraftPanel } from '../components/QuotationBlDraftPanel';
 import { QuotationBookingFormPanel } from '../components/QuotationBookingFormPanel';
 import { QuotationOverviewPanel } from '../components/QuotationOverviewPanel';
@@ -81,6 +82,7 @@ import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
   canArchiveQuotation,
   canConvertQuotationToJob,
+  canShowQuotationAwbDraft,
   canShowQuotationBlDraft,
   canStartAirOpsJobFromQuote,
   canStaffInternallyApprove,
@@ -1079,6 +1081,23 @@ export default function QuotationDetailPage() {
                 BL Draft
               </Button>
             ) : null}
+            {canShowQuotationAwbDraft(
+              quotation.job_type,
+              quotation.actions,
+              quotation.path_hints,
+            ) ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="warning"
+                leftIcon={<Plane />}
+                disabled={pending}
+                onClick={() => setFocusTab('awb_draft')}
+                title="Preview / generate HAWB draft from air booking-form fields (same as shipment AWB / BL Draft)"
+              >
+                AWB Draft
+              </Button>
+            ) : null}
             <Button
               size="sm"
               type="button"
@@ -1280,6 +1299,19 @@ export default function QuotationDetailPage() {
                   key: 'bl_draft',
                   label: 'BL Draft',
                   content: <QuotationBlDraftPanel quotation={quotation} />,
+                },
+              ]
+            : []),
+          ...(canShowQuotationAwbDraft(
+            quotation.job_type,
+            quotation.actions,
+            quotation.path_hints,
+          )
+            ? [
+                {
+                  key: 'awb_draft',
+                  label: 'AWB Draft',
+                  content: <QuotationAwbDraftPanel quotation={quotation} />,
                 },
               ]
             : []),

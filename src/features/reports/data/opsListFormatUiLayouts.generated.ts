@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — Fresa sky-blue themes. */
+/** Permanent JSON UI layouts — opsListFormatUiLayouts. */
 export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "CONTAINER_LIST_BASED_ON_CARGO_UNPACK_DATE_LIST_REPORT_FORMAT",
@@ -97,7 +97,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CONTAINER LIST BASED ON CARGO UNPACK DATE LIST",
-        "align": "end",
+        "align": "center",
         "band": true
       },
       {
@@ -106,7 +106,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -213,14 +216,14 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -322,19 +325,22 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CREATED INVOICE LIST",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
         "type": "agingSummary"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -436,16 +442,16 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "colorfulFooter"
@@ -547,7 +553,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "EXPORT SHIPMENTS DEPARTED BUT NOT CONFIRMED ON BOARD LIST",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -559,10 +565,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "orange"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
       },
       {
-        "type": "summaryHero"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -669,7 +675,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -680,6 +686,9 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -781,22 +790,22 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOB ATA NOT UPDATED LIST",
-        "align": "end",
+        "align": "start",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
         "headerColor": "orange"
       },
       {
-        "type": "agingSummary"
+        "type": "jobDescription"
       },
       {
-        "type": "wireBox"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -898,25 +907,25 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOB NOT CLOSED LIST",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
       },
       {
-        "type": "summaryHero"
+        "type": "stampSignature"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -1018,22 +1027,25 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MANIFEST NOT SENT TO AGENT",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -1260,23 +1272,23 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1387,7 +1399,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "agingSummary"
@@ -1397,6 +1409,9 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "stampSignature"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -1498,7 +1513,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS FOR CARGO ARRIVAL NOTICE LIST",
-        "align": "end",
+        "align": "center",
         "band": true
       },
       {
@@ -1513,7 +1528,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -1523,6 +1538,9 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -1633,19 +1651,19 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "agingSummary"
@@ -1750,7 +1768,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
@@ -1758,20 +1776,23 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -1996,28 +2017,28 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "SHIPMENTS WITH NO INVOICES LIST",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "agingSummary"
@@ -2125,16 +2146,16 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "SHIPMENTS WITH NO PURCHASE INVOICES LIST",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "agingSummary"
@@ -2146,7 +2167,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
+        "type": "termsBank"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -2506,16 +2530,16 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "SHIPMENT IS NOT LINKED WITH JOB LIST",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
@@ -2527,10 +2551,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
+        "type": "termsBank"
       },
       {
-        "type": "formatBadge"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -2899,28 +2923,20 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "HOUSE BILL OF LADING — DRAFT",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "hblCargoTable"
       },
       {
         "type": "containerStrip"
       },
       {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
+        "type": "hblFreightSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3301,7 +3317,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
         "type": "agingSummary"
@@ -3313,13 +3329,13 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
+        "type": "termsBank"
       },
       {
-        "type": "formatBadge"
+        "type": "summaryHero"
       },
       {
-        "type": "letterBody"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -3697,7 +3713,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO ARRIVAL NOTICE SENT SHIPMENTS LIST",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
@@ -3705,14 +3721,14 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -4113,7 +4129,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -4129,16 +4145,16 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
+        "type": "termsBank"
       },
       {
         "type": "summaryHero"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -4270,7 +4286,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "QUOTATION",
-        "align": "end",
+        "align": "center",
         "band": true
       },
       {
@@ -4285,7 +4301,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -4295,6 +4311,9 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -4543,16 +4562,16 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "EXPORT CARGO READY BUT NOT STUFFED LIST",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "agingSummary"
@@ -4564,19 +4583,19 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
+        "type": "termsBank"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
       },
       {
         "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4678,7 +4697,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOB ATA UPDATED ARRIVAL NOTICE NOT SENT LIST",
-        "align": "end",
+        "align": "start",
         "band": true
       },
       {
@@ -4686,14 +4705,14 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -4705,7 +4724,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "agingSummary"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4957,7 +4979,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "SHIPMENTS WITH NO COST CHARGES LIST",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
@@ -4966,7 +4988,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "agingSummary"
@@ -4978,7 +5000,13 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
+        "type": "termsBank"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
@@ -4987,13 +5015,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "summaryHero"
-      },
-      {
         "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5394,11 +5416,11 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
@@ -5410,7 +5432,13 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
+        "type": "termsBank"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
@@ -5419,16 +5447,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "summaryHero"
-      },
-      {
         "type": "exportMetaStrip"
       },
       {
         "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -5674,16 +5696,16 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "start",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "agingSummary"
@@ -5788,19 +5810,19 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
-        "type": "outstandingTable"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -5903,18 +5925,18 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DAILY STATUS",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
-        "type": "containerStrip"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6016,8 +6038,8 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "start",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -6025,13 +6047,13 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "agingSummary"
       },
       {
-        "type": "formatBadge"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6133,8 +6155,8 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -6142,13 +6164,13 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "accent"
       },
       {
-        "type": "outstandingTable"
+        "type": "summaryHero"
       },
       {
-        "type": "jobDescription"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -6250,19 +6272,19 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "accent"
       },
       {
-        "type": "containerStrip"
+        "type": "summaryHero"
       },
       {
         "type": "agingSummary"
@@ -6368,24 +6390,21 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DAILY STATUS",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6487,25 +6506,25 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
-        "type": "outstandingTable"
+        "type": "summaryHero"
       },
       {
-        "type": "jobDescription"
+        "type": "agingSummary"
       },
       {
-        "type": "stampSignature"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -6607,8 +6626,8 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -6616,10 +6635,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
-        "type": "containerStrip"
+        "type": "summaryHero"
       },
       {
         "type": "agingSummary"
@@ -6728,27 +6747,24 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DAILY STATUS",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
         "type": "agingSummary"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
         "type": "summaryHero"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -6850,28 +6866,28 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
-        "type": "outstandingTable"
+        "type": "summaryHero"
       },
       {
-        "type": "jobDescription"
+        "type": "agingSummary"
       },
       {
-        "type": "stampSignature"
+        "type": "wireBox"
       },
       {
-        "type": "taxAmountBox"
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -7096,8 +7112,8 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "start",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -7105,22 +7121,19 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
       },
       {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
         "type": "summaryHero"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -7222,8 +7235,8 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -7234,19 +7247,19 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "cyan"
       },
       {
-        "type": "outstandingTable"
+        "type": "summaryHero"
       },
       {
-        "type": "jobDescription"
+        "type": "agingSummary"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -7474,12 +7487,12 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "start",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -7489,19 +7502,16 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "agingSummary"
       },
       {
+        "type": "summaryHero"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
         "type": "formatBadge"
       },
       {
         "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -7603,34 +7613,34 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
-        "type": "outstandingTable"
+        "type": "summaryHero"
       },
       {
-        "type": "jobDescription"
+        "type": "agingSummary"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
       },
       {
         "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -7731,9 +7741,9 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "DAILY STATUS",
+        "text": "DAILY STATUS · V1",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -7741,25 +7751,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
+        "headerColor": "primary"
       },
       {
         "type": "colorfulFooter"
@@ -7862,18 +7854,24 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DAILY STATUS",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "agingSummary"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
@@ -7882,16 +7880,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "summaryHero"
-      },
-      {
         "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -7993,28 +7982,25 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DAILY STATUS",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "accent"
       },
       {
-        "type": "outstandingTable"
+        "type": "summaryHero"
       },
       {
-        "type": "jobDescription"
+        "type": "agingSummary"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
@@ -8023,7 +8009,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "summaryHero"
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -8125,19 +8114,19 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
-        "type": "summaryHero"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -8240,7 +8229,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -8248,10 +8237,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
-        "type": "stampSignature"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -8353,22 +8342,22 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "start",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
       },
       {
-        "type": "wireBox"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -8470,22 +8459,22 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "summaryHero"
+        "type": "containerStrip"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -8587,22 +8576,22 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "stampSignature"
+        "type": "containerStrip"
       },
       {
-        "type": "taxAmountBox"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -8824,8 +8813,8 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -8833,16 +8822,16 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -8944,25 +8933,25 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -9187,28 +9176,28 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
+        "headerColor": "cyan"
       },
       {
         "type": "containerStrip"
       },
       {
-        "type": "agingSummary"
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -9311,7 +9300,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -9319,19 +9308,19 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -9432,7 +9421,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PENDING SHIPMENTS LIST",
+        "text": "PENDING SHIPMENTS LIST · V2",
         "align": "start",
         "band": false
       },
@@ -9442,22 +9431,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
+        "headerColor": "accent"
       },
       {
         "type": "colorfulFooter"
@@ -9559,31 +9533,31 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
       },
       {
-        "type": "agingSummary"
+        "type": "jobDescription"
       },
       {
-        "type": "wireBox"
+        "type": "stampSignature"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -9686,27 +9660,27 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
+        "type": "termsBank"
       },
       {
         "type": "summaryHero"
@@ -9810,13 +9784,13 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PENDING SHIPMENTS LIST",
-        "align": "start",
-        "band": false
+        "text": "PENDING SHIPMENTS LIST · V3",
+        "align": "end",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
@@ -9824,21 +9798,6 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -10069,34 +10028,34 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
+        "type": "termsBank"
       },
       {
         "type": "summaryHero"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -10462,8 +10421,8 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -10474,25 +10433,25 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "fill"
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
+        "type": "termsBank"
       },
       {
         "type": "summaryHero"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "agingSummary"
       },
       {
-        "type": "containerStrip"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -10593,41 +10552,17 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PENDING SHIPMENTS LIST",
-        "align": "start",
+        "text": "PENDING SHIPMENTS LIST · V4",
+        "align": "center",
         "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
+        "headerColor": "orange"
       },
       {
         "type": "colorfulFooter"
@@ -10728,8 +10663,8 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PENDING SHIPMENTS LIST",
-        "align": "end",
+        "text": "PENDING SHIPMENTS LIST · V2",
+        "align": "start",
         "band": false
       },
       {
@@ -10738,31 +10673,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -10865,39 +10779,39 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "PENDING SHIPMENTS LIST",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
+        "headerColor": "orange"
       },
       {
         "type": "containerStrip"
       },
       {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
         "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -10998,9 +10912,9 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PENDING SHIPMENTS LIST",
+        "text": "PENDING SHIPMENTS LIST · V5",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -11008,34 +10922,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
+        "headerColor": "cyan"
       },
       {
         "type": "colorfulFooter"
@@ -11136,44 +11023,17 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PENDING SHIPMENTS LIST",
+        "text": "PENDING SHIPMENTS LIST · V3",
         "align": "end",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -11578,49 +11438,19 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "JOB STATUS LIST",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "agingSummary"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -11871,8 +11701,8 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOB STATUS LIST",
-        "align": "center",
+        "text": "JOB STATUS LIST · V5",
+        "align": "start",
         "band": true
       },
       {
@@ -11881,55 +11711,10 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "cyan"
       },
       {
         "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -12177,59 +11962,20 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOB STATUS LIST",
+        "text": "JOB STATUS LIST · V6",
         "align": "end",
-        "band": true
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -12798,71 +12544,17 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOB STATUS LIST",
-        "align": "center",
-        "band": true
+        "text": "JOB STATUS LIST · V6",
+        "align": "end",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
+        "headerColor": "primary"
       },
       {
         "type": "colorfulFooter"
@@ -12963,59 +12655,20 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOB STATUS LIST",
-        "align": "start",
+        "text": "JOB STATUS LIST · V1",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "agingSummary"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -13443,62 +13096,20 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOB STATUS LIST",
-        "align": "start",
-        "band": true
+        "text": "JOB STATUS LIST · V4",
+        "align": "center",
+        "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "agingSummary"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -13599,68 +13210,17 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOB STATUS LIST",
-        "align": "end",
+        "text": "JOB STATUS LIST · V7",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
+        "headerColor": "accent"
       },
       {
         "type": "colorfulFooter"
@@ -14091,9 +13651,9 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOB STATUS LIST",
-        "align": "end",
-        "band": true
+        "text": "JOB STATUS LIST · V8",
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -14102,60 +13662,6 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "chargeTable",
         "headerColor": "fill"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -14256,9 +13762,9 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "JOB STATUS LIST",
-        "align": "center",
-        "band": true
+        "text": "JOB STATUS LIST · V8",
+        "align": "start",
+        "band": false
       },
       {
         "type": "fieldGrid",
@@ -14269,67 +13775,7 @@ export const OPS_LIST_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "headerColor": "fill"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
         "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
-      },
-      {
-        "type": "exportMetaStrip"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"

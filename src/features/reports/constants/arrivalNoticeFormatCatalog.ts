@@ -6,6 +6,7 @@
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
 import { listArrivalNoticeFormatUiLayouts } from '../data/arrivalNoticeFormatUiLayouts';
+import { buildLayoutBackedFormatCatalog } from '../utils/buildLayoutBackedFormatCatalog';
 import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
 
 export type ArrivalNoticeFormatKind = string;
@@ -234,34 +235,31 @@ export const ARRIVAL_NOTICE_FORMAT_CATALOG: ArrivalNoticeFormatSpec[] = [
   },
 ];
 
-const ARRIVAL_EXTRA: ArrivalNoticeFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
-  (r) => r.bucket === 'arrival' || r.bucket === 'arrival_extra',
-).map((r, i) => ({
-  code: r.code,
-  name: r.name,
-  kind: `arrival_extra_${r.sortOrder || i + 1}`,
-  sortOrder: 1000 + (r.sortOrder || i + 1),
-  family: (r.family === 'air_docs' ? 'air_docs' : 'sea_docs') as 'sea_docs' | 'air_docs',
-}));
+/** Name/sort metadata only — strip lists layout-backed codes exclusively. */
+const ARRIVAL_SEED: ArrivalNoticeFormatSpec[] = [
+  ...ARRIVAL_NOTICE_FORMAT_CATALOG,
+  ...REMAINING_FORMAT_CATALOG.filter(
+    (r) => r.bucket === 'arrival' || r.bucket === 'arrival_extra',
+  ).map((r, i) => ({
+    code: r.code,
+    name: r.name,
+    kind: `arrival_extra_${r.sortOrder || i + 1}`,
+    sortOrder: 1000 + (r.sortOrder || i + 1),
+    family: (r.family === 'air_docs' ? 'air_docs' : 'sea_docs') as 'sea_docs' | 'air_docs',
+  })),
+];
 
-const ALL_ARRIVAL_FORMATS: ArrivalNoticeFormatSpec[] = (() => {
-  const by = new Map<string, ArrivalNoticeFormatSpec>();
-  for (const row of [...ARRIVAL_NOTICE_FORMAT_CATALOG, ...ARRIVAL_EXTRA]) {
-    by.set(row.code.toUpperCase(), row);
-  }
-  listArrivalNoticeFormatUiLayouts().forEach((layout, i) => {
-    const key = layout.code.toUpperCase();
-    const existing = by.get(key);
-    by.set(key, {
-      code: layout.code,
-      name: layout.name || existing?.name || layout.code,
-      kind: existing?.kind || `arrival_${layout.formatNumber || i + 1}`,
-      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
-      family: existing?.family || 'sea_docs',
-    });
-  });
-  return [...by.values()];
-})();
+const ALL_ARRIVAL_FORMATS: ArrivalNoticeFormatSpec[] = buildLayoutBackedFormatCatalog(
+  listArrivalNoticeFormatUiLayouts(),
+  ARRIVAL_SEED,
+  (layout, seed, i) => ({
+    code: layout.code,
+    name: layout.name || seed?.name || layout.code,
+    kind: seed?.kind || `arrival_${layout.formatNumber || i + 1}`,
+    sortOrder: seed?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+    family: seed?.family || 'sea_docs',
+  }),
+);
 
 const byCode = new Map(ALL_ARRIVAL_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 

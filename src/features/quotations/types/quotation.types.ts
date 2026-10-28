@@ -102,6 +102,12 @@ export interface QuotationActions {
    */
   can_bl_draft?: boolean;
   /**
+   * Staff AWB draft from air booking form (same continuum as shipment AWB / BL Draft).
+   * When omitted, FE shows for AIR_EXPORT / AIR_IMPORT.
+   * Backend optional: GET/POST …/hawb-draft/preview|generate (soft-404 → air-booking-form).
+   */
+  can_awb_draft?: boolean;
+  /**
    * Optional BE gates for quotation PDF (GET /quotations/:id `actions`).
    * When omitted, the FE still shows PDF / Download (client layout + store).
    */

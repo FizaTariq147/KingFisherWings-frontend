@@ -1,9 +1,12 @@
 {
-  "totalLayouts": 852,
-  "fresaSampleNames": 77,
-  "matched": 77,
-  "missingNames": [],
+  "totalLayouts": 816,
   "stores": [
+    {
+      "store": "invoiceFormatUiLayouts.json",
+      "count": 82,
+      "uniqueSignatures": 82,
+      "ok": true
+    },
     {
       "store": "accountsFormatUiLayouts.json",
       "count": 95,
@@ -11,21 +14,21 @@
       "ok": true
     },
     {
-      "store": "arrivalNoticeFormatUiLayouts.json",
-      "count": 55,
-      "uniqueSignatures": 55,
+      "store": "wmsFormatUiLayouts.json",
+      "count": 61,
+      "uniqueSignatures": 61,
       "ok": true
     },
     {
-      "store": "commercialExtraFormatUiLayouts.json",
-      "count": 37,
-      "uniqueSignatures": 37,
+      "store": "arrivalNoticeFormatUiLayouts.json",
+      "count": 31,
+      "uniqueSignatures": 31,
       "ok": true
     },
     {
       "store": "deliveryOrderFormatUiLayouts.json",
-      "count": 41,
-      "uniqueSignatures": 41,
+      "count": 42,
+      "uniqueSignatures": 42,
       "ok": true
     },
     {
@@ -36,26 +39,8 @@
     },
     {
       "store": "hblFormatUiLayouts.json",
-      "count": 122,
-      "uniqueSignatures": 122,
-      "ok": true
-    },
-    {
-      "store": "invoiceFormatUiLayouts.json",
-      "count": 82,
-      "uniqueSignatures": 82,
-      "ok": true
-    },
-    {
-      "store": "leftoverFormatUiLayouts.json",
-      "count": 83,
-      "uniqueSignatures": 83,
-      "ok": true
-    },
-    {
-      "store": "opsListFormatUiLayouts.json",
-      "count": 108,
-      "uniqueSignatures": 108,
+      "count": 109,
+      "uniqueSignatures": 109,
       "ok": true
     },
     {
@@ -71,16 +56,29 @@
       "ok": true
     },
     {
+      "store": "opsListFormatUiLayouts.json",
+      "count": 108,
+      "uniqueSignatures": 108,
+      "ok": true
+    },
+    {
+      "store": "commercialExtraFormatUiLayouts.json",
+      "count": 37,
+      "uniqueSignatures": 37,
+      "ok": true
+    },
+    {
       "store": "seaDocsExtraFormatUiLayouts.json",
       "count": 43,
       "uniqueSignatures": 43,
       "ok": true
     },
     {
-      "store": "wmsFormatUiLayouts.json",
-      "count": 61,
-      "uniqueSignatures": 61,
+      "store": "leftoverFormatUiLayouts.json",
+      "count": 83,
+      "uniqueSignatures": 83,
       "ok": true
     }
-  ]
+  ],
+  "generatedAt": "2026-10-28T08:32:15.667Z"
 }

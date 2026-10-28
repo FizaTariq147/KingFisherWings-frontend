@@ -19,6 +19,12 @@ import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessa
 import { safeInternalPath } from '@/lib/safeInternalPath';
 import { stripSensitiveSearchParams } from '@/lib/stripSensitiveSearchParams';
 import {
+  clearInviteTokenSession,
+  readInviteTokenFromSearch,
+} from '@/lib/inviteTokenSession';
+import { softPasswordField } from '@/lib/validation';
+import { portalInviteErrorMessage } from '../utils/portalInviteErrorMessage';
+import {
   LoginPopupFrame,
   popupInputClass,
   popupLabelClass,
@@ -43,7 +49,7 @@ const inviteSchema = z.object({
     .optional()
     .or(z.literal(''))
     .refine((v) => !v || v.length >= 2, 'Full name must be at least 2 characters'),
-  password: z.string().min(8, 'Password must be at least 8 characters'),
+  password: softPasswordField(8),
   confirm: z.string().min(1, 'Confirm your password'),
 }).refine((v) => v.password === v.confirm, {
   message: 'Passwords do not match',
@@ -62,13 +68,16 @@ export default function PortalLoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [inviteToken] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    return (params.get('token') || params.get('invite') || '').trim();
-  });
+  const [inviteToken] = useState(() =>
+    readInviteTokenFromSearch(window.location.search, 'portal'),
+  );
+  const isAcceptInvitePath = /accept-invite/i.test(location.pathname);
+  const missingInviteToken = isAcceptInvitePath && !inviteToken;
   const setSession = usePortalAuthStore((s) => s.setSession);
   const { ready, accessToken } = usePortalAuthBootstrap();
   const [showPassword, setShowPassword] = useState(false);
+  const [showInvitePassword, setShowInvitePassword] = useState(false);
+  const [inviteSuccessMsg, setInviteSuccessMsg] = useState<string | null>(null);
   const [forgotOpen, setForgotOpen] = useState(false);
   const [forgotSlug, setForgotSlug] = useState('');
   const [forgotEmail, setForgotEmail] = useState('');
@@ -143,6 +152,7 @@ export default function PortalLoginPage() {
   const inviteMutation = useMutation({
     mutationFn: portalAuthService.acceptInvite,
     onSuccess: async (result) => {
+      clearInviteTokenSession('portal');
       if (result?.accessToken) {
         useAuthStore.setState({
           user: null,
@@ -164,16 +174,13 @@ export default function PortalLoginPage() {
         navigate('/portal', { replace: true });
         return;
       }
-      navigate('/portal/login', { replace: true });
+      setInviteSuccessMsg('Account activated. Sign in with your new password.');
+      window.setTimeout(() => {
+        navigate('/portal/login', { replace: true });
+      }, 1200);
     },
     onError: (error: unknown) => {
-      const raw =
-        error instanceof PortalApiError
-          ? error.message
-          : error instanceof Error
-            ? error.message
-            : 'Could not accept invite.';
-      inviteForm.setError('root', { message: withAuthThrottleMessage(error, raw) });
+      inviteForm.setError('root', { message: portalInviteErrorMessage(error) });
     },
   });
 
@@ -294,7 +301,11 @@ export default function PortalLoginPage() {
         </LoginPopupFrame>
       ) : (
       <LoginPopupFrame
-        title={inviteToken ? 'Accept invite' : 'Customer Portal Sign In'}
+        title={
+          inviteToken || missingInviteToken
+            ? 'Activate account & set password'
+            : 'Customer Portal Sign In'
+        }
         onClose={closeToHub}
       >
         {(form.formState.errors.root || inviteForm.formState.errors.root) && (
@@ -302,8 +313,28 @@ export default function PortalLoginPage() {
             {form.formState.errors.root?.message || inviteForm.formState.errors.root?.message}
           </div>
         )}
+        {inviteSuccessMsg ? (
+          <div className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3 py-2.5 text-sm text-emerald-800" role="status">
+            {inviteSuccessMsg}
+          </div>
+        ) : null}
 
-        {inviteToken ? (
+        {missingInviteToken ? (
+          <div className="space-y-3.5">
+            <p className="text-sm text-slate-600" role="alert">
+              This invitation link is missing a token. Open the full link from your email, or ask
+              your forwarder to resend the invitation.
+            </p>
+            <button
+              type="button"
+              className={popupSubmitClass}
+              style={{ background: '#0A2942' }}
+              onClick={() => navigate('/portal/login', { replace: true })}
+            >
+              Go to portal sign in
+            </button>
+          </div>
+        ) : inviteToken ? (
           <form
             onSubmit={inviteForm.handleSubmit((values) =>
               inviteMutation.mutate({
@@ -315,26 +346,44 @@ export default function PortalLoginPage() {
             noValidate
             className="space-y-3.5"
           >
+            <p className="text-xs text-slate-500">
+              Choose a password for your customer portal account. After activation you can sign in
+              anytime.
+            </p>
             <div>
               <label htmlFor="invite_full_name" className={popupLabelClass}>
                 Full name (optional)
               </label>
               <input id="invite_full_name" autoComplete="name" className={popupInputClass} {...inviteForm.register('full_name')} />
+              {inviteForm.formState.errors.full_name && (
+                <p className="mt-1 text-xs text-red-600">{inviteForm.formState.errors.full_name.message}</p>
+              )}
             </div>
             <div>
               <label htmlFor="invite_password" className={popupLabelClass}>
                 New password
               </label>
-              <input
-                id="invite_password"
-                type="password"
-                autoComplete="new-password"
-                className={popupInputClass}
-                {...inviteForm.register('password')}
-              />
+              <div className="relative">
+                <input
+                  id="invite_password"
+                  type={showInvitePassword ? 'text' : 'password'}
+                  autoComplete="new-password"
+                  className={`${popupInputClass} pr-10`}
+                  {...inviteForm.register('password')}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowInvitePassword((v) => !v)}
+                  aria-label={showInvitePassword ? 'Hide password' : 'Show password'}
+                  className="absolute right-2.5 top-[calc(50%+2px)] -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                >
+                  {showInvitePassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                </button>
+              </div>
               {inviteForm.formState.errors.password && (
                 <p className="mt-1 text-xs text-red-600">{inviteForm.formState.errors.password.message}</p>
               )}
+              <p className="mt-1 text-[11px] text-slate-400">At least 8 characters, with a letter and a number.</p>
             </div>
             <div>
               <label htmlFor="invite_confirm" className={popupLabelClass}>
@@ -342,7 +391,7 @@ export default function PortalLoginPage() {
               </label>
               <input
                 id="invite_confirm"
-                type="password"
+                type={showInvitePassword ? 'text' : 'password'}
                 autoComplete="new-password"
                 className={popupInputClass}
                 {...inviteForm.register('confirm')}
@@ -353,11 +402,11 @@ export default function PortalLoginPage() {
             </div>
             <button
               type="submit"
-              disabled={inviteMutation.isPending}
+              disabled={inviteMutation.isPending || Boolean(inviteSuccessMsg)}
               className={popupSubmitClass}
               style={{ background: '#0A2942' }}
             >
-              {inviteMutation.isPending ? 'Activating…' : 'Activate account'}
+              {inviteMutation.isPending ? 'Activating…' : 'Activate account & set password'}
             </button>
           </form>
         ) : (

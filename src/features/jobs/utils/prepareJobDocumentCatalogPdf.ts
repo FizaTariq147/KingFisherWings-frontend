@@ -1,11 +1,13 @@
 import { generateBlDraftPdf } from '@/features/shared/bl-draft/generateBlDraftPdf';
 import { loadBlDraftSource } from '@/features/shared/bl-draft/loadBlDraftSource';
+import { generateAwbDraftPdf } from '@/features/shared/awb-draft/generateAwbDraftPdf';
+import { loadAwbDraftSource } from '@/features/shared/awb-draft/loadAwbDraftSource';
 import { appendOfficialCustomerTermsPdf } from '@/features/reports/utils/appendOfficialCustomerTermsPdf';
 import { generateCatalogLayoutPdf } from '@/features/reports/utils/generateCatalogLayoutPdf';
 import { resolveCatalogContextPdfData } from '@/features/reports/utils/resolveCatalogContextPdfData';
-import { resolveCustomerTermsBranding } from '@/features/reports/utils/resolveCustomerTermsBranding';
 import { shouldAppendCustomerTermsPage } from '@/features/reports/utils/shouldAppendCustomerTermsPage';
 import {
+  AWB_CATALOG_DOCUMENT_KEYS,
   CLASSIC_BL_DRAFT_DOCUMENT_KEYS,
   CATALOG_LAYOUT_JOB_DOCUMENT_KEYS,
   resolveJobDocumentFormatCode,
@@ -18,13 +20,17 @@ function normalizeDocKey(documentKey: string): string {
     .replace(/[\s_]+/g, '-');
 }
 
+function awbKindFromDocKey(key: string): 'hawb' | 'mawb' {
+  if (key === 'mawb') return 'mawb';
+  return 'hawb';
+}
+
 async function maybeAppendTerms(formatCode: string, blob: Blob): Promise<Blob> {
   if (!shouldAppendCustomerTermsPage(formatCode)) return blob;
   try {
-    const branding = await resolveCustomerTermsBranding();
-    return appendOfficialCustomerTermsPdf(blob, branding);
-  } catch {
     return appendOfficialCustomerTermsPdf(blob);
+  } catch {
+    return blob;
   }
 }
 
@@ -32,6 +38,8 @@ async function maybeAppendTerms(formatCode: string, blob: Blob): Promise<Blob> {
  * Prefer catalog / classic Fresa layout PDF for critical job documents.
  * Returns null when the key is out of scope or generation fails (caller falls
  * back to backend bytes + chrome stamp).
+ *
+ * Air HAWB/MAWB: merge air-booking-form + air_details (BL booking-form parity).
  */
 export async function prepareJobDocumentCatalogPdf(opts: {
   jobId: string;
@@ -61,11 +69,30 @@ export async function prepareJobDocumentCatalogPdf(opts: {
       return { blob, formatCode, source: 'classic-bl' };
     }
 
+    if (AWB_CATALOG_DOCUMENT_KEYS.has(key)) {
+      const kind = awbKindFromDocKey(key);
+      const { preview } = await loadAwbDraftSource({
+        jobId: opts.jobId,
+        shipmentId: opts.shipmentId || undefined,
+        quotationId: opts.quotationId || undefined,
+        documentKind: kind,
+      });
+      const { blob } = await generateAwbDraftPdf({
+        jobId: opts.jobId,
+        shipmentId: opts.shipmentId || undefined,
+        quotationId: opts.quotationId || undefined,
+        preview,
+        documentKind: kind,
+      });
+      return { blob, formatCode, source: 'catalog-layout' };
+    }
+
     const data = await resolveCatalogContextPdfData({
       job_id: opts.jobId,
       shipment_id: opts.shipmentId || undefined,
       quotation_id: opts.quotationId || undefined,
     });
+
     const generated = await generateCatalogLayoutPdf(formatCode, data);
     if (!generated?.blob) return null;
 

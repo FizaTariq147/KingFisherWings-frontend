@@ -56,7 +56,7 @@ export default defineConfig({
     {
       name: 'chromium',
       testIgnore: /auth\.setup\.ts/,
-      testMatch: /(auth|validation|public-track)\.spec\.ts/,
+      testMatch: /(auth|validation|public-track|portal-accept-invite-routing)\.spec\.ts/,
       use: { ...devices['Desktop Chrome'] },
     },
     {

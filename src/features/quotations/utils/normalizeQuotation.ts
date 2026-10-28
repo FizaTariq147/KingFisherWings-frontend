@@ -103,6 +103,14 @@ function normalizeQuotationActions(raw: unknown): QuotationActions | undefined {
       'canBlEntry',
       'bl_entry',
     ),
+    can_awb_draft: flag(
+      'can_awb_draft',
+      'canAwbDraft',
+      'awb_draft',
+      'can_awb',
+      'canAwb',
+      'awb',
+    ),
     can_generate_pdf: flag(
       'can_generate_pdf',
       'canGeneratePdf',

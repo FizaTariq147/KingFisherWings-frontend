@@ -4,6 +4,7 @@
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
 import { listDeliveryOrderFormatUiLayouts } from '../data/deliveryOrderFormatUiLayouts';
+import { buildLayoutBackedFormatCatalog } from '../utils/buildLayoutBackedFormatCatalog';
 
 export const FRESA_DELIVERY_ORDER_SAMPLE_BASE =
   'https://fresatechnologies.com/wp-content/fresa-std-files/fresagold/sample_reports/';
@@ -395,37 +396,23 @@ export const DELIVERY_ORDER_FORMAT_CATALOG: DeliveryOrderFormatSpec[] = [
   },
 ];
 
-const ALL_DELIVERY_FORMATS: DeliveryOrderFormatSpec[] = (() => {
-  const by = new Map<string, DeliveryOrderFormatSpec>();
-  for (const row of DELIVERY_ORDER_FORMAT_CATALOG) by.set(row.code.toUpperCase(), row);
-  listDeliveryOrderFormatUiLayouts().forEach((layout, i) => {
-    const key = layout.code.toUpperCase();
-    const existing = by.get(key);
-    by.set(key, {
-      code: layout.code,
-      name: layout.name || existing?.name || layout.code,
-      kind: existing?.kind || `delivery_${layout.formatNumber || i + 1}`,
-      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
-      family: existing?.family || 'sea_docs',
-      samplePdfUrl: existing?.samplePdfUrl || FRESA_REPORT_FORMAT_UPLOAD_BASE,
-    });
-  });
-  return [...by.values()];
-})();
+const ALL_DELIVERY_FORMATS: DeliveryOrderFormatSpec[] = buildLayoutBackedFormatCatalog(
+  listDeliveryOrderFormatUiLayouts(),
+  DELIVERY_ORDER_FORMAT_CATALOG,
+  (layout, seed, i) => ({
+    code: layout.code,
+    name: layout.name || seed?.name || layout.code,
+    kind: seed?.kind || `delivery_${layout.formatNumber || i + 1}`,
+    sortOrder: seed?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+    family: seed?.family || 'sea_docs',
+    samplePdfUrl: seed?.samplePdfUrl || FRESA_REPORT_FORMAT_UPLOAD_BASE,
+  }),
+);
 
 const byCode = new Map(ALL_DELIVERY_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 
-const REGISTRY_DELIVERY_ORDER = /^DELIVERY_ORDER_REPORT_FORMAT_\d+$/;
-const REGISTRY_DELIVERY_AIR = /^DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT$/;
-
 export function isDeliveryOrderFormatCode(code: string): boolean {
-  const needle = code.trim().toUpperCase();
-  if (!needle) return false;
-  if (byCode.has(needle)) return true;
-  if (needle === 'DELIVERY_CONFIRMATION_REPORT_FORMAT') return true;
-  if (REGISTRY_DELIVERY_ORDER.test(needle)) return true;
-  if (REGISTRY_DELIVERY_AIR.test(needle)) return true;
-  return false;
+  return byCode.has(code.trim().toUpperCase());
 }
 
 export function getDeliveryOrderFormatSpec(code: string): DeliveryOrderFormatSpec | undefined {

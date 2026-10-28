@@ -469,7 +469,7 @@ export async function resolveCatalogContextPdfData(
     data.total = money(Number(data.total));
   }
 
-  // Entity-bound: keep N/A placeholders even when some fetches fail (no demo fill-in).
+  // Entity-bound: live invoice/quote/job data only — missing fields stay empty (no demo).
   if (hasEntityContext) {
     data.entityBound = true;
   } else if (

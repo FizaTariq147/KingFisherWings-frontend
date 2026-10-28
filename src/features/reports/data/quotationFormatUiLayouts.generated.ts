@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated Quotation formats — run: node scripts/build-quotation-format-ui-layouts.mjs */
+/** Permanent JSON UI layouts — quotationFormatUiLayouts. */
 export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "QUOTATION_REPORT_FORMAT_1",
@@ -119,7 +119,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Classic sea quotation — rates subject to space."
-      ]
+      ],
+      "letterBody": "Thank you for your enquiry. Please find our quotation below."
     },
     "blocks": [
       {
@@ -127,24 +128,24 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION — FORMAT 1",
+        "text": "QUOTATION",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -215,7 +216,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,380.00",
       "words": "USD One Thousand Three Hundred Eighty Only",
       "remarks": "Format-2",
-      "letterBody": "Thank you for your enquiry. Please find our competitive quotation as below.",
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
       "fieldGrid": [
         {
           "k": "POL",
@@ -282,11 +283,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION — FORMAT 2",
+        "text": "QUOTATION",
         "align": "center",
         "band": true
       },
@@ -309,6 +307,9 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -616,7 +617,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "US Letter paper quotation format."
-      ]
+      ],
+      "letterBody": "Thank you for your enquiry. Please find our quotation below."
     },
     "blocks": [
       {
@@ -624,24 +626,24 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "docTitle",
+        "text": "QUOTATION",
+        "align": "start",
+        "band": true
       },
       {
-        "type": "docTitle",
-        "text": "QUOTATION — FORMAT 4",
-        "align": "center",
-        "band": true
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
         "type": "fieldGrid",
         "cols": 2
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
@@ -651,6 +653,9 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -758,7 +763,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Compact 3-column charge summary."
-      ]
+      ],
+      "letterBody": "Thank you for your enquiry. Please find our quotation below."
     },
     "blocks": [
       {
@@ -766,27 +772,36 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION — FORMAT 5",
-        "align": "center",
+        "text": "QUOTATION",
+        "align": "start",
         "band": true
       },
       {
+        "type": "letterBody"
+      },
+      {
+        "type": "partyTriple"
+      },
+      {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
       },
       {
+        "type": "termsBank"
+      },
+      {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -848,7 +863,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,380.00",
       "words": "USD One Thousand Three Hundred Eighty Only",
       "remarks": "Format-6",
-      "letterBody": "Quotation valid for 30 days from date of issue.",
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
       "fieldGrid": [
         {
           "k": "POL",
@@ -935,11 +950,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION — FORMAT 6",
+        "text": "QUOTATION",
         "align": "center",
         "band": true
       },
@@ -947,24 +959,24 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
         "type": "partyTriple"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
-        "type": "agingSummary"
+        "type": "chargeTable",
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -1100,7 +1112,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Four-party notify layout with insurance line."
-      ]
+      ],
+      "letterBody": "Thank you for your enquiry. Please find our quotation below."
     },
     "blocks": [
       {
@@ -1108,27 +1121,24 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "docTitle",
+        "text": "QUOTATION",
+        "align": "start",
+        "band": true
       },
       {
-        "type": "docTitle",
-        "text": "QUOTATION — FORMAT 7",
-        "align": "center",
-        "band": true
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -1138,6 +1148,12 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -1265,7 +1281,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Buy/Sell/Profit quotation sheet."
-      ]
+      ],
+      "letterBody": "Thank you for your enquiry. Please find our quotation below."
     },
     "blocks": [
       {
@@ -1273,13 +1290,16 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "docTitle",
+        "text": "QUOTATION",
+        "align": "start",
+        "band": true
       },
       {
-        "type": "docTitle",
-        "text": "QUOTATION WITH MARGIN — FORMAT 8",
-        "align": "center",
-        "band": true
+        "type": "letterBody"
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
@@ -1287,7 +1307,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -1297,6 +1317,12 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -1358,7 +1384,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,947.50",
       "words": "USD One Thousand Nine Hundred Forty Seven And 50/100",
       "remarks": "Format-9",
-      "letterBody": "Please confirm acceptance by return email to proceed with booking.",
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
       "fieldGrid": [
         {
           "k": "Origin Airport",
@@ -1425,33 +1451,36 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION — FORMAT 9",
-        "align": "center",
+        "text": "QUOTATION",
+        "align": "start",
         "band": true
       },
       {
         "type": "letterBody"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "partyTriple"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
       },
       {
+        "type": "termsBank"
+      },
+      {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -1577,7 +1606,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Includes bank settlement details."
-      ]
+      ],
+      "letterBody": "Thank you for your enquiry. Please find our quotation below."
     },
     "blocks": [
       {
@@ -1585,20 +1615,20 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION — FORMAT 10",
+        "text": "QUOTATION",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -1611,10 +1641,16 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "wireBox"
+        "type": "signatureRow"
       },
       {
-        "type": "signatureRow"
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -1752,7 +1788,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Shipment + container planning quotation."
-      ]
+      ],
+      "letterBody": "Thank you for your enquiry. Please find our quotation below."
     },
     "blocks": [
       {
@@ -1760,33 +1797,42 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION — FORMAT 11",
+        "text": "QUOTATION",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -1899,7 +1945,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "Simple particulars list — India trade style."
-      ]
+      ],
+      "letterBody": "Thank you for your enquiry. Please find our quotation below."
     },
     "blocks": [
       {
@@ -1907,33 +1954,39 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
+        "type": "docTitle",
+        "text": "QUOTATION",
+        "align": "start",
+        "band": true
       },
       {
-        "type": "docTitle",
-        "text": "QUOTATION — FORMAT 12",
-        "align": "center",
-        "band": true
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "accent"
+        "type": "fieldGrid",
+        "cols": 1
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "chargeTable",
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
       },
       {
+        "type": "termsBank"
+      },
+      {
         "type": "signatureRow"
       },
       {
-        "type": "termsBank"
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -1995,7 +2048,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,380.00",
       "words": "USD One Thousand Three Hundred Eighty Only",
       "remarks": "Format-13",
-      "letterBody": "This quotation supersedes all previous offers for the same shipment.",
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
       "fieldGrid": [
         {
           "k": "POL",
@@ -2066,11 +2119,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION — FORMAT 13",
+        "text": "QUOTATION",
         "align": "center",
         "band": true
       },
@@ -2078,15 +2128,15 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
+        "type": "partyTriple"
+      },
+      {
         "type": "fieldGrid",
         "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "partyTriple"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -2096,6 +2146,18 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -2215,7 +2277,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "termsLines": [
         "VAT-inclusive air quotation."
-      ]
+      ],
+      "letterBody": "Thank you for your enquiry. Please find our quotation below."
     },
     "blocks": [
       {
@@ -2223,34 +2286,45 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION WITH TAX — FORMAT 14",
+        "text": "QUOTATION",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "subtotalBar",
-        "variant": "tax"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -2312,7 +2386,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "total": "1,380.00",
       "words": "USD One Thousand Three Hundred Eighty Only",
       "remarks": "Format-15",
-      "letterBody": "We look forward to your confirmation to proceed with booking.",
+      "letterBody": "Thank you for your enquiry. Please find our quotation below.",
       "fieldGrid": [
         {
           "k": "POL",
@@ -2392,11 +2466,8 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge"
-      },
-      {
         "type": "docTitle",
-        "text": "QUOTATION — FORMAT 15",
+        "text": "QUOTATION",
         "align": "center",
         "band": true
       },
@@ -2408,7 +2479,7 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -2422,6 +2493,15 @@ export const QUOTATION_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
