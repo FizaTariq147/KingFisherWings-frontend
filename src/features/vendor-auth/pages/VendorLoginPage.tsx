@@ -19,6 +19,10 @@ import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQuery
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
 import { safeInternalPath } from '@/lib/safeInternalPath';
 import { stripSensitiveSearchParams } from '@/lib/stripSensitiveSearchParams';
+import {
+  clearInviteTokenSession,
+  readInviteTokenFromSearch,
+} from '@/lib/inviteTokenSession';
 import { useVendorAuthBootstrap } from '../hooks/useVendorAuthBootstrap';
 import { vendorAuthService } from '../services/vendorAuth.service';
 import { useVendorAuthStore } from '../store/vendorAuthStore';
@@ -63,10 +67,9 @@ export default function VendorLoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [inviteToken] = useState(() => {
-    const params = new URLSearchParams(window.location.search);
-    return (params.get('token') || params.get('invite') || '').trim();
-  });
+  const [inviteToken] = useState(() =>
+    readInviteTokenFromSearch(window.location.search, 'vendor'),
+  );
   const setSession = useVendorAuthStore((s) => s.setSession);
   const { ready, accessToken } = useVendorAuthBootstrap();
   const [showPassword, setShowPassword] = useState(false);
@@ -141,6 +144,7 @@ export default function VendorLoginPage() {
   const inviteMutation = useMutation({
     mutationFn: vendorAuthService.acceptInvite,
     onSuccess: async (result) => {
+      clearInviteTokenSession('vendor');
       if (result?.accessToken) {
         await applySession(result.user, result.accessToken, result.refreshToken);
         navigate('/vendor', { replace: true });

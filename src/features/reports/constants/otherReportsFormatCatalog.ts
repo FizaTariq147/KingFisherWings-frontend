@@ -3,6 +3,7 @@
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
 import { listOtherReportsFormatUiLayouts } from '../data/otherReportsFormatUiLayouts';
+import { buildLayoutBackedFormatCatalog } from '../utils/buildLayoutBackedFormatCatalog';
 import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
 
 export const FRESA_OTHER_REPORTS_FORMAT_BASE =
@@ -539,60 +540,49 @@ export const OTHER_REPORTS_FORMAT_CATALOG: OtherReportsFormatSpec[] = [
   },
 ];
 
-const OTHER_EXTRA: OtherReportsFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
-  (r) => r.bucket === 'other' || r.bucket === 'other_extra',
-).map((r, i) => ({
-  code: r.code,
-  name: r.name,
-  kind: `other_extra_${r.sortOrder || i + 1}`,
-  sortOrder: 1000 + (r.sortOrder || i + 1),
-  family: (r.family === 'air_docs'
-    ? 'air_docs'
-    : r.family === 'quotation'
-      ? 'quotation'
-      : r.family === 'ops_list'
-        ? 'ops_list'
-        : r.family === 'commercial'
-          ? 'commercial'
-          : r.family === 'sea_docs'
-            ? 'sea_docs'
-            : 'other') as OtherReportsFormatSpec['family'],
-  samplePdfUrl: FRESA_OTHER_REPORTS_FORMAT_BASE,
-}));
+/** Name/sort metadata only — strip lists layout-backed codes exclusively. */
+const OTHER_SEED: OtherReportsFormatSpec[] = [
+  ...OTHER_REPORTS_FORMAT_CATALOG,
+  ...REMAINING_FORMAT_CATALOG.filter(
+    (r) => r.bucket === 'other' || r.bucket === 'other_extra',
+  ).map((r, i) => ({
+    code: r.code,
+    name: r.name,
+    kind: `other_extra_${r.sortOrder || i + 1}`,
+    sortOrder: 1000 + (r.sortOrder || i + 1),
+    family: (r.family === 'air_docs'
+      ? 'air_docs'
+      : r.family === 'quotation'
+        ? 'quotation'
+        : r.family === 'ops_list'
+          ? 'ops_list'
+          : r.family === 'commercial'
+            ? 'commercial'
+            : r.family === 'sea_docs'
+              ? 'sea_docs'
+              : 'other') as OtherReportsFormatSpec['family'],
+    samplePdfUrl: FRESA_OTHER_REPORTS_FORMAT_BASE,
+  })),
+];
 
-const ALL_OTHER_REPORTS: OtherReportsFormatSpec[] = (() => {
-  const by = new Map<string, OtherReportsFormatSpec>();
-  for (const row of [...OTHER_REPORTS_FORMAT_CATALOG, ...OTHER_EXTRA]) {
-    by.set(row.code.toUpperCase(), row);
-  }
-  listOtherReportsFormatUiLayouts().forEach((layout, i) => {
-    const key = layout.code.toUpperCase();
-    const existing = by.get(key);
-    by.set(key, {
-      code: layout.code,
-      name: layout.name || existing?.name || layout.code,
-      kind: existing?.kind || `other_${layout.formatNumber || i + 1}`,
-      sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
-      family: existing?.family || 'other',
-      contexts: existing?.contexts,
-      samplePdfUrl: existing?.samplePdfUrl || FRESA_OTHER_REPORTS_FORMAT_BASE,
-    });
-  });
-  return [...by.values()];
-})();
+const ALL_OTHER_REPORTS: OtherReportsFormatSpec[] = buildLayoutBackedFormatCatalog(
+  listOtherReportsFormatUiLayouts(),
+  OTHER_SEED,
+  (layout, seed, i) => ({
+    code: layout.code,
+    name: layout.name || seed?.name || layout.code,
+    kind: seed?.kind || `other_${layout.formatNumber || i + 1}`,
+    sortOrder: seed?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+    family: seed?.family || 'other',
+    contexts: seed?.contexts,
+    samplePdfUrl: seed?.samplePdfUrl || FRESA_OTHER_REPORTS_FORMAT_BASE,
+  }),
+);
 
 const byCode = new Map(ALL_OTHER_REPORTS.map((row) => [row.code.toUpperCase(), row]));
 
-const CATALOG_CODES = new Set(ALL_OTHER_REPORTS.map((row) => row.code.toUpperCase()));
-
 export function isOtherReportsFormatCode(code: string): boolean {
-  const needle = code.trim().toUpperCase();
-  if (!needle) return false;
-  if (CATALOG_CODES.has(needle)) return true;
-  if (/^BOOKING_CONFIRMATION_REPORT_FORMAT_\d+$/.test(needle)) return true;
-  if (/^DAILY_STATUS_REPORT_FORMAT_\d+$/.test(needle)) return true;
-  if (/^MAWB_DRAFT_REPORT_FORMAT(_\d+)?$/.test(needle)) return true;
-  return false;
+  return byCode.has(code.trim().toUpperCase());
 }
 
 export function getOtherReportsFormatSpec(code: string): OtherReportsFormatSpec | undefined {

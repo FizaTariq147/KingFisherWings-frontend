@@ -1,0 +1,48 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>PDF raster</title>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: #fff;
+      }
+      #c {
+        display: block;
+      }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  </head>
+  <body>
+    <canvas id="c"></canvas>
+    <script>
+      pdfjsLib.GlobalWorkerOptions.workerSrc =
+        'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+      window.__RASTER__ = { ready: false };
+
+      window.renderPdfBytes = async function renderPdfBytes(base64, pageNumber, scale) {
+        const raw = atob(base64);
+        const bytes = new Uint8Array(raw.length);
+        for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+        const pdf = await pdfjsLib.getDocument({ data: bytes }).promise;
+        const page = await pdf.getPage(pageNumber || 1);
+        const viewport = page.getViewport({ scale: scale || 2 });
+        const canvas = document.getElementById('c');
+        const ctx = canvas.getContext('2d');
+        canvas.width = Math.floor(viewport.width);
+        canvas.height = Math.floor(viewport.height);
+        await page.render({ canvasContext: ctx, viewport }).promise;
+        window.__RASTER__ = {
+          ready: true,
+          pageCount: pdf.numPages,
+          width: canvas.width,
+          height: canvas.height,
+          dataUrl: canvas.toDataURL('image/png'),
+        };
+        return window.__RASTER__;
+      };
+    </script>
+  </body>
+</html>

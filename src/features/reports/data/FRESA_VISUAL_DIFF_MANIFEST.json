@@ -1,0 +1,237 @@
+{
+  "generatedAt": "2026-10-28T10:28:44.795Z",
+  "baseURL": "http://localhost:5174",
+  "passThreshold": 0.08,
+  "batchSize": 4,
+  "passed": [],
+  "failed": [
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "status": "failed_visual",
+      "referencePath": "tmp\\fresa-references\\pdfs\\invoice-report-format-1-tax-invoice-india.pdf",
+      "generatedPath": "tmp\\fresa-visual-diff\\INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA\\generated.pdf",
+      "comparisonDir": "tmp\\fresa-visual-diff\\INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "mismatchRatio": 0.46509,
+      "mismatchedPixels": 931469,
+      "passThreshold": 0.08,
+      "pageMeta": {
+        "referencePages": 1,
+        "generatedPages": 1,
+        "referenceSize": {
+          "w": 1188,
+          "h": 1683
+        },
+        "generatedSize": {
+          "w": 1190,
+          "h": 1683
+        },
+        "pageCountMatch": true,
+        "dimensionDelta": {
+          "w": 2,
+          "h": 0
+        }
+      },
+      "note": "Layout differs from reference — do not claim Fresa fidelity."
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+      "status": "failed_visual",
+      "referencePath": "tmp\\fresa-references\\pdfs\\invoice-report-format-3-summary-invoice.pdf",
+      "generatedPath": "tmp\\fresa-visual-diff\\INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE\\generated.pdf",
+      "comparisonDir": "tmp\\fresa-visual-diff\\INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+      "mismatchRatio": 0.567883,
+      "mismatchedPixels": 1137340,
+      "passThreshold": 0.08,
+      "pageMeta": {
+        "referencePages": 1,
+        "generatedPages": 1,
+        "referenceSize": {
+          "w": 1188,
+          "h": 1683
+        },
+        "generatedSize": {
+          "w": 1190,
+          "h": 1683
+        },
+        "pageCountMatch": true,
+        "dimensionDelta": {
+          "w": 2,
+          "h": 0
+        }
+      },
+      "note": "Layout differs from reference — do not claim Fresa fidelity."
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "status": "failed_visual",
+      "referencePath": "tmp\\fresa-references\\pdfs\\hawb-draft-report-format.pdf",
+      "generatedPath": "tmp\\fresa-visual-diff\\HAWB_DRAFT_REPORT_FORMAT\\generated.pdf",
+      "comparisonDir": "tmp\\fresa-visual-diff\\HAWB_DRAFT_REPORT_FORMAT",
+      "mismatchRatio": 0.129772,
+      "mismatchedPixels": 260985,
+      "passThreshold": 0.08,
+      "pageMeta": {
+        "referencePages": 1,
+        "generatedPages": 2,
+        "referenceSize": {
+          "w": 1190,
+          "h": 1690
+        },
+        "generatedSize": {
+          "w": 1190,
+          "h": 1683
+        },
+        "pageCountMatch": false,
+        "dimensionDelta": {
+          "w": 0,
+          "h": 7
+        }
+      },
+      "note": "Layout differs from reference — do not claim Fresa fidelity."
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "status": "failed_visual",
+      "referencePath": "tmp\\fresa-references\\pdfs\\hbl-draft-report-fomat-jasper.pdf",
+      "generatedPath": "tmp\\fresa-visual-diff\\HBL_DRAFT_REPORT_FORMAT_JASPER\\generated.pdf",
+      "comparisonDir": "tmp\\fresa-visual-diff\\HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "mismatchRatio": 0.11963,
+      "mismatchedPixels": 239733,
+      "passThreshold": 0.08,
+      "pageMeta": {
+        "referencePages": 1,
+        "generatedPages": 2,
+        "referenceSize": {
+          "w": 1190,
+          "h": 1684
+        },
+        "generatedSize": {
+          "w": 1190,
+          "h": 1683
+        },
+        "pageCountMatch": false,
+        "dimensionDelta": {
+          "w": 0,
+          "h": 1
+        }
+      },
+      "note": "Layout differs from reference — do not claim Fresa fidelity."
+    }
+  ],
+  "skipped": [],
+  "results": [
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "status": "failed_visual",
+      "referencePath": "tmp\\fresa-references\\pdfs\\invoice-report-format-1-tax-invoice-india.pdf",
+      "generatedPath": "tmp\\fresa-visual-diff\\INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA\\generated.pdf",
+      "comparisonDir": "tmp\\fresa-visual-diff\\INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "mismatchRatio": 0.46509,
+      "mismatchedPixels": 931469,
+      "passThreshold": 0.08,
+      "pageMeta": {
+        "referencePages": 1,
+        "generatedPages": 1,
+        "referenceSize": {
+          "w": 1188,
+          "h": 1683
+        },
+        "generatedSize": {
+          "w": 1190,
+          "h": 1683
+        },
+        "pageCountMatch": true,
+        "dimensionDelta": {
+          "w": 2,
+          "h": 0
+        }
+      },
+      "note": "Layout differs from reference — do not claim Fresa fidelity."
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+      "status": "failed_visual",
+      "referencePath": "tmp\\fresa-references\\pdfs\\invoice-report-format-3-summary-invoice.pdf",
+      "generatedPath": "tmp\\fresa-visual-diff\\INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE\\generated.pdf",
+      "comparisonDir": "tmp\\fresa-visual-diff\\INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+      "mismatchRatio": 0.567883,
+      "mismatchedPixels": 1137340,
+      "passThreshold": 0.08,
+      "pageMeta": {
+        "referencePages": 1,
+        "generatedPages": 1,
+        "referenceSize": {
+          "w": 1188,
+          "h": 1683
+        },
+        "generatedSize": {
+          "w": 1190,
+          "h": 1683
+        },
+        "pageCountMatch": true,
+        "dimensionDelta": {
+          "w": 2,
+          "h": 0
+        }
+      },
+      "note": "Layout differs from reference — do not claim Fresa fidelity."
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "status": "failed_visual",
+      "referencePath": "tmp\\fresa-references\\pdfs\\hawb-draft-report-format.pdf",
+      "generatedPath": "tmp\\fresa-visual-diff\\HAWB_DRAFT_REPORT_FORMAT\\generated.pdf",
+      "comparisonDir": "tmp\\fresa-visual-diff\\HAWB_DRAFT_REPORT_FORMAT",
+      "mismatchRatio": 0.129772,
+      "mismatchedPixels": 260985,
+      "passThreshold": 0.08,
+      "pageMeta": {
+        "referencePages": 1,
+        "generatedPages": 2,
+        "referenceSize": {
+          "w": 1190,
+          "h": 1690
+        },
+        "generatedSize": {
+          "w": 1190,
+          "h": 1683
+        },
+        "pageCountMatch": false,
+        "dimensionDelta": {
+          "w": 0,
+          "h": 7
+        }
+      },
+      "note": "Layout differs from reference — do not claim Fresa fidelity."
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "status": "failed_visual",
+      "referencePath": "tmp\\fresa-references\\pdfs\\hbl-draft-report-fomat-jasper.pdf",
+      "generatedPath": "tmp\\fresa-visual-diff\\HBL_DRAFT_REPORT_FORMAT_JASPER\\generated.pdf",
+      "comparisonDir": "tmp\\fresa-visual-diff\\HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "mismatchRatio": 0.11963,
+      "mismatchedPixels": 239733,
+      "passThreshold": 0.08,
+      "pageMeta": {
+        "referencePages": 1,
+        "generatedPages": 2,
+        "referenceSize": {
+          "w": 1190,
+          "h": 1684
+        },
+        "generatedSize": {
+          "w": 1190,
+          "h": 1683
+        },
+        "pageCountMatch": false,
+        "dimensionDelta": {
+          "w": 0,
+          "h": 1
+        }
+      },
+      "note": "Layout differs from reference — do not claim Fresa fidelity."
+    }
+  ],
+  "honesty": "Only entries in passed[] are visually verified. Structural uniqueness is irrelevant here."
+}

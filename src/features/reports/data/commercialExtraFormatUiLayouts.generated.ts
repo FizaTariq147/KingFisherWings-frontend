@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — Fresa sky-blue themes. */
+/** Permanent JSON UI layouts — commercialExtraFormatUiLayouts. */
 export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
@@ -2470,12 +2470,12 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2286C8",
-      "fill": "#E9F5FD",
-      "panel": "#D7EFFC",
+      "accent": "#2185C7",
+      "fill": "#E4F0F8",
+      "panel": "#D3EBF8",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#9AD7FF",
+      "cyan": "#99D6FE",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2585,7 +2585,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PROFORMA INVOICE",
+        "text": "PROFORMA INVOICE · V1",
         "align": "center",
         "band": true
       },
@@ -2598,7 +2598,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -2920,7 +2920,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DEBIT NOTE",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -2933,7 +2933,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -3070,8 +3070,8 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DEBIT NOTE",
-        "align": "start",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -3080,7 +3080,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
@@ -3224,8 +3224,8 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DEBIT NOTE",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -3247,7 +3247,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -3379,7 +3379,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DEBIT NOTE",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -3388,7 +3388,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -3401,7 +3401,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "outstandingTable"
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -3533,7 +3533,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DEBIT NOTE",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -3542,11 +3542,11 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -3558,7 +3558,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "containerStrip"
       },
       {
-        "type": "agingSummary"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -3689,8 +3689,8 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DEBIT NOTE",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -3699,11 +3699,11 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -3712,10 +3712,10 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
+        "type": "containerStrip"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -3846,8 +3846,8 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DEBIT NOTE",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -3860,7 +3860,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -3869,7 +3869,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "outstandingTable"
+        "type": "containerStrip"
       },
       {
         "type": "jobDescription"
@@ -4004,7 +4004,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DEBIT NOTE",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -4017,7 +4017,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -4029,10 +4029,10 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "containerStrip"
       },
       {
-        "type": "agingSummary"
+        "type": "jobDescription"
       },
       {
-        "type": "wireBox"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4163,8 +4163,8 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DEBIT NOTE",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -4173,11 +4173,11 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -4186,13 +4186,13 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "formatBadge"
+        "type": "containerStrip"
       },
       {
-        "type": "letterBody"
+        "type": "jobDescription"
       },
       {
-        "type": "summaryHero"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4323,8 +4323,8 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DEBIT NOTE",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -4333,11 +4333,11 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -4346,7 +4346,7 @@ export const COMMERCIAL_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "outstandingTable"
+        "type": "containerStrip"
       },
       {
         "type": "jobDescription"

@@ -11,6 +11,10 @@ import { authService } from '@/features/auth/services/auth.service'
 import { erpPostAuthPath } from '@/features/auth/utils/postLoginPath'
 import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage'
 import { stripSensitiveSearchParams } from '@/lib/stripSensitiveSearchParams'
+import {
+  clearInviteTokenSession,
+  readInviteTokenFromSearch,
+} from '@/lib/inviteTokenSession'
 import { wakeApi } from '@/lib/wakeApi'
 import { AuthLandingShell } from '@/features/auth/components/AuthLandingShell'
 import { AcceptInvitePopup } from '@/features/auth/components/AcceptInvitePopup'
@@ -437,10 +441,9 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const [searchParams, setSearchParams] = useSearchParams()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
-  const [inviteToken] = useState(() => {
-    const params = new URLSearchParams(window.location.search)
-    return (params.get('token') || params.get('invite') || '').trim()
-  })
+  const [inviteToken] = useState(() =>
+    readInviteTokenFromSearch(window.location.search, 'staff'),
+  )
   const [loginOpen, setLoginOpen] = useState(() => searchParams.get('admin') === '1' && !inviteToken)
   const [inviteOpen, setInviteOpen] = useState(() => Boolean(inviteToken))
   const [inviteDone, setInviteDone] = useState(false)
@@ -478,6 +481,7 @@ export default function LoginPage() {
           token={inviteToken}
           onClose={() => setInviteOpen(false)}
           onAccepted={() => {
+            clearInviteTokenSession('staff')
             setInviteOpen(false)
             setInviteDone(true)
             setLoginOpen(true)

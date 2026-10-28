@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — Fresa sky-blue themes. */
+/** Permanent JSON UI layouts — seaDocsExtraFormatUiLayouts. */
 export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "JOB_HOUSES_RECORD_LIST_REPORT_FORMAT",
@@ -98,15 +98,27 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "JOB HOUSES RECORD LIST",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -237,11 +249,11 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -252,6 +264,12 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -381,22 +399,34 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "jobDescription"
@@ -529,8 +559,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -538,7 +568,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "containerStrip"
@@ -547,7 +577,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -678,21 +714,27 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "letterBody"
@@ -825,12 +867,12 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
@@ -841,6 +883,18 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "jobDescription"
@@ -977,15 +1031,15 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -994,10 +1048,16 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
+        "type": "wireBox"
       },
       {
-        "type": "wireBox"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1127,8 +1187,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "start",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -1136,7 +1196,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -1145,10 +1205,16 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
         "type": "letterBody"
       },
       {
-        "type": "summaryHero"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -1278,8 +1344,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -1287,7 +1353,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "containerStrip"
@@ -1296,13 +1362,22 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
         "type": "jobDescription"
       },
       {
         "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -1586,16 +1661,16 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "start",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "containerStrip"
@@ -1604,10 +1679,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
+        "type": "wireBox"
       },
       {
-        "type": "summaryHero"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "exportMetaStrip"
@@ -1740,16 +1818,16 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
@@ -1758,16 +1836,25 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
         "type": "jobDescription"
       },
       {
         "type": "stampSignature"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -2055,15 +2142,15 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
         "type": "containerStrip"
@@ -2072,16 +2159,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
+        "type": "wireBox"
       },
       {
-        "type": "summaryHero"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "exportMetaStrip"
       },
       {
-        "type": "containerStrip"
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -2211,16 +2301,16 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "containerStrip"
@@ -2229,19 +2319,28 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
       },
       {
         "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -2370,38 +2469,23 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO MANIFEST",
+        "text": "CARGO MANIFEST · V1",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -2532,7 +2616,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "CARGO MANIFEST",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -2549,19 +2633,22 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
+        "type": "wireBox"
       },
       {
-        "type": "summaryHero"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "exportMetaStrip"
       },
       {
-        "type": "containerStrip"
+        "type": "jobDescription"
       },
       {
-        "type": "agingSummary"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2691,8 +2778,8 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "fieldGrid",
@@ -2700,7 +2787,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
         "type": "containerStrip"
@@ -2709,13 +2796,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
@@ -2724,7 +2805,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
         "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -2853,41 +2946,23 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "CARGO MANIFEST",
-        "align": "center",
+        "text": "CARGO MANIFEST · V2",
+        "align": "start",
         "band": false
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3017,16 +3092,16 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "start",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "containerStrip"
@@ -3035,22 +3110,22 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
+        "type": "wireBox"
       },
       {
-        "type": "summaryHero"
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "exportMetaStrip"
       },
       {
-        "type": "containerStrip"
+        "type": "jobDescription"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3180,12 +3255,12 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "CARGO MANIFEST",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -3198,13 +3273,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
@@ -3213,10 +3282,19 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "letterBody"
       },
       {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
         "type": "summaryHero"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -3345,23 +3423,26 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "MAWB",
-        "align": "start",
-        "band": false
+        "text": "MAWB DRAFT",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "formatBadge"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "cyan"
       },
       {
         "type": "termsBank"
@@ -3497,31 +3578,21 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "hawbRouteGrid"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
+        "headerColor": "primary"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -3651,31 +3722,27 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "hawbRouteGrid"
       },
       {
         "type": "containerStrip"
       },
       {
-        "type": "termsBank"
+        "type": "chargeTable",
+        "headerColor": "cyan"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
       },
       {
-        "type": "agingSummary"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -3804,23 +3871,26 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "MAWB",
-        "align": "start",
-        "band": false
+        "text": "MAWB DRAFT",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "formatBadge"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
         "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "termsBank"
@@ -3829,7 +3899,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "letterBody"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -3959,34 +4029,24 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "hawbRouteGrid"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
+        "headerColor": "accent"
       },
       {
         "type": "signatureRow"
       },
       {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -4116,34 +4176,27 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "hawbRouteGrid"
       },
       {
         "type": "containerStrip"
       },
       {
-        "type": "termsBank"
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -4272,12 +4325,18 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "MAWB",
+        "text": "MAWB DRAFT",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "formatBadge"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
@@ -4285,10 +4344,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "cyan"
       },
       {
         "type": "termsBank"
@@ -4297,10 +4353,10 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "letterBody"
+        "type": "summaryHero"
       },
       {
-        "type": "summaryHero"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -4430,37 +4486,27 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "hawbRouteGrid"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
+        "headerColor": "fill"
       },
       {
         "type": "signatureRow"
       },
       {
-        "type": "jobDescription"
+        "type": "summaryHero"
       },
       {
-        "type": "stampSignature"
-      },
-      {
-        "type": "taxAmountBox"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -4749,23 +4795,26 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "MAWB",
+        "text": "MAWB DRAFT",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "formatBadge"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
@@ -4774,13 +4823,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "summaryHero"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -4910,40 +4959,30 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "hawbRouteGrid"
       },
       {
         "type": "chargeTable",
         "headerColor": "orange"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
         "type": "signatureRow"
       },
       {
-        "type": "jobDescription"
+        "type": "summaryHero"
       },
       {
-        "type": "stampSignature"
+        "type": "agingSummary"
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "formatBadge"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -5235,23 +5274,26 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "MAWB",
-        "align": "start",
-        "band": false
+        "text": "MAWB DRAFT",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "formatBadge"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hawbRouteGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
+        "headerColor": "accent"
       },
       {
         "type": "termsBank"
@@ -5260,16 +5302,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "letterBody"
-      },
-      {
         "type": "summaryHero"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "agingSummary"
       },
       {
-        "type": "containerStrip"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -5399,43 +5438,33 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "MAWB",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "hawbRouteGrid"
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
-      },
-      {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
+        "headerColor": "cyan"
       },
       {
         "type": "signatureRow"
       },
       {
-        "type": "jobDescription"
+        "type": "summaryHero"
       },
       {
-        "type": "stampSignature"
+        "type": "agingSummary"
       },
       {
-        "type": "taxAmountBox"
+        "type": "wireBox"
       },
       {
         "type": "formatBadge"
-      },
-      {
-        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -5564,44 +5593,25 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "MAWB",
+        "text": "MAWB · V1",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "chargeTable",
-        "headerColor": "orange"
+        "type": "hawbRouteGrid"
       },
       {
         "type": "containerStrip"
       },
       {
-        "type": "termsBank"
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
-        "type": "signatureRow"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
-      },
-      {
-        "type": "usaNumberedFields"
-      },
-      {
-        "type": "outstandingTable"
-      },
-      {
-        "type": "jobDescription"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -5731,7 +5741,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
@@ -5746,13 +5756,16 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -5883,14 +5896,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "DELIVERY ORDER",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "containerStrip"
@@ -5906,7 +5919,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "taxAmountBox"
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -6190,15 +6203,15 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "containerStrip"
@@ -6214,7 +6227,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "exportMetaStrip"
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -6344,22 +6357,22 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -6368,10 +6381,10 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "taxAmountBox"
+        "type": "letterBody"
       },
       {
-        "type": "formatBadge"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -6501,7 +6514,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
@@ -6509,14 +6522,14 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -6525,7 +6538,7 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "stampSignature"
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -6654,9 +6667,9 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "DELIVERY ORDER",
-        "align": "end",
-        "band": true
+        "text": "DELIVERY ORDER · V4",
+        "align": "center",
+        "band": false
       },
       {
         "type": "partyTriple"
@@ -6670,16 +6683,13 @@ export const SEA_DOCS_EXTRA_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"

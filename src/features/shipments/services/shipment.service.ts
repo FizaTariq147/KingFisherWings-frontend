@@ -1199,6 +1199,53 @@ export const shipmentService = {
     }
   },
 
+  /**
+   * Optional GET …/hawb-draft|mawb-draft|awb-draft/preview (BL-parity for air).
+   * Soft-404 → caller merges job air-booking-form.
+   */
+  async getAwbDraftPreview(
+    id: string,
+    kind: 'hawb' | 'mawb' | 'awb' = 'hawb',
+  ): Promise<unknown> {
+    assertId(id);
+    // Shipments expose hawb-draft + shared awb-draft preview (no dedicated mawb preview).
+    const paths =
+      kind === 'awb'
+        ? [SHIPMENT_API.awbDraftPreview(id), SHIPMENT_API.hawbDraftPreview(id)]
+        : [SHIPMENT_API.hawbDraftPreview(id), SHIPMENT_API.awbDraftPreview(id)];
+    let lastError: unknown;
+    for (const path of paths) {
+      try {
+        const res = await withGatewayRetry(() => axiosInstance.get(path));
+        return unwrapShipmentPayload(res.data) ?? res.data;
+      } catch (err) {
+        lastError = err;
+        const status = (err as { response?: { status?: number } })?.response?.status;
+        if (status !== 404 && status !== 405) throw formatAxiosError(err);
+      }
+    }
+    throw formatAxiosError(lastError);
+  },
+
+  /** Optional POST …/hawb-draft|mawb-draft/generate — register only; client PDF is SoT. */
+  async generateAwbDraft(
+    id: string,
+    kind: 'hawb' | 'mawb' | 'awb' = 'hawb',
+    body: Record<string, unknown> = {},
+  ): Promise<unknown> {
+    assertId(id);
+    const path =
+      kind === 'mawb'
+        ? SHIPMENT_API.mawbDraftGenerate(id)
+        : SHIPMENT_API.hawbDraftGenerate(id);
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.post(path, body));
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   /** POST /shipments/:id/documents/booking-confirmation (requires linked job). */
   async queueBookingConfirmation(id: string): Promise<unknown> {
     assertId(id);

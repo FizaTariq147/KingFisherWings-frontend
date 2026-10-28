@@ -30,7 +30,12 @@ export default defineConfig(({ mode }) => ({
     host: 'localhost',
     // Local sample PDFs under tmp/ can be locked on Windows (EBUSY) — never watch them.
     watch: {
-      ignored: ['**/tmp/**', '**/tmp/sample-pdfs/**'],
+      ignored: [
+        '**/tmp/**',
+        '**/tmp/sample-pdfs/**',
+        '**/playwright-report/**',
+        '**/test-results/**',
+      ],
     },
     allowedHosts: [
       'localhost',
@@ -74,6 +79,14 @@ export default defineConfig(({ mode }) => ({
 
   test: {
     projects: [
+      {
+        extends: true,
+        test: {
+          name: 'unit',
+          environment: 'node',
+          include: ['src/**/*.test.ts'],
+        },
+      },
       {
         extends: true,
         plugins: [

@@ -8,8 +8,8 @@ import { PageBackLink } from '@/components/ui/PageBackLink';
 import {
   REPORT_TEMPLATE_CONTEXT_ENUM,
 } from '../api/reportCatalog.api';
-import { filterRegistry, getRegistryByCode, FRESA_REPORT_REGISTRY } from '../data/fresaReportRegistry';
-import type { ReportFamily, ReportTemplate } from '../types/reportCatalog.types';
+import { filterRegistry, getRegistryByCode } from '../data/fresaReportRegistry';
+import type { ReportFamily, ReportTemplate, ReportTemplateMeta } from '../types/reportCatalog.types';
 import { reportContextLabel, reportFamilyLabel } from '../types/reportCatalog.types';
 import { metaToTemplate } from '../utils/normalizeReportCatalog';
 import { reportFamilyAllowed } from '../utils/reportModuleAccess';
@@ -19,6 +19,7 @@ import {
 } from '../utils/filterCatalogStripRows';
 import {
   isReportSearchActive,
+  reportCatalogRowMatchesSearch,
 } from '../utils/reportCatalogSearch';
 import { parseCatalogFamiliesParam } from '../utils/moduleCatalogFamily';
 import { hasReportEntityContext } from '../utils/reportParameterUtils';
@@ -379,29 +380,68 @@ export default function ReportCatalogPage() {
   const registeredLayoutEntries = useMemo(() => listAllRegisteredFormatCatalogEntries(), []);
 
   /**
-   * Prefer GET /reports/templates (already filtered by enabled_modules + family perms).
-   * FRESA local registry is fallback only when the API is unavailable.
+   * Catalogue source of truth = permanent JSON layouts only (~816).
+   * Live GET /reports/templates may return a 2000-row registry dump (page cap);
+   * those extras are never listed — live rows only enrich registered codes.
    */
   const items = useMemo(() => {
     const familyAllow =
       familiesFilter.length > 0 ? new Set(familiesFilter) : null;
+    const liveByCode = new Map<string, ReportTemplate>();
     if (liveAvailable && liveBrowse.data?.items) {
-      return liveBrowse.data.items.filter((t) => {
-        if (!reportFamilyAllowed(t.family, enabledModules)) return false;
-        if (familyAllow && t.family && !familyAllow.has(t.family as ReportFamily)) {
-          return false;
-        }
-        return true;
-      });
+      for (const t of liveBrowse.data.items) {
+        const key = String(t.code || '').trim().toUpperCase();
+        if (key && !liveByCode.has(key)) liveByCode.set(key, t);
+      }
     }
-    const rows = filterRegistry({
-      search: searchQuery,
-      family: family === 'all' ? 'all' : (family as ReportFamily),
-      families: familiesFilter.length ? familiesFilter : undefined,
-      context: contextFilter,
-    }).filter((meta) => reportFamilyAllowed(meta.family, enabledModules));
-    return rows.map((meta, i) => metaToTemplate(meta, i));
+
+    const rows: ReportTemplate[] = [];
+    registeredLayoutEntries.forEach((entry, i) => {
+      if (!reportFamilyAllowed(entry.family, enabledModules)) return;
+      if (familyAllow) {
+        if (!familyAllow.has(entry.family as ReportFamily)) return;
+      } else {
+        if (family !== 'all' && entry.family !== family) return;
+        if (
+          contextFilter !== 'all' &&
+          !(entry.contexts ?? []).includes(
+            contextFilter as 'job' | 'quotation' | 'list' | 'invoice' | 'gl' | 'wms' | 'party',
+          )
+        ) {
+          return;
+        }
+      }
+      if (
+        !reportCatalogRowMatchesSearch(
+          { name: entry.name, code: entry.code, family: entry.family, kind: entry.kind },
+          searchQuery,
+        )
+      ) {
+        return;
+      }
+
+      const live = liveByCode.get(entry.code.toUpperCase());
+      if (live) {
+        rows.push(live);
+        return;
+      }
+
+      const registryMeta = getRegistryByCode(entry.code);
+      const meta: ReportTemplateMeta = registryMeta ?? {
+        code: entry.code,
+        name: entry.name,
+        family: entry.family,
+        contexts: entry.contexts,
+        formats: ['PDF'],
+        rolloutPhase: 1,
+        gapStatus: 'covered_document_pdf',
+        hasClientLayout: true,
+      };
+      rows.push(metaToTemplate(meta, i));
+    });
+    return rows;
   }, [
+    registeredLayoutEntries,
     liveAvailable,
     liveBrowse.data?.items,
     searchQuery,
@@ -410,10 +450,15 @@ export default function ReportCatalogPage() {
     contextFilter,
     enabledModules,
   ]);
+
+  const registeredTotal = useMemo(
+    () =>
+      registeredLayoutEntries.filter((e) =>
+        reportFamilyAllowed(e.family, enabledModules),
+      ).length,
+    [registeredLayoutEntries, enabledModules],
+  );
   const metaTotal = items.length;
-  const completeReportTotal = liveAvailable
-    ? metaTotal
-    : FRESA_REPORT_REGISTRY.filter((t) => reportFamilyAllowed(t.family, enabledModules)).length;
   const listLoading = liveBrowse.isLoading && !liveBrowse.data;
 
   /** Family/Context allow-list for browse strips (null = no restriction). */
@@ -445,21 +490,13 @@ export default function ReportCatalogPage() {
 
   const familyOptions = useMemo(() => {
     const fromCatalog = new Set<string>();
-    if (liveAvailable && liveBrowse.data?.items?.length) {
-      for (const t of liveBrowse.data.items) {
-        if (t.family && reportFamilyAllowed(t.family, enabledModules)) {
-          fromCatalog.add(t.family);
-        }
-      }
-    } else {
-      for (const entry of registeredLayoutEntries) {
-        if (reportFamilyAllowed(entry.family, enabledModules)) {
-          fromCatalog.add(entry.family);
-        }
+    for (const entry of registeredLayoutEntries) {
+      if (reportFamilyAllowed(entry.family, enabledModules)) {
+        fromCatalog.add(entry.family);
       }
     }
     return ['all', ...[...fromCatalog].sort()];
-  }, [registeredLayoutEntries, liveAvailable, liveBrowse.data?.items, enabledModules]);
+  }, [registeredLayoutEntries, enabledModules]);
 
   const selected = useMemo(() => {
     if (!selectedCode) return null;
@@ -953,6 +990,61 @@ export default function ReportCatalogPage() {
     hasSeaDocsExtraLayout ||
     hasLeftoverLayout;
 
+  /** Codes already shown in a visible format strip — omit from family browse list. */
+  const browseItems = useMemo(() => {
+    const stripShown = new Set<string>();
+    const add = (visible: boolean, codes: string[]) => {
+      if (!visible) return;
+      for (const code of codes) {
+        const key = code.trim().toUpperCase();
+        if (key) stripShown.add(key);
+      }
+    };
+    add(showInvoiceFormatStrip, invoiceStripCodes);
+    add(showAccountsFormatStrip, accountsStripCodes);
+    add(showWmsFormatStrip, wmsStripCodes);
+    add(showArrivalNoticeFormatStrip, arrivalStripCodes);
+    add(showDeliveryOrderFormatStrip, deliveryStripCodes);
+    add(showHawbFormatStrip, hawbStripCodes);
+    add(showHblFormatStrip, hblStripCodes);
+    add(showOtherReportsFormatStrip, otherStripCodes);
+    add(showQuotationFormatStrip, quotationStripCodes);
+    add(showOpsListFormatStrip, opsStripCodes);
+    add(showCommercialExtraFormatStrip, commercialExtraStripCodes);
+    add(showSeaDocsExtraFormatStrip, seaDocsExtraStripCodes);
+    add(showLeftoverFormatStrip, leftoverStripCodes);
+    if (!stripShown.size) return items;
+    return items.filter((t) => !stripShown.has(String(t.code || '').trim().toUpperCase()));
+  }, [
+    items,
+    showInvoiceFormatStrip,
+    invoiceStripCodes,
+    showAccountsFormatStrip,
+    accountsStripCodes,
+    showWmsFormatStrip,
+    wmsStripCodes,
+    showArrivalNoticeFormatStrip,
+    arrivalStripCodes,
+    showDeliveryOrderFormatStrip,
+    deliveryStripCodes,
+    showHawbFormatStrip,
+    hawbStripCodes,
+    showHblFormatStrip,
+    hblStripCodes,
+    showOtherReportsFormatStrip,
+    otherStripCodes,
+    showQuotationFormatStrip,
+    quotationStripCodes,
+    showOpsListFormatStrip,
+    opsStripCodes,
+    showCommercialExtraFormatStrip,
+    commercialExtraStripCodes,
+    showSeaDocsExtraFormatStrip,
+    seaDocsExtraStripCodes,
+    showLeftoverFormatStrip,
+    leftoverStripCodes,
+  ]);
+
   return (
     <div className="space-y-4">
       <PageBackLink to="/reports" label="Back to Reports" />
@@ -974,14 +1066,12 @@ export default function ReportCatalogPage() {
         <div>
           <h2 className={appType.pageTitle}>Report catalogue</h2>
           <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
-            {metaTotal} of {completeReportTotal} complete reports
             {isReportSearchActive(searchQuery) ||
             family !== 'all' ||
             familiesFilter.length > 0 ||
             contextFilter !== 'all'
-              ? ' (filtered)'
-              : ''}
-            .
+              ? `${metaTotal} of ${registeredTotal} registered formats (filtered).`
+              : `${registeredTotal} registered formats.`}
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-stretch gap-1 sm:items-end">
@@ -1222,7 +1312,7 @@ export default function ReportCatalogPage() {
       />
 
       <ReportCatalogBrowseList
-        items={items}
+        items={browseItems}
         selectedCode={selectedCode}
         onSelect={selectTemplate}
         loading={listLoading}

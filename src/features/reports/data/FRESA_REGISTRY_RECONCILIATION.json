@@ -1,0 +1,136 @@
+{
+  "generatedAt": "2026-10-28T10:28:47.801Z",
+  "definitions": {
+    "discoveredReportNames": "Unique display names scraped / curated from the Fresa sample page (not registry size).",
+    "registeredLayouts": "Local JSON layout definitions across all *FormatUiLayouts.json stores (stable report IDs).",
+    "validReferencePdfs": "Downloaded PDF files fingerprint-classified as non-stub (usable for visual-diff).",
+    "xlsxReferences": "Sample assets that are spreadsheets, not PDF document layouts.",
+    "visuallyVerified": "Reports that passed page-image visual-diff against their matched reference (not structural uniqueness)."
+  },
+  "counts": {
+    "pageNameCount": 435,
+    "curatedNameCount": 77,
+    "uniqueDiscoveredNames": 437,
+    "inventoryRows": 747,
+    "uniqueSourceUrlsOnPage": 454,
+    "uniquePdfUrlsOnPage": 402,
+    "uniqueXlsxUrlsOnPage": 49,
+    "otherPageUrls": 3,
+    "downloadedReferences": 403,
+    "unavailableReferences": 344,
+    "diskPdfFiles": 404,
+    "fingerprintOkPdfs": 386,
+    "fingerprintStubPdfs": 18,
+    "uniqueReferenceFingerprints": 381,
+    "identicalReferenceGroups": 5,
+    "matchedLocalLayouts": 239,
+    "missingLocalLayouts": 508,
+    "registryAtHead": 816,
+    "registryCurrent": 816,
+    "registryUniqueCodesHead": 816,
+    "registryUniqueCodesCurrent": 816,
+    "codesRemovedSinceHead": 0,
+    "codesAddedSinceHead": 0,
+    "visuallyVerified": 0,
+    "visuallyFailed": 4,
+    "visuallySkippedUnverified": 0
+  },
+  "accessStatusBreakdown": {
+    "unavailable": 344,
+    "downloaded": 403
+  },
+  "implementationStatusBreakdown": {
+    "missing_local_layout": 508,
+    "has_local_layout": 239
+  },
+  "registryByStore": [
+    {
+      "store": "invoiceFormatUiLayouts.json",
+      "headCount": 82,
+      "currentCount": 82,
+      "delta": 0
+    },
+    {
+      "store": "accountsFormatUiLayouts.json",
+      "headCount": 95,
+      "currentCount": 95,
+      "delta": 0
+    },
+    {
+      "store": "wmsFormatUiLayouts.json",
+      "headCount": 61,
+      "currentCount": 61,
+      "delta": 0
+    },
+    {
+      "store": "arrivalNoticeFormatUiLayouts.json",
+      "headCount": 31,
+      "currentCount": 31,
+      "delta": 0
+    },
+    {
+      "store": "deliveryOrderFormatUiLayouts.json",
+      "headCount": 42,
+      "currentCount": 42,
+      "delta": 0
+    },
+    {
+      "store": "hawbFormatUiLayouts.json",
+      "headCount": 30,
+      "currentCount": 30,
+      "delta": 0
+    },
+    {
+      "store": "hblFormatUiLayouts.json",
+      "headCount": 109,
+      "currentCount": 109,
+      "delta": 0
+    },
+    {
+      "store": "otherReportsFormatUiLayouts.json",
+      "headCount": 80,
+      "currentCount": 80,
+      "delta": 0
+    },
+    {
+      "store": "quotationFormatUiLayouts.json",
+      "headCount": 15,
+      "currentCount": 15,
+      "delta": 0
+    },
+    {
+      "store": "opsListFormatUiLayouts.json",
+      "headCount": 108,
+      "currentCount": 108,
+      "delta": 0
+    },
+    {
+      "store": "commercialExtraFormatUiLayouts.json",
+      "headCount": 37,
+      "currentCount": 37,
+      "delta": 0
+    },
+    {
+      "store": "seaDocsExtraFormatUiLayouts.json",
+      "headCount": 43,
+      "currentCount": 43,
+      "delta": 0
+    },
+    {
+      "store": "leftoverFormatUiLayouts.json",
+      "headCount": 83,
+      "currentCount": 83,
+      "delta": 0
+    }
+  ],
+  "removalAnalysis": {
+    "note": "Previous 816→702 drop was HAWB (−25) + HBL (−89) store rebuilds to marketing-page-only lists — not leftover purge (leftover stayed 83). Restore script returned HAWB/HBL to HEAD counts while keeping current official Fresa-page layout bodies.",
+    "removedSample": [],
+    "addedSample": []
+  },
+  "backups": {
+    "gitBranch": "backup/fresa-pre-registry-recovery-20261028-143245",
+    "filesCopyHint": "tmp/backups/fresa-registry-*"
+  },
+  "successCriteriaReminder": "Structural uniqueness (702 unique shells) is NOT visual fidelity. Only FRESA_VISUAL_DIFF_MANIFEST pass entries count as visually verified."
+}

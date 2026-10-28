@@ -1,0 +1,827 @@
+# Fresa reference discovery inventory
+
+Source: https://fresatechnologies.com/sample-report-formats/
+Discovered at: 2026-10-28T08:51:34.274Z
+
+## Summary
+
+- Names (unique): **437**
+- Inventory rows: **747**
+- Downloaded PDFs: **403**
+- Unavailable / unverified: **344**
+- Matched local layouts: **239**
+- Missing local layouts: **508**
+- Unique local block signatures (matched): **144**
+- Duplicate signature groups: **56**
+
+## Downloaded (verified reference asset)
+
+- **ADVANCE SHIPPING NOTE FORMAT1** → `tmp/fresa-references/pdfs/advance-shipping-note-format1.pdf` (126172 bytes) · local `ADVANCE_SHIPPING_NOTE`
+- **ADVANCE_SHIPPING_NOTE** → `tmp/fresa-references/pdfs/advance-shipping-note.pdf` (62366 bytes) · **no local layout**
+- **ADVANCE_SHIPPING_NOTE_LOCATION_WISE** → `tmp/fresa-references/pdfs/advance-shipping-note-location-wise.pdf` (58681 bytes) · **no local layout**
+- **ADVANCE_SHIPPING_NOTE_LOCATION_WISE_** → `tmp/fresa-references/pdfs/advance-shipping-note-location-wise.pdf` (58648 bytes) · **no local layout**
+- **ADVANCE_SHIPPING_NOTE_SUMMARY** → `tmp/fresa-references/pdfs/advance-shipping-note-summary.pdf` (61246 bytes) · **no local layout**
+- **air freight atd confirmation report format** → `tmp/fresa-references/pdfs/air-freight-atd-confirmation-report-format.pdf` (70185 bytes) · local `AIR_FREIGHT_ATD_CONFIRMATION_REPORT_FORMAT`
+- **air quotation report format** → `tmp/fresa-references/pdfs/air-quotation-report-format.pdf` (98967 bytes) · local `AIR_QUOTATION_REPORT_FORMAT`
+- **air quotation with airline report format** → `tmp/fresa-references/pdfs/air-quotation-with-airline-report-format.pdf` (75598 bytes) · local `AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT`
+- **air shipment profit and loss report format** → `tmp/fresa-references/pdfs/air-shipment-profit-and-loss-report-format.pdf` (77778 bytes) · local `AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT`
+- **air shipment profit and loss report format 1** → `tmp/fresa-references/pdfs/air-shipment-profit-and-loss-report-format-1.pdf` (76827 bytes) · local `SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT`
+- **ap aging summary report format** → `tmp/fresa-references/pdfs/ap-aging-summary-report-format.pdf` (76343 bytes) · local `AP_AGING_SUMMARY_REPORT_FORMAT`
+- **ap outstanding statement report format** → `tmp/fresa-references/pdfs/ap-outstanding-statement-report-format.pdf` (69967 bytes) · local `AP_OUTSTANDING_STATEMENT_REPORT_FORMAT`
+- **ar aging summary report format** → `tmp/fresa-references/pdfs/ar-aging-summary-report-format.pdf` (77506 bytes) · local `AR_AGING_SUMMARY_REPORT_FORMAT`
+- **arrival confirmation report format** → `tmp/fresa-references/pdfs/arrival-confirmation-report-format.pdf` (70123 bytes) · local `ARRIVAL_CONFIRMATION`
+- **arrival notice report format 1 cargo arrival notice jasper** → `tmp/fresa-references/pdfs/arrival-notice-report-format-1-cargo-arrival-notice-jasper.pdf` (108634 bytes) · **no local layout**
+- **arrival notice report format 10 sea arrival notice fcl vietnam** → `tmp/fresa-references/pdfs/arrival-notice-report-format-10-sea-arrival-notice-fcl-vietnam.pdf` (98177 bytes) · **no local layout**
+- **arrival notice report format 2 cargo arrival notice jasper** → `tmp/fresa-references/pdfs/arrival-notice-report-format-2-cargo-arrival-notice-jasper.pdf` (108015 bytes) · **no local layout**
+- **arrival notice report format 3 arrival notice usa** → `tmp/fresa-references/pdfs/arrival-notice-report-format-3-arrival-notice-usa.pdf` (122482 bytes) · **no local layout**
+- **arrival notice report format 4 arrival notice usa** → `tmp/fresa-references/pdfs/arrival-notice-report-format-4-arrival-notice-usa.pdf` (122239 bytes) · **no local layout**
+- **arrival notice report format 5 cargo arrival notice sea** → `tmp/fresa-references/pdfs/arrival-notice-report-format-5-cargo-arrival-notice-sea.pdf` (79211 bytes) · **no local layout**
+- **arrival notice report format 6 cargo arrival notice sea** → `tmp/fresa-references/pdfs/arrival-notice-report-format-6-cargo-arrival-notice-sea.pdf` (78829 bytes) · **no local layout**
+- **arrival notice report format 7 cargo arrival notice sea** → `tmp/fresa-references/pdfs/arrival-notice-report-format-7-cargo-arrival-notice-sea.pdf` (78961 bytes) · **no local layout**
+- **arrival notice report format 8 cargo arrival notice sea without charges** → `tmp/fresa-references/pdfs/arrival-notice-report-format-8-cargo-arrival-notice-sea-without-charges.pdf` (73820 bytes) · **no local layout**
+- **arrival notice report format 9 cargo arrival notice sea without charges** → `tmp/fresa-references/pdfs/arrival-notice-report-format-9-cargo-arrival-notice-sea-without-charges.pdf` (74529 bytes) · **no local layout**
+- **arrival_confirmation_format1_rpm_ref_732** → `tmp/fresa-references/pdfs/arrival-confirmation-format1-rpm-ref-732.pdf` (105347 bytes) · **no local layout**
+- **arrival_confirmation_rpm_ref_152** → `tmp/fresa-references/pdfs/arrival-confirmation-rpm-ref-152.pdf` (86214 bytes) · **no local layout**
+- **arrival_information_rpm_ref_839** → `tmp/fresa-references/pdfs/arrival-information-rpm-ref-839.pdf` (131498 bytes) · **no local layout**
+- **barcode awb report format** → `tmp/fresa-references/pdfs/barcode-awb-report-format.pdf` (53169 bytes) · local `BARCODE_AWB_REPORT_FORMAT`
+- **booking confirmation air report format** → `tmp/fresa-references/pdfs/booking-confirmation-air-report-format.pdf` (87162 bytes) · local `BOOKING_CONFIRMATION_AIR_REPORT_FORMAT`
+- **booking confirmation report format 1 booking confirmation** → `tmp/fresa-references/pdfs/booking-confirmation-report-format-1-booking-confirmation.pdf` (86656 bytes) · **no local layout**
+- **booking confirmation report format 2 booking confirmation** → `tmp/fresa-references/pdfs/booking-confirmation-report-format-2-booking-confirmation.pdf` (73986 bytes) · **no local layout**
+- **cargo arrival notice air report format** → `tmp/fresa-references/pdfs/cargo-arrival-notice-air-report-format.pdf` (78016 bytes) · local `CARGO_ARRIVAL_NOTICE_AIR_REPORT_FORMAT`
+- **cargo arrival notice air without charges report format** → `tmp/fresa-references/pdfs/cargo-arrival-notice-air-without-charges-report-format.pdf` (74908 bytes) · local `CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT`
+- **cargo manifest air house report fomat** → `tmp/fresa-references/pdfs/cargo-manifest-air-house-report-fomat.pdf` (72266 bytes) · **no local layout**
+- **cargo manifest air jasper report format** → `tmp/fresa-references/pdfs/cargo-manifest-air-jasper-report-format.pdf` (102301 bytes) · local `CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT`
+- **cargo manifest air lc jasper report format** → `tmp/fresa-references/pdfs/cargo-manifest-air-lc-jasper-report-format.pdf` (102178 bytes) · local `CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT`
+- **cargo manifest report format** → `tmp/fresa-references/pdfs/cargo-manifest-report-format.pdf` (107718 bytes) · local `CARGO_MANIFEST_REPORT_FORMAT`
+- **cargo receipt note for export cfs report format** → `tmp/fresa-references/pdfs/cargo-receipt-note-for-export-cfs-report-format.pdf` (86454 bytes) · local `CARGO_RECEIPT_NOTE_FOR_EXPORT_CFS_REPORT_FORMAT`
+- **cargo_arrival_notice_air_rpm_ref_49** → `tmp/fresa-references/pdfs/cargo-arrival-notice-air-rpm-ref-49.pdf` (146126 bytes) · **no local layout**
+- **cargo_arrival_notice_air_without_charges_rpm_ref_363** → `tmp/fresa-references/pdfs/cargo-arrival-notice-air-without-charges-rpm-ref-363.pdf` (95556 bytes) · **no local layout**
+- **cargo_arrival_notice_sea_format_3_rpm_ref_1376** → `tmp/fresa-references/pdfs/cargo-arrival-notice-sea-format-3-rpm-ref-1376.pdf` (152857 bytes) · **no local layout**
+- **cargo_arrival_notice_sea_format1_rpm_ref_446** → `tmp/fresa-references/pdfs/cargo-arrival-notice-sea-format1-rpm-ref-446.pdf` (106146 bytes) · **no local layout**
+- **cargo_arrival_notice_sea_format2_rpm_ref_592** → `tmp/fresa-references/pdfs/cargo-arrival-notice-sea-format2-rpm-ref-592.pdf` (145843 bytes) · **no local layout**
+- **cargo_arrival_notice_sea_rpm_ref_27** → `tmp/fresa-references/pdfs/cargo-arrival-notice-sea-rpm-ref-27.pdf` (154608 bytes) · **no local layout**
+- **cargo_arrival_notice_sea_without_charges_format1_rpm_ref_447** → `tmp/fresa-references/pdfs/cargo-arrival-notice-sea-without-charges-format1-rpm-ref-447.pdf` (96536 bytes) · **no local layout**
+- **cargo_arrival_notice_sea_without_charges_rpm_ref_251** → `tmp/fresa-references/pdfs/cargo-arrival-notice-sea-without-charges-rpm-ref-251.pdf` (103323 bytes) · **no local layout**
+- **carting confirmation report format** → `tmp/fresa-references/pdfs/carting-confirmation-report-format.pdf` (72246 bytes) · local `CARTING_CONFIRMATION_REPORT_FORMAT`
+- **consol igm filling letter jasper report format** → `tmp/fresa-references/pdfs/consol-igm-filling-letter-jasper-report-format.pdf` (111989 bytes) · local `CONSOL_IGM_FILLING_LETTER_JASPER_REPORT_FORMAT`
+- **container load plan report format** → `tmp/fresa-references/pdfs/container-load-plan-report-format.pdf` (106931 bytes) · local `CONTAINER_LOAD_PLAN_REPORT_FORMAT`
+- **container movement facilitation cell note report format** → `tmp/fresa-references/pdfs/container-movement-facilitation-cell-note-report-format.pdf` (67369 bytes) · local `CONTAINER_MOVEMENT_FACILITATION_CELL_NOTE_REPORT_FORMAT`
+- **container outturn report format** → `tmp/fresa-references/pdfs/container-outturn-report-format.pdf` (28858 bytes) · local `CONTAINER_OUTTURN_REPORT_FORMAT`
+- **container unload plan report format** → `tmp/fresa-references/pdfs/container-unload-plan-report-format.pdf` (23281 bytes) · local `CONTAINER_UNLOAD_PLAN_REPORT_FORMAT`
+- **container vgm form report format** → `tmp/fresa-references/pdfs/container-vgm-form-report-format.pdf` (3641 bytes) · local `CONTAINER_VGM_FORM_REPORT_FORMAT`
+- **d.o_fcl_vietnam_rpm_ref_411** → `tmp/fresa-references/pdfs/d-o-fcl-vietnam-rpm-ref-411.pdf` (113560 bytes) · **no local layout**
+- **d.o_lcl_vietnam_without_stamp_rpm_ref_427** → `tmp/fresa-references/pdfs/d-o-lcl-vietnam-without-stamp-rpm-ref-427.pdf` (102689 bytes) · **no local layout**
+- **daily status report format 1** → `tmp/fresa-references/pdfs/daily-status-report-format-1.pdf` (37570 bytes) · local `DAILY_STATUS_REPORT_FORMAT_1_DSR_LIST_REPORT_FORMAT`
+- **daily status report format 2** → `tmp/fresa-references/pdfs/daily-status-report-format-2.pdf` (40357 bytes) · **no local layout**
+- **delivery confirmation report format** → `tmp/fresa-references/pdfs/delivery-confirmation-report-format.pdf` (72652 bytes) · local `DELIVERY_CONFIRMATION_REPORT_FORMAT`
+- **delivery order air jasper report format** → `tmp/fresa-references/pdfs/delivery-order-air-jasper-report-format.pdf` (24466 bytes) · local `DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT`
+- **delivery_confirmation_osa_rpm_ref_733** → `tmp/fresa-references/pdfs/delivery-confirmation-osa-rpm-ref-733.pdf` (99053 bytes) · **no local layout**
+- **delivery_confirmation_rpm_ref_153** → `tmp/fresa-references/pdfs/delivery-confirmation-rpm-ref-153.pdf` (99733 bytes) · **no local layout**
+- **delivery_order_format_17_rpm_ref_1496** → `tmp/fresa-references/pdfs/delivery-order-format-17-rpm-ref-1496.pdf` (107290 bytes) · **no local layout**
+- **delivery_order_format16_house_rpm_ref_1133** → `tmp/fresa-references/pdfs/delivery-order-format16-house-rpm-ref-1133.pdf` (106230 bytes) · **no local layout**
+- **draft_hbl_html_format29_rpm_ref_660** → `tmp/fresa-references/pdfs/draft-hbl-html-format29-rpm-ref-660.pdf` (129398 bytes) · **no local layout**
+- **draft_hbl_html_format36_rpm_ref_703** → `tmp/fresa-references/pdfs/draft-hbl-html-format36-rpm-ref-703.pdf` (101084 bytes) · **no local layout**
+- **exchange letter to carrier agent report format** → `tmp/fresa-references/pdfs/exchange-letter-to-carrier-agent-report-format.pdf` (80419 bytes) · local `EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT`
+- **fcl quotation report format** → `tmp/fresa-references/pdfs/fcl-quotation-report-format.pdf` (77723 bytes) · local `FCL_QUOTATION_REPORT_FORMAT`
+- **fcr document report format** → `tmp/fresa-references/pdfs/fcr-document-report-format.pdf` (84539 bytes) · local `FCR_DOCUMENT_REPORT_FORMAT`
+- **fg_arrival_information_rpm_ref_871** → `tmp/fresa-references/pdfs/fg-arrival-information-rpm-ref-871.pdf` (103836 bytes) · **no local layout**
+- **fg_arrival_notice_format2_rpm_ref_593** → `tmp/fresa-references/pdfs/fg-arrival-notice-format2-rpm-ref-593.pdf` (29951 bytes) · **no local layout**
+- **fg_arrival_notice_format3_rpm_ref_893** → `tmp/fresa-references/pdfs/fg-arrival-notice-format3-rpm-ref-893.pdf` (104718 bytes) · **no local layout**
+- **fg_arrival_notice_rpm_ref_399** → `tmp/fresa-references/pdfs/fg-arrival-notice-rpm-ref-399.pdf` (106742 bytes) · **no local layout**
+- **fg_arrivalnotice_without_chg_rpm_ref_633** → `tmp/fresa-references/pdfs/fg-arrivalnotice-without-chg-rpm-ref-633.pdf` (29745 bytes) · **no local layout**
+- **fg_cargo_arrival_notice_format1_rpm_ref_553** → `tmp/fresa-references/pdfs/fg-cargo-arrival-notice-format1-rpm-ref-553.pdf` (108316 bytes) · **no local layout**
+- **fg_cargo_arrival_notice_rpm_ref_233** → `tmp/fresa-references/pdfs/fg-cargo-arrival-notice-rpm-ref-233.pdf` (118716 bytes) · **no local layout**
+- **fg_cargo_arrival_notice_sea_format3_rpm_ref_1322** → `tmp/fresa-references/pdfs/fg-cargo-arrival-notice-sea-format3-rpm-ref-1322.pdf` (98089 bytes) · **no local layout**
+- **fg_cargo_arrival_notice_sea_rpm_ref_1172** → `tmp/fresa-references/pdfs/fg-cargo-arrival-notice-sea-rpm-ref-1172.pdf` (107601 bytes) · **no local layout**
+- **fg_consignment_delivery_note_format1_rpm_ref_1445** → `tmp/fresa-references/pdfs/fg-consignment-delivery-note-format1-rpm-ref-1445.pdf` (93166 bytes) · **no local layout**
+- **fg_consignment_delivery_note_rpm_ref_1379** → `tmp/fresa-references/pdfs/fg-consignment-delivery-note-rpm-ref-1379.pdf` (90907 bytes) · **no local layout**
+- **fg_delivery_noc_letter_rpm_ref_1320** → `tmp/fresa-references/pdfs/fg-delivery-noc-letter-rpm-ref-1320.pdf` (99053 bytes) · **no local layout**
+- **fg_delivery_note_format_uk_rpm_ref_1305** → `tmp/fresa-references/pdfs/fg-delivery-note-format-uk-rpm-ref-1305.pdf` (104223 bytes) · **no local layout**
+- **fg_delivery_note_format1_rpm_ref_1337** → `tmp/fresa-references/pdfs/fg-delivery-note-format1-rpm-ref-1337.pdf` (103206 bytes) · **no local layout**
+- **fg_delivery_note_rpm_ref_1276** → `tmp/fresa-references/pdfs/fg-delivery-note-rpm-ref-1276.pdf` (100264 bytes) · **no local layout**
+- **fg_delivery_order_abudhabi_rpm_ref_808** → `tmp/fresa-references/pdfs/fg-delivery-order-abudhabi-rpm-ref-808.pdf` (100191 bytes) · **no local layout**
+- **fg_delivery_order_air_format1_rpm_ref_1179** → `tmp/fresa-references/pdfs/fg-delivery-order-air-format1-rpm-ref-1179.pdf` (101541 bytes) · **no local layout**
+- **fg_delivery_order_air_format2_rpm_ref_1471** → `tmp/fresa-references/pdfs/fg-delivery-order-air-format2-rpm-ref-1471.pdf` (101831 bytes) · **no local layout**
+- **fg_delivery_order_air_rpm_ref_377** → `tmp/fresa-references/pdfs/fg-delivery-order-air-rpm-ref-377.pdf` (29060 bytes) · **no local layout**
+- **fg_delivery_order_air_usa_rpm_ref_650** → `tmp/fresa-references/pdfs/fg-delivery-order-air-usa-rpm-ref-650.pdf` (30461 bytes) · **no local layout**
+- **fg_delivery_order_for_trucker_rpm_ref_937** → `tmp/fresa-references/pdfs/fg-delivery-order-for-trucker-rpm-ref-937.pdf` (98790 bytes) · **no local layout**
+- **fg_delivery_order_format10_rpm_ref_835** → `tmp/fresa-references/pdfs/fg-delivery-order-format10-rpm-ref-835.pdf` (30409 bytes) · **no local layout**
+- **fg_delivery_order_format13_rpm_ref_886** → `tmp/fresa-references/pdfs/fg-delivery-order-format13-rpm-ref-886.pdf` (104205 bytes) · **no local layout**
+- **fg_delivery_order_format14_rpm_ref_896** → `tmp/fresa-references/pdfs/fg-delivery-order-format14-rpm-ref-896.pdf` (103896 bytes) · **no local layout**
+- **fg_delivery_order_format15_rpm_ref_1089** → `tmp/fresa-references/pdfs/fg-delivery-order-format15-rpm-ref-1089.pdf` (103469 bytes) · **no local layout**
+- **fg_delivery_order_format16_rpm_ref_1306** → `tmp/fresa-references/pdfs/fg-delivery-order-format16-rpm-ref-1306.pdf` (105095 bytes) · **no local layout**
+- **fg_delivery_order_format18_rpm_ref_1505** → `tmp/fresa-references/pdfs/fg-delivery-order-format18-rpm-ref-1505.pdf` (104917 bytes) · **no local layout**
+- **fg_delivery_order_format3_rpm_ref_629** → `tmp/fresa-references/pdfs/fg-delivery-order-format3-rpm-ref-629.pdf` (30977 bytes) · **no local layout**
+- **fg_delivery_order_format8_rpm_ref_777** → `tmp/fresa-references/pdfs/fg-delivery-order-format8-rpm-ref-777.pdf` (104055 bytes) · **no local layout**
+- **fg_delivery_order_format9_rpm_ref_803** → `tmp/fresa-references/pdfs/fg-delivery-order-format9-rpm-ref-803.pdf` (91930 bytes) · **no local layout**
+- **fg_delivery_order_sea_format1_rpm_ref_538** → `tmp/fresa-references/pdfs/fg-delivery-order-sea-format1-rpm-ref-538.pdf` (104594 bytes) · **no local layout**
+- **fg_delivery_order_sea_format10_rpm_ref_1395** → `tmp/fresa-references/pdfs/fg-delivery-order-sea-format10-rpm-ref-1395.pdf` (91985 bytes) · **no local layout**
+- **fg_delivery_order_sea_format3_rpm_ref_560** → `tmp/fresa-references/pdfs/fg-delivery-order-sea-format3-rpm-ref-560.pdf` (91985 bytes) · **no local layout**
+- **fg_delivery_order_sea_format5_rpm_ref_628** → `tmp/fresa-references/pdfs/fg-delivery-order-sea-format5-rpm-ref-628.pdf` (101511 bytes) · **no local layout**
+- **fg_delivery_order_sea_format6_rpm_ref_668** → `tmp/fresa-references/pdfs/fg-delivery-order-sea-format6-rpm-ref-668.pdf` (91693 bytes) · **no local layout**
+- **fg_delivery_order_sea_format7_rpm_ref_755** → `tmp/fresa-references/pdfs/fg-delivery-order-sea-format7-rpm-ref-755.pdf` (103951 bytes) · **no local layout**
+- **fg_delivery_order_sea_format8_rpm_ref_940** → `tmp/fresa-references/pdfs/fg-delivery-order-sea-format8-rpm-ref-940.pdf` (92017 bytes) · **no local layout**
+- **fg_e_delivery_order_sea_format1_rpm_ref_1147** → `tmp/fresa-references/pdfs/fg-e-delivery-order-sea-format1-rpm-ref-1147.pdf` (92482 bytes) · **no local layout**
+- **fg_edelivery_order_rpm_ref_837** → `tmp/fresa-references/pdfs/fg-edelivery-order-rpm-ref-837.pdf` (91827 bytes) · **no local layout**
+- **fg_export_delivery_order_rpm_ref_1209** → `tmp/fresa-references/pdfs/fg-export-delivery-order-rpm-ref-1209.pdf` (104291 bytes) · **no local layout**
+- **fg_hbl_format1_rpm_ref_388** → `tmp/fresa-references/pdfs/fg-hbl-format1-rpm-ref-388.pdf` (82144 bytes) · **no local layout**
+- **fg_hbl_format10_rpm_ref_472** → `tmp/fresa-references/pdfs/fg-hbl-format10-rpm-ref-472.pdf` (2189352 bytes) · **no local layout**
+- **fg_hbl_format100_rpm_ref_1085** → `tmp/fresa-references/pdfs/fg-hbl-format100-rpm-ref-1085.pdf` (86440 bytes) · **no local layout**
+- **fg_hbl_format101_rpm_ref_1086** → `tmp/fresa-references/pdfs/fg-hbl-format101-rpm-ref-1086.pdf` (85294 bytes) · **no local layout**
+- **fg_hbl_format102_rpm_ref_1092** → `tmp/fresa-references/pdfs/fg-hbl-format102-rpm-ref-1092.pdf` (84851 bytes) · **no local layout**
+- **fg_hbl_format107_rpm_ref_1137** → `tmp/fresa-references/pdfs/fg-hbl-format107-rpm-ref-1137.pdf` (80560 bytes) · **no local layout**
+- **fg_hbl_format109_rpm_ref_1156** → `tmp/fresa-references/pdfs/fg-hbl-format109-rpm-ref-1156.pdf` (80683 bytes) · **no local layout**
+- **fg_hbl_format114_rpm_ref_1181** → `tmp/fresa-references/pdfs/fg-hbl-format114-rpm-ref-1181.pdf` (84097 bytes) · **no local layout**
+- **fg_hbl_format116_rpm_ref_1198** → `tmp/fresa-references/pdfs/fg-hbl-format116-rpm-ref-1198.pdf` (2306538 bytes) · **no local layout**
+- **fg_hbl_format117_rpm_ref_1202** → `tmp/fresa-references/pdfs/fg-hbl-format117-rpm-ref-1202.pdf` (933989 bytes) · **no local layout**
+- **fg_hbl_format118_rpm_ref_1203** → `tmp/fresa-references/pdfs/fg-hbl-format118-rpm-ref-1203.pdf` (637894 bytes) · **no local layout**
+- **fg_hbl_format120_rpm_ref_1211** → `tmp/fresa-references/pdfs/fg-hbl-format120-rpm-ref-1211.pdf` (9767 bytes) · **no local layout**
+- **fg_hbl_format122_rpm_ref_1221** → `tmp/fresa-references/pdfs/fg-hbl-format122-rpm-ref-1221.pdf` (1890821 bytes) · **no local layout**
+- **fg_hbl_format127_rpm_ref_1251** → `tmp/fresa-references/pdfs/fg-hbl-format127-rpm-ref-1251.pdf` (2227699 bytes) · **no local layout**
+- **fg_hbl_format128_rpm_ref_1257** → `tmp/fresa-references/pdfs/fg-hbl-format128-rpm-ref-1257.pdf` (86149 bytes) · **no local layout**
+- **fg_hbl_format129_rpm_ref_1259** → `tmp/fresa-references/pdfs/fg-hbl-format129-rpm-ref-1259.pdf` (104242 bytes) · **no local layout**
+- **fg_hbl_format130_rpm_ref_1261** → `tmp/fresa-references/pdfs/fg-hbl-format130-rpm-ref-1261.pdf` (747218 bytes) · **no local layout**
+- **fg_hbl_format132_rpm_ref_1280** → `tmp/fresa-references/pdfs/fg-hbl-format132-rpm-ref-1280.pdf` (451165 bytes) · **no local layout**
+- **fg_hbl_format134_rpm_ref_1287** → `tmp/fresa-references/pdfs/fg-hbl-format134-rpm-ref-1287.pdf` (84693 bytes) · **no local layout**
+- **fg_hbl_format135_rpm_ref_1291** → `tmp/fresa-references/pdfs/fg-hbl-format135-rpm-ref-1291.pdf` (86084 bytes) · **no local layout**
+- **fg_hbl_format136_rpm_ref_1293** → `tmp/fresa-references/pdfs/fg-hbl-format136-rpm-ref-1293.pdf` (78507 bytes) · **no local layout**
+- **fg_hbl_format137_rpm_ref_1317** → `tmp/fresa-references/pdfs/fg-hbl-format137-rpm-ref-1317.pdf` (87606 bytes) · **no local layout**
+- **fg_hbl_format138_rpm_ref_1321** → `tmp/fresa-references/pdfs/fg-hbl-format138-rpm-ref-1321.pdf` (83890 bytes) · **no local layout**
+- **fg_hbl_format139_rpm_ref_1324** → `tmp/fresa-references/pdfs/fg-hbl-format139-rpm-ref-1324.pdf` (85967 bytes) · **no local layout**
+- **fg_hbl_format14_rpm_ref_505** → `tmp/fresa-references/pdfs/fg-hbl-format14-rpm-ref-505.pdf` (78112 bytes) · **no local layout**
+- **fg_hbl_format140_rpm_ref_1326** → `tmp/fresa-references/pdfs/fg-hbl-format140-rpm-ref-1326.pdf` (9354 bytes) · **no local layout**
+- **fg_hbl_format141_rpm_ref_1327** → `tmp/fresa-references/pdfs/fg-hbl-format141-rpm-ref-1327.pdf` (88240 bytes) · **no local layout**
+- **fg_hbl_format142_rpm_ref_1339** → `tmp/fresa-references/pdfs/fg-hbl-format142-rpm-ref-1339.pdf` (887445 bytes) · **no local layout**
+- **fg_hbl_format143_rpm_ref_1341** → `tmp/fresa-references/pdfs/fg-hbl-format143-rpm-ref-1341.pdf` (86050 bytes) · **no local layout**
+- **fg_hbl_format144_rpm_ref_1353** → `tmp/fresa-references/pdfs/fg-hbl-format144-rpm-ref-1353.pdf` (86507 bytes) · **no local layout**
+- **fg_hbl_format145_rpm_ref_1354** → `tmp/fresa-references/pdfs/fg-hbl-format145-rpm-ref-1354.pdf` (85549 bytes) · **no local layout**
+- **fg_hbl_format146_rpm_ref_1358** → `tmp/fresa-references/pdfs/fg-hbl-format146-rpm-ref-1358.pdf` (82418 bytes) · **no local layout**
+- **fg_hbl_format147_rpm_ref_1359** → `tmp/fresa-references/pdfs/fg-hbl-format147-rpm-ref-1359.pdf` (87105 bytes) · **no local layout**
+- **fg_hbl_format148_rpm_ref_1361** → `tmp/fresa-references/pdfs/fg-hbl-format148-rpm-ref-1361.pdf` (89315 bytes) · **no local layout**
+- **fg_hbl_format149_rpm_ref_1365** → `tmp/fresa-references/pdfs/fg-hbl-format149-rpm-ref-1365.pdf` (86836 bytes) · **no local layout**
+- **fg_hbl_format151_rpm_ref_1380** → `tmp/fresa-references/pdfs/fg-hbl-format151-rpm-ref-1380.pdf` (90553 bytes) · **no local layout**
+- **fg_hbl_format16_rpm_ref_556** → `tmp/fresa-references/pdfs/fg-hbl-format16-rpm-ref-556.pdf` (9443 bytes) · **no local layout**
+- **fg_hbl_format171_rpm_ref_1491** → `tmp/fresa-references/pdfs/fg-hbl-format171-rpm-ref-1491.pdf` (897149 bytes) · **no local layout**
+- **fg_hbl_format172_rpm_ref_1489** → `tmp/fresa-references/pdfs/fg-hbl-format172-rpm-ref-1489.pdf` (1051440 bytes) · **no local layout**
+- **fg_hbl_format20_rpm_ref_613** → `tmp/fresa-references/pdfs/fg-hbl-format20-rpm-ref-613.pdf` (5994 bytes) · **no local layout**
+- **fg_hbl_format23_rpm_ref_631** → `tmp/fresa-references/pdfs/fg-hbl-format23-rpm-ref-631.pdf` (93439 bytes) · **no local layout**
+- **fg_hbl_format25_rpm_ref_643** → `tmp/fresa-references/pdfs/fg-hbl-format25-rpm-ref-643.pdf` (88385 bytes) · **no local layout**
+- **fg_hbl_format26_rpm_ref_653** → `tmp/fresa-references/pdfs/fg-hbl-format26-rpm-ref-653.pdf` (85063 bytes) · **no local layout**
+- **fg_hbl_format27_rpm_ref_655** → `tmp/fresa-references/pdfs/fg-hbl-format27-rpm-ref-655.pdf` (10332 bytes) · **no local layout**
+- **fg_hbl_format33_rpm_ref_684** → `tmp/fresa-references/pdfs/fg-hbl-format33-rpm-ref-684.pdf` (42808 bytes) · **no local layout**
+- **fg_hbl_format40_rpm_ref_717** → `tmp/fresa-references/pdfs/fg-hbl-format40-rpm-ref-717.pdf` (86984 bytes) · **no local layout**
+- **fg_hbl_format41_rpm_ref_721** → `tmp/fresa-references/pdfs/fg-hbl-format41-rpm-ref-721.pdf` (9307 bytes) · **no local layout**
+- **fg_hbl_format42_rpm_ref_745** → `tmp/fresa-references/pdfs/fg-hbl-format42-rpm-ref-745.pdf` (84982 bytes) · **no local layout**
+- **fg_hbl_format43_rpm_ref_754** → `tmp/fresa-references/pdfs/fg-hbl-format43-rpm-ref-754.pdf` (80947 bytes) · **no local layout**
+- **fg_hbl_format44_rpm_ref_771** → `tmp/fresa-references/pdfs/fg-hbl-format44-rpm-ref-771.pdf` (85989 bytes) · **no local layout**
+- **fg_hbl_format45_rpm_ref_776** → `tmp/fresa-references/pdfs/fg-hbl-format45-rpm-ref-776.pdf` (87010 bytes) · **no local layout**
+- **fg_hbl_format46_rpm_ref_781** → `tmp/fresa-references/pdfs/fg-hbl-format46-rpm-ref-781.pdf` (86241 bytes) · **no local layout**
+- **fg_hbl_format47_rpm_ref_785** → `tmp/fresa-references/pdfs/fg-hbl-format47-rpm-ref-785.pdf` (9343 bytes) · **no local layout**
+- **fg_hbl_format48_rpm_ref_786** → `tmp/fresa-references/pdfs/fg-hbl-format48-rpm-ref-786.pdf` (43712 bytes) · **no local layout**
+- **fg_hbl_format49_rpm_ref_787** → `tmp/fresa-references/pdfs/fg-hbl-format49-rpm-ref-787.pdf` (9261 bytes) · **no local layout**
+- **fg_hbl_format50_rpm_ref_789** → `tmp/fresa-references/pdfs/fg-hbl-format50-rpm-ref-789.pdf` (86721 bytes) · **no local layout**
+- **fg_hbl_format51_rpm_ref_790** → `tmp/fresa-references/pdfs/fg-hbl-format51-rpm-ref-790.pdf` (9957 bytes) · **no local layout**
+- **fg_hbl_format52_rpm_ref_804** → `tmp/fresa-references/pdfs/fg-hbl-format52-rpm-ref-804.pdf` (1994035 bytes) · **no local layout**
+- **fg_hbl_format53_rpm_ref_819** → `tmp/fresa-references/pdfs/fg-hbl-format53-rpm-ref-819.pdf` (84476 bytes) · **no local layout**
+- **fg_hbl_format54_rpm_ref_821** → `tmp/fresa-references/pdfs/fg-hbl-format54-rpm-ref-821.pdf` (118915 bytes) · **no local layout**
+- **fg_hbl_format55_rpm_ref_824** → `tmp/fresa-references/pdfs/fg-hbl-format55-rpm-ref-824.pdf` (8595 bytes) · **no local layout**
+- **fg_hbl_format56_rpm_ref_838** → `tmp/fresa-references/pdfs/fg-hbl-format56-rpm-ref-838.pdf` (118995 bytes) · **no local layout**
+- **fg_hbl_format59_rpm_ref_872** → `tmp/fresa-references/pdfs/fg-hbl-format59-rpm-ref-872.pdf` (662707 bytes) · **no local layout**
+- **fg_hbl_format60_rpm_ref_881** → `tmp/fresa-references/pdfs/fg-hbl-format60-rpm-ref-881.pdf` (86240 bytes) · **no local layout**
+- **fg_hbl_format61_rpm_ref_887** → `tmp/fresa-references/pdfs/fg-hbl-format61-rpm-ref-887.pdf` (85278 bytes) · **no local layout**
+- **fg_hbl_format63_rpm_ref_895** → `tmp/fresa-references/pdfs/fg-hbl-format63-rpm-ref-895.pdf` (9620 bytes) · **no local layout**
+- **fg_hbl_format64_rpm_ref_909** → `tmp/fresa-references/pdfs/fg-hbl-format64-rpm-ref-909.pdf` (9959 bytes) · **no local layout**
+- **fg_hbl_format65_rpm_ref_913** → `tmp/fresa-references/pdfs/fg-hbl-format65-rpm-ref-913.pdf` (83453 bytes) · **no local layout**
+- **fg_hbl_format66_rpm_ref_916** → `tmp/fresa-references/pdfs/fg-hbl-format66-rpm-ref-916.pdf` (79870 bytes) · **no local layout**
+- **fg_hbl_format67_rpm_ref_915** → `tmp/fresa-references/pdfs/fg-hbl-format67-rpm-ref-915.pdf` (9247 bytes) · **no local layout**
+- **fg_hbl_format68_rpm_ref_924** → `tmp/fresa-references/pdfs/fg-hbl-format68-rpm-ref-924.pdf` (77433 bytes) · **no local layout**
+- **fg_hbl_format69_rpm_ref_931** → `tmp/fresa-references/pdfs/fg-hbl-format69-rpm-ref-931.pdf` (108202 bytes) · **no local layout**
+- **fg_hbl_format70_rpm_ref_933** → `tmp/fresa-references/pdfs/fg-hbl-format70-rpm-ref-933.pdf` (5351 bytes) · **no local layout**
+- **fg_hbl_format72_rpm_ref_943** → `tmp/fresa-references/pdfs/fg-hbl-format72-rpm-ref-943.pdf` (13298 bytes) · **no local layout**
+- **fg_hbl_format73_rpm_ref_956** → `tmp/fresa-references/pdfs/fg-hbl-format73-rpm-ref-956.pdf` (68543 bytes) · **no local layout**
+- **fg_hbl_format75_rpm_ref_962** → `tmp/fresa-references/pdfs/fg-hbl-format75-rpm-ref-962.pdf` (9768 bytes) · **no local layout**
+- **fg_hbl_format77_rpm_ref_1225** → `tmp/fresa-references/pdfs/fg-hbl-format77-rpm-ref-1225.pdf` (9264 bytes) · **no local layout**
+- **fg_hbl_format83_rpm_ref_1001** → `tmp/fresa-references/pdfs/fg-hbl-format83-rpm-ref-1001.pdf` (81218 bytes) · **no local layout**
+- **fg_hbl_format84_rpm_ref_1019** → `tmp/fresa-references/pdfs/fg-hbl-format84-rpm-ref-1019.pdf` (86515 bytes) · **no local layout**
+- **fg_hbl_format85_rpm_ref_1020** → `tmp/fresa-references/pdfs/fg-hbl-format85-rpm-ref-1020.pdf` (86123 bytes) · **no local layout**
+- **fg_hbl_format86_rpm_ref_1022** → `tmp/fresa-references/pdfs/fg-hbl-format86-rpm-ref-1022.pdf` (10135 bytes) · **no local layout**
+- **fg_hbl_format87_rpm_ref_1025** → `tmp/fresa-references/pdfs/fg-hbl-format87-rpm-ref-1025.pdf` (84704 bytes) · **no local layout**
+- **fg_hbl_format88_rpm_ref_1026** → `tmp/fresa-references/pdfs/fg-hbl-format88-rpm-ref-1026.pdf` (9462 bytes) · **no local layout**
+- **fg_hbl_format89_rpm_ref_1027** → `tmp/fresa-references/pdfs/fg-hbl-format89-rpm-ref-1027.pdf` (86197 bytes) · **no local layout**
+- **fg_hbl_format90_rpm_ref_1035** → `tmp/fresa-references/pdfs/fg-hbl-format90-rpm-ref-1035.pdf` (85590 bytes) · **no local layout**
+- **fg_hbl_format92_rpm_ref_1039** → `tmp/fresa-references/pdfs/fg-hbl-format92-rpm-ref-1039.pdf` (86361 bytes) · **no local layout**
+- **fg_hbl_format95_rpm_ref_1076** → `tmp/fresa-references/pdfs/fg-hbl-format95-rpm-ref-1076.pdf` (86397 bytes) · **no local layout**
+- **fg_hbl_format96_rpm_ref_1077** → `tmp/fresa-references/pdfs/fg-hbl-format96-rpm-ref-1077.pdf` (85527 bytes) · **no local layout**
+- **fg_hbl_format97_rpm_ref_1079** → `tmp/fresa-references/pdfs/fg-hbl-format97-rpm-ref-1079.pdf` (86373 bytes) · **no local layout**
+- **fg_hbl_format99_rpm_ref_1081** → `tmp/fresa-references/pdfs/fg-hbl-format99-rpm-ref-1081.pdf` (2387724 bytes) · **no local layout**
+- **fg_hbl_hkg_rpm_ref_245** → `tmp/fresa-references/pdfs/fg-hbl-hkg-rpm-ref-245.pdf` (86104 bytes) · **no local layout**
+- **fg_hbl_magiclogisys_rpm_ref_405** → `tmp/fresa-references/pdfs/fg-hbl-magiclogisys-rpm-ref-405.pdf` (8265 bytes) · **no local layout**
+- **fg_hbl_original_format87_rpm_ref_1479** → `tmp/fresa-references/pdfs/fg-hbl-original-format87-rpm-ref-1479.pdf` (77497 bytes) · **no local layout**
+- **fg_invoice_format1_rpm_ref_443** → `tmp/fresa-references/pdfs/fg-invoice-format1-rpm-ref-443.pdf` (104981 bytes) · **no local layout**
+- **fg_invoice_format12_rpm_ref_1199** → `tmp/fresa-references/pdfs/fg-invoice-format12-rpm-ref-1199.pdf` (103287 bytes) · **no local layout**
+- **fg_invoice_format14_rpm_ref_1325** → `tmp/fresa-references/pdfs/fg-invoice-format14-rpm-ref-1325.pdf` (105067 bytes) · **no local layout**
+- **fg_invoice_format15_rpm_ref_1384** → `tmp/fresa-references/pdfs/fg-invoice-format15-rpm-ref-1384.pdf` (77045 bytes) · **no local layout**
+- **fg_invoice_format15_standard_rpm_ref_1394** → `tmp/fresa-references/pdfs/fg-invoice-format15-standard-rpm-ref-1394.pdf` (104959 bytes) · **no local layout**
+- **fg_invoice_format2_fcy_rpm_ref_490** → `tmp/fresa-references/pdfs/fg-invoice-format2-fcy-rpm-ref-490.pdf` (102430 bytes) · **no local layout**
+- **fg_invoice_format3_fcy_rpm_ref_1012** → `tmp/fresa-references/pdfs/fg-invoice-format3-fcy-rpm-ref-1012.pdf` (102335 bytes) · **no local layout**
+- **fg_invoice_format3_rpm_ref_478** → `tmp/fresa-references/pdfs/fg-invoice-format3-rpm-ref-478.pdf` (104021 bytes) · **no local layout**
+- **fg_invoice_format4_fcy_rpm_ref_1433** → `tmp/fresa-references/pdfs/fg-invoice-format4-fcy-rpm-ref-1433.pdf` (103029 bytes) · **no local layout**
+- **fg_invoice_format5_rpm_ref_672** → `tmp/fresa-references/pdfs/fg-invoice-format5-rpm-ref-672.pdf` (103300 bytes) · **no local layout**
+- **fg_invoice_format6_rpm_ref_691** → `tmp/fresa-references/pdfs/fg-invoice-format6-rpm-ref-691.pdf` (140007 bytes) · **no local layout**
+- **fg_invoice_format7_inr_rpm_ref_897** → `tmp/fresa-references/pdfs/fg-invoice-format7-inr-rpm-ref-897.pdf` (30177 bytes) · **no local layout**
+- **fg_invoice_format7_rpm_ref_894** → `tmp/fresa-references/pdfs/fg-invoice-format7-rpm-ref-894.pdf` (29038 bytes) · **no local layout**
+- **fg_invoice_format8_rpm_ref_1011** → `tmp/fresa-references/pdfs/fg-invoice-format8-rpm-ref-1011.pdf` (107558 bytes) · **no local layout**
+- **fg_invoice_format9_rpm_ref_1055** → `tmp/fresa-references/pdfs/fg-invoice-format9-rpm-ref-1055.pdf` (106016 bytes) · **no local layout**
+- **fg_invoice_singapore_rpm_ref_1069** → `tmp/fresa-references/pdfs/fg-invoice-singapore-rpm-ref-1069.pdf` (106052 bytes) · **no local layout**
+- **fg_ksa_invoice_arabic_rpm_ref_1161** → `tmp/fresa-references/pdfs/fg-ksa-invoice-arabic-rpm-ref-1161.pdf` (148172 bytes) · **no local layout**
+- **fg_notice_of_delivery_rpm_ref_905** → `tmp/fresa-references/pdfs/fg-notice-of-delivery-rpm-ref-905.pdf` (84735 bytes) · **no local layout**
+- **fg_overseas_debit_note_format2_rpm_ref_1343** → `tmp/fresa-references/pdfs/fg-overseas-debit-note-format2-rpm-ref-1343.pdf` (105431 bytes) · **no local layout**
+- **fg_proof_of_delivery_rpm_ref_847** → `tmp/fresa-references/pdfs/fg-proof-of-delivery-rpm-ref-847.pdf` (119885 bytes) · **no local layout**
+- **fg_simple_invoice_india_rpm_ref_862** → `tmp/fresa-references/pdfs/fg-simple-invoice-india-rpm-ref-862.pdf` (105435 bytes) · **no local layout**
+- **fg_simple_invoice_rpm_ref_861** → `tmp/fresa-references/pdfs/fg-simple-invoice-rpm-ref-861.pdf` (105616 bytes) · **no local layout**
+- **fg_simple_invoice_usa_rpm_ref_1274** → `tmp/fresa-references/pdfs/fg-simple-invoice-usa-rpm-ref-1274.pdf` (105390 bytes) · **no local layout**
+- **fg_standard_courier_invoice_rpm_ref_773** → `tmp/fresa-references/pdfs/fg-standard-courier-invoice-rpm-ref-773.pdf` (104641 bytes) · **no local layout**
+- **fg_standard_invoice_arabic_format1_rpm_ref_939** → `tmp/fresa-references/pdfs/fg-standard-invoice-arabic-format1-rpm-ref-939.pdf` (146078 bytes) · **no local layout**
+- **fg_standard_invoice_arabic_format1_rpm_ref_941** → `tmp/fresa-references/pdfs/fg-standard-invoice-arabic-format1-rpm-ref-941.pdf` (121369 bytes) · **no local layout**
+- **fg_standard_invoice_arabic_format2_rpm_ref_1171** → `tmp/fresa-references/pdfs/fg-standard-invoice-arabic-format2-rpm-ref-1171.pdf` (146221 bytes) · **no local layout**
+- **fg_standard_invoice_arabic_format3_rpm_ref_1183** → `tmp/fresa-references/pdfs/fg-standard-invoice-arabic-format3-rpm-ref-1183.pdf` (148317 bytes) · **no local layout**
+- **fg_standard_invoice_arabic_format4_rpm_ref_1215** → `tmp/fresa-references/pdfs/fg-standard-invoice-arabic-format4-rpm-ref-1215.pdf` (146902 bytes) · **no local layout**
+- **fg_standard_invoice_arabic_format5_rpm_ref_1385** → `tmp/fresa-references/pdfs/fg-standard-invoice-arabic-format5-rpm-ref-1385.pdf` (145551 bytes) · **no local layout**
+- **fg_standard_invoice_arabic_format7_rpm_ref_1400** → `tmp/fresa-references/pdfs/fg-standard-invoice-arabic-format7-rpm-ref-1400.pdf` (145582 bytes) · **no local layout**
+- **fg_standard_invoice_arabic_oman_rpm_ref_747** → `tmp/fresa-references/pdfs/fg-standard-invoice-arabic-oman-rpm-ref-747.pdf` (115159 bytes) · **no local layout**
+- **fg_standard_invoice_arabic_rpm_ref_464** → `tmp/fresa-references/pdfs/fg-standard-invoice-arabic-rpm-ref-464.pdf` (115356 bytes) · **no local layout**
+- **fg_standard_invoice_fcy_rpm_ref_1029** → `tmp/fresa-references/pdfs/fg-standard-invoice-fcy-rpm-ref-1029.pdf` (106568 bytes) · **no local layout**
+- **fg_standard_invoice_format2_rpm_ref_778** → `tmp/fresa-references/pdfs/fg-standard-invoice-format2-rpm-ref-778.pdf` (103261 bytes) · **no local layout**
+- **fg_standard_invoice_format4_rpm_ref_1419** → `tmp/fresa-references/pdfs/fg-standard-invoice-format4-rpm-ref-1419.pdf` (82403 bytes) · **no local layout**
+- **fg_standard_invoice_rpm_ref_217** → `tmp/fresa-references/pdfs/fg-standard-invoice-rpm-ref-217.pdf` (103095 bytes) · **no local layout**
+- **fg_standard_invoice_tanzania_rpm_ref_1431** → `tmp/fresa-references/pdfs/fg-standard-invoice-tanzania-rpm-ref-1431.pdf` (102517 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format10_rpm_ref_801** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format10-rpm-ref-801.pdf` (30177 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format12_letterhead_rpm_ref_869** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format12-letterhead-rpm-ref-869.pdf` (5675 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format13_rpm_ref_882** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format13-rpm-ref-882.pdf` (29094 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format14_rpm_ref_921** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format14-rpm-ref-921.pdf` (44591 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format15_rpm_ref_997** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format15-rpm-ref-997.pdf` (85198 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format16_cum_an_rpm_ref_1186** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format16-cum-an-rpm-ref-1186.pdf` (109829 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format16_rpm_ref_1170** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format16-rpm-ref-1170.pdf` (31491 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format17_rpm_ref_1309** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format17-rpm-ref-1309.pdf` (105684 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format18_rpm_ref_1319** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format18-rpm-ref-1319.pdf` (107366 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format19_rpm_ref_1344** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format19-rpm-ref-1344.pdf` (105893 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format20_rpm_ref_1345** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format20-rpm-ref-1345.pdf` (94783 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format21_rpm_ref_1407** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format21-rpm-ref-1407.pdf` (105723 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format22_rpm_ref_1425** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format22-rpm-ref-1425.pdf` (112114 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format3_rpm_ref_687** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format3-rpm-ref-687.pdf` (105918 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format5_rpm_ref_699** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format5-rpm-ref-699.pdf` (106290 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format6_rpm_ref_751** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format6-rpm-ref-751.pdf` (101996 bytes) · **no local layout**
+- **fg_standard_tax_invoice_format9_rpm_ref_799** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-format9-rpm-ref-799.pdf` (30528 bytes) · **no local layout**
+- **fg_standard_tax_invoice_rpm_ref_385** → `tmp/fresa-references/pdfs/fg-standard-tax-invoice-rpm-ref-385.pdf` (126926 bytes) · **no local layout**
+- **fg_tax_invoice_india_format1_rpm_ref_796** → `tmp/fresa-references/pdfs/fg-tax-invoice-india-format1-rpm-ref-796.pdf` (114698 bytes) · **no local layout**
+- **fg_tax_invoice_india_format2_rpm_ref_911** → `tmp/fresa-references/pdfs/fg-tax-invoice-india-format2-rpm-ref-911.pdf` (108214 bytes) · **no local layout**
+- **fg_tax_invoice_india_format3_rpm_ref_977** → `tmp/fresa-references/pdfs/fg-tax-invoice-india-format3-rpm-ref-977.pdf` (108801 bytes) · **no local layout**
+- **fg_tax_invoice_india_format4_rpm_ref_1007** → `tmp/fresa-references/pdfs/fg-tax-invoice-india-format4-rpm-ref-1007.pdf` (179549 bytes) · **no local layout**
+- **fg_tax_invoice_india_format5_rpm_ref_1009** → `tmp/fresa-references/pdfs/fg-tax-invoice-india-format5-rpm-ref-1009.pdf` (103790 bytes) · **no local layout**
+- **fg_tax_invoice_india_format6_rpm_ref_1059** → `tmp/fresa-references/pdfs/fg-tax-invoice-india-format6-rpm-ref-1059.pdf` (111680 bytes) · **no local layout**
+- **fg_tax_invoice_india_format7_rpm_ref_1067** → `tmp/fresa-references/pdfs/fg-tax-invoice-india-format7-rpm-ref-1067.pdf` (108636 bytes) · **no local layout**
+- **fg_tax_invoice_india_format8_rpm_ref_1159** → `tmp/fresa-references/pdfs/fg-tax-invoice-india-format8-rpm-ref-1159.pdf` (107474 bytes) · **no local layout**
+- **fg_tax_invoice_india_rpm_ref_237** → `tmp/fresa-references/pdfs/fg-tax-invoice-india-rpm-ref-237.pdf` (159457 bytes) · **no local layout**
+- **fg_tax_invoice_malaysia_rpm_ref_736** → `tmp/fresa-references/pdfs/fg-tax-invoice-malaysia-rpm-ref-736.pdf` (103721 bytes) · **no local layout**
+- **fg_tax_invoice_singapore_rpm_ref_737** → `tmp/fresa-references/pdfs/fg-tax-invoice-singapore-rpm-ref-737.pdf` (103701 bytes) · **no local layout**
+- **freight manifest for groupage imports lcl report format** → `tmp/fresa-references/pdfs/freight-manifest-for-groupage-imports-lcl-report-format.pdf` (82433 bytes) · local `FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT`
+- **freight manifest lcl exports report format** → `tmp/fresa-references/pdfs/freight-manifest-lcl-exports-report-format.pdf` (107712 bytes) · local `FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT`
+- **Fresa_Gold_Profile_20260727** → `tmp/fresa-references/pdfs/fresa-gold-profile-20260727.pdf` (1535738 bytes) · **no local layout**
+- **gl listing sort by customer code voucher report format** → `tmp/fresa-references/pdfs/gl-listing-sort-by-customer-code-voucher-report-format.pdf` (3554 bytes) · local `GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT`
+- **gl report currency wise voucher report format** → `tmp/fresa-references/pdfs/gl-report-currency-wise-voucher-report-format.pdf` (74442 bytes) · local `GL_REPORT_CURRENCY_WISE_VOUCHER_REPORT_FORMAT`
+- **gl report voucher report format** → `tmp/fresa-references/pdfs/gl-report-voucher-report-format.pdf` (5221 bytes) · local `GL_REPORT_VOUCHER_REPORT_FORMAT`
+- **hawb draft report format** → `tmp/fresa-references/pdfs/hawb-draft-report-format.pdf` (82750 bytes) · local `HAWB_DRAFT_REPORT_FORMAT`
+- **hawb draft report format 1** → `tmp/fresa-references/pdfs/hawb-draft-report-format-1.pdf` (55545 bytes) · local `HAWB_DRAFT_REPORT_FORMAT`
+- **hawb draft report format 2** → `tmp/fresa-references/pdfs/hawb-draft-report-format-2.pdf` (87688 bytes) · local `HAWB_DRAFT_REPORT_FORMAT`
+- **hawb original pre printed report format 1** → `tmp/fresa-references/pdfs/hawb-original-pre-printed-report-format-1.pdf` (2207 bytes) · **no local layout**
+- **hawb original pre printed report format 2** → `tmp/fresa-references/pdfs/hawb-original-pre-printed-report-format-2.pdf` (72641 bytes) · **no local layout**
+- **hbl draft report fomat jasper** → `tmp/fresa-references/pdfs/hbl-draft-report-fomat-jasper.pdf` (85499 bytes) · **no local layout**
+- **hbl draft report format 10** → `tmp/fresa-references/pdfs/hbl-draft-report-format-10.pdf` (95385 bytes) · **no local layout**
+- **hbl draft report format 11** → `tmp/fresa-references/pdfs/hbl-draft-report-format-11.pdf` (79999 bytes) · **no local layout**
+- **hbl draft report format 12** → `tmp/fresa-references/pdfs/hbl-draft-report-format-12.pdf` (82273 bytes) · **no local layout**
+- **hbl draft report format 13** → `tmp/fresa-references/pdfs/hbl-draft-report-format-13.pdf` (8069 bytes) · **no local layout**
+- **hbl draft report format 14** → `tmp/fresa-references/pdfs/hbl-draft-report-format-14.pdf` (9313 bytes) · **no local layout**
+- **hbl draft report format 15** → `tmp/fresa-references/pdfs/hbl-draft-report-format-15.pdf` (94215 bytes) · **no local layout**
+- **hbl draft report format 16** → `tmp/fresa-references/pdfs/hbl-draft-report-format-16.pdf` (9277 bytes) · **no local layout**
+- **hbl draft report format 17** → `tmp/fresa-references/pdfs/hbl-draft-report-format-17.pdf` (92267 bytes) · **no local layout**
+- **hbl draft report format 18** → `tmp/fresa-references/pdfs/hbl-draft-report-format-18.pdf` (9711 bytes) · **no local layout**
+- **hbl draft report format 19** → `tmp/fresa-references/pdfs/hbl-draft-report-format-19.pdf` (9796 bytes) · **no local layout**
+- **hbl draft report format 2** → `tmp/fresa-references/pdfs/hbl-draft-report-format-2.pdf` (75260 bytes) · **no local layout**
+- **hbl draft report format 20** → `tmp/fresa-references/pdfs/hbl-draft-report-format-20.pdf` (5895 bytes) · **no local layout**
+- **hbl draft report format 4** → `tmp/fresa-references/pdfs/hbl-draft-report-format-4.pdf` (75919 bytes) · **no local layout**
+- **hbl draft report format 5** → `tmp/fresa-references/pdfs/hbl-draft-report-format-5.pdf` (82737 bytes) · **no local layout**
+- **hbl draft report format 6** → `tmp/fresa-references/pdfs/hbl-draft-report-format-6.pdf` (714486 bytes) · **no local layout**
+- **hbl draft report format 7** → `tmp/fresa-references/pdfs/hbl-draft-report-format-7.pdf` (714703 bytes) · **no local layout**
+- **hbl draft report format 8** → `tmp/fresa-references/pdfs/hbl-draft-report-format-8.pdf` (83327 bytes) · **no local layout**
+- **hbl draft report format 9** → `tmp/fresa-references/pdfs/hbl-draft-report-format-9.pdf` (76337 bytes) · **no local layout**
+- **import cargo manifest report format** → `tmp/fresa-references/pdfs/import-cargo-manifest-report-format.pdf` (78304 bytes) · local `IMPORT_CARGO_MANIFEST_REPORT_FORMAT`
+- **import security filling jasper ams report format** → `tmp/fresa-references/pdfs/import-security-filling-jasper-ams-report-format.pdf` (5838 bytes) · local `IMPORT_SECURITY_FILLING_JASPER_AMS_REPORT_FORMAT`
+- **import tally sheet report format** → `tmp/fresa-references/pdfs/import-tally-sheet-report-format.pdf` (105116 bytes) · local `IMPORT_TALLY_SHEET_REPORT_FORMAT`
+- **invoice report format 1 tax invoice india** → `tmp/fresa-references/pdfs/invoice-report-format-1-tax-invoice-india.pdf` (98740 bytes) · **no local layout**
+- **invoice report format 10 standard invoice** → `tmp/fresa-references/pdfs/invoice-report-format-10-standard-invoice.pdf` (99780 bytes) · **no local layout**
+- **invoice report format 11 standard invoice land** → `tmp/fresa-references/pdfs/invoice-report-format-11-standard-invoice-land.pdf` (101191 bytes) · **no local layout**
+- **invoice report format 12 standard invoice preprinted** → `tmp/fresa-references/pdfs/invoice-report-format-12-standard-invoice-preprinted.pdf` (4078 bytes) · **no local layout**
+- **invoice report format 13 standard invoice usa** → `tmp/fresa-references/pdfs/invoice-report-format-13-standard-invoice-usa.pdf` (73793 bytes) · **no local layout**
+- **invoice report format 14 invoice** → `tmp/fresa-references/pdfs/invoice-report-format-14-invoice.pdf` (100844 bytes) · **no local layout**
+- **invoice report format 15 invoice fcy** → `tmp/fresa-references/pdfs/invoice-report-format-15-invoice-fcy.pdf` (97975 bytes) · **no local layout**
+- **invoice report format 16 standard tax invoice preprinted** → `tmp/fresa-references/pdfs/invoice-report-format-16-standard-tax-invoice-preprinted.pdf` (5062 bytes) · **no local layout**
+- **invoice report format 17 invoice jasper** → `tmp/fresa-references/pdfs/invoice-report-format-17-invoice-jasper.pdf` (99638 bytes) · **no local layout**
+- **invoice report format 18 land freight transportation invoice** → `tmp/fresa-references/pdfs/invoice-report-format-18-land-freight-transportation-invoice.pdf` (93861 bytes) · **no local layout**
+- **invoice report format 19 debit note vietnam** → `tmp/fresa-references/pdfs/invoice-report-format-19-debit-note-vietnam.pdf` (75378 bytes) · **no local layout**
+- **invoice report format 2 tax invoice india** → `tmp/fresa-references/pdfs/invoice-report-format-2-tax-invoice-india.pdf` (32305 bytes) · **no local layout**
+- **invoice report format 20 tax invoice india** → `tmp/fresa-references/pdfs/invoice-report-format-20-tax-invoice-india.pdf` (99193 bytes) · **no local layout**
+- **invoice report format 21 warehouse invoice** → `tmp/fresa-references/pdfs/invoice-report-format-21-warehouse-invoice.pdf` (98021 bytes) · **no local layout**
+- **invoice report format 3 summary invoice** → `tmp/fresa-references/pdfs/invoice-report-format-3-summary-invoice.pdf` (98012 bytes) · **no local layout**
+- **invoice report format 4 standard tax invoice** → `tmp/fresa-references/pdfs/invoice-report-format-4-standard-tax-invoice.pdf` (25482 bytes) · **no local layout**
+- **invoice report format 5 tax invoice india** → `tmp/fresa-references/pdfs/invoice-report-format-5-tax-invoice-india.pdf` (98700 bytes) · **no local layout**
+- **invoice report format 6 simple invoice (india)** → `tmp/fresa-references/pdfs/invoice-report-format-6-simple-invoice-india.pdf` (97155 bytes) · **no local layout**
+- **invoice report format 7 simple invoice** → `tmp/fresa-references/pdfs/invoice-report-format-7-simple-invoice.pdf` (98884 bytes) · **no local layout**
+- **invoice report format 8 standard invoice arabic** → `tmp/fresa-references/pdfs/invoice-report-format-8-standard-invoice-arabic.pdf` (110650 bytes) · **no local layout**
+- **invoice report format 9 standard invoice usa** → `tmp/fresa-references/pdfs/invoice-report-format-9-standard-invoice-usa.pdf` (100386 bytes) · **no local layout**
+- **isf filing document report format** → `tmp/fresa-references/pdfs/isf-filing-document-report-format.pdf` (5828 bytes) · local `ISF_FILING_DOCUMENT_REPORT_FORMAT`
+- **job card report format** → `tmp/fresa-references/pdfs/job-card-report-format.pdf` (77917 bytes) · local `JOB_CARD_REPORT_FORMAT`
+- **job house record list report format** → `tmp/fresa-references/pdfs/job-house-record-list-report-format.pdf` (73200 bytes) · local `JOB_HOUSE_RECORD_LIST_REPORT_FORMAT`
+- **job houses record list report format** → `tmp/fresa-references/pdfs/job-houses-record-list-report-format.pdf` (74158 bytes) · local `JOB_HOUSES_RECORD_LIST_REPORT_FORMAT`
+- **journal voucher report format 1** → `tmp/fresa-references/pdfs/journal-voucher-report-format-1.pdf` (23021 bytes) · **no local layout**
+- **journal voucher report format 2** → `tmp/fresa-references/pdfs/journal-voucher-report-format-2.pdf` (71324 bytes) · **no local layout**
+- **land_freight_transportation_invoice_rpm_ref_525** → `tmp/fresa-references/pdfs/land-freight-transportation-invoice-rpm-ref-525.pdf` (124201 bytes) · **no local layout**
+- **land_freight_transportation_invoiceformat1_rpm_ref_1485** → `tmp/fresa-references/pdfs/land-freight-transportation-invoiceformat1-rpm-ref-1485.pdf` (119573 bytes) · **no local layout**
+- **letter of guarantee report format** → `tmp/fresa-references/pdfs/letter-of-guarantee-report-format.pdf` (3431 bytes) · local `LETTER_OF_GUARANTEE_REPORT_FORMAT`
+- **loading confirmation report format** → `tmp/fresa-references/pdfs/loading-confirmation-report-format.pdf` (74405 bytes) · local `LOADING_CONFIRMATION_REPORT_FORMAT`
+- **mawb draft report format** → `tmp/fresa-references/pdfs/mawb-draft-report-format.pdf` (946733 bytes) · local `MAWB_DRAFT_REPORT_FORMAT`
+- **mawb draft report format 1** → `tmp/fresa-references/pdfs/mawb-draft-report-format-1.pdf` (81985 bytes) · local `MAWB_DRAFT_REPORT_FORMAT`
+- **mawb original preprinted kc report format** → `tmp/fresa-references/pdfs/mawb-original-preprinted-kc-report-format.pdf` (11623 bytes) · local `MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT`
+- **outstanding letter report format 1 outstanding letter** → `tmp/fresa-references/pdfs/outstanding-letter-report-format-1-outstanding-letter.pdf` (92614 bytes) · **no local layout**
+- **outstanding letter report format 2 outstanding letter jasper** → `tmp/fresa-references/pdfs/outstanding-letter-report-format-2-outstanding-letter-jasper.pdf` (30732 bytes) · **no local layout**
+- **outstanding letter report format 3 outstanding letter with aging** → `tmp/fresa-references/pdfs/outstanding-letter-report-format-3-outstanding-letter-with-aging.pdf` (90999 bytes) · **no local layout**
+- **outstanding letter report format 4 outstanding letter with bl details** → `tmp/fresa-references/pdfs/outstanding-letter-report-format-4-outstanding-letter-with-bl-details.pdf` (140003 bytes) · **no local layout**
+- **outstanding letter report format 5 outstanding letter with invoices** → `tmp/fresa-references/pdfs/outstanding-letter-report-format-5-outstanding-letter-with-invoices.pdf` (72523 bytes) · **no local layout**
+- **payment voucher report format 1** → `tmp/fresa-references/pdfs/payment-voucher-report-format-1.pdf` (72762 bytes) · **no local layout**
+- **payment voucher report format 2** → `tmp/fresa-references/pdfs/payment-voucher-report-format-2.pdf` (96917 bytes) · **no local layout**
+- **payment voucher report format 3** → `tmp/fresa-references/pdfs/payment-voucher-report-format-3.pdf` (73470 bytes) · **no local layout**
+- **payment voucher report format 4 vietnam** → `tmp/fresa-references/pdfs/payment-voucher-report-format-4-vietnam.pdf` (73415 bytes) · **no local layout**
+- **pickup confirmation report format** → `tmp/fresa-references/pdfs/pickup-confirmation-report-format.pdf` (72488 bytes) · local `PICKUP_CONFIRMATION_REPORT_FORMAT`
+- **pre alert air report format** → `tmp/fresa-references/pdfs/pre-alert-air-report-format.pdf` (95031 bytes) · local `PRE_ALERT_AIR_REPORT_FORMAT`
+- **pre alert to client report format** → `tmp/fresa-references/pdfs/pre-alert-to-client-report-format.pdf` (101134 bytes) · local `PRE_ALERT_TO_CLIENT_REPORT_FORMAT`
+- **prealert usa jasper report format** → `tmp/fresa-references/pdfs/prealert-usa-jasper-report-format.pdf` (101302 bytes) · local `PREALERT_USA_JASPER_REPORT_FORMAT`
+- **profit and loss report format 1 landscape** → `tmp/fresa-references/pdfs/profit-and-loss-report-format-1-landscape.pdf` (3302 bytes) · **no local layout**
+- **profit and loss report format 2 jasper** → `tmp/fresa-references/pdfs/profit-and-loss-report-format-2-jasper.pdf` (2561 bytes) · **no local layout**
+- **profit and loss report format 3 summary periodwise** → `tmp/fresa-references/pdfs/profit-and-loss-report-format-3-summary-periodwise.pdf` (2875 bytes) · **no local layout**
+- **proforma invoice all charges report format** → `tmp/fresa-references/pdfs/proforma-invoice-all-charges-report-format.pdf` (76740 bytes) · local `PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT`
+- **proforma invoice report format 1 proforma invoice all charges** → `tmp/fresa-references/pdfs/proforma-invoice-report-format-1-proforma-invoice-all-charges.pdf` (77024 bytes) · **no local layout**
+- **proforma invoice report format 2 proforma invoice all charges** → `tmp/fresa-references/pdfs/proforma-invoice-report-format-2-proforma-invoice-all-charges.pdf` (73418 bytes) · **no local layout**
+- **proforma_invoice_format_1_rpm_ref_815** → `tmp/fresa-references/pdfs/proforma-invoice-format-1-rpm-ref-815.pdf` (160091 bytes) · **no local layout**
+- **proof of delivery report format** → `tmp/fresa-references/pdfs/proof-of-delivery-report-format.pdf` (88982 bytes) · local `PROOF_OF_DELIVERY_REPORT_FORMAT`
+- **proof_of_delivery_rpm_ref_275** → `tmp/fresa-references/pdfs/proof-of-delivery-rpm-ref-275.pdf` (107279 bytes) · **no local layout**
+- **purchase invoice report format 1** → `tmp/fresa-references/pdfs/purchase-invoice-report-format-1.pdf` (86548 bytes) · **no local layout**
+- **purchase invoice report format 2** → `tmp/fresa-references/pdfs/purchase-invoice-report-format-2.pdf` (73712 bytes) · **no local layout**
+- **receipt voucher report forat 2** → `tmp/fresa-references/pdfs/receipt-voucher-report-forat-2.pdf` (72578 bytes) · **no local layout**
+- **receipt voucher report format 1** → `tmp/fresa-references/pdfs/receipt-voucher-report-format-1.pdf` (70653 bytes) · **no local layout**
+- **Receipt Voucher Report Format-2** → `tmp/fresa-references/pdfs/receipt-voucher-report-format-2.pdf` (70929 bytes) · local `RECEIPT_VOUCHER_REPORT_FORMAT_2`
+- **rider sheet for export manifest report format** → `tmp/fresa-references/pdfs/rider-sheet-for-export-manifest-report-format.pdf` (71078 bytes) · local `RIDER_SHEET_FOR_EXPORT_MANIFEST_REPORT_FORMAT`
+- **sailing confirmation report format** → `tmp/fresa-references/pdfs/sailing-confirmation-report-format.pdf` (70325 bytes) · local `SAILING_CONFIRMATION_REPORT_FORMAT`
+- **sea_arrival_notice_fcl_vietnam_rpm_ref_420** → `tmp/fresa-references/pdfs/sea-arrival-notice-fcl-vietnam-rpm-ref-420.pdf` (110670 bytes) · **no local layout**
+- **sea_arrival_notice_lcl_vietnam_rpm_ref_422** → `tmp/fresa-references/pdfs/sea-arrival-notice-lcl-vietnam-rpm-ref-422.pdf` (114800 bytes) · **no local layout**
+- **shipment freight manifest report format** → `tmp/fresa-references/pdfs/shipment-freight-manifest-report-format.pdf` (73997 bytes) · local `SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT`
+- **shipment profit and loss report format** → `tmp/fresa-references/pdfs/shipment-profit-and-loss-report-format.pdf` (78081 bytes) · local `SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT`
+- **shipment status confirmation report format** → `tmp/fresa-references/pdfs/shipment-status-confirmation-report-format.pdf` (73394 bytes) · local `SHIPMENT_STATUS_CONFIRMATION_REPORT_FORMAT`
+- **shipping instruction report format** → `tmp/fresa-references/pdfs/shipping-instruction-report-format.pdf` (74420 bytes) · local `SHIPPING_INSTRUCTION_REPORT_FORMAT`
+- **simple_invoice_india_rpm_ref_575** → `tmp/fresa-references/pdfs/simple-invoice-india-rpm-ref-575.pdf` (119299 bytes) · **no local layout**
+- **simple_invoice_india_with_os_rpm_ref_767** → `tmp/fresa-references/pdfs/simple-invoice-india-with-os-rpm-ref-767.pdf` (131186 bytes) · **no local layout**
+- **simple_invoice_rpm_ref_325** → `tmp/fresa-references/pdfs/simple-invoice-rpm-ref-325.pdf` (123185 bytes) · **no local layout**
+- **simple_invoice_with_os_rpm_ref_76** → `tmp/fresa-references/pdfs/simple-invoice-with-os-rpm-ref-76.pdf` (135619 bytes) · **no local layout**
+- **simple_invoicevat_rpm_ref_673** → `tmp/fresa-references/pdfs/simple-invoicevat-rpm-ref-673.pdf` (135605 bytes) · **no local layout**
+- **standard_invoice_fcy_format2_rpm_ref_850** → `tmp/fresa-references/pdfs/standard-invoice-fcy-format2-rpm-ref-850.pdf` (126319 bytes) · **no local layout**
+- **standard_invoice_fcy_rpm_ref_486** → `tmp/fresa-references/pdfs/standard-invoice-fcy-rpm-ref-486.pdf` (145895 bytes) · **no local layout**
+- **standard_invoice_kampala_rpm_ref_879** → `tmp/fresa-references/pdfs/standard-invoice-kampala-rpm-ref-879.pdf` (139519 bytes) · **no local layout**
+- **standard_invoice_rpm_ref_79** → `tmp/fresa-references/pdfs/standard-invoice-rpm-ref-79.pdf` (247482 bytes) · **no local layout**
+- **standard_invoiceland_rpm_ref_419** → `tmp/fresa-references/pdfs/standard-invoiceland-rpm-ref-419.pdf` (156486 bytes) · **no local layout**
+- **standard_invoicemalaysia_rpm_ref_611** → `tmp/fresa-references/pdfs/standard-invoicemalaysia-rpm-ref-611.pdf` (152905 bytes) · **no local layout**
+- **standard_invoiceusa_format_2_rpm_ref_698** → `tmp/fresa-references/pdfs/standard-invoiceusa-format-2-rpm-ref-698.pdf` (137707 bytes) · **no local layout**
+- **standard_invoiceusa_rpm_ref_412** → `tmp/fresa-references/pdfs/standard-invoiceusa-rpm-ref-412.pdf` (91528 bytes) · **no local layout**
+- **statement of accounts report format** → `tmp/fresa-references/pdfs/statement-of-accounts-report-format.pdf` (125213 bytes) · local `STATEMENT_OF_ACCOUNTS_REPORT_FORMAT`
+- **stuffing report format** → `tmp/fresa-references/pdfs/stuffing-report-format.pdf` (125578 bytes) · local `STUFFING_REPORT_FORMAT`
+- **stuffing report jasper report format** → `tmp/fresa-references/pdfs/stuffing-report-jasper-report-format.pdf` (111595 bytes) · local `STUFFING_REPORT_JASPER_REPORT_FORMAT`
+- **summary_invoice_rpm_ref_202** → `tmp/fresa-references/pdfs/summary-invoice-rpm-ref-202.pdf` (134542 bytes) · **no local layout**
+- **surrendered letter report format** → `tmp/fresa-references/pdfs/surrendered-letter-report-format.pdf` (71921 bytes) · local `SURRENDERED_LETTER_REPORT_FORMAT`
+- **tax_invoice_india_(reimbursement_bill)_rpm_ref_713** → `tmp/fresa-references/pdfs/tax-invoice-india-reimbursement-bill-rpm-ref-713.pdf` (158585 bytes) · **no local layout**
+- **tax_invoice_india_format1_rpm_ref_458** → `tmp/fresa-references/pdfs/tax-invoice-india-format1-rpm-ref-458.pdf` (157419 bytes) · **no local layout**
+- **tax_invoice_india_format2_rpm_ref_449** → `tmp/fresa-references/pdfs/tax-invoice-india-format2-rpm-ref-449.pdf` (158615 bytes) · **no local layout**
+- **tax_invoice_india_rpm_ref_351** → `tmp/fresa-references/pdfs/tax-invoice-india-rpm-ref-351.pdf` (158594 bytes) · **no local layout**
+- **terminal departure report (tdr) report format** → `tmp/fresa-references/pdfs/terminal-departure-report-tdr-report-format.pdf` (84120 bytes) · local `TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT`
+- **transshipment list report format** → `tmp/fresa-references/pdfs/transshipment-list-report-format.pdf` (69263 bytes) · local `TRANSSHIPMENT_LIST_REPORT_FORMAT`
+- **trial balance report format 1 trial balance summary** → `tmp/fresa-references/pdfs/trial-balance-report-format-1-trial-balance-summary.pdf` (135782 bytes) · **no local layout**
+- **trial balance report format 2 trial balance summary** → `tmp/fresa-references/pdfs/trial-balance-report-format-2-trial-balance-summary.pdf` (3409 bytes) · **no local layout**
+- **trial balance report format 3 trial balance summary branchwise** → `tmp/fresa-references/pdfs/trial-balance-report-format-3-trial-balance-summary-branchwise.pdf` (72887 bytes) · **no local layout**
+- **trial balance report format 4 trial balance summary extended** → `tmp/fresa-references/pdfs/trial-balance-report-format-4-trial-balance-summary-extended.pdf` (135668 bytes) · **no local layout**
+- **trial balance report format 5 trial balance summary extended** → `tmp/fresa-references/pdfs/trial-balance-report-format-5-trial-balance-summary-extended.pdf` (24996 bytes) · **no local layout**
+- **trial balance report format 6 trial balance summary extended branchwise** → `tmp/fresa-references/pdfs/trial-balance-report-format-6-trial-balance-summary-extended-branchwise.pdf` (72887 bytes) · **no local layout**
+- **truck cargo pickup request report format** → `tmp/fresa-references/pdfs/truck-cargo-pickup-request-report-format.pdf` (75770 bytes) · local `TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT`
+- **warehouse_invoice_india_format_rpm_ref_1109** → `tmp/fresa-references/pdfs/warehouse-invoice-india-format-rpm-ref-1109.pdf` (152674 bytes) · **no local layout**
+- **warehouse_invoice_rpm_ref_201** → `tmp/fresa-references/pdfs/warehouse-invoice-rpm-ref-201.pdf` (131595 bytes) · **no local layout**
+
+## Unavailable / unverified (do not invent layouts)
+
+- **Accounts other Formats** — unavailable: No candidate URL returned a PDF
+- **Activity Completed Jobs List Report Format** — unavailable: No candidate URL returned a PDF · local `ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **activity completed jobs list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Advance Shipping Note** — unavailable: No candidate URL returned a PDF · local `ADVANCE_SHIPPING_NOTE` (unverified vs reference)
+- **Advance Shipping Note Format-1** — unavailable: No candidate URL returned a PDF · local `ADVANCE_SHIPPING_NOTE_FORMAT_1` (unverified vs reference)
+- **Advance Shipping Note Location Summary** — unavailable: No candidate URL returned a PDF · local `ADVANCE_SHIPPING_NOTE_LOCATION_SUMMARY` (unverified vs reference)
+- **Agent Nomination Shipments List Report Format** — unavailable: No candidate URL returned a PDF · local `AGENT_NOMINATION_SHIPMENTS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **agent nomination shipments list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `AGENT_NOMINATION_SHIPMENTS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **AR Job Not Invoice Report Format** — unavailable: No candidate URL returned a PDF · local `AR_JOB_NOT_INVOICE_REPORT_FORMAT` (unverified vs reference)
+- **ar job not invoice report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `AR_JOB_NOT_INVOICE_REPORT_FORMAT` (unverified vs reference)
+- **Arrival Confirmation Format1** — unavailable: No candidate URL returned a PDF
+- **Arrival Information** — unavailable: No candidate URL returned a PDF · local `ARRIVAL_INFORMATION` (unverified vs reference)
+- **Arrival Information – Jasper** — unavailable: No candidate URL returned a PDF · local `ARRIVAL_INFORMATION` (unverified vs reference)
+- **Arrival Notice** — unavailable: No candidate URL returned a PDF · local `CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1` (unverified vs reference)
+- **Arrival Notice USA – Jasper** — unavailable: No candidate URL returned a PDF
+- **Arrival Notice USA – Jasper format 2** — unavailable: No candidate URL returned a PDF
+- **Arrival Notice USA – Jasper format 2 without charges** — unavailable: No candidate URL returned a PDF
+- **Arrival Notice USA – Jasper format 3** — unavailable: No candidate URL returned a PDF
+- **Bank Cash Book Summary List Report Format** — unavailable: No candidate URL returned a PDF · local `BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT` (unverified vs reference)
+- **bank cash book summary list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Bill Of Lading Is Not Issued List Report Format** — unavailable: No candidate URL returned a PDF · local `BILL_OF_LADING_IS_NOT_ISSUED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **bill of lading is not issued list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `BILL_OF_LADING_IS_NOT_ISSUED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Cancelled Job List Report Format** — unavailable: No candidate URL returned a PDF · local `CANCELLED_JOB_LIST_REPORT_FORMAT` (unverified vs reference)
+- **cancelled job list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `CANCELLED_JOB_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Cargo Arrival Notice – Air** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Air Without Charges** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Jasper** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Jasper format 1** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Sea** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Sea – Jasper** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Sea Format 2** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Sea Format 3** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Sea Format1** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Sea Without Charges** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice – Sea Without Charges Format1** — unavailable: No candidate URL returned a PDF
+- **cargo arrival notice sea format3 Jasper** — unavailable: No candidate URL returned a PDF
+- **Cargo Arrival Notice Sent Shipments List Report Format** — unavailable: No candidate URL returned a PDF · local `CARGO_ARRIVAL_NOTICE_SENT_SHIPMENTS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **cargo arrival notice sent shipments list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `CARGO_ARRIVAL_NOTICE_SENT_SHIPMENTS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Cash Collection Report List Report Format** — unavailable: No candidate URL returned a PDF · local `CASH_COLLECTION_REPORT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **cash collection report list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `CASH_COLLECTION_REPORT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Cheque Collection Report List Report Format** — unavailable: No candidate URL returned a PDF · local `CHEQUE_COLLECTION_REPORT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **cheque collection report list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `CHEQUE_COLLECTION_REPORT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Client Lost Report For Last N Days List Report Format** — unavailable: No candidate URL returned a PDF · local `CLIENT_LOST_REPORT_FOR_LAST_N_DAYS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **client lost report for last N days list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `CLIENT_LOST_REPORT_FOR_LAST_N_DAYS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Closed Job List Report Format** — unavailable: No candidate URL returned a PDF · local `CLOSED_JOB_LIST_REPORT_FORMAT` (unverified vs reference)
+- **closed job list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `CLOSED_JOB_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Collect Shipment With No Collect Charges List Report Format** — unavailable: No candidate URL returned a PDF · local `COLLECT_SHIPMENT_WITH_NO_COLLECT_CHARGES_LIST_REPORT_FORMAT` (unverified vs reference)
+- **collect shipment with no collect charges list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `COLLECT_SHIPMENT_WITH_NO_COLLECT_CHARGES_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Consignment Delivery Note Format1** — unavailable: No candidate URL returned a PDF
+- **Container List Based On Cargo Unpack Date List Report Format** — unavailable: No candidate URL returned a PDF · local `CONTAINER_LIST_BASED_ON_CARGO_UNPACK_DATE_LIST_REPORT_FORMAT` (unverified vs reference)
+- **container list based on cargo unpack date list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `CONTAINER_LIST_BASED_ON_CARGO_UNPACK_DATE_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Container Load Plan Report Format** — unavailable: No candidate URL returned a PDF · local `CONTAINER_LOAD_PLAN_REPORT_FORMAT` (unverified vs reference)
+- **Container Summary Based On Carrier List Report Format** — unavailable: No candidate URL returned a PDF · local `CONTAINER_SUMMARY_BASED_ON_CARRIER_LIST_REPORT_FORMAT` (unverified vs reference)
+- **container summary based on carrier list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `CONTAINER_SUMMARY_BASED_ON_CARRIER_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Created Invoice List Report Format** — unavailable: No candidate URL returned a PDF · local `CREATED_INVOICE_LIST_REPORT_FORMAT` (unverified vs reference)
+- **created invoice list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `CREATED_INVOICE_LIST_REPORT_FORMAT` (unverified vs reference)
+- **created quotations list list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+- **Created Quotations List Report Format** — unavailable: No candidate URL returned a PDF · local `CREATED_QUOTATIONS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Daily Status Report Format 1 (DSR) List Report Format** — unavailable: No candidate URL returned a PDF · local `DAILY_STATUS_REPORT_FORMAT_1_DSR_LIST_REPORT_FORMAT` (unverified vs reference)
+- **daily status report format 1 (DSR) list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `DAILY_STATUS_REPORT_FORMAT_1_DSR_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Delivery Note Format 1 -Jasper** — unavailable: No candidate URL returned a PDF
+- **Delivery Order – Format 17** — unavailable: No candidate URL returned a PDF
+- **Delivery Order – Format16** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Air Jasper – Format1** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Air Jasper – Format2** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format 10** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format 3** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format 5** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format 6** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format 7** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format 8** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format 9** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format13 USA** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format14 USA** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format15** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format16 US** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper – Format18** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Jasper (SEA) – Format 8** — unavailable: No candidate URL returned a PDF
+- **Delivery Order Sea Jasper – Format1** — unavailable: No candidate URL returned a PDF
+- **Delivery Order USA – Jasper format 2** — unavailable: No candidate URL returned a PDF
+- **Do Issued Shipment List Report Format** — unavailable: No candidate URL returned a PDF · local `DO_ISSUED_SHIPMENT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **do issued shipment list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `DO_ISSUED_SHIPMENT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Electronic Delivery Order Jasper – Format 1** — unavailable: No candidate URL returned a PDF
+- **embed?url=https://fresatechnologies.com/sample report formats/** — unavailable: non-pdf status=200 type=application/json; charset=UTF-8
+- **embed?url=https://fresatechnologies.com/sample report formats/&#038;format=xml** — unavailable: non-pdf status=200 type=application/json; charset=UTF-8
+- **Export Cargo Ready But Not Stuffed List Report Format** — unavailable: No candidate URL returned a PDF · local `EXPORT_CARGO_READY_BUT_NOT_STUFFED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **export cargo ready but not stuffed list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `EXPORT_CARGO_READY_BUT_NOT_STUFFED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Export Shipments Departed But Not Confirmed On Board List Report Format** — unavailable: No candidate URL returned a PDF · local `EXPORT_SHIPMENTS_DEPARTED_BUT_NOT_CONFIRMED_ON_BOARD_LIST_REPORT_FORMAT` (unverified vs reference)
+- **export shipments departed but not confirmed on board list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `EXPORT_SHIPMENTS_DEPARTED_BUT_NOT_CONFIRMED_ON_BOARD_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Freight Manifest For Groupage Imports LCL Report Format** — unavailable: No candidate URL returned a PDF · local `FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT` (unverified vs reference)
+- **Fresa makes it easy for you by giving you a list of all the essential sample reports, Let’s get into it.** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 100** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper Format 101** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper Format 102** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 107** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 114** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 116** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 117** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 118** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 120** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 122** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 127** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 128** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 129** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 13** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 130** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 132** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 134** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 135** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 136** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 139** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 14** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 140** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 141** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 142** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 143** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 144** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 145** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 146** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 147** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 148** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 149** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 151** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 66** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 67** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 68** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 69** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 70** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 72** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 73** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 75** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 77** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 83** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 84** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 85** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 86** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 87** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 88** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 89** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 90** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 92** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 95** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 96** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 97** — unavailable: No candidate URL returned a PDF
+- **HBL Draft Jasper format 99** — unavailable: No candidate URL returned a PDF
+- **HBL Draft- format 29** — unavailable: No candidate URL returned a PDF
+- **HBL Draft- Jasper** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 1** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1` (unverified vs reference)
+- **HBL Draft- Jasper format 10** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 109** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 137** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 138** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 16** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 171** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 172** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 20** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 23** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 25** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 26** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 27** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 36** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 40** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 41** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 42** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 43 SGSIN** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 44** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 45** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 46** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 47** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 48** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 49** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 50** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 51** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 52** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 53** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 54** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 55** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 56** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 59** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 60** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 61** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 63** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 64** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Draft- Jasper format 65** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_HBL_DRAFT_JASPER` (unverified vs reference)
+- **HBL Original format 33** — unavailable: No candidate URL returned a PDF
+- **HBL Original- Jasper format 87** — unavailable: No candidate URL returned a PDF
+- **Invoice format1 – Jasper** — unavailable: No candidate URL returned a PDF
+- **Invoice Format12 – Jasper** — unavailable: No candidate URL returned a PDF
+- **Invoice Format14 – Jasper** — unavailable: No candidate URL returned a PDF
+- **Invoice format15 – Jasper Preprinted** — unavailable: No candidate URL returned a PDF
+- **Invoice format15 – Jasper Standard** — unavailable: No candidate URL returned a PDF
+- **Invoice format2 FCY- Jasper** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_INVOICE_FORMAT2_FCY_JASPER` (unverified vs reference)
+- **Invoice format3 – Jasper** — unavailable: No candidate URL returned a PDF
+- **Invoice format3 FCY with QR/IRN – Jasper** — unavailable: No candidate URL returned a PDF
+- **Invoice format4 FCY- Jasper** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_INVOICE_FORMAT4_FCY_JASPER` (unverified vs reference)
+- **Invoice format5 – Jasper** — unavailable: No candidate URL returned a PDF
+- **Invoice format6** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_INVOICE_FORMAT6` (unverified vs reference)
+- **Invoice format7 – Jasper India** — unavailable: No candidate URL returned a PDF
+- **Invoice format7 – Jasper USA** — unavailable: No candidate URL returned a PDF
+- **Invoice Format8 with QR/IRN – Jasper** — unavailable: No candidate URL returned a PDF
+- **Invoice Format9 with QR/IRN – Jasper** — unavailable: No candidate URL returned a PDF
+- **Invoice Formats** — unavailable: No candidate URL returned a PDF
+- **Invoice Report Format-6 Simple Invoice (India)** — unavailable: No candidate URL returned a PDF · local `INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA` (unverified vs reference)
+- **Invoice Singapore – Jasper** — unavailable: No candidate URL returned a PDF
+- **Job ATA Is Updated And Cargo Unpack Date Is Not Entered List Report Format** — unavailable: No candidate URL returned a PDF · local `JOB_ATA_IS_UPDATED_AND_CARGO_UNPACK_DATE_IS_NOT_ENTERED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **job ata is updated and cargo unpack date is not entered list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `JOB_ATA_IS_UPDATED_AND_CARGO_UNPACK_DATE_IS_NOT_ENTERED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Job Ata Not Updated List Report Format** — unavailable: No candidate URL returned a PDF · local `JOB_ATA_NOT_UPDATED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **job ata not updated list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `JOB_ATA_NOT_UPDATED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Job ATA Updated Arrival Notice Not Sent List Report Format** — unavailable: No candidate URL returned a PDF · local `JOB_ATA_UPDATED_ARRIVAL_NOTICE_NOT_SENT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **job ata updated arrival notice not sent list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `JOB_ATA_UPDATED_ARRIVAL_NOTICE_NOT_SENT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Job House Record List Report Format-1** — unavailable: No candidate URL returned a PDF · local `JOB_HOUSE_RECORD_LIST_REPORT_FORMAT_1` (unverified vs reference)
+- **Job List Summary Report Format** — unavailable: No candidate URL returned a PDF · local `JOB_LIST_SUMMARY_REPORT_FORMAT` (unverified vs reference)
+- **job list summary report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `JOB_LIST_SUMMARY_REPORT_FORMAT` (unverified vs reference)
+- **Job Not Closed list Report Format** — unavailable: No candidate URL returned a PDF · local `JOB_NOT_CLOSED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **job not closed list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `JOB_NOT_CLOSED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Land Freight/ Transportation Invoice** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_LAND_FREIGHT_TRANSPORTATION_INVOICE_FORMAT_1` (unverified vs reference)
+- **Land Freight/ Transportation Invoice Format 1** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_LAND_FREIGHT_TRANSPORTATION_INVOICE_FORMAT_1` (unverified vs reference)
+- **manifest not sent to agent  report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `MANIFEST_NOT_SENT_TO_AGENT_REPORT_FORMAT` (unverified vs reference)
+- **Manifest Not Sent To Agent Report Format** — unavailable: No candidate URL returned a PDF · local `MANIFEST_NOT_SENT_TO_AGENT_REPORT_FORMAT` (unverified vs reference)
+- **MRN Number Not Entered Job List Dubai Report Format** — unavailable: No candidate URL returned a PDF · local `MRN_NUMBER_NOT_ENTERED_JOB_LIST_DUBAI_REPORT_FORMAT` (unverified vs reference)
+- **mrn number not entered job list dubai report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `MRN_NUMBER_NOT_ENTERED_JOB_LIST_DUBAI_REPORT_FORMAT` (unverified vs reference)
+- **Notice of Delivery – Jasper** — unavailable: No candidate URL returned a PDF
+- **Other Reports** — unavailable: No candidate URL returned a PDF
+- **Overseas Debit Note (Export Invoice) – Jasper Format2** — unavailable: No candidate URL returned a PDF
+- **Payment Request List Report Format** — unavailable: No candidate URL returned a PDF · local `PAYMENT_REQUEST_LIST_REPORT_FORMAT` (unverified vs reference)
+- **payment request list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `PAYMENT_REQUEST_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Pending Jobs Atd Updated But Container Loading Date Not Updated List Report Format** — unavailable: No candidate URL returned a PDF · local `PENDING_JOBS_ATD_UPDATED_BUT_CONTAINER_LOADING_DATE_NOT_UPDATED_LIST_REPORT_FORM` (unverified vs reference)
+- **pending jobs atd updated but container loading date not updated list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `PENDING_JOBS_ATD_UPDATED_BUT_CONTAINER_LOADING_DATE_NOT_UPDATED_LIST_REPORT_FORM` (unverified vs reference)
+- **Pending Shipment For Cargo Delivery Do Issued List Report Format** — unavailable: No candidate URL returned a PDF · local `PENDING_SHIPMENT_FOR_CARGO_DELIVERY_DO_ISSUED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **pending shipment for cargo delivery do issued list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `PENDING_SHIPMENT_FOR_CARGO_DELIVERY_DO_ISSUED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Pending Shipments For Cargo Arrival Notice List Report Format** — unavailable: No candidate URL returned a PDF · local `PENDING_SHIPMENTS_FOR_CARGO_ARRIVAL_NOTICE_LIST_REPORT_FORMAT` (unverified vs reference)
+- **pending shipments for cargo arrival notice list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `PENDING_SHIPMENTS_FOR_CARGO_ARRIVAL_NOTICE_LIST_REPORT_FORMAT` (unverified vs reference)
+- **pending Shipments For Cargo Delivery List Report Format** — unavailable: No candidate URL returned a PDF · local `PENDING_SHIPMENTS_FOR_CARGO_DELIVERY_LIST_REPORT_FORMAT` (unverified vs reference)
+- **pending shipments for cargo delivery list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `PENDING_SHIPMENTS_FOR_CARGO_DELIVERY_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Pending Shipments For Delivery Order List Report Format** — unavailable: No candidate URL returned a PDF · local `PENDING_SHIPMENTS_FOR_DELIVERY_ORDER_LIST_REPORT_FORMAT` (unverified vs reference)
+- **pending shipments for delivery order list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `PENDING_SHIPMENTS_FOR_DELIVERY_ORDER_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Pending Shipments For Draft BL List Report Format** — unavailable: No candidate URL returned a PDF · local `PENDING_SHIPMENTS_FOR_DRAFT_BL_LIST_REPORT_FORMAT` (unverified vs reference)
+- **pending shipments(bl status is created) for draft bl list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+- **Prepaid Shipment With No Prepaid Charges List Report Format** — unavailable: No candidate URL returned a PDF · local `PREPAID_SHIPMENT_WITH_NO_PREPAID_CHARGES_LIST_REPORT_FORMAT` (unverified vs reference)
+- **prepaid shipment with no prepaid charges list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `PREPAID_SHIPMENT_WITH_NO_PREPAID_CHARGES_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Proforma Invoice format 1** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_PROFORMA_INVOICE_FORMAT_1` (unverified vs reference)
+- **Salesperson Nomination Report List Report Format** — unavailable: No candidate URL returned a PDF · local `SALESPERSON_NOMINATION_REPORT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **salesperson nomination report list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SALESPERSON_NOMINATION_REPORT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **sample report formats** — unavailable: non-pdf status=200 type=text/html; charset=UTF-8
+- **Sample Report Formats | Fresa Technologies -Freight Software** — unavailable: No candidate URL returned a PDF
+- **Saudi TAX Invoice – Arabic Jasper** — unavailable: No candidate URL returned a PDF
+- **Sea Arrival Notice FCL Vietnam** — unavailable: No candidate URL returned a PDF · local `ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM` (unverified vs reference)
+- **Sea Arrival Notice LCL Vietnam** — unavailable: No candidate URL returned a PDF · local `SEA_ARRIVAL_NOTICE_LCL_VIETNAM` (unverified vs reference)
+- **Shipment Is Not Linked With Job List Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENT_IS_NOT_LINKED_WITH_JOB_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipment is not linked with job list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENT_IS_NOT_LINKED_WITH_JOB_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Shipment Status Report List Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENT_STATUS_REPORT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipment status report list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENT_STATUS_REPORT_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Shipment With No Job CS List Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENT_WITH_NO_JOB_CS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipment with no job cs list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENT_WITH_NO_JOB_CS_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Shipments List IMCO List Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENTS_LIST_IMCO_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipments list IMCO list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENTS_LIST_IMCO_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Shipments With No cost Charges List Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENTS_WITH_NO_COST_CHARGES_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipments with no cost charges list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENTS_WITH_NO_COST_CHARGES_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Shipments With No HBL Number Entered List Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENTS_WITH_NO_HBL_NUMBER_ENTERED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipments with no HBL number entered list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENTS_WITH_NO_HBL_NUMBER_ENTERED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Shipments With No Invoices List** — unavailable: No candidate URL returned a PDF · local `SHIPMENTS_WITH_NO_INVOICES_LIST` (unverified vs reference)
+- **Shipments With No Invoices list Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENTS_WITH_NO_INVOICES_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipments with no invoices list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENTS_WITH_NO_INVOICES_LIST` (unverified vs reference)
+- **shipments with no invoices list.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENTS_WITH_NO_INVOICES_LIST` (unverified vs reference)
+- **Shipments With No Job Number Mapped List Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENTS_WITH_NO_JOB_NUMBER_MAPPED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipments with no job number mapped list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENTS_WITH_NO_JOB_NUMBER_MAPPED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Shipments With No Purchase Invoices List** — unavailable: No candidate URL returned a PDF · local `SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST` (unverified vs reference)
+- **Shipments With No Purchase Invoices List Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipments with no purchase invoices list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST` (unverified vs reference)
+- **shipments with no purchase invoices list.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST` (unverified vs reference)
+- **Shipments With No Salesperson Entered List Report Format** — unavailable: No candidate URL returned a PDF · local `SHIPMENTS_WITH_NO_SALESPERSON_ENTERED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **shipments with no Salesperson entered list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `SHIPMENTS_WITH_NO_SALESPERSON_ENTERED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Simple Invoice** — unavailable: No candidate URL returned a PDF · local `INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA` (unverified vs reference)
+- **Simple Invoice – India** — unavailable: No candidate URL returned a PDF
+- **Simple Invoice – India Jasper** — unavailable: No candidate URL returned a PDF
+- **Simple Invoice – India with O/S** — unavailable: No candidate URL returned a PDF
+- **Simple Invoice – Jasper** — unavailable: No candidate URL returned a PDF
+- **Simple Invoice – US Jasper** — unavailable: No candidate URL returned a PDF
+- **Simple Invoice with O/S** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_SIMPLE_INVOICE_WITH_OS` (unverified vs reference)
+- **Simple Invoice(VAT)** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_SIMPLE_INVOICEVAT` (unverified vs reference)
+- **Standard Invoice** — unavailable: No candidate URL returned a PDF · local `INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC` (unverified vs reference)
+- **Standard Invoice -Land** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_STANDARD_INVOICE_LAND` (unverified vs reference)
+- **Standard Invoice – Jasper** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format10** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format12 Letterhead** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format13** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format14 QR code** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format15** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format16** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format17 (With Holding Tax)** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format18** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format19** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format20 – UAE Local Currency** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format21 (With Holding Tax)** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format22** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format3** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper Format4** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format5** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format6** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper format9** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice – Jasper Tanzania** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice 3 Decimal** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_STANDARD_INVOICE_3_DECIMAL` (unverified vs reference)
+- **Standard Invoice Arabic – Jasper** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Arabic – Jasper Format1** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Arabic – Jasper Format1 With Letter head** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Arabic Oman – Jasper** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Arabic with QR code – Jasper Format2** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Arabic with QR code – Jasper Format3** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Arabic with QR code – Jasper Format4** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Arabic with QR code – Jasper Format5** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Arabic with QR code – Jasper Format7** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Courier – Jasper** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice cum Arrival Notice – Jasper format16** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice FCY** — unavailable: No candidate URL returned a PDF · local `INVOICE_REPORT_FORMAT_44` (unverified vs reference)
+- **Standard Invoice FCY Format2** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_STANDARD_INVOICE_FCY_FORMAT2` (unverified vs reference)
+- **Standard Invoice FCY with QR/IRN – Jasper** — unavailable: No candidate URL returned a PDF
+- **Standard Invoice Kampala** — unavailable: No candidate URL returned a PDF · local `INVOICE_REPORT_FORMAT_47` (unverified vs reference)
+- **Standard Invoice USA** — unavailable: No candidate URL returned a PDF · local `INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA` (unverified vs reference)
+- **Standard Invoice-Malaysia** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_STANDARD_INVOICE_MALAYSIA` (unverified vs reference)
+- **Standard Invoice-USA Format 2** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_STANDARD_INVOICE_USA_FORMAT_2` (unverified vs reference)
+- **Standard Tax Invoice – Jasper** — unavailable: No candidate URL returned a PDF
+- **Summary Invoice** — unavailable: No candidate URL returned a PDF · local `INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE` (unverified vs reference)
+- **TAX Invoice – India** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice – India (Reimbursement Bill)** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice – India format1** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice – India format2** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice – India format2 Jasper** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice – India format6 Jasper** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice – India format7 Jasper** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice – India format8 Jasper** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice – India Jasper** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice – India Jasper Format1** — unavailable: No candidate URL returned a PDF
+- **Tax Invoice Malaysia – Jasper** — unavailable: No candidate URL returned a PDF
+- **Tax Invoice Singapore – Jasper** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice with QR – India format3 Jasper** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice with QR/IRN – India format4 Jasper** — unavailable: No candidate URL returned a PDF
+- **TAX Invoice with QR/IRN – India format5 Jasper** — unavailable: No candidate URL returned a PDF
+- **Terminal Departure Report (TDR) Report Format** — unavailable: No candidate URL returned a PDF · local `TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT` (unverified vs reference)
+- **Transhipment List Report Format** — unavailable: No candidate URL returned a PDF
+- **Uncollected Cargo For Agent Routed List Report Format** — unavailable: No candidate URL returned a PDF · local `UNCOLLECTED_CARGO_FOR_AGENT_ROUTED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **uncollected cargo for agent routed list report format.xlsx** — unavailable: non-pdf status=200 type=application/vnd.openxmlformats-officedocument.spreadsheetml.sheet · local `UNCOLLECTED_CARGO_FOR_AGENT_ROUTED_LIST_REPORT_FORMAT` (unverified vs reference)
+- **Vietnam Invoice** — unavailable: No candidate URL returned a PDF · local `LEFTOVER_VIETNAM_INVOICE` (unverified vs reference)
+- **Warehouse Invoice** — unavailable: No candidate URL returned a PDF · local `INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE` (unverified vs reference)
+- **Warehouse Invoice – India Format** — unavailable: No candidate URL returned a PDF
+
+## Duplicate local signatures (identical structure risk)
+
+- ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT, ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT
+- ADVANCE_SHIPPING_NOTE, ADVANCE_SHIPPING_NOTE
+- AGENT_NOMINATION_SHIPMENTS_LIST_REPORT_FORMAT, AGENT_NOMINATION_SHIPMENTS_LIST_REPORT_FORMAT
+- SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT, SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT
+- AR_JOB_NOT_INVOICE_REPORT_FORMAT, AR_JOB_NOT_INVOICE_REPORT_FORMAT
+- ARRIVAL_INFORMATION, ARRIVAL_INFORMATION
+- BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT, BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT
+- BILL_OF_LADING_IS_NOT_ISSUED_LIST_REPORT_FORMAT, BILL_OF_LADING_IS_NOT_ISSUED_LIST_REPORT_FORMAT
+- CANCELLED_JOB_LIST_REPORT_FORMAT, CANCELLED_JOB_LIST_REPORT_FORMAT
+- CARGO_ARRIVAL_NOTICE_SENT_SHIPMENTS_LIST_REPORT_FORMAT, CARGO_ARRIVAL_NOTICE_SENT_SHIPMENTS_LIST_REPORT_FORMAT
+- CASH_COLLECTION_REPORT_LIST_REPORT_FORMAT, CASH_COLLECTION_REPORT_LIST_REPORT_FORMAT
+- CHEQUE_COLLECTION_REPORT_LIST_REPORT_FORMAT, CHEQUE_COLLECTION_REPORT_LIST_REPORT_FORMAT
+- CLIENT_LOST_REPORT_FOR_LAST_N_DAYS_LIST_REPORT_FORMAT, CLIENT_LOST_REPORT_FOR_LAST_N_DAYS_LIST_REPORT_FORMAT
+- CLOSED_JOB_LIST_REPORT_FORMAT, CLOSED_JOB_LIST_REPORT_FORMAT
+- COLLECT_SHIPMENT_WITH_NO_COLLECT_CHARGES_LIST_REPORT_FORMAT, COLLECT_SHIPMENT_WITH_NO_COLLECT_CHARGES_LIST_REPORT_FORMAT
+- CONTAINER_LIST_BASED_ON_CARGO_UNPACK_DATE_LIST_REPORT_FORMAT, CONTAINER_LIST_BASED_ON_CARGO_UNPACK_DATE_LIST_REPORT_FORMAT
+- CONTAINER_LOAD_PLAN_REPORT_FORMAT, CONTAINER_LOAD_PLAN_REPORT_FORMAT
+- CONTAINER_SUMMARY_BASED_ON_CARRIER_LIST_REPORT_FORMAT, CONTAINER_SUMMARY_BASED_ON_CARRIER_LIST_REPORT_FORMAT
+- CREATED_INVOICE_LIST_REPORT_FORMAT, CREATED_INVOICE_LIST_REPORT_FORMAT
+- DAILY_STATUS_REPORT_FORMAT_1_DSR_LIST_REPORT_FORMAT, DAILY_STATUS_REPORT_FORMAT_1_DSR_LIST_REPORT_FORMAT, DAILY_STATUS_REPORT_FORMAT_1_DSR_LIST_REPORT_FORMAT
+- DO_ISSUED_SHIPMENT_LIST_REPORT_FORMAT, DO_ISSUED_SHIPMENT_LIST_REPORT_FORMAT
+- EXPORT_CARGO_READY_BUT_NOT_STUFFED_LIST_REPORT_FORMAT, EXPORT_CARGO_READY_BUT_NOT_STUFFED_LIST_REPORT_FORMAT
+- EXPORT_SHIPMENTS_DEPARTED_BUT_NOT_CONFIRMED_ON_BOARD_LIST_REPORT_FORMAT, EXPORT_SHIPMENTS_DEPARTED_BUT_NOT_CONFIRMED_ON_BOARD_LIST_REPORT_FORMAT
+- FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT, FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT
+- HAWB_DRAFT_REPORT_FORMAT, HAWB_DRAFT_REPORT_FORMAT, HAWB_DRAFT_REPORT_FORMAT
+- LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER, LEFTOVER_HBL_DRAFT_JASPER
+- INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA, INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA
+- JOB_ATA_IS_UPDATED_AND_CARGO_UNPACK_DATE_IS_NOT_ENTERED_LIST_REPORT_FORMAT, JOB_ATA_IS_UPDATED_AND_CARGO_UNPACK_DATE_IS_NOT_ENTERED_LIST_REPORT_FORMAT
+- JOB_ATA_NOT_UPDATED_LIST_REPORT_FORMAT, JOB_ATA_NOT_UPDATED_LIST_REPORT_FORMAT
+- JOB_ATA_UPDATED_ARRIVAL_NOTICE_NOT_SENT_LIST_REPORT_FORMAT, JOB_ATA_UPDATED_ARRIVAL_NOTICE_NOT_SENT_LIST_REPORT_FORMAT
+- JOB_LIST_SUMMARY_REPORT_FORMAT, JOB_LIST_SUMMARY_REPORT_FORMAT
+- JOB_NOT_CLOSED_LIST_REPORT_FORMAT, JOB_NOT_CLOSED_LIST_REPORT_FORMAT
+- LEFTOVER_LAND_FREIGHT_TRANSPORTATION_INVOICE_FORMAT_1, LEFTOVER_LAND_FREIGHT_TRANSPORTATION_INVOICE_FORMAT_1
+- MANIFEST_NOT_SENT_TO_AGENT_REPORT_FORMAT, MANIFEST_NOT_SENT_TO_AGENT_REPORT_FORMAT
+- MAWB_DRAFT_REPORT_FORMAT, MAWB_DRAFT_REPORT_FORMAT
+- MRN_NUMBER_NOT_ENTERED_JOB_LIST_DUBAI_REPORT_FORMAT, MRN_NUMBER_NOT_ENTERED_JOB_LIST_DUBAI_REPORT_FORMAT
+- PAYMENT_REQUEST_LIST_REPORT_FORMAT, PAYMENT_REQUEST_LIST_REPORT_FORMAT
+- PENDING_JOBS_ATD_UPDATED_BUT_CONTAINER_LOADING_DATE_NOT_UPDATED_LIST_REPORT_FORM, PENDING_JOBS_ATD_UPDATED_BUT_CONTAINER_LOADING_DATE_NOT_UPDATED_LIST_REPORT_FORM
+- PENDING_SHIPMENT_FOR_CARGO_DELIVERY_DO_ISSUED_LIST_REPORT_FORMAT, PENDING_SHIPMENT_FOR_CARGO_DELIVERY_DO_ISSUED_LIST_REPORT_FORMAT
+- PENDING_SHIPMENTS_FOR_CARGO_ARRIVAL_NOTICE_LIST_REPORT_FORMAT, PENDING_SHIPMENTS_FOR_CARGO_ARRIVAL_NOTICE_LIST_REPORT_FORMAT
+- PENDING_SHIPMENTS_FOR_CARGO_DELIVERY_LIST_REPORT_FORMAT, PENDING_SHIPMENTS_FOR_CARGO_DELIVERY_LIST_REPORT_FORMAT
+- PENDING_SHIPMENTS_FOR_DELIVERY_ORDER_LIST_REPORT_FORMAT, PENDING_SHIPMENTS_FOR_DELIVERY_ORDER_LIST_REPORT_FORMAT
+- PREPAID_SHIPMENT_WITH_NO_PREPAID_CHARGES_LIST_REPORT_FORMAT, PREPAID_SHIPMENT_WITH_NO_PREPAID_CHARGES_LIST_REPORT_FORMAT
+- SALESPERSON_NOMINATION_REPORT_LIST_REPORT_FORMAT, SALESPERSON_NOMINATION_REPORT_LIST_REPORT_FORMAT
+- SHIPMENT_IS_NOT_LINKED_WITH_JOB_LIST_REPORT_FORMAT, SHIPMENT_IS_NOT_LINKED_WITH_JOB_LIST_REPORT_FORMAT
+- SHIPMENT_STATUS_REPORT_LIST_REPORT_FORMAT, SHIPMENT_STATUS_REPORT_LIST_REPORT_FORMAT
+- SHIPMENT_WITH_NO_JOB_CS_LIST_REPORT_FORMAT, SHIPMENT_WITH_NO_JOB_CS_LIST_REPORT_FORMAT
+- SHIPMENTS_LIST_IMCO_LIST_REPORT_FORMAT, SHIPMENTS_LIST_IMCO_LIST_REPORT_FORMAT
+- SHIPMENTS_WITH_NO_COST_CHARGES_LIST_REPORT_FORMAT, SHIPMENTS_WITH_NO_COST_CHARGES_LIST_REPORT_FORMAT
+- SHIPMENTS_WITH_NO_HBL_NUMBER_ENTERED_LIST_REPORT_FORMAT, SHIPMENTS_WITH_NO_HBL_NUMBER_ENTERED_LIST_REPORT_FORMAT
+- SHIPMENTS_WITH_NO_INVOICES_LIST, SHIPMENTS_WITH_NO_INVOICES_LIST, SHIPMENTS_WITH_NO_INVOICES_LIST
+- SHIPMENTS_WITH_NO_JOB_NUMBER_MAPPED_LIST_REPORT_FORMAT, SHIPMENTS_WITH_NO_JOB_NUMBER_MAPPED_LIST_REPORT_FORMAT
+- SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST, SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST, SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST
+- SHIPMENTS_WITH_NO_SALESPERSON_ENTERED_LIST_REPORT_FORMAT, SHIPMENTS_WITH_NO_SALESPERSON_ENTERED_LIST_REPORT_FORMAT
+- TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT, TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT
+- UNCOLLECTED_CARGO_FOR_AGENT_ROUTED_LIST_REPORT_FORMAT, UNCOLLECTED_CARGO_FOR_AGENT_ROUTED_LIST_REPORT_FORMAT

@@ -1,10 +1,10 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated HBL formats — permanent JSON store. */
+/** Permanent JSON UI layouts — hblFormatUiLayouts. */
 export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
-    "formatNumber": 0,
+    "formatNumber": 1,
     "name": "HBL Draft Report Format Jasper",
     "paper": "A4",
     "rtl": false,
@@ -31,7 +31,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Jasper Draft",
+      "formatBadgeLabel": "Jasper",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -52,26 +53,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -82,36 +88,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -120,8 +114,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -129,38 +123,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Jasper Draft"
+      "remarks": "Jasper"
     },
     "blocks": [
       {
@@ -168,12 +146,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Jasper Draft"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT (JASPER)",
+        "text": "HOUSE BILL OF LADING — DRAFT (JASPER) · HBL_DRAFT_REPORT_FORMAT_JASPER",
         "align": "center",
         "band": true
       },
@@ -182,7 +156,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "hblCargoTable"
@@ -203,7 +177,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "FG_HBL_HKG",
-    "formatNumber": 1,
+    "formatNumber": 100,
     "name": "FG HBL HKG",
     "paper": "A4",
     "rtl": false,
@@ -771,13 +745,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_2",
-    "formatNumber": 4,
+    "formatNumber": 2,
     "name": "HBL Draft Report Format-2",
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0F4D96",
-      "accent": "#2286C8",
+      "primary": "#0A3D73",
+      "accent": "#1A6FA8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
@@ -798,7 +772,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-2",
+      "formatBadgeLabel": "-2",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -819,26 +794,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -849,36 +829,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -887,8 +855,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -896,38 +864,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-2"
+      "remarks": "-2"
     },
     "blocks": [
       {
@@ -936,20 +888,206 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "formatBadge",
-        "label": "Format-2"
+        "label": "-2"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 2",
-        "align": "end",
-        "band": true
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -2",
+        "align": "start",
+        "band": false
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "partyNotifyGrid"
       },
       {
+        "type": "hblCargoTable"
+      },
+      {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "hblFreightSignature"
+      },
+      {
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_4",
+    "formatNumber": 3,
+    "name": "HBL Draft Report Format-4",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#123A5C",
+      "accent": "#2286C8",
+      "fill": "#EEF2F6",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Wings",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "inquiry@kingfishertec.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "-4",
+      "heroTitle": "BILL OF LADING",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
+          "30 AL MAKTHOOM BUILDING",
+          "AL NABHA SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Bill of Lading No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Job No.",
+          "v": "CEXP190150"
+        },
+        {
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
+        },
+        {
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
+        },
+        {
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-4"
+        }
+      ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
+      "termsLines": [
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
+      ],
+      "remarks": "-4"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -4",
+        "align": "end",
+        "band": true
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "hblCargoTable"
@@ -966,9 +1104,9 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     ]
   },
   {
-    "code": "HBL_DRAFT_REPORT_FORMAT_4",
-    "formatNumber": 5,
-    "name": "HBL Draft Report Format-4",
+    "code": "HBL_DRAFT_REPORT_FORMAT_5",
+    "formatNumber": 4,
+    "name": "HBL Draft Report Format-5",
     "paper": "A4",
     "rtl": false,
     "theme": {
@@ -976,7 +1114,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
-      "orange": "#F7A21C",
+      "orange": "#E08A10",
       "red": "#DE1F26",
       "cyan": "#9AD7FF",
       "ink": "#101010",
@@ -994,7 +1132,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-4",
+      "formatBadgeLabel": "-5",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -1015,26 +1154,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -1045,46 +1189,34 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
-          "v": "HBL Draft Report Format-4"
+          "v": "HBL Draft Report Format-5"
         }
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -1092,38 +1224,23 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-4"
+      "remarks": "-5",
+      "letterBody": "We enclose herewith the draft House Bill of Lading for your kind perusal and confirmation."
     },
     "blocks": [
       {
@@ -1131,17 +1248,19 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-4"
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -5",
+        "align": "center",
+        "band": false
       },
       {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 4",
-        "align": "start",
-        "band": true
+        "type": "letterBody"
       },
       {
         "type": "partyNotifyGrid"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "fieldGrid",
@@ -1151,7 +1270,190 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "hblCargoTable"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
         "type": "hblFreightSignature"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_6",
+    "formatNumber": 5,
+    "name": "HBL Draft Report Format-6",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#163A5F",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#7EC8F0",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Wings",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "inquiry@kingfishertec.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "-6",
+      "heroTitle": "BILL OF LADING",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
+          "30 AL MAKTHOOM BUILDING",
+          "AL NABHA SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Bill of Lading No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Job No.",
+          "v": "CEXP190150"
+        },
+        {
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
+        },
+        {
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
+        },
+        {
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-6"
+        }
+      ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
+      "termsLines": [
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
+      ],
+      "remarks": "-6"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -6",
+        "align": "start",
+        "band": true
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
+      },
+      {
+        "type": "totalsOnly"
       },
       {
         "type": "termsBank"
@@ -1165,400 +1467,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     ]
   },
   {
-    "code": "HBL_DRAFT_REPORT_FORMAT_5",
-    "formatNumber": 6,
-    "name": "HBL Draft Report Format-5",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0F4D96",
-      "accent": "#2286C8",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#9AD7FF",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "PLMAAJEA00081",
-      "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-5",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "Place of Delivery",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
-        },
-        {
-          "k": "Freight",
-          "v": "PREPAID"
-        },
-        {
-          "k": "No. of Packages",
-          "v": "125"
-        },
-        {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
-        },
-        {
-          "k": "Measurement",
-          "v": "24.000 CBM"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-5"
-        }
-      ],
-      "hblCargoHeaders": [
-        "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
-        "Gross Weight",
-        "Measurement"
-      ],
-      "hblCargoRows": [
-        [
-          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
-          "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
-          "18,000.000 KGS",
-          "24.000 CBM"
-        ]
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
-      "hblOnboardDate": "16-JAN-19",
-      "hblPlaceDate": "CHENNAI 28-JAN-19",
-      "hblCarrierAgent": "CMA CGM",
-      "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-5"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "formatBadge",
-        "label": "Format-5"
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 5",
-        "align": "end",
-        "band": false
-      },
-      {
-        "type": "partyNotifyGrid"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "hblCargoTable"
-      },
-      {
-        "type": "hblFreightSignature"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_6",
-    "formatNumber": 7,
-    "name": "HBL Draft Report Format-6",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0F4D96",
-      "accent": "#2286C8",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#9AD7FF",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "PLMAAJEA00081",
-      "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-6",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "Place of Delivery",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
-        },
-        {
-          "k": "Freight",
-          "v": "PREPAID"
-        },
-        {
-          "k": "No. of Packages",
-          "v": "125"
-        },
-        {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
-        },
-        {
-          "k": "Measurement",
-          "v": "24.000 CBM"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-6"
-        }
-      ],
-      "hblCargoHeaders": [
-        "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
-        "Gross Weight",
-        "Measurement"
-      ],
-      "hblCargoRows": [
-        [
-          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
-          "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
-          "18,000.000 KGS",
-          "24.000 CBM"
-        ]
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
-      "hblOnboardDate": "16-JAN-19",
-      "hblPlaceDate": "CHENNAI 28-JAN-19",
-      "hblCarrierAgent": "CMA CGM",
-      "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-6"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "formatBadge",
-        "label": "Format-6"
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 6",
-        "align": "center",
-        "band": true
-      },
-      {
-        "type": "partyNotifyGrid"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "hblCargoTable"
-      },
-      {
-        "type": "hblFreightSignature"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
     "code": "HBL_DRAFT_REPORT_FORMAT_7",
-    "formatNumber": 8,
+    "formatNumber": 6,
     "name": "HBL Draft Report Format-7",
     "paper": "A4",
     "rtl": false,
@@ -1585,7 +1495,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-7",
+      "formatBadgeLabel": "-7",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -1606,26 +1517,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -1636,36 +1552,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -1674,8 +1578,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -1683,38 +1587,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-7"
+      "remarks": "-7"
     },
     "blocks": [
       {
@@ -1723,13 +1611,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "formatBadge",
-        "label": "Format-7"
+        "label": "-7"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 7",
-        "align": "start",
-        "band": false
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -7 · HBL_DRAFT_REPORT_FORMAT_7 · HBL",
+        "align": "end",
+        "band": true
       },
       {
         "type": "partyNotifyGrid"
@@ -1754,13 +1642,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_8",
-    "formatNumber": 9,
+    "formatNumber": 7,
     "name": "HBL Draft Report Format-8",
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0F4D96",
-      "accent": "#2286C8",
+      "primary": "#0A3D73",
+      "accent": "#1A6FA8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
@@ -1781,7 +1669,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-8",
+      "formatBadgeLabel": "-8",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -1802,26 +1691,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -1832,36 +1726,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -1870,8 +1752,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -1879,38 +1761,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-8"
+      "remarks": "-8"
     },
     "blocks": [
       {
@@ -1918,33 +1784,35 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-8"
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -8",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 8",
-        "align": "end",
-        "band": true
+        "type": "agingSummary"
       },
       {
         "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "hblCargoTable"
       },
       {
-        "type": "hblCargoTable"
+        "type": "fieldGrid",
+        "cols": 3
       },
       {
         "type": "hblFreightSignature"
       },
       {
+        "type": "wordsAndTotal"
+      },
+      {
         "type": "termsBank"
       },
       {
-        "type": "signatureRow"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -1953,14 +1821,14 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_9",
-    "formatNumber": 10,
+    "formatNumber": 8,
     "name": "HBL Draft Report Format-9",
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0F4D96",
+      "primary": "#123A5C",
       "accent": "#2286C8",
-      "fill": "#F3F3F3",
+      "fill": "#EEF2F6",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
@@ -1980,7 +1848,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-9",
+      "formatBadgeLabel": "-9",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2001,26 +1870,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -2031,36 +1905,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -2069,8 +1931,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -2078,38 +1940,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-9"
+      "remarks": "-9"
     },
     "blocks": [
       {
@@ -2117,21 +1963,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-9"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 9",
-        "align": "center",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -9",
+        "align": "start",
         "band": false
       },
       {
-        "type": "partyNotifyGrid"
+        "type": "exportMetaStrip"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "hblCargoTable"
@@ -2149,7 +1998,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_10",
-    "formatNumber": 11,
+    "formatNumber": 9,
     "name": "HBL Draft Report Format-10",
     "paper": "A4",
     "rtl": false,
@@ -2158,7 +2007,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
-      "orange": "#F7A21C",
+      "orange": "#E08A10",
       "red": "#DE1F26",
       "cyan": "#9AD7FF",
       "ink": "#101010",
@@ -2176,7 +2025,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-10",
+      "formatBadgeLabel": "-10",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2197,26 +2047,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -2227,36 +2082,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -2265,8 +2108,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -2274,38 +2117,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-10"
+      "remarks": "-10"
     },
     "blocks": [
       {
@@ -2313,17 +2140,16 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-10"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 10",
-        "align": "start",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -10",
+        "align": "end",
         "band": true
       },
       {
         "type": "partyNotifyGrid"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "fieldGrid",
@@ -2333,10 +2159,14 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "hblCargoTable"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "cyan"
+      },
+      {
         "type": "hblFreightSignature"
       },
       {
-        "type": "termsBank"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -2345,18 +2175,18 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_11",
-    "formatNumber": 12,
+    "formatNumber": 10,
     "name": "HBL Draft Report Format-11",
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0F4D96",
+      "primary": "#163A5F",
       "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#9AD7FF",
+      "cyan": "#7EC8F0",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -2372,7 +2202,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-11",
+      "formatBadgeLabel": "-11",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2393,26 +2224,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -2423,36 +2259,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -2461,8 +2285,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -2470,38 +2294,23 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-11"
+      "remarks": "-11",
+      "letterBody": "We enclose herewith the draft House Bill of Lading for your kind perusal and confirmation."
     },
     "blocks": [
       {
@@ -2510,13 +2319,16 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "formatBadge",
-        "label": "Format-11"
+        "label": "-11"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 11",
-        "align": "end",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -11",
+        "align": "center",
         "band": false
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "partyNotifyGrid"
@@ -2526,10 +2338,16 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 3
       },
       {
+        "type": "containerStrip"
+      },
+      {
         "type": "hblCargoTable"
       },
       {
         "type": "hblFreightSignature"
+      },
+      {
+        "type": "totalsOnly"
       },
       {
         "type": "termsBank"
@@ -2541,7 +2359,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_12",
-    "formatNumber": 13,
+    "formatNumber": 11,
     "name": "HBL Draft Report Format-12",
     "paper": "A4",
     "rtl": false,
@@ -2568,7 +2386,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-12",
+      "formatBadgeLabel": "-12",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2589,26 +2408,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -2619,36 +2443,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -2657,8 +2469,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -2666,38 +2478,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-12"
+      "remarks": "-12"
     },
     "blocks": [
       {
@@ -2705,14 +2501,16 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-12"
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -12",
+        "align": "start",
+        "band": true
       },
       {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 12",
-        "align": "center",
-        "band": true
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "partyNotifyGrid"
@@ -2729,9 +2527,6 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -2740,13 +2535,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_13",
-    "formatNumber": 14,
+    "formatNumber": 12,
     "name": "HBL Draft Report Format-13",
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0F4D96",
-      "accent": "#2286C8",
+      "primary": "#0A3D73",
+      "accent": "#1A6FA8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
@@ -2767,7 +2562,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-13",
+      "formatBadgeLabel": "-13",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2788,26 +2584,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -2818,36 +2619,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -2856,8 +2645,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -2865,38 +2654,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-13"
+      "remarks": "-13"
     },
     "blocks": [
       {
@@ -2904,30 +2677,35 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-13"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 13",
-        "align": "start",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -13",
+        "align": "end",
         "band": false
       },
       {
+        "type": "containerStrip"
+      },
+      {
         "type": "partyNotifyGrid"
+      },
+      {
+        "type": "hblCargoTable"
       },
       {
         "type": "fieldGrid",
         "cols": 3
       },
       {
-        "type": "hblCargoTable"
-      },
-      {
         "type": "hblFreightSignature"
       },
       {
+        "type": "wordsAndTotal"
+      },
+      {
         "type": "termsBank"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2936,14 +2714,14 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_14",
-    "formatNumber": 15,
+    "formatNumber": 13,
     "name": "HBL Draft Report Format-14",
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0F4D96",
+      "primary": "#123A5C",
       "accent": "#2286C8",
-      "fill": "#F3F3F3",
+      "fill": "#EEF2F6",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
@@ -2963,7 +2741,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-14",
+      "formatBadgeLabel": "-14",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -2984,26 +2763,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -3014,36 +2798,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -3052,8 +2824,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -3061,38 +2833,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-14"
+      "remarks": "-14"
     },
     "blocks": [
       {
@@ -3100,413 +2856,21 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-14"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 14",
-        "align": "end",
-        "band": true
-      },
-      {
-        "type": "partyNotifyGrid"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "hblCargoTable"
-      },
-      {
-        "type": "hblFreightSignature"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_15",
-    "formatNumber": 16,
-    "name": "HBL Draft Report Format-15",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0F4D96",
-      "accent": "#2286C8",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#9AD7FF",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "PLMAAJEA00081",
-      "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-15",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "Place of Delivery",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
-        },
-        {
-          "k": "Freight",
-          "v": "PREPAID"
-        },
-        {
-          "k": "No. of Packages",
-          "v": "125"
-        },
-        {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
-        },
-        {
-          "k": "Measurement",
-          "v": "24.000 CBM"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-15"
-        }
-      ],
-      "hblCargoHeaders": [
-        "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
-        "Gross Weight",
-        "Measurement"
-      ],
-      "hblCargoRows": [
-        [
-          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
-          "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
-          "18,000.000 KGS",
-          "24.000 CBM"
-        ]
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
-      "hblOnboardDate": "16-JAN-19",
-      "hblPlaceDate": "CHENNAI 28-JAN-19",
-      "hblCarrierAgent": "CMA CGM",
-      "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-15"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "formatBadge",
-        "label": "Format-15"
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 15",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -14",
         "align": "center",
-        "band": false
-      },
-      {
-        "type": "partyNotifyGrid"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "hblCargoTable"
-      },
-      {
-        "type": "hblFreightSignature"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "colorfulFooter"
-      }
-    ]
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_16",
-    "formatNumber": 17,
-    "name": "HBL Draft Report Format-16",
-    "paper": "A4",
-    "rtl": false,
-    "theme": {
-      "primary": "#0F4D96",
-      "accent": "#2286C8",
-      "fill": "#F3F3F3",
-      "panel": "#EBF0F4",
-      "orange": "#F7A21C",
-      "red": "#DE1F26",
-      "cyan": "#9AD7FF",
-      "ink": "#101010",
-      "gray": "#656565",
-      "white": "#FFFFFF"
-    },
-    "branding": {
-      "company": "KingFisher Wings",
-      "address": "Dubai, United Arab Emirates",
-      "web": "www.kingfisherwingsgroup.com",
-      "phone": "+971 55 5355 286",
-      "email": "inquiry@kingfishertec.com",
-      "logo": "kingfisher"
-    },
-    "demo": {
-      "invoiceNo": "PLMAAJEA00081",
-      "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-16",
-      "partyLeft": {
-        "title": "Shipper",
-        "lines": [
-          "4G LOGISTICS INDIA PVT LTD",
-          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "CHENNAI TAMIL NADU 600084 INDIA"
-        ]
-      },
-      "partyMid": {
-        "title": "Consignee",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "partyNotify": {
-        "title": "Notify Party",
-        "lines": [
-          "AL NASER TRADING COMPANY LLC",
-          "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
-        ]
-      },
-      "fieldGrid": [
-        {
-          "k": "HBL No.",
-          "v": "PLMAAJEA00081"
-        },
-        {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
-        },
-        {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
-        },
-        {
-          "k": "Port of Loading",
-          "v": "CHENNAI (EX MADRAS), INDIA"
-        },
-        {
-          "k": "Port of Discharge",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "Place of Delivery",
-          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
-        },
-        {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
-        },
-        {
-          "k": "Freight",
-          "v": "PREPAID"
-        },
-        {
-          "k": "No. of Packages",
-          "v": "125"
-        },
-        {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
-        },
-        {
-          "k": "Measurement",
-          "v": "24.000 CBM"
-        },
-        {
-          "k": "Layout",
-          "v": "HBL Draft Report Format-16"
-        }
-      ],
-      "hblCargoHeaders": [
-        "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
-        "Gross Weight",
-        "Measurement"
-      ],
-      "hblCargoRows": [
-        [
-          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
-          "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
-          "18,000.000 KGS",
-          "24.000 CBM"
-        ]
-      ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
-      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
-      "hblOnboardDate": "16-JAN-19",
-      "hblPlaceDate": "CHENNAI 28-JAN-19",
-      "hblCarrierAgent": "CMA CGM",
-      "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
-      ],
-      "remarks": "Format-16"
-    },
-    "blocks": [
-      {
-        "type": "companyHeader",
-        "showContact": true
-      },
-      {
-        "type": "formatBadge",
-        "label": "Format-16"
-      },
-      {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 16",
-        "align": "start",
         "band": true
       },
       {
-        "type": "partyNotifyGrid"
+        "type": "exportMetaStrip"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "hblCargoTable"
@@ -3526,8 +2890,368 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     ]
   },
   {
+    "code": "HBL_DRAFT_REPORT_FORMAT_15",
+    "formatNumber": 14,
+    "name": "HBL Draft Report Format-15",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#0F4D96",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#E08A10",
+      "red": "#DE1F26",
+      "cyan": "#9AD7FF",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Wings",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "inquiry@kingfishertec.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "-15",
+      "heroTitle": "BILL OF LADING",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
+          "30 AL MAKTHOOM BUILDING",
+          "AL NABHA SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Bill of Lading No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Job No.",
+          "v": "CEXP190150"
+        },
+        {
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
+        },
+        {
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
+        },
+        {
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-15"
+        }
+      ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
+      "termsLines": [
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
+      ],
+      "remarks": "-15"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "formatBadge",
+        "label": "-15"
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -15",
+        "align": "start",
+        "band": false
+      },
+      {
+        "type": "usaNumberedFields"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 2
+      },
+      {
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
+      },
+      {
+        "type": "hblFreightSignature"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_16",
+    "formatNumber": 15,
+    "name": "HBL Draft Report Format-16",
+    "paper": "A4",
+    "rtl": false,
+    "theme": {
+      "primary": "#163A5F",
+      "accent": "#2286C8",
+      "fill": "#F3F3F3",
+      "panel": "#EBF0F4",
+      "orange": "#F7A21C",
+      "red": "#DE1F26",
+      "cyan": "#7EC8F0",
+      "ink": "#101010",
+      "gray": "#656565",
+      "white": "#FFFFFF"
+    },
+    "branding": {
+      "company": "KingFisher Wings",
+      "address": "Dubai, United Arab Emirates",
+      "web": "www.kingfisherwingsgroup.com",
+      "phone": "+971 55 5355 286",
+      "email": "inquiry@kingfishertec.com",
+      "logo": "kingfisher"
+    },
+    "demo": {
+      "invoiceNo": "PLMAAJEA00081",
+      "invoiceDate": "28-JAN-19",
+      "formatBadgeLabel": "-16",
+      "heroTitle": "BILL OF LADING",
+      "partyLeft": {
+        "title": "Shipper",
+        "lines": [
+          "4G LOGISTICS INDIA PVT LTD",
+          "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
+          "CHENNAI TAMIL NADU 600084 INDIA"
+        ]
+      },
+      "partyMid": {
+        "title": "Consignee",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "30 AL MAKTHOOM BUILDING",
+          "SHARJAH UAE"
+        ]
+      },
+      "partyNotify": {
+        "title": "Notify Party",
+        "lines": [
+          "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
+          "30 AL MAKTHOOM BUILDING",
+          "AL NABHA SHARJAH UAE"
+        ]
+      },
+      "fieldGrid": [
+        {
+          "k": "Bill of Lading No.",
+          "v": "PLMAAJEA00081"
+        },
+        {
+          "k": "Job No.",
+          "v": "CEXP190150"
+        },
+        {
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
+        },
+        {
+          "k": "Freight",
+          "v": "PREPAID"
+        },
+        {
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
+        },
+        {
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
+        },
+        {
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
+        },
+        {
+          "k": "Layout",
+          "v": "HBL Draft Report Format-16"
+        }
+      ],
+      "hblCargoHeaders": [
+        "Container No. / Seal No. / Mark & No.",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
+        "Gross Weight",
+        "Measurement"
+      ],
+      "hblCargoRows": [
+        [
+          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
+          "125 PACKAGES",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
+          "18,000.000 KGS",
+          "24.000 CBM"
+        ]
+      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
+      "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
+      "hblOnboardDate": "16-JAN-19",
+      "hblPlaceDate": "CHENNAI 28-JAN-19",
+      "hblCarrierAgent": "CMA CGM",
+      "termsLines": [
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
+      ],
+      "remarks": "-16"
+    },
+    "blocks": [
+      {
+        "type": "companyHeader",
+        "showContact": true
+      },
+      {
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -16",
+        "align": "end",
+        "band": true
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "partyNotifyGrid"
+      },
+      {
+        "type": "fieldGrid",
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "hblCargoTable"
+      },
+      {
+        "type": "hblFreightSignature"
+      },
+      {
+        "type": "totalsOnly"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "colorfulFooter"
+      }
+    ]
+  },
+  {
     "code": "HBL_DRAFT_REPORT_FORMAT_17",
-    "formatNumber": 18,
+    "formatNumber": 16,
     "name": "HBL Draft Report Format-17",
     "paper": "A4",
     "rtl": false,
@@ -3554,7 +3278,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-17",
+      "formatBadgeLabel": "-17",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -3575,26 +3300,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -3605,36 +3335,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -3643,8 +3361,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -3652,38 +3370,23 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-17"
+      "remarks": "-17",
+      "letterBody": "We enclose herewith the draft House Bill of Lading for your kind perusal and confirmation."
     },
     "blocks": [
       {
@@ -3691,21 +3394,20 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-17"
+        "type": "docTitle",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -17 · HBL_DRAFT_REPORT_FORMAT_17 · H",
+        "align": "center",
+        "band": false
       },
       {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 17",
-        "align": "end",
-        "band": false
+        "type": "letterBody"
       },
       {
         "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "hblCargoTable"
@@ -3723,13 +3425,13 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_18",
-    "formatNumber": 19,
+    "formatNumber": 17,
     "name": "HBL Draft Report Format-18",
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0F4D96",
-      "accent": "#2286C8",
+      "primary": "#0A3D73",
+      "accent": "#1A6FA8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
@@ -3750,7 +3452,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-18",
+      "formatBadgeLabel": "-18",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -3771,26 +3474,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -3801,36 +3509,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -3839,8 +3535,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -3848,38 +3544,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-18"
+      "remarks": "-18"
     },
     "blocks": [
       {
@@ -3887,30 +3567,38 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-18"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 18",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -18 · HBL_DRAFT_REPORT_FORMAT_18",
         "align": "center",
         "band": true
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "partyNotifyGrid"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "hblCargoTable"
       },
       {
-        "type": "hblCargoTable"
+        "type": "fieldGrid",
+        "cols": 1
       },
       {
         "type": "hblFreightSignature"
       },
       {
+        "type": "wordsAndTotal"
+      },
+      {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3919,14 +3607,14 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_19",
-    "formatNumber": 20,
+    "formatNumber": 18,
     "name": "HBL Draft Report Format-19",
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#0F4D96",
+      "primary": "#123A5C",
       "accent": "#2286C8",
-      "fill": "#F3F3F3",
+      "fill": "#EEF2F6",
       "panel": "#EBF0F4",
       "orange": "#F7A21C",
       "red": "#DE1F26",
@@ -3946,7 +3634,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-19",
+      "formatBadgeLabel": "-19",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -3967,26 +3656,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -3997,36 +3691,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -4035,8 +3717,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -4044,38 +3726,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-19"
+      "remarks": "-19"
     },
     "blocks": [
       {
@@ -4084,20 +3750,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "formatBadge",
-        "label": "Format-19"
+        "label": "-19"
       },
       {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 19",
-        "align": "start",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -19 · HBL_DRAFT_REPORT_FORMAT_19 · H",
+        "align": "center",
         "band": false
       },
       {
-        "type": "partyNotifyGrid"
+        "type": "exportMetaStrip"
       },
       {
-        "type": "fieldGrid",
-        "cols": 3
+        "type": "twoColumn",
+        "showBillTo": false,
+        "rightMetaFrom": "metaRows"
+      },
+      {
+        "type": "partyNotifyGrid"
       },
       {
         "type": "hblCargoTable"
@@ -4115,7 +3785,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_20",
-    "formatNumber": 21,
+    "formatNumber": 19,
     "name": "HBL Draft Report Format-20",
     "paper": "A4",
     "rtl": false,
@@ -4124,7 +3794,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "accent": "#2286C8",
       "fill": "#F3F3F3",
       "panel": "#EBF0F4",
-      "orange": "#F7A21C",
+      "orange": "#E08A10",
       "red": "#DE1F26",
       "cyan": "#9AD7FF",
       "ink": "#101010",
@@ -4142,7 +3812,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "demo": {
       "invoiceNo": "PLMAAJEA00081",
       "invoiceDate": "28-JAN-19",
-      "formatBadgeLabel": "Format-20",
+      "formatBadgeLabel": "-20",
+      "heroTitle": "BILL OF LADING",
       "partyLeft": {
         "title": "Shipper",
         "lines": [
@@ -4163,26 +3834,31 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "title": "Notify Party",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
+          "POST BOX : 12356",
           "30 AL MAKTHOOM BUILDING",
-          "SHARJAH UAE"
+          "AL NABHA SHARJAH UAE"
         ]
       },
       "fieldGrid": [
         {
-          "k": "HBL No.",
+          "k": "Bill of Lading No.",
           "v": "PLMAAJEA00081"
         },
         {
-          "k": "MBL No.",
-          "v": "MBLCOPY87667888"
+          "k": "Job No.",
+          "v": "CEXP190150"
         },
         {
-          "k": "Booking Ref.",
-          "v": "B/EXP/19/0254"
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         },
         {
           "k": "Port of Loading",
           "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Vessel / Voyage No.",
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "Port of Discharge",
@@ -4193,36 +3869,24 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "JEBEL ALI, UNITED ARAB EMIRATES"
         },
         {
-          "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
-        },
-        {
-          "k": "ETD",
-          "v": "29-JAN-19"
-        },
-        {
-          "k": "ETA",
-          "v": "07-FEB-19"
-        },
-        {
-          "k": "Service Type",
-          "v": "FCL"
+          "k": "No. of Bills of Lading",
+          "v": "1(ONE)"
         },
         {
           "k": "Freight",
           "v": "PREPAID"
         },
         {
-          "k": "No. of Packages",
-          "v": "125"
+          "k": "Payable At",
+          "v": "CHENNAI AS ARRANGED"
         },
         {
-          "k": "Gross Weight",
-          "v": "18,000.000 KGS"
+          "k": "Onboard Date",
+          "v": "16-JAN-19"
         },
         {
-          "k": "Measurement",
-          "v": "24.000 CBM"
+          "k": "Place and Date of Issue",
+          "v": "CHENNAI 28-JAN-19"
         },
         {
           "k": "Layout",
@@ -4231,8 +3895,8 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ],
       "hblCargoHeaders": [
         "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
+        "No. of Pkgs or Shipping Units",
+        "Description of Goods & Pkgs.",
         "Gross Weight",
         "Measurement"
       ],
@@ -4240,38 +3904,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         [
           "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
           "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
       ],
-      "tableHeaders": [
-        "Container No.",
-        "Type",
-        "Seal",
-        "Pkgs",
-        "Weight",
-        "Volume"
-      ],
-      "tableRows": [
-        [
-          "ABCU9877666",
-          "20' DC",
-          "SL988888",
-          "125",
-          "18,000.000",
-          "24.000"
-        ]
-      ],
+      "containerNote": "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       "hblFreightText": "FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED",
       "hblOnboardDate": "16-JAN-19",
       "hblPlaceDate": "CHENNAI 28-JAN-19",
       "hblCarrierAgent": "CMA CGM",
       "termsLines": [
-        "DRAFT — Not negotiable unless marked original.",
-        "STC: VALVE MATERIALS FOR MACHINERY PARTS"
+        "DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+        "RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.",
+        "AS AGENT FOR THE CARRIER"
       ],
-      "remarks": "Format-20"
+      "remarks": "-20"
     },
     "blocks": [
       {
@@ -4279,17 +3927,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-20"
-      },
-      {
         "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 20",
-        "align": "end",
+        "text": "HOUSE BILL OF LADING — DRAFT FORMAT -20",
+        "align": "center",
         "band": true
       },
       {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
         "type": "partyNotifyGrid"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "fieldGrid",
@@ -4299,13 +3952,11 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "hblCargoTable"
       },
       {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
         "type": "hblFreightSignature"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"

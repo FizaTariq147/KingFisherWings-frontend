@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated — run: node scripts/build-invoice-format-ui-layouts.mjs */
+/** Permanent JSON UI layouts — invoiceFormatUiLayouts. */
 export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
@@ -3826,7 +3826,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "INVOICE",
+        "text": "INVOICE · INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
         "align": "center",
         "band": true
       },
@@ -3840,7 +3840,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -5901,7 +5901,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "primary"
       },
       {
         "type": "totalsOnly"
@@ -5911,6 +5911,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6419,7 +6422,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "subtotalBar",
@@ -6433,6 +6436,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "stampSignature"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6624,7 +6630,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -6638,6 +6644,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -7163,7 +7172,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -7173,6 +7182,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -7421,11 +7433,11 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -7435,6 +7447,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -7694,11 +7709,11 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
@@ -7708,6 +7723,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -7967,7 +7985,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE  فاتورة ضريبية",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -7975,11 +7993,11 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -7989,6 +8007,12 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -8252,7 +8276,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE  فاتورة ضريبية",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -8264,7 +8288,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -8274,6 +8298,12 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -8525,7 +8555,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE  فاتورة ضريبية",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -8533,11 +8563,11 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
@@ -8547,6 +8577,12 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -8798,7 +8834,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE  فاتورة ضريبية",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -8806,11 +8842,11 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -8820,6 +8856,15 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -9079,7 +9124,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE  فاتورة ضريبية",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -9087,11 +9132,11 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -9101,6 +9146,15 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -10029,34 +10083,31 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "blocks": [
       {
-        "type": "companyHeader"
+        "type": "companyHeader",
+        "showContact": true
       },
       {
         "type": "docTitle",
-        "text": "INVOICE / DEBIT NOTE",
-        "align": "center"
+        "text": "INVOICE / DEBIT NOTE · V1",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true,
-        "showCreditTerm": true
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "shipmentDetails",
+        "fcyOrder": true,
+        "showQuotation": true
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "subtotalBar",
+        "variant": "fcy"
       },
       {
-        "type": "containerNote"
-      },
-      {
-        "type": "termsBank"
+        "type": "exportClosing",
+        "showBullets": true
       },
       {
         "type": "colorfulFooter"
@@ -10322,7 +10373,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "code": "INVOICE_REPORT_FORMAT_48",
     "formatNumber": 48,
     "name": "Invoice Report Format-48 Standard Invoice USA",
-    "paper": "A4",
+    "paper": "Letter",
     "rtl": false,
     "theme": {
       "primary": "#000000",
@@ -10490,28 +10541,31 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "1,000.00",
           "1,000.00"
         ]
-      ]
+      ],
+      "docSubtitle": "Standard Invoice USA"
     },
     "blocks": [
       {
-        "type": "companyHeader"
+        "type": "companyHeader",
+        "showContact": true
       },
       {
         "type": "docTitle",
-        "text": "INVOICE",
-        "align": "center"
+        "text": "INVOICE · V1",
+        "align": "center",
+        "band": true
+      },
+      {
+        "type": "usaNumberedFields"
       },
       {
         "type": "twoColumn",
-        "showBillTo": true
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 2
+        "showBillTo": true,
+        "rightMetaFrom": "metaRows"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -10760,7 +10814,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
@@ -10771,6 +10825,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -11021,6 +11078,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -11227,7 +11287,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -11238,6 +11298,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -12067,37 +12130,36 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "blocks": [
       {
-        "type": "companyHeader"
+        "type": "companyHeader",
+        "showContact": true
       },
       {
         "type": "docTitle",
-        "text": "TAX INVOICE - BOMINV230500382",
-        "align": "center"
+        "text": "TAX INVOICE · V1",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true,
-        "showCreditTerm": true
+        "type": "exportMetaStrip"
       },
       {
-        "type": "taxAmountBox"
+        "type": "shipmentDetails",
+        "showTermsOfShipment": true,
+        "showPlaceOfSupply": true
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerNote"
+        "type": "partyTriple"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "subtotalBar",
+        "variant": "tax"
       },
       {
-        "type": "termsBank"
+        "type": "exportClosing"
       },
       {
         "type": "colorfulFooter"
@@ -12407,20 +12469,23 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerNote"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -12707,7 +12772,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -12715,17 +12780,23 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -13039,20 +13110,23 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "containerNote"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -13653,13 +13727,16 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -13957,7 +14034,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE - BOMINV230500382 (ORIGINAL FOR RECIPIENT)",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -13976,13 +14053,19 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -14288,7 +14371,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE - BOMINV230500382 (ORIGINAL FOR RECIPIENT)",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -14300,20 +14383,26 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "containerNote"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -14611,7 +14700,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE - BOMINV230500382 (ORIGINAL FOR RECIPIENT)",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -14623,20 +14712,26 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerNote"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -14938,7 +15033,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE - BOMINV230500382 (ORIGINAL FOR RECIPIENT)",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -14950,20 +15045,29 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerNote"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -15261,7 +15365,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE - BOMINV230500382 (ORIGINAL FOR RECIPIENT)",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -15280,13 +15384,22 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -15583,7 +15696,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -15595,20 +15708,29 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "containerNote"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -15812,7 +15934,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -15826,6 +15948,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -16054,7 +16179,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE BOMINV230500382",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -16062,17 +16187,23 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -16301,7 +16432,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE BOMINV230500382",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -16309,17 +16440,26 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -16510,7 +16650,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE - BOMINV230500382",
-        "align": "center"
+        "align": "start"
       },
       {
         "type": "twoColumn",
@@ -16522,13 +16662,19 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -16838,7 +16984,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerNote"
@@ -16852,6 +16998,18 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "formatBadge"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -17652,19 +17810,19 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#000000",
-      "accent": "#2286C8",
-      "fill": "#F3F3F3",
-      "panel": "#F3F3F3",
+      "primary": "#0F4D96",
+      "accent": "#2488CA",
+      "fill": "#F5FEFF",
+      "panel": "#ECF8FF",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#9AD7FF",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -17850,39 +18008,46 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "blocks": [
       {
-        "type": "companyHeader"
+        "type": "companyHeader",
+        "showContact": true
       },
       {
         "type": "docTitle",
-        "text": "TAX INVOICE",
-        "align": "center"
+        "text": "INVOICE · V1",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true
+        "type": "partyTriple"
+      },
+      {
+        "type": "landRoute"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "totalsOnly"
-      },
-      {
-        "type": "taxAmountBox"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "summaryHero"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -18493,10 +18658,10 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#000000",
+      "primary": "#0F4D96",
       "accent": "#2286C8",
-      "fill": "#F3F3F3",
-      "panel": "#F3F3F3",
+      "fill": "#EFF8FE",
+      "panel": "#E7F3FB",
       "orange": "#F7A21C",
       "red": "#DE1F26",
       "cyan": "#9AD7FF",
@@ -18505,7 +18670,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -18750,36 +18915,46 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "blocks": [
       {
-        "type": "companyHeader"
+        "type": "companyHeader",
+        "showContact": true
       },
       {
         "type": "docTitle",
-        "text": "TAX INVOICE",
-        "align": "center"
+        "text": "INVOICE · V1",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true
+        "type": "partyTriple"
+      },
+      {
+        "type": "landRoute"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
+      },
+      {
+        "type": "termsBank"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "containerStrip"
       },
       {
-        "type": "chargeTable",
-        "headerColor": "fill"
+        "type": "agingSummary"
       },
       {
-        "type": "taxAmountBox"
+        "type": "wireBox"
       },
       {
-        "type": "wordsAndTotal"
-      },
-      {
-        "type": "termsBank"
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -19341,14 +19516,14 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "taxAmountBox"
@@ -19358,6 +19533,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -19639,6 +19817,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -19875,14 +20056,14 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "containerNote"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan"
       },
       {
         "type": "totalsOnly"
@@ -19892,6 +20073,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -20150,7 +20334,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
@@ -20169,6 +20353,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
+        "type": "agingSummary"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -20180,19 +20367,19 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "paper": "A4",
     "rtl": false,
     "theme": {
-      "primary": "#000000",
-      "accent": "#2286C8",
-      "fill": "#F3F3F3",
-      "panel": "#F3F3F3",
+      "primary": "#0F4D96",
+      "accent": "#2387C9",
+      "fill": "#FFFCF4",
+      "panel": "#EEF3F7",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#9AD7FF",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
     },
     "branding": {
-      "company": "KingFisher Logistic",
+      "company": "KingFisher Wings",
       "address": "Dubai, United Arab Emirates",
       "web": "www.kingfisherwingsgroup.com",
       "phone": "+971 55 5355 286",
@@ -20413,36 +20600,46 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "blocks": [
       {
-        "type": "companyHeader"
+        "type": "companyHeader",
+        "showContact": true
       },
       {
         "type": "docTitle",
-        "text": "INVOICE",
-        "align": "center"
+        "text": "INVOICE · V1",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true
+        "type": "partyTriple"
+      },
+      {
+        "type": "landRoute"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
-      },
-      {
-        "type": "containerStrip"
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
-      },
-      {
-        "type": "wordsAndTotal"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
       },
       {
-        "type": "stampSignature"
+        "type": "containerStrip"
+      },
+      {
+        "type": "agingSummary"
+      },
+      {
+        "type": "wireBox"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -20985,7 +21182,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
@@ -20999,6 +21196,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"

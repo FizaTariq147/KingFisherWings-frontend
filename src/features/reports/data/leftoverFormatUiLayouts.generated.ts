@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — Fresa sky-blue themes. */
+/** Permanent JSON UI layouts — leftoverFormatUiLayouts. */
 export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "LEFTOVER_HBL_DRAFT_JASPER",
@@ -124,30 +124,21 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "start",
-        "band": false
+        "text": "HOUSE BILL OF LADING — DRAFT · V1",
+        "align": "center",
+        "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
+        "type": "partyNotifyGrid"
       },
       {
-        "type": "partyTriple"
+        "type": "exportMetaStrip"
       },
       {
-        "type": "fieldGrid",
-        "cols": 2
+        "type": "hblCargoTable"
       },
       {
-        "type": "containerStrip"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
+        "type": "hblFreightSignature"
       },
       {
         "type": "colorfulFooter"
@@ -276,33 +267,25 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "BILL OF LADING",
-        "align": "start",
+        "text": "HOUSE BILL OF LADING — DRAFT",
+        "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": false,
-        "rightMetaFrom": "metaRows"
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "containerStrip"
+        "type": "hblCargoTable"
       },
       {
-        "type": "termsBank"
+        "type": "hblFreightSignature"
       },
       {
-        "type": "signatureRow"
-      },
-      {
-        "type": "outstandingTable"
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -939,7 +922,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "TAX INVOICE",
+        "text": "TAX INVOICE · V1",
         "align": "center",
         "band": true
       },
@@ -953,11 +936,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -1259,8 +1242,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE / DEBIT NOTE",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "shipmentDetails",
@@ -1588,7 +1571,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "cyan"
       },
       {
         "type": "subtotalBar",
@@ -1599,7 +1582,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showBullets": true
       },
       {
-        "type": "wireBox"
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -1753,7 +1736,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "primary"
       },
       {
         "type": "subtotalBar",
@@ -1762,6 +1745,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "exportClosing",
         "showBullets": true
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "summaryHero"
@@ -1906,7 +1892,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -3058,7 +3044,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "grandTotalDue"
@@ -3194,9 +3180,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "DEBIT NOTE",
-        "align": "end",
-        "band": false
+        "text": "DEBIT NOTE · V1",
+        "align": "center",
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -3205,11 +3191,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "primary"
       },
       {
         "type": "wordsAndTotal"
@@ -3674,8 +3660,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "format6Totals"
@@ -3843,7 +3829,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "format6Totals"
@@ -3855,7 +3841,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
@@ -3868,7 +3854,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "jobDescription"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3999,9 +3985,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "INVOICE",
-        "align": "start",
-        "band": false
+        "text": "INVOICE · V1",
+        "align": "center",
+        "band": true
       },
       {
         "type": "format6Totals"
@@ -4013,7 +3999,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -4024,9 +4010,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -4159,8 +4142,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "format6Totals"
@@ -4172,7 +4155,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -4185,7 +4168,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4317,8 +4300,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "center",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "format6Totals"
@@ -4330,20 +4313,17 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "stampSignature"
@@ -4483,7 +4463,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "INVOICE",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "format6Totals"
@@ -4495,11 +4475,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -4508,10 +4488,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4656,8 +4633,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "format6Totals"
@@ -4673,7 +4650,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
@@ -4682,10 +4659,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -7347,12 +7321,12 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2589CB",
-      "fill": "#F0FCFF",
-      "panel": "#DCF4FF",
+      "accent": "#2387C9",
+      "fill": "#ECF8FF",
+      "panel": "#D9F1FE",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#9CD9FF",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7462,8 +7436,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE –JASPER FORMAT5",
-        "align": "end",
+        "text": "STANDARD INVOICE –JASPER FORMAT5 · V1",
+        "align": "center",
         "band": true
       },
       {
@@ -7474,11 +7448,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
@@ -7499,9 +7473,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
-        "type": "containerStrip"
-      },
-      {
         "type": "colorfulFooter"
       }
     ]
@@ -7514,12 +7485,12 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
-      "accent": "#2488CA",
-      "fill": "#EEFAFF",
-      "panel": "#DAF2FF",
+      "accent": "#2387C9",
+      "fill": "#EAF6FE",
+      "panel": "#D7EFFC",
       "orange": "#F7A21C",
       "red": "#DE1F26",
-      "cyan": "#9CD9FF",
+      "cyan": "#9BD8FF",
       "ink": "#101010",
       "gray": "#656565",
       "white": "#FFFFFF"
@@ -7630,7 +7601,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "STANDARD INVOICE –JASPER FORMAT6",
+        "text": "STANDARD INVOICE –JASPER FORMAT6 · V1",
         "align": "center",
         "band": true
       },
@@ -7648,11 +7619,11 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
@@ -8310,9 +8281,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "فاتورة / INVOICE",
+        "text": "فاتورة / INVOICE · V1",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "twoColumn",
@@ -8321,7 +8292,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "chargeTable",
@@ -8332,9 +8303,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -8799,8 +8767,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "فاتورة / INVOICE",
-        "align": "center",
+        "text": "فاتورة / INVOICE · V2",
+        "align": "start",
         "band": false
       },
       {
@@ -8814,19 +8782,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -9122,8 +9084,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "فاتورة / INVOICE",
-        "align": "center",
+        "text": "فاتورة / INVOICE · V3",
+        "align": "end",
         "band": true
       },
       {
@@ -9137,16 +9099,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "fill"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -9612,8 +9571,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "فاتورة / INVOICE",
-        "align": "start",
+        "text": "فاتورة / INVOICE · V4",
+        "align": "center",
         "band": false
       },
       {
@@ -9623,23 +9582,17 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 1
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "orange"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "agingSummary"
-      },
-      {
-        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -9933,7 +9886,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "STANDARD INVOICE CUM ARRIVAL NOTICE –JASPER FORMAT16",
-        "align": "start",
+        "align": "center",
         "band": true
       },
       {
@@ -9958,6 +9911,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
@@ -10088,8 +10044,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "INVOICE / DEBIT NOTE",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "shipmentDetails",
@@ -10098,7 +10054,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "orange"
       },
       {
         "type": "subtotalBar",
@@ -10109,7 +10065,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showBullets": true
       },
       {
-        "type": "letterBody"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -10243,8 +10199,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "INVOICE / DEBIT NOTE",
-        "align": "center",
+        "text": "INVOICE / DEBIT NOTE · V2",
+        "align": "start",
         "band": false
       },
       {
@@ -10254,7 +10210,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "subtotalBar",
@@ -10263,9 +10219,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "exportClosing",
         "showBullets": true
-      },
-      {
-        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -10576,9 +10529,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "INVOICE",
-        "align": "end",
-        "band": true
+        "text": "INVOICE · V2",
+        "align": "start",
+        "band": false
       },
       {
         "type": "usaNumberedFields"
@@ -10590,16 +10543,13 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -10898,7 +10848,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TAX INVOICE",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "exportMetaStrip"
@@ -10913,7 +10863,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "subtotalBar",
@@ -11056,8 +11006,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "end",
-        "band": false
+        "align": "start",
+        "band": true
       },
       {
         "type": "exportMetaStrip"
@@ -11082,7 +11032,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "exportClosing"
       },
       {
-        "type": "letterBody"
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -11216,7 +11166,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TAX INVOICE",
         "align": "start",
-        "band": false
+        "band": true
       },
       {
         "type": "exportMetaStrip"
@@ -11231,7 +11181,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "cyan"
       },
       {
         "type": "subtotalBar",
@@ -11241,7 +11191,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "exportClosing"
       },
       {
-        "type": "agingSummary"
+        "type": "wireBox"
       },
       {
         "type": "colorfulFooter"
@@ -11372,8 +11322,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "TAX INVOICE",
-        "align": "end",
+        "text": "TAX INVOICE · V2",
+        "align": "start",
         "band": false
       },
       {
@@ -11389,7 +11339,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "orange"
+        "headerColor": "accent"
       },
       {
         "type": "subtotalBar",
@@ -11397,12 +11347,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "exportClosing"
-      },
-      {
-        "type": "letterBody"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -11534,7 +11478,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "end",
+        "align": "center",
         "band": true
       },
       {
@@ -11550,7 +11494,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "orange"
       },
       {
         "type": "subtotalBar",
@@ -11692,9 +11636,9 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "TAX INVOICE",
-        "align": "center",
-        "band": false
+        "text": "TAX INVOICE · V3",
+        "align": "end",
+        "band": true
       },
       {
         "type": "exportMetaStrip"
@@ -11717,9 +11661,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "exportClosing"
-      },
-      {
-        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -11850,8 +11791,8 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "TAX INVOICE",
-        "align": "start",
+        "text": "TAX INVOICE · V4",
+        "align": "center",
         "band": false
       },
       {
@@ -11867,7 +11808,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "subtotalBar",
@@ -11875,9 +11816,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "exportClosing"
-      },
-      {
-        "type": "taxAmountBox"
       },
       {
         "type": "colorfulFooter"
@@ -12172,7 +12110,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "docTitle",
         "text": "TAX INVOICE",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "exportMetaStrip"
@@ -12187,7 +12125,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "accent"
       },
       {
         "type": "subtotalBar",
@@ -12197,7 +12135,10 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "exportClosing"
       },
       {
-        "type": "jobDescription"
+        "type": "stampSignature"
+      },
+      {
+        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"
@@ -12329,7 +12270,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "TAX INVOICE",
+        "text": "TAX INVOICE · V5",
         "align": "start",
         "band": true
       },
@@ -12346,7 +12287,7 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "cyan"
       },
       {
         "type": "subtotalBar",
@@ -12354,9 +12295,6 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "exportClosing"
-      },
-      {
-        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -13468,16 +13406,16 @@ export const LEFTOVER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "WAREHOUSE INVOICE",
-        "align": "end",
-        "band": false
+        "align": "center",
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
+        "headerColor": "fill"
       },
       {
         "type": "containerStrip"

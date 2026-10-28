@@ -265,7 +265,7 @@ export default function QuotationOnlineQuotePage() {
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="space-y-4">
                 <Input
-                  label="Tenant slug *"
+                  label="Username *"
                   error={errors.tenant_slug?.message as string | undefined}
                   {...register('tenant_slug')}
                 />

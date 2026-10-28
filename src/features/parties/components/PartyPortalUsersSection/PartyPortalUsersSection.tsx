@@ -11,7 +11,6 @@ import { useAppForm } from '@/lib/validation';
 import {
   useCreatePartyPortalUser,
   usePartyPortalUsers,
-  useResendPartyPortalInvite,
   useResetPartyPortalPassword,
   useUpdatePartyPortalUserStatus,
 } from '../../hooks/usePartyPortal';
@@ -23,7 +22,6 @@ const createSchema = z.object({
   phone: z.string().trim().max(30).optional().or(z.literal('')),
   password: z.string().min(8, 'Min 8 characters').optional().or(z.literal('')),
   send_email: z.boolean().optional(),
-  invite_mode: z.boolean().optional(),
 });
 
 type CreateFormValues = z.infer<typeof createSchema>;
@@ -37,7 +35,6 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
   const createUser = useCreatePartyPortalUser(partyId);
   const updateStatus = useUpdatePartyPortalUserStatus(partyId);
   const resetPassword = useResetPartyPortalPassword(partyId);
-  const resendInvite = useResendPartyPortalInvite(partyId);
 
   const [open, setOpen] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
@@ -51,21 +48,17 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
       phone: '',
       password: '',
       send_email: true,
-      invite_mode: false,
     },
   });
 
   const close = () => {
     setOpen(false);
     setFormError(null);
-    form.reset({ email: '', full_name: '', phone: '', password: '', send_email: true, invite_mode: false });
+    form.reset({ email: '', full_name: '', phone: '', password: '', send_email: true });
   };
 
   const pending =
-    createUser.isPending ||
-    updateStatus.isPending ||
-    resetPassword.isPending ||
-    resendInvite.isPending;
+    createUser.isPending || updateStatus.isPending || resetPassword.isPending;
 
   return (
     <Card>
@@ -186,22 +179,6 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
                   >
                     Reset password
                   </Button>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="secondary"
-                    disabled={pending}
-                    onClick={async () => {
-                      try {
-                        const result = await resendInvite.mutateAsync(user.id);
-                        window.alert(result.message || 'Invite resent.');
-                      } catch (err) {
-                        window.alert(getErrorMessage(err) || 'Could not resend invite.');
-                      }
-                    }}
-                  >
-                    Resend invite
-                  </Button>
                 </div>
               </div>
             );
@@ -222,7 +199,7 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
                 phone: values.phone?.trim() || undefined,
                 password: values.password?.trim() || undefined,
                 send_email: values.send_email ?? true,
-                invite_mode: values.invite_mode ?? false,
+                invite_mode: false,
               });
               if (result.temporaryPassword) setTempPassword(result.temporaryPassword);
               close();
@@ -253,10 +230,6 @@ export function PartyPortalUsersSection({ partyId }: PartyPortalUsersSectionProp
             error={form.formState.errors.password?.message}
             {...form.register('password')}
           />
-          <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
-            <input type="checkbox" {...form.register('invite_mode')} />
-            Invite mode (email accept-invite link instead of temporary password)
-          </label>
           <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
             <input type="checkbox" {...form.register('send_email')} />
             Send credentials email when SMTP is configured

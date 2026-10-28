@@ -1,6 +1,6 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated Delivery Order formats — run: node scripts/build-delivery-order-format-ui-layouts.mjs */
+/** Permanent JSON UI layouts — deliveryOrderFormatUiLayouts. */
 export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "DELIVERY_ORDER_REPORT_FORMAT_1",
@@ -589,15 +589,14 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true
-      },
-      {
         "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
@@ -758,7 +757,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "DELIVERY ORDER (FCL VIETNAM)",
+        "text": "DELIVERY ORDER",
         "align": "center",
         "band": true
       },
@@ -767,17 +766,20 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
-      },
-      {
-        "type": "stampSignature"
+        "headerColor": "orange"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -873,24 +875,29 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "DELIVERY ORDER (LCL VIETNAM)",
+        "text": "DELIVERY ORDER",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
+        "type": "containerStrip"
+      },
+      {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "orange"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "signatureRow"
       },
       {
         "type": "colorfulFooter"
@@ -1672,7 +1679,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "hblCargoTable"
@@ -1880,7 +1887,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "hblCargoTable"
@@ -2040,7 +2047,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER — AIR",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -2051,7 +2058,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "hblCargoTable"
@@ -2061,6 +2068,9 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -2211,7 +2221,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER — AIR FORMAT 1",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -2232,6 +2242,9 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -2376,36 +2389,30 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "SEA DO"
-      },
-      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER — AIR FORMAT 2",
+        "text": "DELIVERY ORDER · V1",
         "align": "center",
         "band": true
       },
       {
-        "type": "deliveryOrderRelease"
-      },
-      {
-        "type": "partyNotifyGrid"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
-        "type": "hblCargoTable"
+        "type": "containerStrip"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
       },
       {
         "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -2588,7 +2595,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER — SEA FORMAT 8",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -2599,7 +2606,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "hblCargoTable"
@@ -2609,6 +2616,12 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2791,7 +2804,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER — FORMAT 10",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -2802,7 +2815,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "hblCargoTable"
@@ -2812,6 +2825,12 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -2994,7 +3013,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER — SEA FORMAT 10",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -3005,7 +3024,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "hblCargoTable"
@@ -3015,6 +3034,9 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
       },
       {
         "type": "colorfulFooter"
@@ -3220,6 +3242,15 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -3394,27 +3425,24 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "SEA DO"
-      },
-      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER — SEA FORMAT 5",
-        "align": "center",
-        "band": true
+        "text": "DELIVERY ORDER · V2",
+        "align": "start",
+        "band": false
       },
       {
-        "type": "deliveryOrderRelease"
-      },
-      {
-        "type": "partyNotifyGrid"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "hblCargoTable"
+        "type": "containerStrip"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "accent"
       },
       {
         "type": "termsBank"
@@ -3614,7 +3642,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "hblCargoTable"
@@ -3820,7 +3848,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "hblCargoTable"
@@ -3830,6 +3858,18 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
       },
       {
         "type": "colorfulFooter"
@@ -4035,6 +4075,18 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "signatureRow"
       },
       {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
         "type": "colorfulFooter"
       }
     ]
@@ -4215,7 +4267,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER — FORMAT 9",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -4236,6 +4288,12 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
       },
       {
         "type": "colorfulFooter"
@@ -4418,7 +4476,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER — FORMAT 13",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -4429,7 +4487,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "hblCargoTable"
@@ -4439,6 +4497,21 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4621,7 +4694,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER — FORMAT 14",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -4632,7 +4705,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "hblCargoTable"
@@ -4642,6 +4715,21 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -4835,7 +4923,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "hblCargoTable"
@@ -4845,6 +4933,15 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"
@@ -5027,7 +5124,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "DELIVERY ORDER — FORMAT 16",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -5048,6 +5145,21 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -5241,7 +5353,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "hblCargoTable"
@@ -5430,27 +5542,24 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showContact": true
       },
       {
-        "type": "formatBadge",
-        "label": "SEA DO"
-      },
-      {
         "type": "docTitle",
-        "text": "DELIVERY ORDER — SEA FORMAT 1",
-        "align": "center",
+        "text": "DELIVERY ORDER · V3",
+        "align": "end",
         "band": true
       },
       {
-        "type": "deliveryOrderRelease"
-      },
-      {
-        "type": "partyNotifyGrid"
+        "type": "partyTriple"
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
-        "type": "hblCargoTable"
+        "type": "containerStrip"
+      },
+      {
+        "type": "chargeTable",
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -5650,7 +5759,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "hblCargoTable"
@@ -5660,6 +5769,24 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -5985,7 +6112,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 1
       },
       {
         "type": "hblCargoTable"
@@ -5995,6 +6122,24 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6134,7 +6279,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "E-DELIVERY ORDER",
-        "align": "center",
+        "align": "start",
         "band": true
       },
       {
@@ -6148,7 +6293,7 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "hblCargoTable"
@@ -6333,6 +6478,24 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "summaryHero"
       },
       {
         "type": "colorfulFooter"
@@ -6521,6 +6684,27 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "letterBody"
+      },
+      {
+        "type": "exportMetaStrip"
+      },
+      {
+        "type": "containerStrip"
+      },
+      {
+        "type": "jobDescription"
+      },
+      {
+        "type": "stampSignature"
+      },
+      {
+        "type": "summaryHero"
+      },
+      {
+        "type": "agingSummary"
       },
       {
         "type": "colorfulFooter"
@@ -6882,33 +7066,22 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "PROOF OF DELIVERY / HBL NO - PLMAAJEA00081",
+        "text": "HOUSE BILL OF LADING — DRAFT",
         "align": "center",
         "band": true
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true
-      },
-      {
-        "type": "partyTriple"
+        "type": "partyNotifyGrid"
       },
       {
         "type": "fieldGrid",
         "cols": 2
       },
       {
-        "type": "chargeTable",
-        "headerColor": "primary"
+        "type": "hblCargoTable"
       },
       {
-        "type": "termsBank"
-      },
-      {
-        "type": "signatureRow"
-      },
-      {
-        "type": "stampSignature"
+        "type": "hblFreightSignature"
       },
       {
         "type": "colorfulFooter"
@@ -7003,10 +7176,13 @@ export const DELIVERY_ORDER_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "chargeTable",
-        "headerColor": "accent"
+        "headerColor": "cyan"
       },
       {
         "type": "signatureRow"
+      },
+      {
+        "type": "formatBadge"
       },
       {
         "type": "colorfulFooter"
