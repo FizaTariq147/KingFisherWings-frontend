@@ -1,6 +1,15 @@
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { isUuid } from '@/lib/isUuid';
 import type { NvoccBooking } from '../types/nvocc.types';
 import { formatNvoccDate, nvoccDisplayNumber } from '../utils/normalizeNvocc';
+
+function nameOrDash(name?: string | null, id?: string | null): string | undefined {
+  const n = String(name ?? '').trim();
+  if (n && !isUuid(n)) return n;
+  const fallback = String(id ?? '').trim();
+  if (fallback && !isUuid(fallback)) return fallback;
+  return undefined;
+}
 
 function Row({ label, value }: { label: string; value?: string | number | boolean | null }) {
   let display = '—';
@@ -32,7 +41,7 @@ export function NvoccBookingOverviewPanel({ booking }: { booking: NvoccBooking }
           <Row label="Booking no." value={nvoccDisplayNumber(booking, 'Booking')} />
           <Row label="Commercial gate" value={booking.booking_status} />
           <Row label="Lifecycle" value={booking.lifecycle_status} />
-          <Row label="Job" value={booking.job_number || booking.job_id} />
+          <Row label="Job" value={booking.job_number || nameOrDash(undefined, booking.job_id)} />
           <Row label="HBL" value={booking.hbl_number} />
           <Row label="Created" value={formatNvoccDate(booking.created_at)} />
           <Row label="Updated" value={formatNvoccDate(booking.updated_at)} />
@@ -40,15 +49,21 @@ export function NvoccBookingOverviewPanel({ booking }: { booking: NvoccBooking }
         <div>
           <Row label="Voyage" value={voyageLabel} />
           <Row label="Cargo type" value={booking.cargo_type} />
-          <Row label="Container type" value={booking.container_type_name || booking.container_type_id} />
+          <Row
+            label="Container type"
+            value={nameOrDash(booking.container_type_name, booking.container_type_id)}
+          />
           <Row label="Containers" value={booking.container_count} />
           <Row label="CBM allocated" value={booking.cbm_allocated} />
           <Row label="Job type" value={booking.job_type} />
         </div>
         <div>
-          <Row label="Shipper" value={booking.shipper_name || booking.shipper_id} />
-          <Row label="Consignee" value={booking.consignee_name || booking.consignee_id} />
-          <Row label="Notify" value={booking.notify_name || booking.notify_id} />
+          <Row label="Shipper" value={nameOrDash(booking.shipper_name, booking.shipper_id)} />
+          <Row
+            label="Consignee"
+            value={nameOrDash(booking.consignee_name, booking.consignee_id)}
+          />
+          <Row label="Notify" value={nameOrDash(booking.notify_name, booking.notify_id)} />
           <Row label="Commodity" value={booking.commodity} />
           <Row label="HS code" value={booking.hs_code} />
           <Row label="Gross weight (kg)" value={booking.gross_weight} />

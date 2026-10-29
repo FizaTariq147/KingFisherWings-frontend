@@ -236,10 +236,10 @@ export function QuotationForm({
     ));
 
   const containerOptions = containers
-    .filter((c) => isUuid(String(c.id)))
+    .filter((c) => isUuid(String(c.id)) && String(c.name ?? '').trim())
     .map((c) => (
       <option key={String(c.id)} value={String(c.id)}>
-        {String(c.code ?? c.name ?? c.id)}
+        {String(c.name).trim()}
       </option>
     ));
 
@@ -295,7 +295,8 @@ export function QuotationForm({
   const labelForContainer = (id?: string) => {
     if (!id) return '—';
     const row = containers.find((c) => String(c.id) === id);
-    return row ? String(row.code ?? row.name ?? row.id) : id;
+    const name = String(row?.name ?? '').trim();
+    return name || '—';
   };
 
   const currencyLabel =

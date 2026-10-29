@@ -166,7 +166,8 @@ export function TariffForm({
     const id = watched.container_type_id;
     if (!id) return '—';
     const match = containers.find((c) => String(c.id) === id);
-    return match ? String(match.code ?? match.name ?? id) : id;
+    const name = String(match?.name ?? '').trim();
+    return name || '—';
   })();
 
   const customerLabel = (() => {
@@ -307,10 +308,10 @@ export function TariffForm({
         >
           <option value="">Select…</option>
           {containers
-            .filter((c) => isUuid(String(c.id)))
+            .filter((c) => isUuid(String(c.id)) && String(c.name ?? '').trim())
             .map((c) => (
               <option key={String(c.id)} value={String(c.id)}>
-                {String(c.code ?? c.name ?? c.id)}
+                {String(c.name).trim()}
               </option>
             ))}
         </select>

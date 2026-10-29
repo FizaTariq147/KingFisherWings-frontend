@@ -219,9 +219,11 @@ export function JobForm({
   const containerOpts: Array<{ value: string; label: string }> = [];
   for (const c of containers) {
     if (!isUuid(String(c.id))) continue;
+    const name = String(c.name ?? '').trim();
+    if (!name) continue;
     containerOpts.push({
       value: String(c.id),
-      label: [c.code, c.name].filter(Boolean).join(' — ') || String(c.id),
+      label: name,
     });
   }
 

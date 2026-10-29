@@ -327,10 +327,11 @@ export default function CrmEnquiryCreatePage() {
                   <option value="">Select…</option>
                   {containerTypes.map((o) => {
                     const id = String(o.id ?? '');
-                    if (!id) return null;
+                    const name = String(o.name ?? '').trim();
+                    if (!id || !name) return null;
                     return (
                       <option key={id} value={id}>
-                        {String(o.name ?? o.code ?? id)}
+                        {name}
                       </option>
                     );
                   })}

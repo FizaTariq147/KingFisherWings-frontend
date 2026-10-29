@@ -2918,24 +2918,68 @@ export const jobService = {
     );
   },
 
-  async listContainers(id: string): Promise<unknown[]> {
+  async listContainers(id: string): Promise<import('../types/job.types').JobContainer[]> {
     assertId(id);
-    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.containers(id)));
-    return unwrapList(res.data).items;
+    try {
+      const { normalizeJobContainers } = await import('../utils/normalizeJobContainers');
+      const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.containers(id)));
+      return normalizeJobContainers(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
-  async createContainer(id: string, dto: CreateJobContainerDto): Promise<unknown> {
+  async createContainer(
+    id: string,
+    dto: CreateJobContainerDto,
+  ): Promise<import('../types/job.types').JobContainer | null> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.containers(id), dto));
+    try {
+      const { normalizeJobContainer } = await import('../utils/normalizeJobContainers');
+      const payload: CreateJobContainerDto = {
+        ...dto,
+        status: dto.status ?? 'EMPTY',
+      };
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.containers(id), payload),
+      );
+      return (
+        normalizeJobContainer(unwrapEntity(res.data)) ?? {
+          id: '',
+          container_type_id: payload.container_type_id,
+          container_number: payload.container_number,
+          seal_number: payload.seal_number,
+          status: payload.status,
+        }
+      );
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
   async updateContainer(
     id: string,
     containerId: string,
     dto: UpdateJobContainerDto,
-  ): Promise<unknown> {
+  ): Promise<import('../types/job.types').JobContainer | null> {
     assertId(id);
-    return request(() => axiosInstance.patch(JOB_API.container(id, containerId), dto));
+    try {
+      const { normalizeJobContainer } = await import('../utils/normalizeJobContainers');
+      // Drop undefined so PATCH is never an empty `{}` when callers pass sparse objects.
+      const body: Record<string, unknown> = {};
+      for (const [key, value] of Object.entries(dto)) {
+        if (value !== undefined) body[key] = value;
+      }
+      if (!Object.keys(body).length) {
+        throw new Error('Nothing to update on container.');
+      }
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(JOB_API.container(id, containerId), body),
+      );
+      return normalizeJobContainer(unwrapEntity(res.data));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
   async deleteContainer(id: string, containerId: string): Promise<void> {
@@ -2943,14 +2987,35 @@ export const jobService = {
     return requestVoid(() => axiosInstance.delete(JOB_API.container(id, containerId)));
   },
 
-  async listContainersFill(id: string): Promise<unknown> {
+  async listContainersFill(
+    id: string,
+  ): Promise<import('../utils/normalizeJobContainers').ContainerFillInfo[]> {
     assertId(id);
-    return request(() => axiosInstance.get(JOB_API.containersFill(id)));
+    try {
+      const { normalizeContainersFill } = await import('../utils/normalizeJobContainers');
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.containersFill(id)),
+      );
+      return normalizeContainersFill(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
-  async getContainerFill(id: string, containerId: string): Promise<unknown> {
+  async getContainerFill(
+    id: string,
+    containerId: string,
+  ): Promise<import('../utils/normalizeJobContainers').ContainerFillInfo | null> {
     assertId(id);
-    return request(() => axiosInstance.get(JOB_API.containerFill(id, containerId)));
+    try {
+      const { normalizeContainerFill } = await import('../utils/normalizeJobContainers');
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.containerFill(id, containerId)),
+      );
+      return normalizeContainerFill(unwrapEntity(res.data) ?? res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
   async assignCargoToContainer(

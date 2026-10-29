@@ -46,6 +46,9 @@ import {
   baseCurrencyCode,
   useMasterCodeOptions,
 } from '@/features/masters/hooks/useMasterCodeOptions';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { containerTypeSelectOptions } from '@/features/masters/utils/containerTypeLabel';
 import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
 import { API_ENUMS, API_MAX_LENGTH } from '@/lib/api/apiSchema.generated';
 
@@ -366,6 +369,15 @@ export default function NvoccBookingDetailPage() {
   const actions = useNvoccBookingActions(id);
   const bookingFormQuery = useNvoccBookingForm(id, Boolean(query.data));
   const { data: organization } = useOrganizationProfile();
+  const { data: containerTypes = [] } = useMasterOptions(
+    'container-types',
+    MASTER_PATHS['container-types'],
+    true,
+  );
+  const containerTypeOptions = useMemo(
+    () => containerTypeSelectOptions(containerTypes),
+    [containerTypes],
+  );
   const defaultAgentLine = (organization?.display_name || organization?.name || '')
     .trim()
     .slice(0, NVOCC_FORM_MAX.booking_agent_line);
@@ -2174,18 +2186,32 @@ export default function NvoccBookingDetailPage() {
                             }))
                           }
                         />
-                        <Input
-                          label="Container type id"
-                          value={line.container_type_id}
-                          onChange={(e) =>
-                            setFormState((prev) => ({
-                              ...prev,
-                              containers: prev.containers.map((c, i) =>
-                                i === idx ? { ...c, container_type_id: e.target.value } : c,
-                              ),
-                            }))
-                          }
-                        />
+                        <div className="space-y-1">
+                          <label className="text-xs font-medium text-gray-600">
+                            Container type
+                          </label>
+                          <select
+                            className="h-9 w-full rounded-md border border-gray-300 px-3 text-sm"
+                            value={line.container_type_id}
+                            onChange={(e) =>
+                              setFormState((prev) => ({
+                                ...prev,
+                                containers: prev.containers.map((c, i) =>
+                                  i === idx
+                                    ? { ...c, container_type_id: e.target.value }
+                                    : c,
+                                ),
+                              }))
+                            }
+                          >
+                            <option value="">Select…</option>
+                            {containerTypeOptions.map((o) => (
+                              <option key={o.value} value={o.value}>
+                                {o.label}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
                       </div>
                     ))}
                     <Button

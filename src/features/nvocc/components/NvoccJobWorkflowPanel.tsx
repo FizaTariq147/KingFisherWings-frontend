@@ -2,6 +2,12 @@ import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import {
+  containerTypeSelectOptions,
+  resolveContainerTypeName,
+} from '@/features/masters/utils/containerTypeLabel';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { NvoccSeaExportFlowRail } from './NvoccSeaExportFlowRail';
 import {
@@ -25,6 +31,15 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
   const { data: requests = [], isLoading, isError, error, refetch } = useNvoccContainerRequests(jobId);
   const actions = useNvoccJobActions(jobId);
   const { done, markDone, isDone } = useSeaExportProgress(`job:${jobId}`);
+  const { data: containerTypes = [] } = useMasterOptions(
+    'container-types',
+    MASTER_PATHS['container-types'],
+    true,
+  );
+  const containerTypeOptions = useMemo(
+    () => containerTypeSelectOptions(containerTypes),
+    [containerTypes],
+  );
   const [message, setMessage] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
   const [containerTypeId, setContainerTypeId] = useState('');
@@ -84,11 +99,18 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
           </CardHeader>
           <div className="space-y-3 px-4 pb-4">
             <div className="grid gap-2 sm:grid-cols-3">
-              <Input
-                placeholder="Container type ID"
+              <select
+                className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
                 value={containerTypeId}
                 onChange={(e) => setContainerTypeId(e.target.value)}
-              />
+              >
+                <option value="">Container type</option>
+                {containerTypeOptions.map((o) => (
+                  <option key={o.value} value={o.value}>
+                    {o.label}
+                  </option>
+                ))}
+              </select>
               <Input
                 type="number"
                 min={1}
@@ -141,7 +163,7 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
                 >
                   <div className="min-w-0">
                     <p className="font-medium">
-                      {req.container_type_code || req.container_type_id || 'Container request'}
+                      {resolveContainerTypeName(req.container_type_id, containerTypes)}
                       {(req.container_count ?? req.quantity) != null
                         ? ` × ${req.container_count ?? req.quantity}`
                         : ''}
@@ -149,7 +171,7 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
                     <p className="text-xs text-[var(--color-neutral-500)]">
                       {[req.status, req.cro_number && `CRO ${req.cro_number}`, req.container_number]
                         .filter(Boolean)
-                        .join(' · ') || req.id.slice(0, 8)}
+                        .join(' · ') || 'Request'}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">

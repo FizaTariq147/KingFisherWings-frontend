@@ -2003,9 +2003,11 @@ export function ModeBookingFormPanel({
                     {containerTypes.map((o) => {
                       const id = String(o.id ?? '');
                       if (!id) return null;
+                      const label = String(o.name ?? '').trim();
+                      if (!label) return null;
                       return (
                         <option key={id} value={id}>
-                          {String(o.name ?? o.code ?? id)}
+                          {label}
                         </option>
                       );
                     })}

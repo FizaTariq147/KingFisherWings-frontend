@@ -614,6 +614,8 @@ export interface JobNote {
 export interface JobContainer {
   id: string;
   container_type_id: string;
+  /** Resolved from nested master / API when present — prefer over id/code in UI. */
+  container_type_name?: string;
   container_number?: string;
   seal_number?: string;
   status?: ContainerStatus;
@@ -625,6 +627,8 @@ export interface JobContainer {
   cbm?: number;
   is_soc?: boolean;
   gate_in_at?: string;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface JobCargo {
