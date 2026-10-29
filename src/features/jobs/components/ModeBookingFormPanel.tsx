@@ -1035,7 +1035,7 @@ export function ModeBookingFormPanel({
       .filter((j) => j.id && j.id !== jobId)
       .map((j) => ({
         id: j.id,
-        label: j.job_number || j.id.slice(0, 8),
+        label: j.job_number?.trim() || `Job ${j.id.slice(0, 8)}`,
       }));
   }, [jobsList?.jobs, jobId]);
 
@@ -2238,7 +2238,7 @@ export function ModeBookingFormPanel({
                 {form.freight_job_id &&
                 !freightJobOptions.some((j) => j.id === form.freight_job_id) ? (
                   <option value={form.freight_job_id}>
-                    {form.freight_job_id.slice(0, 8)}…
+                    Job {form.freight_job_id.slice(0, 8)}
                   </option>
                 ) : null}
                 {freightJobOptions.map((j) => (
@@ -2521,7 +2521,7 @@ export function ModeBookingFormPanel({
                 {form.freight_job_id &&
                 !freightJobOptions.some((j) => j.id === form.freight_job_id) ? (
                   <option value={form.freight_job_id}>
-                    {form.freight_job_id.slice(0, 8)}…
+                    Job {form.freight_job_id.slice(0, 8)}
                   </option>
                 ) : null}
                 {freightJobOptions.map((j) => (

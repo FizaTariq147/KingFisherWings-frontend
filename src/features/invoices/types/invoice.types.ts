@@ -39,6 +39,8 @@ export interface Invoice {
   party_name?: string;
   company_id?: string;
   job_id?: string;
+  /** Prefer for display over job_id. */
+  job_number?: string;
   branch_id?: string;
   department_id?: string;
   currency_code: string;

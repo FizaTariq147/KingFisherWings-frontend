@@ -489,7 +489,8 @@ export default function AllShipmentsPage() {
                       </td>
                       <td className="px-4 py-2 text-gray-700">{item.status || '—'}</td>
                       <td className="px-4 py-2 text-gray-700">
-                        {item.job_number || (item.job_id ? item.job_id.slice(0, 8) : '—')}
+                        {item.job_number ||
+                          (item.job_id ? `Job ${item.job_id.slice(0, 8)}` : '—')}
                       </td>
                     </tr>
                   ))}

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useJob } from '@/features/jobs/hooks/useJobs';
+import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { PAYMENT_REQUEST_ROUTE_PREFIX } from '../api/paymentRequest.api';
 import { PaymentRequestRejectModal } from '../components/PaymentRequestRejectModal';
 import { PaymentRequestStatusBadge } from '../components/PaymentRequestStatusBadge';
@@ -29,6 +31,7 @@ export default function PaymentRequestDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data: pr, isLoading, isError, error, refetch } = usePaymentRequest(id);
+  const { data: linkedJob } = useJob(pr?.job_id || '');
   const approve = useApprovePaymentRequest(id);
   const reject = useRejectPaymentRequest(id);
   const markPaid = useMarkPaidPaymentRequest(id);
@@ -201,7 +204,14 @@ export default function PaymentRequestDetailPage() {
                     />
                     <Field label="Due date" value={pr.due_date} />
                     <Field label="Invoice" value={pr.invoice_id} />
-                    <Field label="Job" value={pr.job_id} />
+                    <Field
+                      label="Job number"
+                      value={
+                        linkedJob
+                          ? jobDisplayNumber(linkedJob)
+                          : (pr as { job_number?: string }).job_number
+                      }
+                    />
                     <Field label="Remarks" value={pr.remarks} />
                     <Field label="Rejected reason" value={pr.rejected_reason} />
                     <Field label="Approved at" value={pr.approved_at} />

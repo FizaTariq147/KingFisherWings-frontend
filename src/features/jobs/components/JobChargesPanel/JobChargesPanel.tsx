@@ -68,6 +68,7 @@ import type {
   JobCharge,
 } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { jobDisplayNumber } from '../../utils/jobRoute';
 import { normalizeJobCharges } from '../../utils/normalizeJob';
 import { resolveJobDocumentFileUrl } from '../../utils/resolveJobDocumentFileUrl';
 import { ApiDataView } from '../ApiDataView';
@@ -2914,7 +2915,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               <p className="text-[11px] font-semibold uppercase text-[var(--fresa-header-text,#0A2942)]">
                 Job No.
               </p>
-              <p className="text-[13px] font-medium">{job.job_number || job.id.slice(0, 8)}</p>
+              <p className="text-[13px] font-medium">{jobDisplayNumber(job)}</p>
             </div>
             <div>
               <p className="text-[11px] font-semibold uppercase text-[var(--fresa-header-text,#0A2942)]">

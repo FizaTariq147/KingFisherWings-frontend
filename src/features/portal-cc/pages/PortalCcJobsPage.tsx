@@ -108,7 +108,7 @@ export default function PortalCcJobsPage() {
                     </div>
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-[var(--color-neutral-900)]">
-                        {job.job_number || job.id.slice(0, 8)}
+                        {job.job_number || `Job ${job.id.slice(0, 8)}`}
                       </p>
                       <p className="mt-0.5 truncate text-xs text-[var(--color-neutral-500)]">
                         {[formatLabel(job.stage), job.customer_name].filter(Boolean).join(' · ') ||

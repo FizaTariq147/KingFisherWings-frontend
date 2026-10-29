@@ -635,12 +635,13 @@ export function OpsContinuumPanel({
                   ) : null}
                   {normalizedLinks.jobId ? (
                     <li>
-                      Job ·{' '}
+                      Job number ·{' '}
                       <a
                         className="text-[var(--color-primary-700)] hover:underline"
                         href={`/jobs/${normalizedLinks.jobId}`}
                       >
-                        {normalizedLinks.jobId.slice(0, 8)}…
+                        {normalizedLinks.jobNumber ||
+                          `Job ${normalizedLinks.jobId.slice(0, 8)}`}
                       </a>
                     </li>
                   ) : null}

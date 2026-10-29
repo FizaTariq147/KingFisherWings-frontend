@@ -16,6 +16,8 @@ import {
   INVOICE_TYPE_LABELS,
   type InvoiceType,
 } from '@/features/invoices/constants/invoice.constants';
+import { useJob } from '@/features/jobs/hooks/useJobs';
+import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { CREDIT_NOTE_ROUTE_PREFIX } from '../api/creditNote.api';
 import { useCreditNote, usePostCreditNote } from '../hooks/useCreditNotes';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -34,6 +36,7 @@ export default function CreditNoteDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data: creditNote, isLoading, isError, error, refetch } = useCreditNote(id);
+  const { data: linkedJob } = useJob(creditNote?.job_id || '');
   const post = usePostCreditNote(id);
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -165,7 +168,14 @@ export default function CreditNoteDetailPage() {
                     />
                     <Field label="Currency" value={creditNote.currency_code} />
                     <Field label="Date" value={creditNote.invoice_date} />
-                    <Field label="Job" value={creditNote.job_id} />
+                    <Field
+                      label="Job number"
+                      value={
+                        linkedJob
+                          ? jobDisplayNumber(linkedJob)
+                          : (creditNote as { job_number?: string }).job_number
+                      }
+                    />
                     <div>
                       <dt className="text-xs text-[var(--color-neutral-400)]">
                         Credited invoice
