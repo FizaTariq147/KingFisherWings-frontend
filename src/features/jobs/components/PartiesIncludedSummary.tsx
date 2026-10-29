@@ -64,7 +64,9 @@ export function PartiesIncludedSummary({
                   .join(' · ') || '—';
               return (
                 <tr key={`${p.role ?? ''}:${p.party_id}`} className={erpTable.row}>
-                  <td className={`${erpTable.td} font-medium`}>{p.party_name}</td>
+                  <td className={`${erpTable.td} font-medium`}>
+                    {p.party_name?.trim() || '—'}
+                  </td>
                   <td className={erpTable.td}>{p.role || '—'}</td>
                   <td className={erpTable.td}>{p.party_type || '—'}</td>
                   <td className={`${erpTable.td} text-right tabular-nums`}>

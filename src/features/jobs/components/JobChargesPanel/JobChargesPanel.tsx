@@ -74,6 +74,7 @@ import {
   type JobInvoiceFormKind,
 } from '../JobInvoiceFormModal';
 import { JobPnlSummary } from '../JobPnlPanel/JobPnlPanel';
+import { enrichPartiesIncludedNames } from '../../utils/normalizeCostingParties';
 import { PartiesIncludedSummary } from '../PartiesIncludedSummary';
 
 /** Fresa Costing toolbar — each action has a unique solid color */
@@ -576,7 +577,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     return job.charges ?? [];
   }, [chargesQuery.data, job.charges]);
 
-  const partiesIncluded = chargesQuery.data?.parties_included ?? [];
+  const partiesIncludedRaw = chargesQuery.data?.parties_included ?? [];
 
   const visibleCharges = useMemo(() => {
     if (gridFilter === 'sale')
@@ -670,6 +671,20 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const profitShareAgentOpts = useMemo(() => {
     return vendorOpts.filter((p) => PROFIT_SHARE_AGENT_TYPES.has(p.party_type));
   }, [vendorOpts]);
+
+  const partyNameById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of [...partyAccountOpts, ...vendorOpts]) {
+      const name = String(p.name ?? '').trim();
+      if (isUuid(p.id) && name) map.set(p.id, name);
+    }
+    return map;
+  }, [partyAccountOpts, vendorOpts]);
+
+  const partiesIncluded = useMemo(
+    () => enrichPartiesIncludedNames(partiesIncludedRaw, partyNameById),
+    [partiesIncludedRaw, partyNameById],
+  );
 
   const chargeCodeOpts = useMemo(
     () =>
@@ -1869,7 +1884,14 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                       {c.sale?.bill_to_name ||
                         c.cost?.vendor_name ||
                         c.party_name ||
-                        (c.party_id ? c.party_id.slice(0, 8) : '—')}
+                        (c.sale?.bill_to
+                          ? partyNameById.get(c.sale.bill_to)
+                          : undefined) ||
+                        (c.cost?.vendor
+                          ? partyNameById.get(c.cost.vendor)
+                          : undefined) ||
+                        (c.party_id ? partyNameById.get(c.party_id) : undefined) ||
+                        '—'}
                     </td>
                     <td className={COSTING_TD}>
                       {c.sale?.currency ||
@@ -2335,7 +2357,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                   <option value="">Select party account…</option>
                   {partyAccountOpts.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.code ? `${p.name} (${p.code})` : p.name}
+                      {p.name}
                     </option>
                   ))}
                 </select>
@@ -2426,9 +2448,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                   <option value="">Select vendor…</option>
                   {vendorOpts.map((p) => (
                     <option key={p.id} value={p.id}>
-                      {p.code
-                        ? `${p.name} (${p.code}) — ${p.party_type}`
-                        : `${p.name} — ${p.party_type}`}
+                      {p.name}
                     </option>
                   ))}
                 </select>
@@ -2877,9 +2897,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                 <option value="">-Select-</option>
                 {profitShareAgentOpts.map((p) => (
                   <option key={p.id} value={p.id}>
-                    {p.code
-                      ? `${p.name} (${p.code}) — ${p.party_type}`
-                      : `${p.name} — ${p.party_type}`}
+                    {p.name}
                   </option>
                 ))}
               </select>
