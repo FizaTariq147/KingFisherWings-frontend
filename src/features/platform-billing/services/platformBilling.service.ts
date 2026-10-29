@@ -95,7 +95,20 @@ export const platformBillingService = {
   },
   async createInvoice(dto: CreatePlatformInvoiceDto) {
     const res = await superAdminApiClient.post(PLATFORM_BILLING_API.invoices, dto);
-    return normalizePlatformInvoice(unwrap(res.data));
+    const invoice = normalizePlatformInvoice(unwrap(res.data));
+    if (!invoice?.id) {
+      // Dig common nested shapes before failing create UX.
+      const root = asRecord(unwrap(res.data)) ?? asRecord(res.data) ?? {};
+      const nested =
+        asRecord(root.invoice) ??
+        asRecord(root.result) ??
+        asRecord(root.item) ??
+        asRecord(root.data);
+      const recovered = normalizePlatformInvoice(nested ?? root);
+      if (recovered?.id) return recovered;
+      throw new Error('Create succeeded but no platform invoice id was returned.');
+    }
+    return invoice;
   },
   async updateInvoice(id: string, dto: UpdatePlatformInvoiceDto) {
     const res = await superAdminApiClient.patch(PLATFORM_BILLING_API.invoice(id), dto);

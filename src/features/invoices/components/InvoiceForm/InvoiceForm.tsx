@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useFieldArray, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
@@ -22,6 +22,18 @@ import { createInvoiceSchema, updateInvoiceSchema } from '../../schemas/invoice.
 import type { CreateInvoiceFormValues, UpdateInvoiceFormValues } from '../../types/invoice.types';
 import { INVOICE_FORM_DEFAULTS } from '../../utils/invoiceToFormValues';
 import { InvoiceSourceSelectGrid, InvoiceWizardStepper } from '../invoice-wizard';
+
+function pruneIncompleteInvoiceLines(
+  lines: CreateInvoiceFormValues['lines'] | undefined,
+): NonNullable<CreateInvoiceFormValues['lines']> {
+  if (!Array.isArray(lines)) return [];
+  return lines.filter((line) => {
+    const description = String(line?.description ?? '').trim();
+    if (!description) return false;
+    const price = Number(line?.unit_price);
+    return Number.isFinite(price) && price >= 0;
+  });
+}
 
 const selectClass =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]';
@@ -106,6 +118,7 @@ export function InvoiceForm({
     applyApiErrors,
     watch,
     getValues,
+    setValue,
     trigger,
     formState: { errors, isSubmitted, isValid },
   } = useAppForm<CreateInvoiceFormValues>({
@@ -121,6 +134,12 @@ export function InvoiceForm({
 
   const watched = watch();
 
+  useEffect(() => {
+    if (watched.company_id) return;
+    const first = companies.find((c) => isUuid(String(c.id)));
+    if (first) setValue('company_id', String(first.id));
+  }, [companies, watched.company_id, setValue]);
+
   const fieldError = (name: keyof CreateInvoiceFormValues) =>
     errors[name]?.message as string | undefined;
 
@@ -132,9 +151,38 @@ export function InvoiceForm({
     },
   };
 
+  const firstFormError = (() => {
+    if (!isSubmitted || isValid) return null;
+    const partyErr = errors.party_id?.message;
+    if (typeof partyErr === 'string' && partyErr) return partyErr;
+    const currencyErr = errors.currency_code?.message;
+    if (typeof currencyErr === 'string' && currencyErr) return currencyErr;
+    const dueErr = errors.due_date?.message;
+    if (typeof dueErr === 'string' && dueErr) return dueErr;
+    const lineErr = errors.lines;
+    if (lineErr && typeof lineErr === 'object') {
+      if (typeof lineErr.message === 'string' && lineErr.message) return lineErr.message;
+      if (Array.isArray(lineErr)) {
+        for (const entry of lineErr) {
+          if (!entry || typeof entry !== 'object') continue;
+          const msg =
+            (entry as { description?: { message?: string }; unit_price?: { message?: string } })
+              .description?.message ||
+            (entry as { unit_price?: { message?: string } }).unit_price?.message;
+          if (msg) return msg;
+        }
+      }
+    }
+    return 'Please fix the highlighted fields before saving.';
+  })();
+
   const submitManual = handleValidatedSubmit(async (values) => {
+    const lines = pruneIncompleteInvoiceLines(values.lines);
     try {
-      await onSubmit(values);
+      await onSubmit({
+        ...values,
+        ...(lines.length ? { lines } : { lines: undefined }),
+      });
     } catch (err) {
       applyApiErrors(err);
       throw err;
@@ -183,9 +231,20 @@ export function InvoiceForm({
       return;
     }
     if (step === 3) {
+      const cleaned = pruneIncompleteInvoiceLines(getValues('lines'));
+      setValue('lines', cleaned, { shouldValidate: false, shouldDirty: true });
+      if (cleaned.length > 0) {
+        const ok = await trigger('lines');
+        if (!ok) {
+          setSourceError('Fix incomplete charge lines (description and unit price are required).');
+          return;
+        }
+      }
       setStep(4);
       return;
     }
+    const cleaned = pruneIncompleteInvoiceLines(getValues('lines'));
+    setValue('lines', cleaned, { shouldValidate: true, shouldDirty: true });
     await submitManual();
   };
 
@@ -233,7 +292,7 @@ export function InvoiceForm({
         <label htmlFor="invoice-party" className={labelClass}>
           Party *
         </label>
-        <select id="invoice-party" className={selectClass} {...register('party_id')}>
+        <select id="invoice-party" className={selectClass} {...register('party_id', uuidSelect)}>
           <option value="">Select…</option>
           {partyOptions}
         </select>
@@ -256,6 +315,7 @@ export function InvoiceForm({
           <option value="">—</option>
           {companyOptions}
         </select>
+        <FieldError message={fieldError('company_id')} />
       </div>
       <Input label="Job ID" placeholder="UUID" {...register('job_id', uuidSelect)} />
       <Input
@@ -481,6 +541,20 @@ export function InvoiceForm({
       >
         <InvoiceWizardStepper currentStep={step} />
 
+        {sourceError || firstFormError ? (
+          <div
+            role="alert"
+            className="rounded-lg border px-4 py-3 text-sm"
+            style={{
+              background: 'var(--color-danger-100)',
+              borderColor: '#FECACA',
+              color: 'var(--color-danger-700)',
+            }}
+          >
+            {sourceError || firstFormError}
+          </div>
+        ) : null}
+
         {step === 0 ? (
           <div className="space-y-5 rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
             {orgFields}
@@ -593,7 +667,11 @@ export function InvoiceForm({
             <label htmlFor="invoice-party-flat" className={labelClass}>
               Party *
             </label>
-            <select id="invoice-party-flat" className={selectClass} {...register('party_id')}>
+            <select
+              id="invoice-party-flat"
+              className={selectClass}
+              {...register('party_id', uuidSelect)}
+            >
               <option value="">Select…</option>
               {partyOptions}
             </select>

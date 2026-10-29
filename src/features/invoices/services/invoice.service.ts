@@ -9,6 +9,7 @@ import {
 } from '@/features/shared/share-email';
 import { INVOICE_API } from '../api/invoice.api';
 import {
+  extractInvoiceCandidate,
   normalizeInvoice,
   normalizeInvoiceLine,
   normalizeInvoices,
@@ -73,9 +74,8 @@ function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
 }
 
 function unwrapEntity(raw: unknown): unknown {
-  const envelope = asRecord(raw);
-  if (envelope && 'data' in envelope) return envelope.data;
-  return raw;
+  // Prefer invoice-shaped records when the envelope also embeds party/company.
+  return extractInvoiceCandidate(raw);
 }
 
 function formatAxiosError(error: unknown): Error {
@@ -187,6 +187,8 @@ export const invoiceService = {
           prepareInvoicePayload(dto as Record<string, unknown>),
         ),
       );
+      // Normalize whatever the API returns. When backend returns the created invoice
+      // (id + fields) or a standard envelope, create → detail navigation works as-is.
       const invoice = normalizeInvoice(unwrapEntity(res.data));
       if (!invoice) throw new Error('Create succeeded but no invoice was returned.');
       return invoice;

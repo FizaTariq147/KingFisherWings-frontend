@@ -19,10 +19,19 @@ export function invoiceToFormValues(inv: Invoice): CreateInvoiceFormValues {
   };
 }
 
+function todayIsoDate(): string {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = String(now.getMonth() + 1).padStart(2, '0');
+  const d = String(now.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+}
+
 export const INVOICE_FORM_DEFAULTS: CreateInvoiceFormValues = {
   party_id: '',
   currency_code: 'AED',
   exchange_rate: 1,
   vat_rate: 5,
+  invoice_date: todayIsoDate(),
   lines: [],
 };
