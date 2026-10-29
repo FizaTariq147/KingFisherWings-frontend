@@ -152,6 +152,12 @@ function normalizeChargeSide(
   const party = asRecord(raw.party ?? raw.bill_to_party ?? raw.vendor_party);
   return {
     bill_to: side === 'sale' ? bill : undefined,
+    bill_to_code:
+      side === 'sale'
+        ? pickString(raw, 'bill_to_code', 'billToCode') ||
+          pickString(party ?? {}, 'code') ||
+          undefined
+        : undefined,
     bill_to_name:
       side === 'sale'
         ? pickString(raw, 'bill_to_name', 'billToName', 'party_name', 'partyName') ||
@@ -159,6 +165,12 @@ function normalizeChargeSide(
           undefined
         : undefined,
     vendor: side === 'cost' ? vendor : undefined,
+    vendor_code:
+      side === 'cost'
+        ? pickString(raw, 'vendor_code', 'vendorCode') ||
+          pickString(party ?? {}, 'code') ||
+          undefined
+        : undefined,
     vendor_name:
       side === 'cost'
         ? pickString(raw, 'vendor_name', 'vendorName', 'party_name', 'partyName') ||
@@ -225,7 +237,14 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
     charge_code_id:
       pickString(r, 'charge_code_id', 'chargeCodeId') ||
       pickString(chargeSec ?? {}, 'charge_code_id', 'chargeCodeId'),
-    charge_code: pickString(r, 'charge_code', 'chargeCode', 'code'),
+    charge_code:
+      pickString(r, 'charge_code', 'chargeCode', 'code') ||
+      pickString(chargeSec ?? {}, 'charge_code', 'chargeCode', 'code') ||
+      undefined,
+    charge_code_name:
+      pickString(r, 'charge_code_name', 'chargeCodeName') ||
+      pickString(chargeSec ?? {}, 'charge_code_name', 'chargeCodeName', 'name') ||
+      undefined,
     description:
       pickString(r, 'description', 'charge', 'charge_name', 'chargeName', 'name') ||
       pickString(chargeSec ?? {}, 'description', 'name', 'charge_name', 'chargeName') ||
@@ -420,16 +439,28 @@ export function normalizeJobPnl(raw: unknown): JobPnl {
   };
 }
 
-function normalizeMilestone(raw: unknown): JobMilestone | null {
+export function normalizeMilestone(raw: unknown): JobMilestone | null {
   const r = asRecord(raw);
-  if (!r || !r.id) return null;
+  if (!r) return null;
+  const milestone =
+    pickString(r, 'milestone', 'milestone_key', 'milestoneKey', 'key', 'code', 'name') || '';
+  const id = str(r.id) || milestone;
+  if (!id && !milestone) return null;
   return {
-    id: str(r.id),
-    milestone: pickString(r, 'milestone', 'name'),
+    id,
+    milestone,
+    milestone_key:
+      pickString(r, 'milestone_key', 'milestoneKey', 'key', 'code') || milestone || undefined,
     planned_date: pickString(r, 'planned_date', 'plannedDate') || undefined,
     actual_date: pickString(r, 'actual_date', 'actualDate') || undefined,
     is_completed: Boolean(r.actual_date ?? r.actualDate),
+    notes: pickString(r, 'notes') || undefined,
   };
+}
+
+export function normalizeMilestones(raw: unknown): JobMilestone[] {
+  if (!Array.isArray(raw)) return [];
+  return raw.map(normalizeMilestone).filter((m): m is JobMilestone => Boolean(m));
 }
 
 function normalizeNote(raw: unknown): JobNote | null {

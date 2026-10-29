@@ -80,10 +80,22 @@ export function normalizeJobContainer(raw: unknown): JobContainer | null {
     nestedType?.label,
   );
 
+  const typeCode = pickString(
+    r.container_type_code,
+    r.containerTypeCode,
+    r.iso_size,
+    r.isoSize,
+    nestedType?.code,
+    nestedType?.size,
+    nestedType?.iso_size,
+  );
+
   return {
     id,
     container_type_id,
     container_type_name: typeName,
+    container_type_code: typeCode || undefined,
+    iso_size: pickString(r.iso_size, r.isoSize, typeCode) || undefined,
     container_number: pickString(
       r.container_number,
       r.containerNumber,
@@ -256,4 +268,16 @@ export function normalizeContainersFill(raw: unknown): ContainerFillInfo[] {
 export function formatFillPercent(value?: number): string {
   if (value == null || !Number.isFinite(value)) return '—';
   return `${value % 1 === 0 ? value.toFixed(0) : value.toFixed(1)}%`;
+}
+
+/**
+ * Path key for container APIs — prefer container_number, fall back to UUID.
+ */
+export function containerRouteKey(c: {
+  id?: string;
+  container_number?: string | null;
+}): string {
+  const number = String(c.container_number ?? '').trim();
+  if (number) return number;
+  return String(c.id ?? '').trim();
 }

@@ -692,8 +692,9 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         .filter((c) => isUuid(String(c.id)))
         .map((c) => ({
           id: String(c.id),
+          code: String(c.code ?? '').trim(),
           label: String(c.code ?? c.name ?? c.id),
-          name: String(c.name ?? c.code ?? ''),
+          name: String(c.name ?? c.code ?? '').trim(),
         })),
     [chargeCodes],
   );
@@ -1082,10 +1083,11 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       setAddTab('charge');
       return;
     }
+    const chargeOpt = chargeCodeOpts.find((c) => c.id === chargeCodeId.trim());
     const desc =
       description.trim() ||
-      chargeCodeOpts.find((c) => c.id === chargeCodeId.trim())?.name ||
-      chargeCodeOpts.find((c) => c.id === chargeCodeId.trim())?.label ||
+      chargeOpt?.name ||
+      chargeOpt?.label ||
       '';
     if (!desc) {
       setError('Description is required on the Charge tab.');
@@ -1101,10 +1103,16 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       return;
     }
 
+    const billToParty = partyAccountOpts.find((p) => p.id === saleBillTo.trim());
+    const vendorParty = vendorOpts.find((p) => p.id === costVendor.trim());
     const sQty = saleQty === '' ? qty : Number(saleQty);
     const dto: CreateJobChargesCompositeDto = {
       charge: {
-        charge_code_id: chargeCodeId.trim(),
+        ...(isUuid(chargeCodeId.trim())
+          ? { charge_code_id: chargeCodeId.trim() }
+          : {}),
+        ...(chargeOpt?.code ? { charge_code: chargeOpt.code } : {}),
+        ...(chargeOpt?.name ? { charge_code_name: chargeOpt.name } : {}),
         description: desc,
         quantity: Number.isFinite(qty) ? qty : 1,
         ...(unit.trim() ? { unit: unit.trim() } : {}),
@@ -1124,6 +1132,12 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               currency: saleCurrency.trim().toUpperCase() || 'AED',
               ex_rate: Number(saleExRate) || 1,
               ...(isUuid(saleBillTo.trim()) ? { bill_to: saleBillTo.trim() } : {}),
+              ...(billToParty?.code?.trim()
+                ? { bill_to_code: billToParty.code.trim() }
+                : {}),
+              ...(billToParty?.name?.trim()
+                ? { bill_to_name: billToParty.name.trim() }
+                : {}),
               ...(saleFcy !== '' && Number.isFinite(Number(saleFcy))
                 ? { fcy_amount: Number(saleFcy) }
                 : {}),
@@ -1151,6 +1165,12 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               currency: costCurrency.trim().toUpperCase() || 'AED',
               ex_rate: Number(costExRate) || 1,
               ...(isUuid(costVendor.trim()) ? { vendor: costVendor.trim() } : {}),
+              ...(vendorParty?.code?.trim()
+                ? { vendor_code: vendorParty.code.trim() }
+                : {}),
+              ...(vendorParty?.name?.trim()
+                ? { vendor_name: vendorParty.name.trim() }
+                : {}),
               ...(costFcy !== '' && Number.isFinite(Number(costFcy))
                 ? { fcy_amount: Number(costFcy) }
                 : {}),
@@ -1788,9 +1808,9 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                     <td className={COSTING_TD}>{c.line_no ?? (idx + 1) * 10}</td>
                     <td className={`${COSTING_TD} font-medium`}>
                       {c.description || '—'}
-                      {c.charge_code ? (
+                      {c.charge_code || c.charge_code_name ? (
                         <span className="ml-1 text-[11px] text-[#64748b]">
-                          — {c.charge_code}
+                          — {c.charge_code || c.charge_code_name}
                         </span>
                       ) : null}
                     </td>

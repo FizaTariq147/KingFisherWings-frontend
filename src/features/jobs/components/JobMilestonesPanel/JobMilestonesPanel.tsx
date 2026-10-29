@@ -6,10 +6,15 @@ import { useInlineValidation } from '@/lib/validation';
 import { useJobMilestoneMutations } from '../../hooks/useJobActions';
 import { useJobMilestones } from '../../hooks/useJobs';
 import { createJobMilestoneSchema } from '../../schemas/job.schema';
+import type { JobMilestone } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface JobMilestonesPanelProps {
   jobId: string;
+}
+
+function milestonePathKey(m: JobMilestone): string {
+  return String(m.milestone_key || m.milestone || m.id || '').trim();
 }
 
 export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
@@ -19,11 +24,16 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const complete = async (id: string) => {
+  const complete = async (m: JobMilestone) => {
     setError(null);
+    const key = milestonePathKey(m);
+    if (!key) {
+      setError('Milestone code/name is missing — cannot complete.');
+      return;
+    }
     try {
       await mutations.update.mutateAsync({
-        milestoneId: id,
+        milestoneKey: key,
         dto: { actual_date: new Date().toISOString().slice(0, 10) },
       });
       refetch();
@@ -59,27 +69,23 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
             <p className="text-sm text-[var(--color-neutral-400)]">No milestones.</p>
           ) : (
             milestones.map((raw) => {
-              const m = raw as {
-                id: string;
-                milestone?: string;
-                name?: string;
-                planned_date?: string;
-                actual_date?: string;
-              };
+              const m = raw as JobMilestone;
+              const label = m.milestone || m.milestone_key || 'Milestone';
+              const key = milestonePathKey(m);
               const done = Boolean(m.actual_date);
               return (
                 <div
-                  key={m.id}
+                  key={key || m.id}
                   className="flex items-center justify-between gap-2 py-2 border-b border-[var(--color-neutral-100)] text-sm"
                 >
                   <div>
-                    <p className="font-medium">{m.milestone ?? m.name}</p>
+                    <p className="font-medium">{label}</p>
                     <p className="text-xs text-[var(--color-neutral-400)]">
                       Planned: {m.planned_date || '—'} · Actual: {m.actual_date || '—'}
                     </p>
                   </div>
                   {!done && (
-                    <Button type="button" size="sm" onClick={() => complete(m.id)}>
+                    <Button type="button" size="sm" onClick={() => void complete(m)}>
                       Mark complete
                     </Button>
                   )}
@@ -101,7 +107,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
               setName(e.target.value);
               validation.clearField('milestone');
             }}
-            placeholder="Milestone name"
+            placeholder="Milestone code / name (e.g. SI_SUBMITTED)"
           />
           <Button type="button" disabled={mutations.create.isPending} onClick={() => void add()}>
             Add
