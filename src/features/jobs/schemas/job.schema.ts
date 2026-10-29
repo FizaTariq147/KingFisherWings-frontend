@@ -240,12 +240,15 @@ export const createJobMilestoneSchema = z.object({
   milestone: requiredText({ min: 1, max: 100 }),
   planned_date: optionalTextUndef({ max: 32 }),
   actual_date: optionalTextUndef({ max: 32 }),
+  description: optionalTextUndef({ max: 2000 }),
   notes: optionalTextUndef({ max: 2000 }),
 });
 
 export const updateJobMilestoneSchema = z.object({
   actual_date: optionalTextUndef({ max: 32 }),
   planned_date: optionalTextUndef({ max: 32 }),
+  completed_at: optionalTextUndef({ max: 32 }),
+  description: optionalTextUndef({ max: 2000 }),
   notes: optionalTextUndef({ max: 2000 }),
 });
 

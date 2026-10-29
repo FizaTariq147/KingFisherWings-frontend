@@ -598,11 +598,12 @@ export interface JobCharge {
 
 export interface JobMilestone {
   id: string;
-  /** Display / business key (e.g. SI_SUBMITTED). Prefer this for PATCH path. */
   milestone: string;
   milestone_key?: string;
   planned_date?: string;
   actual_date?: string;
+  completed_at?: string;
+  description?: string;
   is_completed?: boolean;
   notes?: string;
 }
@@ -1391,13 +1392,17 @@ export interface CreateCustomMilestoneDto {
   milestone: string;
   planned_date?: string;
   actual_date?: string;
+   description?: string;
   notes?: string;
 }
 
 export interface UpdateJobMilestoneDto {
   actual_date?: string;
   planned_date?: string;
+  completed_at?: string;
+  description?: string;
   notes?: string;
+
 }
 
 export type UpdateAirJobDetailDto = Partial<JobAirDetail>;
