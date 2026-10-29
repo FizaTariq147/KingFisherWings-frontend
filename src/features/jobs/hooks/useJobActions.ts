@@ -685,12 +685,13 @@ export function useJobMilestoneMutations(jobId: string) {
     }),
     update: useMutation({
       mutationFn: ({
-        milestoneId,
+        milestoneKey,
         dto,
       }: {
-        milestoneId: string;
+        /** Milestone code/name (e.g. SI_SUBMITTED), not a UUID. */
+        milestoneKey: string;
         dto: UpdateJobMilestoneDto;
-      }) => jobService.updateMilestone(jobId, milestoneId, dto),
+      }) => jobService.updateMilestone(jobId, milestoneKey, dto),
       onSuccess: () => invalidate(jobId),
     }),
   };

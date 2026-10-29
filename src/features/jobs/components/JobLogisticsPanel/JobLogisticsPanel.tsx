@@ -6,6 +6,7 @@ import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { resolveContainerTypeName } from '@/features/masters/utils/containerTypeLabel';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
+import { isUuid } from '@/lib/isUuid';
 import { parseWithFieldErrors } from '@/lib/validation';
 import { CUSTOMS_EXAMINATION_RESULTS, CUSTOMS_STATUSES } from '../../constants/job.constants';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
@@ -28,6 +29,7 @@ import {
 } from '../../schemas/job.schema';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { jobDisplayNumber } from '../../utils/jobRoute';
+import { containerRouteKey } from '../../utils/normalizeJobContainers';
 import { ApiDataView } from '../ApiDataView';
 import { JobAcknowledgementPanel } from '../JobAcknowledgementPanel';
 
@@ -55,8 +57,11 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           containerTypes,
           c.container_type_name,
         );
+        const key = containerRouteKey(c);
         return {
-          value: c.id,
+          value: key,
+          // Prefer container_number for free-days writes.
+          container_number: c.container_number?.trim() || undefined,
           label: c.container_number?.trim() || (typeName !== '—' ? typeName : 'Container'),
         };
       }),
@@ -519,8 +524,15 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
               disabled={mutations.upsertFreeDays.isPending}
               onClick={() =>
                 run(async () => {
+                  const key = freeContainerId.trim();
+                  const selected = containerOptions.find((o) => o.value === key);
+                  const number =
+                    selected?.container_number?.trim() ||
+                    (!isUuid(key) ? key : undefined);
                   const parsed = parseWithFieldErrors(upsertContainerFreeDaysSchema, {
-                    container_id: freeContainerId.trim(),
+                    ...(number
+                      ? { container_number: number }
+                      : { container_id: key }),
                     free_days_allowed: freeDaysAllowed
                       ? Number(freeDaysAllowed)
                       : undefined,

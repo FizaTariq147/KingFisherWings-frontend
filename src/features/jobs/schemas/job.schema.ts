@@ -251,6 +251,7 @@ export const updateJobMilestoneSchema = z.object({
 
 export const createJobCargoSchema = z.object({
   container_id: optionalUuid(),
+  container_number: optionalTextUndef({ max: 20 }),
   consignee_id: optionalUuid(),
   commodity: optionalTextUndef({ max: 500 }),
   hs_code: hsCode(false),
@@ -261,22 +262,34 @@ export const createJobCargoSchema = z.object({
   measurement: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
 });
 
-export const createJobContainerSchema = z.object({
-  container_type_id: z.string().uuid('Select a container type'),
-  container_number: optionalTextUndef({ max: 20 }),
-  seal_number: optionalTextUndef({ max: 50 }),
-  tare_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
-  max_payload: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
-  cubic_capacity: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
-  gross_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
-  vgm_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
-  cbm: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
-  status: z
-    .enum(['EMPTY', 'STUFFED', 'GATED_IN', 'LOADED', 'IN_TRANSIT', 'DISCHARGED', 'RETURNED'])
-    .default('EMPTY'),
-  gate_in_at: optionalTextUndef({ max: 32 }),
-  is_soc: z.boolean().optional(),
-});
+export const createJobContainerSchema = z
+  .object({
+    container_type_id: optionalUuid(),
+    container_type_code: optionalTextUndef({ max: 20 }),
+    iso_size: optionalTextUndef({ max: 20 }),
+    container_number: optionalTextUndef({ max: 20 }),
+    seal_number: optionalTextUndef({ max: 50 }),
+    tare_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
+    max_payload: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
+    cubic_capacity: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
+    gross_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
+    vgm_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
+    cbm: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
+    status: z
+      .enum(['EMPTY', 'STUFFED', 'GATED_IN', 'LOADED', 'IN_TRANSIT', 'DISCHARGED', 'RETURNED'])
+      .default('EMPTY'),
+    gate_in_at: optionalTextUndef({ max: 32 }),
+    is_soc: z.boolean().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.container_type_code && !data.iso_size && !data.container_type_id) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['container_type_code'],
+        message: 'Select a container type',
+      });
+    }
+  });
 
 export const createStuffingRecordSchema = z.object({
   supervisor_name: requiredText({ min: 2, max: 100 }),
@@ -303,25 +316,36 @@ export const createJobDepositSchema = z.object({
   remarks: optionalTextUndef({ max: 2000 }),
 });
 
-export const upsertContainerFreeDaysSchema = z.object({
-  container_id: z.string().uuid('Select a container'),
-  free_days_allowed: integerField({ required: false, min: 0, allowNegative: false }),
-  last_free_day_date: optionalTextUndef({ max: 32 }),
-  demurrage_start_date: optionalTextUndef({ max: 32 }),
-  detention_start_date: optionalTextUndef({ max: 32 }),
-  demurrage_rate_per_day: amountField({
-    required: false,
-    min: 0,
-    allowNegative: false,
-    maxDecimals: 4,
-  }),
-  detention_rate_per_day: amountField({
-    required: false,
-    min: 0,
-    allowNegative: false,
-    maxDecimals: 4,
-  }),
-});
+export const upsertContainerFreeDaysSchema = z
+  .object({
+    container_id: optionalUuid(),
+    container_number: optionalTextUndef({ max: 20 }),
+    free_days_allowed: integerField({ required: false, min: 0, allowNegative: false }),
+    last_free_day_date: optionalTextUndef({ max: 32 }),
+    demurrage_start_date: optionalTextUndef({ max: 32 }),
+    detention_start_date: optionalTextUndef({ max: 32 }),
+    demurrage_rate_per_day: amountField({
+      required: false,
+      min: 0,
+      allowNegative: false,
+      maxDecimals: 4,
+    }),
+    detention_rate_per_day: amountField({
+      required: false,
+      min: 0,
+      allowNegative: false,
+      maxDecimals: 4,
+    }),
+  })
+  .superRefine((data, ctx) => {
+    if (!data.container_number && !data.container_id) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['container_number'],
+        message: 'Select a container',
+      });
+    }
+  });
 
 export const createDamageReportSchema = z.object({
   damage_description: requiredText({ min: 1, max: 5000 }),
@@ -409,7 +433,8 @@ export const sendWhatsAppStatusSchema = z.object({
 });
 
 export const assignCargoToContainerFormSchema = z.object({
-  container_id: z.string().uuid('Select a container'),
+  /** Container number preferred; UUID still accepted for path key. */
+  container_id: requiredText({ min: 1, max: 64 }),
   cargo_id: z.string().uuid('Select cargo'),
 });
 
@@ -418,7 +443,8 @@ export const prorateCostFormSchema = z.object({
 });
 
 export const splitContainerFormSchema = z.object({
-  container_id: z.string().uuid('Select a container'),
+  /** Container number preferred; UUID still accepted for path key. */
+  container_id: requiredText({ min: 1, max: 64 }),
   portions: z
     .array(
       z.object({

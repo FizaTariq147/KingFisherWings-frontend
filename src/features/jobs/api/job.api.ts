@@ -226,7 +226,9 @@ export const JOB_API = {
   transportRequests: (id: string) => `/jobs/${id}/transport-requests`,
 
   containers: (id: string) => `/jobs/${id}/containers`,
-  container: (id: string, containerId: string) => `/jobs/${id}/containers/${containerId}`,
+  /** `containerKey` = container_number (preferred) or UUID. */
+  container: (id: string, containerKey: string) =>
+    `/jobs/${id}/containers/${encodeURIComponent(containerKey)}`,
   containersBulk: (id: string) => `/jobs/${id}/containers/bulk`,
   containersExport: (id: string) => `/jobs/${id}/containers/export`,
   containersJobDetails: (id: string) => `/jobs/${id}/containers/job-details`,
@@ -236,14 +238,14 @@ export const JOB_API = {
   containersUploadConfirm: (id: string) => `/jobs/${id}/containers/upload/confirm`,
   containersUploadPaste: (id: string) => `/jobs/${id}/containers/upload/paste`,
   containersFill: (id: string) => `/jobs/${id}/containers/fill`,
-  containerFill: (id: string, containerId: string) =>
-    `/jobs/${id}/containers/${containerId}/fill`,
-  assignCargo: (id: string, containerId: string) =>
-    `/jobs/${id}/containers/${containerId}/cargo`,
-  splitContainer: (id: string, containerId: string) =>
-    `/jobs/${id}/containers/${containerId}/split`,
-  returnContainer: (id: string, containerId: string) =>
-    `/jobs/${id}/containers/${containerId}/return`,
+  containerFill: (id: string, containerKey: string) =>
+    `/jobs/${id}/containers/${encodeURIComponent(containerKey)}/fill`,
+  assignCargo: (id: string, containerKey: string) =>
+    `/jobs/${id}/containers/${encodeURIComponent(containerKey)}/cargo`,
+  splitContainer: (id: string, containerKey: string) =>
+    `/jobs/${id}/containers/${encodeURIComponent(containerKey)}/split`,
+  returnContainer: (id: string, containerKey: string) =>
+    `/jobs/${id}/containers/${encodeURIComponent(containerKey)}/return`,
 
   dimensionLine: (id: string, lineId: string) => `/jobs/${id}/dimensions/${lineId}`,
   dimensionsBulk: (id: string) => `/jobs/${id}/dimensions/bulk`,
@@ -304,7 +306,9 @@ export const JOB_API = {
   disapproveVendorOffer: (_id: string, offerId: string) => `/job-offers/${offerId}/disapprove`,
 
   milestones: (id: string) => `/jobs/${id}/milestones`,
-  milestone: (id: string, milestoneId: string) => `/jobs/${id}/milestones/${milestoneId}`,
+  /** `milestoneKey` = code/name (e.g. SI_SUBMITTED), not a UUID. */
+  milestone: (id: string, milestoneKey: string) =>
+    `/jobs/${id}/milestones/${encodeURIComponent(milestoneKey)}`,
 
   notes: (id: string) => `/jobs/${id}/notes`,
   note: (id: string, noteId: string) => `/jobs/${id}/notes/${noteId}`,

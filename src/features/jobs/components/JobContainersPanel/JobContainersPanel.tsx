@@ -33,6 +33,7 @@ import {
 import type { JobContainer } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import {
+  containerRouteKey,
   formatFillPercent,
   type ContainerFillInfo,
 } from '../../utils/normalizeJobContainers';
@@ -112,9 +113,17 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
     const map = new Map<string, ContainerFillInfo>();
     for (const row of fill) {
       if (row.container_id) map.set(row.container_id, row);
+      const number = String(row.container_number ?? '').trim();
+      if (number) map.set(number, row);
     }
     return map;
   }, [fill]);
+
+  const resolveFill = (c: JobContainer) =>
+    fillByContainerId.get(c.id) ||
+    (c.container_number?.trim()
+      ? fillByContainerId.get(c.container_number.trim())
+      : undefined);
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -131,10 +140,17 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   const addContainer = async () => {
     const cubic = addCubicCapacity.trim() ? Number(addCubicCapacity) : undefined;
     const payload = addMaxPayload.trim() ? Number(addMaxPayload) : undefined;
+    const typeRow = containerTypes.find((t) => String(t.id) === containerTypeId.trim());
+    const typeCode = String(
+      typeRow?.code ?? typeRow?.size ?? typeRow?.iso_size ?? '',
+    ).trim();
     const ok = await addValidation.runValidated(
       createJobContainerSchema,
       {
-        container_type_id: containerTypeId.trim(),
+        // Prefer type code / iso_size — no type UUID when code is known.
+        ...(typeCode
+          ? { container_type_code: typeCode, iso_size: typeCode }
+          : { container_type_id: containerTypeId.trim() || undefined }),
         container_number: containerNumber.trim() || undefined,
         seal_number: sealNumber.trim() || undefined,
         status,
@@ -210,16 +226,17 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
       // Always include status so PATCH is never empty when number/seal are missing.
       dto.status = c.status ?? 'EMPTY';
       await mutations.updateContainer.mutateAsync({
-        containerId: c.id,
+        containerId: containerRouteKey(c),
         dto,
       });
     }, 'Container touched (updated).');
 
   const openFillEditor = async (c: JobContainer) => {
-    const data = await jobService.getContainerFill(jobId, c.id);
+    const key = containerRouteKey(c);
+    const data = await jobService.getContainerFill(jobId, key);
     setSingleFill(data);
     setFillEdit({
-      containerId: c.id,
+      containerId: key,
       cubic_capacity: String(
         data?.capacity_cbm ?? c.cubic_capacity ?? '',
       ),
@@ -291,6 +308,7 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   const onContainerTypeChange = (typeId: string) => {
     setContainerTypeId(typeId);
     addValidation.clearField('container_type_id');
+    addValidation.clearField('container_type_code');
     const row = containerTypes.find((t) => String(t.id) === typeId);
     if (!row) {
       setAddCubicCapacity('');
@@ -389,7 +407,8 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
             <p className="text-[var(--color-neutral-400)]">No containers.</p>
           ) : (
             containers.map((c) => {
-              const fillRow = fillByContainerId.get(c.id);
+              const fillRow = resolveFill(c);
+              const routeKey = containerRouteKey(c);
               const typeName = resolveContainerTypeName(
                 c.container_type_id,
                 containerTypes,
@@ -400,7 +419,7 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                 (typeName !== '—' ? typeName : 'Container');
               return (
                 <div
-                  key={c.id}
+                  key={routeKey || c.id}
                   className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-neutral-100)] py-2"
                 >
                   <div>
@@ -444,7 +463,7 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                         run(
                           () =>
                             mutations.returnContainer.mutateAsync({
-                              containerId: c.id,
+                              containerId: routeKey,
                               dto: {},
                             }),
                           'Container returned.',
@@ -459,7 +478,7 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                       variant="danger"
                       onClick={() =>
                         run(
-                          () => mutations.deleteContainer.mutateAsync(c.id),
+                          () => mutations.deleteContainer.mutateAsync(routeKey),
                           'Container removed.',
                         )
                       }
@@ -582,7 +601,9 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                 disabled={fillSaving}
                 onClick={() =>
                   run(async () => {
-                    const c = containers.find((row) => row.id === fillEdit.containerId);
+                    const c = containers.find(
+                      (row) => containerRouteKey(row) === fillEdit.containerId,
+                    );
                     if (!c) throw new Error('Container not found.');
                     await openFillEditor(c);
                   }, 'Fill refreshed.')
@@ -625,7 +646,10 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
               onChange={onContainerTypeChange}
               placeholder="Search container types from masters…"
               emptyMessage="No container types in masters. Add them under Masters → Container types."
-              error={addValidation.fieldError('container_type_id')}
+              error={
+                addValidation.fieldError('container_type_code') ||
+                addValidation.fieldError('container_type_id')
+              }
               allowManualUuid={false}
             />
           </div>
@@ -711,13 +735,14 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
             >
               <option value="">Select container…</option>
               {containers.map((c) => {
+                const key = containerRouteKey(c);
                 const typeName = resolveContainerTypeName(
                   c.container_type_id,
                   containerTypes,
                   c.container_type_name,
                 );
                 return (
-                  <option key={c.id} value={c.id}>
+                  <option key={key || c.id} value={key}>
                     {c.container_number?.trim() ||
                       (typeName !== '—' ? typeName : 'Container')}
                   </option>
@@ -796,13 +821,14 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
             >
               <option value="">Select container…</option>
               {containers.map((c) => {
+                const key = containerRouteKey(c);
                 const typeName = resolveContainerTypeName(
                   c.container_type_id,
                   containerTypes,
                   c.container_type_name,
                 );
                 return (
-                  <option key={c.id} value={c.id}>
+                  <option key={key || c.id} value={key}>
                     {c.container_number?.trim() ||
                       (typeName !== '—' ? typeName : 'Container')}
                   </option>

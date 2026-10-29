@@ -1,15 +1,19 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { resolveContainerTypeName } from '@/features/masters/utils/containerTypeLabel';
 import { useInlineValidation } from '@/lib/validation';
 import { isUuid } from '@/lib/isUuid';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
-import { jobKeys, useJobCargo } from '../../hooks/useJobs';
+import { jobKeys, useJobCargo, useJobContainers } from '../../hooks/useJobs';
 import { createJobCargoSchema } from '../../schemas/job.schema';
 import { jobService } from '../../services/job.service';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { containerRouteKey } from '../../utils/normalizeJobContainers';
 import { resolveJobDocumentFileUrl } from '../../utils/resolveJobDocumentFileUrl';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { useAuthStore } from '@/store/authStore';
@@ -147,6 +151,12 @@ function CargoDocuments({ jobId, cargoId }: { jobId: string; cargoId: string }) 
 
 export function JobCargoPanel({ jobId }: JobCargoPanelProps) {
   const { data: cargo = [], refetch } = useJobCargo(jobId);
+  const { data: containers = [] } = useJobContainers(jobId);
+  const { data: containerTypes = [] } = useMasterOptions(
+    'container-types',
+    MASTER_PATHS['container-types'],
+    true,
+  );
   const mutations = useJobSubresourceMutations(jobId);
   const validation = useInlineValidation();
   const [error, setError] = useState<string | null>(null);
@@ -155,7 +165,27 @@ export function JobCargoPanel({ jobId }: JobCargoPanelProps) {
   const [gross, setGross] = useState('');
   const [volume, setVolume] = useState('');
   const [hs, setHs] = useState('');
+  const [containerKey, setContainerKey] = useState('');
   const [expandedCargoId, setExpandedCargoId] = useState<string | null>(null);
+
+  const containerOptions = useMemo(
+    () =>
+      containers.map((c) => {
+        const typeName = resolveContainerTypeName(
+          c.container_type_id,
+          containerTypes,
+          c.container_type_name,
+        );
+        return {
+          value: containerRouteKey(c),
+          container_number: c.container_number?.trim() || undefined,
+          label:
+            c.container_number?.trim() ||
+            (typeName !== '—' ? typeName : 'Container'),
+        };
+      }),
+    [containers, containerTypes],
+  );
 
   const run = async (fn: () => Promise<unknown>) => {
     setError(null);
@@ -168,6 +198,10 @@ export function JobCargoPanel({ jobId }: JobCargoPanelProps) {
   };
 
   const add = async () => {
+    const selected = containerOptions.find((o) => o.value === containerKey.trim());
+    const number =
+      selected?.container_number?.trim() ||
+      (!isUuid(containerKey.trim()) ? containerKey.trim() || undefined : undefined);
     const ok = await validation.runValidated(
       createJobCargoSchema,
       {
@@ -176,6 +210,11 @@ export function JobCargoPanel({ jobId }: JobCargoPanelProps) {
         gross_weight: numberOrUndef(gross),
         measurement: numberOrUndef(volume),
         hs_code: emptyToUndef(hs),
+        ...(number
+          ? { container_number: number }
+          : containerKey.trim()
+            ? { container_id: containerKey.trim() }
+            : {}),
       },
       async (dto) => {
         await mutations.createCargo.mutateAsync(dto);
@@ -184,6 +223,7 @@ export function JobCargoPanel({ jobId }: JobCargoPanelProps) {
         setGross('');
         setVolume('');
         setHs('');
+        setContainerKey('');
         refetch();
       },
     );
@@ -288,6 +328,36 @@ export function JobCargoPanel({ jobId }: JobCargoPanelProps) {
             }}
             className="sm:col-span-2"
           />
+          <div className="space-y-1 sm:col-span-2">
+            <select
+              className={`h-9 w-full rounded-md border px-3 text-sm ${
+                validation.fieldError('container_number') ||
+                validation.fieldError('container_id')
+                  ? 'border-[var(--color-danger-500)]'
+                  : 'border-[var(--color-neutral-200)]'
+              }`}
+              value={containerKey}
+              onChange={(e) => {
+                setContainerKey(e.target.value);
+                validation.clearField('container_number');
+                validation.clearField('container_id');
+              }}
+            >
+              <option value="">Container (optional)</option>
+              {containerOptions.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+            {(validation.fieldError('container_number') ||
+              validation.fieldError('container_id')) && (
+              <p className="text-xs text-[var(--color-danger-500)]">
+                {validation.fieldError('container_number') ||
+                  validation.fieldError('container_id')}
+              </p>
+            )}
+          </div>
           <Input
             placeholder="Packages"
             type="number"

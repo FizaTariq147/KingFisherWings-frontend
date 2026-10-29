@@ -528,8 +528,10 @@ export type StaffBookingFormMode =
 /** Sale / Cost side snapshot when returned on charge lines or composite rows */
 export interface JobChargeSideView {
   bill_to?: string;
+  bill_to_code?: string;
   bill_to_name?: string;
   vendor?: string;
+  vendor_code?: string;
   vendor_name?: string;
   amount?: number;
   qty?: number;
@@ -556,6 +558,7 @@ export interface JobCharge {
   id: string;
   charge_code_id: string;
   charge_code?: string;
+  charge_code_name?: string;
   description: string;
   quantity?: number;
   unit_price: number;
@@ -595,7 +598,9 @@ export interface JobCharge {
 
 export interface JobMilestone {
   id: string;
+  /** Display / business key (e.g. SI_SUBMITTED). Prefer this for PATCH path. */
   milestone: string;
+  milestone_key?: string;
   planned_date?: string;
   actual_date?: string;
   is_completed?: boolean;
@@ -616,6 +621,9 @@ export interface JobContainer {
   container_type_id: string;
   /** Resolved from nested master / API when present — prefer over id/code in UI. */
   container_type_name?: string;
+  /** Type code / ISO size (e.g. 20GP) — preferred for create writes. */
+  container_type_code?: string;
+  iso_size?: string;
   container_number?: string;
   seal_number?: string;
   status?: ContainerStatus;
@@ -634,6 +642,8 @@ export interface JobContainer {
 export interface JobCargo {
   id: string;
   container_id?: string;
+  /** Prefer over container_id when linking cargo to a container. */
+  container_number?: string;
   consignee_id?: string;
   commodity?: string;
   hs_code?: string;
@@ -1192,7 +1202,10 @@ export interface ProrateToShipmentsDto {
 /** POST /jobs/:id/charges/composite — OpenAPI CompositeJobChargeDto */
 export interface ChargeSectionDto {
   line_no?: number;
-  charge_code_id: string;
+  /** UUID optional when charge_code / charge_code_name is sent. */
+  charge_code_id?: string;
+  charge_code?: string;
+  charge_code_name?: string;
   unit?: string;
   remarks?: string;
   description: string;
@@ -1202,7 +1215,10 @@ export interface ChargeSectionDto {
 }
 
 export interface SaleSectionDto {
+  /** UUID optional when bill_to_code / bill_to_name is sent. */
   bill_to?: string;
+  bill_to_code?: string;
+  bill_to_name?: string;
   amount?: number;
   qty?: number;
   dr_cr?: 'DR' | 'CR';
@@ -1219,7 +1235,10 @@ export interface SaleSectionDto {
 }
 
 export interface CostSectionDto {
+  /** UUID optional when vendor_code / vendor_name is sent. */
   vendor?: string;
+  vendor_code?: string;
+  vendor_name?: string;
   declaration_no?: string;
   dr_cr?: 'DR' | 'CR';
   amount?: number;
@@ -1425,7 +1444,10 @@ export interface CreateLandPodDto {
 export type CreateRoadFreightPodDto = CreateLandPodDto;
 
 export interface CreateJobContainerDto {
-  container_type_id: string;
+  /** Prefer container_type_code / iso_size — type UUID optional. */
+  container_type_id?: string;
+  container_type_code?: string;
+  iso_size?: string;
   container_number?: string;
   seal_number?: string;
   tare_weight?: number;
@@ -1442,7 +1464,9 @@ export interface CreateJobContainerDto {
 export type UpdateJobContainerDto = Partial<CreateJobContainerDto>;
 
 export interface CreateJobCargoDto {
+  /** Prefer container_number over container_id. */
   container_id?: string;
+  container_number?: string;
   consignee_id?: string;
   commodity?: string;
   hs_code?: string;
@@ -1680,7 +1704,9 @@ export interface CreateJobDepositDto {
 export type UpdateJobDepositDto = Partial<CreateJobDepositDto>;
 
 export interface UpsertContainerFreeDaysDto {
-  container_id: string;
+  /** Prefer container_number; UUID still accepted by API. */
+  container_id?: string;
+  container_number?: string;
   free_days_allowed?: number;
   last_free_day_date?: string;
   demurrage_start_date?: string;

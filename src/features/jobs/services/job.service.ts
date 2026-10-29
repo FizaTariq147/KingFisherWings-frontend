@@ -2936,17 +2936,21 @@ export const jobService = {
     assertId(id);
     try {
       const { normalizeJobContainer } = await import('../utils/normalizeJobContainers');
+      // Prefer type code / iso_size — omit type UUID when code is present.
       const payload: CreateJobContainerDto = {
         ...dto,
         status: dto.status ?? 'EMPTY',
       };
+      if (payload.container_type_code || payload.iso_size) {
+        delete payload.container_type_id;
+      }
       const res = await withGatewayRetry(() =>
         axiosInstance.post(JOB_API.containers(id), payload),
       );
       return (
         normalizeJobContainer(unwrapEntity(res.data)) ?? {
           id: '',
-          container_type_id: payload.container_type_id,
+          container_type_id: payload.container_type_id || '',
           container_number: payload.container_number,
           seal_number: payload.seal_number,
           status: payload.status,
@@ -3340,7 +3344,12 @@ export const jobService = {
 
   async createCargo(id: string, dto: CreateJobCargoDto): Promise<unknown> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.cargo(id), dto));
+    const payload: CreateJobCargoDto = { ...dto };
+    if (payload.container_number?.trim()) {
+      payload.container_number = payload.container_number.trim();
+      delete payload.container_id;
+    }
+    return request(() => axiosInstance.post(JOB_API.cargo(id), payload));
   },
 
   async updateCargo(id: string, cargoId: string, dto: UpdateJobCargoDto): Promise<unknown> {
@@ -3489,7 +3498,13 @@ export const jobService = {
 
   async upsertFreeDays(id: string, dto: UpsertContainerFreeDaysDto): Promise<unknown> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.freeDays(id), dto));
+    // Prefer container_number; drop empty id when number is present.
+    const payload: UpsertContainerFreeDaysDto = { ...dto };
+    if (payload.container_number?.trim()) {
+      delete payload.container_id;
+      payload.container_number = payload.container_number.trim();
+    }
+    return request(() => axiosInstance.post(JOB_API.freeDays(id), payload));
   },
 
   async recalculateFreeDays(id: string): Promise<unknown> {
@@ -3625,10 +3640,11 @@ export const jobService = {
     );
   },
 
-  async listMilestones(id: string): Promise<unknown[]> {
+  async listMilestones(id: string): Promise<import('../types/job.types').JobMilestone[]> {
     assertId(id);
+    const { normalizeMilestones } = await import('../utils/normalizeJob');
     const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.milestones(id)));
-    return unwrapList(res.data).items;
+    return normalizeMilestones(unwrapList(res.data).items);
   },
 
   async createMilestone(id: string, dto: CreateCustomMilestoneDto): Promise<unknown> {
@@ -3638,11 +3654,13 @@ export const jobService = {
 
   async updateMilestone(
     id: string,
-    milestoneId: string,
+    milestoneKey: string,
     dto: UpdateJobMilestoneDto,
   ): Promise<unknown> {
     assertId(id);
-    return request(() => axiosInstance.patch(JOB_API.milestone(id, milestoneId), dto));
+    const key = String(milestoneKey ?? '').trim();
+    if (!key) throw new Error('Milestone code/name is required.');
+    return request(() => axiosInstance.patch(JOB_API.milestone(id, key), dto));
   },
 
   async listNotes(id: string): Promise<unknown[]> {
