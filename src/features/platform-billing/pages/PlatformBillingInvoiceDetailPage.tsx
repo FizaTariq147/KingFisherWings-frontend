@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { appType } from '@/lib/erpTypography';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -52,6 +52,7 @@ function linesFromRaw(raw: Record<string, unknown> | undefined): LineDraft[] {
 export default function PlatformBillingInvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
+  const location = useLocation();
   const invoice = usePlatformInvoice(id);
   const paymentStatus = usePlatformInvoicePaymentStatus(id);
   const payments = usePlatformInvoicePayments(id);
@@ -64,7 +65,10 @@ export default function PlatformBillingInvoiceDetailPage() {
   const manualPayment = useRecordPlatformManualPayment(id);
 
   const [actionError, setActionError] = useState<string | null>(null);
-  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(() => {
+    const notice = (location.state as { billingNotice?: string } | null)?.billingNotice;
+    return typeof notice === 'string' && notice.trim() ? notice.trim() : null;
+  });
   const [manualAmount, setManualAmount] = useState('');
   const [manualReference, setManualReference] = useState('');
   const [linkEmail, setLinkEmail] = useState('');

@@ -45,11 +45,67 @@ function normalizeType(value: unknown): InvoiceType | string | undefined {
   return (INVOICE_TYPES as readonly string[]).includes(raw) ? (raw as InvoiceType) : raw;
 }
 
+function pickInvoiceId(record: Record<string, unknown>): string | undefined {
+  const id = str(record.id) ?? str(record.invoice_id) ?? str(record.invoiceId);
+  return id && isUuid(id) ? id : undefined;
+}
+
+/** Score how likely a record is the invoice entity (not party/company embed). */
+function invoiceCandidateScore(record: Record<string, unknown>, fromKey?: string): number {
+  let score = 0;
+  if (fromKey && /invoice/i.test(fromKey)) score += 20;
+  if (pickInvoiceId(record)) score += 5;
+  if (str(record.invoice_number) || str(record.invoice_no) || str(record.number)) score += 12;
+  if (str(record.currency_code) || str(record.currencyCode)) score += 4;
+  if (str(record.party_id) || str(record.partyId) || asRecord(record.party)) score += 4;
+  if (str(record.status)) score += 3;
+  if (Array.isArray(record.lines) || Array.isArray(record.invoice_lines)) score += 6;
+  if (record.subtotal != null || record.total_amount != null || record.total != null) score += 4;
+  // Penalize obvious relation embeds that also have an id.
+  if (fromKey && /^(party|customer|company|branch|department|job|user|created_by)$/i.test(fromKey)) {
+    score -= 25;
+  }
+  if (str(record.email) && str(record.name) && !str(record.currency_code) && !str(record.invoice_number)) {
+    score -= 10;
+  }
+  return score;
+}
+
+/**
+ * Dig invoice-shaped objects out of varied Nest/API envelopes.
+ * Avoids grabbing party/company embeds that also expose `id`.
+ */
+export function extractInvoiceCandidate(raw: unknown): unknown {
+  const candidates: Array<{ value: unknown; score: number }> = [];
+
+  const visit = (value: unknown, fromKey?: string, depth = 0) => {
+    if (depth > 5 || value == null) return;
+    if (Array.isArray(value)) {
+      for (const item of value) visit(item, fromKey, depth + 1);
+      return;
+    }
+    const record = asRecord(value);
+    if (!record) return;
+    const score = invoiceCandidateScore(record, fromKey);
+    if (score > 0 && pickInvoiceId(record)) {
+      candidates.push({ value, score });
+    }
+    for (const [key, child] of Object.entries(record)) {
+      if (child && typeof child === 'object') visit(child, key, depth + 1);
+    }
+  };
+
+  visit(raw);
+  if (!candidates.length) return raw;
+  candidates.sort((a, b) => b.score - a.score);
+  return candidates[0]?.value ?? raw;
+}
+
 export function normalizeInvoiceLine(raw: unknown): InvoiceLine | null {
   const r = asRecord(raw);
   if (!r) return null;
-  const id = str(r.id);
-  if (!id || !isUuid(id)) return null;
+  const id = pickInvoiceId(r);
+  if (!id) return null;
   return {
     id,
     invoice_id: str(r.invoice_id),
@@ -72,11 +128,13 @@ export function normalizeInvoiceLines(raw: unknown): InvoiceLine[] {
 }
 
 export function normalizeInvoice(raw: unknown): Invoice | null {
-  const r = asRecord(raw);
+  const extracted = extractInvoiceCandidate(raw);
+  const r = asRecord(extracted) ?? asRecord(raw);
   if (!r) return null;
-  const id = str(r.id);
-  if (!id || !isUuid(id)) return null;
-  const party_id = str(r.party_id) ?? '';
+  const id = pickInvoiceId(r);
+  if (!id) return null;
+  const partyRecord = asRecord(r.party) ?? asRecord(r.customer);
+  const party_id = str(r.party_id) ?? str(r.partyId) ?? str(partyRecord?.id) ?? '';
   const hints = pickDetailHints(r);
   return {
     id,
@@ -87,31 +145,35 @@ export function normalizeInvoice(raw: unknown): Invoice | null {
     party_name:
       str(r.party_name) ??
       str(r.customer_name) ??
-      str(asRecord(r.party)?.name),
-    company_id: str(r.company_id),
-    job_id: str(r.job_id),
-    branch_id: str(r.branch_id),
-    department_id: str(r.department_id),
-    currency_code: (str(r.currency_code) ?? 'AED').toUpperCase(),
-    exchange_rate: num(r.exchange_rate) ?? 1,
-    vat_rate: num(r.vat_rate) ?? 5,
-    invoice_date: str(r.invoice_date),
-    due_date: str(r.due_date),
-    lpo_number: str(r.lpo_number),
+      str(partyRecord?.name),
+    company_id: str(r.company_id) ?? str(r.companyId) ?? str(asRecord(r.company)?.id),
+    job_id: str(r.job_id) ?? str(r.jobId) ?? str(asRecord(r.job)?.id),
+    branch_id: str(r.branch_id) ?? str(r.branchId),
+    department_id: str(r.department_id) ?? str(r.departmentId),
+    currency_code: (str(r.currency_code) ?? str(r.currencyCode) ?? 'AED').toUpperCase(),
+    exchange_rate: num(r.exchange_rate) ?? num(r.exchangeRate) ?? 1,
+    vat_rate: num(r.vat_rate) ?? num(r.vatRate) ?? 5,
+    invoice_date: str(r.invoice_date) ?? str(r.invoiceDate),
+    due_date: str(r.due_date) ?? str(r.dueDate),
+    lpo_number: str(r.lpo_number) ?? str(r.lpoNumber),
     remarks: str(r.remarks),
-    internal_notes: str(r.internal_notes),
+    internal_notes: str(r.internal_notes) ?? str(r.internalNotes),
     subtotal: num(r.subtotal),
-    tax_total: num(r.tax_total) ?? num(r.vat_amount),
-    total_amount: num(r.total_amount) ?? num(r.total),
-    paid_amount: num(r.paid_amount) ?? num(r.amount_paid) ?? num(r.paid),
+    tax_total: num(r.tax_total) ?? num(r.vat_amount) ?? num(r.taxTotal),
+    total_amount: num(r.total_amount) ?? num(r.totalAmount) ?? num(r.total),
+    paid_amount: num(r.paid_amount) ?? num(r.amount_paid) ?? num(r.paid) ?? num(r.paidAmount),
     outstanding_balance:
-      num(r.outstanding_balance) ?? num(r.balance_due) ?? num(r.balanceDue) ?? num(r.balance),
-    pdf_url: str(r.pdf_url),
+      num(r.outstanding_balance) ??
+      num(r.balance_due) ??
+      num(r.balanceDue) ??
+      num(r.balance) ??
+      num(r.outstandingBalance),
+    pdf_url: str(r.pdf_url) ?? str(r.pdfUrl),
     deleted_at: (str(r.deleted_at) as string | null | undefined) ?? null,
-    created_at: str(r.created_at),
-    updated_at: str(r.updated_at),
-    created_by: str(r.created_by),
-    lines: normalizeInvoiceLines(r.lines ?? r.invoice_lines),
+    created_at: str(r.created_at) ?? str(r.createdAt),
+    updated_at: str(r.updated_at) ?? str(r.updatedAt),
+    created_by: str(r.created_by) ?? str(r.createdBy),
+    lines: normalizeInvoiceLines(r.lines ?? r.invoice_lines ?? r.invoiceLines),
     path_hints: hints.path_hints,
     ops_continuum: hints.ops_continuum,
   };

@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { useJob } from '@/features/jobs/hooks/useJobs';
+import { isUuid } from '@/lib/isUuid';
 import { useParty } from '@/features/parties/hooks/useParties';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
@@ -80,6 +81,23 @@ export default function InvoiceDetailPage() {
     ],
   );
 
+  if (!isUuid(id)) {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-[var(--color-danger-600)]">
+          Invalid invoice link. Go back to the invoice list and open the invoice again.
+        </p>
+        <button
+          type="button"
+          className="text-sm underline"
+          onClick={() => navigate(INVOICE_ROUTE_PREFIX)}
+        >
+          Back to invoices
+        </button>
+      </div>
+    );
+  }
+
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
   }
@@ -89,9 +107,18 @@ export default function InvoiceDetailPage() {
         <p className="text-sm text-[var(--color-danger-600)]">
           {getErrorMessage(error) || 'Invoice not found.'}
         </p>
-        <button type="button" className="text-sm underline" onClick={() => refetch()}>
-          Retry
-        </button>
+        <div className="flex flex-wrap gap-3">
+          <button type="button" className="text-sm underline" onClick={() => refetch()}>
+            Retry
+          </button>
+          <button
+            type="button"
+            className="text-sm underline"
+            onClick={() => navigate(INVOICE_ROUTE_PREFIX)}
+          >
+            Back to invoices
+          </button>
+        </div>
       </div>
     );
   }

@@ -68,10 +68,15 @@ export function useInvalidateInvoices() {
 }
 
 export function useCreateInvoice() {
+  const queryClient = useQueryClient();
   const invalidate = useInvalidateInvoices();
   return useMutation({
     mutationFn: (dto: CreateInvoiceDto) => invoiceService.create(dto),
-    onSuccess: (inv) => invalidate(inv.id),
+    onSuccess: (inv) => {
+      // Seed detail cache before navigation so the page does not flash "not found".
+      queryClient.setQueryData(invoiceKeys.detail(inv.id), inv);
+      invalidate(inv.id);
+    },
   });
 }
 

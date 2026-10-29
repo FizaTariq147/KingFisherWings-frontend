@@ -42,7 +42,7 @@ export default function PlatformBillingInvoicesPage() {
   const [notes, setNotes] = useState('');
   const [lines, setLines] = useState<LineDraft[]>([emptyLine()]);
   const [createError, setCreateError] = useState<string | null>(null);
-  const [sendAfterCreate, setSendAfterCreate] = useState(true);
+  const [sendAfterCreate, setSendAfterCreate] = useState(false);
   const [sendToEmail, setSendToEmail] = useState('');
   const [sendMessage, setSendMessage] = useState('');
 
@@ -136,17 +136,32 @@ export default function PlatformBillingInvoicesPage() {
 
     try {
       const created = await createInvoice.mutateAsync(dto);
-      if (sendAfterCreate && created?.id) {
-        await sendInvoice.mutateAsync({
-          id: created.id,
-          body: {
-            deliver_email: true,
-            to_email: sendToEmail.trim() || undefined,
-            message: sendMessage.trim() || undefined,
-            include_payment_link: true,
-          },
-        });
+      if (!created?.id) {
+        setCreateError(
+          'Invoice create returned no id. Refresh the list to confirm whether it was saved.',
+        );
+        void refetch();
+        return;
       }
+
+      let sendWarning: string | null = null;
+      if (sendAfterCreate) {
+        try {
+          await sendInvoice.mutateAsync({
+            id: created.id,
+            body: {
+              deliver_email: true,
+              to_email: sendToEmail.trim() || undefined,
+              message: sendMessage.trim() || undefined,
+              include_payment_link: true,
+            },
+          });
+        } catch (sendErr) {
+          // Create already succeeded — do not present send/SMTP failure as a create failure.
+          sendWarning = getErrorMessage(sendErr);
+        }
+      }
+
       setShowCreate(false);
       setTenantId('');
       setCurrencyCode('');
@@ -157,11 +172,13 @@ export default function PlatformBillingInvoicesPage() {
       setLines([emptyLine()]);
       setSendToEmail('');
       setSendMessage('');
-      if (created?.id) {
-        navigate(`/superadmin/billing/invoices/${created.id}`);
-      } else {
-        void refetch();
-      }
+      navigate(`/superadmin/billing/invoices/${created.id}`, {
+        state: sendWarning
+          ? {
+              billingNotice: `Invoice created, but email send failed: ${sendWarning}`,
+            }
+          : undefined,
+      });
     } catch (err) {
       setCreateError(getErrorMessage(err));
     }

@@ -81,9 +81,13 @@ export function useInvoicePdf(id: string, enabled = true) {
 }
 
 export function useCreateInvoiceFromJob() {
+  const queryClient = useQueryClient();
   const invalidate = useInvalidateInvoices();
   return useMutation({
     mutationFn: (jobId: string) => invoiceService.createFromJob(jobId),
-    onSuccess: (inv) => invalidate(inv.id),
+    onSuccess: (inv) => {
+      queryClient.setQueryData(invoiceKeys.detail(inv.id), inv);
+      invalidate(inv.id);
+    },
   });
 }
