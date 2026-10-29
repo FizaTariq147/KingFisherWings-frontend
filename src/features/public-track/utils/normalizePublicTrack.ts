@@ -5,16 +5,33 @@ import {
 } from '@/features/portal-shared/normalize';
 import type { PublicTrackEmbedConfig, PublicTrackMilestone, PublicTrackResult } from '../types/publicTrack.types';
 
-export function normalizePublicMilestone(raw: unknown, index: number): PublicTrackMilestone | null {
-  const r = asRecord(raw); if (!r) return null;
+
+export function normalizePublicMilestone(
+  raw: unknown,
+  index: number,
+): PublicTrackMilestone | null {
+  const r = asRecord(raw);
+  if (!r) return null;
+
   return {
     id: pickString(r.id) || String(index),
     label: pickString(r.label, r.name, r.code, r.milestone) || 'Milestone',
-    occurredAt: pickString(r.occurred_at, r.occurredAt, r.date) || undefined,
+    description: pickString(r.description, r.notes, r.remark) || undefined,
+    occurredAt:
+      pickString(
+        r.completed_at,
+        r.completedAt,
+        r.occurred_at,
+        r.occurredAt,
+        r.actual_date,
+        r.actualDate,
+        r.date,
+      ) || undefined,
     location: pickString(r.location, r.place) || undefined,
     status: pickString(r.status) || undefined,
   };
 }
+
 
 export function normalizePublicTrack(raw: unknown): PublicTrackResult | null {
   const d = asRecord(unwrapData(raw)) ?? asRecord(raw); if (!d) return null;

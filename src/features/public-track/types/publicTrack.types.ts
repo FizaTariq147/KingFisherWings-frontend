@@ -1,5 +1,5 @@
 export interface PublicTrackMilestone {
-  id: string; label: string; occurredAt?: string; location?: string; status?: string;
+  id: string; label: string;  description?: string; occurredAt?: string; location?: string; status?: string;
 }
 export interface PublicTrackResult {
   reference: string; status?: string; origin?: string; destination?: string;

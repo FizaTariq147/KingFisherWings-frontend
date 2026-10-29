@@ -55,6 +55,7 @@ export interface PortalMilestone {
   code?: string;
   label: string;
   status?: string;
+  description?: string;
   occurredAt?: string;
   location?: string;
   notes?: string;
