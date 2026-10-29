@@ -1,4 +1,4 @@
-import { Input } from '@/components/ui/Input';
+import { JobSearchSelect, PartySearchSelect } from '@/features/shared/entity-search';
 import {
   PAYMENT_REQUEST_STATUSES,
   PAYMENT_REQUEST_STATUS_LABELS,
@@ -43,17 +43,19 @@ export function PaymentRequestFilters({
           ))}
         </select>
       </div>
-      <Input
-        label="Party ID"
-        placeholder="UUID filter"
+      <PartySearchSelect
+        name="payment_request_filter_party"
+        label="Party"
         value={partyId}
-        onChange={(e) => onPartyIdChange(e.target.value)}
+        onChange={onPartyIdChange}
+        placeholder="Search party by name…"
       />
-      <Input
-        label="Job ID"
-        placeholder="UUID filter"
+      <JobSearchSelect
+        name="payment_request_filter_job"
+        label="Job"
         value={jobId}
-        onChange={(e) => onJobIdChange(e.target.value)}
+        onChange={onJobIdChange}
+        placeholder="Search job by number…"
       />
     </div>
   );

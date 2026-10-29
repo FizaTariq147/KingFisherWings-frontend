@@ -42,7 +42,7 @@ export function ChequeFilters({
   onPartyIdChange,
 }: ChequeFiltersProps) {
   const partyError =
-    partyId.trim() && !isUuid(partyId.trim()) ? 'Enter a valid party UUID' : undefined;
+    partyId.trim() && !isUuid(partyId.trim()) ? 'Select a valid party' : undefined;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -104,7 +104,7 @@ export function ChequeFilters({
         onChange={(e) => onDueBeforeChange(e.target.value)}
       />
       <Input
-        label="Party ID"
+        label="Party"
         placeholder="UUID (optional)"
         value={partyId}
         onChange={(e) => onPartyIdChange(e.target.value)}

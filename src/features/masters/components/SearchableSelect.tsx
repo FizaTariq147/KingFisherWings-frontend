@@ -27,9 +27,15 @@ interface SearchableSelectProps {
   onQueryChange?: (query: string) => void;
 }
 
+function looksLikeUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+    value.trim(),
+  );
+}
+
 /**
- * Combobox: pick from the full option list or type to filter.
- * Selecting an option stores its `value` (usually a UUID).
+ * Combobox: pick from the full option list or type to filter by name/label.
+ * Selecting an option stores its `value` (id) — the input always shows the label.
  */
 export function SearchableSelect({
   name,
@@ -37,10 +43,10 @@ export function SearchableSelect({
   value,
   options,
   onChange,
-  placeholder = 'Type to search or select…',
+  placeholder = 'Search by name…',
   error,
   required,
-  allowManualUuid = true,
+  allowManualUuid = false,
   allowManualValue = false,
   emptyMessage = 'No matching options',
   hint,
@@ -50,13 +56,14 @@ export function SearchableSelect({
   const inputId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
   const selected = options.find((o) => o.value === value);
-  const [query, setQuery] = useState(selected?.label ?? value ?? '');
+  const [query, setQuery] = useState(selected?.label ?? '');
   const [open, setOpen] = useState(false);
   const queryRef = useRef(query);
   queryRef.current = query;
 
   // Sync the input from the selected value only when the dropdown is closed.
   // While open (typeahead), options refresh must not wipe the characters being typed.
+  // Never surface a raw UUID in the text box — wait for the matching option label.
   useEffect(() => {
     if (open) return;
     const match = options.find((o) => o.value === value);
@@ -64,8 +71,10 @@ export function SearchableSelect({
       setQuery(match.label);
     } else if (!value) {
       setQuery('');
-    } else {
+    } else if (!looksLikeUuid(value)) {
       setQuery(value);
+    } else {
+      setQuery('');
     }
   }, [value, options, open]);
 

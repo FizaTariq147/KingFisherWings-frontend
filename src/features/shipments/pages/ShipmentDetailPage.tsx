@@ -1195,7 +1195,7 @@ export default function ShipmentDetailPage() {
               rows={3}
               value={mergeSourceIds}
               onChange={(e) => setMergeSourceIds(e.target.value)}
-              placeholder="uuid-1, uuid-2"
+              placeholder="Shipment numbers…"
             />
           </label>
         </Modal>

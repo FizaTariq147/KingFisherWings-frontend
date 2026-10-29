@@ -8,13 +8,10 @@ import { useJobMilestones } from '../../hooks/useJobs';
 import { createJobMilestoneSchema } from '../../schemas/job.schema';
 import type { JobMilestone } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { milestoneRouteKey } from '../../utils/normalizeJob';
 
 interface JobMilestonesPanelProps {
   jobId: string;
-}
-
-function milestonePathKey(m: JobMilestone): string {
-  return String(m.milestone_key || m.milestone || m.id || '').trim();
 }
 
 export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
@@ -24,11 +21,13 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
   const [name, setName] = useState('');
   const [error, setError] = useState<string | null>(null);
 
-  const complete = async (m: JobMilestone) => {
+  const complete = async (milestoneKey: string) => {
     setError(null);
-    const key = milestonePathKey(m);
-    if (!key) {
-      setError('Milestone code/name is missing — cannot complete.');
+    const key = String(milestoneKey ?? '').trim();
+    if (!key || key === 'undefined' || key === 'null') {
+      setError(
+        'Milestone code/name is missing — refresh the list or use the code from GET /jobs/:id/milestones.',
+      );
       return;
     }
     try {
@@ -68,11 +67,10 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
           {milestones.length === 0 ? (
             <p className="text-sm text-[var(--color-neutral-400)]">No milestones.</p>
           ) : (
-            milestones.map((raw) => {
-              const m = raw as JobMilestone;
-              const label = m.milestone || m.milestone_key || 'Milestone';
-              const key = milestonePathKey(m);
-              const done = Boolean(m.actual_date);
+            milestones.map((m: JobMilestone) => {
+              const key = milestoneRouteKey(m);
+              const label = m.milestone || m.milestone_key || key || 'Milestone';
+              const done = Boolean(m.actual_date || m.is_completed);
               return (
                 <div
                   key={key || m.id}
@@ -81,11 +79,17 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                   <div>
                     <p className="font-medium">{label}</p>
                     <p className="text-xs text-[var(--color-neutral-400)]">
+                      {key && key !== label ? `Code: ${key} · ` : ''}
                       Planned: {m.planned_date || '—'} · Actual: {m.actual_date || '—'}
                     </p>
                   </div>
                   {!done && (
-                    <Button type="button" size="sm" onClick={() => void complete(m)}>
+                    <Button
+                      type="button"
+                      size="sm"
+                      disabled={!key || mutations.update.isPending}
+                      onClick={() => void complete(key)}
+                    >
                       Mark complete
                     </Button>
                   )}

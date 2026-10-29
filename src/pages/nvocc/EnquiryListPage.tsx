@@ -63,14 +63,14 @@ export default function EnquiryListPage() {
             <TextInput
               value={draft.customer_id ?? ''}
               onChange={(e) => setDraft((prev) => ({ ...prev, customer_id: e.target.value || undefined }))}
-              placeholder="UUID"
+              placeholder="Search by name…"
             />
           </FilterField>
           <FilterField label="Voyage ID">
             <TextInput
               value={draft.voyage_id ?? ''}
               onChange={(e) => setDraft((prev) => ({ ...prev, voyage_id: e.target.value || undefined }))}
-              placeholder="UUID"
+              placeholder="Search by name…"
             />
           </FilterField>
         </div>

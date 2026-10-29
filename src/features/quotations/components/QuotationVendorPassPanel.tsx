@@ -111,7 +111,7 @@ export function QuotationVendorPassModal({
         label="Vendor party id(s)"
         value={vendorPartyIdsRaw}
         onChange={(e) => setVendorPartyIdsRaw(e.target.value)}
-        placeholder="uuid, uuid, …"
+        placeholder="Search vendors by name…"
       />
       {selected.length > 0 ? (
         <p className="mt-1 text-xs text-[var(--color-neutral-500)]">

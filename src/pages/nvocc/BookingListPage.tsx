@@ -143,14 +143,14 @@ export default function BookingListPage() {
             <TextInput
               value={draft.voyage_id ?? ''}
               onChange={(e) => setDraft((prev) => ({ ...prev, voyage_id: e.target.value || undefined }))}
-              placeholder="UUID"
+              placeholder="Search by name…"
             />
           </FilterField>
           <FilterField label="Shipper ID">
             <TextInput
               value={draft.shipper_id ?? ''}
               onChange={(e) => setDraft((prev) => ({ ...prev, shipper_id: e.target.value || undefined }))}
-              placeholder="UUID"
+              placeholder="Search by name…"
             />
           </FilterField>
           <FilterField label="Type">

@@ -202,21 +202,21 @@ export default function NvoccVoyageCreatePage() {
 
           </NvoccFormField>
 
-          <NvoccFormField label="Vessel ID" error={fieldError('vessel_id')} hint="Optional master UUID">
+          <NvoccFormField label="Vessel" error={fieldError('vessel_id')} hint="Optional — search vessel by name">
 
-            <TextInput value={form.vessel_id} onChange={(e) => patch({ vessel_id: e.target.value })} placeholder="UUID" />
+            <TextInput value={form.vessel_id} onChange={(e) => patch({ vessel_id: e.target.value })} placeholder="Search by name…" />
 
           </NvoccFormField>
 
           <NvoccFormField label="POL ID" error={fieldError('pol_id')}>
 
-            <TextInput value={form.pol_id} onChange={(e) => patch({ pol_id: e.target.value })} placeholder="Port UUID" />
+            <TextInput value={form.pol_id} onChange={(e) => patch({ pol_id: e.target.value })} placeholder="Port name / code" />
 
           </NvoccFormField>
 
           <NvoccFormField label="POD ID" error={fieldError('pod_id')}>
 
-            <TextInput value={form.pod_id} onChange={(e) => patch({ pod_id: e.target.value })} placeholder="Port UUID" />
+            <TextInput value={form.pod_id} onChange={(e) => patch({ pod_id: e.target.value })} placeholder="Port name / code" />
 
           </NvoccFormField>
 

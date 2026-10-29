@@ -40,7 +40,11 @@ function bool(value: unknown, fallback = false): boolean {
 function pickString(record: Record<string, unknown>, ...keys: string[]): string {
   for (const key of keys) {
     const v = record[key];
-    if (v != null && String(v).trim()) return String(v).trim();
+    // Skip objects/arrays — callers must unwrap nested records explicitly.
+    if (v == null || typeof v === 'object') continue;
+    const s = String(v).trim();
+    if (!s || s === 'undefined' || s === 'null') continue;
+    return s;
   }
   return '';
 }
@@ -78,6 +82,7 @@ export function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
     const list =
       (Array.isArray(nested.items) && nested.items) ||
       (Array.isArray(nested.results) && nested.results) ||
+      (Array.isArray(nested.milestones) && nested.milestones) ||
       (Array.isArray(nested.jobs) && nested.jobs) ||
       (Array.isArray(nested.shipments) && nested.shipments) ||
       (Array.isArray(nested.linked_shipments) && nested.linked_shipments) ||
@@ -90,6 +95,7 @@ export function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
   const topList =
     (Array.isArray(envelope.items) && envelope.items) ||
     (Array.isArray(envelope.results) && envelope.results) ||
+    (Array.isArray(envelope.milestones) && envelope.milestones) ||
     (Array.isArray(envelope.shipments) && envelope.shipments) ||
     (Array.isArray(envelope.linked_shipments) && envelope.linked_shipments) ||
     (Array.isArray(envelope.uld_requests) && envelope.uld_requests) ||
@@ -439,21 +445,102 @@ export function normalizeJobPnl(raw: unknown): JobPnl {
   };
 }
 
+/**
+ * Business key for PATCH /jobs/:id/milestones/:milestoneKey.
+ * Prefer code/name from GET list — never UUID, never the literal "undefined".
+ */
+export function milestoneRouteKey(m: {
+  milestone_key?: string | null;
+  milestone?: string | null;
+  id?: string | null;
+}): string {
+  const candidates = [m.milestone_key, m.milestone, m.id];
+  for (const raw of candidates) {
+    const key = String(raw ?? '').trim();
+    if (!key || key === 'undefined' || key === 'null' || key === '[object Object]') continue;
+    // Backend rejects UUID path keys — skip id-shaped values when a code exists above.
+    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(key)) {
+      continue;
+    }
+    return key;
+  }
+  return '';
+}
+
 export function normalizeMilestone(raw: unknown): JobMilestone | null {
   const r = asRecord(raw);
   if (!r) return null;
-  const milestone =
-    pickString(r, 'milestone', 'milestone_key', 'milestoneKey', 'key', 'code', 'name') || '';
-  const id = str(r.id) || milestone;
-  if (!id && !milestone) return null;
+
+  const nested =
+    asRecord(r.milestone) ||
+    asRecord(r.milestone_def) ||
+    asRecord(r.milestoneDef) ||
+    asRecord(r.milestone_type) ||
+    asRecord(r.milestoneType) ||
+    asRecord(r.type);
+
+  // Prefer explicit code fields (path key), then human name/label.
+  const code =
+    pickString(
+      r,
+      'milestone_key',
+      'milestoneKey',
+      'milestone_code',
+      'milestoneCode',
+      'code',
+      'key',
+      'type',
+      'event',
+      'event_code',
+      'eventCode',
+    ) ||
+    (nested
+      ? pickString(
+          nested,
+          'milestone_key',
+          'milestoneKey',
+          'milestone_code',
+          'milestoneCode',
+          'code',
+          'key',
+          'type',
+          'name',
+        )
+      : '');
+
+  const name =
+    pickString(
+      r,
+      'milestone',
+      'milestone_name',
+      'milestoneName',
+      'name',
+      'label',
+      'title',
+      'description',
+    ) ||
+    (nested ? pickString(nested, 'name', 'label', 'title', 'description') : '');
+
+  // If `milestone` was a plain string it wins as both code fallback and display.
+  const milestoneScalar =
+    typeof r.milestone === 'string' || typeof r.milestone === 'number'
+      ? String(r.milestone).trim()
+      : '';
+
+  const milestone_key = code || milestoneScalar || '';
+  const milestone = milestone_key || name;
+  if (!milestone) return null;
+
+  const id = str(r.id) || milestone_key || milestone;
   return {
     id,
     milestone,
-    milestone_key:
-      pickString(r, 'milestone_key', 'milestoneKey', 'key', 'code') || milestone || undefined,
+    milestone_key: milestone_key || milestone || undefined,
     planned_date: pickString(r, 'planned_date', 'plannedDate') || undefined,
     actual_date: pickString(r, 'actual_date', 'actualDate') || undefined,
-    is_completed: Boolean(r.actual_date ?? r.actualDate),
+    is_completed: Boolean(
+      r.actual_date ?? r.actualDate ?? r.is_completed ?? r.isCompleted ?? r.completed,
+    ),
     notes: pickString(r, 'notes') || undefined,
   };
 }

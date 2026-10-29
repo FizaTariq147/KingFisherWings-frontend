@@ -1,4 +1,4 @@
-import { type Resolver, useFieldArray } from 'react-hook-form';
+import { Controller, type Resolver, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -9,6 +9,7 @@ import { useAppForm } from '@/lib/validation';
 import { useChartOfAccounts } from '@/features/chartOfAccounts/hooks/useChartOfAccounts';
 import { chartOfAccountDisplayLabel } from '@/features/chartOfAccounts/utils/normalizeChartOfAccount';
 import { useParties } from '@/features/parties/hooks/useParties';
+import { JobSearchSelect } from '@/features/shared/entity-search';
 import {
   VOUCHER_CURRENCY_OPTIONS,
   VOUCHER_TYPES,
@@ -168,15 +169,22 @@ export function VoucherForm({
             </select>
             <FieldError message={fieldError('party_id')} />
           </div>
-          <Input
-            label="Job ID"
-            placeholder="UUID"
-            error={fieldError('job_id')}
-            {...register('job_id', uuidSelect)}
+          <Controller
+            name="job_id"
+            control={control}
+            render={({ field }) => (
+              <JobSearchSelect
+                name="job_id"
+                label="Job"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || undefined)}
+                error={fieldError('job_id')}
+              />
+            )}
           />
           <Input
-            label="Invoice ID"
-            placeholder="UUID"
+            label="Invoice number / reference"
+            placeholder="Search or paste invoice reference"
             error={fieldError('invoice_id')}
             {...register('invoice_id', uuidSelect)}
           />

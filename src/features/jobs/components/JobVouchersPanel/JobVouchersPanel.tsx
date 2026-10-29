@@ -161,10 +161,10 @@ export function JobVouchersPanel({ jobId, job }: JobVouchersPanelProps) {
           </label>
           <Input
             className="sm:col-span-2"
-            label="Charge IDs (comma-separated UUIDs)"
+            label="Charges"
             value={chargeIds}
             onChange={(e) => setChargeIds(e.target.value)}
-            placeholder="uuid, uuid…"
+            placeholder="Select charges…"
           />
           {chargeOptions.length > 0 ? (
             <div className="sm:col-span-2 flex flex-wrap gap-2">

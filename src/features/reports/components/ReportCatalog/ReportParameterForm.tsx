@@ -111,7 +111,7 @@ function ReportParameterField({
       type={inputType}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      placeholder={field.type === 'uuid' ? 'UUID' : undefined}
+      placeholder={field.type === 'uuid' ? 'Search by name…' : undefined}
     />
   );
 }

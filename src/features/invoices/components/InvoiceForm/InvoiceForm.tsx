@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useFieldArray, type Resolver } from 'react-hook-form';
+import { Controller, useFieldArray, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, Trash2 } from 'lucide-react';
@@ -13,6 +13,7 @@ import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
+import { JobSearchSelect } from '@/features/shared/entity-search';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
   INVOICE_CREATE_WIZARD_STEPS,
@@ -198,7 +199,7 @@ export function InvoiceForm({
       }
       if (createMode === 'FROM_JOB') {
         if (!isUuid(fromJobId.trim())) {
-          setSourceError('Enter a valid job UUID to continue.');
+          setSourceError('Select a job to continue.');
           return;
         }
       }
@@ -317,7 +318,19 @@ export function InvoiceForm({
         </select>
         <FieldError message={fieldError('company_id')} />
       </div>
-      <Input label="Job ID" placeholder="UUID" {...register('job_id', uuidSelect)} />
+      <Controller
+        name="job_id"
+        control={control}
+        render={({ field }) => (
+          <JobSearchSelect
+            name="job_id"
+            label="Job"
+            value={field.value ?? ''}
+            onChange={(id) => field.onChange(id || undefined)}
+            error={fieldError('job_id')}
+          />
+        )}
+      />
       <Input
         label="Exchange rate"
         type="number"
@@ -480,7 +493,7 @@ export function InvoiceForm({
             <dd className="mt-0.5 text-[var(--color-neutral-800)]">Create from Job</dd>
           </div>
           <div>
-            <dt className="text-xs text-[var(--color-neutral-400)]">Job ID</dt>
+            <dt className="text-xs text-[var(--color-neutral-400)]">Job</dt>
             <dd className="mt-0.5 font-mono text-[var(--color-neutral-800)]">{fromJobId.trim()}</dd>
           </div>
         </dl>
@@ -505,7 +518,7 @@ export function InvoiceForm({
             <dd className="mt-0.5 text-[var(--color-neutral-800)]">{watched.due_date || '—'}</dd>
           </div>
           <div>
-            <dt className="text-xs text-[var(--color-neutral-400)]">Job ID</dt>
+            <dt className="text-xs text-[var(--color-neutral-400)]">Job</dt>
             <dd className="mt-0.5 font-mono text-[var(--color-neutral-800)]">
               {watched.job_id || '—'}
             </dd>
@@ -567,14 +580,17 @@ export function InvoiceForm({
               error={sourceError ?? undefined}
             />
             {createMode === 'FROM_JOB' ? (
-              <Input
-                label="Job UUID *"
+              <JobSearchSelect
+                name="from_job_id"
+                label="Job *"
                 value={fromJobId}
-                onChange={(e) => {
-                  setFromJobId(e.target.value);
+                onChange={(id) => {
+                  setFromJobId(id);
                   setSourceError(null);
                 }}
-                placeholder="Uninvoiced job id"
+                required
+                error={sourceError ?? undefined}
+                placeholder="Search uninvoiced job by number…"
               />
             ) : null}
           </div>
@@ -725,7 +741,19 @@ export function InvoiceForm({
               {departmentOptions}
             </select>
           </div>
-          <Input label="Job ID" placeholder="UUID" {...register('job_id', uuidSelect)} />
+          <Controller
+            name="job_id"
+            control={control}
+            render={({ field }) => (
+              <JobSearchSelect
+                name="job_id_flat"
+                label="Job"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || undefined)}
+                error={fieldError('job_id')}
+              />
+            )}
+          />
           <Input
             label="Exchange rate"
             type="number"

@@ -3642,9 +3642,25 @@ export const jobService = {
 
   async listMilestones(id: string): Promise<import('../types/job.types').JobMilestone[]> {
     assertId(id);
-    const { normalizeMilestones } = await import('../utils/normalizeJob');
+    const { normalizeMilestones, unwrapEntity } = await import('../utils/normalizeJob');
     const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.milestones(id)));
-    return normalizeMilestones(unwrapList(res.data).items);
+    let items = unwrapList(res.data).items;
+    if (!items.length) {
+      const entity = unwrapEntity(res.data);
+      const record =
+        entity && typeof entity === 'object' && !Array.isArray(entity)
+          ? (entity as Record<string, unknown>)
+          : res.data && typeof res.data === 'object' && !Array.isArray(res.data)
+            ? (res.data as Record<string, unknown>)
+            : null;
+      const alt =
+        (Array.isArray(record?.milestones) && record.milestones) ||
+        (Array.isArray(record?.items) && record.items) ||
+        (Array.isArray(entity) && entity) ||
+        [];
+      items = alt as unknown[];
+    }
+    return normalizeMilestones(items);
   },
 
   async createMilestone(id: string, dto: CreateCustomMilestoneDto): Promise<unknown> {
@@ -3659,7 +3675,11 @@ export const jobService = {
   ): Promise<unknown> {
     assertId(id);
     const key = String(milestoneKey ?? '').trim();
-    if (!key) throw new Error('Milestone code/name is required.');
+    if (!key || key === 'undefined' || key === 'null') {
+      throw new Error(
+        'Milestone code/name is required. Use the code from GET /jobs/:id/milestones (e.g. SI_SUBMITTED).',
+      );
+    }
     return request(() => axiosInstance.patch(JOB_API.milestone(id, key), dto));
   },
 

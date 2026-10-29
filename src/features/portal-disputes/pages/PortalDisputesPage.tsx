@@ -186,7 +186,7 @@ export default function PortalDisputesPage() {
           })}
         >
           <Input
-            label="Invoice ID"
+            label="Invoice"
             required
             hint="UUID of the invoice"
             placeholder="e.g. afece50f-dba6-4bb1-a05a-031b268d3a46"

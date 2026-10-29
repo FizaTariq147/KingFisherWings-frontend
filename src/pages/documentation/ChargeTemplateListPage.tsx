@@ -50,7 +50,7 @@ export default function ChargeTemplateListPage() {
 
         <div className="flex flex-wrap gap-2 border-b border-gray-200 px-5 py-4">
           <Input placeholder="New template name" value={name} onChange={(e) => setName(e.target.value)} />
-          <Input placeholder="Job ID to apply template" value={jobId} onChange={(e) => setJobId(e.target.value)} className="w-72" />
+          <Input placeholder="Job number to apply template" value={jobId} onChange={(e) => setJobId(e.target.value)} className="w-72" />
           <Button type="button" variant="secondary" onClick={() => void query.refetch()}>Refresh</Button>
         </div>
 

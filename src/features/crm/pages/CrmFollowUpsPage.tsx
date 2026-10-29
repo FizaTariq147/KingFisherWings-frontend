@@ -104,13 +104,13 @@ export default function CrmFollowUpsPage() {
               error={err('owner_id')}
             />
             <Field label="Lead ID" error={err('lead_id')}>
-              <TextInput {...register('lead_id')} placeholder="UUID" />
+              <TextInput {...register('lead_id')} placeholder="Search by name…" />
             </Field>
-            <Field label="Party ID" error={err('party_id')}>
-              <TextInput {...register('party_id')} placeholder="UUID" />
+            <Field label="Party" error={err('party_id')}>
+              <TextInput {...register('party_id')} placeholder="Search by name…" />
             </Field>
             <Field label="Enquiry ID" error={err('enquiry_id')}>
-              <TextInput {...register('enquiry_id')} placeholder="UUID" />
+              <TextInput {...register('enquiry_id')} placeholder="Search by name…" />
             </Field>
           </div>
           <Field label="Notes" error={err('notes')}>

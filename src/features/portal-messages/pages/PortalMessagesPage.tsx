@@ -308,7 +308,7 @@ export default function PortalMessagesPage() {
           </label>
           <div className="grid gap-3 sm:grid-cols-2">
             <Input
-              label="Job ID (optional)"
+              label="Job (optional)"
               hint="UUID"
               error={form.formState.errors.job_id?.message}
               {...form.register('job_id')}

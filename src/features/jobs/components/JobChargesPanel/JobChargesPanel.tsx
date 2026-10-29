@@ -28,8 +28,10 @@ import { Modal } from '@/components/ui/Modal';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { AddChargeCodeModal } from '@/features/masters/components/AddChargeCodeModal';
+import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
+import { JobSearchSelect } from '@/features/shared/entity-search';
 import { useAuthStore } from '@/store/authStore';
 import { VOUCHER_ROUTE_PREFIX } from '@/features/vouchers/api/voucher.api';
 import {
@@ -535,6 +537,11 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     MASTER_PATHS['charge-codes'],
     true,
   );
+  const { data: taxRates = [] } = useMasterOptions(
+    'tax-rates',
+    MASTER_PATHS['tax-rates'],
+    true,
+  );
   const { data: customersResult } = useParties({
     page: 1,
     limit: 200,
@@ -697,6 +704,36 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           name: String(c.name ?? c.code ?? '').trim(),
         })),
     [chargeCodes],
+  );
+
+  const taxRateOptions = useMemo(
+    () =>
+      taxRates
+        .filter((t) => isUuid(String(t.id)))
+        .map((t) => {
+          const name = String(t.name ?? t.label ?? '').trim();
+          const code = String(t.code ?? '').trim();
+          const rate = t.rate != null ? `${t.rate}%` : '';
+          const label = [name || code || 'Tax rate', rate].filter(Boolean).join(' · ');
+          return { value: String(t.id), label };
+        })
+        .filter((o) => o.label && !isUuid(o.label)),
+    [taxRates],
+  );
+
+  const chargeLineOptions = useMemo(
+    () =>
+      charges
+        .filter((c) => isUuid(c.id))
+        .map((c) => ({
+          value: c.id,
+          label:
+            c.description ||
+            c.charge_code ||
+            c.charge_code_name ||
+            'Charge',
+        })),
+    [charges],
   );
 
   /** Master job cost-side lines — required by POST …/prorate-to-shipments. */
@@ -1387,7 +1424,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const attachShipmentForProrate = async () => {
     const sid = prorateAttachShipmentId.trim();
     if (!isUuid(sid)) {
-      setError('Enter a valid shipment UUID to attach.');
+      setError('Select a valid shipment to attach.');
       return;
     }
     setError(null);
@@ -2135,11 +2172,14 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           <CardTitle>Charge attachments</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 grid gap-3 sm:grid-cols-2">
-          <Input
-            label="Charge id"
+          <SearchableSelect
+            name="attach_charge_id"
+            label="Charge"
             value={attachChargeId}
-            onChange={(e) => setAttachChargeId(e.target.value)}
-            placeholder="Charge UUID"
+            options={chargeLineOptions}
+            onChange={setAttachChargeId}
+            placeholder="Search charge by description…"
+            allowManualUuid={false}
           />
           <label className="block space-y-1">
             <span className="text-xs font-medium text-[var(--color-neutral-600)]">
@@ -2428,10 +2468,14 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                 value={saleTaxGroup}
                 onChange={(e) => setSaleTaxGroup(e.target.value)}
               />
-              <Input
-                label="Tax Rate UUID"
+              <SearchableSelect
+                name="sale_tax_rate_id"
+                label="Tax rate"
                 value={saleTaxRateId}
-                onChange={(e) => setSaleTaxRateId(e.target.value)}
+                options={taxRateOptions}
+                onChange={setSaleTaxRateId}
+                placeholder="Search tax rate by name…"
+                allowManualUuid={false}
               />
               <label className="block text-sm">
                 <span className={FIELD_LABEL}>Dr / Cr</span>
@@ -2799,20 +2843,24 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         }
       >
         <div className="grid gap-3">
-          <Input
-            label="From job UUID"
+          <JobSearchSelect
+            name="copy_from_job_id"
+            label="From job"
             value={copyFromJobId}
-            onChange={(e) => setCopyFromJobId(e.target.value)}
+            onChange={setCopyFromJobId}
+            placeholder="Search job by number…"
           />
           <Input
-            label="From shipment UUID"
+            label="From shipment number / reference"
             value={copyFromShipmentId}
             onChange={(e) => setCopyFromShipmentId(e.target.value)}
+            placeholder="Shipment number (not UUID)"
           />
           <Input
-            label="From quotation UUID"
+            label="From quotation number / reference"
             value={copyFromQuotationId}
             onChange={(e) => setCopyFromQuotationId(e.target.value)}
+            placeholder="Quotation number (not UUID)"
           />
           <label className="flex items-center gap-2 text-sm">
             <input
