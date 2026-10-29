@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { FullPageSpinner } from '@/components/skeletons/SkeletonPrimitives';
 import { VENDOR_VERIFICATION_PATH } from '@/features/party-verification/api/partyVerification.api';
 import {
@@ -8,6 +8,7 @@ import {
 } from '@/features/party-verification/utils/verificationAllowlist';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { isVendorApiUnavailable } from '@/features/vendor-shared/vendorUnavailable';
+import { useIdleSessionLogout } from '@/hooks/useIdleSessionLogout';
 import { VENDOR_CHANGE_PASSWORD_PATH } from '../api/vendorAuth.api';
 import { useVendorAuthBootstrap } from '../hooks/useVendorAuthBootstrap';
 import { vendorAuthService } from '../services/vendorAuth.service';
@@ -15,6 +16,7 @@ import { useVendorAuthStore } from '../store/vendorAuthStore';
 
 export function VendorProtectedRoute() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { ready, accessToken } = useVendorAuthBootstrap();
   const logout = useVendorAuthStore((s) => s.logout);
   const setUser = useVendorAuthStore((s) => s.setUser);
@@ -22,6 +24,28 @@ export function VendorProtectedRoute() {
   const mustChangePassword = Boolean(user?.mustChangePassword);
   const needsVerification = vendorUserNeedsVerification(user);
   const [sessionOk, setSessionOk] = useState<boolean | null>(null);
+
+  const logoutDueToIdle = useCallback(() => {
+    void (async () => {
+      try {
+        await vendorAuthService.logout();
+      } catch {
+        /* still clear local session */
+      } finally {
+        logout();
+        clearVendorQueryCache();
+        navigate('/vendor/login', {
+          replace: true,
+          state: { reason: 'idle' },
+        });
+      }
+    })();
+  }, [logout, navigate]);
+
+  useIdleSessionLogout({
+    enabled: Boolean(accessToken) && sessionOk === true,
+    onIdle: logoutDueToIdle,
+  });
 
   useEffect(() => {
     if (!ready) return;

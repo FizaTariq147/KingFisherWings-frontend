@@ -5,6 +5,7 @@ import type {
   LoginDto,
   TenantLoginDto,
 } from '@/features/auth/types/auth.api.types'
+import { IDLE_SESSION_MS, isIdleSessionExpired as isIdleExpired } from '@/lib/idleSession'
 import {
   resolveSessionTenantIdFromAuth,
   sessionIdFromAccessToken,
@@ -176,12 +177,11 @@ interface AuthActions {
 
 type AuthStore = AuthState & AuthActions
 
-/** Idle timeout — inactivity only (not counted from login). Matches backend SESSION_IDLE_TIMEOUT_MINUTES=30. */
-export const SESSION_IDLE_MS = 30 * 60 * 1000
+/** Idle timeout — inactivity only (not counted from login). 20 minutes for Admin / portals. */
+export const SESSION_IDLE_MS = IDLE_SESSION_MS
 
 export function isSessionIdleExpired(lastActiveAt: number | null | undefined): boolean {
-  if (!lastActiveAt || !Number.isFinite(lastActiveAt)) return false
-  return Date.now() - lastActiveAt >= SESSION_IDLE_MS
+  return isIdleExpired(lastActiveAt, SESSION_IDLE_MS)
 }
 
 /** Detect API 401 body from SESSION_IDLE_TIMEOUT_MINUTES revoke. */
@@ -548,7 +548,7 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       markSessionExpired: () => {
-        // 30 minutes idle (or refresh failure): sign out automatically — no Continue/Revoke popup.
+        // 20 minutes idle (or refresh failure): sign out automatically — no Continue/Revoke popup.
         hardSignOutToLogin('/login')
       },
 
