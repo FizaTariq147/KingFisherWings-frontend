@@ -78,16 +78,26 @@ export function normalizePartiesIncluded(raw: unknown): CostingPartyIncluded[] {
     .map((row) => {
       const r = asRecord(row);
       if (!r) return null;
-      const party_id = str(r.party_id, r.partyId, r.id);
+      const nestedParty = asRecord(r.party) ?? asRecord(r.customer) ?? asRecord(r.vendor);
+      const party_id = str(r.party_id, r.partyId, r.id, nestedParty?.id);
       if (!party_id) return null;
-      const party_name =
-        str(r.party_name, r.partyName, r.name) || party_id.slice(0, 8);
+      // Prefer real names — never fall back to UUID / id stub (UI resolves via parties list).
+      const party_name = str(
+        r.party_name,
+        r.partyName,
+        r.name,
+        nestedParty?.name,
+        nestedParty?.party_name,
+        nestedParty?.short_name,
+      );
       const line_count =
         num(r.line_count ?? r.lineCount ?? r.lines_count ?? r.count) ?? 0;
       return {
         party_id,
         party_name,
-        party_type: str(r.party_type, r.partyType, r.type) || undefined,
+        party_type:
+          str(r.party_type, r.partyType, r.type, nestedParty?.party_type) ||
+          undefined,
         role: str(r.role, r.party_role, r.partyRole) || undefined,
         sale_total: num(r.sale_total ?? r.saleTotal),
         cost_total: num(r.cost_total ?? r.costTotal),
@@ -155,7 +165,7 @@ export function derivePartiesIncludedFromCharges(
     if (!acc) {
       acc = {
         party_id: partyId,
-        party_name: partyName || partyId.slice(0, 8),
+        party_name: partyName || '',
         role,
         sale_total: 0,
         cost_total: 0,
@@ -167,7 +177,7 @@ export function derivePartiesIncludedFromCharges(
     acc.sale_total += sale;
     acc.cost_total += cost;
     acc.line_count += 1;
-    if (partyName && acc.party_name.length < partyName.length) {
+    if (partyName && (!acc.party_name || partyName.length > acc.party_name.length)) {
       acc.party_name = partyName;
     }
     const ccy = (currency || 'AED').toUpperCase();
@@ -234,4 +244,38 @@ export function resolvePartiesIncluded(
   const fromApi = normalizePartiesIncluded(raw);
   if (fromApi.length) return fromApi;
   return derivePartiesIncludedFromCharges(charges);
+}
+
+/** True when display string is missing or is an id stub (UUID / first 8 of id). */
+export function isMissingPartyDisplayName(
+  partyName: string | undefined,
+  partyId: string,
+): boolean {
+  const name = String(partyName ?? '').trim();
+  if (!name) return true;
+  const id = String(partyId ?? '').trim();
+  if (name === id) return true;
+  if (id && name === id.slice(0, 8)) return true;
+  // UUID-shaped labels are never valid party names for UI.
+  if (
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      name,
+    )
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/** Fill blank / stub party names from a party-id → name map (from useParties). */
+export function enrichPartiesIncludedNames(
+  parties: CostingPartyIncluded[],
+  nameById: Map<string, string>,
+): CostingPartyIncluded[] {
+  return parties.map((p) => {
+    if (!isMissingPartyDisplayName(p.party_name, p.party_id)) return p;
+    const resolved = nameById.get(p.party_id)?.trim();
+    if (!resolved) return { ...p, party_name: p.party_name || '—' };
+    return { ...p, party_name: resolved };
+  });
 }
