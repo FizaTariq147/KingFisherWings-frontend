@@ -71,29 +71,56 @@ export function PortalGsapTimeline({ children, className }: PortalGsapTimelinePr
   );
 }
 
+export type PortalGsapMilestoneTone = 'complete' | 'hold' | 'pending';
+
+const MILESTONE_TONE_CLASSES: Record<
+  PortalGsapMilestoneTone,
+  { dot: string; line: string }
+> = {
+  /** Mark complete — green */
+  complete: {
+    dot: 'bg-[var(--color-success-500)] ring-4 ring-[var(--color-success-500)]/25',
+    line: 'bg-[var(--color-success-500)]/35',
+  },
+  /** Hold or custom — red */
+  hold: {
+    dot: 'bg-[var(--color-danger-500)] ring-4 ring-[var(--color-danger-500)]/25',
+    line: 'bg-[var(--color-danger-500)]/35',
+  },
+  /** Not completed — orange */
+  pending: {
+    dot: 'bg-[var(--color-secondary)] ring-4 ring-[var(--color-secondary)]/20',
+    line: 'bg-[var(--color-secondary)]/40',
+  },
+};
+
 type PortalGsapTimelineItemProps = {
   children: ReactNode;
   className?: string;
   isLast?: boolean;
+  /** complete=green, hold=red (hold/custom), pending=orange */
+  tone?: PortalGsapMilestoneTone;
 };
 
 export function PortalGsapTimelineItem({
   children,
   className,
   isLast = false,
+  tone = 'pending',
 }: PortalGsapTimelineItemProps) {
+  const colors = MILESTONE_TONE_CLASSES[tone] ?? MILESTONE_TONE_CLASSES.pending;
   return (
     <li className={cn('relative flex gap-3 pb-5 last:pb-0', className)} data-gsap="milestone">
       <div className="relative flex w-3 shrink-0 flex-col items-center">
         <span
           data-gsap="milestone-dot"
-          className="mt-1.5 h-2.5 w-2.5 rounded-full bg-[var(--color-secondary)] ring-4 ring-[var(--color-secondary)]/20"
+          className={cn('mt-1.5 h-2.5 w-2.5 rounded-full', colors.dot)}
           aria-hidden="true"
         />
         {!isLast ? (
           <span
             data-gsap="milestone-line"
-            className="mt-1 w-0.5 flex-1 min-h-[1.5rem] bg-[var(--color-secondary)]/40"
+            className={cn('mt-1 w-0.5 flex-1 min-h-[1.5rem]', colors.line)}
             aria-hidden="true"
           />
         ) : null}

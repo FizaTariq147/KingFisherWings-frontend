@@ -146,6 +146,12 @@ export function normalizeInvoice(raw: unknown): Invoice | null {
       str(partyRecord?.name),
     company_id: str(r.company_id) ?? str(r.companyId) ?? str(asRecord(r.company)?.id),
     job_id: str(r.job_id) ?? str(r.jobId) ?? str(asRecord(r.job)?.id),
+    job_number:
+      str(r.job_number) ??
+      str(r.jobNumber) ??
+      str(asRecord(r.job)?.job_number) ??
+      str(asRecord(r.job)?.jobNumber) ??
+      undefined,
     branch_id: str(r.branch_id) ?? str(r.branchId),
     department_id: str(r.department_id) ?? str(r.departmentId),
     currency_code: (str(r.currency_code) ?? str(r.currencyCode) ?? 'AED').toUpperCase(),

@@ -83,7 +83,7 @@ export function QuotationBookingFormPanel({ quotation }: QuotationBookingFormPan
             className="text-[var(--color-primary)] underline"
             to={jobDetailPath({ id: jobId, job_type: quotation.job_type })}
           >
-            {quotation.job_number || jobId.slice(0, 8)}
+            {quotation.job_number || (jobId ? `Job ${jobId.slice(0, 8)}` : '—')}
           </Link>
           .
         </p>

@@ -81,7 +81,7 @@ export function AwbAllocationsPanel({
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      {a.job_number || (a.job_id ? a.job_id.slice(0, 8) : '—')}
+                      {a.job_number || (a.job_id ? `Job ${a.job_id.slice(0, 8)}` : '—')}
                     </TableCell>
                     <TableCell className="text-xs text-[var(--color-neutral-500)]">
                       {a.allocated_at

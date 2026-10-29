@@ -12,6 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { useJob } from '@/features/jobs/hooks/useJobs';
+import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { VOUCHER_ROUTE_PREFIX } from '../api/voucher.api';
 import { VoucherLineForm } from '../components/VoucherLineForm';
 import { VoucherStatusBadge } from '../components/VoucherStatusBadge';
@@ -46,6 +48,7 @@ export default function VoucherDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data: voucher, isLoading, isError, error, refetch } = useVoucher(id);
+  const { data: linkedJob } = useJob(voucher?.job_id || '');
   const addLine = useAddVoucherLine(id);
   const removeLine = useRemoveVoucherLine(id);
   const post = usePostVoucher(id);
@@ -200,7 +203,14 @@ export default function VoucherDetailPage() {
                     <Field label="Exchange rate" value={voucher.exchange_rate} />
                     <Field label="Reference" value={voucher.reference_number} />
                     <Field label="Party" value={voucher.party_name || voucher.party_id} />
-                    <Field label="Job" value={voucher.job_id} />
+                    <Field
+                      label="Job number"
+                      value={
+                        linkedJob
+                          ? jobDisplayNumber(linkedJob)
+                          : (voucher as { job_number?: string }).job_number
+                      }
+                    />
                     <Field label="Invoice" value={voucher.invoice_id} />
                     <Field
                       label="Total debit"

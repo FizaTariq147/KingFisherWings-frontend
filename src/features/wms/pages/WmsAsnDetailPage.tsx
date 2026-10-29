@@ -237,7 +237,10 @@ export default function WmsAsnDetailPage() {
               <WmsDetailField label="Document" value={displayDocNumber(doc)} />
               <WmsDetailField label="Warehouse" value={warehouseLabel} />
               <WmsDetailField label="Party" value={partyLabel || doc.party_id || '—'} />
-              <WmsDetailField label="Job" value={doc.job_id ?? '—'} />
+              <WmsDetailField
+                label="Job number"
+                value={doc.job_number ?? (doc.job_id ? `Job ${doc.job_id.slice(0, 8)}` : '—')}
+              />
               <WmsDetailField label="Remarks" value={doc.remarks ?? '—'} />
               <WmsDetailField
                 label="Created"

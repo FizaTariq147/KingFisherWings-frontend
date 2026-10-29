@@ -28,6 +28,7 @@ import {
   usePortalShipmentMilestones,
   usePortalShipmentTracking,
 } from '../hooks/usePortalShipments';
+import { portalMilestoneDotTone } from '../utils/normalizePortalShipments';
 
 export default function PortalShipmentDetailPage() {
   const { id = '' } = useParams();
@@ -388,7 +389,11 @@ export default function PortalShipmentDetailPage() {
         ) : (
           <PortalGsapTimeline>
             {milestones.map((m, index) => (
-              <PortalGsapTimelineItem key={m.id} isLast={index === milestones.length - 1}>
+              <PortalGsapTimelineItem
+                key={m.id}
+                isLast={index === milestones.length - 1}
+                tone={portalMilestoneDotTone(m)}
+              >
                 <div className="text-sm font-medium text-[var(--color-neutral-800)]">{m.label}</div>
                 <div className="text-xs text-[var(--color-neutral-500)]">
                   {[m.occurredAt, m.location, m.status].filter(Boolean).join(' · ') || '—'}

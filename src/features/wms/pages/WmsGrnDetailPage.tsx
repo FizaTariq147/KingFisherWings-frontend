@@ -134,7 +134,10 @@ export default function WmsGrnDetailPage() {
                   party (recreate GRN with party, or use ASN Mark unloaded).
                 </p>
               ) : null}
-              <WmsDetailField label="Job" value={doc.job_id ?? '—'} />
+              <WmsDetailField
+                label="Job number"
+                value={doc.job_number ?? (doc.job_id ? `Job ${doc.job_id.slice(0, 8)}` : '—')}
+              />
               <WmsDetailField label="Remarks" value={doc.remarks ?? '—'} />
               <WmsDetailField
                 label="Created"

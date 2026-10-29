@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { useJob } from '@/features/jobs/hooks/useJobs';
+import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { isUuid } from '@/lib/isUuid';
 import { useParty } from '@/features/parties/hooks/useParties';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
@@ -412,7 +413,14 @@ export default function InvoiceDetailPage() {
                     <Field label="Invoice date" value={invoice.invoice_date} />
                     <Field label="Due date" value={invoice.due_date} />
                     <Field label="LPO" value={invoice.lpo_number} />
-                    <Field label="Job" value={invoice.job_id} />
+                    <Field
+                      label="Job number"
+                      value={
+                        job
+                          ? jobDisplayNumber(job)
+                          : invoice.job_number || undefined
+                      }
+                    />
                     <Field label="Subtotal" value={invoice.subtotal} />
                     <Field label="Tax" value={invoice.tax_total} />
                     <div>

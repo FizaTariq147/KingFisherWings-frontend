@@ -208,7 +208,7 @@ export function InvoiceFilters({
           />
         </EnquirySheetFilterField>
 
-        <EnquirySheetFilterField label="Job Id">
+        <EnquirySheetFilterField label="Job number">
           <EnquirySheetTextInput
             value={draft.jobId}
             onChange={(e) => patch({ jobId: e.target.value.trim() })}

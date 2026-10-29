@@ -165,17 +165,83 @@ export function normalizeMilestone(raw: unknown): PortalMilestone | null {
     pickString(record.label, record.name, record.title, record.code, record.milestone) || '';
   const id = pickString(record.id, record.code, label);
   if (!id && !label) return null;
+  const status = pickString(record.status) || undefined;
+  const statusUpper = (status || '').toUpperCase();
+  const code = pickString(record.code, record.milestone_key, record.milestoneKey, record.milestone) || undefined;
+  const codeUpper = (code || '').toUpperCase();
+  const actualDate =
+    pickString(
+      record.actual_date,
+      record.actualDate,
+      record.completed_at,
+      record.completedAt,
+    ) || undefined;
+  const occurredAt =
+    pickString(
+      record.occurred_at,
+      record.occurredAt,
+      record.event_at,
+      record.timestamp,
+      record.date,
+      actualDate,
+    ) || undefined;
+  const isCompleted = Boolean(
+    actualDate ||
+      record.is_completed === true ||
+      record.isCompleted === true ||
+      record.completed === true ||
+      statusUpper === 'COMPLETED' ||
+      statusUpper === 'DONE' ||
+      statusUpper === 'COMPLETE',
+  );
+  const isHold = Boolean(
+    record.is_hold === true ||
+      record.isHold === true ||
+      statusUpper === 'HOLD' ||
+      statusUpper === 'ON_HOLD' ||
+      statusUpper.includes('HOLD') ||
+      codeUpper === 'HOLD' ||
+      codeUpper.includes('HOLD'),
+  );
+  const isCustom = Boolean(
+    record.is_custom === true ||
+      record.isCustom === true ||
+      record.custom === true ||
+      statusUpper === 'CUSTOM' ||
+      pickString(record.source, record.type, record.milestone_type, record.milestoneType)
+        .toUpperCase()
+        .includes('CUSTOM'),
+  );
   return {
     id: id || label,
-    code: pickString(record.code) || undefined,
+    code,
     label: label || id,
-    status: pickString(record.status) || undefined,
-    occurredAt:
-      pickString(record.occurred_at, record.occurredAt, record.event_at, record.timestamp, record.date) ||
-      undefined,
+    status,
+    occurredAt,
     location: pickString(record.location, record.place) || undefined,
     notes: pickString(record.notes, record.remark, record.description) || undefined,
+    isCompleted,
+    isCustom,
+    isHold,
   };
+}
+
+/** Portal timeline dot: completed=green, hold/custom=red, else orange. */
+export type PortalMilestoneDotTone = 'complete' | 'hold' | 'pending';
+
+export function portalMilestoneDotTone(m: {
+  isCompleted?: boolean;
+  isCustom?: boolean;
+  isHold?: boolean;
+  status?: string;
+}): PortalMilestoneDotTone {
+  if (m.isCompleted) return 'complete';
+  if (m.isHold || m.isCustom) return 'hold';
+  const status = String(m.status ?? '').toUpperCase();
+  if (status === 'HOLD' || status === 'ON_HOLD' || status.includes('HOLD')) return 'hold';
+  if (status === 'CUSTOM') return 'hold';
+  if (status === 'COMPLETED' || status === 'DONE' || status === 'COMPLETE') return 'complete';
+  return 'pending';
 }
 
 export function normalizeMilestones(raw: unknown): PortalMilestone[] {

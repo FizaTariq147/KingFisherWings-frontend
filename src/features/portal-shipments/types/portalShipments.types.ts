@@ -58,6 +58,12 @@ export interface PortalMilestone {
   occurredAt?: string;
   location?: string;
   notes?: string;
+  /** True when Mark complete set actual_date / is_completed. */
+  isCompleted?: boolean;
+  /** Staff-added custom milestone (not a standard template code). */
+  isCustom?: boolean;
+  /** On hold / delayed milestone. */
+  isHold?: boolean;
 }
 
 export interface PortalShipmentDocument {

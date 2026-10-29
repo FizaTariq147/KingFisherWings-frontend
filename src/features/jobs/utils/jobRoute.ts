@@ -51,8 +51,34 @@ export function jobDetailPath(
   return base;
 }
 
-export function jobDisplayNumber(job: { job_number?: string; id: string }): string {
-  return job.job_number?.trim() || `Job ${job.id.slice(0, 8)}`;
+/**
+ * User-facing job reference — always prefer job number over UUID.
+ * Never show a bare UUID; fall back to a short "Job …" stub only when number is missing.
+ */
+export function jobDisplayNumber(job: {
+  job_number?: string | null;
+  jobNumber?: string | null;
+  id?: string | null;
+  job_id?: string | null;
+}): string {
+  const number = String(job.job_number ?? job.jobNumber ?? '').trim();
+  if (number) return number;
+  const id = String(job.id ?? job.job_id ?? '').trim();
+  if (id) return `Job ${id.slice(0, 8)}`;
+  return '—';
+}
+
+/** Resolve display text from either a number or an id-only link field. */
+export function jobRefLabel(opts: {
+  job_number?: string | null;
+  jobNumber?: string | null;
+  job_id?: string | null;
+  jobId?: string | null;
+}): string {
+  return jobDisplayNumber({
+    job_number: opts.job_number ?? opts.jobNumber,
+    id: opts.job_id ?? opts.jobId,
+  });
 }
 
 export function jobEditable(status: string): boolean {

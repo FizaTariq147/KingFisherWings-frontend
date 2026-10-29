@@ -11,6 +11,8 @@ import {
   TableRow,
 } from '@/components/ui/Table';
 import { InvoiceStatusBadge } from '@/features/invoices/components/InvoiceStatusBadge';
+import { useJob } from '@/features/jobs/hooks/useJobs';
+import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { OpsContinuumRail } from '@/features/ops-activity';
 import { StaffPurchaseInvoicePaymentProofPanel } from '@/features/payment-proofs/components/StaffPurchaseInvoicePaymentProofPanel';
 import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
@@ -42,6 +44,7 @@ export default function PurchaseInvoiceDetailPage() {
   const navigate = useNavigate();
   const { data: invoice, isLoading, isError, error, refetch } = usePurchaseInvoice(id);
   const { data: proofs = [] } = usePurchaseInvoicePaymentProofs(id);
+  const { data: linkedJob } = useJob(invoice?.job_id || '');
   const post = usePostPurchaseInvoice(id);
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -222,7 +225,14 @@ export default function PurchaseInvoiceDetailPage() {
                     <Field label="Invoice date" value={invoice.invoice_date} />
                     <Field label="Due date" value={invoice.due_date} />
                     <Field label="LPO" value={invoice.lpo_number} />
-                    <Field label="Job" value={invoice.job_id} />
+                    <Field
+                      label="Job number"
+                      value={
+                        linkedJob
+                          ? jobDisplayNumber(linkedJob)
+                          : (invoice as { job_number?: string }).job_number
+                      }
+                    />
                     <Field label="Subtotal" value={invoice.subtotal} />
                     <Field label="Tax" value={invoice.tax_total} />
                     <Field

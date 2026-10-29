@@ -16,6 +16,8 @@ import {
   INVOICE_TYPE_LABELS,
   type InvoiceType,
 } from '@/features/invoices/constants/invoice.constants';
+import { useJob } from '@/features/jobs/hooks/useJobs';
+import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { DEBIT_NOTE_ROUTE_PREFIX } from '../api/debitNote.api';
 import { useDebitNote, usePostDebitNote } from '../hooks/useDebitNotes';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -34,6 +36,7 @@ export default function DebitNoteDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const { data: debitNote, isLoading, isError, error, refetch } = useDebitNote(id);
+  const { data: linkedJob } = useJob(debitNote?.job_id || '');
   const post = usePostDebitNote(id);
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -162,7 +165,14 @@ export default function DebitNoteDetailPage() {
                     <Field label="Party" value={debitNote.party_name || '—'} />
                     <Field label="Currency" value={debitNote.currency_code} />
                     <Field label="Date" value={debitNote.invoice_date} />
-                    <Field label="Job" value={debitNote.job_id} />
+                    <Field
+                      label="Job number"
+                      value={
+                        linkedJob
+                          ? jobDisplayNumber(linkedJob)
+                          : (debitNote as { job_number?: string }).job_number
+                      }
+                    />
                     <div>
                       <dt className="text-xs text-[var(--color-neutral-400)]">Debited invoice</dt>
                       <dd className="mt-0.5 text-sm text-[var(--color-neutral-800)]">

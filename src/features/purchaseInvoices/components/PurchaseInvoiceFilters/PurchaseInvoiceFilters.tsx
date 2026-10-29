@@ -259,7 +259,7 @@ export function PurchaseInvoiceFilters({
           />
         </FilterField>
 
-        <FilterField label="Job Id">
+        <FilterField label="Job number">
           <TextInput
             value={draft.jobId}
             onChange={(e) => patch({ jobId: e.target.value.trim() })}
