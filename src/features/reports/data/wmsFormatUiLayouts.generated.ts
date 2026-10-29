@@ -1,6 +1,5 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Permanent JSON UI layouts — Fresa sky-blue themes. */
 export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "ADVANCE_SHIPPING_NOTE_FORMAT_1",
@@ -396,6 +395,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "1",
           "112541AASD52",
           "WD EXTERNAL HDD",
+          "",
           "500",
           "500",
           "BOX",
@@ -408,6 +408,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "HP LAPTOP",
           "1024662001",
           "1",
+          "1",
           "BOX",
           "2.750",
           "3.000"
@@ -417,6 +418,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "2253465",
           "HP LAPTOP",
           "1024662002",
+          "1",
           "1",
           "BOX",
           "2.750",
@@ -428,6 +430,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "HP LAPTOP",
           "1024662003",
           "1",
+          "1",
           "BOX",
           "2.750",
           "3.000"
@@ -438,6 +441,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "HP LAPTOP",
           "1024662004",
           "1",
+          "1",
           "BOX",
           "2.750",
           "3.000"
@@ -446,6 +450,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "6",
           "2253465100",
           "HP MOUSE",
+          "",
           "1200",
           "1200",
           "BOX",
@@ -456,6 +461,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "7",
           "22534653",
           "HP MONITOR",
+          "",
           "550",
           "550",
           "BOX",
@@ -466,6 +472,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "8",
           "2253465350",
           "HP KEYBOARD",
+          "",
           "750",
           "750",
           "BOX",
@@ -476,6 +483,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "9",
           "5251255220",
           "NVIDIA GPU",
+          "",
           "600",
           "600",
           "BOX",
@@ -486,6 +494,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "10",
           "5251255220",
           "NVIDIA GPU",
+          "",
           "600",
           "600",
           "BOX",
@@ -496,6 +505,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "Total :",
           "",
           "",
+          "",
           "4204",
           "4204",
           "",
@@ -503,9 +513,7 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "48663.000"
         ]
       ],
-      "termsLines": [
-        "1. This is a computer generated document and does not require a signature."
-      ]
+      "docSubtitle": "ADVANCE SHIPPING NOTE / ASN No - ASN/000033"
     },
     "blocks": [
       {
@@ -514,29 +522,21 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE",
-        "align": "start",
+        "text": "ADVANCE SHIPPING NOTE / ASN No - ASN/000033",
+        "align": "center",
         "band": true
       },
       {
-        "type": "partyTriple"
-      },
-      {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 2,
+        "labelTone": "ink"
       },
       {
         "type": "chargeTable",
-        "headerColor": "primary"
-      },
-      {
-        "type": "jobDescription"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "letterBody"
+        "headerColor": "primary",
+        "chrome": "grid",
+        "tintTotalRow": true,
+        "gridBorder": "ink"
       },
       {
         "type": "colorfulFooter"
@@ -732,9 +732,6 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "",
           "4204"
         ]
-      ],
-      "termsLines": [
-        "1. This is a computer generated document and does not require a signature."
       ]
     },
     "blocks": [
@@ -744,20 +741,17 @@ export const WMS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "docTitle",
-        "text": "ADVANCE SHIPPING NOTE — LOCATION",
-        "align": "end",
+        "text": "ADVANCE SHIPPING NOTE — LOCATION WISE",
+        "align": "center",
         "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 3
       },
       {
         "type": "chargeTable",
         "headerColor": "primary"
-      },
-      {
-        "type": "containerStrip"
       },
       {
         "type": "colorfulFooter"

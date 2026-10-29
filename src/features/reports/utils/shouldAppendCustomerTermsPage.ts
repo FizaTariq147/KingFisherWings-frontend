@@ -1,50 +1,29 @@
-import type { ReportFamily } from '../types/reportCatalog.types';
-import { getRegistryByCode } from '../data/fresaReportRegistry';
+import { resolveCustomerTermsKind } from './resolveCustomerTermsKind';
+
+export type AppendCustomerTermsOptions = {
+  /**
+   * Explicit override from the generate call (highest priority).
+   * Used by validation harnesses and callers that need layout-only PDFs.
+   */
+  override?: boolean;
+  /**
+   * @deprecated Ignored — T&C append is only driven by BL / airway bill codes.
+   */
+  layoutFlag?: boolean;
+};
 
 /**
- * Customer-facing transport documents get KingFisher Terms & Conditions on the
- * next PDF page (BL draft/original, HAWB, arrival notice, DO, booking, pre-alert…).
+ * Append Terms & Conditions only for Bill of Lading (BL) and Airway Bill (HAWB/MAWB/AWB).
+ * All other report families (invoice, ASN, DO, finance, etc.) never get T&C pages.
  *
- * Excluded:
- * - Invoice / commercial / quotation formats
- * - Admin / internal downloads (ops lists, finance, WMS stock reports)
+ * Priority:
+ * 1. `options.override` when boolean
+ * 2. code resolves to BL or airway bill via `resolveCustomerTermsKind`
  */
-export function shouldAppendCustomerTermsPage(code: string): boolean {
-  const needle = code.trim().toUpperCase();
-  if (!needle) return false;
-
-  if (
-    /^(INVOICE_|QUOTATION_|PROFORMA_|DEBIT_NOTE_|CREDIT_NOTE_|LEFTOVER_INVOICE_|LEFTOVER_TAX_|LEFTOVER_PROFORMA_|LEFTOVER_SIMPLE_|LEFTOVER_STANDARD_|LEFTOVER_SAUDI_|LEFTOVER_VIETNAM_|LEFTOVER_OVERSEAS_|LEFTOVER_LAND_)/i.test(
-      needle,
-    )
-  ) {
-    return false;
-  }
-
-  if (
-    /LIST_REPORT|DAILY_STATUS|PENDING_SHIPMENT|JOB_STATUS|JOB_NOT_CLOSED|TRIAL_BALANCE|PROFIT_AND_LOSS|STATEMENT_OF_ACCOUNTS|AGING|VOUCHER|OUTSTANDING_LETTER|WMS_|ADVANCE_SHIPPING|GL_/i.test(
-      needle,
-    )
-  ) {
-    return false;
-  }
-
-  const family = getRegistryByCode(needle)?.family as ReportFamily | undefined;
-  if (
-    family === 'commercial' ||
-    family === 'quotation' ||
-    family === 'finance' ||
-    family === 'ops_list' ||
-    family === 'wms'
-  ) {
-    return false;
-  }
-
-  if (family === 'sea_docs' || family === 'air_docs' || family === 'other') {
-    return true;
-  }
-
-  return /HBL_|HAWB_|MAWB_|ARRIVAL_NOTICE_|DELIVERY_ORDER_|DELIVERY_NOTE_|BOOKING_CONFIRMATION_|PRE_ALERT_|CARGO_MANIFEST_|FG_HBL_|FG_ARRIVAL_|FG_DELIVERY_|LEFTOVER_HBL_|PROOF_OF_DELIVERY|STUFFING_REPORT|FCR_/i.test(
-    needle,
-  );
+export function shouldAppendCustomerTermsPage(
+  code: string,
+  options: AppendCustomerTermsOptions = {},
+): boolean {
+  if (typeof options.override === 'boolean') return options.override;
+  return resolveCustomerTermsKind(code) !== null;
 }

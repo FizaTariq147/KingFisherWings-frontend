@@ -26,6 +26,8 @@ export function AccountsFormatAutoPdf({ code, context, autoOpen = true }: Props)
           samplePdfUrl: null,
           layoutKind: 'generic',
           paper: layout.paper,
+          orientation: layout.orientation,
+          appendCustomerTerms: layout.appendCustomerTerms,
           rtl: layout.rtl,
           sections: [],
         }

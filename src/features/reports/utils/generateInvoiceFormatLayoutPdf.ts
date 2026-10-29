@@ -1,9 +1,17 @@
 import type { InvoiceFormatPreview } from '../types/invoiceFormatPreview.types';
 import type { InvoiceFormatPdfData, InvoiceFormatPdfLine } from './invoiceFormatToInvoicePdfModel';
 import { formatReportLayoutDate } from './formatReportLayoutDate';
-import { generateInvoiceFormatPreviewPdf } from './generateInvoiceFormatPreviewPdf';
+import {
+  generateInvoiceFormatPreviewPdf,
+  type GenerateInvoiceFormatPreviewPdfOptions,
+} from './generateInvoiceFormatPreviewPdf';
 
 export type { InvoiceFormatPdfData, InvoiceFormatPdfLine };
+
+export type GenerateInvoiceFormatLayoutPdfOptions = GenerateInvoiceFormatPreviewPdfOptions & {
+  /** Reserved — logo comes from shared chrome / assets. */
+  logoUrl?: string;
+};
 
 /**
  * Client PDF matching the KingFisher layout preview exactly.
@@ -12,10 +20,11 @@ export type { InvoiceFormatPdfData, InvoiceFormatPdfLine };
 export async function generateInvoiceFormatLayoutPdf(
   preview: InvoiceFormatPreview,
   data: InvoiceFormatPdfData = {},
-  _options?: { logoUrl?: string },
+  options: GenerateInvoiceFormatLayoutPdfOptions = {},
 ): Promise<Blob> {
-  void _options;
-  return generateInvoiceFormatPreviewPdf(preview, data);
+  const { logoUrl: _logoUrl, ...pdfOptions } = options;
+  void _logoUrl;
+  return generateInvoiceFormatPreviewPdf(preview, data, pdfOptions);
 }
 
 /** Map a staff invoice record into layout PDF data (best-effort). */

@@ -161,7 +161,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "CONTAINER_LOAD_PLAN_REPORT_FORMAT",
@@ -342,7 +343,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT",
@@ -510,7 +512,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "TRANSSHIPMENT_LIST_REPORT_FORMAT",
@@ -1358,7 +1361,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "CONTAINER_UNLOAD_PLAN_REPORT_FORMAT",
@@ -1703,7 +1707,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "SAILING_CONFIRMATION_REPORT_FORMAT",
@@ -2593,7 +2598,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "IMPORT_TALLY_SHEET_REPORT_FORMAT",
@@ -2775,7 +2781,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "LETTER_OF_GUARANTEE_REPORT_FORMAT",
@@ -3650,7 +3657,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "CARTING_CONFIRMATION_REPORT_FORMAT",
@@ -5938,7 +5946,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "SURRENDERED_LETTER_REPORT_FORMAT",
@@ -6303,7 +6312,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "DAILY_STATUS_REPORT_FORMAT_1",
@@ -6461,7 +6471,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "DAILY_STATUS_REPORT_FORMAT_2",
@@ -6619,7 +6630,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "JOB_CARD_REPORT_FORMAT",
@@ -7504,7 +7516,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "BOOKING_CONFIRMATION_AIR_REPORT_FORMAT",
@@ -8012,7 +8025,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT",
@@ -8176,7 +8190,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT",
@@ -8352,7 +8367,8 @@ export const OTHER_REPORTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",

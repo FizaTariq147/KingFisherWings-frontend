@@ -1,76 +1,132 @@
 import { axiosInstance } from '@/lib/axios';
 import { withGatewayRetry } from '@/lib/wakeApi';
-import { asList, unwrap } from '@/features/online-payments/utils/billingApiHelpers';
 import { ADMIN_QUOTE_REQUESTS_API } from '../api/adminQuoteRequests.api';
+import type {
+  ExternalQuoteRequest,
+  PatchQuoteRequestStatusDto,
+  QuoteRequestConnection,
+  QuoteRequestHealthResult,
+  QuoteRequestListParams,
+  QuoteRequestListResult,
+  QuoteRequestSyncResult,
+  QuoteRequestSyncRunListParams,
+  QuoteRequestSyncRunListResult,
+  UpsertQuoteRequestConnectionDto,
+} from '../types/adminQuoteRequests.types';
+import {
+  normalizeExternalQuoteRequest,
+  normalizeQuoteRequestConnection,
+  normalizeQuoteRequestHealth,
+  normalizeQuoteRequestList,
+  normalizeQuoteRequestSyncResult,
+  normalizeQuoteRequestSyncRunList,
+} from '../utils/normalizeAdminQuoteRequests';
+
+function requireNormalized<T>(value: T | null, label: string): T {
+  if (value == null) throw new Error(`${label} response was empty.`);
+  return value;
+}
 
 export const adminQuoteRequestsService = {
-  async list(params?: Record<string, unknown>) {
+  async list(params?: QuoteRequestListParams): Promise<QuoteRequestListResult> {
     const res = await withGatewayRetry(() =>
       axiosInstance.get(ADMIN_QUOTE_REQUESTS_API.list, { params }),
     );
-    return asList(res.data);
+    return normalizeQuoteRequestList(res.data, {
+      page: params?.page,
+      limit: params?.limit,
+    });
   },
 
-  async getById(id: string, params?: Record<string, unknown>) {
+  async getById(id: string): Promise<ExternalQuoteRequest> {
     const res = await withGatewayRetry(() =>
-      axiosInstance.get(ADMIN_QUOTE_REQUESTS_API.detail(id), { params }),
+      axiosInstance.get(ADMIN_QUOTE_REQUESTS_API.detail(id)),
     );
-    return unwrap(res.data);
+    return requireNormalized(
+      normalizeExternalQuoteRequest(res.data),
+      'Quote request',
+    );
   },
 
-  async convertToQuote(id: string, body: Record<string, unknown> = {}) {
+  async convertToQuote(id: string): Promise<unknown> {
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(ADMIN_QUOTE_REQUESTS_API.convertToQuote(id), body),
+      axiosInstance.post(ADMIN_QUOTE_REQUESTS_API.convertToQuote(id), {}),
     );
-    return unwrap(res.data);
+    return res.data;
   },
 
-  async linkCrm(id: string, body: Record<string, unknown> = {}) {
+  async linkCrm(id: string): Promise<ExternalQuoteRequest> {
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(ADMIN_QUOTE_REQUESTS_API.linkCrm(id), body),
+      axiosInstance.post(ADMIN_QUOTE_REQUESTS_API.linkCrm(id), {}),
     );
-    return unwrap(res.data);
+    return (
+      normalizeExternalQuoteRequest(res.data) ??
+      (await adminQuoteRequestsService.getById(id))
+    );
   },
 
-  async updateStatus(id: string, body: Record<string, unknown>) {
+  async updateStatus(
+    id: string,
+    body: PatchQuoteRequestStatusDto,
+  ): Promise<ExternalQuoteRequest> {
     const res = await withGatewayRetry(() =>
       axiosInstance.patch(ADMIN_QUOTE_REQUESTS_API.status(id), body),
     );
-    return unwrap(res.data);
-  },
-
-  async getConnection(params?: Record<string, unknown>) {
-    const res = await withGatewayRetry(() =>
-      axiosInstance.get(ADMIN_QUOTE_REQUESTS_API.connection, { params }),
+    return (
+      normalizeExternalQuoteRequest(res.data) ??
+      (await adminQuoteRequestsService.getById(id))
     );
-    return unwrap(res.data);
   },
 
-  async upsertConnection(body: Record<string, unknown>) {
+  async getConnection(): Promise<QuoteRequestConnection | null> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(ADMIN_QUOTE_REQUESTS_API.connection),
+      );
+      return normalizeQuoteRequestConnection(res.data);
+    } catch (err: unknown) {
+      const status = (err as { response?: { status?: number } })?.response?.status;
+      if (status === 404) return null;
+      throw err;
+    }
+  },
+
+  async upsertConnection(
+    body: UpsertQuoteRequestConnectionDto,
+  ): Promise<QuoteRequestConnection> {
     const res = await withGatewayRetry(() =>
       axiosInstance.put(ADMIN_QUOTE_REQUESTS_API.connection, body),
     );
-    return unwrap(res.data);
+    return requireNormalized(
+      normalizeQuoteRequestConnection(res.data),
+      'Connection',
+    );
   },
 
-  async testConnection(body: Record<string, unknown> = {}) {
+  async testConnection(): Promise<QuoteRequestHealthResult> {
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(ADMIN_QUOTE_REQUESTS_API.connectionTest, body),
+      axiosInstance.post(ADMIN_QUOTE_REQUESTS_API.connectionTest, {}),
     );
-    return unwrap(res.data);
+    return normalizeQuoteRequestHealth(res.data);
   },
 
-  async sync(body: Record<string, unknown> = {}) {
+  async sync(): Promise<QuoteRequestSyncResult> {
     const res = await withGatewayRetry(() =>
-      axiosInstance.post(ADMIN_QUOTE_REQUESTS_API.sync, body),
+      axiosInstance.post(ADMIN_QUOTE_REQUESTS_API.sync, {}),
     );
-    return unwrap(res.data);
+    return normalizeQuoteRequestSyncResult(res.data);
   },
 
-  async listSyncRuns(params?: Record<string, unknown>) {
+  async listSyncRuns(
+    params?: QuoteRequestSyncRunListParams,
+  ): Promise<QuoteRequestSyncRunListResult> {
+    const page = params?.page ?? 1;
+    const limit = params?.limit ?? 20;
     const res = await withGatewayRetry(() =>
-      axiosInstance.get(ADMIN_QUOTE_REQUESTS_API.syncRuns, { params }),
+      axiosInstance.get(ADMIN_QUOTE_REQUESTS_API.syncRuns, {
+        params: { page: String(page), limit: String(limit) },
+      }),
     );
-    return asList(res.data);
+    return normalizeQuoteRequestSyncRunList(res.data, { page, limit });
   },
 };

@@ -6,11 +6,13 @@ export const HAWB_FORMAT_UI_LAYOUT_LIST: InvoiceFormatUiLayout[] = HAWB_FORMAT_U
 const byCode = new Map(HAWB_FORMAT_UI_LAYOUT_LIST.map((row) => [row.code.toUpperCase(), row]));
 
 const FALLBACK_DRAFT = 'HAWB_DRAFT_REPORT_FORMAT';
-const FALLBACK_ORIGINAL = 'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1';
+/** Format-1 original is a stub Fresa PDF — fallback to verified Format-2 only. */
+const FALLBACK_ORIGINAL = 'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2';
 
 function resolveLayoutCode(code: string): string {
   const needle = code.trim().toUpperCase();
   if (byCode.has(needle)) return needle;
+  // Legacy deep-links to removed draft indices resolve to the base verified draft.
   if (/^HAWB_DRAFT_REPORT_FORMAT_\d+$/.test(needle)) return FALLBACK_DRAFT;
   if (/^HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_\d+$/.test(needle)) return FALLBACK_ORIGINAL;
   return needle;

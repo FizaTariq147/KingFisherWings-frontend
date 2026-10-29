@@ -52,6 +52,11 @@ export type PermissionKey =
   | 'shipments.update'
   | 'shipments.generate'
   | 'shipments.manage'
+  // Quote Requests Integration (website KFPP bridge)
+  | 'integrations.quote_requests.view'
+  | 'integrations.quote_requests.manage_connection'
+  | 'integrations.quote_requests.sync'
+  | 'integrations.quote_requests.update_status'
   | (string & {})
 
 export interface Permission {

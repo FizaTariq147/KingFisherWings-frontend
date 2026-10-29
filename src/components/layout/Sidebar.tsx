@@ -29,6 +29,7 @@ import {
   CreditCard,
   Layers,
   Package,
+  Link2,
   type LucideIcon,
 } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
@@ -158,6 +159,7 @@ const SIDEBAR_ICON_STYLES: Record<string, NavIconStyle> = {
   '/organization': navStyle('#06B6D4'),
   '/parties': navStyle('#CA8A04'),
   '/admin/users': navStyle('#C026D3'),
+  '/admin/integrations/quote-requests': navStyle('#7C3AED'),
   '/superadmin/dashboard': navStyle('#0284C7'),
   '/superadmin/companies': navStyle('#B45309'),
   '/superadmin/tenants': navStyle('#4ADE80'),
@@ -624,6 +626,15 @@ const ADMIN_BILLING_NAV_ITEM: NavItem = {
   activePrefix: '/settings/billing',
 };
 
+const ADMIN_QUOTE_REQUESTS_NAV_ITEM: NavItem = {
+  label: 'Quote Requests',
+  path: '/admin/integrations/quote-requests',
+  Icon: Link2,
+  permission: null,
+  adminOnly: true,
+  activePrefix: '/admin/integrations/quote-requests',
+};
+
 const SUPER_ADMIN_NAV_ITEMS: NavItem[] = [
   { label: 'Platform', path: '/superadmin/dashboard', Icon: Globe, permission: null },
   { label: 'Companies', path: '/superadmin/companies', Icon: Briefcase, permission: null },
@@ -813,6 +824,7 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
               ADMIN_ORGANIZATION_NAV_ITEM,
               ADMIN_PARTIES_NAV_ITEM,
               ADMIN_USERS_NAV_ITEM,
+              ADMIN_QUOTE_REQUESTS_NAV_ITEM,
               ADMIN_BILLING_NAV_ITEM,
             ].map(
               (item) => (

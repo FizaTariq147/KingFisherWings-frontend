@@ -126,7 +126,7 @@ export default function PublicTrackPage() {
           >
             {showTenantField ? (
               <Input
-                label="Workspace (tenant slug)"
+                label="Username"
                 value={tenantSlug}
                 onChange={(e) => setTenantSlug(e.target.value)}
                 placeholder="e.g. kingfisher"

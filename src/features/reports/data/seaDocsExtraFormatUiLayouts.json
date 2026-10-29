@@ -31,54 +31,55 @@
       "billToName": "All Branches",
       "fieldGrid": [
         {
+          "k": "Job No.",
+          "v": "B/EXP/19/0251"
+        },
+        {
+          "k": "Customer",
+          "v": "4G LOGISTICS INDIA PVT LTD"
+        },
+        {
+          "k": "Status",
+          "v": "In Progress"
+        },
+        {
           "k": "As Of",
           "v": "10-FEB-19"
-        },
-        {
-          "k": "Branch",
-          "v": "Dubai"
-        },
-        {
-          "k": "Prepared By",
-          "v": "Operations"
-        },
-        {
-          "k": "Layout",
-          "v": "Job Houses Record List Report Format"
         }
       ],
       "tableHeaders": [
-        "#",
-        "Job No.",
-        "Customer",
-        "Status",
-        "ETD",
-        "ETA"
+        "House B/L",
+        "Shipper",
+        "Consignee",
+        "PP/CC",
+        "POF",
+        "Forwarder",
+        "Pkgs",
+        "Weight",
+        "Volume"
       ],
       "tableRows": [
         [
-          "1",
-          "B/EXP/19/0251",
-          "4G LOGISTICS",
-          "Pending",
-          "29-JAN-19",
-          "07-FEB-19"
+          "PLMAAJEA00080",
+          "4G LOGISTICS INDIA PVT LTD",
+          "AL NASER TRADING COMPANY LLC",
+          "PP",
+          "Collect",
+          "KingFisher Agent",
+          "125",
+          "18,000.000",
+          "20.000"
         ],
         [
-          "2",
-          "B/EXP/19/0252",
-          "AL NASER TRADING",
-          "In Transit",
-          "30-JAN-19",
-          "08-FEB-19"
-        ],
-        [
-          "3",
-          "B/EXP/19/0253",
-          "GULF FREIGHT",
-          "Delivered",
-          "28-JAN-19",
-          "06-FEB-19"
+          "PLMAAJEA00081",
+          "GULF FREIGHT LLC",
+          "DEMO CONSIGNEE FZE",
+          "CC",
+          "Prepaid",
+          "KingFisher Agent",
+          "40",
+          "4,200.000",
+          "8.500"
         ]
       ],
       "termsLines": [
@@ -95,11 +96,11 @@
         "type": "docTitle",
         "text": "JOB HOUSES RECORD LIST",
         "align": "center",
-        "band": false
+        "band": true
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2
       },
       {
         "type": "chargeTable",

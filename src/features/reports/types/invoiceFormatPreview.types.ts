@@ -14,6 +14,9 @@ export type InvoiceFormatLayoutKind =
 
 export type InvoiceFormatPaper = 'A4' | 'Letter';
 
+/** Mirrors layout orientation for PDF capture (optional). */
+export type InvoiceFormatOrientation = 'portrait' | 'landscape';
+
 export type InvoiceFormatSectionId =
   | 'companyHeader'
   | 'invoiceMeta'
@@ -39,6 +42,13 @@ export interface InvoiceFormatPreview {
   samplePdfUrl: string | null;
   layoutKind: InvoiceFormatLayoutKind;
   paper: InvoiceFormatPaper;
+  /** Optional; defaults to portrait in the shared PDF pipeline. */
+  orientation?: InvoiceFormatOrientation;
+  /**
+   * Optional override for BL / Airway Terms & Conditions append.
+   * When omitted, only BL and airway-bill format codes append T&C pages.
+   */
+  appendCustomerTerms?: boolean;
   rtl?: boolean;
   showGst?: boolean;
   showArabic?: boolean;

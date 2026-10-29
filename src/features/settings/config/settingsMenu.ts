@@ -2,6 +2,7 @@ import {
   Building2,
   CreditCard,
   KeyRound,
+  Link2,
   Ruler,
   Shield,
   UserCircle,
@@ -51,6 +52,15 @@ export const settingsMenu: MenuTile[] = [
     icon: Webhook,
     iconColor: 'bg-violet-600',
     path: '/settings/public-api',
+  },
+  {
+    id: 'quote-requests-bridge',
+    title: 'Quote Requests Integration',
+    description:
+      'Connect website KFPP quote requests, sync mirror + CRM, and push status updates.',
+    icon: Link2,
+    iconColor: 'bg-violet-700',
+    path: '/admin/integrations/quote-requests',
   },
   {
     id: 'online-payments-stripe',
