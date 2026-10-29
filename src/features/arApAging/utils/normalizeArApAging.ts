@@ -315,10 +315,231 @@ export function normalizeAgingReport(raw: unknown): {
   return { as_of, lines, totals: totals ?? undefined };
 }
 
-export function normalizeStatementLine(raw: unknown): StatementLine | null {
+function firstStr(r: Record<string, unknown>, keys: string[]): string | undefined {
+  for (const key of keys) {
+    const value = str(r[key]);
+    if (value) return value;
+  }
+  return undefined;
+}
+
+function humanizeToken(value?: string): string | undefined {
+  if (!value) return undefined;
+  return value.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim() || undefined;
+}
+
+function formatStatusLabel(status?: string): string | undefined {
+  const label = humanizeToken(status);
+  return label ? `Status ${label}` : undefined;
+}
+
+function isLikelyUuid(value?: string): boolean {
+  return Boolean(
+    value &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        value,
+      ),
+  );
+}
+
+function looksLikeBareStatus(value?: string): boolean {
+  if (!value) return false;
+  return /^(draft|posted|paid|partial(?:ly)?(?:\s*paid)?|unpaid|cancelled|canceled|void|open|closed|pending|approved|received|allocated)$/i.test(
+    value.trim().replace(/[_-]+/g, ' '),
+  );
+}
+
+function pickNarrative(r: Record<string, unknown>): string | undefined {
+  for (const key of [
+    'description',
+    'narration',
+    'remarks',
+    'memo',
+    'particulars',
+    'particular',
+    'notes',
+    'note',
+    'details',
+    'comment',
+    'line_description',
+    'transaction_description',
+    'statement_description',
+  ]) {
+    const value = str(r[key]);
+    // Skip when API stuffed status into description (e.g. "POSTED").
+    if (value && !looksLikeBareStatus(value)) return value;
+  }
+  return undefined;
+}
+
+function isCreditNoteType(type?: string): boolean {
+  if (!type) return false;
+  return /credit.?note|cn\b/i.test(type);
+}
+
+function docKindLabel(type?: string, side: 'AR' | 'AP' = 'AR'): string | undefined {
+  if (!type) return undefined;
+  if (isCreditNoteType(type)) return 'Credit note';
+  if (/debit.?note/i.test(type)) return 'Debit note';
+  if (/receipt/i.test(type)) return 'Receipt';
+  if (/payment|allocation|receipt/i.test(type)) return side === 'AR' ? 'Receipt' : 'Payment';
+  if (/invoice|sales|purchase/i.test(type)) {
+    return side === 'AP' ? 'Purchase invoice' : 'Sales invoice';
+  }
+  return humanizeToken(type);
+}
+
+function allocationReferences(r: Record<string, unknown>): string | undefined {
+  const single = firstStr(r, [
+    'invoice_number',
+    'against_invoice',
+    'against_reference',
+    'allocated_to',
+    'allocation_reference',
+    'document_number',
+  ]);
+  if (single) return single;
+
+  const lists = [r.allocations, r.applied_to, r.applications, r.invoices];
+  const numbers: string[] = [];
+  for (const list of lists) {
+    if (!Array.isArray(list)) continue;
+    for (const item of list) {
+      const row = asRecord(item);
+      if (!row) continue;
+      const ref = firstStr(row, [
+        'invoice_number',
+        'number',
+        'document_number',
+        'reference',
+        'payment_number',
+      ]);
+      if (ref && !numbers.includes(ref)) numbers.push(ref);
+    }
+  }
+  return numbers.length ? numbers.join(', ') : undefined;
+}
+
+/**
+ * Build a human Description for statement rows from whatever fields the API sent.
+ * Prefers narration/remarks; otherwise composes type + job/LPO/due/method/status.
+ */
+function buildStatementDescription(
+  r: Record<string, unknown>,
+  opts: { side?: 'AR' | 'AP'; kind?: 'invoice' | 'payment' | 'line' } = {},
+): string | undefined {
+  const side = opts.side ?? 'AR';
+  const type =
+    firstStr(r, ['type', 'document_type', 'invoice_type', 'payment_type']) ??
+    (opts.kind === 'payment' ? 'PAYMENT' : opts.kind === 'invoice' ? 'INVOICE' : undefined);
+  const narrative = pickNarrative(r);
+
+  const kind =
+    opts.kind ??
+    (type && /payment|receipt|allocation/i.test(type)
+      ? 'payment'
+      : type && /invoice|credit.?note|debit.?note|sales|purchase/i.test(type)
+        ? 'invoice'
+        : 'line');
+
+  const parts: string[] = [];
+  if (narrative) {
+    parts.push(narrative);
+  } else {
+    const label =
+      docKindLabel(type, side) ??
+      (kind === 'payment' ? (side === 'AR' ? 'Receipt' : 'Payment') : undefined);
+    if (label) parts.push(label);
+  }
+
+  const lpo = firstStr(r, ['lpo_number', 'lpoNumber', 'lpo', 'po_number', 'purchase_order']);
+  if (lpo) parts.push(`LPO ${lpo}`);
+
+  const job = firstStr(r, [
+    'job_number',
+    'jobNumber',
+    'job_no',
+    'job_ref',
+    'job_reference',
+    'hawb',
+    'mawb',
+    'bl_number',
+  ]);
+  if (job) parts.push(`Job ${job}`);
+  else {
+    const jobId = firstStr(r, ['job_id', 'jobId']);
+    if (jobId && !isLikelyUuid(jobId)) parts.push(`Job ${jobId}`);
+  }
+
+  if (kind === 'invoice' || kind === 'line') {
+    const due = firstStr(r, ['due_date', 'dueDate']);
+    if (due) parts.push(`Due ${due}`);
+
+    const total = num(r.total_amount) || num(r.totalAmount) || num(r.amount);
+    const paid =
+      num(r.paid_amount) || num(r.amount_paid) || num(r.paidAmount) || num(r.paid);
+    const remaining =
+      num(r.balance_due) ||
+      num(r.outstanding_balance) ||
+      num(r.outstandingBalance) ||
+      (total > 0 && paid >= 0 ? Math.max(0, total - paid) : 0);
+    if (paid > 0) parts.push(`Paid ${paid}`);
+    if (remaining > 0) parts.push(`Remaining ${remaining}`);
+  }
+
+  if (kind === 'payment' || kind === 'line') {
+    const method = humanizeToken(
+      firstStr(r, [
+        'payment_method',
+        'paymentMethod',
+        'method',
+        'mode',
+        'payment_mode',
+        'instrument',
+      ]),
+    );
+    if (method) parts.push(method);
+
+    const bank = firstStr(r, ['bank_name', 'bankName', 'bank', 'account_name']);
+    if (bank) parts.push(bank);
+
+    const cheque = firstStr(r, [
+      'cheque_number',
+      'check_number',
+      'cheque_no',
+      'instrument_number',
+    ]);
+    if (cheque) parts.push(`Cheque ${cheque}`);
+
+    const against = allocationReferences(r);
+    if (against) parts.push(`Against ${against}`);
+  }
+
+  // Status only when we have no narrative (avoid "POSTED" as the whole description).
+  if (!narrative) {
+    const statusPart = formatStatusLabel(firstStr(r, ['status']));
+    if (statusPart) parts.push(statusPart);
+  }
+
+  // Deduplicate while preserving order
+  const seen = new Set<string>();
+  const unique = parts.filter((part) => {
+    const key = part.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return unique.length ? unique.join(' · ') : undefined;
+}
+
+export function normalizeStatementLine(
+  raw: unknown,
+  side: 'AR' | 'AP' = 'AR',
+): StatementLine | null {
   const r = asRecord(raw);
   if (!r) return null;
   return {
+    ...r,
     id: str(r.id),
     date:
       str(r.date) ??
@@ -337,19 +558,13 @@ export function normalizeStatementLine(raw: unknown): StatementLine | null {
       str(r.number) ??
       str(r.invoice_number) ??
       str(r.payment_number),
-    description: str(r.description) ?? str(r.narration) ?? str(r.remarks) ?? str(r.status),
+    description: buildStatementDescription(r, { side, kind: 'line' }),
     debit: num(r.debit) || num(r.debit_amount),
     credit: num(r.credit) || num(r.credit_amount),
     balance: num(r.balance) || num(r.running_balance),
     document_id: str(r.document_id) ?? str(r.invoice_id) ?? str(r.payment_id) ?? str(r.id),
     document_number: str(r.document_number) ?? str(r.invoice_number) ?? str(r.payment_number),
-    ...r,
   };
-}
-
-function isCreditNoteType(type?: string): boolean {
-  if (!type) return false;
-  return /credit.?note|cn\b/i.test(type);
 }
 
 /**
@@ -386,7 +601,10 @@ function linesFromInvoicesAndPayments(
       date: str(r.invoice_date) ?? str(r.date),
       type,
       reference: str(r.invoice_number) ?? str(r.number),
-      description: str(r.status),
+      description: buildStatementDescription(
+        { ...r, type, invoice_type: type },
+        { side, kind: 'invoice' },
+      ),
       debit,
       credit,
       document_id: str(r.id) ?? str(r.invoice_id),
@@ -403,13 +621,16 @@ function linesFromInvoicesAndPayments(
       num(r.total_amount) ||
       num(r.allocated_amount) ||
       num(r.payment_amount);
-    const type = str(r.payment_type) ?? str(r.type) ?? 'PAYMENT';
+    const type = str(r.payment_type) ?? str(r.type) ?? (side === 'AR' ? 'RECEIPT' : 'PAYMENT');
     events.push({
       id: str(r.id) ?? str(r.payment_id),
       date: str(r.payment_date) ?? str(r.date) ?? str(r.paid_at),
       type,
       reference: str(r.payment_number) ?? str(r.number) ?? str(r.reference),
-      description: str(r.status) ?? str(r.narration),
+      description: buildStatementDescription(
+        { ...r, type, payment_type: type },
+        { side, kind: 'payment' },
+      ),
       debit: side === 'AP' ? amount : 0,
       credit: side === 'AR' ? amount : 0,
       document_id: str(r.id) ?? str(r.payment_id),
@@ -460,7 +681,7 @@ export function normalizeStatementReport(raw: unknown, partyId?: string) {
   const side: 'AR' | 'AP' = sideRaw === 'AP' ? 'AP' : 'AR';
 
   let lines = unwrapStatementLines(raw)
-    .map(normalizeStatementLine)
+    .map((line) => normalizeStatementLine(line, side))
     .filter((l): l is StatementLine => Boolean(l));
 
   if (!lines.length && (Array.isArray(root.invoices) || Array.isArray(root.payments))) {
