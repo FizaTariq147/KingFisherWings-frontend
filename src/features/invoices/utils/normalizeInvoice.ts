@@ -50,55 +50,43 @@ function pickInvoiceId(record: Record<string, unknown>): string | undefined {
   return id && isUuid(id) ? id : undefined;
 }
 
-/** Score how likely a record is the invoice entity (not party/company embed). */
-function invoiceCandidateScore(record: Record<string, unknown>, fromKey?: string): number {
-  let score = 0;
-  if (fromKey && /invoice/i.test(fromKey)) score += 20;
-  if (pickInvoiceId(record)) score += 5;
-  if (str(record.invoice_number) || str(record.invoice_no) || str(record.number)) score += 12;
-  if (str(record.currency_code) || str(record.currencyCode)) score += 4;
-  if (str(record.party_id) || str(record.partyId) || asRecord(record.party)) score += 4;
-  if (str(record.status)) score += 3;
-  if (Array.isArray(record.lines) || Array.isArray(record.invoice_lines)) score += 6;
-  if (record.subtotal != null || record.total_amount != null || record.total != null) score += 4;
-  // Penalize obvious relation embeds that also have an id.
-  if (fromKey && /^(party|customer|company|branch|department|job|user|created_by)$/i.test(fromKey)) {
-    score -= 25;
-  }
-  if (str(record.email) && str(record.name) && !str(record.currency_code) && !str(record.invoice_number)) {
-    score -= 10;
-  }
-  return score;
-}
-
 /**
- * Dig invoice-shaped objects out of varied Nest/API envelopes.
- * Avoids grabbing party/company embeds that also expose `id`.
+ * Unwrap common API envelopes to the invoice entity.
+ * Supports: entity | { data: entity } | { data: { invoice: entity } }
  */
-export function extractInvoiceCandidate(raw: unknown): unknown {
-  const candidates: Array<{ value: unknown; score: number }> = [];
+export function unwrapInvoiceEntity(raw: unknown): unknown {
+  if (raw == null) return raw;
+  if (Array.isArray(raw)) return raw[0] ?? raw;
 
-  const visit = (value: unknown, fromKey?: string, depth = 0) => {
-    if (depth > 5 || value == null) return;
-    if (Array.isArray(value)) {
-      for (const item of value) visit(item, fromKey, depth + 1);
-      return;
-    }
-    const record = asRecord(value);
-    if (!record) return;
-    const score = invoiceCandidateScore(record, fromKey);
-    if (score > 0 && pickInvoiceId(record)) {
-      candidates.push({ value, score });
-    }
-    for (const [key, child] of Object.entries(record)) {
-      if (child && typeof child === 'object') visit(child, key, depth + 1);
-    }
-  };
+  const root = asRecord(raw);
+  if (!root) return raw;
 
-  visit(raw);
-  if (!candidates.length) return raw;
-  candidates.sort((a, b) => b.score - a.score);
-  return candidates[0]?.value ?? raw;
+  const layer1 = 'data' in root && root.data != null ? root.data : raw;
+  if (Array.isArray(layer1)) return layer1[0] ?? layer1;
+
+  const mid = asRecord(layer1);
+  if (!mid) return layer1;
+
+  // Prefer explicit invoice key when present (avoids party/company embeds).
+  const nestedInvoice =
+    mid.invoice ?? mid.Invoice ?? mid.entity ?? mid.result ?? mid.item;
+  const nestedRecord = asRecord(nestedInvoice);
+  if (nestedRecord && pickInvoiceId(nestedRecord)) return nestedInvoice;
+
+  if (pickInvoiceId(mid)) return mid;
+
+  // One more data unwrap (double envelope).
+  if ('data' in mid && mid.data != null) {
+    const inner = asRecord(mid.data);
+    if (inner) {
+      const innerInvoice = asRecord(inner.invoice);
+      if (innerInvoice && pickInvoiceId(innerInvoice)) return inner.invoice;
+      if (pickInvoiceId(inner)) return mid.data;
+    }
+    return mid.data;
+  }
+
+  return mid;
 }
 
 export function normalizeInvoiceLine(raw: unknown): InvoiceLine | null {
@@ -128,8 +116,7 @@ export function normalizeInvoiceLines(raw: unknown): InvoiceLine[] {
 }
 
 export function normalizeInvoice(raw: unknown): Invoice | null {
-  const extracted = extractInvoiceCandidate(raw);
-  const r = asRecord(extracted) ?? asRecord(raw);
+  const r = asRecord(unwrapInvoiceEntity(raw));
   if (!r) return null;
   const id = pickInvoiceId(r);
   if (!id) return null;

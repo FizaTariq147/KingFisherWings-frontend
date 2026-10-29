@@ -43,7 +43,20 @@ export function useInvoiceActions(invoiceId: string) {
   });
   const createFromJob = useMutation({
     mutationFn: (jobId: string) => invoiceService.createFromJob(jobId),
-    onSuccess: (inv) => invalidate(inv.id),
+    onSuccess: (inv) => {
+      queryClient.setQueryData(invoiceKeys.detail(inv.id), inv);
+      void queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            Array.isArray(key) &&
+            key[0] === 'tenant' &&
+            key[1] === 'invoices' &&
+            key[2] !== 'detail'
+          );
+        },
+      });
+    },
   });
   const addLine = useMutation({
     mutationFn: (dto: CreateInvoiceLineDto) => invoiceService.addLine(id, dto),
@@ -82,12 +95,21 @@ export function useInvoicePdf(id: string, enabled = true) {
 
 export function useCreateInvoiceFromJob() {
   const queryClient = useQueryClient();
-  const invalidate = useInvalidateInvoices();
   return useMutation({
     mutationFn: (jobId: string) => invoiceService.createFromJob(jobId),
     onSuccess: (inv) => {
       queryClient.setQueryData(invoiceKeys.detail(inv.id), inv);
-      invalidate(inv.id);
+      void queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            Array.isArray(key) &&
+            key[0] === 'tenant' &&
+            key[1] === 'invoices' &&
+            key[2] !== 'detail'
+          );
+        },
+      });
     },
   });
 }
