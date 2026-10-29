@@ -9,7 +9,8 @@ import type { Job } from '../types/job.types';
 
 function partyDisplayLabel(party?: { code?: string; name?: string } | null): string {
   if (!party) return '—';
-  return [party.code, party.name].filter(Boolean).join(' — ') || '—';
+  const name = String(party.name ?? '').trim();
+  return name && !isUuid(name) ? name : '—';
 }
 
 function masterDisplayLabel(record?: MasterRecord | null): string {
@@ -24,8 +25,10 @@ function masterDisplayLabel(record?: MasterRecord | null): string {
       '',
   ).trim();
   const name = String(record.name ?? record.label ?? record.city ?? '').trim();
-  if (code && name && code !== name) return `${code} — ${name}`;
-  return name || code || '';
+  // Prefer names over codes/ids (never show UUID).
+  if (name && !isUuid(name)) return name;
+  if (code && !isUuid(code)) return code;
+  return '';
 }
 
 function buildMasterLabelMap(items: MasterRecord[]): Map<string, string> {
@@ -34,7 +37,18 @@ function buildMasterLabelMap(items: MasterRecord[]): Map<string, string> {
     const id = String(item.id ?? '').trim();
     if (!isUuid(id)) continue;
     const label = masterDisplayLabel(item) || portLabelFromRecord(item);
-    if (label) map.set(id, label);
+    if (label && !isUuid(label)) map.set(id, label);
+  }
+  return map;
+}
+
+function buildContainerTypeNameMap(items: MasterRecord[]): Map<string, string> {
+  const map = new Map<string, string>();
+  for (const item of items) {
+    const id = String(item.id ?? '').trim();
+    if (!isUuid(id)) continue;
+    const name = String(item.name ?? item.label ?? '').trim();
+    if (name && !isUuid(name)) map.set(id, name);
   }
   return map;
 }
@@ -222,7 +236,10 @@ export function useJobResolvedLabels(job: Job) {
 
   const portMap = useMemo(() => buildMasterLabelMap(ports), [ports]);
   const airportMap = useMemo(() => buildMasterLabelMap(airports), [airports]);
-  const containerTypeMap = useMemo(() => buildMasterLabelMap(containerTypes), [containerTypes]);
+  const containerTypeMap = useMemo(
+    () => buildContainerTypeNameMap(containerTypes),
+    [containerTypes],
+  );
   const shippingLineMap = useMemo(() => buildMasterLabelMap(shippingLines), [shippingLines]);
   const vesselMap = useMemo(() => buildMasterLabelMap(vessels), [vessels]);
   const airlineMap = useMemo(() => buildMasterLabelMap(airlines), [airlines]);

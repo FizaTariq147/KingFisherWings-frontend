@@ -238,19 +238,18 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
               {containers.length === 0 ? (
                 <p className="text-[var(--color-neutral-400)]">No containers.</p>
               ) : (
-                containers.map((raw) => {
-                  const c = raw as {
-                    id: string;
-                    container_number?: string;
-                    status?: string;
-                  };
-                  return (
-                    <div key={c.id} className="flex justify-between border-b py-1">
-                      <span>{c.container_number || c.id.slice(0, 8)}</span>
-                      <span className="text-[var(--color-neutral-400)]">{c.status}</span>
-                    </div>
-                  );
-                })
+                containers.map((c) => (
+                  <div key={c.id} className="flex justify-between border-b py-1">
+                    <span>
+                      {c.container_number?.trim() ||
+                        c.container_type_name?.trim() ||
+                        'Container'}
+                    </span>
+                    <span className="text-[var(--color-neutral-400)]">
+                      {c.status || 'EMPTY'}
+                    </span>
+                  </div>
+                ))
               )}
               <Button type="button" size="sm" variant="secondary" onClick={() => refetchContainers()}>
                 Refresh

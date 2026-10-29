@@ -1,8 +1,21 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import {
+  containerTypeSelectOptions,
+  partyNameOnly,
+  resolveContainerTypeName,
+} from '@/features/masters/utils/containerTypeLabel';
+import { useParties } from '@/features/parties/hooks/useParties';
+import { isUuid } from '@/lib/isUuid';
 import { useInlineValidation } from '@/lib/validation';
+import {
+  CONTAINER_STATUSES,
+  type ContainerStatus,
+} from '../../constants/job.constants';
 import { jobService } from '../../services/job.service';
 import { useJobActions } from '../../hooks/useJobActions';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
@@ -16,37 +29,81 @@ import {
   createJobContainerSchema,
   splitContainerFormSchema,
 } from '../../schemas/job.schema';
+import type { JobContainer } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import {
+  formatFillPercent,
+  type ContainerFillInfo,
+} from '../../utils/normalizeJobContainers';
 import { ApiDataView } from '../ApiDataView';
 
 interface JobContainersPanelProps {
   jobId: string;
 }
 
+function formatUpdatedAt(value?: string): string {
+  if (!value) return '—';
+  const t = Date.parse(value);
+  if (!Number.isFinite(t)) return value;
+  return new Date(t).toLocaleString();
+}
+
 export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   const { data: containers = [], refetch } = useJobContainers(jobId);
-  const { data: fill, refetch: refetchFill } = useJobContainersFill(jobId);
+  const { data: fill = [], refetch: refetchFill } = useJobContainersFill(jobId);
   const { data: cargo = [] } = useJobCargo(jobId);
+  const { data: containerTypes = [] } = useMasterOptions(
+    'container-types',
+    MASTER_PATHS['container-types'],
+    true,
+  );
+  const { data: partiesResult } = useParties({
+    page: 1,
+    limit: 200,
+    order: 'asc',
+  });
   const mutations = useJobSubresourceMutations(jobId);
   const actions = useJobActions(jobId);
+  const containerTypeOptions = useMemo(
+    () => containerTypeSelectOptions(containerTypes),
+    [containerTypes],
+  );
+  const partyOptions = useMemo(() => {
+    return (partiesResult?.parties ?? [])
+      .filter((p) => isUuid(p.id))
+      .map((p) => ({
+        value: p.id,
+        label: partyNameOnly(p) || '—',
+      }))
+      .filter((o) => o.label && o.label !== '—');
+  }, [partiesResult?.parties]);
   const addValidation = useInlineValidation();
   const assignValidation = useInlineValidation();
   const splitValidation = useInlineValidation();
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
-  const [singleFill, setSingleFill] = useState<unknown>(null);
+  const [singleFill, setSingleFill] = useState<ContainerFillInfo | null>(null);
   const [syncIncludeHouses, setSyncIncludeHouses] = useState(true);
   const [syncSubJobOnly, setSyncSubJobOnly] = useState(false);
   const [syncRollupHeader, setSyncRollupHeader] = useState(true);
   const [containerTypeId, setContainerTypeId] = useState('');
   const [containerNumber, setContainerNumber] = useState('');
   const [sealNumber, setSealNumber] = useState('');
+  const [status, setStatus] = useState<ContainerStatus>('EMPTY');
   const [assignCargoId, setAssignCargoId] = useState('');
   const [assignContainerId, setAssignContainerId] = useState('');
   const [splitContainerId, setSplitContainerId] = useState('');
   const [splitPortions, setSplitPortions] = useState<
     { consignee_id: string; packages: string; gross_weight: string }[]
   >([{ consignee_id: '', packages: '', gross_weight: '' }]);
+
+  const fillByContainerId = useMemo(() => {
+    const map = new Map<string, ContainerFillInfo>();
+    for (const row of fill) {
+      if (row.container_id) map.set(row.container_id, row);
+    }
+    return map;
+  }, [fill]);
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -67,12 +124,14 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         container_type_id: containerTypeId.trim(),
         container_number: containerNumber.trim() || undefined,
         seal_number: sealNumber.trim() || undefined,
+        status,
       },
       async (dto) => {
         await mutations.createContainer.mutateAsync(dto);
         setContainerTypeId('');
         setContainerNumber('');
         setSealNumber('');
+        setStatus('EMPTY');
         setMsg('Container added.');
         await Promise.all([refetch(), refetchFill()]);
       },
@@ -119,6 +178,23 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
     );
     if (!ok) setError(null);
   };
+
+  const touchContainer = (c: JobContainer) =>
+    run(async () => {
+      const dto: {
+        container_number?: string;
+        seal_number?: string;
+        status?: ContainerStatus;
+      } = {};
+      if (c.container_number) dto.container_number = c.container_number;
+      if (c.seal_number) dto.seal_number = c.seal_number;
+      // Always include status so PATCH is never empty when number/seal are missing.
+      dto.status = c.status ?? 'EMPTY';
+      await mutations.updateContainer.mutateAsync({
+        containerId: c.id,
+        dto,
+      });
+    }, 'Container touched (updated).');
 
   const banner =
     error ||
@@ -204,22 +280,30 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
           {containers.length === 0 ? (
             <p className="text-[var(--color-neutral-400)]">No containers.</p>
           ) : (
-            containers.map((raw) => {
-              const c = raw as {
-                id: string;
-                container_number?: string;
-                seal_number?: string;
-                status?: string;
-              };
+            containers.map((c) => {
+              const fillRow = fillByContainerId.get(c.id);
+              const typeName = resolveContainerTypeName(
+                c.container_type_id,
+                containerTypes,
+                c.container_type_name,
+              );
+              const title =
+                c.container_number?.trim() ||
+                (typeName !== '—' ? typeName : 'Container');
               return (
                 <div
                   key={c.id}
                   className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-neutral-100)] py-2"
                 >
                   <div>
-                    <p className="font-medium">{c.container_number || c.id.slice(0, 8)}</p>
+                    <p className="font-medium">{title}</p>
                     <p className="text-xs text-[var(--color-neutral-400)]">
-                      Seal: {c.seal_number || '—'} · Status: {c.status || '—'}
+                      Type: {typeName} · Seal: {c.seal_number || '—'} · Status:{' '}
+                      {c.status || 'EMPTY'} · Fill: {formatFillPercent(fillRow?.fill_percent)}
+                    </p>
+                    <p className="text-xs text-[var(--color-neutral-400)]">
+                      Updated: {formatUpdatedAt(c.updated_at)}
+                      {fillRow?.message ? ` · ${fillRow.message}` : ''}
                     </p>
                   </div>
                   <div className="flex gap-2">
@@ -231,6 +315,14 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                         run(async () => {
                           const data = await jobService.getContainerFill(jobId, c.id);
                           setSingleFill(data);
+                          if (!data) {
+                            throw new Error(
+                              'Fill % returned no data. Assign cargo and set container capacity.',
+                            );
+                          }
+                          if (data.fill_percent == null && data.message) {
+                            throw new Error(data.message);
+                          }
                         }, 'Fetched container fill.')
                       }
                     >
@@ -240,19 +332,7 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                       type="button"
                       size="sm"
                       variant="secondary"
-                      onClick={() =>
-                        run(
-                          () =>
-                            mutations.updateContainer.mutateAsync({
-                              containerId: c.id,
-                              dto: {
-                                seal_number: c.seal_number,
-                                container_number: c.container_number,
-                              },
-                            }),
-                          'Container updated.',
-                        )
-                      }
+                      onClick={() => void touchContainer(c)}
                     >
                       Touch update
                     </Button>
@@ -299,7 +379,29 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
           <CardTitle>Fill indicators (all)</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4">
-          <ApiDataView data={fill} emptyLabel="No fill indicators." maxHeightClass="max-h-40" />
+          {fill.length === 0 ? (
+            <p className="text-sm text-[var(--color-neutral-400)]">No fill indicators.</p>
+          ) : (
+            <div className="space-y-2 text-sm">
+              {fill.map((row) => (
+                <div
+                  key={row.container_id}
+                  className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-neutral-100)] py-1.5"
+                >
+                  <span className="font-medium">
+                    {row.container_number || row.container_id.slice(0, 8)}
+                  </span>
+                  <span className="text-[var(--color-neutral-600)]">
+                    Fill {formatFillPercent(row.fill_percent)}
+                    {row.used_cbm != null || row.capacity_cbm != null
+                      ? ` · CBM ${row.used_cbm ?? '—'} / ${row.capacity_cbm ?? '—'}`
+                      : ''}
+                    {row.message ? ` · ${row.message}` : ''}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </Card>
 
@@ -308,9 +410,25 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
           <CardHeader>
             <CardTitle>Selected container fill</CardTitle>
           </CardHeader>
-          <div className="px-4 pb-4">
+          <div className="px-4 pb-4 space-y-2 text-sm">
+            <p>
+              Fill: <strong>{formatFillPercent(singleFill.fill_percent)}</strong>
+            </p>
+            {(singleFill.used_cbm != null || singleFill.capacity_cbm != null) && (
+              <p>
+                CBM: {singleFill.used_cbm ?? '—'} / {singleFill.capacity_cbm ?? '—'}
+              </p>
+            )}
+            {(singleFill.used_weight != null || singleFill.capacity_weight != null) && (
+              <p>
+                Weight: {singleFill.used_weight ?? '—'} / {singleFill.capacity_weight ?? '—'}
+              </p>
+            )}
+            {singleFill.message ? (
+              <p className="text-[var(--color-neutral-500)]">{singleFill.message}</p>
+            ) : null}
             <ApiDataView
-              data={singleFill}
+              data={singleFill.raw ?? singleFill}
               emptyLabel="No fill data."
               maxHeightClass="max-h-40"
             />
@@ -323,15 +441,50 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
           <CardTitle>Add container</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
-          <Input
-            placeholder="Container type UUID *"
-            value={containerTypeId}
-            error={addValidation.fieldError('container_type_id')}
-            onChange={(e) => {
-              setContainerTypeId(e.target.value);
-              addValidation.clearField('container_type_id');
-            }}
-          />
+          <div className="space-y-1">
+            <select
+              className={`h-9 w-full rounded-md border px-3 text-sm ${
+                addValidation.fieldError('container_type_id')
+                  ? 'border-[var(--color-danger-500)]'
+                  : 'border-[var(--color-neutral-200)]'
+              }`}
+              value={containerTypeId}
+              onChange={(e) => {
+                setContainerTypeId(e.target.value);
+                addValidation.clearField('container_type_id');
+              }}
+            >
+              <option value="">Container type *</option>
+              {containerTypeOptions.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+            {addValidation.fieldError('container_type_id') && (
+              <p className="text-xs text-[var(--color-danger-500)]">
+                {addValidation.fieldError('container_type_id')}
+              </p>
+            )}
+            {containerTypeOptions.length === 0 ? (
+              <p className="text-xs text-[var(--color-neutral-500)]">
+                No container types in masters. Add them under Masters → Container types.
+              </p>
+            ) : null}
+          </div>
+          <div className="space-y-1">
+            <select
+              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as ContainerStatus)}
+            >
+              {CONTAINER_STATUSES.map((s) => (
+                <option key={s} value={s}>
+                  {s.replace(/_/g, ' ')}
+                </option>
+              ))}
+            </select>
+          </div>
           <Input
             placeholder="Container number"
             value={containerNumber}
@@ -379,11 +532,16 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
               }}
             >
               <option value="">Select container…</option>
-              {containers.map((raw) => {
-                const c = raw as { id: string; container_number?: string };
+              {containers.map((c) => {
+                const typeName = resolveContainerTypeName(
+                  c.container_type_id,
+                  containerTypes,
+                  c.container_type_name,
+                );
                 return (
                   <option key={c.id} value={c.id}>
-                    {c.container_number || c.id.slice(0, 8)}
+                    {c.container_number?.trim() ||
+                      (typeName !== '—' ? typeName : 'Container')}
                   </option>
                 );
               })}
@@ -409,10 +567,14 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
             >
               <option value="">Select cargo…</option>
               {cargo.map((raw) => {
-                const c = raw as { id: string; description?: string };
+                const item = raw as {
+                  id: string;
+                  description?: string;
+                  commodity?: string;
+                };
                 return (
-                  <option key={c.id} value={c.id}>
-                    {c.description || c.id.slice(0, 8)}
+                  <option key={item.id} value={item.id}>
+                    {item.description || item.commodity || 'Cargo'}
                   </option>
                 );
               })}
@@ -455,11 +617,16 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
               }}
             >
               <option value="">Select container…</option>
-              {containers.map((raw) => {
-                const c = raw as { id: string; container_number?: string };
+              {containers.map((c) => {
+                const typeName = resolveContainerTypeName(
+                  c.container_type_id,
+                  containerTypes,
+                  c.container_type_name,
+                );
                 return (
                   <option key={c.id} value={c.id}>
-                    {c.container_number || c.id.slice(0, 8)}
+                    {c.container_number?.trim() ||
+                      (typeName !== '—' ? typeName : 'Container')}
                   </option>
                 );
               })}
@@ -479,17 +646,30 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                 key={`split-row-${index}`}
                 className="grid gap-2 rounded-md border border-[var(--color-neutral-200)] bg-white p-2 sm:grid-cols-[1fr_6rem_6rem_auto]"
               >
-                <Input
-                  label={index === 0 ? 'Consignee ID' : undefined}
-                  placeholder="Consignee UUID (optional)"
-                  value={row.consignee_id}
-                  onChange={(e) => {
-                    const next = [...splitPortions];
-                    next[index] = { ...next[index], consignee_id: e.target.value };
-                    setSplitPortions(next);
-                    splitValidation.clearField('portions');
-                  }}
-                />
+                <div className="space-y-1">
+                  {index === 0 ? (
+                    <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+                      Consignee
+                    </label>
+                  ) : null}
+                  <select
+                    className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+                    value={row.consignee_id}
+                    onChange={(e) => {
+                      const next = [...splitPortions];
+                      next[index] = { ...next[index], consignee_id: e.target.value };
+                      setSplitPortions(next);
+                      splitValidation.clearField('portions');
+                    }}
+                  >
+                    <option value="">Consignee (optional)</option>
+                    {partyOptions.map((o) => (
+                      <option key={o.value} value={o.value}>
+                        {o.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
                 <Input
                   label={index === 0 ? 'Packages' : undefined}
                   type="number"

@@ -352,10 +352,10 @@ export default function QuotationOnlineQuotePage() {
                 >
                   <option value="">Select…</option>
                   {containers
-                    .filter((c) => isUuid(String(c.id)))
+                    .filter((c) => isUuid(String(c.id)) && String(c.name ?? '').trim())
                     .map((c) => (
                       <option key={String(c.id)} value={String(c.id)}>
-                        {String(c.code ?? c.name ?? c.id)}
+                        {String(c.name).trim()}
                       </option>
                     ))}
                 </select>

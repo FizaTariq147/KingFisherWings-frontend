@@ -273,7 +273,7 @@ export const createJobContainerSchema = z.object({
   cbm: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
   status: z
     .enum(['EMPTY', 'STUFFED', 'GATED_IN', 'LOADED', 'IN_TRANSIT', 'DISCHARGED', 'RETURNED'])
-    .optional(),
+    .default('EMPTY'),
   gate_in_at: optionalTextUndef({ max: 32 }),
   is_soc: z.boolean().optional(),
 });

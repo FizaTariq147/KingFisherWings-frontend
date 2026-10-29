@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { resolveContainerTypeName } from '@/features/masters/utils/containerTypeLabel';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { parseWithFieldErrors } from '@/lib/validation';
 import { CUSTOMS_EXAMINATION_RESULTS, CUSTOMS_STATUSES } from '../../constants/job.constants';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import {
+  useJobContainers,
   useJobCustomsExaminations,
   useJobDamageReports,
   useJobDeposits,
@@ -37,6 +41,27 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
   const mutations = useJobSubresourceMutations(jobId);
   const { data: deposits = [], refetch: refetchDeposits } = useJobDeposits(jobId);
   const { data: freeDays = [], refetch: refetchFreeDays } = useJobFreeDays(jobId);
+  const { data: jobContainers = [] } = useJobContainers(jobId);
+  const { data: containerTypes = [] } = useMasterOptions(
+    'container-types',
+    MASTER_PATHS['container-types'],
+    true,
+  );
+  const containerOptions = useMemo(
+    () =>
+      jobContainers.map((c) => {
+        const typeName = resolveContainerTypeName(
+          c.container_type_id,
+          containerTypes,
+          c.container_type_name,
+        );
+        return {
+          value: c.id,
+          label: c.container_number?.trim() || (typeName !== '—' ? typeName : 'Container'),
+        };
+      }),
+    [jobContainers, containerTypes],
+  );
   const { data: damageReports = [], refetch: refetchDamage } = useJobDamageReports(jobId);
   const { data: partDeliveries = [], refetch: refetchParts } = useJobPartDeliveries(jobId);
   const { data: pods = [], refetch: refetchPods } = useJobPods(jobId);
@@ -469,11 +494,18 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
             maxHeightClass="max-h-40"
           />
           <div className="grid gap-2 sm:grid-cols-2">
-            <Input
-              placeholder="Container UUID *"
+            <select
+              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
               value={freeContainerId}
               onChange={(e) => setFreeContainerId(e.target.value)}
-            />
+            >
+              <option value="">Container *</option>
+              {containerOptions.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
             <Input
               type="number"
               placeholder="Free days allowed"

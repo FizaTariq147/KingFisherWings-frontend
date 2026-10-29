@@ -323,7 +323,7 @@ export function ShipmentForm({
   const labelForContainer = (id?: string) => {
     if (!id) return '—';
     const row = containers.find((c) => String(c.id) === id);
-    return row ? String(row.code ?? row.name ?? row.id) : id;
+    return row ? String(row.name ?? '').trim() || '—' : '—';
   };
 
   const chargeLabelById = useMemo(() => {
@@ -650,10 +650,10 @@ export function ShipmentForm({
                   >
                     <option value="">Select…</option>
                     {containers
-                      .filter((c) => isUuid(String(c.id)))
+                      .filter((c) => isUuid(String(c.id)) && String(c.name ?? '').trim())
                       .map((c) => (
                         <option key={String(c.id)} value={String(c.id)}>
-                          {String(c.code ?? c.name ?? c.id)}
+                          {String(c.name).trim()}
                         </option>
                       ))}
                   </select>

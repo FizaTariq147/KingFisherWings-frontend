@@ -90,15 +90,14 @@ export default function NvoccBookingCreatePage() {
 
   const containerTypeOptions = useMemo(
     () =>
-      containerTypes.map((row) => {
-        const id = String(row.id ?? '').trim();
-        const code = String(row.code ?? row.size ?? '').trim();
-        const name = String(row.name ?? code).trim();
-        return {
-          value: isUuid(id) ? id : code,
-          label: name && code && name !== code ? `${name} (${code})` : name || code || id,
-        };
-      }),
+      containerTypes
+        .map((row) => {
+          const id = String(row.id ?? '').trim();
+          const name = String(row.name ?? '').trim();
+          if (!isUuid(id) || !name) return null;
+          return { value: id, label: name };
+        })
+        .filter((o): o is { value: string; label: string } => Boolean(o)),
     [containerTypes],
   );
 
