@@ -55,22 +55,69 @@ function normalizeMeta(
   return { page, limit, total, totalPages };
 }
 
+const LIST_ARRAY_KEYS = [
+  'items',
+  'results',
+  'invoices',
+  'rows',
+  'records',
+  'data',
+] as const;
+
+function firstArrayField(
+  record: Record<string, unknown>,
+  keys: readonly string[] = LIST_ARRAY_KEYS,
+): unknown[] | null {
+  for (const key of keys) {
+    const value = record[key];
+    if (Array.isArray(value)) return value;
+  }
+  return null;
+}
+
 function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
   if (Array.isArray(raw)) return { items: raw };
   const envelope = asRecord(raw);
   if (!envelope) return { items: [] };
+
+  // Root-level list (e.g. { invoices: [...] } without data wrapper).
+  const rootList = firstArrayField(envelope, [
+    'items',
+    'results',
+    'invoices',
+    'rows',
+    'records',
+  ]);
+  if (rootList) return { items: rootList, meta: envelope.meta };
+
   const data = envelope.data;
   if (Array.isArray(data)) return { items: data, meta: envelope.meta };
   const nested = asRecord(data);
   if (nested) {
-    const list =
-      (Array.isArray(nested.items) && nested.items) ||
-      (Array.isArray(nested.results) && nested.results) ||
-      (Array.isArray(nested.invoices) && nested.invoices) ||
-      [];
+    const list = firstArrayField(nested) ?? [];
     return { items: list, meta: nested.meta ?? envelope.meta };
   }
-  return { items: [] };
+  return { items: [], meta: envelope.meta };
+}
+
+function extractIdFromLocation(location: unknown): string | undefined {
+  if (typeof location !== 'string' || !location.trim()) return undefined;
+  const match = location.trim().match(
+    /\/invoices\/([0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})/i,
+  );
+  return match?.[1];
+}
+
+function asCreateLineDtos(rawLines: unknown): CreateInvoiceLineDto[] {
+  if (!Array.isArray(rawLines)) return [];
+  const out: CreateInvoiceLineDto[] = [];
+  for (const line of rawLines) {
+    if (!line || typeof line !== 'object') continue;
+    const prepared = prepareInvoiceLinePayload(line as Record<string, unknown>);
+    if (!prepared.description) continue;
+    out.push(prepared as CreateInvoiceLineDto);
+  }
+  return out;
 }
 
 function unwrapEntity(raw: unknown): unknown {
@@ -180,17 +227,69 @@ export const invoiceService = {
 
   async create(dto: CreateInvoiceDto): Promise<Invoice> {
     try {
+      const fullPayload = prepareInvoicePayload(dto as Record<string, unknown>);
+      // OpenAPI: create header via POST /invoices; charges via POST /invoices/:id/lines.
+      // Nested `lines` on create are often ignored or only echoed — attach via lines API.
+      const linesToAttach = asCreateLineDtos(fullPayload.lines ?? dto.lines);
+      const { lines: _nestedLines, ...headerPayload } = fullPayload;
+
       const res = await withGatewayRetry(() =>
-        axiosInstance.post<unknown>(
-          INVOICE_API.create,
-          prepareInvoicePayload(dto as Record<string, unknown>),
-        ),
+        axiosInstance.post<unknown>(INVOICE_API.create, headerPayload),
       );
-      // Normalize whatever the API returns. When backend returns the created invoice
-      // (id + fields) or a standard envelope, create → detail navigation works as-is.
-      const invoice = normalizeInvoice(unwrapEntity(res.data));
-      if (!invoice) throw new Error('Create succeeded but no invoice was returned.');
-      return invoice;
+
+      let invoice = normalizeInvoice(unwrapEntity(res.data));
+      if (!invoice) {
+        const headers = (res as { headers?: Record<string, string | undefined> }).headers;
+        const locationId = extractIdFromLocation(
+          headers?.location ?? headers?.Location,
+        );
+        if (locationId) {
+          try {
+            invoice = await this.getById(locationId);
+          } catch {
+            invoice = {
+              id: locationId,
+              party_id: String(headerPayload.party_id ?? dto.party_id ?? ''),
+              status: 'DRAFT',
+              currency_code: String(
+                headerPayload.currency_code ?? dto.currency_code ?? 'AED',
+              ),
+              lines: [],
+            };
+          }
+        }
+      }
+      if (!invoice) {
+        throw new Error(
+          'Create succeeded but no invoice id was returned (backend should return the created invoice or Location header).',
+        );
+      }
+
+      if (linesToAttach.length > 0) {
+        const lineErrors: string[] = [];
+        for (const line of linesToAttach) {
+          try {
+            await this.addLine(invoice.id, line);
+          } catch (lineErr) {
+            lineErrors.push(
+              lineErr instanceof Error ? lineErr.message : String(lineErr),
+            );
+          }
+        }
+        if (lineErrors.length === linesToAttach.length) {
+          throw new Error(
+            `Invoice ${invoice.id} was created but charges could not be added via POST /invoices/:id/lines: ${lineErrors[0]}`,
+          );
+        }
+      }
+
+      try {
+        return await this.getById(invoice.id);
+      } catch {
+        // Create (and lines) succeeded; GET failure is a backend/read issue — return create result
+        // so navigation/cache still work. Detail page can show a refetch error separately.
+        return invoice;
+      }
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -443,7 +542,14 @@ export const invoiceService = {
     try {
       return await postAction(INVOICE_API.post(id));
     } catch (error) {
-      throw formatAxiosError(error);
+      const formatted = formatAxiosError(error);
+      const axiosErr = error as { response?: { status?: number } };
+      if (axiosErr.response?.status === 404) {
+        throw new Error(
+          `POST /invoices/${id}/post returned 404 — invoice not found on backend (not persisted, wrong tenant, or invalid id).`,
+        );
+      }
+      throw formatted;
     }
   },
 

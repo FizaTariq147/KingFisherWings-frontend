@@ -34,6 +34,12 @@ export function useInvoice(id: string) {
     queryKey: invoiceKeys.detail(id),
     queryFn: () => invoiceService.getById(id),
     enabled: Boolean(accessToken) && isUuid(id),
+    // Keep seeded create/list cache if a refetch 404s (backend read lag / scope issues).
+    retry: (count, err) => {
+      const msg = err instanceof Error ? err.message : String(err);
+      if (/not found|404/i.test(msg)) return false;
+      return count < 2;
+    },
   });
 }
 
