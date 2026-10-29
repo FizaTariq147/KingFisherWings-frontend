@@ -1129,7 +1129,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "PROFIT_AND_LOSS_REPORT_FORMAT_2_JASPER",
@@ -1583,7 +1584,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "RECEIPT_VOUCHER_REPORT_FORMAT_1",
@@ -3662,7 +3664,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING",
@@ -4223,6 +4226,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 1,
     "name": "AP Aging Summary Report Format",
     "paper": "A4",
+    "orientation": "landscape",
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
@@ -4496,7 +4500,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "AP_OUTSTANDING_STATEMENT_REPORT_FORMAT",
@@ -5159,6 +5164,7 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     "formatNumber": 1,
     "name": "GL Listing Sort By Customer Code Voucher Report Format",
     "paper": "A4",
+    "orientation": "landscape",
     "rtl": false,
     "theme": {
       "primary": "#0F4D96",
@@ -5872,7 +5878,8 @@ export const ACCOUNTS_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT",

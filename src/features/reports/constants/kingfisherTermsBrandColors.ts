@@ -1,15 +1,13 @@
 /**
- * Brand colors sampled from official KingFisher_Terms_and_Conditions.pdf
- * (header bar / titles / footer chrome). Use only for report chrome.
+ * Legacy navy/orange chrome tokens for some invoice header bars (`TcBrandChrome`).
+ * Not used by appended BL / Airway Terms PDFs.
  */
 export const KINGFISHER_TC_HEADER_FOOTER = {
-  /** Top-bar / title navy on the T&C page */
   navy: '#0A2942',
-  /** Top-bar / WINGS GROUP / MULTIMODAL orange on the T&C page */
   orange: '#F26A00',
 } as const;
 
-/** Outer page frame: navy border + orange ring (matches T&C brand). */
+/** Outer page frame: navy border + orange ring. */
 export const KINGFISHER_TC_PAGE_FRAME = {
   borderWidth: 2,
   borderStyle: 'solid' as const,

@@ -1,6 +1,5 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated — run: node scripts/build-invoice-format-ui-layouts.mjs */
 export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
@@ -62,6 +61,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "SGST",
         "CGST %",
         "CGST",
+        "I/UGST %",
+        "I/UGST",
         "Total Amount (INR)"
       ],
       "tableRows": [
@@ -75,6 +76,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "100.00",
           "",
           "7,000.00",
+          "",
+          "",
           "",
           "",
           "",
@@ -95,6 +98,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "495.00",
           "9.00",
           "495.00",
+          "",
+          "",
           "6,490.00"
         ],
         [
@@ -111,6 +116,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "27.00",
           "9.00",
           "27.00",
+          "",
+          "",
           "354.00"
         ],
         [
@@ -127,6 +134,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "270.00",
           "9.00",
           "270.00",
+          "",
+          "",
           "3,540.00"
         ]
       ],
@@ -162,13 +171,13 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         {
           "k": "Invoice No./Date",
           "v": "MAAINV1900717 / 28-JAN-19 (CREATED)"
-        },
-        {
-          "k": "Due Date",
-          "v": "28-JAN-19"
         }
       ],
       "fieldGrid": [
+        {
+          "k": "Due Date",
+          "v": "28-JAN-19"
+        },
         {
           "k": "Shipper",
           "v": "4G LOGISTICS INDIA PVT LTD"
@@ -222,6 +231,10 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "28-JAN-19"
         },
         {
+          "k": "Narration",
+          "v": "B/EXP/19/0251 MBL NO. MBLC9878909999 / HBL NO. PLMAAJEA00080 / JOB NO.CEXP190148"
+        },
+        {
           "k": "ETA",
           "v": "05-FEB-19"
         },
@@ -242,10 +255,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "v": "CFR"
         },
         {
-          "k": "Narration",
-          "v": "B/EXP/19/0251 MBL NO. MBLC9878909999 / HBL NO. PLMAAJEA00080 / JOB NO.CEXP190148"
-        },
-        {
           "k": "Remarks",
           "v": "1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019"
         }
@@ -259,7 +268,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "center"
+        "align": "center",
+        "band": true,
+        "bandStyle": "soft"
       },
       {
         "type": "twoColumn",
@@ -267,20 +278,27 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 2,
+        "labelTone": "ink"
       },
       {
-        "type": "containerStrip"
+        "type": "containerStrip",
+        "chrome": "grid",
+        "headerColor": "cyan"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "cyan",
+        "chrome": "grid",
+        "gridBorder": "primary"
       },
       {
-        "type": "taxAmountBox"
+        "type": "taxAmountBox",
+        "variant": "indiaSummary"
       },
       {
-        "type": "wordsAndTotal"
+        "type": "wordsAndTotal",
+        "variant": "skip"
       },
       {
         "type": "termsBank"
@@ -350,6 +368,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "SGST",
         "CGST %",
         "CGST",
+        "I/UGST %",
+        "I/UGST",
         "Total Amount (INR)"
       ],
       "tableRows": [
@@ -363,6 +383,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "100.00",
           "",
           "7,000.00",
+          "",
+          "",
           "",
           "",
           "",
@@ -383,6 +405,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "495.00",
           "9.00",
           "495.00",
+          "",
+          "",
           "6,490.00"
         ],
         [
@@ -399,6 +423,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "27.00",
           "9.00",
           "27.00",
+          "",
+          "",
           "354.00"
         ],
         [
@@ -415,6 +441,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "270.00",
           "9.00",
           "270.00",
+          "",
+          "",
           "3,540.00"
         ]
       ],
@@ -527,6 +555,82 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "k": "Remarks",
           "v": "1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019"
         }
+      ],
+      "metaMid": [
+        {
+          "k": "Invoice No.",
+          "v": "MAAINV1900717 / 28-JAN-19 (CREATED)"
+        },
+        {
+          "k": "Job No.",
+          "v": "CEXP190148 / 28-JAN-19"
+        },
+        {
+          "k": "Shipment No.",
+          "v": "B/EXP/19/0251 / 22-JAN-19"
+        },
+        {
+          "k": "MBL / MAWB No.",
+          "v": "MBLC9878909999 / 21-JAN-19"
+        },
+        {
+          "k": "HBL / HAWB No.",
+          "v": "PLMAAJEA00080 / 23-JAN-19"
+        },
+        {
+          "k": "Vessel / Voyage",
+          "v": "MSC MARINA / 876"
+        },
+        {
+          "k": "ETD",
+          "v": "28-JAN-19"
+        },
+        {
+          "k": "ETA",
+          "v": "05-FEB-19"
+        },
+        {
+          "k": "INCO Terms",
+          "v": "CFR"
+        }
+      ],
+      "metaRight": [
+        {
+          "k": "Shipper",
+          "v": "4G LOGISTICS INDIA PVT LTD"
+        },
+        {
+          "k": "Consignee",
+          "v": "AL NASER TRADING COMPANY LLC"
+        },
+        {
+          "k": "Origin",
+          "v": "CHENNAI (EX MADRAS), INDIA"
+        },
+        {
+          "k": "Destination",
+          "v": "JEBEL ALI, UNITED ARAB EMIRATES"
+        },
+        {
+          "k": "Currency",
+          "v": "INR 1.00000"
+        },
+        {
+          "k": "Reference No.",
+          "v": "987898 / 17-JAN-19"
+        },
+        {
+          "k": "IGM No.",
+          "v": "8987777 / 25-JAN-19"
+        },
+        {
+          "k": "Line / Subline No.",
+          "v": "128 / 12"
+        },
+        {
+          "k": "PO No.",
+          "v": "987898"
+        }
       ]
     },
     "blocks": [
@@ -537,32 +641,36 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "center"
+        "align": "center",
+        "band": true,
+        "bandStyle": "fill"
       },
       {
-        "type": "twoColumn",
-        "showBillTo": true,
+        "type": "metaTriple",
         "showCreditTerm": true
       },
       {
-        "type": "partyTriple"
-      },
-      {
         "type": "fieldGrid",
-        "cols": 1
+        "cols": 1,
+        "labelTone": "ink"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "fill",
+        "chrome": "grid",
+        "gridBorder": "primary"
       },
       {
-        "type": "taxAmountBox"
+        "type": "taxAmountBox",
+        "variant": "compact"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "containerStrip"
+        "type": "containerStrip",
+        "chrome": "grid",
+        "headerColor": "fill"
       },
       {
         "type": "termsBank"
@@ -570,7 +678,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "colorfulFooter"
       }
-    ]
+    ],
+    "orientation": "landscape"
   },
   {
     "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
@@ -820,23 +929,15 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
     },
     "blocks": [
       {
-        "type": "summaryHero",
-        "title": "SUMMARY INVOICE"
-      },
-      {
-        "type": "formatBadge",
-        "label": "Format-3"
-      },
-      {
-        "type": "companyHeader"
-      },
-      {
-        "type": "officeAddressBand"
+        "type": "companyHeader",
+        "showContact": true
       },
       {
         "type": "docTitle",
         "text": "TAX INVOICE - BOMINV230500382",
-        "align": "center"
+        "align": "center",
+        "band": true,
+        "bandStyle": "solid"
       },
       {
         "type": "twoColumn",
@@ -844,24 +945,33 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "showCreditTerm": true
       },
       {
-        "type": "taxAmountBox"
-      },
-      {
         "type": "fieldGrid",
-        "cols": 2
+        "cols": 2,
+        "labelTone": "primary"
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "primary",
+        "chrome": "grid",
+        "gridBorder": "primary"
+      },
+      {
+        "type": "taxAmountBox",
+        "variant": "compact"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "containerNote"
+        "type": "containerStrip",
+        "chrome": "grid",
+        "headerColor": "primary"
       },
       {
         "type": "termsBank"
+      },
+      {
+        "type": "officeAddressBand"
       },
       {
         "type": "colorfulFooter"
@@ -898,7 +1008,7 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "invoiceNo": "BOMINV230500382",
       "invoiceDate": "17-MAY-23",
       "dueDate": "24-MAY-23",
-      "billToLabel": "Bill To",
+      "billToLabel": "Client",
       "billToName": "DEMO LOGISTICS INDIA PVT LTD",
       "billToAddress": "21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA, 676876",
       "billToPhone": "798798798",
@@ -1054,73 +1164,58 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         }
       ],
       "tableHeaders": [
-        "Charges",
-        "Unit",
+        "Charge",
         "Qty",
-        "Amount / Qty",
-        "Curr.",
+        "Cur.",
         "Ex.Rate",
-        "FCY Amount",
-        "Taxable Amount",
-        "Non Taxable Amount",
+        "Amount / Qty",
         "Tax %",
-        "Tax Amount",
-        "Total Amount"
+        "FCY Amount",
+        "VAT",
+        "Amount (INR)"
       ],
       "tableRows": [
         [
           "FREIGHT CHARGE",
-          "1 TON OR 1/2 MEASURE",
           "1",
-          "1,500.00",
           "INR",
           "1.00",
           "1,500.00",
-          "1,500.00",
-          "",
           "18",
+          "1,500.00",
           "",
           "1,500.00"
         ],
         [
           "LOCAL CHARGES",
-          "—",
           "1",
-          "800.00",
           "INR",
           "1.00",
           "800.00",
-          "800.00",
-          "",
           "18",
+          "800.00",
           "",
           "800.00"
         ],
         [
           "SEA FREIGHT CHARGE",
-          "1 TON OR 1/2 MEASURE",
           "1",
-          "900.00",
           "INR",
           "1.00",
           "900.00",
-          "900.00",
-          "",
           "18",
+          "900.00",
           "",
           "900.00"
         ],
         [
           "CONTAINER CLEANING FEE",
-          "1 TON OR 1/2 MEASURE",
           "1",
-          "1,000.00",
           "INR",
           "1.00",
           "1,000.00",
-          "1,000.00",
-          "",
           "15",
+          "1,000.00",
           "",
           "1,000.00"
         ]
@@ -1140,7 +1235,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "3 PACKAGES",
         "22,700.00 KGS",
         "22,700.00"
-      ]
+      ],
+      "containerNote": "Total No. of Pcs : 3 PACKAGES , G.Weight : 22,700.00 KGS , Volume : 22,700.00"
     },
     "blocks": [
       {
@@ -1150,8 +1246,9 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       {
         "type": "docTitle",
         "text": "TAX INVOICE",
-        "align": "start",
-        "band": true
+        "align": "center",
+        "band": true,
+        "bandStyle": "rules"
       },
       {
         "type": "twoColumn",
@@ -1160,24 +1257,24 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       },
       {
         "type": "fieldGrid",
-        "cols": 3
+        "cols": 2,
+        "labelTone": "ink"
       },
       {
         "type": "chargeTable",
-        "headerColor": "cyan"
+        "headerColor": "fill",
+        "chrome": "grid",
+        "gridBorder": "primary"
       },
       {
         "type": "subtotalBar",
-        "variant": "tax"
-      },
-      {
-        "type": "taxAmountBox"
+        "variant": "subVat"
       },
       {
         "type": "wordsAndTotal"
       },
       {
-        "type": "containerStrip"
+        "type": "containerNote"
       },
       {
         "type": "termsBank"
@@ -2560,7 +2657,8 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "type": "termsBank"
       },
       {
-        "type": "colorfulFooter"
+        "type": "colorfulFooter",
+        "variant": "plain"
       }
     ]
   },
@@ -2591,104 +2689,85 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "logo": "kingfisher"
     },
     "demo": {
-      "invoiceNo": "BOMINV230500382",
-      "invoiceDate": "17-MAY-23",
-      "billToLabel": "BILL TO",
-      "billToName": "DEMO LOGISTICS INDIA PVT LTD",
-      "billToAddress": "21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA, 676876",
-      "billToPhone": "798798798",
+      "invoiceNo": "INV1800564",
+      "invoiceDate": "27-NOV-18",
+      "billToLabel": "Bill To",
+      "billToName": "FRESA DEMO DUBAI LLC",
+      "billToAddress": "AL NABHA, DUBAI",
+      "billToPhone": "04-233456",
       "fax": "9879878",
-      "vatNo": "68768978898098",
-      "billToGstin": "888329087642356",
-      "currency": "INR",
-      "words": "Rupee Four Thousand Seven Hundred Seventy-Six Only",
-      "total": "4,776.00",
-      "docSubtitle": "TRANSPORTATION INVOICE",
+      "vatNo": "VATNO98766655555",
+      "billToGstin": "29760737473",
+      "currency": "AED",
+      "words": "UAE Dirham Seven Hundred Fifty-Six and 21/100 Only",
+      "total": "756.21",
+      "docSubtitle": "TAX INVOICE - INV1800564",
       "narration": "MBL NO... / HBL NO. NSAJED85630124277 / JOB NO.",
-      "referenceRows": [
-        {
-          "k": "Invoice Number",
-          "v": "BOMINV230500382"
-        },
-        {
-          "k": "Invoice Date",
-          "v": "17-MAY-23"
-        },
-        {
-          "k": "Agreed Terms/Days",
-          "v": "CASH / 0"
-        },
-        {
-          "k": "Customer Ref.",
-          "v": "—"
-        },
-        {
-          "k": "Narration",
-          "v": "MBL NO... / HBL NO. NSAJED85630124277 / JOB NO."
-        }
-      ],
       "containerHeaders": [
+        "Truck No.",
         "Container No.",
         "Type",
-        "Description",
         "No of Pcs",
         "Gross Weight",
-        "Volume",
-        "Volume Weight"
+        "Volume"
       ],
       "containerRow": [
-        "TTNU0712894",
-        "40' FLAT",
-        "GENERAL CARGO",
-        "3 PACKAGES",
-        "22,700.000 KGS",
-        "22,700.000",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
         "—"
       ],
       "tableHeaders": [
-        "Truck# / Charge",
-        "Unit Type",
-        "Unit Rate",
-        "TAX Amount",
-        "Total Charges"
+        "Charge Description",
+        "Qty",
+        "Unit",
+        "Currency",
+        "Unit Price",
+        "Amount",
+        "VAT %",
+        "VAT Amount",
+        "Total (AED)"
       ],
       "tableRows": [
         [
-          "FREIGHT CHARGE",
-          "1 TON OR 1/2 MEASURE",
-          "1,500.00",
-          "270.00",
-          "1,500.00"
+          "Delivery Order Charges",
+          "1",
+          "SHPT",
+          "AED",
+          "150.00",
+          "150.00",
+          "5",
+          "7.50",
+          "157.50"
         ],
         [
-          "LOCAL CHARGES",
-          "—",
-          "800.00",
-          "144.00",
-          "800.00"
+          "THC Charges",
+          "1",
+          "SHPT",
+          "AED",
+          "250.00",
+          "250.00",
+          "5",
+          "12.50",
+          "262.50"
         ],
         [
-          "SEA FREIGHT CHARGE",
-          "1 TON OR 1/2 MEASURE",
-          "900.00",
-          "162.00",
-          "900.00"
-        ],
-        [
-          "CONTAINER CLEANING FEE",
-          "1 TON OR 1/2 MEASURE",
-          "1,000.00",
-          "0.00",
-          "1,000.00"
+          "Documentation Fee",
+          "1",
+          "SHPT",
+          "AED",
+          "320.20",
+          "320.20",
+          "5",
+          "16.01",
+          "336.21"
         ]
       ],
-      "subtotalParts": [
-        "4,200.00",
-        "576.00",
-        "4,776.00"
-      ],
       "termsLines": [
-        "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt."
+        "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.",
+        "2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted."
       ],
       "bankLines": [
         "Beneficiary Name: KingFisher Logistic",
@@ -2697,49 +2776,110 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "IBAN Code : ABA:XXXXXX",
         "Swift Code : XXXXXX",
         "Address : Dubai, United Arab Emirates"
+      ],
+      "creditTerm": "CASH",
+      "subtotal": "720.20",
+      "tax": "36.01",
+      "totalLabel": "Total : AED",
+      "trnNo": "ABC123",
+      "metaRows": [
+        {
+          "k": "Invoice No.",
+          "v": "INV1800564 / 27-NOV-18 (CREATED)"
+        },
+        {
+          "k": "Credit Term",
+          "v": "CASH"
+        },
+        {
+          "k": "TRN No",
+          "v": "VATNO98766655555"
+        },
+        {
+          "k": "GSTIN No.",
+          "v": "29760737473"
+        }
+      ],
+      "fieldGrid": [
+        {
+          "k": "Consignee",
+          "v": "FRESA DEMO DUBAI LLC"
+        },
+        {
+          "k": "Shipper",
+          "v": "PAHILAJRAI JAIKISHIN AND CO"
+        },
+        {
+          "k": "Shipment No.",
+          "v": "BDXBSI180115 / 27-NOV-18"
+        },
+        {
+          "k": "Job No.",
+          "v": "CCDXBSI18000061 / 27-NOV-18"
+        },
+        {
+          "k": "MBL / MAWB No.",
+          "v": "NSA.JEA.18/26917 / 12-OCT-18"
+        },
+        {
+          "k": "Port of Loading",
+          "v": "NHAVA SHEVA (JAWAHARLAL NEHRU), INDIA"
+        },
+        {
+          "k": "Port of Discharge",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Vessel / Flight Name",
+          "v": "NORTHERN GENERAL"
+        },
+        {
+          "k": "Place of Delivery",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "Place of Receipt",
+          "v": "—"
+        }
+      ],
+      "taxAmountLines": [
+        "VAT-05 36.010"
       ]
     },
     "blocks": [
       {
-        "type": "companyHeader"
+        "type": "companyHeader",
+        "showContact": true
       },
       {
-        "type": "landFreightHeader",
-        "title": "TRANSPORTATION INVOICE"
+        "type": "docTitle",
+        "text": "TAX INVOICE - INV1800564",
+        "align": "center",
+        "band": true
       },
       {
         "type": "twoColumn",
         "showBillTo": true
       },
       {
-        "type": "docTitle",
-        "text": "CONTAINER DETAILS",
-        "align": "start"
+        "type": "fieldGrid",
+        "cols": 2
       },
       {
         "type": "containerStrip"
-      },
-      {
-        "type": "docTitle",
-        "text": "DETAILS OF CHARGES / SHIPMENTS",
-        "align": "start"
       },
       {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "subtotalBar",
-        "variant": "igst"
+        "type": "taxAmountBox"
       },
       {
         "type": "wordsAndTotal"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "stampSignature"
       },
       {
         "type": "colorfulFooter"
@@ -3995,9 +4135,6 @@ export const INVOICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       ]
     },
     "blocks": [
-      {
-        "type": "companyHeader"
-      },
       {
         "type": "landFreightHeader",
         "title": "VAT / TAX INVOICE — LAND FREIGHT / TRANSPORTATION"

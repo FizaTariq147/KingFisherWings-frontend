@@ -8,7 +8,7 @@ import { PageBackLink } from '@/components/ui/PageBackLink';
 import {
   REPORT_TEMPLATE_CONTEXT_ENUM,
 } from '../api/reportCatalog.api';
-import { filterRegistry, getRegistryByCode, FRESA_REPORT_REGISTRY } from '../data/fresaReportRegistry';
+import { filterRegistry, getRegistryByCode } from '../data/fresaReportRegistry';
 import type { ReportFamily, ReportTemplate } from '../types/reportCatalog.types';
 import { reportContextLabel, reportFamilyLabel } from '../types/reportCatalog.types';
 import { metaToTemplate } from '../utils/normalizeReportCatalog';
@@ -379,28 +379,66 @@ export default function ReportCatalogPage() {
   const registeredLayoutEntries = useMemo(() => listAllRegisteredFormatCatalogEntries(), []);
 
   /**
-   * Prefer GET /reports/templates (already filtered by enabled_modules + family perms).
-   * FRESA local registry is fallback only when the API is unavailable.
+   * Catalogue list = permanent JSON layouts only (registered reports).
+   * Never list bare backend import rows (browse caps at ~2000 and was shown as
+   * “2000 of 2000 complete reports” even when most codes have no FE layout).
+   * Live GET /reports/templates is used only to enrich id/active metadata.
    */
   const items = useMemo(() => {
     const familyAllow =
       familiesFilter.length > 0 ? new Set(familiesFilter) : null;
+    const liveByCode = new Map<string, ReportTemplate>();
     if (liveAvailable && liveBrowse.data?.items) {
-      return liveBrowse.data.items.filter((t) => {
-        if (!reportFamilyAllowed(t.family, enabledModules)) return false;
-        if (familyAllow && t.family && !familyAllow.has(t.family as ReportFamily)) {
-          return false;
-        }
-        return true;
-      });
+      for (const t of liveBrowse.data.items) {
+        if (t.code) liveByCode.set(t.code.toUpperCase(), t);
+      }
     }
-    const rows = filterRegistry({
-      search: searchQuery,
-      family: family === 'all' ? 'all' : (family as ReportFamily),
-      families: familiesFilter.length ? familiesFilter : undefined,
-      context: contextFilter,
-    }).filter((meta) => reportFamilyAllowed(meta.family, enabledModules));
-    return rows.map((meta, i) => metaToTemplate(meta, i));
+    const q = searchQuery.trim().toLowerCase();
+    const rows: ReportTemplate[] = [];
+    registeredLayoutEntries.forEach((entry, index) => {
+      if (!reportFamilyAllowed(entry.family, enabledModules)) return;
+      if (familyAllow && !familyAllow.has(entry.family as ReportFamily)) return;
+      if (family !== 'all' && !familyAllow && entry.family !== family) return;
+      if (
+        contextFilter !== 'all' &&
+        !(entry.contexts ?? []).includes(
+          contextFilter as 'job' | 'quotation' | 'list' | 'invoice' | 'gl' | 'wms' | 'party',
+        )
+      ) {
+        return;
+      }
+      if (
+        q &&
+        !entry.code.toLowerCase().includes(q) &&
+        !entry.name.toLowerCase().includes(q)
+      ) {
+        return;
+      }
+      const live = liveByCode.get(entry.code.toUpperCase());
+      if (live) {
+        rows.push(live);
+        return;
+      }
+      const meta = getRegistryByCode(entry.code);
+      rows.push(
+        meta
+          ? metaToTemplate(meta, index)
+          : metaToTemplate(
+              {
+                code: entry.code,
+                name: entry.name,
+                family: entry.family,
+                contexts: entry.contexts,
+                formats: ['PDF'],
+                gapStatus: 'covered_document_pdf',
+                rolloutPhase: 1,
+                defaultParams: [],
+              },
+              index,
+            ),
+      );
+    });
+    return rows;
   }, [
     liveAvailable,
     liveBrowse.data?.items,
@@ -409,14 +447,17 @@ export default function ReportCatalogPage() {
     familiesFilter,
     contextFilter,
     enabledModules,
+    registeredLayoutEntries,
   ]);
   const metaTotal = items.length;
-  const completeReportTotal = liveAvailable
-    ? metaTotal
-    : FRESA_REPORT_REGISTRY.filter((t) => reportFamilyAllowed(t.family, enabledModules)).length;
-  const listLoading = liveBrowse.isLoading && !liveBrowse.data;
-
-  /** Family/Context allow-list for browse strips (null = no restriction). */
+  const completeReportTotal = useMemo(
+    () =>
+      registeredLayoutEntries.filter((e) =>
+        reportFamilyAllowed(e.family, enabledModules),
+      ).length,
+    [registeredLayoutEntries, enabledModules],
+  );
+  const listLoading = liveBrowse.isLoading && !liveBrowse.data;  /** Family/Context allow-list for browse strips (null = no restriction). */
   const allowedCodes = useMemo(() => {
     const multi = familiesFilter.length > 0;
     if (family === 'all' && contextFilter === 'all' && !multi) return null;
@@ -974,7 +1015,7 @@ export default function ReportCatalogPage() {
         <div>
           <h2 className={appType.pageTitle}>Report catalogue</h2>
           <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
-            {metaTotal} of {completeReportTotal} complete reports
+            {metaTotal} of {completeReportTotal} registered reports
             {isReportSearchActive(searchQuery) ||
             family !== 'all' ||
             familiesFilter.length > 0 ||

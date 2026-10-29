@@ -1,6 +1,5 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated HBL formats — permanent JSON store. */
 export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
@@ -2374,7 +2373,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
       "invoiceDate": "28-JAN-19",
       "formatBadgeLabel": "Format-11",
       "partyLeft": {
-        "title": "Shipper",
+        "title": "SHIPPER",
         "lines": [
           "4G LOGISTICS INDIA PVT LTD",
           "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
@@ -2382,7 +2381,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyMid": {
-        "title": "Consignee",
+        "title": "CONSIGNEE OR ORDER",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
           "30 AL MAKTHOOM BUILDING",
@@ -2390,7 +2389,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         ]
       },
       "partyNotify": {
-        "title": "Notify Party",
+        "title": "NOTIFY ADDRESS (Carrier not responsible for failure to notify)",
         "lines": [
           "AL NASER TRADING COMPANY LLC",
           "30 AL MAKTHOOM BUILDING",
@@ -2424,7 +2423,7 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         },
         {
           "k": "Vessel / Voyage",
-          "v": "EVERGREEN MARINE / 9887"
+          "v": "CMA CGM / 9887"
         },
         {
           "k": "ETD",
@@ -2457,20 +2456,22 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         {
           "k": "Layout",
           "v": "HBL Draft Report Format-11"
+        },
+        {
+          "k": "Place of Receipt",
+          "v": "CHENNAI (EX MADRAS), INDIA"
         }
       ],
       "hblCargoHeaders": [
-        "Container No. / Seal No. / Mark & No.",
-        "No. of Pkgs",
-        "Description of Goods",
-        "Gross Weight",
-        "Measurement"
+        "Container Nos, Seal Nos, Mark and Nos",
+        "Number and kind of packages : description of goods",
+        "Gross Weight(Kg)",
+        "Volume"
       ],
       "hblCargoRows": [
         [
-          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
-          "125 PACKAGES",
-          "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "ABCU9877666 / SEAL NO. : SL345566 /\n20' DC X 1\nNIL MARKS",
+          "STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "18,000.000 KGS",
           "24.000 CBM"
         ]
@@ -2501,41 +2502,32 @@ export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "DRAFT — Not negotiable unless marked original.",
         "STC: VALVE MATERIALS FOR MACHINERY PARTS"
       ],
-      "remarks": "Format-11"
+      "remarks": "Format-11",
+      "hblBlTitle": "Bill of Lading FOR COMBINED TRANSPORT OR PORT TO PORT SHIPMENT",
+      "hblOriginals": "1(ONE)",
+      "hblRegisteredNo": "MTO/DGS/1182/APR/2019",
+      "hblDeliveryAgent": {
+        "title": "APPLICATION FOR DELIVERY AT DESTINATION MUST BE MADE TO:",
+        "lines": [
+          "KingFisher Wings Dubai LLC",
+          "DUBAI UNITED ARAB EMIRATES",
+          "TEL: +971 55 5355 286",
+          "EMAIL: inquiry@kingfishertec.com"
+        ]
+      }
     },
     "blocks": [
       {
-        "type": "companyHeader",
-        "showContact": true
+        "type": "hblBlShell",
+        "embedLogo": true
       },
       {
-        "type": "formatBadge",
-        "label": "Format-11"
+        "type": "hblFreightSignature",
+        "variant": "blClosing"
       },
       {
-        "type": "docTitle",
-        "text": "HOUSE BILL OF LADING — DRAFT FORMAT 11",
-        "align": "end",
-        "band": false
-      },
-      {
-        "type": "partyNotifyGrid"
-      },
-      {
-        "type": "fieldGrid",
-        "cols": 3
-      },
-      {
-        "type": "hblCargoTable"
-      },
-      {
-        "type": "hblFreightSignature"
-      },
-      {
-        "type": "termsBank"
-      },
-      {
-        "type": "colorfulFooter"
+        "type": "colorfulFooter",
+        "variant": "plain"
       }
     ]
   },

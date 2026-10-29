@@ -11,6 +11,7 @@ export default function SettingsMenuPage() {
       settingsMenu.filter((tile) => {
         if (
           tile.id === 'public-api' ||
+          tile.id === 'quote-requests-bridge' ||
           tile.id === 'online-payments-stripe' ||
           tile.id === 'billing'
         ) {

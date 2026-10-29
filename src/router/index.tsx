@@ -14,6 +14,8 @@ import TransportRequestsPage from '../features/transport/pages/TransportRequests
 import OperationsReportsHubPage from '../features/operations/pages/OperationsReportsHubPage'
 import OperationsReportPage from '../features/operations/pages/OperationsReportPage'
 import PublicApiAdminPage from '../features/public-api-admin/pages/PublicApiAdminPage'
+import AdminQuoteRequestsPage from '../features/admin-quote-requests/pages/AdminQuoteRequestsPage'
+import AdminQuoteRequestDetailPage from '../features/admin-quote-requests/pages/AdminQuoteRequestDetailPage'
 import TenantBillingPage from '../features/tenant-platform-billing/pages/TenantBillingPage'
 import TenantPlatformInvoiceDetailPage from '../features/tenant-platform-billing/pages/TenantPlatformInvoiceDetailPage'
 import TenantPlatformPaymentDetailPage from '../features/tenant-platform-billing/pages/TenantPlatformPaymentDetailPage'
@@ -804,6 +806,14 @@ export const router = createBrowserRouter([
               { path: '/admin/users/:id', element: <UserDetailPage /> },
               { path: '/admin/users/:id/edit', element: <UserEditPage /> },
             ],
+          },
+          {
+            path: '/admin/integrations/quote-requests',
+            element: <AdminQuoteRequestsPage />,
+          },
+          {
+            path: '/admin/integrations/quote-requests/:id',
+            element: <AdminQuoteRequestDetailPage />,
           },
           // Legacy: Users used to live under Settings — send to Admin Users
           {

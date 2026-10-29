@@ -22,7 +22,13 @@ export function InvoiceFormatLayoutByKind({
 }) {
   const base = resolveAnyFormatUiLayout(preview.code);
   if (!base) return null;
-  const merged = mergeInvoiceFormatDemo(base, data ?? {});
+  const withPaper = {
+    ...base,
+    paper: preview.paper || base.paper,
+    orientation: preview.orientation ?? base.orientation,
+    appendCustomerTerms: preview.appendCustomerTerms ?? base.appendCustomerTerms,
+  };
+  const merged = mergeInvoiceFormatDemo(withPaper, data ?? {});
   // One shared chrome for all formats — live companyName from data wins when present.
   const resolvedChrome: SharedLayoutChrome = chrome ?? {
     ...SHARED_LAYOUT_CHROME,

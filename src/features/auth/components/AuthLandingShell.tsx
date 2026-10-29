@@ -96,7 +96,7 @@ export function AuthLandingShell({
     }
     const slug = tenantSlug.trim()
     if (!slug) {
-      setError('Enter your workspace (tenant slug) to track without login.')
+      setError('Enter your username to track without login.')
       return
     }
     setError(null)
@@ -188,7 +188,7 @@ export function AuthLandingShell({
                 type="text"
                 value={tenantSlug}
                 onChange={(e) => setTenantSlug(e.target.value)}
-                placeholder="Workspace (tenant slug)"
+                placeholder="Username"
                 className="mb-2 h-10 w-full rounded-lg border-0 bg-white/90 px-3 text-[13px] text-slate-800 outline-none placeholder:text-slate-400"
               />
             ) : null}

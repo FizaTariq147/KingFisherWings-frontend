@@ -1,6 +1,5 @@
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 
-/** Auto-generated Arrival Notice formats — permanent JSON store. */
 export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
   {
     "code": "CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1",
@@ -2436,8 +2435,7 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "lines": [
           "4G LOGISTICS INDIA PVT LTD",
           "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD",
-          "NUNGAMBAKKAM CHENNAI TAMILNADU 600084 INDIA",
-          "Attn: Import Department"
+          "NUNGAMBAKKAM CHENNAI TAMILNADU 600084 INDIA"
         ]
       },
       "partyMid": {
@@ -2550,8 +2548,19 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           "10,333"
         ]
       ],
-      "termsLines": [
-        "ALL CHARGES HAVE TO PAY BEFORE PICK UP D/O ( Các phí cần thanh toán trước khi lấy lệnh )"
+      "partyThird": {
+        "title": "Người liên hệ / Attn",
+        "lines": [
+          "Import Department"
+        ]
+      },
+      "agingHeaders": [
+        "No. of Containers",
+        "Type"
+      ],
+      "agingRow": [
+        "1",
+        "20' DC"
       ]
     },
     "blocks": [
@@ -2573,14 +2582,20 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
+        "type": "docTitle",
+        "text": "CHI TIẾT CỤ THỂ / DETAIL CARGO",
+        "align": "center",
+        "band": true
+      },
+      {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
-        "type": "outstandingTable"
+        "type": "agingSummary"
       },
       {
-        "type": "termsBank"
+        "type": "outstandingTable"
       },
       {
         "type": "colorfulFooter"
@@ -5747,14 +5762,12 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
           ""
         ]
       ],
-      "termsLines": [
-        "1. Kindly contact our Imports Department/Customer Service for Actual Arrival.",
-        "2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.",
-        "3. Cheque in favor of “KingFisher Logistic”.",
-        "4. Partial Payments are not acceptable.",
-        "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days.",
-        "6. After Free days storage charges applicable."
-      ]
+      "partyThird": {
+        "title": "Người liên hệ / Attn",
+        "lines": [
+          "Import Department"
+        ]
+      }
     },
     "blocks": [
       {
@@ -5775,14 +5788,17 @@ export const ARRIVAL_NOTICE_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = [
         "cols": 2
       },
       {
+        "type": "docTitle",
+        "text": "CHI TIẾT CỤ THỂ / DETAIL CARGO",
+        "align": "center",
+        "band": true
+      },
+      {
         "type": "chargeTable",
         "headerColor": "fill"
       },
       {
         "type": "outstandingTable"
-      },
-      {
-        "type": "termsBank"
       },
       {
         "type": "colorfulFooter"

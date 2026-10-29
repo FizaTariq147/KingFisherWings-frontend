@@ -16,8 +16,8 @@ function page1LogoUrl(): string {
 }
 
 /**
- * Branding for appended Terms & Conditions pages only.
- * Logo matches Page 1; company name comes from GET /organization/profile.
+ * Org display name + logo for shared report chrome (headers/footers).
+ * Appended BL/Airway Terms PDFs are copied as-is and do not use this branding.
  */
 export async function resolveCustomerTermsBranding(): Promise<CustomerTermsBranding> {
   let companyName = FALLBACK_COMPANY;

@@ -34,6 +34,8 @@ export function CatalogReportAutoPdf({
         samplePdfUrl: null,
         layoutKind: 'generic',
         paper: layout.paper,
+        orientation: layout.orientation,
+        appendCustomerTerms: layout.appendCustomerTerms,
         rtl: layout.rtl,
         sections: [],
       }

@@ -37,6 +37,7 @@ Desktop.ini
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+.pw-browsers/
 e2e/.auth/
 
 # React Doctor dumps

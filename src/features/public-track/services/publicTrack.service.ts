@@ -50,7 +50,7 @@ export const publicTrackService = {
     const slug = tenantSlug?.trim();
     if (!slug) {
       throw new Error(
-        'Workspace (tenant slug) is required for Track & Trace when not on your company domain.',
+        'Username is required for Track & Trace when not on your company domain.',
       );
     }
     const headers = buildPublicTrackHeaders();
