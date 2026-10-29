@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
+import { useCallback, useEffect, useState } from 'react';
+import { Navigate, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { FullPageSpinner } from '@/components/skeletons/SkeletonPrimitives';
 import { PORTAL_VERIFICATION_PATH } from '@/features/party-verification/api/partyVerification.api';
 import {
@@ -7,6 +7,7 @@ import {
   portalUserNeedsVerification,
 } from '@/features/party-verification/utils/verificationAllowlist';
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache';
+import { useIdleSessionLogout } from '@/hooks/useIdleSessionLogout';
 import { usePortalAuthBootstrap } from '../../hooks/usePortalAuthBootstrap';
 import { PORTAL_CHANGE_PASSWORD_PATH } from '../../api/portalAuth.api';
 import { portalAuthService } from '../../services/portalAuth.service';
@@ -15,6 +16,7 @@ import { usePortalAuthStore } from '../../store/portalAuthStore';
 /** Guards customer portal routes — requires a valid portal token + /me check. */
 export function PortalProtectedRoute() {
   const location = useLocation();
+  const navigate = useNavigate();
   const { ready, accessToken } = usePortalAuthBootstrap();
   const logout = usePortalAuthStore((s) => s.logout);
   const setUser = usePortalAuthStore((s) => s.setUser);
@@ -22,6 +24,28 @@ export function PortalProtectedRoute() {
   const mustChangePassword = Boolean(user?.mustChangePassword);
   const needsVerification = portalUserNeedsVerification(user);
   const [sessionOk, setSessionOk] = useState<boolean | null>(null);
+
+  const logoutDueToIdle = useCallback(() => {
+    void (async () => {
+      try {
+        await portalAuthService.logout();
+      } catch {
+        /* still clear local session */
+      } finally {
+        logout();
+        clearPortalQueryCache();
+        navigate('/portal/login', {
+          replace: true,
+          state: { reason: 'idle' },
+        });
+      }
+    })();
+  }, [logout, navigate]);
+
+  useIdleSessionLogout({
+    enabled: Boolean(accessToken) && sessionOk === true,
+    onIdle: logoutDueToIdle,
+  });
 
   useEffect(() => {
     if (!ready) return;

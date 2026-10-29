@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import {
@@ -83,6 +84,14 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [singleFill, setSingleFill] = useState<ContainerFillInfo | null>(null);
+  const [fillEdit, setFillEdit] = useState<{
+    containerId: string;
+    cubic_capacity: string;
+    max_payload: string;
+    cbm: string;
+    gross_weight: string;
+  } | null>(null);
+  const [fillSaving, setFillSaving] = useState(false);
   const [syncIncludeHouses, setSyncIncludeHouses] = useState(true);
   const [syncSubJobOnly, setSyncSubJobOnly] = useState(false);
   const [syncRollupHeader, setSyncRollupHeader] = useState(true);
@@ -90,6 +99,8 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   const [containerNumber, setContainerNumber] = useState('');
   const [sealNumber, setSealNumber] = useState('');
   const [status, setStatus] = useState<ContainerStatus>('EMPTY');
+  const [addCubicCapacity, setAddCubicCapacity] = useState('');
+  const [addMaxPayload, setAddMaxPayload] = useState('');
   const [assignCargoId, setAssignCargoId] = useState('');
   const [assignContainerId, setAssignContainerId] = useState('');
   const [splitContainerId, setSplitContainerId] = useState('');
@@ -118,6 +129,8 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
   };
 
   const addContainer = async () => {
+    const cubic = addCubicCapacity.trim() ? Number(addCubicCapacity) : undefined;
+    const payload = addMaxPayload.trim() ? Number(addMaxPayload) : undefined;
     const ok = await addValidation.runValidated(
       createJobContainerSchema,
       {
@@ -125,6 +138,10 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         container_number: containerNumber.trim() || undefined,
         seal_number: sealNumber.trim() || undefined,
         status,
+        cubic_capacity:
+          cubic != null && Number.isFinite(cubic) ? cubic : undefined,
+        max_payload:
+          payload != null && Number.isFinite(payload) ? payload : undefined,
       },
       async (dto) => {
         await mutations.createContainer.mutateAsync(dto);
@@ -132,6 +149,8 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         setContainerNumber('');
         setSealNumber('');
         setStatus('EMPTY');
+        setAddCubicCapacity('');
+        setAddMaxPayload('');
         setMsg('Container added.');
         await Promise.all([refetch(), refetchFill()]);
       },
@@ -195,6 +214,95 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         dto,
       });
     }, 'Container touched (updated).');
+
+  const openFillEditor = async (c: JobContainer) => {
+    const data = await jobService.getContainerFill(jobId, c.id);
+    setSingleFill(data);
+    setFillEdit({
+      containerId: c.id,
+      cubic_capacity: String(
+        data?.capacity_cbm ?? c.cubic_capacity ?? '',
+      ),
+      max_payload: String(data?.capacity_weight ?? c.max_payload ?? ''),
+      cbm: String(data?.used_cbm ?? c.cbm ?? ''),
+      gross_weight: String(data?.used_weight ?? c.gross_weight ?? ''),
+    });
+    if (!data) {
+      throw new Error(
+        'Fill % returned no data. Set capacity below, save, then refresh Fill %.',
+      );
+    }
+  };
+
+  const saveFillCapacity = async () => {
+    if (!fillEdit) return;
+    setError(null);
+    setMsg(null);
+    setFillSaving(true);
+    try {
+      const toNum = (raw: string): number | undefined => {
+        const t = raw.trim();
+        if (!t) return undefined;
+        const n = Number(t);
+        return Number.isFinite(n) ? n : undefined;
+      };
+      const dto = {
+        cubic_capacity: toNum(fillEdit.cubic_capacity),
+        max_payload: toNum(fillEdit.max_payload),
+        cbm: toNum(fillEdit.cbm),
+        gross_weight: toNum(fillEdit.gross_weight),
+      };
+      if (
+        dto.cubic_capacity == null &&
+        dto.max_payload == null &&
+        dto.cbm == null &&
+        dto.gross_weight == null
+      ) {
+        throw new Error('Enter at least one capacity or used value to save.');
+      }
+      await mutations.updateContainer.mutateAsync({
+        containerId: fillEdit.containerId,
+        dto,
+      });
+      const data = await jobService.getContainerFill(jobId, fillEdit.containerId);
+      setSingleFill(data);
+      if (data) {
+        setFillEdit((prev) =>
+          prev
+            ? {
+                ...prev,
+                cubic_capacity: String(data.capacity_cbm ?? prev.cubic_capacity),
+                max_payload: String(data.capacity_weight ?? prev.max_payload),
+                cbm: String(data.used_cbm ?? prev.cbm),
+                gross_weight: String(data.used_weight ?? prev.gross_weight),
+              }
+            : prev,
+        );
+      }
+      setMsg('Container fill capacity saved.');
+      await Promise.all([refetch(), refetchFill()]);
+    } catch (err) {
+      setError(getErrorMessage(err));
+    } finally {
+      setFillSaving(false);
+    }
+  };
+
+  const onContainerTypeChange = (typeId: string) => {
+    setContainerTypeId(typeId);
+    addValidation.clearField('container_type_id');
+    const row = containerTypes.find((t) => String(t.id) === typeId);
+    if (!row) {
+      setAddCubicCapacity('');
+      setAddMaxPayload('');
+      return;
+    }
+    // Prefill capacity from master (drives Fill %).
+    const volume = Number(row.volume_cbm ?? row.cubic_capacity);
+    const payload = Number(row.max_payload);
+    setAddCubicCapacity(Number.isFinite(volume) && volume > 0 ? String(volume) : '');
+    setAddMaxPayload(Number.isFinite(payload) && payload > 0 ? String(payload) : '');
+  };
 
   const banner =
     error ||
@@ -312,18 +420,10 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
                       size="sm"
                       variant="secondary"
                       onClick={() =>
-                        run(async () => {
-                          const data = await jobService.getContainerFill(jobId, c.id);
-                          setSingleFill(data);
-                          if (!data) {
-                            throw new Error(
-                              'Fill % returned no data. Assign cargo and set container capacity.',
-                            );
-                          }
-                          if (data.fill_percent == null && data.message) {
-                            throw new Error(data.message);
-                          }
-                        }, 'Fetched container fill.')
+                        run(
+                          () => openFillEditor(c),
+                          'Fetched container fill — you can update capacity below.',
+                        )
                       }
                     >
                       Fill %
@@ -405,28 +505,102 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         </div>
       </Card>
 
-      {singleFill != null ? (
+      {singleFill != null && fillEdit ? (
         <Card>
           <CardHeader>
             <CardTitle>Selected container fill</CardTitle>
           </CardHeader>
-          <div className="px-4 pb-4 space-y-2 text-sm">
+          <div className="px-4 pb-4 space-y-3 text-sm">
             <p>
               Fill: <strong>{formatFillPercent(singleFill.fill_percent)}</strong>
+              {singleFill.message ? (
+                <span className="text-[var(--color-neutral-500)]"> · {singleFill.message}</span>
+              ) : null}
             </p>
-            {(singleFill.used_cbm != null || singleFill.capacity_cbm != null) && (
-              <p>
-                CBM: {singleFill.used_cbm ?? '—'} / {singleFill.capacity_cbm ?? '—'}
-              </p>
-            )}
-            {(singleFill.used_weight != null || singleFill.capacity_weight != null) && (
-              <p>
-                Weight: {singleFill.used_weight ?? '—'} / {singleFill.capacity_weight ?? '—'}
-              </p>
-            )}
-            {singleFill.message ? (
-              <p className="text-[var(--color-neutral-500)]">{singleFill.message}</p>
-            ) : null}
+            <p className="text-xs text-[var(--color-neutral-500)]">
+              Update capacity / used values, then Save. Fill % refreshes from the API.
+            </p>
+            <div className="grid gap-2 sm:grid-cols-2">
+              <Input
+                label="Capacity CBM"
+                type="number"
+                min={0}
+                step="0.001"
+                value={fillEdit.cubic_capacity}
+                onChange={(e) =>
+                  setFillEdit((prev) =>
+                    prev ? { ...prev, cubic_capacity: e.target.value } : prev,
+                  )
+                }
+              />
+              <Input
+                label="Max payload (kg)"
+                type="number"
+                min={0}
+                step="0.001"
+                value={fillEdit.max_payload}
+                onChange={(e) =>
+                  setFillEdit((prev) =>
+                    prev ? { ...prev, max_payload: e.target.value } : prev,
+                  )
+                }
+              />
+              <Input
+                label="Used CBM"
+                type="number"
+                min={0}
+                step="0.001"
+                value={fillEdit.cbm}
+                onChange={(e) =>
+                  setFillEdit((prev) => (prev ? { ...prev, cbm: e.target.value } : prev))
+                }
+              />
+              <Input
+                label="Used weight (kg)"
+                type="number"
+                min={0}
+                step="0.001"
+                value={fillEdit.gross_weight}
+                onChange={(e) =>
+                  setFillEdit((prev) =>
+                    prev ? { ...prev, gross_weight: e.target.value } : prev,
+                  )
+                }
+              />
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                disabled={fillSaving || mutations.updateContainer.isPending}
+                onClick={() => void saveFillCapacity()}
+              >
+                Save fill capacity
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={fillSaving}
+                onClick={() =>
+                  run(async () => {
+                    const c = containers.find((row) => row.id === fillEdit.containerId);
+                    if (!c) throw new Error('Container not found.');
+                    await openFillEditor(c);
+                  }, 'Fill refreshed.')
+                }
+              >
+                Refresh Fill %
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                onClick={() => {
+                  setSingleFill(null);
+                  setFillEdit(null);
+                }}
+              >
+                Close
+              </Button>
+            </div>
             <ApiDataView
               data={singleFill.raw ?? singleFill}
               emptyLabel="No fill data."
@@ -441,38 +615,24 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
           <CardTitle>Add container</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
-          <div className="space-y-1">
-            <select
-              className={`h-9 w-full rounded-md border px-3 text-sm ${
-                addValidation.fieldError('container_type_id')
-                  ? 'border-[var(--color-danger-500)]'
-                  : 'border-[var(--color-neutral-200)]'
-              }`}
+          <div className="sm:col-span-2">
+            <SearchableSelect
+              name="container_type_id"
+              label="Container type"
+              required
               value={containerTypeId}
-              onChange={(e) => {
-                setContainerTypeId(e.target.value);
-                addValidation.clearField('container_type_id');
-              }}
-            >
-              <option value="">Container type *</option>
-              {containerTypeOptions.map((o) => (
-                <option key={o.value} value={o.value}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-            {addValidation.fieldError('container_type_id') && (
-              <p className="text-xs text-[var(--color-danger-500)]">
-                {addValidation.fieldError('container_type_id')}
-              </p>
-            )}
-            {containerTypeOptions.length === 0 ? (
-              <p className="text-xs text-[var(--color-neutral-500)]">
-                No container types in masters. Add them under Masters → Container types.
-              </p>
-            ) : null}
+              options={containerTypeOptions}
+              onChange={onContainerTypeChange}
+              placeholder="Search container types from masters…"
+              emptyMessage="No container types in masters. Add them under Masters → Container types."
+              error={addValidation.fieldError('container_type_id')}
+              allowManualUuid={false}
+            />
           </div>
           <div className="space-y-1">
+            <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+              Status
+            </label>
             <select
               className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
               value={status}
@@ -486,7 +646,8 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
             </select>
           </div>
           <Input
-            placeholder="Container number"
+            label="Container number"
+            placeholder="Optional"
             value={containerNumber}
             error={addValidation.fieldError('container_number')}
             onChange={(e) => {
@@ -495,13 +656,30 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
             }}
           />
           <Input
-            placeholder="Seal number"
+            label="Seal number"
+            placeholder="Optional"
             value={sealNumber}
             error={addValidation.fieldError('seal_number')}
             onChange={(e) => {
               setSealNumber(e.target.value);
               addValidation.clearField('seal_number');
             }}
+          />
+          <Input
+            label="Cubic capacity (from type)"
+            type="number"
+            min={0}
+            step="0.001"
+            value={addCubicCapacity}
+            onChange={(e) => setAddCubicCapacity(e.target.value)}
+          />
+          <Input
+            label="Max payload (from type)"
+            type="number"
+            min={0}
+            step="0.001"
+            value={addMaxPayload}
+            onChange={(e) => setAddMaxPayload(e.target.value)}
           />
           <Button
             type="button"

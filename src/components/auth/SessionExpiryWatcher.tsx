@@ -22,9 +22,10 @@ function isSuperAdminSurface(): boolean {
 }
 
 /**
- * Idle timeout is 30 minutes from last activity (not from login).
+ * Idle timeout is 20 minutes from last activity (not from login).
  * When idle expires the user is signed out automatically (no Continue/Revoke popup).
  * ERP staff/tenant only — disabled on Super Admin surfaces.
+ * Customer/Vendor portals use the same 20-minute idle via useIdleSessionLogout.
  */
 export function SessionExpiryWatcher() {
   const accessToken = useAuthStore((s) => s.accessToken)
