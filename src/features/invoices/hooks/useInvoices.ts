@@ -60,22 +60,39 @@ export function useOverdueInvoices() {
 export function useInvalidateInvoices() {
   const queryClient = useQueryClient();
   return (detailId?: string) => {
-    queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
-    if (detailId) {
-      queryClient.invalidateQueries({ queryKey: invoiceKeys.detail(detailId) });
-    }
+    // Invalidate list/overdue only by default — broad `invoiceKeys.all` also matches
+    // detail queries and can wipe a just-seeded create result with a failed refetch.
+    void queryClient.invalidateQueries({
+      predicate: (query) => {
+        const key = query.queryKey;
+        if (!Array.isArray(key) || key[0] !== 'tenant' || key[1] !== 'invoices') return false;
+        if (key[2] === 'detail') {
+          return Boolean(detailId && key[3] === detailId);
+        }
+        return true;
+      },
+    });
   };
 }
 
 export function useCreateInvoice() {
   const queryClient = useQueryClient();
-  const invalidate = useInvalidateInvoices();
   return useMutation({
     mutationFn: (dto: CreateInvoiceDto) => invoiceService.create(dto),
     onSuccess: (inv) => {
-      // Seed detail cache before navigation so the page does not flash "not found".
+      // Seed detail and refresh lists — do not invalidate this detail (avoids race).
       queryClient.setQueryData(invoiceKeys.detail(inv.id), inv);
-      invalidate(inv.id);
+      void queryClient.invalidateQueries({
+        predicate: (query) => {
+          const key = query.queryKey;
+          return (
+            Array.isArray(key) &&
+            key[0] === 'tenant' &&
+            key[1] === 'invoices' &&
+            key[2] !== 'detail'
+          );
+        },
+      });
     },
   });
 }

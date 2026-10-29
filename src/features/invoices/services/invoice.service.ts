@@ -9,10 +9,10 @@ import {
 } from '@/features/shared/share-email';
 import { INVOICE_API } from '../api/invoice.api';
 import {
-  extractInvoiceCandidate,
   normalizeInvoice,
   normalizeInvoiceLine,
   normalizeInvoices,
+  unwrapInvoiceEntity,
 } from '../utils/normalizeInvoice';
 import { normalizeInvoiceHistory } from '../utils/normalizeInvoiceHistory';
 import type { InvoiceHistoryEntry } from '../types/invoice.types';
@@ -74,8 +74,7 @@ function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
 }
 
 function unwrapEntity(raw: unknown): unknown {
-  // Prefer invoice-shaped records when the envelope also embeds party/company.
-  return extractInvoiceCandidate(raw);
+  return unwrapInvoiceEntity(raw);
 }
 
 function formatAxiosError(error: unknown): Error {

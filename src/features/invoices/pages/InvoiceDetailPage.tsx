@@ -45,7 +45,14 @@ function Field({ label, value }: { label: string; value?: string | number | null
 export default function InvoiceDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
-  const { data: invoice, isLoading, isError, error, refetch } = useInvoice(id);
+  const {
+    data: invoice,
+    isLoading,
+    isFetching,
+    isError,
+    error,
+    refetch,
+  } = useInvoice(id);
   const { data: proofs = [] } = useInvoicePaymentProofs(id, Boolean(id));
   const actions = useInvoiceActions(id);
   const remove = useDeleteInvoice();
@@ -98,10 +105,10 @@ export default function InvoiceDetailPage() {
     );
   }
 
-  if (isLoading) {
+  if (isLoading || (isFetching && !invoice && !isError)) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
   }
-  if (isError || !invoice) {
+  if (isError && !invoice) {
     return (
       <div className="space-y-3">
         <p className="text-sm text-[var(--color-danger-600)]">
@@ -119,6 +126,20 @@ export default function InvoiceDetailPage() {
             Back to invoices
           </button>
         </div>
+      </div>
+    );
+  }
+  if (!invoice) {
+    return (
+      <div className="space-y-3">
+        <p className="text-sm text-[var(--color-danger-600)]">Invoice not found.</p>
+        <button
+          type="button"
+          className="text-sm underline"
+          onClick={() => navigate(INVOICE_ROUTE_PREFIX)}
+        >
+          Back to invoices
+        </button>
       </div>
     );
   }
