@@ -189,7 +189,7 @@ export function BankAccountForm({
           </Button>
         </div>
         <Input
-          label="Branch id (UUID)"
+          label="Branch"
           hint="Optional branch reference"
           error={errors.branch_id?.message}
           {...register('branch_id')}

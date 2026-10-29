@@ -162,15 +162,15 @@ export default function NvoccEnquiryCreatePage() {
 
           </NvoccFormField>
 
-          <NvoccFormField label="Customer ID" error={fieldError('customer_id')} hint={firstCustomerId ? `First customer: ${firstCustomerId.slice(0, 8)}…` : 'Optional party UUID'}>
+          <NvoccFormField label="Customer" error={fieldError('customer_id')} hint={firstCustomerId ? 'Optional — pick a customer party' : 'Optional — search customer by name'}>
 
-            <TextInput value={form.customer_id} onChange={(e) => patch({ customer_id: e.target.value })} placeholder="UUID" />
+            <TextInput value={form.customer_id} onChange={(e) => patch({ customer_id: e.target.value })} placeholder="Search by name…" />
 
           </NvoccFormField>
 
           <NvoccFormField label="Voyage ID" error={fieldError('voyage_id')} hint="Link to an open voyage">
 
-            <TextInput value={form.voyage_id} onChange={(e) => patch({ voyage_id: e.target.value })} placeholder="UUID" />
+            <TextInput value={form.voyage_id} onChange={(e) => patch({ voyage_id: e.target.value })} placeholder="Search by name…" />
 
           </NvoccFormField>
 

@@ -78,7 +78,7 @@ export function VendorPlaceSelect({
       onQueryChange={setQuery}
       required={required}
       error={error}
-      allowManualUuid
+      allowManualUuid={false}
       placeholder={placeholder ?? `Search ${placeWord} by name or code…`}
       hint={
         hint ??

@@ -300,7 +300,7 @@ export default function CrmEnquiryCreatePage() {
                   <TextArea {...register('consignee_address')} />
                 </Field>
                 <Field label="Lead ID (optional)" error={err('lead_id')}>
-                  <TextInput {...register('lead_id')} placeholder="UUID" />
+                  <TextInput {...register('lead_id')} placeholder="Search by name…" />
                 </Field>
               </div>
             </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useFieldArray, type Resolver } from 'react-hook-form';
+import { Controller, useFieldArray, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, Trash2, Truck } from 'lucide-react';
@@ -15,6 +15,7 @@ import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
+import { JobSearchSelect } from '@/features/shared/entity-search';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
   createPurchaseInvoiceSchema,
@@ -266,7 +267,18 @@ export function PurchaseInvoiceForm({
           {companyOptions}
         </select>
       </div>
-      <Input label="Job ID" placeholder="UUID" {...register('job_id', uuidSelect)} />
+      <Controller
+        name="job_id"
+        control={control}
+        render={({ field }) => (
+          <JobSearchSelect
+            name="job_id"
+            label="Job"
+            value={field.value ?? ''}
+            onChange={(id) => field.onChange(id || undefined)}
+          />
+        )}
+      />
       <Input
         label="Exchange rate"
         type="number"
@@ -408,7 +420,7 @@ export function PurchaseInvoiceForm({
           <dd className="mt-0.5 text-[var(--color-neutral-800)]">{watched.due_date || '—'}</dd>
         </div>
         <div>
-          <dt className="text-xs text-[var(--color-neutral-400)]">Job ID</dt>
+          <dt className="text-xs text-[var(--color-neutral-400)]">Job</dt>
           <dd className="mt-0.5 font-mono text-[var(--color-neutral-800)]">
             {watched.job_id || '—'}
           </dd>
@@ -565,7 +577,18 @@ export function PurchaseInvoiceForm({
               {departmentOptions}
             </select>
           </div>
-          <Input label="Job ID" placeholder="UUID" {...register('job_id', uuidSelect)} />
+          <Controller
+            name="job_id"
+            control={control}
+            render={({ field }) => (
+              <JobSearchSelect
+                name="job_id_flat"
+                label="Job"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || undefined)}
+              />
+            )}
+          />
           <Input
             label="Exchange rate"
             type="number"

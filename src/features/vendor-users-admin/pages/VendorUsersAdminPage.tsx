@@ -93,7 +93,7 @@ export default function VendorUsersAdminPage() {
           </div>
           <div className="min-w-0 flex-1">
             <Input
-              label="Filter by party ID (optional UUID)"
+              label="Filter by party"
               value={partyId}
               onChange={(e) => setPartyId(e.target.value)}
               placeholder="Leave blank for all vendor users"
@@ -101,7 +101,7 @@ export default function VendorUsersAdminPage() {
           </div>
         </div>
         {partyId.trim() && !filterPartyId ? (
-          <p className="mt-2 text-xs text-red-600">Enter a valid party UUID.</p>
+          <p className="mt-2 text-xs text-red-600">Select a valid party.</p>
         ) : null}
         {search.trim() && !isLoading && !isError ? (
           <p className="mt-2 text-xs text-gray-500">

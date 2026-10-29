@@ -1,4 +1,4 @@
-import { type Resolver } from 'react-hook-form';
+import { Controller, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +10,7 @@ import { useParties } from '@/features/parties/hooks/useParties';
 import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
 import { useInvoices } from '@/features/invoices/hooks/useInvoices';
 import { invoiceDisplayNumber } from '@/features/invoices/utils/normalizeInvoice';
+import { JobSearchSelect } from '@/features/shared/entity-search';
 import {
   createPaymentRequestSchema,
   updatePaymentRequestSchema,
@@ -59,6 +60,7 @@ export function PaymentRequestForm({
 
   const {
     register,
+    control,
     handleValidatedSubmit,
     applyApiErrors,
     formState: { errors, isSubmitted, isValid },
@@ -164,7 +166,19 @@ export function PaymentRequestForm({
               ))}
             </select>
           </div>
-          <Input label="Job ID" placeholder="UUID" {...register('job_id', uuidSelect)} />
+          <Controller
+            name="job_id"
+            control={control}
+            render={({ field }) => (
+              <JobSearchSelect
+                name="job_id"
+                label="Job"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || undefined)}
+                error={fieldError('job_id')}
+              />
+            )}
+          />
           <Input label="Due date" type="date" {...register('due_date')} />
           <div className="space-y-1 sm:col-span-2">
             <Input label="Remarks" {...register('remarks')} />

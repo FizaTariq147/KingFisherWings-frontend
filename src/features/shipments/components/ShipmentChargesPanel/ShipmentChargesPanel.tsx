@@ -3,6 +3,10 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { JobSearchSelect, PartySearchSelect } from '@/features/shared/entity-search';
 import { erpTable } from '@/lib/erpTypography';
 import { isUuid } from '@/lib/isUuid';
 import {
@@ -53,6 +57,23 @@ export function ShipmentChargesPanel({
   /** Fallback when GET /charges is empty — detail/{tab} payload. */
   const costingTabQuery = useShipmentDetailTab(shipment.id, tabKey);
   const mutations = useShipmentChargeMutations(shipment.id);
+  const { data: chargeCodes = [] } = useMasterOptions(
+    'charge-codes',
+    MASTER_PATHS['charge-codes'],
+    true,
+  );
+  const chargeCodeOptions = useMemo(
+    () =>
+      chargeCodes
+        .filter((c) => isUuid(String(c.id)))
+        .map((c) => {
+          const code = String(c.code ?? '').trim();
+          const name = String(c.name ?? '').trim();
+          const label = code && name ? `${code} — ${name}` : code || name || 'Charge code';
+          return { value: String(c.id), label };
+        }),
+    [chargeCodes],
+  );
 
   const charges = useMemo(() => {
     if (chargesQuery.data?.length) return chargesQuery.data;
@@ -121,7 +142,7 @@ export function ShipmentChargesPanel({
       return;
     }
     if (chargeCodeId.trim() && !isUuid(chargeCodeId.trim())) {
-      setError('Charge code must be a valid UUID when provided.');
+      setError('Select a charge code from the list.');
       return;
     }
     if (partyId.trim() && !isUuid(partyId.trim())) {
@@ -378,10 +399,14 @@ export function ShipmentChargesPanel({
           {error && dialog === 'add' ? (
             <p className="text-sm text-[var(--color-danger-600)] sm:col-span-2">{error}</p>
           ) : null}
-          <Input
-            label="Charge code UUID"
+          <SearchableSelect
+            name="shipment_charge_code_id"
+            label="Charge code"
             value={chargeCodeId}
-            onChange={(e) => setChargeCodeId(e.target.value)}
+            options={chargeCodeOptions}
+            onChange={setChargeCodeId}
+            placeholder="Search charge code by name…"
+            allowManualUuid={false}
           />
           <Input
             label="Description"
@@ -405,11 +430,15 @@ export function ShipmentChargesPanel({
             value={currency}
             onChange={(e) => setCurrency(e.target.value)}
           />
-          <Input
-            label="Party UUID"
-            value={partyId}
-            onChange={(e) => setPartyId(e.target.value)}
-          />
+          <div className="sm:col-span-2">
+            <PartySearchSelect
+              name="shipment_charge_party_id"
+              label="Party"
+              value={partyId}
+              onChange={setPartyId}
+              placeholder="Search party by name…"
+            />
+          </div>
           <label className="flex items-center gap-2 text-sm sm:col-span-2">
             <input
               type="checkbox"
@@ -467,7 +496,7 @@ export function ShipmentChargesPanel({
             From party standard
           </label>
           <Input
-            label="Quotation UUID (optional)"
+            label="Quotation number (optional)"
             value={quotationId}
             onChange={(e) => setQuotationId(e.target.value)}
             placeholder="Uses linked quotation when set"
@@ -501,19 +530,22 @@ export function ShipmentChargesPanel({
             <p className="text-sm text-[var(--color-danger-600)]">{error}</p>
           ) : null}
           <Input
-            label="From shipment UUID"
+            label="From shipment number / reference"
             value={copyFromShipmentId}
             onChange={(e) => setCopyFromShipmentId(e.target.value)}
+            placeholder="Shipment number"
           />
-          <Input
-            label="From job UUID"
+          <JobSearchSelect
+            name="copy_from_job_id"
+            label="From job"
             value={copyFromJobId}
-            onChange={(e) => setCopyFromJobId(e.target.value)}
+            onChange={setCopyFromJobId}
           />
           <Input
-            label="From quotation UUID"
+            label="From quotation number / reference"
             value={copyFromQuotationId}
             onChange={(e) => setCopyFromQuotationId(e.target.value)}
+            placeholder="Quotation number"
           />
           <label className="flex items-center gap-2 text-sm">
             <input

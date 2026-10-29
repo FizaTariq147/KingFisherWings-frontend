@@ -5,6 +5,7 @@ import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { PartySearchSelect } from '@/features/shared/entity-search';
 import { useAuth } from '@/hooks/useAuth';
 import { isUuid } from '@/lib/isUuid';
 import { useArOpenItems, useApOpenItems } from '../hooks/useArApAging';
@@ -88,32 +89,31 @@ export function GlOpenItemsPage({ kind }: GlOpenItemsPageProps) {
 
       <Card className="p-4 space-y-4">
         <div className="grid gap-3 sm:grid-cols-2">
-          <Input
-            label="Party ID *"
-            placeholder="Customer / vendor UUID"
+          <PartySearchSelect
+            name="open_items_party_id"
+            label="Party *"
             value={partyId}
-            onChange={(e) => setPartyId(e.target.value)}
-            error={
-              partyId.trim() && !isUuid(partyId.trim()) ? 'Enter a valid UUID' : undefined
-            }
+            onChange={setPartyId}
+            required
+            placeholder="Search customer / vendor by name…"
           />
           <Input
-            label="Company ID (optional)"
-            placeholder="UUID — omit to use tenant default"
+            label="Company (optional)"
+            placeholder="Leave blank for tenant default"
             value={companyId}
             onChange={(e) => setCompanyId(e.target.value)}
             error={
               companyId.trim() && !isUuid(companyId.trim())
-                ? 'Enter a valid UUID or leave blank'
+                ? 'Select a valid company or leave blank'
                 : undefined
             }
-            hint="Wrong company_id returns an empty list; leave blank if unsure."
+            hint="Wrong company returns an empty list; leave blank if unsure."
           />
         </div>
 
         {!ready ? (
           <p className="text-sm text-[var(--color-neutral-500)] py-4">
-            Enter a party UUID to load open items with paid vs pending balances.
+            Select a party to load open items with paid vs pending balances.
           </p>
         ) : query.isLoading ? (
           <p className="text-sm text-[var(--color-neutral-400)] py-6">Loading open items…</p>

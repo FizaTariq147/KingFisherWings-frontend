@@ -24,7 +24,7 @@ export default function BulkCostEntryPage() {
 
   const addLine = () => {
     if (!line.job_id.trim() || !line.description.trim()) {
-      setError('Job ID and description are required.');
+      setError('Job and description are required.');
       return;
     }
     setError(null);
@@ -64,7 +64,7 @@ export default function BulkCostEntryPage() {
           <div className="grid grid-cols-1 gap-3 p-5 md:grid-cols-2">
             <TextInput placeholder="Voyage no." value={voyageNumber} onChange={(e) => setVoyageNumber(e.target.value)} />
             <TextInput placeholder="Prorate method" value={prorateMethod} onChange={(e) => setProrateMethod(e.target.value)} />
-            <TextInput placeholder="Job ID (UUID) *" value={line.job_id} onChange={(e) => setLine({ ...line, job_id: e.target.value })} />
+            <TextInput placeholder="Job number *" value={line.job_id} onChange={(e) => setLine({ ...line, job_id: e.target.value })} />
             <TextInput placeholder="Description *" value={line.description} onChange={(e) => setLine({ ...line, description: e.target.value })} />
             <TextInput placeholder="Currency" value={line.currency_code} onChange={(e) => setLine({ ...line, currency_code: e.target.value })} />
             <TextInput placeholder="FCY amount" value={String(line.fcy_amount || '')} onChange={(e) => setLine({ ...line, fcy_amount: Number(e.target.value) || 0 })} />

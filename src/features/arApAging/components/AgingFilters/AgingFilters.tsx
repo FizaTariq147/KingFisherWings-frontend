@@ -1,4 +1,5 @@
 import { Input } from '@/components/ui/Input';
+import { PartySearchSelect } from '@/features/shared/entity-search';
 import { isUuid } from '@/lib/isUuid';
 
 interface AgingFiltersProps {
@@ -19,9 +20,9 @@ export function AgingFilters({
   onCompanyIdChange,
 }: AgingFiltersProps) {
   const partyError =
-    partyId.trim() && !isUuid(partyId.trim()) ? 'Enter a valid party UUID' : undefined;
+    partyId.trim() && !isUuid(partyId.trim()) ? 'Select a party from the list' : undefined;
   const companyError =
-    companyId.trim() && !isUuid(companyId.trim()) ? 'Enter a valid company UUID' : undefined;
+    companyId.trim() && !isUuid(companyId.trim()) ? 'Enter a valid company or leave blank' : undefined;
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -31,16 +32,17 @@ export function AgingFilters({
         value={asOf}
         onChange={(e) => onAsOfChange(e.target.value)}
       />
-      <Input
-        label="Party ID (optional)"
-        placeholder="UUID"
+      <PartySearchSelect
+        name="aging_filter_party"
+        label="Party (optional)"
         value={partyId}
-        onChange={(e) => onPartyIdChange(e.target.value)}
+        onChange={onPartyIdChange}
         error={partyError}
+        placeholder="Search party by name…"
       />
       <Input
-        label="Company ID (optional)"
-        placeholder="UUID"
+        label="Company (optional)"
+        placeholder="Leave blank for default"
         value={companyId}
         onChange={(e) => onCompanyIdChange(e.target.value)}
         error={companyError}

@@ -133,10 +133,10 @@ export default function CrmCallLogsPage() {
               />
             </Field>
             <Field label="Lead ID" error={err('lead_id')}>
-              <TextInput {...register('lead_id')} placeholder="UUID" />
+              <TextInput {...register('lead_id')} placeholder="Search by name…" />
             </Field>
-            <Field label="Party ID" error={err('party_id')}>
-              <TextInput {...register('party_id')} placeholder="UUID" />
+            <Field label="Party" error={err('party_id')}>
+              <TextInput {...register('party_id')} placeholder="Search by name…" />
             </Field>
             <Field label="Next follow-up date" error={err('next_followup_date')}>
               <TextInput type="date" {...register('next_followup_date')} />
@@ -187,7 +187,7 @@ export default function CrmCallLogsPage() {
               />
               <TextInput
                 className="max-w-44"
-                placeholder="Party ID"
+                placeholder="Party name"
                 value={partyId}
                 onChange={(e) => setPartyId(e.target.value)}
               />

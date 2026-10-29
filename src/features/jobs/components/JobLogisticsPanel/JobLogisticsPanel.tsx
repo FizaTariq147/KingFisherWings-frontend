@@ -27,6 +27,7 @@ import {
   createProofOfDeliverySchema,
   upsertContainerFreeDaysSchema,
 } from '../../schemas/job.schema';
+import { JobSearchSelect } from '@/features/shared/entity-search';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { jobDisplayNumber } from '../../utils/jobRoute';
 import { containerRouteKey } from '../../utils/normalizeJobContainers';
@@ -242,10 +243,13 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
               <CardTitle>Air transhipment link</CardTitle>
             </CardHeader>
             <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
-              <Input
-                placeholder="Export job UUID *"
+              <JobSearchSelect
+                name="air_export_job_id"
+                label="Export job *"
                 value={airExportJobId}
-                onChange={(e) => setAirExportJobId(e.target.value)}
+                onChange={setAirExportJobId}
+                required
+                placeholder="Search export job by number…"
               />
               <Button
                 type="button"
@@ -360,10 +364,13 @@ export function JobLogisticsPanel({ jobId, jobType }: JobLogisticsPanelProps) {
           <CardTitle>Transhipment link</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
-          <Input
-            placeholder="Export job UUID *"
+          <JobSearchSelect
+            name="export_job_id"
+            label="Export job *"
             value={exportJobId}
-            onChange={(e) => setExportJobId(e.target.value)}
+            onChange={setExportJobId}
+            required
+            placeholder="Search export job by number…"
           />
           <Button
             type="button"
