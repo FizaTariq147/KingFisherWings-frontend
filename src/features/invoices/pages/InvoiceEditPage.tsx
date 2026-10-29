@@ -17,14 +17,16 @@ export default function InvoiceEditPage() {
   const update = useUpdateInvoice(id);
   const [formError, setFormError] = useState<string | null>(null);
 
-  if (isLoading) {
+  if (isLoading && !invoice) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
   }
 
-  if (isError || !invoice) {
+  if (!invoice) {
     return (
       <p className="text-sm text-[var(--color-danger-600)]">
-        {getErrorMessage(error) || 'Invoice not found.'}
+        {isError
+          ? getErrorMessage(error) || 'Invoice not found.'
+          : 'Invoice not found.'}
       </p>
     );
   }

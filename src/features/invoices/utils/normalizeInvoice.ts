@@ -50,6 +50,12 @@ function pickInvoiceId(record: Record<string, unknown>): string | undefined {
   return id && isUuid(id) ? id : undefined;
 }
 
+/** Line entity id only — do not fall back to parent invoice_id. */
+function pickLineId(record: Record<string, unknown>): string | undefined {
+  const id = str(record.id) ?? str(record.line_id) ?? str(record.lineId);
+  return id && isUuid(id) ? id : undefined;
+}
+
 /**
  * Unwrap common API envelopes to the invoice entity.
  * Supports: entity | { data: entity } | { data: { invoice: entity } }
@@ -89,30 +95,35 @@ export function unwrapInvoiceEntity(raw: unknown): unknown {
   return mid;
 }
 
-export function normalizeInvoiceLine(raw: unknown): InvoiceLine | null {
+export function normalizeInvoiceLine(raw: unknown, index = 0): InvoiceLine | null {
   const r = asRecord(raw);
   if (!r) return null;
-  const id = pickInvoiceId(r);
-  if (!id) return null;
+  const description = str(r.description) ?? '';
+  const unit_price = num(r.unit_price) ?? num(r.unitPrice);
+  // Keep lines even when backend omits line UUID (common on nested create responses).
+  if (!description && unit_price == null && num(r.quantity) == null) return null;
+  const id = pickLineId(r) ?? `pending-line-${index}`;
   return {
     id,
-    invoice_id: str(r.invoice_id),
-    description: str(r.description) ?? '',
+    invoice_id: str(r.invoice_id) ?? str(r.invoiceId),
+    description,
     quantity: num(r.quantity) ?? 1,
-    unit_price: num(r.unit_price) ?? 0,
-    charge_code_id: str(r.charge_code_id),
+    unit_price: unit_price ?? 0,
+    charge_code_id: str(r.charge_code_id) ?? str(r.chargeCodeId),
     charge_code: str(r.charge_code) ?? str(r.charge_code_code),
-    tax_rate_id: str(r.tax_rate_id),
-    is_taxable: bool(r.is_taxable) ?? true,
-    sort_order: num(r.sort_order) ?? 0,
-    tax_amount: num(r.tax_amount),
+    tax_rate_id: str(r.tax_rate_id) ?? str(r.taxRateId),
+    is_taxable: bool(r.is_taxable) ?? bool(r.isTaxable) ?? true,
+    sort_order: num(r.sort_order) ?? num(r.sortOrder) ?? index,
+    tax_amount: num(r.tax_amount) ?? num(r.taxAmount),
     line_total: num(r.line_total) ?? num(r.amount) ?? num(r.total),
   };
 }
 
 export function normalizeInvoiceLines(raw: unknown): InvoiceLine[] {
   if (!Array.isArray(raw)) return [];
-  return raw.map(normalizeInvoiceLine).filter((l): l is InvoiceLine => Boolean(l));
+  return raw
+    .map((line, index) => normalizeInvoiceLine(line, index))
+    .filter((l): l is InvoiceLine => Boolean(l));
 }
 
 export function normalizeInvoice(raw: unknown): Invoice | null {

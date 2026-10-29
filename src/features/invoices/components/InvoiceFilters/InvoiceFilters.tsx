@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   EnquirySheetDateInput,
   EnquirySheetDatePresetSelect,
@@ -42,11 +42,12 @@ export type InvoiceFilterDraft = {
 export function defaultInvoiceFilterDraft(
   limit = DEFAULT_INVOICE_PAGE_SIZE,
 ): InvoiceFilterDraft {
-  const range = resolveDateRangePreset('this_month');
+  // No default date window — a this_month filter (plus UTC date bugs) was hiding
+  // newly created invoices from the list.
   return {
-    datePreset: 'this_month',
-    fromDate: range?.from_date ?? '',
-    toDate: range?.to_date ?? '',
+    datePreset: 'custom',
+    fromDate: '',
+    toDate: '',
     partyId: '',
     jobId: '',
     invoiceNo: '',
@@ -236,23 +237,6 @@ export function useInvoiceFilterDraft(initialLimit = DEFAULT_INVOICE_PAGE_SIZE) 
   const [applied, setApplied] = useState<InvoiceFilterDraft>(() =>
     defaultInvoiceFilterDraft(initialLimit),
   );
-
-  useEffect(() => {
-    const range = resolveDateRangePreset('this_month');
-    if (!range) return;
-    setDraft((prev) => ({
-      ...prev,
-      datePreset: 'this_month',
-      fromDate: range.from_date,
-      toDate: range.to_date,
-    }));
-    setApplied((prev) => ({
-      ...prev,
-      datePreset: 'this_month',
-      fromDate: range.from_date,
-      toDate: range.to_date,
-    }));
-  }, []);
 
   const submit = () => {
     let next = draft;
