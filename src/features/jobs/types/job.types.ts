@@ -18,17 +18,19 @@ export interface PaginationMeta {
   totalPages: number;
 }
 
-export type JobListCategory =
-  | 'hold'
-  | 'on_hold'
-  | 'delayed'
-  | 'delivered'
-  | 'cancelled'
-  | 'completed'
-  | 'closed'
-  | 'in_progress'
-  | 'open'
-  | string;
+/** Backend GET /jobs/by-category/:category allowed values. */
+export const JOB_BY_CATEGORIES = [
+  'on_hold',
+  'delayed',
+  'delivered',
+  'cancelled',
+  'completed',
+  'in_progress',
+] as const;
+
+export type JobByCategory = (typeof JOB_BY_CATEGORIES)[number];
+
+export type JobListCategory = JobByCategory | string;
 
 export interface JobListParams {
   page?: number;

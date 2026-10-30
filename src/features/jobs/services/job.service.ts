@@ -221,32 +221,43 @@ function assertId(id: string): void {
   if (!id || !isUuid(id)) throw new Error('Invalid job id.');
 }
 
-/** Dashboard Completed bucket includes Closed-group jobs. */
-function expandJobCategoryKeys(category: string): string[] {
-  const parts = category
-    .split(',')
-    .map((c) => c.trim().toLowerCase())
-    .filter(Boolean);
-  const out = new Set<string>();
-  for (const part of parts.length ? parts : ['on_hold']) {
-    out.add(part);
-    if (part === 'completed' || part === 'closed') {
-      out.add('completed');
-      out.add('closed');
-    }
-  }
-  return [...out];
-}
+/** Backend-allowed by-category keys (must match API enum). */
+const JOB_BY_CATEGORY_SET = new Set([
+  'on_hold',
+  'delayed',
+  'delivered',
+  'cancelled',
+  'completed',
+  'in_progress',
+]);
+
+const STATUS_BY_JOB_CATEGORY: Partial<
+  Record<string, NonNullable<JobListParams['status']>>
+> = {
+  on_hold: 'ON_HOLD',
+  in_progress: 'IN_PROGRESS',
+  delivered: 'DELIVERED',
+  completed: 'COMPLETED',
+  cancelled: 'CANCELLED',
+};
 
 async function listByCategorySingle(
   category: string,
   params: JobListParams = {},
 ): Promise<JobListResult> {
-  const cat = category.trim() || 'on_hold';
+  const cat = category.trim().toLowerCase() || 'on_hold';
+  if (!JOB_BY_CATEGORY_SET.has(cat)) {
+    const status = STATUS_BY_JOB_CATEGORY[cat];
+    return jobService.list({
+      ...params,
+      category: undefined,
+      ...(status ? { status } : {}),
+    });
+  }
   try {
     const res = await withGatewayRetry(() =>
       axiosInstance.get(JOB_API.byCategory(cat), {
-        params: buildListQuery({ ...params, category: undefined }),
+        params: buildListQuery({ ...params, category: undefined, status: undefined }),
       }),
     );
     const { items, meta } = unwrapList(res.data);
@@ -256,22 +267,12 @@ async function listByCategorySingle(
       meta: normalizePaginationMeta(meta, jobs.length, params),
     };
   } catch {
-    const statusByCategory: Partial<
-      Record<string, NonNullable<JobListParams['status']>>
-    > = {
-      on_hold: 'ON_HOLD',
-      hold: 'ON_HOLD',
-      in_progress: 'IN_PROGRESS',
-      delivered: 'DELIVERED',
-      completed: 'COMPLETED',
-      closed: 'COMPLETED',
-      cancelled: 'CANCELLED',
-    };
-    const status = statusByCategory[cat];
+    // Fallback: status only (do not send invalid/unknown category to GET /jobs).
+    const status = STATUS_BY_JOB_CATEGORY[cat];
     return jobService.list({
       ...params,
-      category: cat === 'on_hold' || cat === 'hold' ? 'hold' : cat,
-      ...(status ? { status } : {}),
+      category: undefined,
+      ...(status ? { status } : { category: cat }),
     });
   }
 }
@@ -1413,51 +1414,12 @@ export const jobService = {
     return request(() => axiosInstance.patch(JOB_API.hold(id), dto), normalizeJob);
   },
 
-  /** GET /jobs/by-category/:category — e.g. on_hold.
-   * `completed` also includes Closed-group jobs (`closed`). */
+  /** GET /jobs/by-category/:category — on_hold | delayed | delivered | cancelled | completed | in_progress */
   async listByCategory(
     category: string,
     params: JobListParams = {},
   ): Promise<JobListResult> {
-    const cats = expandJobCategoryKeys(category);
-    if (cats.length > 1) {
-      const page = params.page ?? 1;
-      const limit = clampApiListLimit(params.limit, 20);
-      const order = params.order ?? 'desc';
-      const fetchLimit = clampApiListLimit(Math.max(limit * page, limit), 100);
-      const pages = await Promise.all(
-        cats.map((cat) =>
-          listByCategorySingle(cat, {
-            ...params,
-            page: 1,
-            limit: fetchLimit,
-            order,
-          }),
-        ),
-      );
-      const byId = new Map<string, Job>();
-      for (const result of pages) {
-        for (const job of result.jobs) {
-          if (job.id && !byId.has(job.id)) byId.set(job.id, job);
-        }
-      }
-      const merged = [...byId.values()].sort((a, b) => {
-        const diff = jobSortTime(a) - jobSortTime(b);
-        return order === 'asc' ? diff : -diff;
-      });
-      const start = (page - 1) * limit;
-      const slice = merged.slice(start, start + limit);
-      return {
-        jobs: slice,
-        meta: {
-          page,
-          limit,
-          total: merged.length,
-          totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
-        },
-      };
-    }
-    return listByCategorySingle(cats[0] || 'on_hold', params);
+    return listByCategorySingle(category, params);
   },
 
   /** PATCH /jobs/:id/organization/client-reference */

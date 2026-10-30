@@ -127,15 +127,16 @@ export function DashboardAlertPills({
     {
       key: 'open',
       label: 'Open',
-      to: '/management/all-jobs-mis?category=open',
+      // Backend has no `open` category — open bucket = all active jobs.
+      to: '/management/all-jobs-mis',
       icon: CircleDot,
       tone: 'bg-[#E8EEF4] text-[#2C557A]',
-      count: n('open'),
+      count: n('active'),
     },
     {
       key: 'completed',
       label: 'Completed',
-      to: '/management/all-jobs-mis?category=completed,closed',
+      to: '/management/all-jobs-mis?category=completed',
       icon: CheckCircle2,
       tone: 'bg-[#E7F6EC] text-[#1B8A4A]',
       count: n('completed'),
@@ -151,7 +152,7 @@ export function DashboardAlertPills({
     {
       key: 'docsPending',
       label: 'Docs pending',
-      to: '/jobs/air-export',
+      to: '/management/all-jobs-mis?status=DOCS_PENDING',
       icon: FileClock,
       tone: 'bg-[#FDF2F8] text-[#9D174D]',
       count: n('docsPending'),
