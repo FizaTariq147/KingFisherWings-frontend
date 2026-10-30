@@ -7,6 +7,7 @@ import {
   MapPin,
   PauseCircle,
   Pencil,
+  PlayCircle,
   Plus,
   Radio,
   RefreshCw,
@@ -226,7 +227,7 @@ export default function JobDetailPage() {
     return (
       <div
         id="job-track-trace"
-        className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white"
+        className="rounded-sm bg-white"
       >
         <div className="flex items-center justify-between gap-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2">
           <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
@@ -312,6 +313,10 @@ export default function JobDetailPage() {
   const [closedOverrideReason, setClosedOverrideReason] = useState('');
   const [stopOpen, setStopOpen] = useState(false);
   const [stopReason, setStopReason] = useState('');
+  const [stopExpectedRelease, setStopExpectedRelease] = useState('');
+  const [stopConfirmed, setStopConfirmed] = useState(false);
+  const [resumeOpen, setResumeOpen] = useState(false);
+  const [resumeReason, setResumeReason] = useState('');
   const [actionPanel, setActionPanel] = useState<JobActionPanelKey | null>(null);
   const statusOptionsQuery = useJobStatusOptions(
     id,
@@ -523,6 +528,10 @@ export default function JobDetailPage() {
     job.status !== 'ON_HOLD' &&
     job.status !== 'COMPLETED' &&
     job.status !== 'CANCELLED';
+  const canResume =
+    job.status === 'ON_HOLD' &&
+    (fclActions?.can_resume === true ||
+      (fclActions?.can_resume !== false && editable));
   const canReopen =
     fclActions?.can_reopen === true ||
     (fclActions?.can_reopen !== false &&
@@ -831,7 +840,60 @@ export default function JobDetailPage() {
                 label={jobDisplayNumber(job)}
               />
             </div>
-            <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
+            {(job.status === 'ON_HOLD' ||
+              job.hold_reason ||
+              job.held_at ||
+              job.resume_reason ||
+              job.resumed_at) && (
+              <div className="rounded-sm border border-amber-200 bg-amber-50/90 px-3 py-2 text-[13px] text-[#334155]">
+                <p className="mb-1 font-semibold text-amber-950">
+                  {job.status === 'ON_HOLD' ? 'On hold' : 'Hold history'}
+                </p>
+                <dl className="grid gap-1 sm:grid-cols-2 lg:grid-cols-3">
+                  {job.hold_reason ? (
+                    <div>
+                      <dt className="text-[11px] uppercase tracking-wide text-[#64748b]">
+                        Hold reason
+                      </dt>
+                      <dd>{job.hold_reason}</dd>
+                    </div>
+                  ) : null}
+                  {job.held_at ? (
+                    <div>
+                      <dt className="text-[11px] uppercase tracking-wide text-[#64748b]">
+                        Held at
+                      </dt>
+                      <dd>{job.held_at}</dd>
+                    </div>
+                  ) : null}
+                  {job.expected_release_at ? (
+                    <div>
+                      <dt className="text-[11px] uppercase tracking-wide text-[#64748b]">
+                        Expected release
+                      </dt>
+                      <dd>{job.expected_release_at}</dd>
+                    </div>
+                  ) : null}
+                  {job.resume_reason ? (
+                    <div>
+                      <dt className="text-[11px] uppercase tracking-wide text-[#64748b]">
+                        Resume reason
+                      </dt>
+                      <dd>{job.resume_reason}</dd>
+                    </div>
+                  ) : null}
+                  {job.resumed_at ? (
+                    <div>
+                      <dt className="text-[11px] uppercase tracking-wide text-[#64748b]">
+                        Resumed at
+                      </dt>
+                      <dd>{job.resumed_at}</dd>
+                    </div>
+                  ) : null}
+                </dl>
+              </div>
+            )}
+            <div className="rounded-sm bg-white px-3 py-2 text-[13px]">
               <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
               {enquiryHref ? (
                 <Link
@@ -888,10 +950,27 @@ export default function JobDetailPage() {
                 disabled={pending || actions.stop.isPending}
                 onClick={() => {
                   setStopReason('');
+                  setStopExpectedRelease('');
+                  setStopConfirmed(false);
                   setStopOpen(true);
                 }}
               >
-                Stop / On hold
+                Hold job
+              </Button>
+            ) : null}
+            {canResume ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="report"
+                leftIcon={<PlayCircle />}
+                disabled={pending || actions.resume.isPending}
+                onClick={() => {
+                  setResumeReason('');
+                  setResumeOpen(true);
+                }}
+              >
+                Resume job
               </Button>
             ) : null}
             {canReopen ? (
@@ -1380,7 +1459,7 @@ export default function JobDetailPage() {
         <Modal
           open
           onClose={() => !pending && setStopOpen(false)}
-          title="Stop job (ON_HOLD)"
+          title="Hold job"
           footer={
             <div className="flex justify-end gap-2">
               <Button
@@ -1397,30 +1476,129 @@ export default function JobDetailPage() {
                 size="sm"
                 variant="edit"
                 leftIcon={<PauseCircle />}
-                disabled={pending}
+                disabled={pending || !stopReason.trim() || !stopConfirmed}
                 onClick={() =>
                   void run(async () => {
+                    const reason = stopReason.trim();
                     await actions.stop.mutateAsync({
-                      ...(stopReason.trim() ? { reason: stopReason.trim() } : {}),
+                      hold_reason: reason,
+                      reason,
+                      ...(stopExpectedRelease.trim()
+                        ? { expected_release_at: stopExpectedRelease.trim() }
+                        : {}),
                     });
                     setStopOpen(false);
                   }, 'Job put on hold.')
                 }
               >
-                {pending ? 'Stopping…' : 'Stop'}
+                {pending ? 'Holding…' : 'Confirm hold'}
               </Button>
             </div>
           }
         >
-          <label className="block text-[13px]">
-            <span className="mb-1 block text-[12px] font-medium text-[#334155]">Reason (optional)</span>
-            <input
-              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
-              value={stopReason}
-              onChange={(e) => setStopReason(e.target.value)}
-              maxLength={500}
-            />
-          </label>
+          <div className="space-y-3">
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Hold reason *
+              </span>
+              <input
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={stopReason}
+                onChange={(e) => setStopReason(e.target.value)}
+                maxLength={500}
+                required
+              />
+            </label>
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Expected release date
+              </span>
+              <input
+                type="date"
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={stopExpectedRelease}
+                onChange={(e) => setStopExpectedRelease(e.target.value)}
+              />
+            </label>
+            <label className="flex items-start gap-2 text-[13px] text-[#334155]">
+              <input
+                type="checkbox"
+                className="mt-0.5"
+                checked={stopConfirmed}
+                onChange={(e) => setStopConfirmed(e.target.checked)}
+              />
+              <span>
+                I confirm putting this job on hold. Status will change to ON_HOLD until resumed.
+              </span>
+            </label>
+          </div>
+        </Modal>
+      ) : null}
+
+      {resumeOpen ? (
+        <Modal
+          open
+          onClose={() => !pending && setResumeOpen(false)}
+          title="Resume job"
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={pending}
+                onClick={() => setResumeOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="create"
+                leftIcon={<PlayCircle />}
+                disabled={pending || !resumeReason.trim()}
+                onClick={() =>
+                  void run(async () => {
+                    await actions.resume.mutateAsync({
+                      resume_reason: resumeReason.trim(),
+                      status: 'IN_PROGRESS',
+                    });
+                    setResumeOpen(false);
+                  }, 'Job resumed.')
+                }
+              >
+                {pending ? 'Resuming…' : 'Resume'}
+              </Button>
+            </div>
+          }
+        >
+          <div className="space-y-3">
+            {(job.hold_reason || job.held_at || job.expected_release_at) && (
+              <div className="rounded-sm border border-amber-200 bg-amber-50/80 px-3 py-2 text-[13px] text-[#334155]">
+                <p className="font-medium text-amber-900">Current hold</p>
+                {job.hold_reason ? <p>Reason: {job.hold_reason}</p> : null}
+                {job.held_at ? <p>Held at: {job.held_at}</p> : null}
+                {job.expected_release_at ? (
+                  <p>Expected release: {job.expected_release_at}</p>
+                ) : null}
+              </div>
+            )}
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Resume reason *
+              </span>
+              <input
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={resumeReason}
+                onChange={(e) => setResumeReason(e.target.value)}
+                maxLength={500}
+                required
+              />
+            </label>
+            <p className="text-[12px] text-[#64748b]">
+              Job status will return to IN_PROGRESS (or the previous open status per backend rules).
+            </p>
+          </div>
         </Modal>
       ) : null}
 
@@ -1454,9 +1632,7 @@ export default function JobDetailPage() {
             submissionsLoading={jobEdiSubmissionsQuery.isLoading}
             generatePending={actions.generateJobEdi.isPending}
             downloadPending={actions.downloadJobEdiSubmission.isPending}
-            onGenerate={(edi_type) =>
-              actions.generateJobEdi.mutateAsync({ edi_type })
-            }
+            onGenerate={(dto) => actions.generateJobEdi.mutateAsync(dto)}
             onDownload={(submissionId) =>
               actions.downloadJobEdiSubmission.mutateAsync(submissionId)
             }

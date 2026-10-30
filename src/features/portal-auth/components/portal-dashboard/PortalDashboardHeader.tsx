@@ -166,13 +166,13 @@ export function PortalDashboardAlertPills({
 
       <AlertPill
 
-        label="Held at customs"
+        label="On hold"
 
         count={customsHold}
 
         tone="orange"
 
-        to="/portal/shipments"
+        to="/portal/shipments?status=ON_HOLD"
 
         Icon={ShieldAlert}
 

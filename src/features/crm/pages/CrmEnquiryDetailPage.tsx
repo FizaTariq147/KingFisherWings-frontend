@@ -30,6 +30,7 @@ import { ENQUIRY_STATUSES, SERVICE_TYPES, crmLabel } from '../constants/crm.cons
 import { CrmCurrencySelect, CrmPartySelect, CrmSalespersonSelect } from '../components/CrmFormControls';
 import { CrmSection } from '../components/CrmSection';
 import { OperationTypeBadge } from '@/components/erp';
+import { LeadSearchSelect } from '@/features/shared/entity-search';
 import { erpForm } from '@/lib/erpForm';
 import { appType } from '@/lib/erpTypography';
 import { CrmStatusBadge } from '../components/CrmStatusBadge';
@@ -493,7 +494,7 @@ export default function CrmEnquiryDetailPage() {
   return (
     <div className="space-y-2.5 bg-[var(--fresa-page-bg,#F4F6F9)] -mx-1 px-1 pb-4 print:space-y-2">
       {/* Header chrome — Create / Edit / Report / Back (same as shipment) */}
-      <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2.5">
+      <div className="rounded-sm bg-white px-3 py-2.5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
@@ -795,9 +796,12 @@ export default function CrmEnquiryDetailPage() {
                   onChange={(v) => setValue('salesperson_id', v, { shouldValidate: true })}
                   error={err('salesperson_id')}
                 />
-                <Field label="Lead ID" error={err('lead_id')}>
-                  <TextInput {...register('lead_id')} />
-                </Field>
+                <LeadSearchSelect
+                  label="Lead"
+                  value={watch('lead_id') ?? ''}
+                  onChange={(v) => setValue('lead_id', v, { shouldValidate: true })}
+                  error={err('lead_id')}
+                />
                 <div className="sm:col-span-3">
                   <CrmPartySelect
                     label="Client"

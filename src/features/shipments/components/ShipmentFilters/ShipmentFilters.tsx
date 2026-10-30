@@ -193,15 +193,15 @@ export function ShipmentFilters({
           <TextInput
             value={draft.jobId}
             onChange={(e) => patch({ jobId: e.target.value.trim() })}
-            placeholder="Optional job UUID"
+            placeholder="Search by job number…"
           />
         </FilterField>
 
-        <FilterField label="Quotation Id">
+        <FilterField label="Quotation">
           <TextInput
             value={draft.quotationId}
             onChange={(e) => patch({ quotationId: e.target.value.trim() })}
-            placeholder="Optional quotation UUID"
+            placeholder="Search by quotation number…"
           />
         </FilterField>
 

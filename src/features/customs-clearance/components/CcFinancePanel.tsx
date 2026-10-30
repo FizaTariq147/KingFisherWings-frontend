@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
+import { JobSearchSelect } from '@/features/shared/entity-search';
 import {
   useCcFinancialSummary,
   useCcJobActions,
@@ -141,19 +142,25 @@ export function CcFinancePanel({ jobId }: { jobId: string }) {
             <p className="text-sm">
               Linked:{' '}
               <strong>
-                {link.data.freight_job_number || link.data.freight_job_id}
+                {link.data.freight_job_number ||
+                  (link.data.freight_job_id
+                    ? `Job ${String(link.data.freight_job_id).slice(0, 8)}`
+                    : '—')}
               </strong>
             </p>
           ) : (
             <p className="text-sm text-[var(--color-neutral-400)]">No freight job linked.</p>
           )}
-          <div className="flex flex-wrap gap-2">
-            <Input
-              className="min-w-[220px] flex-1"
-              placeholder="Freight job UUID"
-              value={freightId}
-              onChange={(e) => setFreightId(e.target.value)}
-            />
+          <div className="flex flex-wrap items-end gap-2">
+            <div className="min-w-[220px] flex-1">
+              <JobSearchSelect
+                name="cc_freight_job_id"
+                label="Freight job"
+                value={freightId}
+                onChange={setFreightId}
+                placeholder="Search freight job by number…"
+              />
+            </div>
             <Button
               type="button"
               disabled={actions.linkFreight.isPending || !freightId.trim()}

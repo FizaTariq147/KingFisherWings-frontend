@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Plus, Search, Calendar, ChevronDown, Maximize2 } from 'lucide-react';
@@ -114,11 +114,10 @@ export default function AllShipmentsPage() {
   const navigate = useNavigate();
   const tableRef = useRef<HTMLDivElement>(null);
   const { canWriteCreate } = useShipmentsPermissions();
-  const initialRange = resolveDateRangePreset('this_month');
   const [rows, setRows] = useState('10');
-  const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
-  const [fromDate, setFromDate] = useState(initialRange?.from_date ?? '');
-  const [toDate, setToDate] = useState(initialRange?.to_date ?? '');
+  const [datePreset, setDatePreset] = useState<DateRangePreset>('custom');
+  const [fromDate, setFromDate] = useState('');
+  const [toDate, setToDate] = useState('');
   const [branch, setBranch] = useState('All');
   const [client, setClient] = useState('All');
   const [salesPerson, setSalesPerson] = useState('All');
@@ -149,10 +148,6 @@ export default function AllShipmentsPage() {
       setToDate(range.to_date);
     }
   };
-
-  useEffect(() => {
-    applyPreset('this_month');
-  }, []);
 
   const filters = useCustomerFilterSelectOptions();
   const pageSize = Number(rows) || 10;

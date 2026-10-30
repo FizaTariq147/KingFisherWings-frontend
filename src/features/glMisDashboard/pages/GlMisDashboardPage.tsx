@@ -5,6 +5,10 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/Table';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
+import { isUuid } from '@/lib/isUuid';
 import { useMisDashboard, useMisOperational, useMisProfitability } from '../hooks/useGlMis';
 import type { MisGroupBy } from '../types/glMis.types';
 
@@ -38,13 +42,15 @@ function GenericTable({ rows }: { rows: Record<string, unknown>[] }) {
 export default function GlMisDashboardPage() {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+  const { data: companies = [] } = useTenantCompanies(true);
+  const { data: branches = [] } = useMasterOptions('branches', MASTER_PATHS.branches, true);
   const [companyId, setCompanyId] = useState('');
   const [branchId, setBranchId] = useState('');
   const [groupBy, setGroupBy] = useState<MisGroupBy>('customer');
 
   const params = useMemo(
     () => ({
-      period: (fromDate.trim() || toDate.trim() ? 'custom' : 'mtd') as const,
+      period: fromDate.trim() || toDate.trim() ? ('custom' as const) : ('mtd' as const),
       from_date: fromDate.trim() || undefined,
       to_date: toDate.trim() || undefined,
       company_id: companyId.trim() || undefined,
@@ -85,8 +91,43 @@ export default function GlMisDashboardPage() {
       <Card className="p-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
         <Input label="From date" type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
         <Input label="To date" type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
-        <Input label="Company ID" value={companyId} onChange={(e) => setCompanyId(e.target.value)} />
-        <Input label="Branch ID" value={branchId} onChange={(e) => setBranchId(e.target.value)} />
+        <label className="space-y-1 text-sm">
+          <span className="font-medium text-[var(--color-neutral-700)]">Company</span>
+          <select
+            className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+            value={companyId}
+            onChange={(e) => setCompanyId(e.target.value)}
+          >
+            <option value="">All companies</option>
+            {companies.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.code ? `${c.name} (${c.code})` : c.name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <label className="space-y-1 text-sm">
+          <span className="font-medium text-[var(--color-neutral-700)]">Branch</span>
+          <select
+            className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+            value={branchId}
+            onChange={(e) => setBranchId(e.target.value)}
+          >
+            <option value="">All branches</option>
+            {(branches as Array<Record<string, unknown>>)
+              .filter((b) => isUuid(String(b.id ?? '')))
+              .map((b) => {
+                const id = String(b.id);
+                const name = String(b.name ?? b.code ?? 'Branch');
+                const code = String(b.code ?? '').trim();
+                return (
+                  <option key={id} value={id}>
+                    {code && name !== code ? `${name} (${code})` : name}
+                  </option>
+                );
+              })}
+          </select>
+        </label>
         <div className="space-y-1">
           <label htmlFor="mis-group-by" className="text-sm font-medium text-[var(--color-neutral-700)]">Profitability group</label>
           <select

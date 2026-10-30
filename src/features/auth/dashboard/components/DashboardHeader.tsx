@@ -1,6 +1,16 @@
 import { Link } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
-import { FileClock, Receipt, ShieldAlert } from 'lucide-react';
+import {
+  Ban,
+  CheckCircle2,
+  CircleDot,
+  Clock3,
+  FileClock,
+  PauseCircle,
+  PlayCircle,
+  Receipt,
+} from 'lucide-react';
+import type { JobDashboardCounts } from '@/features/jobs/types/jobDashboard.types';
 import type { DashboardPeriod } from '../utils/dashboardFormat';
 import { formatDashboardDate, greetingForHour, firstName } from '../utils/dashboardFormat';
 import { cn } from '@/lib/utils';
@@ -65,38 +75,109 @@ export function DashboardHeader({
   );
 }
 
+type StatusPill = {
+  key: string;
+  label: string;
+  to: string;
+  icon: LucideIcon;
+  tone: string;
+  count: number | string;
+};
+
 export function DashboardAlertPills({
-  customsHold,
-  docsPending,
+  counts,
   invoicesOverdue,
+  loading,
 }: {
-  customsHold: number;
-  docsPending: number;
+  counts?: JobDashboardCounts | null;
   invoicesOverdue: number;
+  loading?: boolean;
 }) {
+  const n = (key: keyof JobDashboardCounts) =>
+    loading ? '…' : (counts?.[key] ?? 0);
+  const onHoldCount = loading
+    ? '…'
+    : (counts?.onHold ?? counts?.customsHold ?? 0);
+
+  const pills: StatusPill[] = [
+    {
+      key: 'onHold',
+      label: 'On hold',
+      to: '/jobs/on-hold',
+      icon: PauseCircle,
+      tone: 'bg-[#FFF1E6] text-[#C7590F]',
+      count: onHoldCount,
+    },
+    {
+      key: 'delayed',
+      label: 'Delayed',
+      to: '/management/all-jobs-mis?category=delayed',
+      icon: Clock3,
+      tone: 'bg-[#FCEBEC] text-[#C6303E]',
+      count: n('delayed'),
+    },
+    {
+      key: 'inProgress',
+      label: 'In progress',
+      to: '/management/all-jobs-mis?category=in_progress',
+      icon: PlayCircle,
+      tone: 'bg-[#FFF4ED] text-[#FF751F]',
+      count: n('inProgress'),
+    },
+    {
+      key: 'open',
+      label: 'Open',
+      to: '/management/all-jobs-mis?category=open',
+      icon: CircleDot,
+      tone: 'bg-[#E8EEF4] text-[#2C557A]',
+      count: n('open'),
+    },
+    {
+      key: 'completed',
+      label: 'Completed',
+      to: '/management/all-jobs-mis?category=completed,closed',
+      icon: CheckCircle2,
+      tone: 'bg-[#E7F6EC] text-[#1B8A4A]',
+      count: n('completed'),
+    },
+    {
+      key: 'cancelled',
+      label: 'Cancelled',
+      to: '/management/all-jobs-mis?category=cancelled',
+      icon: Ban,
+      tone: 'bg-[#F1F5F9] text-[#475569]',
+      count: n('cancelled'),
+    },
+    {
+      key: 'docsPending',
+      label: 'Docs pending',
+      to: '/jobs/air-export',
+      icon: FileClock,
+      tone: 'bg-[#FDF2F8] text-[#9D174D]',
+      count: n('docsPending'),
+    },
+    {
+      key: 'invoicesOverdue',
+      label: 'Invoices overdue',
+      to: '/invoices/overdue',
+      icon: Receipt,
+      tone: 'bg-[#FFF6ED] text-[#B7791F]',
+      count: loading ? '…' : invoicesOverdue,
+    },
+  ];
+
   return (
     <div className="flex flex-wrap gap-2">
-      <AlertPill
-        to="/jobs/sea-import"
-        label="Held at customs"
-        count={customsHold}
-        tone="orange"
-        icon={ShieldAlert}
-      />
-      <AlertPill
-        to="/jobs/air-export"
-        label="Docs pending"
-        count={docsPending}
-        tone="rose"
-        icon={FileClock}
-      />
-      <AlertPill
-        to="/invoices/overdue"
-        label="Invoices overdue"
-        count={invoicesOverdue}
-        tone="peach"
-        icon={Receipt}
-      />
+      {pills.map((pill) => (
+        <AlertPill
+          key={pill.key}
+          to={pill.to}
+          label={pill.label}
+          count={pill.count}
+          tone={pill.tone}
+          icon={pill.icon}
+        />
+      ))}
     </div>
   );
 }
@@ -110,20 +191,12 @@ function AlertPill({
 }: {
   to: string;
   label: string;
-  count: number;
-  tone: 'orange' | 'rose' | 'peach';
+  count: number | string;
+  tone: string;
   icon: LucideIcon;
 }) {
-  const tones = {
-    orange: 'bg-[#FFF1E6] text-[#C7590F]',
-    rose: 'bg-[#FCEBEC] text-[#C6303E]',
-    peach: 'bg-[#FFF6ED] text-[#B7791F]',
-  };
   return (
-    <Link
-      to={to}
-      className={cn(dashType.alertPill.base, tones[tone])}
-    >
+    <Link to={to} className={cn(dashType.alertPill.base, tone)}>
       <Icon size={14} strokeWidth={2.25} className="shrink-0 opacity-90" aria-hidden />
       {label}
       <span className={dashType.alertPill.count}>{count}</span>

@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { Plus, RefreshCw, Upload, Wand2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -10,6 +10,7 @@ import { appType, listShell } from '@/lib/erpTypography';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
   JobMisFilters,
+  jobMisDraftFromSearch,
   jobMisFilterDraftToListParams,
   useJobMisFilterDraft,
 } from '../components/JobFilters/JobMisFilters';
@@ -22,10 +23,12 @@ import {
 import { useJobLifecycleMutations } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
+import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeJob } from '../utils/normalizeJob';
 import { jobDetailPath } from '../utils/jobRoute';
+import { useAuthStore } from '@/store/authStore';
 
 export type HubAllJobsVariant = 'nvocc' | 'documentation' | 'management';
 
@@ -71,6 +74,8 @@ export interface HubAllJobsPageProps {
 /** Hub All Jobs list — reuses Jobs API/table; chrome matches Management/NVOCC/Documentation shells. */
 export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPageProps) {
   const navigate = useNavigate();
+  const location = useLocation();
+  const accessToken = useAuthStore((s) => s.accessToken);
   const config = variantConfig(variant);
 
   const [page, setPage] = useState(1);
@@ -79,7 +84,20 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [manifestHint, setManifestHint] = useState<string | null>(null);
   const { confirm, requestConfirm, closeConfirm } = useJobConfirmState();
-  const { draft, setDraft, applied, submit } = useJobMisFilterDraft(DEFAULT_JOB_PAGE_SIZE);
+  const { draft, setDraft, applied, setApplied, submit } = useJobMisFilterDraft(
+    DEFAULT_JOB_PAGE_SIZE,
+    () => jobMisDraftFromSearch(location.search, DEFAULT_JOB_PAGE_SIZE),
+  );
+
+  // Keep filters in sync when dashboard pills change ?status= / ?category=
+  useEffect(() => {
+    const seeded = jobMisDraftFromSearch(location.search, applied.rows || DEFAULT_JOB_PAGE_SIZE);
+    if (!seeded.status && !seeded.category) return;
+    if (seeded.status === applied.status && seeded.category === applied.category) return;
+    setDraft((prev) => ({ ...prev, status: seeded.status, category: seeded.category }));
+    setApplied((prev) => ({ ...prev, status: seeded.status, category: seeded.category }));
+    setPage(1);
+  }, [location.search, applied.status, applied.category, applied.rows, setDraft, setApplied]);
 
   useEffect(() => {
     setPage(1);
@@ -93,7 +111,23 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     [applied, page, config.filterJobTypes],
   );
 
-  const jobsQuery = useJobs(listParams, { enabled: variant !== 'documentation' });
+  const categoryFilter = applied.category.trim();
+  const useCategoryList = Boolean(categoryFilter) && variant !== 'documentation';
+
+  const jobsQuery = useJobs(listParams, {
+    enabled: variant !== 'documentation' && !useCategoryList,
+  });
+  const categoryQuery = useQuery({
+    queryKey: ['tenant', 'jobs', 'by-category', categoryFilter, page, applied.rows, applied.order],
+    queryFn: () =>
+      jobService.listByCategory(categoryFilter, {
+        page,
+        limit: applied.rows,
+        order: applied.order,
+        search: applied.search.trim() || undefined,
+      }),
+    enabled: Boolean(accessToken) && useCategoryList,
+  });
   const documentationQuery = useQuery({
     queryKey: ['documentation', 'jobs', listParams],
     queryFn: () =>
@@ -118,15 +152,39 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
             .filter((j): j is Job => Boolean(j)),
           meta: documentationQuery.data?.meta,
         }
-      : jobsQuery.data;
+      : useCategoryList
+        ? categoryQuery.data
+        : jobsQuery.data;
   const isLoading =
-    variant === 'documentation' ? documentationQuery.isLoading : jobsQuery.isLoading;
+    variant === 'documentation'
+      ? documentationQuery.isLoading
+      : useCategoryList
+        ? categoryQuery.isLoading
+        : jobsQuery.isLoading;
   const isFetching =
-    variant === 'documentation' ? documentationQuery.isFetching : jobsQuery.isFetching;
-  const isError = variant === 'documentation' ? documentationQuery.isError : jobsQuery.isError;
-  const error = variant === 'documentation' ? documentationQuery.error : jobsQuery.error;
+    variant === 'documentation'
+      ? documentationQuery.isFetching
+      : useCategoryList
+        ? categoryQuery.isFetching
+        : jobsQuery.isFetching;
+  const isError =
+    variant === 'documentation'
+      ? documentationQuery.isError
+      : useCategoryList
+        ? categoryQuery.isError
+        : jobsQuery.isError;
+  const error =
+    variant === 'documentation'
+      ? documentationQuery.error
+      : useCategoryList
+        ? categoryQuery.error
+        : jobsQuery.error;
   const refetch =
-    variant === 'documentation' ? documentationQuery.refetch : jobsQuery.refetch;
+    variant === 'documentation'
+      ? documentationQuery.refetch
+      : useCategoryList
+        ? categoryQuery.refetch
+        : jobsQuery.refetch;
   const lifecycle = useJobLifecycleMutations();
   const jobs = data?.jobs ?? [];
   const meta = data?.meta;

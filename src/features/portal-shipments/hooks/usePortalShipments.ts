@@ -256,3 +256,45 @@ export function useUploadPortalAcknowledgementSignature(shipmentId: string) {
       portalShipmentsService.uploadAcknowledgementSignature(shipmentId, file),
   });
 }
+
+export function usePortalAcknowledgementAttachments(shipmentId: string, enabled = true) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  return useQuery({
+    queryKey: [...portalShipmentKeys.acknowledgement(scope, shipmentId), 'attachments'] as const,
+    queryFn: () => portalShipmentsService.listAcknowledgementAttachments(shipmentId),
+    enabled: Boolean(accessToken) && Boolean(shipmentId) && enabled && scope !== 'anon',
+    retry: false,
+  });
+}
+
+export function usePortalAcknowledgementAttachmentMutations(shipmentId: string) {
+  const queryClient = useQueryClient();
+  const scope = usePortalQueryScope();
+  const invalidate = () => {
+    void queryClient.invalidateQueries({
+      queryKey: [...portalShipmentKeys.acknowledgement(scope, shipmentId), 'attachments'],
+    });
+  };
+  return {
+    upload: useMutation({
+      mutationFn: (file: File) =>
+        portalShipmentsService.uploadAcknowledgementAttachment(shipmentId, file),
+      onSuccess: () => invalidate(),
+    }),
+    download: useMutation({
+      mutationFn: ({
+        attachmentId,
+        fileName,
+      }: {
+        attachmentId: string;
+        fileName?: string;
+      }) =>
+        portalShipmentsService.downloadAcknowledgementAttachment(
+          shipmentId,
+          attachmentId,
+          fileName || 'attachment',
+        ),
+    }),
+  };
+}

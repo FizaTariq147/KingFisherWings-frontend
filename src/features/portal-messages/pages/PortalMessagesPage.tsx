@@ -32,7 +32,7 @@ const optionalUuid = z
   .trim()
   .optional()
   .or(z.literal(''))
-  .refine((v) => !v || isUuid(v), 'Enter a valid UUID');
+  .refine((v) => !v || isUuid(v), 'Select a valid record');
 
 const createMessageSchema = z.object({
   subject: z
@@ -308,14 +308,16 @@ export default function PortalMessagesPage() {
           </label>
           <div className="grid gap-3 sm:grid-cols-2">
             <Input
-              label="Job (optional)"
-              hint="UUID"
+              label="Job number (optional)"
+              hint="e.g. job reference from your shipment"
+              placeholder="Job number…"
               error={form.formState.errors.job_id?.message}
               {...form.register('job_id')}
             />
             <Input
-              label="Invoice ID (optional)"
-              hint="UUID"
+              label="Invoice number (optional)"
+              hint="e.g. INV-…"
+              placeholder="Invoice number…"
               error={form.formState.errors.invoice_id?.message}
               {...form.register('invoice_id')}
             />

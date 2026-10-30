@@ -76,7 +76,7 @@ export function CcChecklistPanel({ jobId }: { jobId: string }) {
                 <div className="mt-1 flex flex-wrap gap-1">
                   <Input
                     className="max-w-[220px]"
-                    placeholder="Job document UUID"
+                    placeholder="Search document by name…"
                     defaultValue={item.job_document_id ?? ''}
                     id={`cc-doc-${item.id}`}
                   />

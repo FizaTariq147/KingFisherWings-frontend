@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { Download, Package, RefreshCw, Search } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -23,6 +23,7 @@ import { PORTAL_JOB_STATUSES, PORTAL_JOB_TYPES } from '../api/portalShipments.ap
 import { useExportPortalShipmentsCsv, usePortalShipments } from '../hooks/usePortalShipments';
 
 export default function PortalShipmentsPage() {
+  const [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
   const [jobType, setJobType] = useState('');
@@ -36,14 +37,17 @@ export default function PortalShipmentsPage() {
 
   useEffect(() => {
     if (filtersReady || prefs.isLoading) return;
+    const fromUrl = searchParams.get('status')?.trim().toUpperCase() ?? '';
     const saved = prefs.data?.defaultShipmentFilters;
-    if (saved) {
+    if (fromUrl) {
+      setStatus(fromUrl);
+    } else if (saved) {
       if (typeof saved.search === 'string') setSearch(saved.search);
       if (typeof saved.status === 'string') setStatus(saved.status);
       if (typeof saved.job_type === 'string') setJobType(saved.job_type);
     }
     setFiltersReady(true);
-  }, [filtersReady, prefs.data, prefs.isLoading]);
+  }, [filtersReady, prefs.data, prefs.isLoading, searchParams]);
 
   const params = useMemo(
     () => ({

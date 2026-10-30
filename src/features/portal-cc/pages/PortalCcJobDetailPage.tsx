@@ -371,10 +371,10 @@ export default function PortalCcJobDetailPage() {
             </select>
           </label>
           <Input
-            label="Job document id (optional)"
+            label="Job document (optional)"
             value={jobDocumentId}
             onChange={(e) => setJobDocumentId(e.target.value)}
-            placeholder="UUID from Documents"
+            placeholder="Select document by name…"
           />
           <Button
             type="button"

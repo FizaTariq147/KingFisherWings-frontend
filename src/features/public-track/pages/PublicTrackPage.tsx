@@ -1,11 +1,10 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
-import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { ApiDataView } from '@/features/jobs/components/ApiDataView';
 import { usePublicTrackEmbed } from '../hooks/usePublicTrack';
+import { PublicTrackTimeline } from '../components/PublicTrackTimeline';
 import { publicTrackService } from '../services/publicTrack.service';
 import type { PublicTrackResult } from '../types/publicTrack.types';
 import {
@@ -95,11 +94,10 @@ export default function PublicTrackPage() {
           {title}
         </h1>
         <p className="mt-1 text-sm text-[var(--color-neutral-500)]">
-          Enter a job, shipment, HAWB, MAWB, HBL, MBL, booking, or container number — results stay
-          on this page.
+          Search by job number, shipment number, container number, BL number, or AWB number.
         </p>
 
-        <div className="mt-8 rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+        <div className="mt-8 rounded-xl bg-white p-5 sm:p-6">
           <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--color-primary-100)] text-[var(--color-primary)]">
             <Search size={20} aria-hidden="true" />
           </div>
@@ -138,7 +136,8 @@ export default function PublicTrackPage() {
               required
               value={ref}
               onChange={(e) => setRef(e.target.value)}
-              placeholder="e.g. KFW-J-00042"
+              placeholder="Job / shipment / container / BL / AWB"
+              hint="GET /track?ref= — public timeline only; confidential fields are not shown."
             />
             <Button type="submit" className="w-full" disabled={pending || !canSearch}>
               {pending ? 'Searching…' : 'Track'}
@@ -146,34 +145,17 @@ export default function PublicTrackPage() {
           </form>
         </div>
 
-        {(result || rawPayload) && (
-          <div className="mt-6 space-y-4 rounded-xl border border-[var(--color-neutral-200)] bg-white p-5">
-            {result ? (
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <div className="text-lg font-semibold">{result.reference}</div>
-                  <div className="text-sm text-[var(--color-neutral-500)]">
-                    {[result.origin, result.destination].filter(Boolean).join(' → ') ||
-                      result.jobType ||
-                      '—'}
-                  </div>
-                  {result.partyName ? (
-                    <div className="mt-1 text-xs text-[var(--color-neutral-500)]">
-                      {result.partyName}
-                    </div>
-                  ) : null}
-                </div>
-                {result.status ? (
-                  <Badge variant="info">{result.status.replaceAll('_', ' ')}</Badge>
-                ) : null}
-              </div>
-            ) : null}
-            <ApiDataView
-              data={rawPayload ?? result ?? {}}
-              emptyLabel="No tracking data returned."
-            />
+        {result ? (
+          <div className="mt-6 rounded-xl bg-white p-5 sm:p-6">
+            <PublicTrackTimeline result={result} />
           </div>
-        )}
+        ) : rawPayload && !pending ? (
+          <div className="mt-6 rounded-xl bg-white p-5">
+            <p className="text-sm text-[var(--color-neutral-500)]">
+              Tracking response received but could not be normalized. Try a more specific reference.
+            </p>
+          </div>
+        ) : null}
       </div>
     </div>
   );

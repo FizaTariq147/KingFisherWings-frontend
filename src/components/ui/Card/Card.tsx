@@ -11,7 +11,7 @@ export function Card({ children, className, padding = 'md' }: CardProps) {
   const paddingMap = { none: '', sm: 'p-3', md: 'p-4', lg: 'p-6' };
   return (
     <div className={cn(
-      'rounded-sm border border-[#d0d7de] bg-white shadow-none',
+      'rounded-sm bg-white shadow-none',
       paddingMap[padding],
       className
     )}>

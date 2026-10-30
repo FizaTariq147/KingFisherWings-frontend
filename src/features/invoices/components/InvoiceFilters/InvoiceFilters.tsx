@@ -212,7 +212,7 @@ export function InvoiceFilters({
           <EnquirySheetTextInput
             value={draft.jobId}
             onChange={(e) => patch({ jobId: e.target.value.trim() })}
-            placeholder="Optional job UUID"
+            placeholder="Search by job number…"
           />
         </EnquirySheetFilterField>
       </EnquirySheetFilterGrid>

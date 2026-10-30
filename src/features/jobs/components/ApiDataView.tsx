@@ -236,7 +236,7 @@ export function ApiDataView({
           {scalars.map(([key, value]) => (
             <div
               key={key}
-              className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2"
+              className="rounded-sm bg-white px-3 py-2"
             >
               <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
                 {humanLabel(key)}

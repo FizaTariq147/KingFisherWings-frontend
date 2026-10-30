@@ -18,11 +18,28 @@ export interface PaginationMeta {
   totalPages: number;
 }
 
+export type JobListCategory =
+  | 'hold'
+  | 'on_hold'
+  | 'delayed'
+  | 'delivered'
+  | 'cancelled'
+  | 'completed'
+  | 'closed'
+  | 'in_progress'
+  | 'open'
+  | string;
+
 export interface JobListParams {
   page?: number;
   limit?: number;
   search?: string;
   status?: JobStatus;
+  /**
+   * Backend category filter (hold / delayed / delivered / cancelled …).
+   * Prefer this over inventing DELAYED as a status enum.
+   */
+  category?: JobListCategory;
   job_type?: JobType;
   shipper_id?: string;
   consignee_id?: string;
@@ -719,6 +736,7 @@ export interface JobActions {
   can_change_status?: boolean;
   can_reopen?: boolean;
   can_stop?: boolean;
+  can_resume?: boolean;
   can_close?: boolean;
   can_cancel?: boolean;
   /** Real jobs.closed_delivery.edit permission when job is closed */
@@ -795,8 +813,25 @@ export interface ReopenJobDto {
   reason?: string;
 }
 
+/** POST /jobs/:id/stop — status → ON_HOLD */
 export interface StopJobDto {
+  /** Preferred hold reason (required by Phase 3 rules). */
+  hold_reason?: string;
+  /** Backward-compatible alias still accepted by older clients. */
   reason?: string;
+  expected_release_at?: string;
+}
+
+/** POST /jobs/:id/resume — restore from ON_HOLD (default status IN_PROGRESS). */
+export interface ResumeJobDto {
+  resume_reason: string;
+  status?: JobStatus | string;
+}
+
+/** PATCH /jobs/:id/hold — update hold metadata while ON_HOLD. */
+export interface PatchJobHoldDto {
+  hold_reason?: string;
+  expected_release_at?: string | null;
 }
 
 export interface UpsertJobPartyReferenceDto {
@@ -939,11 +974,19 @@ export interface UpsertJobRoutingLegDto {
   leg_sequence?: number;
   transport_mode?: string;
   port_id?: string;
+  /** UUID optional when origin_port_name / origin_port_code is sent. */
   origin_port_id?: string;
+  origin_port_name?: string;
+  origin_port_code?: string;
+  /** UUID optional when dest_port_name / dest_port_code is sent. */
   dest_port_id?: string;
+  dest_port_name?: string;
+  dest_port_code?: string;
   etd?: string;
   eta?: string;
+  /** UUID optional when carrier_name is sent. */
   carrier_id?: string;
+  carrier_name?: string;
   vessel_name?: string;
   voyage_number?: string;
 }
@@ -1077,6 +1120,12 @@ export interface Job {
   barcode_value?: string;
   etd?: string;
   eta?: string;
+  /** Hold / resume metadata (enriched when status is or was ON_HOLD). */
+  hold_reason?: string;
+  held_at?: string;
+  expected_release_at?: string;
+  resume_reason?: string;
+  resumed_at?: string;
   created_at?: string;
   updated_at?: string;
   /** From GET /jobs/:id/detail */
@@ -1343,6 +1392,41 @@ export type JobEdiType = (typeof JOB_EDI_TYPES)[number];
 
 export interface GenerateJobEdiDto {
   edi_type: JobEdiType | string;
+  /**
+   * Required for MANIFEST_CSDP — each code emits a VOY/BOL/(CTR/CON) block in one .txt file.
+   * OpenAPI: string[] items minLength 1, maxLength 40.
+   */
+  company_codes?: string[];
+}
+
+/** PATCH /jobs/:id/detail/show_all · /shipments/:id/detail/show_all */
+export interface PatchShowAllDto {
+  commodity?: string | null;
+  pieces?: number | null;
+  gross_weight?: number | null;
+  volume_cbm?: number | null;
+  etd?: string | null;
+  eta?: string | null;
+  /** Jobs: job_date · Shipments: maps to shipment_date on BE */
+  job_date?: string | null;
+  mbl_number?: string | null;
+  hbl_number?: string | null;
+  origin_port_name?: string | null;
+  origin_port_code?: string | null;
+  dest_port_name?: string | null;
+  dest_port_code?: string | null;
+  shipper_name?: string | null;
+  shipper_code?: string | null;
+  consignee_name?: string | null;
+  consignee_code?: string | null;
+  billing_party_name?: string | null;
+  billing_party_code?: string | null;
+  agent_name?: string | null;
+  agent_code?: string | null;
+  carrier_name?: string | null;
+  carrier_code?: string | null;
+  customer_name?: string | null;
+  customer_code?: string | null;
 }
 
 export interface JobEdiTypeOption {

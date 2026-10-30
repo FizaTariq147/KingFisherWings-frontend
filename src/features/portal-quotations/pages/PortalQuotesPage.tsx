@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { FileText, RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -26,13 +26,23 @@ import {
 
 export default function PortalQuotesPage() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   useEffect(() => {
     ensureCustomerQuoteDecisionStorageMigrated();
   }, []);
   const [search, setSearch] = useState('');
-  const [status, setStatus] = useState('');
+  const [status, setStatus] = useState(
+    () => searchParams.get('status')?.trim().toUpperCase() ?? '',
+  );
   const [jobType, setJobType] = useState('');
   const [page, setPage] = useState(1);
+
+  useEffect(() => {
+    const fromUrl = searchParams.get('status')?.trim().toUpperCase() ?? '';
+    if (!fromUrl || fromUrl === status) return;
+    setStatus(fromUrl);
+    setPage(1);
+  }, [searchParams, status]);
   const params = useMemo(
     () => ({
       page,

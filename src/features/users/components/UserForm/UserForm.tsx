@@ -366,7 +366,7 @@ export function UserForm({
         <UserWizardStepper currentStep={step} />
 
         {step === 0 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <UserRoleSelectGrid
               value={role}
               onChange={(next: UserRole) => {
@@ -379,7 +379,7 @@ export function UserForm({
         ) : null}
 
         {step === 1 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6 space-y-6">
             <div>
               <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
                 Basic Information
@@ -396,7 +396,7 @@ export function UserForm({
         ) : null}
 
         {step === 2 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6 space-y-6">
             <div>
               <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
                 Assign permissions

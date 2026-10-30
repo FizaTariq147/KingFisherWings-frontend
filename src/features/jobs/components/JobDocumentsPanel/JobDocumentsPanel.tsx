@@ -262,11 +262,24 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                 visible_to_vendor?: boolean;
                 visibleToCustomer?: boolean;
                 visibleToVendor?: boolean;
+                downloadable_by_customer?: boolean;
+                downloadable_by_vendor?: boolean;
+                downloadableByCustomer?: boolean;
+                downloadableByVendor?: boolean;
               };
               const visibleToCustomer =
                 d.visible_to_customer === true || d.visibleToCustomer === true;
               const visibleToVendor =
                 d.visible_to_vendor === true || d.visibleToVendor === true;
+              const downloadableByCustomer =
+                d.downloadable_by_customer === true ||
+                d.downloadableByCustomer === true ||
+                (d.downloadable_by_customer == null &&
+                  d.downloadableByCustomer == null &&
+                  visibleToCustomer);
+              const downloadableByVendor =
+                d.downloadable_by_vendor === true ||
+                d.downloadableByVendor === true;
               const canDownload =
                 d.can_download !== false && d.canDownload !== false;
               const docRef = {
@@ -301,8 +314,16 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                     <p className="text-xs text-[var(--color-neutral-400)]">
                       {d.document_type} · {d.status || '—'}
                       {d.is_finalized ? ' · Final' : ''}
-                      {visibleToCustomer ? ' · Customer' : ''}
-                      {visibleToVendor ? ' · Vendor' : ''}
+                      {visibleToCustomer
+                        ? downloadableByCustomer
+                          ? ' · Customer download'
+                          : ' · Customer view only'
+                        : ''}
+                      {visibleToVendor
+                        ? downloadableByVendor
+                          ? ' · Vendor download'
+                          : ' · Vendor view only'
+                        : ''}
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-2">
@@ -316,7 +337,12 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                           () =>
                             docs.patchDocumentVisibility.mutateAsync({
                               documentId: d.id,
-                              dto: { visible_to_customer: !visibleToCustomer },
+                              dto: {
+                                visible_to_customer: !visibleToCustomer,
+                                ...(!visibleToCustomer
+                                  ? {}
+                                  : { downloadable_by_customer: false }),
+                              },
                             }),
                           visibleToCustomer
                             ? 'Hidden from customer portal.'
@@ -329,6 +355,32 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                     <Button
                       type="button"
                       size="sm"
+                      variant="secondary"
+                      disabled={
+                        docs.patchDocumentVisibility.isPending || !visibleToCustomer
+                      }
+                      onClick={() =>
+                        void run(
+                          () =>
+                            docs.patchDocumentVisibility.mutateAsync({
+                              documentId: d.id,
+                              dto: {
+                                downloadable_by_customer: !downloadableByCustomer,
+                              },
+                            }),
+                          downloadableByCustomer
+                            ? 'Customer download disabled (view only).'
+                            : 'Customer can download.',
+                        )
+                      }
+                    >
+                      {downloadableByCustomer
+                        ? 'Customer: view only'
+                        : 'Customer: allow download'}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
                       variant={visibleToVendor ? 'edit' : 'secondary'}
                       disabled={docs.patchDocumentVisibility.isPending}
                       onClick={() =>
@@ -336,7 +388,12 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                           () =>
                             docs.patchDocumentVisibility.mutateAsync({
                               documentId: d.id,
-                              dto: { visible_to_vendor: !visibleToVendor },
+                              dto: {
+                                visible_to_vendor: !visibleToVendor,
+                                ...(!visibleToVendor
+                                  ? {}
+                                  : { downloadable_by_vendor: false }),
+                              },
                             }),
                           visibleToVendor
                             ? 'Hidden from vendor portal.'
@@ -345,6 +402,32 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
                       }
                     >
                       {visibleToVendor ? 'Hide vendor' : 'Show vendor'}
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      disabled={
+                        docs.patchDocumentVisibility.isPending || !visibleToVendor
+                      }
+                      onClick={() =>
+                        void run(
+                          () =>
+                            docs.patchDocumentVisibility.mutateAsync({
+                              documentId: d.id,
+                              dto: {
+                                downloadable_by_vendor: !downloadableByVendor,
+                              },
+                            }),
+                          downloadableByVendor
+                            ? 'Vendor download disabled (view only).'
+                            : 'Vendor can download.',
+                        )
+                      }
+                    >
+                      {downloadableByVendor
+                        ? 'Vendor: view only'
+                        : 'Vendor: allow download'}
                     </Button>
                     <Button
                       type="button"

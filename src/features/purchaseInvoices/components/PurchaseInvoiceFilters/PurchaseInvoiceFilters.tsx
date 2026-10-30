@@ -1,4 +1,4 @@
-import { useEffect, useState, type ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
 import { ChevronDown, Search } from 'lucide-react';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { isUuid } from '@/lib/isUuid';
@@ -94,11 +94,10 @@ export type PurchaseInvoiceFilterDraft = {
 export function defaultPurchaseInvoiceFilterDraft(
   limit = DEFAULT_PURCHASE_INVOICE_PAGE_SIZE,
 ): PurchaseInvoiceFilterDraft {
-  const range = resolveDateRangePreset('this_month');
   return {
-    datePreset: 'this_month',
-    fromDate: range?.from_date ?? '',
-    toDate: range?.to_date ?? '',
+    datePreset: 'custom',
+    fromDate: '',
+    toDate: '',
     partyId: '',
     jobId: '',
     invoiceNo: '',
@@ -263,7 +262,7 @@ export function PurchaseInvoiceFilters({
           <TextInput
             value={draft.jobId}
             onChange={(e) => patch({ jobId: e.target.value.trim() })}
-            placeholder="Optional job UUID"
+            placeholder="Search by job number…"
           />
         </FilterField>
       </div>
@@ -331,23 +330,6 @@ export function usePurchaseInvoiceFilterDraft(
   const [applied, setApplied] = useState<PurchaseInvoiceFilterDraft>(() =>
     defaultPurchaseInvoiceFilterDraft(initialLimit),
   );
-
-  useEffect(() => {
-    const range = resolveDateRangePreset('this_month');
-    if (!range) return;
-    setDraft((prev) => ({
-      ...prev,
-      datePreset: 'this_month',
-      fromDate: range.from_date,
-      toDate: range.to_date,
-    }));
-    setApplied((prev) => ({
-      ...prev,
-      datePreset: 'this_month',
-      fromDate: range.from_date,
-      toDate: range.to_date,
-    }));
-  }, []);
 
   const submit = () => {
     let next = draft;

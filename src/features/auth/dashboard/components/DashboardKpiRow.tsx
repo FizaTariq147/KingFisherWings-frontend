@@ -10,7 +10,7 @@ const KPI_THEMES = {
   jobs: DASHBOARD_KPI_THEMES.orange,
   quotes: DASHBOARD_KPI_THEMES.gold,
   receivables: DASHBOARD_KPI_THEMES.navy,
-  onTime: DASHBOARD_KPI_THEMES.green,
+  delivered: DASHBOARD_KPI_THEMES.green,
 } as const;
 
 function TrendPill({
@@ -45,13 +45,13 @@ export function DashboardKpiRow({
   receivables,
   overdue30,
   agingBars,
-  onTimePct,
-  onTimeTarget,
-  onTimeBars,
+  deliveredJobs,
+  completedJobs,
+  deliveredBars,
   loadingJobs,
   loadingQuotes,
   loadingReceivables,
-  loadingOnTime,
+  loadingDelivered,
 }: {
   activeJobs: number;
   inTransit: number;
@@ -65,20 +65,16 @@ export function DashboardKpiRow({
   receivables: number;
   overdue30: number;
   agingBars: number[];
-  onTimePct: number | null;
-  onTimeTarget: number | null;
-  onTimeBars: number[];
+  deliveredJobs: number;
+  completedJobs: number;
+  deliveredBars: number[];
   loadingJobs: boolean;
   loadingQuotes: boolean;
   loadingReceivables: boolean;
-  loadingOnTime: boolean;
+  loadingDelivered: boolean;
 }) {
   const overdueShare =
     receivables > 0 ? Math.round((overdue30 / receivables) * 100) : 0;
-  const onTimeDelta =
-    onTimePct == null || onTimeTarget == null
-      ? null
-      : Math.round((onTimePct - onTimeTarget) * 10) / 10;
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
@@ -94,7 +90,7 @@ export function DashboardKpiRow({
         loading={loadingJobs}
       />
       <KpiCard
-        to="/quotations/all"
+        to="/quotations/all?status=DRAFT"
         label="Pending quotations"
         value={loadingQuotes ? null : String(pendingQuotes)}
         unit="awaiting"
@@ -121,24 +117,19 @@ export function DashboardKpiRow({
         loading={loadingReceivables}
       />
       <KpiCard
-        to="/gl/mis/dashboard"
-        label="On-time delivery"
-        value={loadingOnTime ? null : onTimePct == null ? '—' : String(Math.round(onTimePct))}
-        unit="%"
+        to="/management/all-jobs-mis?category=delivered"
+        label="Delivered jobs"
+        value={loadingDelivered ? null : String(deliveredJobs)}
+        unit="delivered"
         caption={
-          onTimePct == null
-            ? 'No operational on-time metric from the API yet'
-            : onTimeTarget == null
-              ? 'From MIS operational metrics'
-              : `Target ${Math.round(onTimeTarget)}% this quarter`
+          completedJobs > 0
+            ? `${completedJobs} completed alongside delivered`
+            : 'Jobs marked delivered'
         }
-        badge={
-          onTimeDelta == null ? null : `${onTimeDelta > 0 ? '+' : ''}${onTimeDelta}`
-        }
-        bars={onTimeBars}
-        theme={KPI_THEMES.onTime}
-        muted={!loadingOnTime && onTimePct == null}
-        loading={loadingOnTime}
+        badge={deliveredJobs > 0 ? `${deliveredJobs}` : null}
+        bars={deliveredBars}
+        theme={KPI_THEMES.delivered}
+        loading={loadingDelivered}
       />
     </div>
   );

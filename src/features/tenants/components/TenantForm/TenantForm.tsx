@@ -596,25 +596,25 @@ export function TenantForm({
         <TenantWizardStepper currentStep={step} />
 
         {step === 0 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {basicFields}
           </div>
         ) : null}
 
         {step === 1 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {adminFields}
           </div>
         ) : null}
 
         {step === 2 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {companyStepContent}
           </div>
         ) : null}
 
         {step === 3 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {subscriptionFields}
           </div>
         ) : null}

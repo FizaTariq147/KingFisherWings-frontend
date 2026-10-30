@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { ListChecks, Wand2, Plus, Search, ChevronDown, Maximize2, Heart } from 'lucide-react';
@@ -23,7 +23,7 @@ export default function SailingSchedulePage() {
   const uploadInputRef = useRef<HTMLInputElement>(null);
   const [uploadMessage, setUploadMessage] = useState<string | null>(null);
   const [rows, setRows] = useState('10');
-  const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
+  const [datePreset, setDatePreset] = useState<DateRangePreset>('custom');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [carrier, setCarrier] = useState('-Select-');
@@ -46,10 +46,6 @@ export default function SailingSchedulePage() {
       setToDate(range.to_date);
     }
   };
-
-  useEffect(() => {
-    applyPreset('this_month');
-  }, []);
 
   const query = useCustomerSailingSchedule(activeFilters, submitted);
   const filters = useCustomerFilterSelectOptions();
@@ -110,7 +106,7 @@ export default function SailingSchedulePage() {
                 const file = event.target.files?.[0];
                 setUploadMessage(
                   file
-                    ? `Selected "${file.name}". Bulk import is not available yet — use Create to add a sea export job with ETD/vessel details.`
+                    ? `Selected "${file.name}". Bulk import is not available yet use Create to add a sea export job with ETD/vessel details.`
                     : null,
                 );
                 event.target.value = '';

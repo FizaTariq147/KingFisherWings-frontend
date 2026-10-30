@@ -4,6 +4,7 @@ import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { Modal } from '@/components/ui/Modal';
 import {
   Table,
   TableBody,
@@ -22,6 +23,7 @@ import {
   useChartOfAccount,
   useDeleteChartOfAccount,
 } from '../hooks/useChartOfAccounts';
+import { chartOfAccountService } from '../services/chartOfAccount.service';
 import { chartOfAccountDisplayLabel } from '../utils/normalizeChartOfAccount';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
@@ -44,6 +46,12 @@ export default function ChartOfAccountDetailPage() {
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [openingOpen, setOpeningOpen] = useState(false);
+  const [obAmount, setObAmount] = useState('');
+  const [obType, setObType] = useState<'DEBIT' | 'CREDIT'>('DEBIT');
+  const [obDate, setObDate] = useState(() => new Date().toISOString().slice(0, 10));
+  const [obPostVoucher, setObPostVoucher] = useState(true);
+  const [obMsg, setObMsg] = useState<string | null>(null);
 
   const ledgerParams = {
     from_date: fromDate.trim() || undefined,
@@ -112,6 +120,18 @@ export default function ChartOfAccountDetailPage() {
         backLabel="Chart of Accounts"
         actionsDisabled={pending}
         actions={[
+          {
+            label: 'Opening balance',
+            onClick: () => {
+              setObAmount(String(account.opening_balance ?? ''));
+              setObType(
+                account.opening_balance_type === 'CREDIT' ? 'CREDIT' : 'DEBIT',
+              );
+              setObMsg(null);
+              setOpeningOpen(true);
+            },
+            variant: 'create',
+          },
           {
             label: 'Edit',
             onClick: () => navigate(`${CHART_OF_ACCOUNT_ROUTE_PREFIX}/${id}/edit`),
@@ -260,6 +280,109 @@ export default function ChartOfAccountDetailPage() {
           },
         ]}
       />
+
+      {openingOpen ? (
+        <Modal
+          open
+          onClose={() => !pending && setOpeningOpen(false)}
+          title="Post CoA opening balance"
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={pending}
+                onClick={() => setOpeningOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="create"
+                disabled={pending}
+                onClick={() => {
+                  const n = Number(obAmount);
+                  if (!Number.isFinite(n)) {
+                    setActionError('Enter a valid amount.');
+                    return;
+                  }
+                  setPending(true);
+                  setActionError(null);
+                  setObMsg(null);
+                  void chartOfAccountService
+                    .postOpeningBalance(id, {
+                      amount: n,
+                      type: obType,
+                      date: obDate.trim() || undefined,
+                      post_voucher: obPostVoucher,
+                    })
+                    .then((res) => {
+                      setObMsg(
+                        [
+                          res.message || 'Opening balance posted.',
+                          res.voucher_number
+                            ? `Voucher ${res.voucher_number}`
+                            : null,
+                        ]
+                          .filter(Boolean)
+                          .join(' '),
+                      );
+                      void refetch();
+                      void refetchLedger();
+                    })
+                    .catch((err) => setActionError(getErrorMessage(err)))
+                    .finally(() => setPending(false));
+                }}
+              >
+                {pending ? 'Posting…' : 'Post'}
+              </Button>
+            </div>
+          }
+        >
+          <div className="space-y-3">
+            <p className="text-[12px] text-[var(--color-neutral-500)]">
+              POST /gl/accounts/:id/opening-balance — sets opening balance and optionally posts a
+              voucher against retained earnings (3200).
+            </p>
+            {obMsg ? (
+              <p className="text-sm text-[var(--color-success-700)]">{obMsg}</p>
+            ) : null}
+            <Input
+              label="Amount"
+              type="number"
+              value={obAmount}
+              onChange={(e) => setObAmount(e.target.value)}
+            />
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium">Type</span>
+              <select
+                className="h-9 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2"
+                value={obType}
+                onChange={(e) => setObType(e.target.value as 'DEBIT' | 'CREDIT')}
+              >
+                <option value="DEBIT">DEBIT</option>
+                <option value="CREDIT">CREDIT</option>
+              </select>
+            </label>
+            <Input
+              label="Date"
+              type="date"
+              value={obDate}
+              onChange={(e) => setObDate(e.target.value)}
+            />
+            <label className="flex items-center gap-2 text-[13px]">
+              <input
+                type="checkbox"
+                checked={obPostVoucher}
+                onChange={(e) => setObPostVoucher(e.target.checked)}
+              />
+              Post opening balance voucher
+            </label>
+          </div>
+        </Modal>
+      ) : null}
     </>
   );
 }

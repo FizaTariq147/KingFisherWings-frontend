@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { useJobSubresourceMutations } from '@/features/jobs/hooks/useJobSubresources';
 import { useJobCustomsExaminations } from '@/features/jobs/hooks/useJobs';
+import { JobSearchSelect } from '@/features/shared/entity-search';
 import { CcFlowRail } from './CcFlowRail';
 import {
   canRunCcStageAction,
@@ -376,18 +377,25 @@ export function CcJobWorkflowPanel({ jobId }: CcJobWorkflowPanelProps) {
         <div className="space-y-2 px-4 pb-4">
           {linkFreight.data?.freight_job_id ? (
             <p className="text-sm text-[var(--color-neutral-600)]">
-              Linked: <span className="font-mono">{linkFreight.data.freight_job_id}</span>
+              Linked:{' '}
+              <span className="font-medium">
+                {(linkFreight.data as { freight_job_number?: string }).freight_job_number ||
+                  `Job ${String(linkFreight.data.freight_job_id).slice(0, 8)}`}
+              </span>
             </p>
           ) : (
             <p className="text-sm text-[var(--color-neutral-400)]">No freight job linked.</p>
           )}
-          <div className="flex flex-wrap gap-2">
-            <Input
-              className="min-w-[220px] flex-1"
-              placeholder="Freight job UUID"
-              value={freightJobId}
-              onChange={(e) => setFreightJobId(e.target.value)}
-            />
+          <div className="flex flex-wrap items-end gap-2">
+            <div className="min-w-[220px] flex-1">
+              <JobSearchSelect
+                name="cc_workflow_freight_job_id"
+                label="Freight job"
+                value={freightJobId}
+                onChange={setFreightJobId}
+                placeholder="Search freight job by number…"
+              />
+            </div>
             <Button
               type="button"
               disabled={actions.linkFreight.isPending || !freightJobId.trim()}

@@ -213,7 +213,7 @@ export function OpsContinuumPanel({
               render={(row, i) => (
                 <li
                   key={rowId(row, i)}
-                  className="flex flex-wrap items-start justify-between gap-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm"
+                  className="flex flex-wrap items-start justify-between gap-2 rounded-sm bg-white px-3 py-2 text-sm"
                 >
                   <div className="min-w-0">
                     <p className="whitespace-pre-wrap">
@@ -281,7 +281,7 @@ export function OpsContinuumPanel({
               render={(row, i) => (
                 <li
                   key={rowId(row, i)}
-                  className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm"
+                  className="rounded-sm bg-white px-3 py-2 text-sm"
                 >
                   <p className="font-medium">
                     {cell(row, 'subject', 'title', 'notes', 'note')}
@@ -362,7 +362,7 @@ export function OpsContinuumPanel({
                 return (
                   <li
                     key={id}
-                    className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm"
+                    className="flex flex-wrap items-center justify-between gap-2 rounded-sm bg-white px-3 py-2 text-sm"
                   >
                     <span className="font-medium">{name}</span>
                     <div className="flex gap-2">
@@ -474,7 +474,7 @@ export function OpsContinuumPanel({
               render={(row, i) => (
                 <li
                   key={rowId(row, i)}
-                  className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm"
+                  className="rounded-sm bg-white px-3 py-2 text-sm"
                 >
                   <span className="font-medium">
                     {cell(row, 'ref_type', 'reference_type', 'type', 'label')}
@@ -542,7 +542,7 @@ export function OpsContinuumPanel({
                 return (
                   <li
                     key={id}
-                    className="flex items-center justify-between gap-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm"
+                    className="flex items-center justify-between gap-2 rounded-sm bg-white px-3 py-2 text-sm"
                   >
                     <span>{cell(row, 'tag', 'name', 'label')}</span>
                     <Button
@@ -595,7 +595,7 @@ export function OpsContinuumPanel({
               normalizedLinks.quotationId ||
               normalizedLinks.shipmentId ||
               normalizedLinks.jobId) && (
-              <div className="space-y-1.5 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2">
+              <div className="space-y-1.5 rounded-sm bg-white px-3 py-2">
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
                   Lifecycle
                 </p>
@@ -657,7 +657,7 @@ export function OpsContinuumPanel({
                 return (
                   <li
                     key={rowId(row, i)}
-                    className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm"
+                    className="rounded-sm bg-white px-3 py-2 text-sm"
                   >
                     <p className="font-medium">
                       {cell(row, 'title', 'label', 'link_type')}
@@ -740,7 +740,7 @@ export function OpsContinuumPanel({
               render={(row, i) => (
                 <li
                   key={rowId(row, i)}
-                  className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm"
+                  className="rounded-sm bg-white px-3 py-2 text-sm"
                 >
                   {cell(row, 'user_name', 'created_by', 'email', 'id')}
                 </li>
@@ -760,7 +760,7 @@ export function OpsContinuumPanel({
                 return (
                   <li
                     key={id}
-                    className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm"
+                    className="space-y-2 rounded-sm bg-white px-3 py-2 text-sm"
                   >
                     <p className="font-medium">
                       {cell(row, 'subject', 'title')}
@@ -842,7 +842,7 @@ export function OpsContinuumPanel({
             render={(row, i) => (
               <li
                 key={rowId(row, i)}
-                className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm"
+                className="rounded-sm bg-white px-3 py-2 text-sm"
               >
                 <p className="font-medium">
                   {cell(row, 'event', 'action', 'type', 'summary')}

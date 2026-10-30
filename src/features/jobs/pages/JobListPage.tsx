@@ -8,6 +8,7 @@ import { EmptyState, ErrorState } from '@/components/erp';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
   JobMisFilters,
+  jobMisDraftFromSearch,
   jobMisFilterDraftToListParams,
   useJobMisFilterDraft,
 } from '../components/JobFilters/JobMisFilters';
@@ -36,7 +37,20 @@ export default function JobListPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const { confirm, requestConfirm, closeConfirm } = useJobConfirmState();
-  const { draft, setDraft, applied, submit } = useJobMisFilterDraft(DEFAULT_JOB_PAGE_SIZE);
+  const { draft, setDraft, applied, submit, setApplied } = useJobMisFilterDraft(
+    DEFAULT_JOB_PAGE_SIZE,
+    () => jobMisDraftFromSearch(location.search, DEFAULT_JOB_PAGE_SIZE),
+  );
+
+  // Keep filters in sync when dashboard pills change ?status= / ?category=
+  useEffect(() => {
+    const seeded = jobMisDraftFromSearch(location.search, applied.rows || DEFAULT_JOB_PAGE_SIZE);
+    if (!seeded.status && !seeded.category) return;
+    if (seeded.status === applied.status && seeded.category === applied.category) return;
+    setDraft((prev) => ({ ...prev, status: seeded.status, category: seeded.category }));
+    setApplied((prev) => ({ ...prev, status: seeded.status, category: seeded.category }));
+    setPage(1);
+  }, [location.search, applied.status, applied.category, applied.rows, setDraft, setApplied]);
 
   useEffect(() => {
     setPage(1);

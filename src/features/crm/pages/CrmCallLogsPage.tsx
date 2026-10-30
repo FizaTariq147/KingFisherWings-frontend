@@ -25,6 +25,7 @@ import {
   tdClass,
   thClass,
 } from '../components/CrmUi';
+import { LeadSearchSelect, PartySearchSelect } from '@/features/shared/entity-search';
 import { useCreateCrmCallLog, useCrmCallLogs, useCrmDailyCallLogs } from '../hooks/useCrmCallLogs';
 import { createCallLogSchema, type CreateCallLogFormValues } from '../schemas/crm.schema';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -132,12 +133,18 @@ export default function CrmCallLogsPage() {
                 {...register('duration_minutes', { valueAsNumber: true })}
               />
             </Field>
-            <Field label="Lead ID" error={err('lead_id')}>
-              <TextInput {...register('lead_id')} placeholder="Search by name…" />
-            </Field>
-            <Field label="Party" error={err('party_id')}>
-              <TextInput {...register('party_id')} placeholder="Search by name…" />
-            </Field>
+            <LeadSearchSelect
+              label="Lead"
+              value={watch('lead_id') ?? ''}
+              onChange={(v) => setValue('lead_id', v, { shouldValidate: true })}
+              error={err('lead_id')}
+            />
+            <PartySearchSelect
+              label="Party"
+              value={watch('party_id') ?? ''}
+              onChange={(v) => setValue('party_id', v, { shouldValidate: true })}
+              error={err('party_id')}
+            />
             <Field label="Next follow-up date" error={err('next_followup_date')}>
               <TextInput type="date" {...register('next_followup_date')} />
               <span className="mt-1 block text-xs font-normal text-[var(--color-neutral-400)]">

@@ -93,12 +93,5 @@ export const STATUS_LABELS: Record<QuotationStatus, string> = {
   LOST: 'Rejected',
 };
 
-/** Statuses treated as “pending” for dashboard widgets. */
-export const PENDING_QUOTATION_STATUSES: QuotationStatus[] = [
-  'DRAFT',
-  'SUBMITTED',
-  'INTERNALLY_APPROVED',
-  'SENT',
-  'CUSTOMER_REVIEW',
-  'NEGOTIATING',
-];
+/** Statuses treated as “pending” for dashboard widgets (draft queue only). */
+export const PENDING_QUOTATION_STATUSES: QuotationStatus[] = ['DRAFT'];

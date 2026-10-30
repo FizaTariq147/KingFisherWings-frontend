@@ -173,7 +173,12 @@ export function useJobSubresourceMutations(jobId: string) {
         dto,
       }: {
         documentId: string;
-        dto: { visible_to_customer?: boolean; visible_to_vendor?: boolean };
+        dto: {
+          visible_to_customer?: boolean;
+          visible_to_vendor?: boolean;
+          downloadable_by_customer?: boolean;
+          downloadable_by_vendor?: boolean;
+        };
       }) => jobService.patchDocumentVisibility(jobId, documentId, dto),
       onSuccess: refresh,
     }),

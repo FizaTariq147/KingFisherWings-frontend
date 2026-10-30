@@ -54,6 +54,23 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
     pickNumber(inner, ['active', 'active_jobs', 'activeJobs', 'total_active']) ??
     ACTIVE_STATUSES.reduce((sum, s) => sum + (byStatus[s] ?? 0), 0);
 
+  const onHold =
+    pickNumber(inner, ['on_hold', 'onHold', 'hold']) ?? byStatus.ON_HOLD ?? 0;
+  const delayed = pickNumber(inner, ['delayed', 'delayed_count', 'delayedCount']) ?? 0;
+  const delivered =
+    pickNumber(inner, ['delivered', 'delivered_count']) ?? byStatus.DELIVERED ?? 0;
+  const cancelled =
+    pickNumber(inner, ['cancelled', 'canceled', 'cancelled_count']) ??
+    byStatus.CANCELLED ??
+    0;
+  const completed =
+    pickNumber(inner, ['completed', 'completed_count']) ?? byStatus.COMPLETED ?? 0;
+  const inProgress =
+    pickNumber(inner, ['in_progress', 'inProgress']) ?? byStatus.IN_PROGRESS ?? 0;
+  const open =
+    pickNumber(inner, ['open', 'open_count', 'openCount']) ??
+    active - completed - cancelled;
+
   return {
     byStatus,
     bars,
@@ -63,8 +80,15 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
     newJobs: pickNumber(inner, ['new_jobs', 'newJobs']) ?? newJobs,
     customsHold:
       pickNumber(inner, ['customs_hold', 'customsHold']) ??
-      (byStatus.CUSTOMS_CLEARANCE ?? 0) + (byStatus.ON_HOLD ?? 0),
+      (byStatus.CUSTOMS_CLEARANCE ?? 0) + onHold,
     docsPending: pickNumber(inner, ['docs_pending', 'docsPending']) ?? byStatus.DOCS_PENDING ?? 0,
+    onHold,
+    delayed,
+    delivered,
+    cancelled,
+    completed,
+    inProgress,
+    open: Number.isFinite(open) ? Math.max(0, open) : active,
     raw: inner,
   };
 }

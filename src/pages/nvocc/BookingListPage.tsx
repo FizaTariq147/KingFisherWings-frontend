@@ -139,14 +139,14 @@ export default function BookingListPage() {
         </div>
 
         <div className="p-5 grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-3">
-          <FilterField label="Voyage ID">
+          <FilterField label="Voyage">
             <TextInput
               value={draft.voyage_id ?? ''}
               onChange={(e) => setDraft((prev) => ({ ...prev, voyage_id: e.target.value || undefined }))}
               placeholder="Search by name…"
             />
           </FilterField>
-          <FilterField label="Shipper ID">
+          <FilterField label="Shipper">
             <TextInput
               value={draft.shipper_id ?? ''}
               onChange={(e) => setDraft((prev) => ({ ...prev, shipper_id: e.target.value || undefined }))}

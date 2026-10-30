@@ -14,7 +14,7 @@ export function DashCard({
   return (
     <section
       className={cn(
-        'rounded-2xl border border-[var(--color-neutral-200)] bg-white shadow-[0_10px_30px_rgba(10,41,66,0.05)]',
+        'rounded-2xl bg-white shadow-[0_10px_30px_rgba(10,41,66,0.05)]',
         padding && 'p-5',
         className,
       )}

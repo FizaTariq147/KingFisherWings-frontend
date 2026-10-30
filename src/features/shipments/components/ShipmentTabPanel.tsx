@@ -1,11 +1,19 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
+import { Pencil } from 'lucide-react';
 import { ErrorState } from '@/components/erp';
+import { Button } from '@/components/ui/Button';
 import { erpForm } from '@/lib/erpForm';
 import { erpTable } from '@/lib/erpTypography';
 import { JobContainersPanel } from '@/features/jobs/components/JobContainersPanel';
 import { isUuid } from '@/lib/isUuid';
+import { ShowAllEditModal } from '@/features/shared/show-all/ShowAllEditModal';
 import { isShipmentShowAllTab } from '../api/shipment.api';
-import { useShipment, useShipmentDetailTab, useShipmentShowAll } from '../hooks/useShipments';
+import {
+  usePatchShipmentShowAll,
+  useShipment,
+  useShipmentDetailTab,
+  useShipmentShowAll,
+} from '../hooks/useShipments';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isShipmentCostingTab } from '../utils/normalizeShipmentCharges';
 import { EntitySectionFilesPanel } from '@/features/shared/section-attachments';
@@ -374,6 +382,8 @@ function ShipmentShowAllPanel({
   footer?: ReactNode;
 }) {
   const query = useShipmentShowAll(shipmentId, siblingTabKeys, true);
+  const patchShowAll = usePatchShipmentShowAll(shipmentId);
+  const [editOpen, setEditOpen] = useState(false);
 
   if (query.isLoading) {
     return (
@@ -404,16 +414,55 @@ function ShipmentShowAllPanel({
   }
 
   const { sections = [], arrays = [] } = query.data ?? {};
+  const editModal = (
+    <ShowAllEditModal
+      open={editOpen}
+      onClose={() => setEditOpen(false)}
+      title="Edit shipment Show All"
+      sources={[query.data, ...sections.map((s) => s.data)]}
+      pending={patchShowAll.isPending}
+      onSubmit={async (dto) => {
+        await patchShowAll.mutateAsync(dto);
+        await query.refetch();
+      }}
+    />
+  );
+
   if (!sections.length && !arrays.length && !footer) {
     return (
-      <p className="p-3 text-center text-[13px] text-[#64748b]">
-        No Show All data returned from shipment APIs.
-      </p>
+      <div className="space-y-3 p-3">
+        <div className="flex justify-end">
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            leftIcon={<Pencil className="h-3.5 w-3.5" />}
+            onClick={() => setEditOpen(true)}
+          >
+            Edit Show All
+          </Button>
+        </div>
+        <p className="text-center text-[13px] text-[#64748b]">
+          No Show All data returned from shipment APIs.
+        </p>
+        {editModal}
+      </div>
     );
   }
 
   return (
     <div className="space-y-3 p-3">
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          size="sm"
+          variant="secondary"
+          leftIcon={<Pencil className="h-3.5 w-3.5" />}
+          onClick={() => setEditOpen(true)}
+        >
+          Edit Show All
+        </Button>
+      </div>
       {sections.map((section) => (
         <SectionCard key={section.key} title={section.title}>
           <ShipmentApiPayloadView data={section.data} emptyMessage="No fields for this section." />
@@ -425,6 +474,7 @@ function ShipmentShowAllPanel({
         </SectionCard>
       ))}
       {footer}
+      {editModal}
     </div>
   );
 }

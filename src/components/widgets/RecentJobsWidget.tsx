@@ -18,7 +18,7 @@ export default function RecentJobsWidget() {
   const { data = [], isLoading } = useRecentJobs(5)
 
   return (
-    <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5">
+    <div className="rounded-xl bg-white p-5">
       <div className="flex items-center gap-2 mb-4">
         <div className="w-7 h-7 rounded-lg flex items-center justify-center" style={{ background: 'var(--color-primary-50)' }}>
           <Briefcase size={14} style={{ color: 'var(--color-primary-600)' }} aria-hidden="true" />

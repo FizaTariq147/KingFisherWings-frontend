@@ -115,7 +115,7 @@ export default function BankReconciliationDetailPage() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <Input label="Txn date *" type="date" value={txnDate} onChange={(e) => setTxnDate(e.target.value)} />
             <Input label="Statement ref" value={statementRef} onChange={(e) => setStatementRef(e.target.value)} />
-            <Input label="Voucher ID" value={voucherId} onChange={(e) => setVoucherId(e.target.value)} />
+            <Input label="Voucher" value={voucherId} onChange={(e) => setVoucherId(e.target.value)} />
             <Input label="Debit amount" type="number" value={debit} onChange={(e) => setDebit(e.target.value)} />
             <Input label="Credit amount" type="number" value={credit} onChange={(e) => setCredit(e.target.value)} />
             <Input label="Description" value={description} onChange={(e) => setDescription(e.target.value)} />

@@ -278,6 +278,63 @@ export const portalShipmentsService = {
     );
     return unwrapData(res.data) ?? res.data;
   },
+
+  /** GET /portal/shipments/:id/acknowledgement/attachments */
+  async listAcknowledgementAttachments(id: string): Promise<
+    Array<{ id: string; file_name?: string; mime_type?: string; size_bytes?: number }>
+  > {
+    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.acknowledgementAttachments(id));
+    const data = unwrapData(res.data) ?? res.data;
+    const rec = asRecord(data);
+    const list =
+      (Array.isArray(data) ? data : null) ??
+      (Array.isArray(rec?.items) ? rec!.items : null) ??
+      (Array.isArray(rec?.attachments) ? rec!.attachments : null) ??
+      [];
+    return list
+      .map((row) => {
+        const r = asRecord(row);
+        if (!r) return null;
+        const attId = String(r.id ?? r.attachment_id ?? '').trim();
+        if (!attId) return null;
+        return {
+          id: attId,
+          file_name: String(r.file_name ?? r.filename ?? r.name ?? '').trim() || undefined,
+          mime_type: String(r.mime_type ?? r.content_type ?? '').trim() || undefined,
+          size_bytes:
+            typeof r.size_bytes === 'number'
+              ? r.size_bytes
+              : typeof r.size === 'number'
+                ? r.size
+                : undefined,
+        };
+      })
+      .filter((row): row is NonNullable<typeof row> => Boolean(row));
+  },
+
+  async uploadAcknowledgementAttachment(id: string, file: File): Promise<unknown> {
+    const form = new FormData();
+    form.append('file', file);
+    const res = await portalApiClient.post(
+      PORTAL_SHIPMENTS_API.acknowledgementAttachments(id),
+      form,
+      { headers: { 'Content-Type': 'multipart/form-data' } },
+    );
+    return unwrapData(res.data) ?? res.data;
+  },
+
+  async downloadAcknowledgementAttachment(
+    id: string,
+    attachmentId: string,
+    fileName = 'attachment',
+  ): Promise<void> {
+    const res = await portalApiClient.get(
+      PORTAL_SHIPMENTS_API.acknowledgementAttachmentDownload(id, attachmentId),
+      { responseType: 'blob' },
+    );
+    const blob = res.data instanceof Blob ? res.data : new Blob([res.data as BlobPart]);
+    triggerBlobDownload(blob, fileName);
+  },
 };
 
 function asRecord(value: unknown): Record<string, unknown> | null {

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, ChevronDown, Maximize2, Download } from 'lucide-react';
 import { FilterField, SelectInput, TextInput, DateInput } from '../../components/widgets/FilterField';
@@ -22,7 +22,7 @@ export default function AgentEdiPage() {
   const navigate = useNavigate();
   const tableRef = useRef<HTMLDivElement>(null);
   const [rows, setRows] = useState('10');
-  const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
+  const [datePreset, setDatePreset] = useState<DateRangePreset>('custom');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [branch, setBranch] = useState('All');
@@ -51,10 +51,6 @@ export default function AgentEdiPage() {
       setToDate(range.to_date);
     }
   };
-
-  useEffect(() => {
-    applyPreset('this_month');
-  }, []);
 
   const query = useCustomerAgentEdi(activeFilters, submitted);
   const filters = useCustomerFilterSelectOptions();

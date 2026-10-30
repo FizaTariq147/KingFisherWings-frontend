@@ -35,6 +35,8 @@ import { BlDraftFromBookingPanel } from '@/features/shared/bl-draft/BlDraftFromB
 import { GenerateEdiPanel } from '@/features/shared/edi/GenerateEdiPanel';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { AddStatusCatalogModal } from '@/features/shared/status-catalog';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
@@ -190,6 +192,12 @@ export default function ShipmentDetailPage() {
   const [statusValue, setStatusValue] = useState('');
   const [blStatusValue, setBlStatusValue] = useState('');
   const [departmentId, setDepartmentId] = useState('');
+  const { data: departmentOptions = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    confirmKind === 'change-department',
+    true,
+  );
   /** Set from first API tab once detail loads — never invent tab keys. */
   const [activeTab, setActiveTab] = useState<string>('');
   const [showKpi, setShowKpi] = useState(false);
@@ -473,7 +481,7 @@ export default function ShipmentDetailPage() {
   return (
     <div className="space-y-2.5 bg-[var(--fresa-page-bg,#F4F6F9)] -mx-1 px-1 pb-4">
       {/* ── Fresa main chrome: title + Create / Edit / Report / Back ── */}
-      <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2.5">
+      <div className="rounded-sm bg-white px-3 py-2.5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
@@ -1028,7 +1036,7 @@ export default function ShipmentDetailPage() {
                   showTracking ? (
                     <div
                       id="shipment-track-trace"
-                      className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white"
+                      className="rounded-sm bg-white"
                     >
                       <div className="flex items-center justify-between gap-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2">
                         <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
@@ -1188,7 +1196,7 @@ export default function ShipmentDetailPage() {
         >
           <label className="block text-[13px]">
             <span className={erpForm.label}>
-              Source shipment IDs (UUIDs, comma or space separated)
+              Source shipments (search/paste shipment numbers, comma or space separated)
             </span>
             <textarea
               className={erpForm.input}
@@ -1279,9 +1287,9 @@ export default function ShipmentDetailPage() {
             submissionsLoading={shipmentEdiSubmissionsQuery.isLoading}
             generatePending={generateShipmentEdi.isPending}
             downloadPending={downloadShipmentEdi.isPending}
-            onGenerate={async (edi_type) => {
-              await generateShipmentEdi.mutateAsync({ edi_type });
-              setActionMessage(`EDI “${edi_type}” generated.`);
+            onGenerate={async (dto) => {
+              await generateShipmentEdi.mutateAsync(dto);
+              setActionMessage(`EDI “${dto.edi_type}” generated.`);
             }}
             onDownload={(submissionId) =>
               downloadShipmentEdi.mutateAsync(submissionId)
@@ -1472,13 +1480,32 @@ export default function ShipmentDetailPage() {
           }
         >
           <label className="block text-[13px]">
-            <span className={erpForm.label}>Department ID (UUID)</span>
-            <input
+            <span className={erpForm.label}>Department</span>
+            <select
               className={erpForm.input}
               value={departmentId}
               onChange={(e) => setDepartmentId(e.target.value)}
-              placeholder="Department UUID from masters"
-            />
+            >
+              <option value="">Select department…</option>
+              {(departmentOptions as Array<Record<string, unknown>>)
+                .filter((d) => isUuid(String(d.id ?? '')))
+                .map((d) => {
+                  const id = String(d.id);
+                  const name = String(d.name ?? d.display_name ?? '').trim();
+                  const code = String(d.code ?? '').trim();
+                  const label =
+                    code && name && !isUuid(name)
+                      ? `${code} — ${name}`
+                      : name && !isUuid(name)
+                        ? name
+                        : code || 'Department';
+                  return (
+                    <option key={id} value={id}>
+                      {label}
+                    </option>
+                  );
+                })}
+            </select>
           </label>
         </Modal>
       )}

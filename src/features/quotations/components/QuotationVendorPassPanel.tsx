@@ -1,23 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Send, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
-import { Input } from '@/components/ui/Input';
+import { useParties } from '@/features/parties/hooks/useParties';
+import { PartySearchSelect } from '@/features/shared/entity-search';
 import { axiosInstance } from '@/lib/axios';
 import { isUuid } from '@/lib/isUuid';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { QUOTATION_API } from '../api/quotation.api';
-
-function parseVendorPartyIds(raw: string): string[] {
-  return [
-    ...new Set(
-      raw
-        .split(/[\s,;]+/)
-        .map((s) => s.trim())
-        .filter((id) => isUuid(id)),
-    ),
-  ];
-}
 
 /** Pass an approved quotation to vendor(s) without sharing customer sell prices. */
 export function QuotationVendorPassModal({
@@ -31,31 +21,52 @@ export function QuotationVendorPassModal({
   onClose: () => void;
   onSuccess?: (message: string) => void;
 }) {
-  const [vendorPartyIdsRaw, setVendorPartyIdsRaw] = useState('');
+  const [vendorIds, setVendorIds] = useState<string[]>([]);
+  const [pendingPick, setPendingPick] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const { data: partiesData } = useParties({
+    page: 1,
+    limit: 100,
+    party_type: 'VENDOR',
+    order: 'asc',
+  });
+  const vendorLabelById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of partiesData?.parties ?? []) {
+      if (!isUuid(p.id)) continue;
+      const name = String(p.name ?? '').trim();
+      const code = String(p.code ?? '').trim();
+      map.set(p.id, name && code ? `${name} (${code})` : name || code || 'Vendor');
+    }
+    return map;
+  }, [partiesData?.parties]);
 
   if (!open) return null;
 
-  const selected = parseVendorPartyIds(vendorPartyIdsRaw);
+  const addVendor = (id: string) => {
+    if (!isUuid(id)) return;
+    setVendorIds((prev) => (prev.includes(id) ? prev : [...prev, id]));
+    setPendingPick('');
+  };
 
   const send = async () => {
-    if (!selected.length) {
-      setError('Enter at least one valid vendor party UUID.');
+    if (!vendorIds.length) {
+      setError('Select at least one vendor.');
       return;
     }
     setPending(true);
     setError(null);
     try {
-      // Same SendJobToVendorDto as job pass-to-vendor (vendor_party_id + optional vendor_party_ids).
       await axiosInstance.post(QUOTATION_API.sendToVendor(quotationId), {
-        vendor_party_id: selected[0],
-        ...(selected.length > 1 ? { vendor_party_ids: selected } : {}),
+        vendor_party_id: vendorIds[0],
+        ...(vendorIds.length > 1 ? { vendor_party_ids: vendorIds } : {}),
       });
-      setVendorPartyIdsRaw('');
+      setVendorIds([]);
+      setPendingPick('');
       onSuccess?.(
-        selected.length > 1
-          ? `Sent to ${selected.length} vendors.`
+        vendorIds.length > 1
+          ? `Sent to ${vendorIds.length} vendors.`
           : 'Sent to vendor.',
       );
       onClose();
@@ -90,33 +101,52 @@ export function QuotationVendorPassModal({
             size="sm"
             variant="success"
             leftIcon={<Send />}
-            disabled={selected.length === 0 || pending}
+            disabled={vendorIds.length === 0 || pending}
             onClick={() => void send()}
           >
             {pending
               ? 'Sending…'
-              : selected.length > 1
-                ? `Send to ${selected.length} vendors`
+              : vendorIds.length > 1
+                ? `Send to ${vendorIds.length} vendors`
                 : 'Send approved quote to vendor'}
           </Button>
         </div>
       }
     >
       <p className="mb-3 text-[13px] text-[#475569]">
-        Pass this approved quotation to one or more vendors without sharing customer sell
-        prices. Paste UUIDs separated by commas or spaces (
-        <code className="text-[11px]">vendor_party_ids</code>).
+        Pass this approved quotation to one or more vendors without sharing customer sell prices.
+        Search vendors by name.
       </p>
-      <Input
-        label="Vendor party id(s)"
-        value={vendorPartyIdsRaw}
-        onChange={(e) => setVendorPartyIdsRaw(e.target.value)}
-        placeholder="Search vendors by name…"
+      <PartySearchSelect
+        name="vendor_party_pick"
+        label="Add vendor"
+        value={pendingPick}
+        onChange={addVendor}
+        partyType="VENDOR"
+        placeholder="Search vendor by name…"
       />
-      {selected.length > 0 ? (
-        <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-          {selected.length} valid UUID{selected.length === 1 ? '' : 's'} ready to send.
-        </p>
+      {vendorIds.length > 0 ? (
+        <ul className="mt-3 space-y-1">
+          {vendorIds.map((id) => (
+            <li
+              key={id}
+              className="flex items-center justify-between rounded-md border border-[var(--color-neutral-200)] px-2 py-1 text-sm"
+            >
+              <span className="truncate text-[var(--color-neutral-700)]">
+                {vendorLabelById.get(id) ?? 'Vendor'}
+              </span>
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={pending}
+                onClick={() => setVendorIds((prev) => prev.filter((x) => x !== id))}
+              >
+                Remove
+              </Button>
+            </li>
+          ))}
+        </ul>
       ) : null}
       {error ? <p className="mt-2 text-sm text-[var(--color-danger-600)]">{error}</p> : null}
     </Modal>

@@ -841,7 +841,7 @@ export default function QuotationDetailPage() {
                 label={title}
               />
             </div>
-            <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]">
+            <div className="rounded-sm bg-white px-3 py-2 text-[13px]">
               <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">Related: </span>
               {enquiryHref ? (
                 <Link className="mr-3 text-[var(--fresa-action,#0A2942)] hover:underline" to={enquiryHref}>

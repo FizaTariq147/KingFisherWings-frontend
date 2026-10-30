@@ -20,6 +20,11 @@ import {
   thClass,
 } from '../components/CrmUi';
 import {
+  EnquirySearchSelect,
+  LeadSearchSelect,
+  PartySearchSelect,
+} from '@/features/shared/entity-search';
+import {
   useCreateCrmFollowUp,
   useCrmFollowUpCalendar,
   useCrmFollowUps,
@@ -103,15 +108,24 @@ export default function CrmFollowUpsPage() {
               onChange={(v) => setValue('owner_id', v, { shouldValidate: true })}
               error={err('owner_id')}
             />
-            <Field label="Lead ID" error={err('lead_id')}>
-              <TextInput {...register('lead_id')} placeholder="Search by name…" />
-            </Field>
-            <Field label="Party" error={err('party_id')}>
-              <TextInput {...register('party_id')} placeholder="Search by name…" />
-            </Field>
-            <Field label="Enquiry ID" error={err('enquiry_id')}>
-              <TextInput {...register('enquiry_id')} placeholder="Search by name…" />
-            </Field>
+            <LeadSearchSelect
+              label="Lead"
+              value={watch('lead_id') ?? ''}
+              onChange={(v) => setValue('lead_id', v, { shouldValidate: true })}
+              error={err('lead_id')}
+            />
+            <PartySearchSelect
+              label="Party"
+              value={watch('party_id') ?? ''}
+              onChange={(v) => setValue('party_id', v, { shouldValidate: true })}
+              error={err('party_id')}
+            />
+            <EnquirySearchSelect
+              label="Enquiry"
+              value={watch('enquiry_id') ?? ''}
+              onChange={(v) => setValue('enquiry_id', v, { shouldValidate: true })}
+              error={err('enquiry_id')}
+            />
           </div>
           <Field label="Notes" error={err('notes')}>
             <TextArea {...register('notes')} />

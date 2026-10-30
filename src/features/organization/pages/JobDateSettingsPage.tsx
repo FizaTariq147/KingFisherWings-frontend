@@ -75,7 +75,7 @@ export default function JobDateSettingsPage() {
         {OPTIONS.map((opt) => (
           <label
             key={opt.value}
-            className="flex cursor-pointer gap-3 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2.5"
+            className="flex cursor-pointer gap-3 rounded-sm bg-white px-3 py-2.5"
           >
             <input
               type="radio"

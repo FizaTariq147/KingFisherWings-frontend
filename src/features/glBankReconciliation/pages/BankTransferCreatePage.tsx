@@ -4,6 +4,10 @@ import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { AccountsCreatePageLayout } from '@/features/accounts/components';
+import {
+  useGlAccountSelectOptions,
+} from '@/features/chartOfAccounts/hooks/useGlAccountSelectOptions';
+import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { isUuid } from '@/lib/isUuid';
 import { BANK_RECON_ROUTE_PREFIX } from '../api/bankReconciliation.api';
 import { useCreateBankTransfer } from '../hooks/useBankReconciliation';
@@ -22,6 +26,8 @@ export default function BankTransferCreatePage() {
   const [narration, setNarration] = useState('');
   const [referenceNumber, setReferenceNumber] = useState('');
   const [companyId, setCompanyId] = useState('');
+  const { options: accountOptions } = useGlAccountSelectOptions(true, undefined, true);
+  const { data: companies = [] } = useTenantCompanies(true);
 
   return (
     <AccountsCreatePageLayout
@@ -34,16 +40,36 @@ export default function BankTransferCreatePage() {
     >
       <Card className="p-4 space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <Input
-            label="From account ID *"
-            value={fromAccountId}
-            onChange={(e) => setFromAccountId(e.target.value)}
-          />
-          <Input
-            label="To account ID *"
-            value={toAccountId}
-            onChange={(e) => setToAccountId(e.target.value)}
-          />
+          <label className="space-y-1 text-sm">
+            <span className="font-medium text-[var(--color-neutral-700)]">From account *</span>
+            <select
+              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+              value={fromAccountId}
+              onChange={(e) => setFromAccountId(e.target.value)}
+            >
+              <option value="">Select account…</option>
+              {accountOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="space-y-1 text-sm">
+            <span className="font-medium text-[var(--color-neutral-700)]">To account *</span>
+            <select
+              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+              value={toAccountId}
+              onChange={(e) => setToAccountId(e.target.value)}
+            >
+              <option value="">Select account…</option>
+              {accountOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+          </label>
           <Input
             label="Amount *"
             type="number"
@@ -73,11 +99,21 @@ export default function BankTransferCreatePage() {
             value={referenceNumber}
             onChange={(e) => setReferenceNumber(e.target.value)}
           />
-          <Input
-            label="Company ID"
-            value={companyId}
-            onChange={(e) => setCompanyId(e.target.value)}
-          />
+          <label className="space-y-1 text-sm">
+            <span className="font-medium text-[var(--color-neutral-700)]">Company</span>
+            <select
+              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+              value={companyId}
+              onChange={(e) => setCompanyId(e.target.value)}
+            >
+              <option value="">Select company…</option>
+              {companies.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.code ? `${c.name} (${c.code})` : c.name}
+                </option>
+              ))}
+            </select>
+          </label>
           <div className="sm:col-span-2">
             <Input
               label="Narration"
@@ -93,7 +129,7 @@ export default function BankTransferCreatePage() {
             onClick={async () => {
               setError(null);
               if (!isUuid(fromAccountId) || !isUuid(toAccountId)) {
-                setError('Valid from/to account UUIDs are required.');
+                setError('Select valid from and to accounts.');
                 return;
               }
               const parsedAmount = Number(amount);
@@ -119,13 +155,9 @@ export default function BankTransferCreatePage() {
               }
             }}
           >
-            {create.isPending ? 'Posting…' : 'Post transfer'}
+            {create.isPending ? 'Creating…' : 'Create transfer'}
           </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            onClick={() => navigate(BANK_RECON_ROUTE_PREFIX)}
-          >
+          <Button type="button" variant="secondary" onClick={() => navigate(BANK_RECON_ROUTE_PREFIX)}>
             Cancel
           </Button>
         </div>

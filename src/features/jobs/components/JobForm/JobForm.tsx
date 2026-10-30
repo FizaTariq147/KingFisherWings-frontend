@@ -328,7 +328,7 @@ export function JobForm({
         <JobWizardStepper currentStep={step} />
 
         {step === 0 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-5">
+          <div className="rounded-xl bg-white p-5 sm:p-6 space-y-5">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-[minmax(0,220px)_minmax(0,1fr)] sm:items-end">
               <div className="space-y-1">
                 <label htmlFor="job-branch" className={labelClass}>
@@ -374,7 +374,7 @@ export function JobForm({
         ) : null}
 
         {step === 1 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="space-y-4">
                 <Controller
@@ -462,7 +462,7 @@ export function JobForm({
         ) : null}
 
         {step === 2 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-[var(--color-neutral-800)]">
               {isRoadLand ? 'Road / land consignment' : 'Planned Container / Consignment'}
             </h3>
@@ -637,7 +637,7 @@ export function JobForm({
         ) : null}
 
         {step === 3 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <JobWizardCostingPanel
               lines={draftCharges}
               onLinesChange={setDraftCharges}
@@ -646,7 +646,7 @@ export function JobForm({
         ) : null}
 
         {step === 4 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-4">
+          <div className="rounded-xl bg-white p-5 sm:p-6 space-y-4">
             <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Summary</h3>
             <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
               <div>

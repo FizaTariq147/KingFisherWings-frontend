@@ -78,7 +78,7 @@ export function PortalPendingQuotesPanel({
 
       <div className="mt-5">
         <Link
-          to="/portal/quotes"
+          to="/portal/quotes?status=DRAFT"
           className="flex h-11 items-center justify-center gap-2 rounded-full bg-[var(--color-secondary)] text-sm font-semibold text-white hover:opacity-90"
         >
           Review quotes

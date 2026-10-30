@@ -13,6 +13,7 @@ import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
+import { CrmSalespersonSelect } from '@/features/crm/components/CrmFormControls';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
 import { getErrorMessage } from '@/features/parties/utils/getErrorMessage';
@@ -420,7 +421,7 @@ export function QuotationForm({
         <QuotationWizardStepper currentStep={step} />
 
         {wizardStepKey === 'create' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <JobTypeSelectGrid
               value={watched.job_type}
               onChange={(jobType: JobType) =>
@@ -432,7 +433,7 @@ export function QuotationForm({
         ) : null}
 
         {wizardStepKey === 'ports' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="space-y-4">
                 <div className="space-y-1">
@@ -502,11 +503,17 @@ export function QuotationForm({
               </div>
 
               <div className="space-y-4">
-                <Input
-                  label="Salesperson ID"
-                  error={fieldError('salesperson_id')}
-                  placeholder="Optional user UUID"
-                  {...register('salesperson_id')}
+                <Controller
+                  name="salesperson_id"
+                  control={control}
+                  render={({ field }) => (
+                    <CrmSalespersonSelect
+                      label="Salesperson"
+                      value={field.value ?? ''}
+                      onChange={field.onChange}
+                      error={fieldError('salesperson_id')}
+                    />
+                  )}
                 />
                 <div className="space-y-1">
                   <label htmlFor="carrier_id" className={labelClass}>
@@ -552,7 +559,7 @@ export function QuotationForm({
         ) : null}
 
         {wizardStepKey === 'consignment' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-[var(--color-neutral-800)]">
               Planned Container / Consignment
             </h3>
@@ -639,7 +646,7 @@ export function QuotationForm({
         ) : null}
 
         {wizardStepKey === 'costing' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-5">
+          <div className="rounded-xl bg-white p-5 sm:p-6 space-y-5">
             <div>
               <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
                 Costing / Charges
@@ -697,7 +704,7 @@ export function QuotationForm({
         ) : null}
 
         {wizardStepKey === 'summary' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-4">
+          <div className="rounded-xl bg-white p-5 sm:p-6 space-y-4">
             <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Summary</h3>
             <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
               <div>
@@ -877,11 +884,17 @@ export function QuotationForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="sm:col-span-2">{customerBlock}</div>
-          <Input
-            label="Salesperson ID"
-            error={fieldError('salesperson_id')}
-            placeholder="Optional user UUID"
-            {...register('salesperson_id')}
+          <Controller
+            name="salesperson_id"
+            control={control}
+            render={({ field }) => (
+              <CrmSalespersonSelect
+                label="Salesperson"
+                value={field.value ?? ''}
+                onChange={field.onChange}
+                error={fieldError('salesperson_id')}
+              />
+            )}
           />
           <div className="space-y-1">
             <label htmlFor="carrier_id" className={labelClass}>

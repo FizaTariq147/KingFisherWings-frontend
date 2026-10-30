@@ -376,4 +376,39 @@ export const chartOfAccountService = {
       throw formatAxiosError(error);
     }
   },
+
+  /** POST /gl/accounts/:id/opening-balance */
+  async postOpeningBalance(
+    id: string,
+    dto: {
+      amount: number;
+      type?: string;
+      date?: string;
+      post_voucher?: boolean;
+      remarks?: string;
+    },
+  ): Promise<{
+    voucher_id?: string;
+    voucher_number?: string;
+    message?: string;
+    raw?: Record<string, unknown>;
+  }> {
+    if (!isUuid(id)) throw new Error('Invalid account id.');
+    try {
+      const { data } = await withGatewayRetry(() =>
+        axiosInstance.post(CHART_OF_ACCOUNT_API.openingBalance(id), dto),
+      );
+      const rec = asRecord(data);
+      const nested = asRecord(rec?.data) ?? rec ?? {};
+      return {
+        voucher_id: String(nested.voucher_id ?? nested.voucherId ?? '').trim() || undefined,
+        voucher_number:
+          String(nested.voucher_number ?? nested.voucherNumber ?? '').trim() || undefined,
+        message: String(nested.message ?? '').trim() || undefined,
+        raw: nested,
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
 };

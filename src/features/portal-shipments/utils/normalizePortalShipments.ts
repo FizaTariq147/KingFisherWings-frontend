@@ -267,13 +267,23 @@ export function normalizeShipmentDocument(raw: unknown): PortalShipmentDocument 
       : record.visible_to_customer === true || record.visibleToCustomer === true
         ? true
         : undefined;
-  // List all customer-visible completed docs; permission matrix only gates download.
+  // List customer-visible docs; download gated by can_download / downloadable_by_customer.
+  const downloadable =
+    record.downloadable_by_customer === false ||
+    record.downloadableByCustomer === false
+      ? false
+      : record.downloadable_by_customer === true ||
+          record.downloadableByCustomer === true
+        ? true
+        : undefined;
   const canDownload =
     record.can_download === false || record.canDownload === false
       ? false
-      : visible === false
+      : downloadable === false
         ? false
-        : true;
+        : visible === false
+          ? false
+          : true;
   return {
     id,
     name:

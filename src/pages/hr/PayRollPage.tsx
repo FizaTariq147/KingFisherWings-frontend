@@ -17,6 +17,7 @@ import {
 } from '../../features/hr/schemas/hr.schema';
 import { useAuthStore } from '@/store/authStore';
 import { companyIdFromAccessToken } from '@/lib/tenantFromAuth';
+import { useGlAccountSelectOptions } from '@/features/chartOfAccounts/hooks/useGlAccountSelectOptions';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 
 function formatGratuity(value: unknown): Record<string, string> {
@@ -64,7 +65,10 @@ export default function PayRollPage() {
 
   const resolveCreateCompanyId = () => payCompanyId.trim() || sessionCompanyId || '';
 
-  const { data: companies = [], isLoading: companiesLoading } = useTenantCompanies(createOpen);
+  const { data: companies = [], isLoading: companiesLoading } = useTenantCompanies(
+    createOpen || glOpen,
+  );
+  const { options: glAccountOptions } = useGlAccountSelectOptions(glOpen);
 
   useEffect(() => {
     if (!createOpen || companies.length === 0) return;
@@ -690,21 +694,45 @@ export default function PayRollPage() {
         }
       >
         <div className="space-y-3">
+          <label className="block text-sm">
+            <span className="block text-xs text-gray-600 mb-1">Company *</span>
+            <select
+              className={`w-full h-9 border rounded px-3 ${fieldErrors.company_id ? 'border-red-400' : ''}`}
+              value={glCompanyId}
+              onChange={(e) => setGlCompanyId(e.target.value)}
+            >
+              <option value="">Select company…</option>
+              {companies.map((company) => (
+                <option key={company.id} value={company.id}>
+                  {company.code ? `${company.name} (${company.code})` : company.name}
+                </option>
+              ))}
+            </select>
+            {fieldErrors.company_id ? (
+              <span className="text-xs text-red-600">{fieldErrors.company_id}</span>
+            ) : null}
+          </label>
           {(
             [
-              ['company_id', 'Company ID (UUID)', glCompanyId, setGlCompanyId],
-              ['salary_expense_account_id', 'Salary expense account ID', glSalaryExpense, setGlSalaryExpense],
-              ['payroll_payable_account_id', 'Payroll payable account ID', glPayable, setGlPayable],
-              ['deduction_account_id', 'Deduction account ID', glDeduction, setGlDeduction],
+              ['salary_expense_account_id', 'Salary expense account *', glSalaryExpense, setGlSalaryExpense],
+              ['payroll_payable_account_id', 'Payroll payable account *', glPayable, setGlPayable],
+              ['deduction_account_id', 'Deduction account *', glDeduction, setGlDeduction],
             ] as const
           ).map(([key, label, value, setter]) => (
             <label key={key} className="block text-sm">
-              <span className="block text-xs text-gray-600 mb-1">{label} *</span>
-              <input
+              <span className="block text-xs text-gray-600 mb-1">{label}</span>
+              <select
                 className={`w-full h-9 border rounded px-3 ${fieldErrors[key] ? 'border-red-400' : ''}`}
                 value={value}
                 onChange={(e) => setter(e.target.value)}
-              />
+              >
+                <option value="">Select account…</option>
+                {glAccountOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
               {fieldErrors[key] ? <span className="text-xs text-red-600">{fieldErrors[key]}</span> : null}
             </label>
           ))}

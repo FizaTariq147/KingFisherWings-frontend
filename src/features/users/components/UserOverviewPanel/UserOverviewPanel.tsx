@@ -38,10 +38,10 @@ export function UserOverviewPanel({ user }: UserOverviewPanelProps) {
           <CardTitle>Organization Assignment</CardTitle>
         </CardHeader>
         <dl className="space-y-0">
-          <DetailRow label="Tenant ID" value={user.tenant_id} mono />
-          <DetailRow label="Company ID" value={user.company_id || '—'} mono />
-          <DetailRow label="Branch ID" value={user.branch_id || '—'} mono />
-          <DetailRow label="Department ID" value={user.department_id || '—'} mono />
+          <DetailRow label="Tenant" value={user.tenant_id} mono />
+          <DetailRow label="Company" value={user.company_id || '—'} mono />
+          <DetailRow label="Branch" value={user.branch_id || '—'} mono />
+          <DetailRow label="Department" value={user.department_id || '—'} mono />
         </dl>
       </Card>
 

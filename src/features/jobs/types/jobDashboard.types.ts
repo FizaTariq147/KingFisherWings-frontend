@@ -11,6 +11,14 @@ export interface JobDashboardCounts {
   newJobs: number;
   customsHold: number;
   docsPending: number;
+  /** Backend category counts — do not invent DELAYED as a status enum. */
+  onHold: number;
+  delayed: number;
+  delivered: number;
+  cancelled: number;
+  completed: number;
+  inProgress: number;
+  open: number;
   raw?: Record<string, unknown>;
 }
 

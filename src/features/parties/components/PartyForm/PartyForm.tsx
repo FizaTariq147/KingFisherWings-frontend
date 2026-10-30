@@ -368,7 +368,7 @@ export function PartyForm({
         <PartyWizardStepper currentStep={step} />
 
         {step === 0 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <PartyTypeSelectGrid
               value={partyType}
               onChange={(type: PartyType) =>
@@ -380,7 +380,7 @@ export function PartyForm({
         ) : null}
 
         {step === 1 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6 space-y-6">
             <div>
               <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">Identity</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">{identityFields}</div>
@@ -395,7 +395,7 @@ export function PartyForm({
         ) : null}
 
         {step === 2 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6 space-y-6">
             <div>
               <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
                 Credit & assignment

@@ -25,7 +25,7 @@ export function FormWizardSteps({
   return (
     <ol
       className={cn(
-        'flex flex-wrap items-stretch overflow-hidden rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white',
+        'flex flex-wrap items-stretch overflow-hidden rounded-sm bg-white',
         className,
       )}
     >

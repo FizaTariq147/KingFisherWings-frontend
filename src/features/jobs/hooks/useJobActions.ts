@@ -29,7 +29,9 @@ import type {
   SchedulePreAlertDto,
   SendPreAlertDto,
   SendWhatsAppStatusDto,
+  ResumeJobDto,
   StopJobDto,
+  PatchJobHoldDto,
   UpdateJobChargeDto,
   UpdateJobMilestoneDto,
   UpdateJobNoteDto,
@@ -61,6 +63,14 @@ export function useJobActions(jobId: string) {
   });
   const stop = useMutation({
     mutationFn: (dto?: StopJobDto) => jobService.stop(id, dto ?? {}),
+    onSuccess: () => invalidate(id),
+  });
+  const resume = useMutation({
+    mutationFn: (dto: ResumeJobDto) => jobService.resume(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+  const patchHold = useMutation({
+    mutationFn: (dto: PatchJobHoldDto) => jobService.patchHold(id, dto),
     onSuccess: () => invalidate(id),
   });
   const upsertClientReference = useMutation({
@@ -490,6 +500,8 @@ export function useJobActions(jobId: string) {
     changeStatus,
     reopen,
     stop,
+    resume,
+    patchHold,
     upsertClientReference,
     patchDimensions,
     putGpum,
@@ -598,6 +610,11 @@ export function useJobLifecycleMutations() {
     stop: useMutation({
       mutationFn: ({ id, dto }: { id: string; dto?: StopJobDto }) =>
         jobService.stop(id, dto ?? {}),
+      onSuccess: (_d, { id }) => invalidate(id),
+    }),
+    resume: useMutation({
+      mutationFn: ({ id, dto }: { id: string; dto: ResumeJobDto }) =>
+        jobService.resume(id, dto),
       onSuccess: (_d, { id }) => invalidate(id),
     }),
     remove: useMutation({

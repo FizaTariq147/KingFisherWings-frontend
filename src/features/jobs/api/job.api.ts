@@ -27,6 +27,10 @@ export const JOB_API = {
   changeStatus: (id: string) => `/jobs/${id}/change-status`,
   reopen: (id: string) => `/jobs/${id}/reopen`,
   stop: (id: string) => `/jobs/${id}/stop`,
+  resume: (id: string) => `/jobs/${id}/resume`,
+  hold: (id: string) => `/jobs/${id}/hold`,
+  byCategory: (category: string) =>
+    `/jobs/by-category/${encodeURIComponent(category)}`,
   cancel: (id: string) => `/jobs/${id}/cancel`,
   close: (id: string) => `/jobs/${id}/close`,
   closeChecklist: (id: string) => `/jobs/${id}/close-checklist`,

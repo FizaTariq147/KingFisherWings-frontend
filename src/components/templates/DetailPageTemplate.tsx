@@ -204,7 +204,7 @@ export function DetailPageTemplate({
       ) : null}
 
       {/* Header chrome */}
-      <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2.5">
+      <div className="rounded-sm bg-white px-3 py-2.5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div className="min-w-0">
             {eyebrow ? (

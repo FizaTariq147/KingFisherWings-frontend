@@ -175,7 +175,7 @@ export function BlDraftFromBookingPanel({
         {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
 
         {classicModel ? (
-          <div className="overflow-x-auto rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white p-2">
+          <div className="overflow-x-auto rounded-sm bg-white p-2">
             <BlDraftClassicDocument model={classicModel} />
           </div>
         ) : (

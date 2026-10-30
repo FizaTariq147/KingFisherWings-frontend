@@ -1,7 +1,6 @@
 import { crmEnquiriesService } from '@/features/crm/services/crmEnquiries.service';
 import { portalAdminService } from '@/features/portal-admin/services/portalAdmin.service';
 import { portalAdminInboxService } from '@/features/portal-admin-inbox/services/portalAdminInbox.service';
-import { resolveDateRangePreset } from '@/features/management/utils/managementFilters';
 import { CUSTOMER_API_PAGE_LIMIT, fetchAllJobsForCustomerFilters } from '../utils/customerServiceApi';
 import { mapJobsToSailingRows } from '../utils/normalizeCustomerService';
 
@@ -30,12 +29,6 @@ function isPendingCreditRequest(status: string | undefined): boolean {
 
 export const customerServiceMenuService = {
   async loadStats(): Promise<CustomerServiceMenuStats> {
-    const range = resolveDateRangePreset('this_month');
-    const dateParams = {
-      from_date: range?.from_date,
-      to_date: range?.to_date,
-    };
-
     const [
       jobsPack,
       enquiriesResult,
@@ -45,7 +38,7 @@ export const customerServiceMenuService = {
       disputes,
       creditRequests,
     ] = await Promise.all([
-      fetchAllJobsForCustomerFilters({ ...dateParams, limit: CUSTOMER_API_PAGE_LIMIT }).catch(() => ({
+      fetchAllJobsForCustomerFilters({ limit: CUSTOMER_API_PAGE_LIMIT }).catch(() => ({
         jobs: [],
         listParams: {},
       })),
