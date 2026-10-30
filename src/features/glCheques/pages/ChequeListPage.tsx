@@ -156,7 +156,7 @@ export default function ChequeListPage() {
         />
 
         {!partyValid ? (
-          <p className="text-sm text-[var(--color-danger-600)]">Enter a valid party UUID.</p>
+          <p className="text-sm text-[var(--color-danger-600)]">Select a valid party.</p>
         ) : isError ? (
           <div className="space-y-3 py-8">
             <p className="flex items-start gap-2 text-sm text-[var(--color-danger-600)]">

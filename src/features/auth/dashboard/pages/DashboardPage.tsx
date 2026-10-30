@@ -3,7 +3,6 @@ import { useAuth } from '@/hooks/useAuth';
 import { useJobs } from '@/features/jobs/hooks/useJobs';
 import { useInvoices, useOverdueInvoices } from '@/features/invoices/hooks/useInvoices';
 import { useArAging } from '@/features/arApAging/hooks/useArApAging';
-import { useMisOperational } from '@/features/glMisDashboard/hooks/useGlMis';
 import { useCrmFollowUps, usePatchCrmFollowUp } from '@/features/crm/hooks/useCrmFollowUps';
 import { useNotifications } from '@/features/notifications/hooks/useNotifications';
 import { computeAgingTotals, resolveAgingBucketValues } from '@/features/arApAging/utils/normalizeArApAging';
@@ -21,56 +20,7 @@ import {
   useDashboardJobCounts,
   useDashboardPendingQuoteStats,
 } from '../hooks/useDashboardJobCounts';
-import { isoDate, pickNumber } from '../utils/dashboardFormat';
-import { uiPeriodToApi } from '@/lib/apiPeriod';
-
-function extractOnTime(rows: Record<string, unknown>[]) {
-  const percents: number[] = [];
-  const volumes: number[] = [];
-  let target: number | null = null;
-  for (const row of rows) {
-    const otp = pickNumber(row, [
-      'on_time',
-      'ontime',
-      'on_time_pct',
-      'on_time_percent',
-      'otp',
-      'delivery_otp',
-      'ontime_pct',
-      'on_time_rate',
-    ]);
-    if (otp != null) percents.push(otp <= 1 && otp >= 0 ? otp * 100 : otp);
-    const volume = pickNumber(row, [
-      'jobs',
-      'job_count',
-      'shipments',
-      'delivered',
-      'delivered_count',
-      'volume',
-      'count',
-    ]);
-    if (volume != null) volumes.push(volume);
-    const rowTarget = pickNumber(row, [
-      'target',
-      'otp_target',
-      'on_time_target',
-      'target_pct',
-      'target_percent',
-    ]);
-    if (rowTarget != null && target == null) {
-      target = rowTarget <= 1 && rowTarget > 0 ? rowTarget * 100 : rowTarget;
-    }
-  }
-  const pct =
-    percents.length === 0
-      ? null
-      : percents.reduce((sum, n) => sum + n, 0) / percents.length;
-  return {
-    pct,
-    target,
-    bars: percents.length >= 2 ? percents : volumes.length ? volumes : percents,
-  };
-}
+import { isoDate } from '../utils/dashboardFormat';
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -96,12 +46,6 @@ export function DashboardPage() {
   const invoicesQuery = useInvoices({ page: 1, limit: 8 });
   const overdueQuery = useOverdueInvoices();
   const agingQuery = useArAging({ as_of: range.to });
-  const apiPeriod = uiPeriodToApi(period);
-  const operational = useMisOperational({
-    period: apiPeriod.period,
-    from_date: range.from,
-    to_date: range.to,
-  });
   const monthlySales = useCrmReportQuery('monthly_sales', revenueRange);
   const topCustomers = useCrmReportQuery('top_customers', revenueRange);
   const customerRevenue = useCrmReportQuery('customer_revenue', revenueRange);
@@ -183,10 +127,14 @@ export function DashboardPage() {
     };
   }, [quoteStats.data]);
 
-  const onTime = useMemo(
-    () => extractOnTime(operational.data?.rows ?? []),
-    [operational.data],
-  );
+  const deliveredJobs = jobCounts.data?.delivered ?? 0;
+  const completedJobs = jobCounts.data?.completed ?? 0;
+  const deliveredBars = useMemo(() => {
+    const delivered = deliveredJobs;
+    const completed = completedJobs;
+    const inProgress = jobCounts.data?.inProgress ?? 0;
+    return [delivered, completed, inProgress].filter((v) => v > 0);
+  }, [deliveredJobs, completedJobs, jobCounts.data?.inProgress]);
 
   const agingReport = agingQuery.data
     ? { ...agingQuery.data, totals: agingTotals }
@@ -212,9 +160,9 @@ export function DashboardPage() {
         />
 
         <DashboardAlertPills
-          customsHold={jobCounts.data?.customsHold ?? 0}
-          docsPending={jobCounts.data?.docsPending ?? 0}
+          counts={jobCounts.data}
           invoicesOverdue={overdueQuery.data?.length ?? 0}
+          loading={jobCounts.isLoading}
         />
 
         <DashboardKpiRow
@@ -234,13 +182,13 @@ export function DashboardPage() {
             (agingTotals.days_over_90 || 0)
           }
           agingBars={agingBars}
-          onTimePct={onTime.pct}
-          onTimeTarget={onTime.target}
-          onTimeBars={onTime.bars}
+          deliveredJobs={deliveredJobs}
+          completedJobs={completedJobs}
+          deliveredBars={deliveredBars}
           loadingJobs={jobCounts.isLoading}
           loadingQuotes={quoteStats.isLoading}
           loadingReceivables={agingQuery.isLoading}
-          loadingOnTime={operational.isLoading}
+          loadingDelivered={jobCounts.isLoading}
         />
 
         <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.9fr)]">

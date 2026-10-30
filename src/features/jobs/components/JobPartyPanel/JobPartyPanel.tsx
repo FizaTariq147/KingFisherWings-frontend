@@ -15,6 +15,7 @@ import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTy
 import { JOB_ORG_TYPES, JOB_PARTY_ROLES } from '@/features/shared/organizations/orgTypes';
 import { orgPartyLabel } from '@/features/shared/organizations/orgDisplay';
 import { PartyOrgSearchField } from '@/features/shared/organizations/PartyOrgSearchField';
+import { JobSearchSelect } from '@/features/shared/entity-search';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 /** Matches AddJobOrganizationDto.org_type (includes Vendor). */
@@ -152,7 +153,7 @@ export function JobPartyPanel({
       {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
 
-      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+      <section className="space-y-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
           Organizations
         </p>
@@ -343,10 +344,12 @@ export function JobPartyPanel({
         </div>
 
         <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
-          <Input
-            label="Copy from job ID"
+          <JobSearchSelect
+            name="copy_from_job_id"
+            label="Copy from job"
             value={copyFromJobId}
-            onChange={(e) => setCopyFromJobId(e.target.value)}
+            onChange={setCopyFromJobId}
+            placeholder="Search job by number…"
           />
           <div className="flex items-end sm:col-span-2">
             <Button
@@ -373,7 +376,7 @@ export function JobPartyPanel({
         </div>
       </section>
 
-      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+      <section className="space-y-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
           Client reference
         </p>
@@ -428,7 +431,7 @@ export function JobPartyPanel({
         </Button>
       </section>
 
-      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+      <section className="space-y-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
           Typed references (SABER / RA / ISF)
         </p>

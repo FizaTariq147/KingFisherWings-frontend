@@ -249,7 +249,7 @@ export default function QuotationOnlineQuotePage() {
         <QuotationWizardStepper currentStep={step} />
 
         {wizardStepKey === 'create' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <JobTypeSelectGrid
               value={jobType}
               onChange={(jt: JobType) =>
@@ -261,7 +261,7 @@ export default function QuotationOnlineQuotePage() {
         ) : null}
 
         {wizardStepKey === 'ports' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
               <div className="space-y-4">
                 <Input
@@ -331,7 +331,7 @@ export default function QuotationOnlineQuotePage() {
         ) : null}
 
         {wizardStepKey === 'consignment' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <h3 className="mb-4 text-sm font-semibold text-[var(--color-neutral-800)]">
               Planned Container / Consignment
             </h3>
@@ -413,7 +413,7 @@ export default function QuotationOnlineQuotePage() {
         ) : null}
 
         {wizardStepKey === 'costing' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             <OnlineQuoteCostingPanel
               currencyCode={currencyCode || 'AED'}
               currencyError={errors.currency_code?.message as string | undefined}
@@ -433,7 +433,7 @@ export default function QuotationOnlineQuotePage() {
         ) : null}
 
         {wizardStepKey === 'summary' ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-4">
+          <div className="rounded-xl bg-white p-5 sm:p-6 space-y-4">
             <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">Summary</h3>
             <dl className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
               <div>

@@ -442,7 +442,7 @@ export const assignCargoToContainerFormSchema = z.object({
 });
 
 export const prorateCostFormSchema = z.object({
-  charge_code_id: z.string().uuid('Enter a valid charge code UUID'),
+  charge_code_id: z.string().uuid('Select a charge code'),
 });
 
 export const splitContainerFormSchema = z.object({

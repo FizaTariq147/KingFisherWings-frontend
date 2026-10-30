@@ -15,6 +15,8 @@ import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
+import { useJob } from '@/features/jobs/hooks/useJobs';
+import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { JobSearchSelect } from '@/features/shared/entity-search';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
@@ -129,6 +131,7 @@ export function PurchaseInvoiceForm({
   });
 
   const watched = watch();
+  const { data: summaryJob } = useJob(watched.job_id || '');
 
   const fieldError = (name: keyof CreatePurchaseInvoiceFormValues) =>
     errors[name]?.message as string | undefined;
@@ -420,9 +423,13 @@ export function PurchaseInvoiceForm({
           <dd className="mt-0.5 text-[var(--color-neutral-800)]">{watched.due_date || '—'}</dd>
         </div>
         <div>
-          <dt className="text-xs text-[var(--color-neutral-400)]">Job</dt>
-          <dd className="mt-0.5 font-mono text-[var(--color-neutral-800)]">
-            {watched.job_id || '—'}
+          <dt className="text-xs text-[var(--color-neutral-400)]">Job number</dt>
+          <dd className="mt-0.5 text-[var(--color-neutral-800)]">
+            {summaryJob
+              ? jobDisplayNumber(summaryJob)
+              : watched.job_id
+                ? '…'
+                : '—'}
           </dd>
         </div>
         <div>
@@ -449,7 +456,7 @@ export function PurchaseInvoiceForm({
         <InvoiceWizardStepper currentStep={step} />
 
         {step === 0 ? (
-          <div className="space-y-5 rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="space-y-5 rounded-xl bg-white p-5 sm:p-6">
             {orgFields}
             <div className="space-y-4">
               <h3 className="text-center text-base font-semibold text-[var(--color-neutral-800)] sm:text-lg">
@@ -470,25 +477,25 @@ export function PurchaseInvoiceForm({
         ) : null}
 
         {step === 1 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {headerFields}
           </div>
         ) : null}
 
         {step === 2 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {notesFields}
           </div>
         ) : null}
 
         {step === 3 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {linesEditor}
           </div>
         ) : null}
 
         {step === 4 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {summaryPanel}
           </div>
         ) : null}

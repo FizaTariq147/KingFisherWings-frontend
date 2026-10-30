@@ -8,6 +8,8 @@ import { FieldError } from '@/components/ui/FieldError/FieldError';
 
 import { TextInput, DateInput } from '@/components/widgets/FilterField';
 
+import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
+
 import { NvoccFormActions, NvoccFormField } from '@/features/nvocc/components/NvoccFormField';
 
 import { NvoccPermissionNotice } from '@/features/nvocc/components/NvoccPermissionNotice';
@@ -208,15 +210,30 @@ export default function NvoccVoyageCreatePage() {
 
           </NvoccFormField>
 
-          <NvoccFormField label="POL ID" error={fieldError('pol_id')}>
+          <NvoccFormField label="POL" error={fieldError('pol_id')}>
 
-            <TextInput value={form.pol_id} onChange={(e) => patch({ pol_id: e.target.value })} placeholder="Port name / code" />
+            <MasterPlaceSelect
+              name="pol_id"
+              label=""
+              value={form.pol_id}
+              onChange={(v) => patch({ pol_id: v })}
+              placeholder="Search port by name…"
+              allowCreate={false}
+            />
 
           </NvoccFormField>
 
-          <NvoccFormField label="POD ID" error={fieldError('pod_id')}>
+          <NvoccFormField label="POD" error={fieldError('pod_id')}>
 
-            <TextInput value={form.pod_id} onChange={(e) => patch({ pod_id: e.target.value })} placeholder="Port name / code" />
+            <MasterPlaceSelect
+              name="pod_id"
+              label=""
+              value={form.pod_id}
+              onChange={(v) => patch({ pod_id: v })}
+              placeholder="Search port by name…"
+              excludeId={form.pol_id || undefined}
+              allowCreate={false}
+            />
 
           </NvoccFormField>
 

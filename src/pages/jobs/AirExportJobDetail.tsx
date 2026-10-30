@@ -86,7 +86,7 @@ const mockJob: AirExportJob = {
   grossWeight: 480,
   chargeableWeight: 520,
   volume: 2.4,
-  commodity: 'Electronics — General Cargo',
+  commodity: 'Electronics General Cargo',
   incoterm: 'FOB Dubai',
   paymentMode: 'Prepaid',
   specialInstructions: 'Handle with care. Temperature sensitive cargo.',

@@ -146,7 +146,7 @@ export function ShipmentChargesPanel({
       return;
     }
     if (partyId.trim() && !isUuid(partyId.trim())) {
-      setError('Party must be a valid UUID when provided.');
+      setError('Select a valid party when provided.');
       return;
     }
     const ok = await run(
@@ -178,7 +178,7 @@ export function ShipmentChargesPanel({
       return;
     }
     if (quotationId.trim() && !isUuid(quotationId.trim())) {
-      setError('Quotation must be a valid UUID when provided.');
+      setError('Select a valid quotation when provided.');
       return;
     }
     const ok = await run(
@@ -206,7 +206,7 @@ export function ShipmentChargesPanel({
       copy_cost: copyCost,
     };
     if (!dto.from_shipment_id && !dto.from_job_id && !dto.from_quotation_id) {
-      setError('Provide a from shipment, job, or quotation UUID.');
+      setError('Select a source shipment, job, or quotation.');
       return;
     }
     const ok = await run(() => mutations.copyCharges.mutateAsync(dto), 'Charges copied.');

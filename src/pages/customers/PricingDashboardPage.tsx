@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Search, ChevronDown } from 'lucide-react';
@@ -22,7 +22,7 @@ const tabs = ['Open Enquiry Report', 'Quotation status-wise statistics'] as cons
 export default function PricingDashboardPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<(typeof tabs)[number]>(tabs[0]);
-  const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
+  const [datePreset, setDatePreset] = useState<DateRangePreset>('custom');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [branch, setBranch] = useState('All');
@@ -49,10 +49,6 @@ export default function PricingDashboardPage() {
       setToDate(range.to_date);
     }
   };
-
-  useEffect(() => {
-    applyPreset('this_month');
-  }, []);
 
   const query = useCustomerPricingDashboard(activeFilters, submitted);
   const filters = useCustomerFilterSelectOptions();

@@ -31,7 +31,7 @@ import { AddChargeCodeModal } from '@/features/masters/components/AddChargeCodeM
 import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
-import { JobSearchSelect } from '@/features/shared/entity-search';
+import { JobSearchSelect, ShipmentSearchSelect } from '@/features/shared/entity-search';
 import { useAuthStore } from '@/store/authStore';
 import { VOUCHER_ROUTE_PREFIX } from '@/features/vouchers/api/voucher.api';
 import {
@@ -208,7 +208,7 @@ function CostingGridIconButton({
 const FIELD_LABEL =
   'mb-1 block text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]';
 const FIELD_CONTROL =
-  'w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-2 py-1.5 text-[13px] text-[#334155] focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]';
+  'w-full rounded-sm bg-white px-2 py-1.5 text-[13px] text-[#334155] focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]';
 const TAB_BTN =
   'px-3 py-1.5 text-[13px] font-medium border-b-2 -mb-px transition-colors';
 const TAB_ACTIVE =
@@ -1287,7 +1287,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       copy_cost: copyCost,
     };
     if (!dto.from_job_id && !dto.from_shipment_id && !dto.from_quotation_id) {
-      setError('Provide a from job, shipment, or quotation UUID.');
+      setError('Select a source job, shipment, or quotation.');
       return;
     }
     await run(() => actions.copyJobCharges.mutateAsync(dto), 'Charges copied.');
@@ -2038,7 +2038,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                 {(sidePanel === 'vouchersOs' ? vouchersOs : vouchers).map((v) => (
                   <li
                     key={v.id}
-                    className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-[13px]"
+                    className="rounded-sm bg-white px-3 py-2 text-[13px]"
                   >
                     <Link
                       className="font-medium text-[var(--color-primary-700)] hover:underline"
@@ -2855,13 +2855,13 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
             label="From shipment number / reference"
             value={copyFromShipmentId}
             onChange={(e) => setCopyFromShipmentId(e.target.value)}
-            placeholder="Shipment number (not UUID)"
+            placeholder="Shipment number…"
           />
           <Input
             label="From quotation number / reference"
             value={copyFromQuotationId}
             onChange={(e) => setCopyFromQuotationId(e.target.value)}
-            placeholder="Quotation number (not UUID)"
+            placeholder="Quotation number…"
           />
           <label className="flex items-center gap-2 text-sm">
             <input
@@ -3044,7 +3044,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           </div>
 
           {psPreview?.ourProfitShare != null ? (
-            <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 text-sm">
+            <div className="rounded-sm bg-white px-3 py-2 text-sm">
               <span className="font-semibold text-[var(--fresa-header-text,#0A2942)]">
                 {psPreview.ourProfitShareLabel || 'Our Profit Share'}:{' '}
               </span>
@@ -3285,15 +3285,17 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                 prorate to.
                 {houseJobCount > 0
                   ? ` You can prorate to ${houseJobCount} house job(s), or attach/create a shipment below.`
-                  : ' Attach an existing shipment UUID or create one linked to this job.'}
+                  : ' Attach an existing shipment or create one linked to this job.'}
               </p>
               <div className="flex flex-wrap items-end gap-2">
-                <Input
-                  label="Attach shipment ID"
-                  value={prorateAttachShipmentId}
-                  onChange={(e) => setProrateAttachShipmentId(e.target.value)}
-                  className="min-w-[12rem] flex-1"
-                />
+                <div className="min-w-[12rem] flex-1">
+                  <ShipmentSearchSelect
+                    name="prorate_attach_shipment_id"
+                    label="Attach shipment"
+                    value={prorateAttachShipmentId}
+                    onChange={setProrateAttachShipmentId}
+                  />
+                </div>
                 <Button
                   type="button"
                   size="sm"

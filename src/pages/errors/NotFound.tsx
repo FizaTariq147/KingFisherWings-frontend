@@ -8,7 +8,7 @@ export default function NotFound() {
     <div className="flex min-h-screen items-center justify-center px-4">
       <div className="max-w-sm mx-auto text-center">
         <SearchX size={40} className="text-gray-300 mx-auto mb-4" aria-hidden="true" />
-        <h1 className="text-2xl font-medium text-gray-900 mb-2">404 — Page Not Found</h1>
+        <h1 className="text-2xl font-medium text-gray-900 mb-2">404 Page Not Found</h1>
         <p className="text-gray-500 mb-6">The page you're looking for doesn't exist.</p>
         <button
           type="button"

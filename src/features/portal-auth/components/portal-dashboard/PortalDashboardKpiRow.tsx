@@ -11,7 +11,7 @@ const KPI_THEMES = {
   shipments: DASHBOARD_KPI_THEMES.orange,
   quotes: DASHBOARD_KPI_THEMES.gold,
   outstanding: DASHBOARD_KPI_THEMES.navy,
-  onTime: DASHBOARD_KPI_THEMES.green,
+  delivered: DASHBOARD_KPI_THEMES.green,
 } as const;
 
 function TrendPill({
@@ -99,9 +99,9 @@ export function PortalDashboardKpiRow({
   overdue,
   invoiceCount,
   invoiceBars,
-  onTimePct,
-  onTimeBars,
-  onTimeCaption = 'selected period',
+  deliveredJobs,
+  deliveredBars,
+  deliveredCaption = 'Jobs marked delivered',
   loadingShipments,
   loadingQuotes,
   loadingInvoices,
@@ -117,15 +117,13 @@ export function PortalDashboardKpiRow({
   overdue: number;
   invoiceCount: number;
   invoiceBars: number[];
-  onTimePct: number | null;
-  onTimeBars: number[];
-  onTimeCaption?: string;
+  deliveredJobs: number;
+  deliveredBars: number[];
+  deliveredCaption?: string;
   loadingShipments: boolean;
   loadingQuotes: boolean;
   loadingInvoices: boolean;
 }) {
-  const deliveryValue = onTimePct == null ? null : String(Math.round(onTimePct));
-
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <KpiCard
@@ -141,7 +139,7 @@ export function PortalDashboardKpiRow({
         loading={loadingShipments}
       />
       <KpiCard
-        to="/portal/quotes"
+        to="/portal/quotes?status=DRAFT"
         label="Pending quotations"
         value={loadingQuotes ? null : String(pendingQuotes)}
         unit="awaiting"
@@ -171,14 +169,14 @@ export function PortalDashboardKpiRow({
         loading={loadingInvoices}
       />
       <KpiCard
-        to="/portal/shipments"
-        label="On-time delivery"
-        value={loadingShipments ? null : deliveryValue ?? '—'}
-        unit={deliveryValue == null ? undefined : '%'}
-        caption={onTimeCaption}
-        badge={null}
-        bars={onTimeBars}
-        theme={KPI_THEMES.onTime}
+        to="/portal/shipments?status=DELIVERED"
+        label="Delivered jobs"
+        value={loadingShipments ? null : String(deliveredJobs)}
+        unit="delivered"
+        caption={deliveredCaption}
+        badge={deliveredJobs > 0 ? String(deliveredJobs) : null}
+        bars={deliveredBars}
+        theme={KPI_THEMES.delivered}
         Icon={CheckCircle2}
         loading={loadingShipments}
       />

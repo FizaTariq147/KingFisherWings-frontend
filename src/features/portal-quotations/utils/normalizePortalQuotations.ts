@@ -60,16 +60,8 @@ function portLabel(record: Record<string, unknown>, side: 'origin' | 'dest'): st
   return '';
 }
 
-const OPEN_QUOTE_STATUSES = new Set([
-  'DRAFT',
-  'SUBMITTED',
-  'INTERNALLY_APPROVED',
-  'SENT',
-  'CUSTOMER_REVIEW',
-  'NEGOTIATING',
-  'PENDING',
-  'OPEN',
-]);
+/** Dashboard pending count — draft quotations only. */
+const OPEN_QUOTE_STATUSES = new Set(['DRAFT']);
 
 function sumByStatus(byStatus: Record<string, number>, statuses: Set<string>) {
   return Object.entries(byStatus).reduce((sum, [status, count]) => {
@@ -91,20 +83,8 @@ export function normalizeQuotationSummary(raw: unknown): PortalQuotationSummary 
   return {
     total: pickNumber(data.total, data.count, data.quotations_total, data.quotes_total) ?? byStatusTotal,
     open:
-      pickNumber(
-        data.open,
-        data.pending,
-        data.active,
-        data.open_count,
-        data.openCount,
-        data.pending_count,
-        data.pendingCount,
-        data.pending_quotations,
-        data.pendingQuotations,
-        data.awaiting,
-        data.awaiting_approval,
-        data.awaitingApproval,
-      ) ?? sumByStatus(byStatus, OPEN_QUOTE_STATUSES),
+      pickNumber(data.draft, data.draft_count, data.draftCount) ??
+      sumByStatus(byStatus, OPEN_QUOTE_STATUSES),
     won:
       pickNumber(data.won, data.approved) ??
       sumByStatus(byStatus, new Set(['APPROVED', 'WON', 'CONVERTED'])),

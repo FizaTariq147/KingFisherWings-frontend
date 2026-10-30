@@ -4,6 +4,7 @@ import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { jobService } from '../../services/job.service';
@@ -121,6 +122,14 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
             ) : null}
           </div>
         ) : null}
+        <SectionAttachmentsPanel
+          entity="jobs"
+          entityId={jobId}
+          section="acknowledgement"
+          recordId={ack?.id}
+          title="Acknowledgement attachments"
+          compact
+        />
         <div className="flex flex-wrap gap-2 pt-1">
           <Button
             type="button"

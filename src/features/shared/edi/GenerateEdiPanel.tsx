@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react';
-import { Download, Radio } from 'lucide-react';
+import { Download, Plus, Radio, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Input } from '@/components/ui/Input';
 import { erpTable } from '@/lib/erpTypography';
 import type { JobEdiSubmission, JobEdiTypeOption } from '@/features/jobs/types/job.types';
 import {
@@ -13,6 +14,11 @@ import {
 } from './normalizeEdi';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 
+export type GenerateEdiRequest = {
+  edi_type: string;
+  company_codes?: string[];
+};
+
 interface GenerateEdiPanelProps {
   title?: string;
   typesRaw: unknown;
@@ -21,9 +27,13 @@ interface GenerateEdiPanelProps {
   submissionsLoading?: boolean;
   generatePending?: boolean;
   downloadPending?: boolean;
-  onGenerate: (ediType: string) => Promise<unknown>;
+  onGenerate: (dto: GenerateEdiRequest) => Promise<unknown>;
   onDownload: (submissionId: string) => Promise<unknown>;
   onChanged?: () => void;
+}
+
+function normalizeCode(raw: string): string {
+  return raw.trim().toUpperCase();
 }
 
 export function GenerateEdiPanel({
@@ -44,6 +54,8 @@ export function GenerateEdiPanel({
     [submissionsRaw],
   );
   const [ediType, setEdiType] = useState('');
+  const [companyCodes, setCompanyCodes] = useState<string[]>([]);
+  const [codeDraft, setCodeDraft] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
@@ -51,15 +63,45 @@ export function GenerateEdiPanel({
   const selected = ediType || types[0]?.code || '';
   const isManifestTxt = /MANIFEST_CSDP|CSDP/i.test(selected);
 
+  const addCompanyCode = () => {
+    const code = normalizeCode(codeDraft);
+    if (!code) {
+      setError('Enter a company code.');
+      return;
+    }
+    if (code.length > 40) {
+      setError('Company code must be at most 40 characters.');
+      return;
+    }
+    if (companyCodes.some((c) => normalizeCode(c) === code)) {
+      setError(`Company code “${code}” is already added.`);
+      return;
+    }
+    setCompanyCodes((prev) => [...prev, code]);
+    setCodeDraft('');
+    setError(null);
+  };
+
+  const removeCompanyCode = (code: string) => {
+    setCompanyCodes((prev) => prev.filter((c) => c !== code));
+  };
+
   const runGenerate = async () => {
     if (!selected.trim()) {
       setError('Select an EDI type.');
       return;
     }
+    if (isManifestTxt && companyCodes.length === 0) {
+      setError('At least one company code is required for MANIFEST_CSDP.');
+      return;
+    }
     setError(null);
     setMsg(null);
     try {
-      const generated = await onGenerate(selected.trim());
+      const generated = await onGenerate({
+        edi_type: selected.trim(),
+        ...(isManifestTxt ? { company_codes: companyCodes } : {}),
+      });
       onChanged?.();
       const submissionId = pickEdiSubmissionId(generated);
       // Primary demo path: MANIFEST_CSDP → stream official .txt immediately.
@@ -148,7 +190,11 @@ export function GenerateEdiPanel({
               <select
                 className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
                 value={selected}
-                onChange={(e) => setEdiType(e.target.value)}
+                onChange={(e) => {
+                  setEdiType(e.target.value);
+                  setError(null);
+                  setMsg(null);
+                }}
               >
                 {types.map((t: JobEdiTypeOption) => (
                   <option key={t.code} value={t.code}>
@@ -158,11 +204,77 @@ export function GenerateEdiPanel({
               </select>
             )}
           </label>
+
+          {isManifestTxt ? (
+            <div className="space-y-2 rounded-md bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2.5">
+              <p className="text-xs font-medium text-[var(--color-neutral-700)]">
+                Company codes <span className="text-[var(--color-danger-500)]">*</span>
+              </p>
+              <p className="text-[11px] text-[var(--color-neutral-500)]">
+                Required for MANIFEST_CSDP. Each code produces a VOY/BOL block in one TXT file.
+              </p>
+              <div className="flex flex-wrap items-end gap-2">
+                <div className="min-w-[10rem] flex-1">
+                  <Input
+                    label="Add code"
+                    value={codeDraft}
+                    placeholder="e.g. 64085L"
+                    maxLength={40}
+                    onChange={(e) => setCodeDraft(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        addCompanyCode();
+                      }
+                    }}
+                  />
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  leftIcon={<Plus className="h-3.5 w-3.5" />}
+                  onClick={addCompanyCode}
+                >
+                  Add
+                </Button>
+              </div>
+              {companyCodes.length > 0 ? (
+                <ul className="flex flex-wrap gap-1.5 pt-1">
+                  {companyCodes.map((code) => (
+                    <li
+                      key={code}
+                      className="inline-flex items-center gap-1 rounded-full bg-white px-2.5 py-1 text-[12px] font-medium text-[var(--color-neutral-800)] ring-1 ring-[var(--color-neutral-200)]"
+                    >
+                      {code}
+                      <button
+                        type="button"
+                        className="rounded-full p-0.5 text-[var(--color-neutral-400)] hover:bg-[var(--color-neutral-100)] hover:text-[var(--color-neutral-700)]"
+                        aria-label={`Remove ${code}`}
+                        onClick={() => removeCompanyCode(code)}
+                      >
+                        <X className="h-3 w-3" />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="text-[12px] text-[var(--color-neutral-500)]">
+                  No company codes added yet.
+                </p>
+              )}
+            </div>
+          ) : null}
+
           <Button
             type="button"
             variant="report"
             leftIcon={<Radio className="h-3.5 w-3.5" />}
-            disabled={generatePending || !selected.trim()}
+            disabled={
+              generatePending ||
+              !selected.trim() ||
+              (isManifestTxt && companyCodes.length === 0)
+            }
             onClick={() => void runGenerate()}
           >
             {generatePending ? 'Generating…' : 'Generate EDI'}
@@ -180,7 +292,7 @@ export function GenerateEdiPanel({
           ) : submissions.length === 0 ? (
             <p className="text-[13px] text-[#64748b]">No EDI submissions yet.</p>
           ) : (
-            <div className="overflow-x-auto rounded-sm border border-[var(--fresa-border,#C9D3DF)]">
+            <div className="overflow-x-auto rounded-sm">
               <table className="w-full min-w-[480px] text-left text-[13px]">
                 <thead>
                   <tr>

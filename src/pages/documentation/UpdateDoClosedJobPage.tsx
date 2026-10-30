@@ -26,7 +26,7 @@ export default function UpdateDoClosedJobPage() {
       <PageBackLink to="/documentation" label="Back to Documentation" />
       <div className="rounded-md border border-gray-200 bg-white">
         <div className="border-b border-gray-200 px-5 py-3">
-          <h2 className="text-[17px] font-medium text-gray-800">Update DO — Closed Job</h2>
+          <h2 className="text-[17px] font-medium text-gray-800">Update DO Closed Job</h2>
         </div>
         <div className="flex flex-wrap gap-2 border-b border-gray-200 px-5 py-4">
           <Input placeholder="DO number" value={doNumber} onChange={(e) => setDoNumber(e.target.value)} />

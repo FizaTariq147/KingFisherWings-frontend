@@ -79,7 +79,7 @@ function CargoDocuments({ jobId, cargoId }: { jobId: string; cargoId: string }) 
               if (file) void upload(file);
             }}
           />
-          <span className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-2 py-1 text-[11px] font-medium text-[var(--fresa-header-text,#0A2942)] hover:bg-white/80">
+          <span className="rounded-sm bg-white px-2 py-1 text-[11px] font-medium text-[var(--fresa-header-text,#0A2942)] hover:bg-white/80">
             {uploading ? 'Uploading…' : 'Upload document'}
           </span>
         </label>

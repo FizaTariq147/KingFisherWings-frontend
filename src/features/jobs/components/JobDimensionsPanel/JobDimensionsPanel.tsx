@@ -97,7 +97,7 @@ export function JobDimensionsPanel({
       {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
 
-      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+      <section className="space-y-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
           Header
         </p>
@@ -127,7 +127,7 @@ export function JobDimensionsPanel({
         </Button>
       </section>
 
-      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+      <section className="space-y-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
           Lines
         </p>
@@ -263,7 +263,7 @@ export function JobDimensionsPanel({
         </div>
       </section>
 
-      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+      <section className="space-y-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
           Upload / export
         </p>

@@ -17,7 +17,7 @@ export const V = {
   timezoneForCountry: (country: string) =>
     `Timezone must be one of the zones for ${country}`,
   url: 'Enter a valid URL',
-  uuid: 'Must be a valid UUID',
+  uuid: 'Select a valid option from the list',
   countryCode: 'Use a 2-letter ISO 3166-1 alpha-2 country code (e.g. AE)',
   currencyCode: 'Use a 3-letter ISO 4217 currency code (e.g. AED)',
   dialCode: 'Use dial code with leading + (e.g. +971)',
@@ -35,7 +35,7 @@ export const V = {
   hsDutyRate: 'Duty rate must be between 0 and 100',
   dgClass: 'Enter a valid DG class (1–9, optional subclass e.g. 3 or 2.1)',
   hsProhibitedRestricted:
-    'Cannot mark both Prohibited and Restricted — banned items use Prohibited; permit-controlled items use Restricted',
+    'Cannot mark both Prohibited and Restricted banned items use Prohibited; permit-controlled items use Restricted',
   unNumber: 'UN number must be 4 digits (optional UN prefix)',
   hexColor: 'Must be a hex color (e.g. #0A66C2)',
   whitespace: 'Cannot be only spaces',
@@ -50,19 +50,19 @@ export const V = {
   departmentNameLetters:
     'Department name must include at least two letters',
   departmentNameJunk:
-    'Department name looks invalid — avoid codes, symbols-only, or repeated characters',
+    'Department name looks invalid avoid codes, symbols-only, or repeated characters',
   designationName:
     'Enter a valid and logical designation name (e.g. Operations Manager, Sales Executive)',
   designationNameLetters:
     'Designation name must include at least two letters',
   designationNameJunk:
-    'Designation name looks invalid — avoid codes, symbols-only, or repeated characters',
+    'Designation name looks invalid avoid codes, symbols-only, or repeated characters',
   branchName:
     'Enter a valid and logical branch name (e.g. Dubai Head Office, Airport Branch)',
   branchNameLetters:
     'Branch name must include at least two letters',
   branchNameJunk:
-    'Branch name looks invalid — avoid codes, symbols-only, or repeated characters',
+    'Branch name looks invalid avoid codes, symbols-only, or repeated characters',
   minLength: (n: number) => `Must be at least ${n} characters`,
   maxLength: (n: number) => `Must be at most ${n} characters`,
   minValue: (n: number) => `Must be at least ${n}`,

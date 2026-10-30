@@ -120,6 +120,25 @@ export function useInvalidateShipments() {
   };
 }
 
+/** PATCH /shipments/:id/detail/show_all */
+export function usePatchShipmentShowAll(id: string) {
+  const invalidate = useInvalidateShipments();
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: import('@/features/jobs/types/job.types').PatchShowAllDto) =>
+      shipmentService.patchShowAll(id, dto),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({
+        queryKey: [...shipmentKeys.detail(id), 'show-all'],
+      });
+      void queryClient.invalidateQueries({
+        queryKey: shipmentKeys.detailTab(id, 'show_all'),
+      });
+    },
+  });
+}
+
 export function useCreateShipment() {
   const invalidate = useInvalidateShipments();
   return useMutation({
@@ -315,12 +334,13 @@ export function useShipmentEdiSubmissions(id: string, enabled = true) {
   });
 }
 
-/** POST /shipments/:id/edi/generate { edi_type } */
+/** POST /shipments/:id/edi/generate { edi_type, company_codes? } */
 export function useGenerateShipmentEdi(id: string) {
   const invalidate = useInvalidateShipments();
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (dto: { edi_type: string }) => shipmentService.generateEdi(id, dto),
+    mutationFn: (dto: import('../types/shipment.types').GenerateShipmentEdiDto) =>
+      shipmentService.generateEdi(id, dto),
     onSuccess: () => {
       invalidate(id);
       void queryClient.invalidateQueries({ queryKey: shipmentKeys.ediSubmissions(id) });

@@ -23,6 +23,12 @@ function appendFormFields(form: FormData, fields?: UploadSectionAttachmentFields
   if (typeof fields.visible_to_vendor === 'boolean') {
     form.append('visible_to_vendor', String(fields.visible_to_vendor));
   }
+  if (typeof fields.downloadable_by_customer === 'boolean') {
+    form.append('downloadable_by_customer', String(fields.downloadable_by_customer));
+  }
+  if (typeof fields.downloadable_by_vendor === 'boolean') {
+    form.append('downloadable_by_vendor', String(fields.downloadable_by_vendor));
+  }
 }
 
 function filenameFromDisposition(header: unknown, fallback: string): string {

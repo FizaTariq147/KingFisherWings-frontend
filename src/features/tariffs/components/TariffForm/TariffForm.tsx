@@ -39,7 +39,7 @@ const selectClass =
 const labelClass = 'text-xs font-medium text-[var(--color-neutral-500)]';
 
 const PANEL =
-  'rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6 space-y-4';
+  'rounded-xl bg-white p-5 sm:p-6 space-y-4';
 
 interface TariffFormProps {
   mode: 'create' | 'edit';

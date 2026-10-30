@@ -59,14 +59,14 @@ export default function EnquiryListPage() {
               }
             />
           </FilterField>
-          <FilterField label="Customer ID">
+          <FilterField label="Customer">
             <TextInput
               value={draft.customer_id ?? ''}
               onChange={(e) => setDraft((prev) => ({ ...prev, customer_id: e.target.value || undefined }))}
               placeholder="Search by name…"
             />
           </FilterField>
-          <FilterField label="Voyage ID">
+          <FilterField label="Voyage">
             <TextInput
               value={draft.voyage_id ?? ''}
               onChange={(e) => setDraft((prev) => ({ ...prev, voyage_id: e.target.value || undefined }))}

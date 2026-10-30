@@ -43,6 +43,10 @@ export const PORTAL_SHIPMENTS_API = {
     `/portal/shipments/${encodeURIComponent(id)}/acknowledgement`,
   acknowledgementSignature: (id: string) =>
     `/portal/shipments/${encodeURIComponent(id)}/acknowledgement/signature`,
+  acknowledgementAttachments: (id: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/acknowledgement/attachments`,
+  acknowledgementAttachmentDownload: (id: string, attachmentId: string) =>
+    `/portal/shipments/${encodeURIComponent(id)}/acknowledgement/attachments/${encodeURIComponent(attachmentId)}/download`,
 } as const;
 
 export const PORTAL_JOB_STATUSES = [

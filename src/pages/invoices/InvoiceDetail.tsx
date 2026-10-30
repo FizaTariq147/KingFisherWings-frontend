@@ -86,10 +86,10 @@ const mockInvoice: Invoice = {
 };
 
 const mockLineItems: InvoiceLineItem[] = [
-  { id: '1', description: 'Air Freight Charges — DXB to LHR (520 KG @ AED 12.50)', quantity: 520,  unit: 'KG',  unitPrice: 12.50, taxPct: 5, amount: 6500  },
-  { id: '2', description: 'Fuel Surcharge (YQ) — 520 KG @ AED 3.20',               quantity: 520,  unit: 'KG',  unitPrice: 3.20,  taxPct: 5, amount: 1664  },
-  { id: '3', description: 'Security Surcharge — 12 PCS @ AED 25.00',               quantity: 12,   unit: 'PCS', unitPrice: 25.00, taxPct: 5, amount: 300   },
-  { id: '4', description: 'Airport Handling Fee — DXB',                             quantity: 480,  unit: 'KG',  unitPrice: 1.80,  taxPct: 5, amount: 864   },
+  { id: '1', description: 'Air Freight Charges DXB to LHR (520 KG @ AED 12.50)', quantity: 520,  unit: 'KG',  unitPrice: 12.50, taxPct: 5, amount: 6500  },
+  { id: '2', description: 'Fuel Surcharge (YQ) 520 KG @ AED 3.20',               quantity: 520,  unit: 'KG',  unitPrice: 3.20,  taxPct: 5, amount: 1664  },
+  { id: '3', description: 'Security Surcharge 12 PCS @ AED 25.00',               quantity: 12,   unit: 'PCS', unitPrice: 25.00, taxPct: 5, amount: 300   },
+  { id: '4', description: 'Airport Handling Fee DXB',                             quantity: 480,  unit: 'KG',  unitPrice: 1.80,  taxPct: 5, amount: 864   },
   { id: '5', description: 'Documentation & HAWB Issuance Fee',                      quantity: 1,    unit: 'BL',  unitPrice: 250,   taxPct: 5, amount: 250   },
   { id: '6', description: 'Export Customs Clearance',                               quantity: 1,    unit: 'SHP', unitPrice: 450,   taxPct: 0, amount: 450   },
 ];

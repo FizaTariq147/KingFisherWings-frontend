@@ -131,6 +131,22 @@ export function useJobShowAll(id: string, siblingTabKeys: string[], enabled = tr
   });
 }
 
+/** PATCH /jobs/:id/detail/show_all */
+export function usePatchJobShowAll(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: import('../types/job.types').PatchShowAllDto) =>
+      jobService.patchShowAll(id, dto),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: jobKeys.detail(id) });
+      void queryClient.invalidateQueries({
+        queryKey: [...jobKeys.detail(id), 'show-all'],
+      });
+      void queryClient.invalidateQueries({ queryKey: jobKeys.detailTab(id, 'show_all') });
+    },
+  });
+}
+
 /** GET /jobs/:id/organizations */
 export function useJobOrganizations(id: string, enabled = true) {
   const accessToken = useAuthStore((s) => s.accessToken);

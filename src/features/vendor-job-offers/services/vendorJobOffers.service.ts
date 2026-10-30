@@ -407,7 +407,12 @@ export const vendorPortalJobsService = {
    * GET /vendor/jobs/:id/documents — only visible_to_vendor or self-uploaded (BE filter).
    */
   async listJobDocuments(jobId: string): Promise<
-    Array<{ id: string; fileName?: string; documentType?: string }>
+    Array<{
+      id: string;
+      fileName?: string;
+      documentType?: string;
+      canDownload?: boolean;
+    }>
   > {
     try {
       const res = await vendorApiClient.get(VENDOR_JOB_OFFERS_API.jobDocuments(jobId));
@@ -425,13 +430,30 @@ export const vendorPortalJobsService = {
           const r = row as Record<string, unknown>;
           const id = String(r.id ?? r.document_id ?? '').trim();
           if (!id) return null;
+          const canDownload =
+            r.downloadable_by_vendor === false ||
+            r.downloadableByVendor === false ||
+            r.can_download === false ||
+            r.canDownload === false
+              ? false
+              : true;
           return {
             id,
             fileName: String(r.file_name ?? r.fileName ?? r.name ?? '').trim() || undefined,
             documentType: String(r.document_type ?? r.documentType ?? '').trim() || undefined,
+            canDownload,
           };
         })
-        .filter((x): x is { id: string; fileName?: string; documentType?: string } => Boolean(x));
+        .filter(
+          (
+            x,
+          ): x is {
+            id: string;
+            fileName?: string;
+            documentType?: string;
+            canDownload?: boolean;
+          } => Boolean(x),
+        );
     } catch (err) {
       if (isNotFound(err)) return [];
       throw err;

@@ -798,6 +798,14 @@ export function normalizeJob(raw: unknown): Job | null {
       undefined,
     etd: schedule.etd,
     eta: schedule.eta,
+    hold_reason:
+      pickString(r, 'hold_reason', 'holdReason', 'stop_reason', 'stopReason') || undefined,
+    held_at: pickString(r, 'held_at', 'heldAt', 'stopped_at', 'stoppedAt') || undefined,
+    expected_release_at:
+      pickString(r, 'expected_release_at', 'expectedReleaseAt', 'expected_release_date') ||
+      undefined,
+    resume_reason: pickString(r, 'resume_reason', 'resumeReason') || undefined,
+    resumed_at: pickString(r, 'resumed_at', 'resumedAt') || undefined,
     created_at: pickString(r, 'created_at', 'createdAt') || undefined,
     updated_at: pickString(r, 'updated_at', 'updatedAt') || undefined,
     air_details: air

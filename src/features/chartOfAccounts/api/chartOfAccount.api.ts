@@ -8,4 +8,6 @@ export const CHART_OF_ACCOUNT_API = {
   seedDefaults: '/gl/accounts/seed-defaults',
   byId: (id: string) => `/gl/accounts/${id}`,
   ledger: (id: string) => `/gl/accounts/${id}/ledger`,
+  /** POST /gl/accounts/:id/opening-balance */
+  openingBalance: (id: string) => `/gl/accounts/${id}/opening-balance`,
 } as const;

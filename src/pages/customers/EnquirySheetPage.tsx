@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
+import { useMemo, useRef, useState, type ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Wand2, Search, ChevronDown, Maximize2 } from 'lucide-react';
@@ -80,7 +80,7 @@ export default function EnquirySheetPage() {
   const tableRef = useRef<HTMLDivElement>(null);
   const [summaryView, setSummaryView] = useState<'sales' | 'department' | null>(null);
   const [rows, setRows] = useState('10');
-  const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
+  const [datePreset, setDatePreset] = useState<DateRangePreset>('custom');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [branch, setBranch] = useState('All');
@@ -108,10 +108,6 @@ export default function EnquirySheetPage() {
       setToDate(range.to_date);
     }
   };
-
-  useEffect(() => {
-    applyPreset('this_month');
-  }, []);
 
   const query = useCustomerEnquiries(activeFilters, submitted);
   const filters = useCustomerFilterSelectOptions();

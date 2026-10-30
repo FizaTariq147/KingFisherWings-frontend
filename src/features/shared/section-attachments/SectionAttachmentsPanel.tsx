@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { Download, Paperclip, Upload } from 'lucide-react';
+import { Eye, Paperclip, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { getServerErrorMessage } from '@/lib/validation/mapApiErrors';
 import {
@@ -37,6 +37,8 @@ export function SectionAttachmentsPanel({
   const mutations = useSectionAttachmentMutations(entity, entityId, section);
   const [visibleToCustomer, setVisibleToCustomer] = useState(true);
   const [visibleToVendor, setVisibleToVendor] = useState(false);
+  const [downloadableByCustomer, setDownloadableByCustomer] = useState(true);
+  const [downloadableByVendor, setDownloadableByVendor] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
@@ -57,6 +59,8 @@ export function SectionAttachmentsPanel({
           ...(recordId?.trim() ? { record_id: recordId.trim() } : {}),
           visible_to_customer: visibleToCustomer,
           visible_to_vendor: visibleToVendor,
+          downloadable_by_customer: visibleToCustomer ? downloadableByCustomer : false,
+          downloadable_by_vendor: visibleToVendor ? downloadableByVendor : false,
         },
       });
       setMsg(`Uploaded “${file.name}”. Appears on Documents when saved.`);
@@ -95,56 +99,78 @@ export function SectionAttachmentsPanel({
         <p className="text-[12px] text-[var(--color-neutral-400)]">No files yet.</p>
       ) : (
         <ul className="mb-2 space-y-1.5">
-          {items.map((row) => (
-            <li
-              key={row.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-2 py-1.5 text-[12px]"
-            >
-              <div className="min-w-0">
-                <p className="truncate font-medium text-[#0f172a]">
-                  {row.file_name || row.id.slice(0, 8)}
-                </p>
-                <p className="text-[10px] text-[var(--color-neutral-500)]">
-                  {[
-                    row.visible_to_customer ? 'Customer' : null,
-                    row.visible_to_vendor ? 'Vendor' : null,
-                    row.mime_type,
-                  ]
-                    .filter(Boolean)
-                    .join(' · ') || 'Staff only'}
-                </p>
-              </div>
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                leftIcon={<Download className="h-3.5 w-3.5" />}
-                disabled={busy}
-                onClick={() => {
-                  setError(null);
-                  void mutations.openOrDownload
-                    .mutateAsync({
-                      documentId: row.id,
-                      fileName: row.file_name,
-                    })
-                    .catch((err) => setError(getServerErrorMessage(err)));
-                }}
+          {items.map((row) => {
+            const customerBits = [
+              row.visible_to_customer ? 'Customer view' : null,
+              row.visible_to_customer && row.downloadable_by_customer !== false
+                ? 'download'
+                : row.visible_to_customer
+                  ? 'view only'
+                  : null,
+            ].filter(Boolean);
+            const vendorBits = [
+              row.visible_to_vendor ? 'Vendor view' : null,
+              row.visible_to_vendor && row.downloadable_by_vendor
+                ? 'download'
+                : row.visible_to_vendor
+                  ? 'view only'
+                  : null,
+            ].filter(Boolean);
+            return (
+              <li
+                key={row.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-sm bg-white px-2 py-1.5 text-[12px]"
               >
-                Open
-              </Button>
-            </li>
-          ))}
+                <div className="min-w-0">
+                  <p className="truncate font-medium text-[#0f172a]">
+                    {row.file_name || row.id.slice(0, 8)}
+                  </p>
+                  <p className="text-[10px] text-[var(--color-neutral-500)]">
+                    {[
+                      customerBits.length ? customerBits.join(' · ') : null,
+                      vendorBits.length ? vendorBits.join(' · ') : null,
+                      row.mime_type,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ') || 'Staff only'}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  leftIcon={<Eye className="h-3.5 w-3.5" />}
+                  disabled={busy}
+                  onClick={() => {
+                    setError(null);
+                    void mutations.openOrDownload
+                      .mutateAsync({
+                        documentId: row.id,
+                        fileName: row.file_name,
+                      })
+                      .catch((err) => setError(getServerErrorMessage(err)));
+                  }}
+                >
+                  Open
+                </Button>
+              </li>
+            );
+          })}
         </ul>
       )}
 
       {canUpload ? (
         <div className="space-y-2 border-t border-[var(--fresa-border,#C9D3DF)] pt-2">
-          <div className="flex flex-wrap gap-3 text-[11px] text-[var(--color-neutral-600)]">
+          <div className="flex flex-wrap gap-x-4 gap-y-2 text-[11px] text-[var(--color-neutral-600)]">
             <label className="inline-flex items-center gap-1.5">
               <input
                 type="checkbox"
                 checked={visibleToCustomer}
-                onChange={(e) => setVisibleToCustomer(e.target.checked)}
+                onChange={(e) => {
+                  const on = e.target.checked;
+                  setVisibleToCustomer(on);
+                  if (!on) setDownloadableByCustomer(false);
+                }}
                 disabled={busy}
               />
               Visible to customer
@@ -152,13 +178,38 @@ export function SectionAttachmentsPanel({
             <label className="inline-flex items-center gap-1.5">
               <input
                 type="checkbox"
+                checked={downloadableByCustomer}
+                onChange={(e) => setDownloadableByCustomer(e.target.checked)}
+                disabled={busy || !visibleToCustomer}
+              />
+              Downloadable by customer
+            </label>
+            <label className="inline-flex items-center gap-1.5">
+              <input
+                type="checkbox"
                 checked={visibleToVendor}
-                onChange={(e) => setVisibleToVendor(e.target.checked)}
+                onChange={(e) => {
+                  const on = e.target.checked;
+                  setVisibleToVendor(on);
+                  if (!on) setDownloadableByVendor(false);
+                }}
                 disabled={busy}
               />
               Visible to vendor
             </label>
+            <label className="inline-flex items-center gap-1.5">
+              <input
+                type="checkbox"
+                checked={downloadableByVendor}
+                onChange={(e) => setDownloadableByVendor(e.target.checked)}
+                disabled={busy || !visibleToVendor}
+              />
+              Downloadable by vendor
+            </label>
           </div>
+          <p className="text-[10px] text-[var(--color-neutral-500)]">
+            Visible without download = view only. Backend enforces download restrictions.
+          </p>
           <input
             ref={fileRef}
             type="file"

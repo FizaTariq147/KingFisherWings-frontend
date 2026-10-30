@@ -120,9 +120,10 @@ export default function PortalHomePage() {
     dashboard.data?.shipmentsActive,
     listActiveShipments,
   );
+  // Pending quotation card — DRAFT only (summary.open is draft-normalized; list is client-filtered).
   const quoteOpen = coalesceCount(
+    quoteSummary.data?.byStatus?.DRAFT ?? quoteSummary.data?.byStatus?.draft,
     quoteSummary.data?.open,
-    dashboard.data?.quotationsOpen,
     listOpenQuotes,
   );
   const outstanding = coalesceCount(
@@ -154,12 +155,11 @@ export default function PortalHomePage() {
     invoiceSummary.data == null &&
     dashboard.data == null;
 
-  const onTimePct = useMemo(() => {
-    const pct = dashboard.data?.onTime?.pct;
-    if (pct == null || !Number.isFinite(pct)) return null;
-    return pct <= 1 && pct >= 0 ? Math.round(pct * 100) : Math.round(pct);
-  }, [dashboard.data?.onTime?.pct]);
-
+  const deliveredJobs = coalesceCount(
+    shipmentSummary.data?.delivered,
+    shipmentSummary.data?.byStatus?.DELIVERED ??
+      shipmentSummary.data?.byStatus?.delivered,
+  );
   const shipmentBars = useMemo(
     () => dashboardBarsFromStatusMap(shipmentSummary.data?.byStatus),
     [shipmentSummary.data?.byStatus],
@@ -172,22 +172,14 @@ export default function PortalHomePage() {
     () => dashboardBarsFromStatusMap(invoiceSummary.data?.byStatus),
     [invoiceSummary.data?.byStatus],
   );
-  const onTimeBars = useMemo(() => {
-    const ot = dashboard.data?.onTime;
-    if (ot?.delivered != null || ot?.total != null) {
-      const delivered = ot.delivered ?? 0;
-      const late = Math.max(0, (ot.total ?? delivered) - delivered);
-      return [delivered, late].filter((v) => v > 0);
-    }
+  const deliveredBars = useMemo(() => {
     const byStatus = shipmentSummary.data?.byStatus;
-    const statusBars = dashboardBarsFromStatusMap(byStatus);
-    if (statusBars.length >= 2) return statusBars;
-    return [
-      shipmentSummary.data?.delivered ?? 0,
-      shipmentSummary.data?.active ?? 0,
-      shipmentSummary.data?.onHold ?? 0,
-    ].filter((value) => value > 0);
-  }, [dashboard.data?.onTime, shipmentSummary.data]);
+    const delivered =
+      byStatus?.DELIVERED ?? byStatus?.delivered ?? shipmentSummary.data?.delivered ?? 0;
+    const completed = byStatus?.COMPLETED ?? byStatus?.completed ?? 0;
+    const active = shipmentSummary.data?.active ?? 0;
+    return [delivered, completed, active].filter((value) => value > 0);
+  }, [shipmentSummary.data]);
 
   const recentActive = useMemo(
     () =>
@@ -216,8 +208,11 @@ export default function PortalHomePage() {
     [shipmentItems],
   );
 
-  const customsHolds =
-    alertCountFromDashboard(dashboard.data?.alerts, ['customs', 'hold']) ?? listCustomsHolds;
+  const customsHolds = coalesceCount(
+    shipmentSummary.data?.onHold,
+    alertCountFromDashboard(dashboard.data?.alerts, ['customs', 'hold']),
+    listCustomsHolds,
+  );
   const docsPending =
     alertCountFromDashboard(dashboard.data?.alerts, ['doc', 'document']) ?? listDocsPending;
 
@@ -309,9 +304,9 @@ export default function PortalHomePage() {
         overdue={overdue}
         invoiceCount={invoiceCount}
         invoiceBars={invoiceBars}
-        onTimePct={onTimePct}
-        onTimeBars={onTimeBars}
-        onTimeCaption={PERIOD_CAPTION[period]}
+        deliveredJobs={deliveredJobs}
+        deliveredBars={deliveredBars}
+        deliveredCaption={PERIOD_CAPTION[period]}
         loadingShipments={shipmentsKpiLoading}
         loadingQuotes={quotesKpiLoading}
         loadingInvoices={invoicesKpiLoading}

@@ -12,6 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
   useBalanceSheetReport,
   useCashFlowReport,
@@ -29,6 +30,7 @@ export default function FinancialReportsPage() {
   const [asOf, setAsOf] = useState('');
   const [companyId, setCompanyId] = useState('');
   const [hideZero, setHideZero] = useState(true);
+  const { data: companies = [] } = useTenantCompanies(true);
 
   const common = useMemo(
     () => ({
@@ -91,7 +93,21 @@ export default function FinancialReportsPage() {
           <Input label="From date" type="date" value={fromDate} onChange={(e) => setFromDate(e.target.value)} />
           <Input label="To date" type="date" value={toDate} onChange={(e) => setToDate(e.target.value)} />
           <Input label="As-of date" type="date" value={asOf} onChange={(e) => setAsOf(e.target.value)} />
-          <Input label="Company ID" value={companyId} onChange={(e) => setCompanyId(e.target.value)} />
+          <label className="space-y-1 text-sm">
+            <span className="font-medium text-[var(--color-neutral-700)]">Company</span>
+            <select
+              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+              value={companyId}
+              onChange={(e) => setCompanyId(e.target.value)}
+            >
+              <option value="">All companies</option>
+              {companies.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.code ? `${c.name} (${c.code})` : c.name}
+                </option>
+              ))}
+            </select>
+          </label>
           <label className="text-sm flex items-center gap-2 h-9 mt-6">
             <input type="checkbox" checked={hideZero} onChange={(e) => setHideZero(e.target.checked)} />
             Hide zero

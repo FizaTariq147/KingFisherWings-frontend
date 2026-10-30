@@ -163,4 +163,60 @@ export const arApAgingService = {
     assertPartyId(partyId);
     return postShareEmail(axiosInstance, AR_AP_AGING_API.apStatementSendEmail(partyId), dto);
   },
+
+  /** POST /gl/ar/opening-balance */
+  async postArOpeningBalance(
+    dto: import('../types/openingBalance.types').PostArApOpeningBalanceDto,
+  ): Promise<import('../types/openingBalance.types').OpeningBalanceResult> {
+    try {
+      const { data } = await withGatewayRetry(() =>
+        axiosInstance.post(AR_AP_AGING_API.arOpeningBalance, {
+          ...dto,
+          create_manual_invoice: dto.create_manual_invoice !== false,
+        }),
+      );
+      return normalizeOpeningBalanceResult(data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /gl/ap/opening-balance */
+  async postApOpeningBalance(
+    dto: import('../types/openingBalance.types').PostArApOpeningBalanceDto,
+  ): Promise<import('../types/openingBalance.types').OpeningBalanceResult> {
+    try {
+      const { data } = await withGatewayRetry(() =>
+        axiosInstance.post(AR_AP_AGING_API.apOpeningBalance, {
+          ...dto,
+          create_manual_invoice: dto.create_manual_invoice !== false,
+        }),
+      );
+      return normalizeOpeningBalanceResult(data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
 };
+
+function normalizeOpeningBalanceResult(
+  raw: unknown,
+): import('../types/openingBalance.types').OpeningBalanceResult {
+  const rec =
+    raw && typeof raw === 'object' && !Array.isArray(raw)
+      ? ((raw as { data?: unknown }).data &&
+        typeof (raw as { data?: unknown }).data === 'object'
+          ? ((raw as { data: Record<string, unknown> }).data)
+          : (raw as Record<string, unknown>))
+      : {};
+  return {
+    invoice_id: String(rec.invoice_id ?? rec.invoiceId ?? '').trim() || undefined,
+    invoice_number:
+      String(rec.invoice_number ?? rec.invoiceNumber ?? '').trim() || undefined,
+    voucher_id: String(rec.voucher_id ?? rec.voucherId ?? '').trim() || undefined,
+    voucher_number:
+      String(rec.voucher_number ?? rec.voucherNumber ?? '').trim() || undefined,
+    message: String(rec.message ?? '').trim() || undefined,
+    raw: rec,
+  };
+}

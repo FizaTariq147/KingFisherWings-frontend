@@ -37,8 +37,8 @@ const createDisputeSchema = z.object({
   invoice_id: z
     .string()
     .trim()
-    .min(1, 'Invoice ID is required')
-    .refine((v) => isUuid(v), 'Invoice ID must be a valid UUID'),
+    .min(1, 'Invoice is required')
+    .refine((v) => isUuid(v), 'Select a valid invoice'),
   reason: z
     .string()
     .trim()
@@ -182,10 +182,10 @@ export default function VendorDisputesPage() {
           })}
         >
           <Input
-            label="Invoice"
+            label="Invoice number"
             required
-            hint="UUID of the invoice"
-            placeholder="e.g. afece50f-dba6-4bb1-a05a-031b268d3a46"
+            hint="Enter the invoice number from your statement"
+            placeholder="e.g. INV-2026-001"
             error={form.formState.errors.invoice_id?.message}
             {...form.register('invoice_id')}
           />

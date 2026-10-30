@@ -68,7 +68,7 @@ export function PendingQuotationsPanel({
           <span className="text-sm font-semibold text-white">{formatMoney(pipelineValue)}</span>
         </div>
         <Link
-          to="/quotations/all"
+          to="/quotations/all?status=DRAFT"
           className="flex h-10 items-center justify-center gap-2 rounded-full bg-[var(--color-secondary)] text-sm font-semibold text-white hover:bg-[var(--color-secondary-600)]"
         >
           Review queue
@@ -93,7 +93,7 @@ export function TodaysTasksPanel({
   pendingToggleId?: string;
 }) {
   return (
-    <section className="rounded-2xl border border-[var(--color-neutral-200)] bg-white p-5 shadow-[0_10px_30px_rgba(10,41,66,0.05)]">
+    <section className="rounded-2xl bg-white p-5 shadow-[0_10px_30px_rgba(10,41,66,0.05)]">
       <div className="mb-3 flex items-center justify-between">
         <div>
           <h3 className="text-sm font-semibold text-[var(--color-neutral-900)]">Today&apos;s tasks</h3>

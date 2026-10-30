@@ -53,7 +53,7 @@ const ENQUIRY_WIZARD_STEPS = [
 const ENQUIRY_SHEET_LIST = '/customer-service/enquiry-sheet';
 
 const panelClass =
-  'rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6';
+  'rounded-xl bg-white p-5 sm:p-6';
 
 export default function CrmEnquiryCreatePage() {
   const navigate = useNavigate();

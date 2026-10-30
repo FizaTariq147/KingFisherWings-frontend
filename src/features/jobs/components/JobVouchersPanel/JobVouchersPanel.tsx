@@ -110,7 +110,7 @@ export function JobVouchersPanel({ jobId, job }: JobVouchersPanelProps) {
               {vouchers.map((v) => (
                 <li
                   key={v.id}
-                  className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2"
+                  className="rounded-sm bg-white px-3 py-2"
                 >
                   <Link
                     className="font-medium text-[var(--color-primary-700)] hover:underline"
@@ -137,7 +137,7 @@ export function JobVouchersPanel({ jobId, job }: JobVouchersPanelProps) {
           <label className="block text-[12px] font-medium text-[#64748b]">
             Voucher type
             <select
-              className="mt-1 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-2 py-1.5 text-[13px]"
+              className="mt-1 w-full rounded-sm bg-white px-2 py-1.5 text-[13px]"
               value={voucherType}
               onChange={(e) => setVoucherType(e.target.value as VoucherType)}
             >
@@ -151,7 +151,7 @@ export function JobVouchersPanel({ jobId, job }: JobVouchersPanelProps) {
           <label className="block text-[12px] font-medium text-[#64748b]">
             Side
             <select
-              className="mt-1 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-2 py-1.5 text-[13px]"
+              className="mt-1 w-full rounded-sm bg-white px-2 py-1.5 text-[13px]"
               value={side}
               onChange={(e) => setSide(e.target.value as 'SALE' | 'COST')}
             >

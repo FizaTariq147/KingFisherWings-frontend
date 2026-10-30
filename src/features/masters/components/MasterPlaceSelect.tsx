@@ -7,15 +7,25 @@ import {
   usePlaceSearchQuery,
 } from '@/features/masters/hooks/useMasterResource';
 import { masterPlaceLabel } from '@/features/masters/utils/placeLabel';
+import { parsePlaceLabel } from '@/features/shared/routing/routingPlace';
 import { AddPortModal } from './AddPortModal';
 
 export type MasterPlaceKind = 'ports' | 'airports';
+
+export type MasterPlaceSelection = {
+  id: string;
+  label: string;
+  code?: string;
+  name?: string;
+};
 
 interface MasterPlaceSelectProps {
   name: string;
   label: string;
   value: string;
   onChange: (value: string) => void;
+  /** Fired with parsed code/name when a place is chosen or cleared. */
+  onPlaceChange?: (place: MasterPlaceSelection | null) => void;
   /** Defaults to ports (job/quote FKs). Pass airports only when the API field is airport-scoped. */
   kind?: MasterPlaceKind;
   jobType?: string | null;
@@ -47,6 +57,7 @@ export function MasterPlaceSelect({
   label,
   value,
   onChange,
+  onPlaceChange,
   kind,
   jobType,
   error,
@@ -82,6 +93,21 @@ export function MasterPlaceSelect({
     resolved === 'airports' || (resolved === 'ports' && airLabel) ? 'airport' : 'port';
   const defaultMode = airLabel || resolved === 'airports' ? 'AIR' : 'SEA';
 
+  const emitChange = (id: string, labelText?: string) => {
+    onChange(id);
+    if (!onPlaceChange) return;
+    if (!id) {
+      onPlaceChange(null);
+      return;
+    }
+    const optLabel =
+      labelText ??
+      merged.find((o) => o.value === id)?.label ??
+      '';
+    const parsed = parsePlaceLabel(optLabel);
+    onPlaceChange({ id, label: optLabel, ...parsed });
+  };
+
   return (
     <div className="space-y-1">
       <div className="flex items-start gap-2">
@@ -91,7 +117,7 @@ export function MasterPlaceSelect({
             label={label}
             value={value}
             options={merged}
-            onChange={onChange}
+            onChange={(id) => emitChange(id)}
             onQueryChange={setQuery}
             required={required}
             error={error}
@@ -126,8 +152,9 @@ export function MasterPlaceSelect({
           onCreated={(record) => {
             const id = String(record.id ?? '');
             if (!id) return;
-            setExtraOption({ value: id, label: masterPlaceLabel(record) });
-            onChange(id);
+            const createdLabel = masterPlaceLabel(record);
+            setExtraOption({ value: id, label: createdLabel });
+            emitChange(id, createdLabel);
             setQuery('');
           }}
         />

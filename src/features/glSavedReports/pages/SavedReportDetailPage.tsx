@@ -112,7 +112,7 @@ export default function SavedReportDetailPage() {
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <Field label="Report type" value={SAVED_REPORT_TYPE_LABELS[report.report_type]} />
           <Field label="Shared" value={report.is_shared ? 'Yes' : 'No'} />
-          <Field label="Company ID" value={report.company_id} />
+          <Field label="Company" value={report.company_id} />
           <Field label="Created" value={report.created_at} />
           <Field label="Updated" value={report.updated_at} />
           <div className="sm:col-span-2">

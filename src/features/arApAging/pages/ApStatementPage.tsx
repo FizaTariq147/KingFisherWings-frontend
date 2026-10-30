@@ -11,6 +11,7 @@ import {
 } from '@/features/shared/share-email';
 import { AP_AGING_ROUTE } from '../api/arApAging.api';
 import { AgingFilters } from '../components/AgingFilters';
+import { PartyOpeningBalanceModal } from '../components/PartyOpeningBalanceModal';
 import { StatementTable } from '../components/StatementTable';
 import { useApStatement, useSendApStatementEmail } from '../hooks/useArApAging';
 import { downloadGlStatementPdf } from '../utils/downloadGlStatementPdf';
@@ -26,6 +27,7 @@ export default function ApStatementPage() {
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [emailOpen, setEmailOpen] = useState(false);
   const [emailMessage, setEmailMessage] = useState<string | null>(null);
+  const [openingOpen, setOpeningOpen] = useState(false);
   const sendEmail = useSendApStatementEmail(partyId);
 
   const partyValid = isUuid(partyId);
@@ -89,6 +91,14 @@ export default function ApStatementPage() {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            variant="create"
+            onClick={() => setOpeningOpen(true)}
+            disabled={!partyValid}
+          >
+            Opening balance
+          </Button>
           <Button
             type="button"
             variant="secondary"
@@ -222,6 +232,14 @@ export default function ApStatementPage() {
           setEmailOpen(false);
           setEmailMessage(formatShareEmailSuccess(result));
         }}
+      />
+
+      <PartyOpeningBalanceModal
+        open={openingOpen}
+        kind="ap"
+        defaultPartyId={partyId}
+        onClose={() => setOpeningOpen(false)}
+        onSuccess={() => void refetch()}
       />
     </div>
   );

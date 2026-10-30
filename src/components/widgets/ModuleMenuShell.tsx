@@ -156,7 +156,7 @@ export function ModuleMenuShell({
   const renderTileGroup = (groupTiles: MenuTile[]) => {
     if (viewMode === 'list') {
       return (
-        <div className="overflow-hidden rounded-xl border border-gray-200 bg-white divide-y divide-gray-100">
+        <div className="overflow-hidden rounded-xl bg-white divide-y divide-gray-100">
           {groupTiles.map((tile) => (
             <MenuTileListRow key={tile.id} tile={tile} onClick={goTo} compact={compact} />
           ))}

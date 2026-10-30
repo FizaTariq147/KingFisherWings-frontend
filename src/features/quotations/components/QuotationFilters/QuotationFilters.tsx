@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   EnquirySheetDateInput,
   EnquirySheetDatePresetSelect,
@@ -50,11 +50,10 @@ export type QuotationFilterDraft = {
 export function defaultQuotationFilterDraft(
   limit = 20,
 ): QuotationFilterDraft {
-  const range = resolveDateRangePreset('this_month');
   return {
-    datePreset: 'this_month',
-    fromDate: range?.from_date ?? '',
-    toDate: range?.to_date ?? '',
+    datePreset: 'custom',
+    fromDate: '',
+    toDate: '',
     branchId: '',
     customerId: '',
     salespersonId: '',
@@ -355,7 +354,7 @@ export function QuotationFilters({
   );
 }
 
-/** Initialize this-month dates once on mount (enquiry-sheet parity). */
+/** Default: no date range (show all). Presets still fill From/To when chosen. */
 export function useQuotationFilterDraft(initialLimit = 20) {
   const [draft, setDraft] = useState<QuotationFilterDraft>(() =>
     defaultQuotationFilterDraft(initialLimit),
@@ -363,23 +362,6 @@ export function useQuotationFilterDraft(initialLimit = 20) {
   const [applied, setApplied] = useState<QuotationFilterDraft>(() =>
     defaultQuotationFilterDraft(initialLimit),
   );
-
-  useEffect(() => {
-    const range = resolveDateRangePreset('this_month');
-    if (!range) return;
-    setDraft((prev) => ({
-      ...prev,
-      datePreset: 'this_month',
-      fromDate: range.from_date,
-      toDate: range.to_date,
-    }));
-    setApplied((prev) => ({
-      ...prev,
-      datePreset: 'this_month',
-      fromDate: range.from_date,
-      toDate: range.to_date,
-    }));
-  }, []);
 
   const submit = () => {
     let next = draft;

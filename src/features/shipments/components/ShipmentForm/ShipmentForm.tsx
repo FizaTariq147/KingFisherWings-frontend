@@ -10,6 +10,10 @@ import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
+import {
+  EnquirySearchSelect,
+  QuotationSearchSelect,
+} from '@/features/shared/entity-search';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { getErrorMessage } from '@/features/parties/utils/getErrorMessage';
 import { isAirJobType } from '@/features/jobs/constants/job.constants';
@@ -36,7 +40,7 @@ const selectClass =
 const labelClass = 'text-xs font-medium text-[var(--color-neutral-500)]';
 
 const panelClass =
-  'rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6';
+  'rounded-xl bg-white p-5 sm:p-6';
 
 export type ShipmentFormValues = {
   job_type: string;
@@ -589,17 +593,31 @@ export function ShipmentForm({
             </div>
 
             <div className="space-y-4">
-              <Input
-                label="Quotation ID"
-                placeholder="Optional UUID"
-                error={fieldError('quotation_id')}
-                {...register('quotation_id')}
+              <Controller
+                name="quotation_id"
+                control={control}
+                render={({ field }) => (
+                  <QuotationSearchSelect
+                    name="quotation_id"
+                    label="Quotation"
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
+                    error={fieldError('quotation_id')}
+                  />
+                )}
               />
-              <Input
-                label="Enquiry ID"
-                placeholder="Optional UUID"
-                error={fieldError('enquiry_id')}
-                {...register('enquiry_id')}
+              <Controller
+                name="enquiry_id"
+                control={control}
+                render={({ field }) => (
+                  <EnquirySearchSelect
+                    name="enquiry_id"
+                    label="Enquiry"
+                    value={field.value ?? ''}
+                    onChange={field.onChange}
+                    error={fieldError('enquiry_id')}
+                  />
+                )}
               />
               <div className="space-y-1">
                 <label htmlFor="carrier_id" className={labelClass}>

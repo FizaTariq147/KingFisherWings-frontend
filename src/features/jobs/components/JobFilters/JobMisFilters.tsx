@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import {
   EnquirySheetDateInput,
   EnquirySheetDatePresetSelect,
@@ -47,6 +47,7 @@ export type JobMisFilterDraft = {
   jobNo: string;
   createdBy: string;
   status: '' | JobStatus;
+  category: string;
   search: string;
   mastersOnly: boolean;
   rows: number;
@@ -54,12 +55,11 @@ export type JobMisFilterDraft = {
 };
 
 export function defaultJobMisFilterDraft(limit = 20): JobMisFilterDraft {
-  const range = resolveDateRangePreset('this_month');
   return {
-    datePreset: 'this_month',
-    dateField: 'etd',
-    fromDate: range?.from_date ?? '',
-    toDate: range?.to_date ?? '',
+    datePreset: 'custom',
+    dateField: '',
+    fromDate: '',
+    toDate: '',
     branchId: '',
     shipperId: '',
     consigneeId: '',
@@ -71,10 +71,35 @@ export function defaultJobMisFilterDraft(limit = 20): JobMisFilterDraft {
     jobNo: '',
     createdBy: '',
     status: '',
+    category: '',
     search: '',
     mastersOnly: false,
     rows: limit,
     order: 'desc',
+  };
+}
+
+/** Seed MIS filters from dashboard deep-links (`?status=` / `?category=`). */
+export function jobMisDraftFromSearch(
+  search: string,
+  limit = 20,
+): JobMisFilterDraft {
+  const base = defaultJobMisFilterDraft(limit);
+  const params = new URLSearchParams(search.startsWith('?') ? search : `?${search}`);
+  const statusRaw = params.get('status')?.trim().toUpperCase() ?? '';
+  const categoryRaw = params.get('category')?.trim().toLowerCase() ?? '';
+  const category =
+    categoryRaw === 'completed' || categoryRaw === 'closed'
+      ? 'completed,closed'
+      : categoryRaw;
+  const status = (JOB_STATUSES as readonly string[]).includes(statusRaw)
+    ? (statusRaw as JobStatus)
+    : '';
+  if (!status && !category) return base;
+  return {
+    ...base,
+    status,
+    category: status ? '' : category,
   };
 }
 
@@ -90,6 +115,7 @@ export function jobMisFilterDraftToListParams(
     limit: draft.rows,
     search,
     status: draft.status || undefined,
+    category: draft.category.trim() || undefined,
     job_type: draft.jobType || undefined,
     /** When no single job_type chosen, scope to segment types (Air Export, etc.). */
     job_types:
@@ -172,14 +198,20 @@ export function JobMisFilters({
 
   const allOpt = { value: '', label: 'All' };
 
+  const catalogStatuses = statusOptionsQuery.data?.length
+    ? statusOptionsQuery.data.map((s) => ({
+        value: s.value,
+        label: s.label || JOB_STATUS_LABELS[s.value as JobStatus] || s.value,
+      }))
+    : [];
+  const catalogValues = new Set(catalogStatuses.map((s) => s.value));
   const statusOptions = [
     allOpt,
-    ...(statusOptionsQuery.data?.length
-      ? statusOptionsQuery.data.map((s) => ({
-          value: s.value,
-          label: s.label || JOB_STATUS_LABELS[s.value as JobStatus] || s.value,
-        }))
-      : JOB_STATUSES.map((s) => ({ value: s, label: JOB_STATUS_LABELS[s] }))),
+    ...catalogStatuses,
+    ...JOB_STATUSES.filter((s) => !catalogValues.has(s)).map((s) => ({
+      value: s,
+      label: JOB_STATUS_LABELS[s],
+    })),
   ];
 
   const branchOptions = [
@@ -357,7 +389,38 @@ export function JobMisFilters({
           <EnquirySheetSelect
             options={statusOptions}
             value={draft.status}
-            onChange={(e) => patch({ status: e.target.value as '' | JobStatus })}
+            onChange={(e) =>
+              patch({
+                status: e.target.value as '' | JobStatus,
+                category: e.target.value ? '' : draft.category,
+              })
+            }
+          />
+        </EnquirySheetFilterField>
+
+        <EnquirySheetFilterField label="Category">
+          <EnquirySheetSelect
+            options={[
+              { value: '', label: 'All' },
+              { value: 'open', label: 'Open' },
+              { value: 'in_progress', label: 'In progress' },
+              { value: 'delayed', label: 'Delayed' },
+              { value: 'delivered', label: 'Delivered' },
+              { value: 'completed,closed', label: 'Completed / closed' },
+              { value: 'cancelled', label: 'Cancelled' },
+              { value: 'hold', label: 'On hold' },
+            ]}
+            value={
+              draft.category === 'completed' || draft.category === 'closed'
+                ? 'completed,closed'
+                : draft.category
+            }
+            onChange={(e) =>
+              patch({
+                category: e.target.value,
+                status: e.target.value ? '' : draft.status,
+              })
+            }
           />
         </EnquirySheetFilterField>
 
@@ -413,30 +476,18 @@ export function JobMisFilters({
   );
 }
 
-export function useJobMisFilterDraft(initialLimit = 20) {
-  const [draft, setDraft] = useState<JobMisFilterDraft>(() =>
-    defaultJobMisFilterDraft(initialLimit),
-  );
-  const [applied, setApplied] = useState<JobMisFilterDraft>(() =>
-    defaultJobMisFilterDraft(initialLimit),
-  );
-
-  useEffect(() => {
-    const range = resolveDateRangePreset('this_month');
-    if (!range) return;
-    setDraft((prev) => ({
-      ...prev,
-      datePreset: 'this_month',
-      fromDate: range.from_date,
-      toDate: range.to_date,
-    }));
-    setApplied((prev) => ({
-      ...prev,
-      datePreset: 'this_month',
-      fromDate: range.from_date,
-      toDate: range.to_date,
-    }));
-  }, []);
+export function useJobMisFilterDraft(
+  initialLimit = 20,
+  initialDraft?: JobMisFilterDraft | (() => JobMisFilterDraft),
+) {
+  const [draft, setDraft] = useState<JobMisFilterDraft>(() => {
+    if (typeof initialDraft === 'function') return initialDraft();
+    return initialDraft ?? defaultJobMisFilterDraft(initialLimit);
+  });
+  const [applied, setApplied] = useState<JobMisFilterDraft>(() => {
+    if (typeof initialDraft === 'function') return initialDraft();
+    return initialDraft ?? defaultJobMisFilterDraft(initialLimit);
+  });
 
   const submit = () => {
     let next = draft;
@@ -450,5 +501,5 @@ export function useJobMisFilterDraft(initialLimit = 20) {
     setApplied(next);
   };
 
-  return { draft, setDraft, applied, submit };
+  return { draft, setDraft, applied, setApplied, submit };
 }

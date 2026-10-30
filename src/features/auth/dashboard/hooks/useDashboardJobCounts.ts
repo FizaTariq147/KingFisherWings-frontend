@@ -40,6 +40,7 @@ async function legacyJobCounts() {
     (byStatus.CUSTOMS_CLEARANCE ?? 0) +
     (byStatus.DELIVERED ?? 0) +
     (byStatus.ON_HOLD ?? 0);
+  const onHold = byStatus.ON_HOLD ?? 0;
   return {
     byStatus,
     bars: COUNT_STATUSES.map((status) => byStatus[status] ?? 0),
@@ -47,8 +48,15 @@ async function legacyJobCounts() {
     inTransit,
     atOrigin,
     newJobs,
-    customsHold: (byStatus.CUSTOMS_CLEARANCE ?? 0) + (byStatus.ON_HOLD ?? 0),
+    customsHold: (byStatus.CUSTOMS_CLEARANCE ?? 0) + onHold,
     docsPending: byStatus.DOCS_PENDING ?? 0,
+    onHold,
+    delayed: 0,
+    delivered: byStatus.DELIVERED ?? 0,
+    cancelled: 0,
+    completed: 0,
+    inProgress: byStatus.IN_PROGRESS ?? 0,
+    open: active,
   };
 }
 
@@ -104,12 +112,16 @@ export function useDashboardPendingQuoteStats(period: DashboardPeriod = 'month')
           from_date: apiPeriod.from_date,
           to_date: apiPeriod.to_date,
         });
+        // Pending cards are DRAFT-only — never replace with a broader API "open/pending" total.
+        const draftFromApi =
+          stats.byStatus.DRAFT ?? stats.byStatus.Draft ?? stats.byStatus.draft;
         return {
-          totalPending: stats.totalPending || legacy.totalPending,
-          byStatus: Object.keys(stats.byStatus).length ? stats.byStatus : legacy.byStatus,
-          bars: stats.bars.length ? stats.bars : legacy.bars,
+          totalPending:
+            typeof draftFromApi === 'number' ? draftFromApi : legacy.totalPending,
+          byStatus: legacy.byStatus,
+          bars: legacy.bars,
           quotations: legacy.quotations,
-          pipelineValue: stats.pipelineValue || legacy.pipelineValue,
+          pipelineValue: legacy.pipelineValue,
         };
       } catch {
         return legacy;

@@ -10,6 +10,8 @@ import { SelectInput, TextInput, DateInput } from '@/components/widgets/FilterFi
 
 import { useParties } from '@/features/parties/hooks/useParties';
 
+import { PartySearchSelect } from '@/features/shared/entity-search';
+
 import { NvoccFormActions, NvoccFormField } from '@/features/nvocc/components/NvoccFormField';
 
 import { NvoccPermissionNotice } from '@/features/nvocc/components/NvoccPermissionNotice';
@@ -18,7 +20,9 @@ import { NVOCC_CARGO_TYPES } from '@/features/nvocc/constants/nvocc.constants';
 
 import type { NvoccCargoType } from '@/features/nvocc/constants/nvocc.constants';
 
-import { useCreateNvoccEnquiry } from '@/features/nvocc/hooks/useNvocc';
+import { useCreateNvoccEnquiry, useNvoccVoyages } from '@/features/nvocc/hooks/useNvocc';
+
+import { isUuid } from '@/lib/isUuid';
 
 import {
 
@@ -83,6 +87,10 @@ export default function NvoccEnquiryCreatePage() {
   const { data: customersResult } = useParties({ page: 1, limit: 5, party_type: 'CUSTOMER', order: 'asc' });
 
   const firstCustomerId = customersResult?.parties[0]?.id ?? '';
+
+  const { data: voyagesResult } = useNvoccVoyages({});
+
+  const voyageOptions = (voyagesResult?.items ?? []).filter((v) => isUuid(v.id));
 
 
 
@@ -164,13 +172,30 @@ export default function NvoccEnquiryCreatePage() {
 
           <NvoccFormField label="Customer" error={fieldError('customer_id')} hint={firstCustomerId ? 'Optional — pick a customer party' : 'Optional — search customer by name'}>
 
-            <TextInput value={form.customer_id} onChange={(e) => patch({ customer_id: e.target.value })} placeholder="Search by name…" />
+            <PartySearchSelect
+              name="customer_id"
+              label=""
+              value={form.customer_id}
+              onChange={(v) => patch({ customer_id: v })}
+              partyType="CUSTOMER"
+              placeholder="Search customer by name…"
+            />
 
           </NvoccFormField>
 
-          <NvoccFormField label="Voyage ID" error={fieldError('voyage_id')} hint="Link to an open voyage">
+          <NvoccFormField label="Voyage" error={fieldError('voyage_id')} hint="Link to an open voyage">
 
-            <TextInput value={form.voyage_id} onChange={(e) => patch({ voyage_id: e.target.value })} placeholder="Search by name…" />
+            <SelectInput
+              options={[
+                { value: '', label: 'Select voyage…' },
+                ...voyageOptions.map((v) => ({
+                  value: v.id,
+                  label: String(v.voyage_number ?? v.vessel_name ?? 'Voyage'),
+                })),
+              ]}
+              value={form.voyage_id || ''}
+              onChange={(e) => patch({ voyage_id: e.target.value })}
+            />
 
           </NvoccFormField>
 

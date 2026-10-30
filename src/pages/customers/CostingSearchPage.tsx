@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { ChevronDown, Search, Maximize2, RotateCcw } from 'lucide-react';
@@ -24,7 +24,7 @@ export default function CostingSearchPage() {
   const navigate = useNavigate();
   const tableRef = useRef<HTMLDivElement>(null);
   const [collapsed, setCollapsed] = useState(false);
-  const [datePreset, setDatePreset] = useState<DateRangePreset>('this_month');
+  const [datePreset, setDatePreset] = useState<DateRangePreset>('custom');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [branch, setBranch] = useState('All');
@@ -54,10 +54,6 @@ export default function CostingSearchPage() {
       setToDate(range.to_date);
     }
   };
-
-  useEffect(() => {
-    applyPreset('this_month');
-  }, []);
 
   const query = useCustomerCostingShipments(activeFilters, submitted);
   const costingQuery = useCustomerJobCosting(selectedJobId, Boolean(selectedJobId));

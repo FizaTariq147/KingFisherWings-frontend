@@ -14,4 +14,8 @@ export const AR_AP_AGING_API = {
   apStatement: (partyId: string) => `/gl/ap/statement/${partyId}`,
   arStatementSendEmail: (partyId: string) => `/gl/ar/statement/${partyId}/send-email`,
   apStatementSendEmail: (partyId: string) => `/gl/ap/statement/${partyId}/send-email`,
+  /** POST /gl/ar/opening-balance */
+  arOpeningBalance: '/gl/ar/opening-balance',
+  /** POST /gl/ap/opening-balance */
+  apOpeningBalance: '/gl/ap/opening-balance',
 } as const;

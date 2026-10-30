@@ -39,7 +39,7 @@ export default function PublicTrackWidgetPage() {
         </p>
         <div
           id={WIDGET_ROOT_ID}
-          className="mt-8 min-h-[220px] rounded-xl border border-[var(--color-neutral-200)] bg-white p-5"
+          className="mt-8 min-h-[220px] rounded-xl bg-white p-5"
         />
       </div>
     </div>

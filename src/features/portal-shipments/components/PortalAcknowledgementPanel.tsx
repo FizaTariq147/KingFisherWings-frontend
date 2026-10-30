@@ -1,10 +1,13 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { Download, Paperclip, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { PortalPanel } from '@/features/portal-auth/components/portal-ui';
 import {
+  usePortalAcknowledgementAttachmentMutations,
+  usePortalAcknowledgementAttachments,
   usePortalShipmentAcknowledgement,
   useSubmitPortalShipmentAcknowledgement,
   useUploadPortalAcknowledgementSignature,
@@ -24,11 +27,15 @@ export function PortalAcknowledgementPanel({
   const query = usePortalShipmentAcknowledgement(shipmentId);
   const submit = useSubmitPortalShipmentAcknowledgement(shipmentId);
   const uploadSig = useUploadPortalAcknowledgementSignature(shipmentId);
+  const attachmentsQuery = usePortalAcknowledgementAttachments(shipmentId);
+  const attachmentMutations = usePortalAcknowledgementAttachmentMutations(shipmentId);
+  const attachmentInputRef = useRef<HTMLInputElement>(null);
 
   const [receiverName, setReceiverName] = useState('');
   const [receiverTitle, setReceiverTitle] = useState('');
   const [goodsCondition, setGoodsCondition] = useState('GOOD');
   const [remarks, setRemarks] = useState('');
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -156,6 +163,101 @@ export function PortalAcknowledgementPanel({
               />
             </label>
           ) : null}
+          <div className="sm:col-span-2 space-y-2 rounded-sm border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-3">
+            <p className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[var(--color-neutral-800)]">
+              <Paperclip className="h-3.5 w-3.5" aria-hidden />
+              Attachments
+            </p>
+            {attachmentsQuery.isLoading ? (
+              <p className="text-[12px] text-[var(--color-neutral-400)]">Loading files…</p>
+            ) : (attachmentsQuery.data?.length ?? 0) === 0 && pendingFiles.length === 0 ? (
+              <p className="text-[12px] text-[var(--color-neutral-400)]">No attachments yet.</p>
+            ) : (
+              <ul className="space-y-1.5">
+                {(attachmentsQuery.data ?? []).map((row) => (
+                  <li
+                    key={row.id}
+                    className="flex flex-wrap items-center justify-between gap-2 text-[13px]"
+                  >
+                    <span className="truncate">{row.file_name || 'Attachment'}</span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="secondary"
+                      leftIcon={<Download className="h-3.5 w-3.5" />}
+                      disabled={attachmentMutations.download.isPending}
+                      onClick={() =>
+                        void attachmentMutations.download.mutateAsync({
+                          attachmentId: row.id,
+                          fileName: row.file_name,
+                        })
+                      }
+                    >
+                      Download
+                    </Button>
+                  </li>
+                ))}
+                {pendingFiles.map((file, i) => (
+                  <li key={`pending-${file.name}-${i}`} className="text-[13px] text-[var(--color-neutral-600)]">
+                    Selected: {file.name} ({Math.round(file.size / 1024)} KB)
+                  </li>
+                ))}
+              </ul>
+            )}
+            {!readOnly ? (
+              <div className="flex flex-wrap items-center gap-2 pt-1">
+                <input
+                  ref={attachmentInputRef}
+                  type="file"
+                  multiple
+                  className="hidden"
+                  onChange={(e) => {
+                    const files = Array.from(e.target.files ?? []);
+                    if (!files.length) return;
+                    setPendingFiles((prev) => [...prev, ...files]);
+                    if (attachmentInputRef.current) attachmentInputRef.current.value = '';
+                  }}
+                />
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  leftIcon={<Upload className="h-3.5 w-3.5" />}
+                  disabled={attachmentMutations.upload.isPending}
+                  onClick={() => attachmentInputRef.current?.click()}
+                >
+                  Choose files
+                </Button>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="primary"
+                  disabled={
+                    attachmentMutations.upload.isPending || pendingFiles.length === 0
+                  }
+                  onClick={() => {
+                    setError(null);
+                    void (async () => {
+                      try {
+                        for (const file of pendingFiles) {
+                          await attachmentMutations.upload.mutateAsync(file);
+                        }
+                        setPendingFiles([]);
+                        setMsg('Attachments uploaded.');
+                        await attachmentsQuery.refetch();
+                      } catch (err) {
+                        setError(
+                          err instanceof Error ? err.message : 'Attachment upload failed.',
+                        );
+                      }
+                    })();
+                  }}
+                >
+                  {attachmentMutations.upload.isPending ? 'Uploading…' : 'Upload selected'}
+                </Button>
+              </div>
+            ) : null}
+          </div>
         </div>
       )}
       {!readOnly ? (

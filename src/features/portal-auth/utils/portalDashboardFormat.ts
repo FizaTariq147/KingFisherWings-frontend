@@ -3,7 +3,8 @@ import type { PortalQuotationListItem } from '@/features/portal-quotations/types
 export type PortalDashboardPeriod = 'today' | 'week' | 'month';
 
 const TERMINAL_SHIPMENT = new Set(['DELIVERED', 'COMPLETED', 'CANCELLED', 'CANCELED', 'CLOSED']);
-const OPEN_QUOTE = new Set(['DRAFT', 'SUBMITTED', 'APPROVED', 'SENT', 'PENDING', 'OPEN']);
+/** Pending quotation cards — draft status only (dynamic count). */
+const OPEN_QUOTE = new Set(['DRAFT']);
 
 export function greetingForHour(hour: number): string {
   if (hour < 12) return 'Good morning';

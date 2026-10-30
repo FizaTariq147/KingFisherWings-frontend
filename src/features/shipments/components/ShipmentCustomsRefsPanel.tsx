@@ -82,7 +82,7 @@ export function ShipmentCustomsRefsPanel({
       ) : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
 
-      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+      <section className="space-y-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
           Shipping bill / BOE
         </p>
@@ -125,7 +125,7 @@ export function ShipmentCustomsRefsPanel({
         )}
       </section>
 
-      <section className="space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] p-3">
+      <section className="space-y-3">
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
           Add shipping bill / BOE
         </p>

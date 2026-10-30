@@ -102,7 +102,9 @@ import type {
   JobStatusOption,
   PatchJobDimensionsDto,
   PutJobGpumDto,
+  PatchJobHoldDto,
   ReopenJobDto,
+  ResumeJobDto,
   StopJobDto,
   UpsertJobPartyReferenceDto,
   LclCfsStorageCalculationDto,
@@ -219,6 +221,61 @@ function assertId(id: string): void {
   if (!id || !isUuid(id)) throw new Error('Invalid job id.');
 }
 
+/** Dashboard Completed bucket includes Closed-group jobs. */
+function expandJobCategoryKeys(category: string): string[] {
+  const parts = category
+    .split(',')
+    .map((c) => c.trim().toLowerCase())
+    .filter(Boolean);
+  const out = new Set<string>();
+  for (const part of parts.length ? parts : ['on_hold']) {
+    out.add(part);
+    if (part === 'completed' || part === 'closed') {
+      out.add('completed');
+      out.add('closed');
+    }
+  }
+  return [...out];
+}
+
+async function listByCategorySingle(
+  category: string,
+  params: JobListParams = {},
+): Promise<JobListResult> {
+  const cat = category.trim() || 'on_hold';
+  try {
+    const res = await withGatewayRetry(() =>
+      axiosInstance.get(JOB_API.byCategory(cat), {
+        params: buildListQuery({ ...params, category: undefined }),
+      }),
+    );
+    const { items, meta } = unwrapList(res.data);
+    const jobs = await enrichJobsWithDisplayNames(normalizeJobs(items));
+    return {
+      jobs,
+      meta: normalizePaginationMeta(meta, jobs.length, params),
+    };
+  } catch {
+    const statusByCategory: Partial<
+      Record<string, NonNullable<JobListParams['status']>>
+    > = {
+      on_hold: 'ON_HOLD',
+      hold: 'ON_HOLD',
+      in_progress: 'IN_PROGRESS',
+      delivered: 'DELIVERED',
+      completed: 'COMPLETED',
+      closed: 'COMPLETED',
+      cancelled: 'CANCELLED',
+    };
+    const status = statusByCategory[cat];
+    return jobService.list({
+      ...params,
+      category: cat === 'on_hold' || cat === 'hold' ? 'hold' : cat,
+      ...(status ? { status } : {}),
+    });
+  }
+}
+
 function buildListQuery(params: JobListParams): Record<string, string | number | boolean> {
   const query: Record<string, string | number | boolean> = {
     page: params.page ?? 1,
@@ -227,6 +284,7 @@ function buildListQuery(params: JobListParams): Record<string, string | number |
   };
   if (params.search?.trim()) query.search = params.search.trim();
   if (params.status) query.status = params.status;
+  if (params.category?.trim()) query.category = params.category.trim();
   // Never send job_type=ROAD_FREIGHT — backend ACL returns 403 for many roles.
   if (
     params.job_type &&
@@ -1131,6 +1189,17 @@ export const jobService = {
     return { sections, arrays: dedupedArrays };
   },
 
+  /** PATCH /jobs/:id/detail/show_all — partial header fields by name/code. */
+  async patchShowAll(
+    id: string,
+    dto: import('../types/job.types').PatchShowAllDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() =>
+      axiosInstance.patch(JOB_API.detailTab(id, 'show_all'), dto),
+    );
+  },
+
   /** GET /jobs/status-options — optional job_id for context-aware catalog. */
   async getStatusOptions(jobId?: string): Promise<JobStatusOption[]> {
     try {
@@ -1330,6 +1399,65 @@ export const jobService = {
   async stop(id: string, dto: StopJobDto = {}): Promise<Job> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.stop(id), dto), normalizeJob);
+  },
+
+  /** POST /jobs/:id/resume — leave ON_HOLD (default status IN_PROGRESS). */
+  async resume(id: string, dto: ResumeJobDto): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.resume(id), dto), normalizeJob);
+  },
+
+  /** PATCH /jobs/:id/hold — update hold_reason / expected_release_at while held. */
+  async patchHold(id: string, dto: PatchJobHoldDto): Promise<Job> {
+    assertId(id);
+    return request(() => axiosInstance.patch(JOB_API.hold(id), dto), normalizeJob);
+  },
+
+  /** GET /jobs/by-category/:category — e.g. on_hold.
+   * `completed` also includes Closed-group jobs (`closed`). */
+  async listByCategory(
+    category: string,
+    params: JobListParams = {},
+  ): Promise<JobListResult> {
+    const cats = expandJobCategoryKeys(category);
+    if (cats.length > 1) {
+      const page = params.page ?? 1;
+      const limit = clampApiListLimit(params.limit, 20);
+      const order = params.order ?? 'desc';
+      const fetchLimit = clampApiListLimit(Math.max(limit * page, limit), 100);
+      const pages = await Promise.all(
+        cats.map((cat) =>
+          listByCategorySingle(cat, {
+            ...params,
+            page: 1,
+            limit: fetchLimit,
+            order,
+          }),
+        ),
+      );
+      const byId = new Map<string, Job>();
+      for (const result of pages) {
+        for (const job of result.jobs) {
+          if (job.id && !byId.has(job.id)) byId.set(job.id, job);
+        }
+      }
+      const merged = [...byId.values()].sort((a, b) => {
+        const diff = jobSortTime(a) - jobSortTime(b);
+        return order === 'asc' ? diff : -diff;
+      });
+      const start = (page - 1) * limit;
+      const slice = merged.slice(start, start + limit);
+      return {
+        jobs: slice,
+        meta: {
+          page,
+          limit,
+          total: merged.length,
+          totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
+        },
+      };
+    }
+    return listByCategorySingle(cats[0] || 'on_hold', params);
   },
 
   /** PATCH /jobs/:id/organization/client-reference */
@@ -2055,9 +2183,24 @@ export const jobService = {
     if (!String(dto.edi_type ?? '').trim()) {
       throw new Error('EDI type is required.');
     }
+    const ediType = String(dto.edi_type).trim();
+    const companyCodes = Array.isArray(dto.company_codes)
+      ? [
+          ...new Set(
+            dto.company_codes
+              .map((c) => String(c ?? '').trim())
+              .filter((c) => c.length > 0),
+          ),
+        ]
+      : undefined;
+    const isCsdp = /MANIFEST_CSDP|CSDP/i.test(ediType);
+    if (isCsdp && (!companyCodes || companyCodes.length === 0)) {
+      throw new Error('At least one company code is required for MANIFEST_CSDP.');
+    }
     return request(() =>
       axiosInstance.post(JOB_API.ediGenerate(id), {
-        edi_type: String(dto.edi_type).trim(),
+        edi_type: ediType,
+        ...(companyCodes?.length ? { company_codes: companyCodes } : {}),
       }),
     );
   },
@@ -3764,7 +3907,12 @@ export const jobService = {
   async patchDocumentVisibility(
     id: string,
     documentId: string,
-    dto: { visible_to_customer?: boolean; visible_to_vendor?: boolean },
+    dto: {
+      visible_to_customer?: boolean;
+      visible_to_vendor?: boolean;
+      downloadable_by_customer?: boolean;
+      downloadable_by_vendor?: boolean;
+    },
   ): Promise<unknown> {
     assertId(id);
     if (!documentId?.trim()) throw new Error('Document id is required.');

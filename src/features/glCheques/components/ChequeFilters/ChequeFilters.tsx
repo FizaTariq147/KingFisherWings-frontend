@@ -105,7 +105,7 @@ export function ChequeFilters({
       />
       <Input
         label="Party"
-        placeholder="UUID (optional)"
+        placeholder="Optional — search by name…"
         value={partyId}
         onChange={(e) => onPartyIdChange(e.target.value)}
         error={partyError}

@@ -531,6 +531,22 @@ export const shipmentService = {
     return { sections, arrays: dedupedArrays };
   },
 
+  /** PATCH /shipments/:id/detail/show_all — partial header fields by name/code. */
+  async patchShowAll(
+    id: string,
+    dto: import('@/features/jobs/types/job.types').PatchShowAllDto,
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(SHIPMENT_API.detailTab(id, 'show_all'), dto),
+      );
+      return unwrapShipmentPayload(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   /** POST /shipments/:id/routing-legs */
   async createRoutingLeg(
     id: string,
@@ -832,19 +848,34 @@ export const shipmentService = {
     }
   },
 
-  /** POST /shipments/:id/edi/generate { edi_type } */
+  /** POST /shipments/:id/edi/generate { edi_type, company_codes? } */
   async generateEdi(
     id: string,
-    dto: { edi_type: string },
+    dto: import('../types/shipment.types').GenerateShipmentEdiDto,
   ): Promise<unknown> {
     assertId(id);
     if (!String(dto.edi_type ?? '').trim()) {
       throw new Error('EDI type is required.');
     }
+    const ediType = String(dto.edi_type).trim();
+    const companyCodes = Array.isArray(dto.company_codes)
+      ? [
+          ...new Set(
+            dto.company_codes
+              .map((c) => String(c ?? '').trim())
+              .filter((c) => c.length > 0),
+          ),
+        ]
+      : undefined;
+    const isCsdp = /MANIFEST_CSDP|CSDP/i.test(ediType);
+    if (isCsdp && (!companyCodes || companyCodes.length === 0)) {
+      throw new Error('At least one company code is required for MANIFEST_CSDP.');
+    }
     try {
       const res = await withGatewayRetry(() =>
         axiosInstance.post(SHIPMENT_API.ediGenerate(id), {
-          edi_type: String(dto.edi_type).trim(),
+          edi_type: ediType,
+          ...(companyCodes?.length ? { company_codes: companyCodes } : {}),
         }),
       );
       return unwrapShipmentPayload(res.data) ?? res.data;

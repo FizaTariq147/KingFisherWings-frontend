@@ -13,6 +13,8 @@ import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
+import { useJob } from '@/features/jobs/hooks/useJobs';
+import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { JobSearchSelect } from '@/features/shared/entity-search';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import {
@@ -134,6 +136,7 @@ export function InvoiceForm({
   });
 
   const watched = watch();
+  const { data: summaryJob } = useJob(watched.job_id || '');
 
   useEffect(() => {
     if (watched.company_id) return;
@@ -518,9 +521,13 @@ export function InvoiceForm({
             <dd className="mt-0.5 text-[var(--color-neutral-800)]">{watched.due_date || '—'}</dd>
           </div>
           <div>
-            <dt className="text-xs text-[var(--color-neutral-400)]">Job</dt>
-            <dd className="mt-0.5 font-mono text-[var(--color-neutral-800)]">
-              {watched.job_id || '—'}
+            <dt className="text-xs text-[var(--color-neutral-400)]">Job number</dt>
+            <dd className="mt-0.5 text-[var(--color-neutral-800)]">
+              {summaryJob
+                ? jobDisplayNumber(summaryJob)
+                : watched.job_id
+                  ? '…'
+                  : '—'}
             </dd>
           </div>
           <div>
@@ -569,7 +576,7 @@ export function InvoiceForm({
         ) : null}
 
         {step === 0 ? (
-          <div className="space-y-5 rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="space-y-5 rounded-xl bg-white p-5 sm:p-6">
             {orgFields}
             <InvoiceSourceSelectGrid
               value={createMode}
@@ -597,7 +604,7 @@ export function InvoiceForm({
         ) : null}
 
         {step === 1 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {createMode === 'FROM_JOB' ? (
               <p className="text-sm text-[var(--color-neutral-500)]">
                 Invoice header fields will be filled from the job on create. Continue to review and
@@ -610,7 +617,7 @@ export function InvoiceForm({
         ) : null}
 
         {step === 2 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {createMode === 'FROM_JOB' ? (
               <p className="text-sm text-[var(--color-neutral-500)]">
                 Remarks can be edited on the invoice detail page after creation.
@@ -622,13 +629,13 @@ export function InvoiceForm({
         ) : null}
 
         {step === 3 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {linesEditor}
           </div>
         ) : null}
 
         {step === 4 ? (
-          <div className="rounded-xl border border-[var(--color-neutral-200)] bg-white p-5 sm:p-6">
+          <div className="rounded-xl bg-white p-5 sm:p-6">
             {summaryPanel}
           </div>
         ) : null}

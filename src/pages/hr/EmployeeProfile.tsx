@@ -5,6 +5,7 @@ import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import { Modal } from '../../components/ui/Modal';
+import { UserSearchSelect } from '@/features/shared/entity-search';
 import { hrService } from '../../features/hr/services/hr.service';
 import { DOCUMENT_TYPES, labelEnum } from '../../features/hr/constants/hr.constants';
 import {
@@ -574,11 +575,14 @@ export default function EmployeeProfile() {
             </>
           )}
           {careerModal === 'link' && (
-            <label className="block text-sm">
-              <span className="block text-xs text-gray-600 mb-1">User ID (UUID) *</span>
-              <input className="w-full h-9 border rounded px-3" value={linkUserId} onChange={(e) => setLinkUserId(e.target.value)} placeholder="Staff user UUID" />
-              {fieldErrors.user_id ? <span className="text-xs text-red-600">{fieldErrors.user_id}</span> : null}
-            </label>
+            <UserSearchSelect
+              name="link_user_id"
+              label="Staff user *"
+              value={linkUserId}
+              onChange={setLinkUserId}
+              error={fieldErrors.user_id}
+              placeholder="Search staff user by name…"
+            />
           )}
         </div>
       </Modal>

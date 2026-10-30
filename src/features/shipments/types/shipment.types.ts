@@ -286,4 +286,16 @@ export const SHIPMENT_BL_STATUSES = [
 /** OpenAPI GenerateShipmentEdiDto — same enum as job EDI */
 export type GenerateShipmentEdiDto = {
   edi_type: string;
+  /** Required for MANIFEST_CSDP — company codes for VOY/BOL blocks. */
+  company_codes?: string[];
 };
+
+/** PUT/GET /shipments/:id/booking-form — optional custom_fields[] */
+export type BookingCustomFieldType = 'text' | 'number' | 'date' | 'boolean';
+
+export interface BookingCustomField {
+  key: string;
+  label: string;
+  value?: string | number | boolean | null;
+  type?: BookingCustomFieldType;
+}

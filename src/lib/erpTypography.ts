@@ -18,12 +18,12 @@ export const appType = {
 
 export const listShell = {
   page: 'space-y-2.5',
-  /** Card chrome aligned with Enquiry Sheet (`border-gray-200 rounded-md`). */
-  card: 'bg-white border border-gray-200 rounded-md shadow-none',
+  /** Soft list surface — no outer box border (dividers handle structure). */
+  card: 'bg-white rounded-md shadow-none',
   header:
-    'flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-5 py-3 border-b border-gray-200 bg-white',
+    'flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between px-5 py-3 border-b border-gray-100 bg-white',
   toolbar:
-    'flex flex-wrap items-center justify-between gap-2 px-5 py-2 border-b border-gray-200 bg-white',
+    'flex flex-wrap items-center justify-between gap-2 px-5 py-2 border-b border-gray-100 bg-white',
   table: 'w-full text-[13px]',
   row: 'border-b border-[#e8edf2] hover:bg-[var(--fresa-row-hover,#F5F9FC)]',
   empty: 'text-center py-10 text-[13px] text-gray-500',

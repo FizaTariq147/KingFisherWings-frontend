@@ -1,12 +1,14 @@
 import { useMemo, useState, type ReactNode } from 'react';
 import { Link } from 'react-router-dom';
+import { Pencil } from 'lucide-react';
 import { OpsContinuumPanel } from '@/features/ops-activity';
 import { isUuid } from '@/lib/isUuid';
 import { erpTable } from '@/lib/erpTypography';
 import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import { ShipmentSearchSelect } from '@/features/shared/entity-search';
+import { ShowAllEditModal } from '@/features/shared/show-all/ShowAllEditModal';
 import { useShipment, useShipments } from '@/features/shipments/hooks/useShipments';
-import { useJobDetailTab, useJobShipmentsList, useJobShowAll } from '../hooks/useJobs';
+import { useJobDetailTab, useJobShipmentsList, useJobShowAll, usePatchJobShowAll } from '../hooks/useJobs';
 import { useJobTabResourceMutations } from '../hooks/useJobTabResources';
 import type { Job } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -328,7 +330,7 @@ function CompleteDetailTabPayload({
   }
 
   return (
-    <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white">
+    <div className="rounded-sm bg-white">
       <div className="border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
         {title ?? jobDetailTabLabel(tab)}
       </div>
@@ -577,10 +579,11 @@ function JobShipmentsTabPanel({
         </div>
       )}
       <div className="flex flex-wrap items-end gap-2">
-        <Input
-          label="Attach shipment ID"
+        <ShipmentSearchSelect
+          name="attach_shipment_id"
+          label="Attach shipment"
           value={attachId}
-          onChange={(e) => setAttachId(e.target.value)}
+          onChange={setAttachId}
         />
         <Button
           type="button"
@@ -653,7 +656,7 @@ function JobShipmentsTabPanel({
 
 function SectionCard({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white">
+    <div className="rounded-sm bg-white">
       <div className="border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
         {title}
       </div>
@@ -673,6 +676,8 @@ function JobShowAllPanel({
   footer?: ReactNode;
 }) {
   const query = useJobShowAll(jobId, siblingTabKeys, true);
+  const patchShowAll = usePatchJobShowAll(jobId);
+  const [editOpen, setEditOpen] = useState(false);
 
   if (query.isLoading) {
     return (
@@ -694,14 +699,49 @@ function JobShowAllPanel({
   const { sections = [], arrays = [] } = query.data ?? {};
   if (!sections.length && !arrays.length && !footer) {
     return (
-      <p className="text-[13px] text-[#64748b]">
-        No Show All data returned from job detail APIs.
-      </p>
+      <div className="space-y-3">
+        <div className="flex justify-end">
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            leftIcon={<Pencil className="h-3.5 w-3.5" />}
+            onClick={() => setEditOpen(true)}
+          >
+            Edit Show All
+          </Button>
+        </div>
+        <p className="text-[13px] text-[#64748b]">
+          No Show All data returned from job detail APIs.
+        </p>
+        <ShowAllEditModal
+          open={editOpen}
+          onClose={() => setEditOpen(false)}
+          title="Edit job Show All"
+          sources={[query.data, ...sections.map((s) => s.data)]}
+          pending={patchShowAll.isPending}
+          onSubmit={async (dto) => {
+            await patchShowAll.mutateAsync(dto);
+            await query.refetch();
+          }}
+        />
+      </div>
     );
   }
 
   return (
     <div className="space-y-3">
+      <div className="flex justify-end">
+        <Button
+          type="button"
+          size="sm"
+          variant="secondary"
+          leftIcon={<Pencil className="h-3.5 w-3.5" />}
+          onClick={() => setEditOpen(true)}
+        >
+          Edit Show All
+        </Button>
+      </div>
       {sections.map((section) => (
         <SectionCard key={section.key} title={section.title}>
           <FormFieldsFromPayload data={section.data} />
@@ -713,6 +753,17 @@ function JobShowAllPanel({
         </SectionCard>
       ))}
       {footer}
+      <ShowAllEditModal
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        title="Edit job Show All"
+        sources={[query.data, ...sections.map((s) => s.data)]}
+        pending={patchShowAll.isPending}
+        onSubmit={async (dto) => {
+          await patchShowAll.mutateAsync(dto);
+          await query.refetch();
+        }}
+      />
     </div>
   );
 }

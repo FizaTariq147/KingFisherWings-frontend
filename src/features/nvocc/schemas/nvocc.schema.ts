@@ -141,7 +141,7 @@ export const createNvoccEnquiryFormSchema = z
   });
 
 export const createNvoccBookingFormSchema = z.object({
-  voyage_id: requiredUuid('Enter a valid voyage UUID'),
+  voyage_id: requiredUuid('Select a voyage'),
   enquiry_id: optionalUuid(),
   shipper_id: optionalUuid(),
   consignee_id: optionalUuid(),

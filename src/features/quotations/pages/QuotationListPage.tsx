@@ -14,8 +14,10 @@ import {
 import { QuotationTable } from '../components/QuotationTable';
 import {
   DEFAULT_QUOTATION_PAGE_SIZE,
+  QUOTATION_STATUS_FILTERS,
   type JobType,
   type LostReason,
+  type QuotationStatus,
 } from '../constants/quotation.constants';
 import { useQuotationLifecycleMutations } from '../hooks/useQuotationActions';
 import { useQuotationConfirmState } from '../hooks/useQuotationConfirmState';
@@ -48,6 +50,14 @@ export default function QuotationListPage() {
     applyPatch({ jobType });
     setPage(1);
   }, [dept?.key]); // eslint-disable-line react-hooks/exhaustive-deps -- sync from ?dept=
+
+  // Dashboard pending-quotes KPI deep-links with ?status=DRAFT (pending)
+  useEffect(() => {
+    const status = searchParams.get('status')?.trim().toUpperCase() ?? '';
+    if (!(QUOTATION_STATUS_FILTERS as readonly string[]).includes(status)) return;
+    applyPatch({ status: status as QuotationStatus });
+    setPage(1);
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps -- sync from ?status=
 
   const listParams = useMemo(
     () => quotationFilterDraftToListParams(applied, page),

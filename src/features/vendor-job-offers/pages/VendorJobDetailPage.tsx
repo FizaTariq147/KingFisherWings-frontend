@@ -240,29 +240,35 @@ export default function VendorJobDetailPage() {
                     </span>
                   ) : null}
                 </span>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="secondary"
-                  disabled={docBusyId === doc.id}
-                  onClick={() => {
-                    setDocBusyId(doc.id);
-                    void vendorPortalJobsService
-                      .downloadJobDocument(id, doc.id)
-                      .then((blob) => {
-                        triggerBlobDownload(
-                          blob,
-                          doc.fileName || `${doc.documentType || 'document'}.pdf`,
-                        );
-                      })
-                      .catch((err) => {
-                        setFormError(vendorErrorMessage(err, 'Document download failed.'));
-                      })
-                      .finally(() => setDocBusyId(null));
-                  }}
-                >
-                  {docBusyId === doc.id ? '…' : 'Download'}
-                </Button>
+                {doc.canDownload === false ? (
+                  <span className="text-xs text-[var(--color-neutral-500)]">View only</span>
+                ) : (
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    disabled={docBusyId === doc.id}
+                    onClick={() => {
+                      setDocBusyId(doc.id);
+                      void vendorPortalJobsService
+                        .downloadJobDocument(id, doc.id)
+                        .then((blob) => {
+                          triggerBlobDownload(
+                            blob,
+                            doc.fileName || `${doc.documentType || 'document'}.pdf`,
+                          );
+                        })
+                        .catch((err) => {
+                          setFormError(
+                            vendorErrorMessage(err, 'Document download failed.'),
+                          );
+                        })
+                        .finally(() => setDocBusyId(null));
+                    }}
+                  >
+                    {docBusyId === doc.id ? '…' : 'Download'}
+                  </Button>
+                )}
               </li>
             ))}
           </ul>

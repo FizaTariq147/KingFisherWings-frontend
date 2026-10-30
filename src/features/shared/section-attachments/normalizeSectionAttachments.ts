@@ -56,6 +56,18 @@ export function normalizeSectionAttachment(raw: unknown): SectionAttachment | nu
       'visibleToCustomer',
     ),
     visible_to_vendor: flag(rec, 'visible_to_vendor', 'visibleToVendor'),
+    downloadable_by_customer: flag(
+      rec,
+      'downloadable_by_customer',
+      'downloadableByCustomer',
+      'can_download',
+      'canDownload',
+    ),
+    downloadable_by_vendor: flag(
+      rec,
+      'downloadable_by_vendor',
+      'downloadableByVendor',
+    ),
     created_at:
       String(rec.created_at ?? rec.createdAt ?? '').trim() || undefined,
     raw: rec,

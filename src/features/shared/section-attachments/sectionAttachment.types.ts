@@ -11,7 +11,8 @@ export type OpsSectionKey =
   | 'payment_requests'
   | 'sub_jobs'
   | 'bills_of_lading'
-  | 'stuffing_records';
+  | 'stuffing_records'
+  | 'acknowledgement';
 
 export type SectionAttachmentEntity = 'jobs' | 'shipments' | 'quotations';
 
@@ -28,6 +29,7 @@ export const OPS_SECTION_KEYS: OpsSectionKey[] = [
   'sub_jobs',
   'bills_of_lading',
   'stuffing_records',
+  'acknowledgement',
 ];
 
 export const OPS_SECTION_LABELS: Record<OpsSectionKey, string> = {
@@ -43,6 +45,7 @@ export const OPS_SECTION_LABELS: Record<OpsSectionKey, string> = {
   sub_jobs: 'Sub-jobs',
   bills_of_lading: 'Bills of lading',
   stuffing_records: 'Stuffing records',
+  acknowledgement: 'Acknowledgement',
 };
 
 export interface SectionAttachment {
@@ -53,6 +56,8 @@ export interface SectionAttachment {
   record_id?: string;
   visible_to_customer?: boolean;
   visible_to_vendor?: boolean;
+  downloadable_by_customer?: boolean;
+  downloadable_by_vendor?: boolean;
   created_at?: string;
   raw?: Record<string, unknown>;
 }
@@ -66,4 +71,6 @@ export interface UploadSectionAttachmentFields {
   record_id?: string;
   visible_to_customer?: boolean;
   visible_to_vendor?: boolean;
+  downloadable_by_customer?: boolean;
+  downloadable_by_vendor?: boolean;
 }
