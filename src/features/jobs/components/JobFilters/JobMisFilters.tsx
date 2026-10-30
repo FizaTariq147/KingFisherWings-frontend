@@ -27,7 +27,28 @@ import {
   type JobType,
 } from '../../constants/job.constants';
 import { useJobStatusOptions } from '../../hooks/useJobs';
-import type { JobListParams } from '../../types/job.types';
+import {
+  JOB_BY_CATEGORIES,
+  type JobListParams,
+} from '../../types/job.types';
+
+/** Map backend by-category keys → job status (for filter UI + list fallback). */
+const STATUS_BY_CATEGORY: Partial<Record<string, JobStatus>> = {
+  on_hold: 'ON_HOLD',
+  in_progress: 'IN_PROGRESS',
+  delivered: 'DELIVERED',
+  completed: 'COMPLETED',
+  cancelled: 'CANCELLED',
+};
+
+const CATEGORY_LABELS: Record<(typeof JOB_BY_CATEGORIES)[number], string> = {
+  on_hold: 'On hold',
+  delayed: 'Delayed',
+  delivered: 'Delivered',
+  cancelled: 'Cancelled',
+  completed: 'Completed',
+  in_progress: 'In progress',
+};
 
 export type JobDateField = NonNullable<JobListParams['date_field']>;
 
@@ -88,18 +109,21 @@ export function jobMisDraftFromSearch(
   const params = new URLSearchParams(search.startsWith('?') ? search : `?${search}`);
   const statusRaw = params.get('status')?.trim().toUpperCase() ?? '';
   const categoryRaw = params.get('category')?.trim().toLowerCase() ?? '';
-  const category =
-    categoryRaw === 'completed' || categoryRaw === 'closed'
-      ? 'completed,closed'
-      : categoryRaw;
-  const status = (JOB_STATUSES as readonly string[]).includes(statusRaw)
+  const category = (JOB_BY_CATEGORIES as readonly string[]).includes(categoryRaw)
+    ? categoryRaw
+    : '';
+  const statusFromUrl = (JOB_STATUSES as readonly string[]).includes(statusRaw)
     ? (statusRaw as JobStatus)
     : '';
+  const statusFromCategory = category ? STATUS_BY_CATEGORY[category] : undefined;
+  // Prefer explicit ?status=; otherwise map category → status for the status filter.
+  const status = statusFromUrl || statusFromCategory || '';
   if (!status && !category) return base;
   return {
     ...base,
     status,
-    category: status ? '' : category,
+    // Keep valid category so All Jobs uses by-category (matches dashboard counts).
+    category: statusFromUrl && !category ? '' : category,
   };
 }
 
@@ -402,25 +426,20 @@ export function JobMisFilters({
           <EnquirySheetSelect
             options={[
               { value: '', label: 'All' },
-              { value: 'open', label: 'Open' },
-              { value: 'in_progress', label: 'In progress' },
-              { value: 'delayed', label: 'Delayed' },
-              { value: 'delivered', label: 'Delivered' },
-              { value: 'completed,closed', label: 'Completed / closed' },
-              { value: 'cancelled', label: 'Cancelled' },
-              { value: 'hold', label: 'On hold' },
+              ...JOB_BY_CATEGORIES.map((value) => ({
+                value,
+                label: CATEGORY_LABELS[value],
+              })),
             ]}
-            value={
-              draft.category === 'completed' || draft.category === 'closed'
-                ? 'completed,closed'
-                : draft.category
-            }
-            onChange={(e) =>
+            value={draft.category}
+            onChange={(e) => {
+              const nextCategory = e.target.value;
+              const mapped = nextCategory ? STATUS_BY_CATEGORY[nextCategory] : undefined;
               patch({
-                category: e.target.value,
-                status: e.target.value ? '' : draft.status,
-              })
-            }
+                category: nextCategory,
+                status: mapped ?? (nextCategory ? '' : draft.status),
+              });
+            }}
           />
         </EnquirySheetFilterField>
 
