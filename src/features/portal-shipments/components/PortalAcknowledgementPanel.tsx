@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Download, Paperclip, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { ApiDataView } from '@/features/jobs/components/ApiDataView';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { PortalPanel } from '@/features/portal-auth/components/portal-ui';
 import {
@@ -12,6 +13,62 @@ import {
   useSubmitPortalShipmentAcknowledgement,
   useUploadPortalAcknowledgementSignature,
 } from '../hooks/usePortalShipments';
+
+/** Extra list/template blocks from acknowledgement payload (same shape as Show All). */
+function acknowledgementTemplateBlocks(ack: {
+  template_snapshot?: string | Record<string, unknown>;
+  raw?: Record<string, unknown>;
+}): Array<{ key: string; title: string; data: unknown }> {
+  const blocks: Array<{ key: string; title: string; data: unknown }> = [];
+  if (ack.template_snapshot != null && ack.template_snapshot !== '') {
+    blocks.push({ key: 'template', title: 'Template', data: ack.template_snapshot });
+  }
+  const raw = ack.raw;
+  if (!raw) return blocks;
+  const skip = new Set([
+    'id',
+    'job_id',
+    'jobId',
+    'status',
+    'receiver_name',
+    'receiverName',
+    'receiver_title',
+    'receiverTitle',
+    'goods_condition',
+    'goodsCondition',
+    'remarks',
+    'notes',
+    'acknowledged_at',
+    'acknowledgedAt',
+    'signature_url',
+    'signatureUrl',
+    'signature_s3_key',
+    'signatureS3Key',
+    'template_snapshot',
+    'templateSnapshot',
+    'received_at',
+    'receivedAt',
+    'actual_delivery_date',
+    'actualDeliveryDate',
+    'path_hints',
+    'pathHints',
+  ]);
+  for (const [key, value] of Object.entries(raw)) {
+    if (skip.has(key)) continue;
+    if (value == null) continue;
+    if (Array.isArray(value) && value.length === 0) continue;
+    if (typeof value === 'object' && !Array.isArray(value) && !Object.keys(value).length) {
+      continue;
+    }
+    if (typeof value === 'string' && !value.trim()) continue;
+    const title = key
+      .replace(/([a-z])([A-Z])/g, '$1 $2')
+      .replace(/[_-]+/g, ' ')
+      .replace(/\b\w/g, (c) => c.toUpperCase());
+    blocks.push({ key, title, data: value });
+  }
+  return blocks;
+}
 
 interface PortalAcknowledgementPanelProps {
   shipmentId: string;
@@ -43,6 +100,10 @@ export function PortalAcknowledgementPanel({
   const ack = query.data;
   const status = (ack?.status || statusHint || 'DRAFT').toUpperCase();
   const readOnly = status === 'SUBMITTED' || status === 'RECEIVED_BY_ADMIN';
+  const templateBlocks = useMemo(
+    () => (ack ? acknowledgementTemplateBlocks(ack) : []),
+    [ack],
+  );
 
   useEffect(() => {
     if (!ack || hydrated) return;
@@ -98,6 +159,25 @@ export function PortalAcknowledgementPanel({
         <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
+          {templateBlocks.length ? (
+            <div className="sm:col-span-2 space-y-3">
+              {templateBlocks.map((block) => (
+                <div
+                  key={block.key}
+                  className="rounded-sm border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-3"
+                >
+                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+                    {block.title}
+                  </p>
+                  <ApiDataView
+                    data={block.data}
+                    emptyLabel="No fields returned for this block."
+                    maxHeightClass="max-h-72"
+                  />
+                </div>
+              ))}
+            </div>
+          ) : null}
           <label className="block text-sm sm:col-span-1">
             <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
               Receiver name *

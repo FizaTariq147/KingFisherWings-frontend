@@ -1408,10 +1408,50 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.resume(id), dto), normalizeJob);
   },
 
-  /** PATCH /jobs/:id/hold — update hold_reason / expected_release_at while held. */
+  /**
+   * Update hold_reason / expected_release_at while ON_HOLD.
+   * Prefer PATCH /jobs/:id/hold; if the route is missing (404/405/501), fall back to
+   * POST /jobs/:id/stop with the same metadata (many gateways never registered PATCH /hold).
+   */
   async patchHold(id: string, dto: PatchJobHoldDto): Promise<Job> {
     assertId(id);
-    return request(() => axiosInstance.patch(JOB_API.hold(id), dto), normalizeJob);
+    const body: Record<string, unknown> = {};
+    if (typeof dto.hold_reason === 'string' && dto.hold_reason.trim()) {
+      body.hold_reason = dto.hold_reason.trim();
+      body.reason = dto.hold_reason.trim();
+    }
+    if (dto.expected_release_at === null) {
+      body.expected_release_at = null;
+    } else if (
+      typeof dto.expected_release_at === 'string' &&
+      dto.expected_release_at.trim()
+    ) {
+      body.expected_release_at = dto.expected_release_at.trim();
+    }
+
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(JOB_API.hold(id), body),
+      );
+      const job = normalizeJob(unwrapEntity(res.data) ?? res.data);
+      if (job) return job;
+      return this.getById(id);
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      if (status === 404 || status === 405 || status === 501) {
+        // Backend: PATCH /jobs/:id/hold not found — update via stop (same hold fields).
+        return this.stop(id, {
+          hold_reason:
+            typeof dto.hold_reason === 'string' ? dto.hold_reason.trim() || undefined : undefined,
+          reason:
+            typeof dto.hold_reason === 'string' ? dto.hold_reason.trim() || undefined : undefined,
+          ...(typeof dto.expected_release_at === 'string' && dto.expected_release_at.trim()
+            ? { expected_release_at: dto.expected_release_at.trim() }
+            : {}),
+        });
+      }
+      throw formatAxiosError(error);
+    }
   },
 
   /** GET /jobs/by-category/:category — on_hold | delayed | delivered | cancelled | completed | in_progress */
