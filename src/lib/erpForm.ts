@@ -1,9 +1,9 @@
 /** Compact ERP form chrome — Fresa-inspired operational forms. */
 export const erpForm = {
   input:
-    'h-8 w-full rounded-sm bg-white px-2.5 text-[13px] text-[var(--color-neutral-800)] outline-none transition-colors placeholder:text-[var(--color-neutral-400)] focus:border-[var(--fresa-action,#0A2942)] focus:ring-1 focus:ring-[var(--fresa-action-soft,#E9EEF2)]',
+    'h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-2.5 text-[13px] text-[var(--color-neutral-800)] outline-none transition-colors placeholder:text-[var(--color-neutral-400)] focus:border-[var(--fresa-action,#0A2942)] focus:ring-1 focus:ring-[var(--fresa-action-soft,#E9EEF2)]',
   textarea:
-    'min-h-[4.5rem] w-full rounded-sm bg-white px-2.5 py-1.5 text-[13px] text-[var(--color-neutral-800)] outline-none focus:border-[var(--fresa-action,#0A2942)] focus:ring-1 focus:ring-[var(--fresa-action-soft,#E9EEF2)]',
+    'min-h-[4.5rem] w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-2.5 py-1.5 text-[13px] text-[var(--color-neutral-800)] outline-none focus:border-[var(--fresa-action,#0A2942)] focus:ring-1 focus:ring-[var(--fresa-action-soft,#E9EEF2)]',
   label: 'mb-1 block text-[12px] font-medium text-[#334155]',
   labelInline: 'text-[12px] font-medium text-[#334155]',
   fieldError: 'mt-0.5 text-[11px] text-[var(--fresa-danger-text,var(--color-danger-700))]',

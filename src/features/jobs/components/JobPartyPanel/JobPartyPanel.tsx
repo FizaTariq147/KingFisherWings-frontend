@@ -13,7 +13,10 @@ import type { Job } from '../../types/job.types';
 import { usePartyTypes } from '@/features/parties/hooks/useParties';
 import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTypeOptions';
 import { JOB_ORG_TYPES, JOB_PARTY_ROLES } from '@/features/shared/organizations/orgTypes';
-import { orgPartyLabel } from '@/features/shared/organizations/orgDisplay';
+import {
+  normalizeOrganizationRows,
+  orgPartyLabel,
+} from '@/features/shared/organizations/orgDisplay';
 import { PartyOrgSearchField } from '@/features/shared/organizations/PartyOrgSearchField';
 import { JobSearchSelect } from '@/features/shared/entity-search';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -34,22 +37,6 @@ const REFERENCE_TYPES = [
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   return value as Record<string, unknown>;
-}
-
-function orgRows(raw: unknown): Record<string, unknown>[] {
-  if (Array.isArray(raw)) {
-    return raw.map(asRecord).filter((r): r is Record<string, unknown> => Boolean(r));
-  }
-  const rec = asRecord(raw);
-  if (!rec) return [];
-  for (const key of ['items', 'organizations', 'data', 'results']) {
-    if (Array.isArray(rec[key])) {
-      return (rec[key] as unknown[])
-        .map(asRecord)
-        .filter((r): r is Record<string, unknown> => Boolean(r));
-    }
-  }
-  return [];
 }
 
 /** Party tab — organizations CRUD + client reference. */
@@ -85,7 +72,11 @@ export function JobPartyPanel({
 
   const typesQuery = usePartyTypes(true);
   const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
-  const rows = useMemo(() => orgRows(orgsQuery.data), [orgsQuery.data]);
+  const rows = useMemo(() => {
+    const fromOrgs = normalizeOrganizationRows(orgsQuery.data);
+    if (fromOrgs.length) return fromOrgs;
+    return normalizeOrganizationRows(tabQuery.data);
+  }, [orgsQuery.data, tabQuery.data]);
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -165,33 +156,44 @@ export function JobPartyPanel({
           <ul className="space-y-2">
             {rows.map((row, i) => {
               const label = orgPartyLabel(row);
+              const canUnlink =
+                Boolean(label.orgType && label.orgType !== '—') &&
+                (Boolean(label.partyId) || label.primary !== '—');
               return (
                 <li
                   key={`${label.orgType}-${label.partyId || i}`}
                   className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-[#e8edf2] bg-white px-2.5 py-2"
                 >
                   <div className="min-w-0">
-                    <p className="font-medium text-[#0f172a]">{label.orgType}</p>
-                    <p className="truncate text-[12px] text-[#64748b]">
-                      {label.primary}
-                      {label.secondary ? ` · ${label.secondary}` : ''}
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-[#64748b]">
+                      {label.orgType.replaceAll('_', ' ')}
                     </p>
+                    <p className="truncate font-medium text-[#0f172a]">
+                      {label.primary}
+                    </p>
+                    {label.secondary ? (
+                      <p className="truncate text-[12px] text-[#64748b]">
+                        {label.secondary}
+                      </p>
+                    ) : null}
                   </div>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="danger"
-                    disabled={pending || !label.orgType || label.orgType === '—'}
-                    onClick={() =>
-                      void run(
-                        () =>
-                          resources.unlinkOrganization.mutateAsync(label.orgType),
-                        `Unlinked ${label.orgType}.`,
-                      )
-                    }
-                  >
-                    Unlink
-                  </Button>
+                  {canUnlink ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="danger"
+                      disabled={pending}
+                      onClick={() =>
+                        void run(
+                          () =>
+                            resources.unlinkOrganization.mutateAsync(label.orgType),
+                          `Unlinked ${label.orgType}.`,
+                        )
+                      }
+                    >
+                      Unlink
+                    </Button>
+                  ) : null}
                 </li>
               );
             })}

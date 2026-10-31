@@ -9,7 +9,7 @@ import { useJobMilestones } from '../../hooks/useJobs';
 import { createJobMilestoneSchema } from '../../schemas/job.schema';
 import type { JobMilestone } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
-import { milestoneRouteKey } from '../../utils/normalizeJob';
+import { formatMilestoneHeading, milestoneRouteKey } from '../../utils/normalizeJob';
 
 interface JobMilestonesPanelProps {
   jobId: string;
@@ -92,7 +92,9 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
           ) : (
             milestones.map((m: JobMilestone) => {
               const key = milestoneRouteKey(m);
-              const label = m.milestone || m.milestone_key || key || 'Milestone';
+              const heading = formatMilestoneHeading(
+                m.milestone || m.milestone_key || key || 'Milestone',
+              );
               const done = Boolean(m.actual_date || m.completed_at || m.is_completed);
               const description =
                 descriptionDrafts[m.id] ?? m.description ?? m.notes ?? '';
@@ -104,9 +106,11 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="font-medium">{label}</p>
+                      <p className="font-medium">{heading}</p>
                       <p className="text-xs text-[var(--color-neutral-400)]">
-                        {key && key !== label ? `Code: ${key} · ` : ''}
+                        {key && formatMilestoneHeading(key) !== heading
+                          ? `Code: ${key} · `
+                          : ''}
                         Planned: {m.planned_date || '—'} · Actual:{' '}
                         {m.completed_at || m.actual_date || '—'}
                       </p>

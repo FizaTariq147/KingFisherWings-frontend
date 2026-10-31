@@ -87,8 +87,8 @@ export function CountrySelect({
         aria-haspopup="listbox"
         onClick={() => !disabled && setOpen((v) => !v)}
         className={cn(
-          'h-9 w-full rounded-md border bg-white px-3 text-left text-sm text-[var(--color-neutral-800)] transition-colors',
-          'border-[var(--color-neutral-200)]',
+          'h-9 w-full rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 text-left text-sm text-[var(--color-neutral-800)] transition-colors',
+
           'focus:outline-none focus:border-[var(--color-primary-500)] focus:ring-1 focus:ring-[var(--color-primary-500)]',
           error && 'border-[var(--color-danger-500)] focus:ring-[var(--color-danger-500)]',
           disabled && 'bg-[var(--color-neutral-50)] opacity-60 cursor-not-allowed',

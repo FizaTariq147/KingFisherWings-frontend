@@ -136,8 +136,8 @@ export function PhoneInput({
 
       <div
         className={cn(
-          'flex h-9 w-full overflow-hidden rounded-md border bg-white transition-colors',
-          'border-[var(--color-neutral-200)]',
+          'flex h-9 w-full overflow-hidden rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white transition-colors',
+
           'focus-within:border-[var(--color-primary-500)] focus-within:ring-1 focus-within:ring-[var(--color-primary-500)]',
           error &&
             'border-[var(--color-danger-500)] focus-within:ring-[var(--color-danger-500)]',

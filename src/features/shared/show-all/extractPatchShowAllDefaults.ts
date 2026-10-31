@@ -45,6 +45,28 @@ const ALIASES: Record<string, keyof PatchShowAllDto> = {
   customer: 'customer_name',
 };
 
+/** Nested party/port objects from show_all → flat PatchShowAllDto fields (compact keys). */
+const NESTED_ENTITY: Record<
+  string,
+  { name: keyof PatchShowAllDto; code: keyof PatchShowAllDto }
+> = {
+  originport: { name: 'origin_port_name', code: 'origin_port_code' },
+  pol: { name: 'origin_port_name', code: 'origin_port_code' },
+  destport: { name: 'dest_port_name', code: 'dest_port_code' },
+  destinationport: { name: 'dest_port_name', code: 'dest_port_code' },
+  pod: { name: 'dest_port_name', code: 'dest_port_code' },
+  shipper: { name: 'shipper_name', code: 'shipper_code' },
+  consignee: { name: 'consignee_name', code: 'consignee_code' },
+  billingparty: { name: 'billing_party_name', code: 'billing_party_code' },
+  agent: { name: 'agent_name', code: 'agent_code' },
+  carrier: { name: 'carrier_name', code: 'carrier_code' },
+  customer: { name: 'customer_name', code: 'customer_code' },
+};
+
+function compactKey(key: string): string {
+  return normalizeKey(key).replace(/_/g, '');
+}
+
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   return value as Record<string, unknown>;
@@ -69,9 +91,50 @@ function pickNumber(value: unknown): number | undefined {
 function pickDate(value: unknown): string | undefined {
   const s = pickString(value);
   if (!s) return undefined;
-  // Keep YYYY-MM-DD for date inputs when ISO datetime.
   if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.slice(0, 10);
   return s;
+}
+
+function setIfEmpty(
+  into: PatchShowAllDto,
+  key: keyof PatchShowAllDto,
+  value: string | number | undefined,
+): void {
+  if (value == null || value === '') return;
+  const cur = into[key];
+  if (cur != null && cur !== '') return;
+  into[key] = value as never;
+}
+
+function collectNestedEntity(
+  key: string,
+  value: unknown,
+  into: PatchShowAllDto,
+): boolean {
+  const mapping = NESTED_ENTITY[compactKey(key)];
+  if (!mapping) return false;
+  const rec = asRecord(value);
+  if (!rec) {
+    const s = pickString(value);
+    if (s) setIfEmpty(into, mapping.name, s);
+    return true;
+  }
+  const name =
+    pickString(rec.name) ||
+    pickString(rec.label) ||
+    pickString(rec.display_name) ||
+    pickString(rec.displayName) ||
+    pickString(rec.port_name) ||
+    pickString(rec.party_name);
+  const code =
+    pickString(rec.code) ||
+    pickString(rec.port_code) ||
+    pickString(rec.party_code) ||
+    pickString(rec.unlocode) ||
+    pickString(rec.iata);
+  setIfEmpty(into, mapping.name, name);
+  setIfEmpty(into, mapping.code, code);
+  return true;
 }
 
 function collectFromRecord(
@@ -79,6 +142,8 @@ function collectFromRecord(
   into: PatchShowAllDto,
 ): void {
   for (const [rawKey, rawVal] of Object.entries(rec)) {
+    if (collectNestedEntity(rawKey, rawVal, into)) continue;
+
     const norm = normalizeKey(rawKey);
     const mapped =
       (PATCH_KEYS.includes(norm as keyof PatchShowAllDto)
@@ -106,24 +171,28 @@ function collectFromRecord(
 }
 
 function walk(value: unknown, into: PatchShowAllDto, depth = 0): void {
-  if (depth > 4) return;
+  if (depth > 6) return;
   const rec = asRecord(value);
   if (!rec) return;
   collectFromRecord(rec, into);
-  for (const nested of Object.values(rec)) {
-    if (nested && typeof nested === 'object') walk(nested, into, depth + 1);
+  for (const [key, nested] of Object.entries(rec)) {
+    if (!nested || typeof nested !== 'object') continue;
+    // Nested entities already flattened in collectFromRecord; still walk for deeper bags.
+    if (NESTED_ENTITY[compactKey(key)]) continue;
+    walk(nested, into, depth + 1);
   }
 }
 
 /**
- * Prefill Show All edit form from aggregated Show All sections / entity payload.
- * Prefer first non-empty value found for each PatchShowAllDto field.
+ * Prefill Show All edit form from aggregated Show All sections / entity payload /
+ * last PATCH body. Prefer first non-empty value found for each PatchShowAllDto field.
  */
 export function extractPatchShowAllDefaults(
   sources: unknown[],
 ): PatchShowAllDto {
   const into: PatchShowAllDto = {};
   for (const source of sources) {
+    if (source == null) continue;
     if (Array.isArray(source)) {
       for (const item of source) walk(item, into);
       continue;
@@ -134,6 +203,16 @@ export function extractPatchShowAllDefaults(
         const sec = asRecord(section);
         if (sec?.data) walk(sec.data, into);
       }
+      if (Array.isArray(rec.arrays)) {
+        for (const block of rec.arrays) {
+          const b = asRecord(block);
+          if (Array.isArray(b?.rows)) {
+            for (const row of b.rows) walk(row, into);
+          }
+        }
+      }
+      // Also walk root in case PATCH returned flat show_all beside sections.
+      walk(rec, into);
       continue;
     }
     walk(source, into);
@@ -168,4 +247,18 @@ export function isPatchShowAllFieldEmpty(
   if (v == null) return true;
   if (typeof v === 'string') return !v.trim();
   return false;
+}
+
+/** Merge a successful PATCH payload + optional API response into overlay for reopen. */
+export function mergeShowAllSavedOverlay(
+  previous: PatchShowAllDto,
+  submitted: PatchShowAllDto,
+  response?: unknown,
+): PatchShowAllDto {
+  const fromResponse = response != null ? extractPatchShowAllDefaults([response]) : {};
+  return {
+    ...previous,
+    ...submitted,
+    ...fromResponse,
+  };
 }

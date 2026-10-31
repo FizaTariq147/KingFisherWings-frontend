@@ -7,10 +7,11 @@ import { erpTable } from '@/lib/erpTypography';
 import { Button } from '@/components/ui/Button';
 import { ShipmentSearchSelect } from '@/features/shared/entity-search';
 import { ShowAllEditModal } from '@/features/shared/show-all/ShowAllEditModal';
+import { mergeShowAllSavedOverlay } from '@/features/shared/show-all/extractPatchShowAllDefaults';
 import { useShipment, useShipments } from '@/features/shipments/hooks/useShipments';
 import { useJobDetailTab, useJobShipmentsList, useJobShowAll, usePatchJobShowAll } from '../hooks/useJobs';
 import { useJobTabResourceMutations } from '../hooks/useJobTabResources';
-import type { Job } from '../types/job.types';
+import type { Job, PatchShowAllDto } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { JobBarcodePanel } from './JobBarcodePanel';
 import { JobChargesPanel } from './JobChargesPanel';
@@ -678,6 +679,13 @@ function JobShowAllPanel({
   const query = useJobShowAll(jobId, siblingTabKeys, true);
   const patchShowAll = usePatchJobShowAll(jobId);
   const [editOpen, setEditOpen] = useState(false);
+  const [savedOverlay, setSavedOverlay] = useState<PatchShowAllDto>({});
+
+  const saveShowAll = async (dto: PatchShowAllDto) => {
+    const refreshed = await patchShowAll.mutateAsync(dto);
+    setSavedOverlay((prev) => mergeShowAllSavedOverlay(prev, dto, refreshed));
+    await query.refetch();
+  };
 
   if (query.isLoading) {
     return (
@@ -697,6 +705,8 @@ function JobShowAllPanel({
   }
 
   const { sections = [], arrays = [] } = query.data ?? {};
+  const editSources = [savedOverlay, query.data, ...sections.map((s) => s.data)];
+
   if (!sections.length && !arrays.length && !footer) {
     return (
       <div className="space-y-3">
@@ -718,12 +728,9 @@ function JobShowAllPanel({
           open={editOpen}
           onClose={() => setEditOpen(false)}
           title="Edit job Show All"
-          sources={[query.data, ...sections.map((s) => s.data)]}
+          sources={editSources}
           pending={patchShowAll.isPending}
-          onSubmit={async (dto) => {
-            await patchShowAll.mutateAsync(dto);
-            await query.refetch();
-          }}
+          onSubmit={saveShowAll}
         />
       </div>
     );
@@ -757,12 +764,9 @@ function JobShowAllPanel({
         open={editOpen}
         onClose={() => setEditOpen(false)}
         title="Edit job Show All"
-        sources={[query.data, ...sections.map((s) => s.data)]}
+        sources={editSources}
         pending={patchShowAll.isPending}
-        onSubmit={async (dto) => {
-          await patchShowAll.mutateAsync(dto);
-          await query.refetch();
-        }}
+        onSubmit={saveShowAll}
       />
     </div>
   );
