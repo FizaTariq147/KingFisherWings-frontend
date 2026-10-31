@@ -95,6 +95,20 @@ function nestedEntityLabel(value: unknown): string {
   return name || code || '';
 }
 
+/** Surface non-UUID strings from API catalog rows (org/party types) — never invent labels. */
+function catalogRowLabel(row: Record<string, unknown>): string {
+  const preferred = nestedEntityLabel(row);
+  if (preferred) return preferred;
+  for (const key of Object.keys(row)) {
+    const lower = key.toLowerCase();
+    if (lower === 'id' || lower.endsWith('_id') || lower.endsWith('_uuid')) continue;
+    const v = row[key];
+    if (typeof v === 'string' && v.trim() && !isUuidish(v)) return v.trim();
+    if (typeof v === 'number' && Number.isFinite(v)) return String(v);
+  }
+  return '';
+}
+
 function readableScalar(value: unknown): string {
   if (typeof value !== 'string') return '';
   const t = value.trim();
@@ -155,6 +169,41 @@ function ArrayTable({
     : [];
 
   if (!cols.length) {
+    const labels = rows.map((row) => {
+      const rec = asRecord(row);
+      if (!rec) return '';
+      return nestedEntityLabel(rec) || catalogRowLabel(rec);
+    });
+    const allLabeled = labels.every(Boolean);
+    if (allLabeled) {
+      return (
+        <div className="space-y-2">
+          {showTitle ? (
+            <p className="text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]">
+              {title}
+            </p>
+          ) : null}
+          <ul className="space-y-1.5">
+            {labels.map((label, index) => (
+              <li
+                key={index}
+                className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2 text-[13px] font-medium text-[#0f172a]"
+              >
+                {label}
+              </li>
+            ))}
+          </ul>
+        </div>
+      );
+    }
+    if (!labels.some(Boolean)) {
+      return (
+        <p className="text-[13px] text-[#64748b]">
+          {rows.length} {title.toLowerCase()} row{rows.length === 1 ? '' : 's'} returned, but only
+          ids without names (backend).
+        </p>
+      );
+    }
     return (
       <div className="space-y-2">
         {showTitle ? (
@@ -168,7 +217,7 @@ function ArrayTable({
             className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2"
           >
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
-              {title} · {index + 1}
+              {labels[index] || `${title} · ${index + 1}`}
             </p>
             <FormFieldsFromPayload data={row} depth={1} />
           </div>

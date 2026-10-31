@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
+import { ApiDataView } from '../ApiDataView';
 import { jobService } from '../../services/job.service';
 import { jobKeys } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -119,6 +120,18 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                   </>
                 ) : null}
               </p>
+            ) : null}
+            {ack.template_snapshot ? (
+              <div className="sm:col-span-2 space-y-1">
+                <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+                  Template
+                </p>
+                <ApiDataView
+                  data={ack.template_snapshot}
+                  emptyLabel="No template fields returned."
+                  maxHeightClass="max-h-80"
+                />
+              </div>
             ) : null}
           </div>
         ) : null}

@@ -129,18 +129,22 @@ export function ShipmentDepartmentPanel({
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="min-w-0">
-          <div className={erpForm.label}>Current department</div>
-          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
-            {currentDepartmentLabel || '—'}
-          </div>
-        </div>
-        <div className="min-w-0">
-          <div className={erpForm.label}>Current branch</div>
-          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
-            {currentBranchLabel || '—'}
-          </div>
-        </div>
+        <label className="block min-w-0">
+          <span className={erpForm.label}>Department</span>
+          <input
+            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
+            readOnly
+            value={currentDepartmentLabel || '—'}
+          />
+        </label>
+        <label className="block min-w-0">
+          <span className={erpForm.label}>Branch</span>
+          <input
+            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
+            readOnly
+            value={currentBranchLabel || '—'}
+          />
+        </label>
       </div>
 
       {canEdit ? (

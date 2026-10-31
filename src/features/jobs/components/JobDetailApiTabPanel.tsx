@@ -145,6 +145,23 @@ function nestedEntityLabel(value: unknown): string {
   return name || code;
 }
 
+/**
+ * Best-effort label for catalog / type rows from the API (org types, party types, etc.).
+ * Never invents values — only surfaces non-UUID strings the backend already sent.
+ */
+function catalogRowLabel(row: Record<string, unknown>): string {
+  const preferred = nestedEntityLabel(row);
+  if (preferred) return preferred;
+  for (const key of Object.keys(row)) {
+    const lower = key.toLowerCase();
+    if (lower === 'id' || lower.endsWith('_id') || lower.endsWith('_uuid')) continue;
+    const v = row[key];
+    if (typeof v === 'string' && v.trim() && !isUuid(v.trim())) return v.trim();
+    if (typeof v === 'number' && Number.isFinite(v)) return String(v);
+  }
+  return '';
+}
+
 function siblingNameLabel(key: string, data: Record<string, unknown>): string {
   const base = key.replace(/(_id|_uuid)$/i, '');
   const name = data[`${base}_name`] ?? data[`${base}_label`];
@@ -192,17 +209,49 @@ function FormFieldsFromPayload({
         />
       );
     }
+    const labeled = data
+      .map((item, index) => {
+        const rec = item && typeof item === 'object' && !Array.isArray(item)
+          ? (item as Record<string, unknown>)
+          : null;
+        const label = rec ? catalogRowLabel(rec) : '';
+        return { index, item, label };
+      });
+    const allHaveLabels = labeled.every((row) => Boolean(row.label));
+    if (allHaveLabels) {
+      return (
+        <ul className="space-y-1.5">
+          {labeled.map((row) => (
+            <li
+              key={row.index}
+              className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2 text-[13px] font-medium text-[#0f172a]"
+            >
+              {row.label}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+    const anyLabel = labeled.some((row) => Boolean(row.label));
+    if (!anyLabel) {
+      return (
+        <p className="text-[13px] text-[#64748b]">
+          {data.length} row{data.length === 1 ? '' : 's'} returned, but only ids without names
+          (backend).
+        </p>
+      );
+    }
     return (
       <div className="space-y-3">
-        {data.map((item, index) => (
+        {labeled.map((row) => (
           <div
-            key={index}
+            key={row.index}
             className="rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2"
           >
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
-              Item {index + 1}
+              {row.label || `Item ${row.index + 1}`}
             </p>
-            <FormFieldsFromPayload data={item} depth={depth + 1} />
+            <FormFieldsFromPayload data={row.item} depth={depth + 1} />
           </div>
         ))}
       </div>
@@ -274,7 +323,15 @@ function FormFieldsFromPayload({
   }
 
   if (!rows.length && !nested.length) {
-    return <p className="text-[13px] text-[#64748b]">No fields</p>;
+    const fallback = catalogRowLabel(rec);
+    if (fallback) {
+      return <FormFieldRow label="Name" value={fallback} />;
+    }
+    return (
+      <p className="text-[13px] text-[#64748b]">
+        No displayable fields (API returned ids only without names).
+      </p>
+    );
   }
 
   return (

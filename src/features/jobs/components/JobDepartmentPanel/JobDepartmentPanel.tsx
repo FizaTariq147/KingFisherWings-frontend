@@ -175,30 +175,38 @@ export function JobDepartmentPanel({
       ) : null}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <div className="min-w-0">
-          <div className={erpForm.label}>Current company</div>
-          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
-            {resolvedCompany || '—'}
-          </div>
-        </div>
-        <div className="min-w-0">
-          <div className={erpForm.label}>Current branch</div>
-          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
-            {resolvedBranch || '—'}
-          </div>
-        </div>
-        <div className="min-w-0">
-          <div className={erpForm.label}>Current department</div>
-          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
-            {resolvedDepartment || '—'}
-          </div>
-        </div>
-        <div className="min-w-0">
-          <div className={erpForm.label}>Current salesperson</div>
-          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
-            {resolvedSalesperson || '—'}
-          </div>
-        </div>
+        <label className="block min-w-0">
+          <span className={erpForm.label}>Company</span>
+          <input
+            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
+            readOnly
+            value={resolvedCompany || '—'}
+          />
+        </label>
+        <label className="block min-w-0">
+          <span className={erpForm.label}>Branch</span>
+          <input
+            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
+            readOnly
+            value={resolvedBranch || '—'}
+          />
+        </label>
+        <label className="block min-w-0">
+          <span className={erpForm.label}>Department</span>
+          <input
+            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
+            readOnly
+            value={resolvedDepartment || '—'}
+          />
+        </label>
+        <label className="block min-w-0">
+          <span className={erpForm.label}>Salesperson</span>
+          <input
+            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
+            readOnly
+            value={resolvedSalesperson || '—'}
+          />
+        </label>
       </div>
 
       <div className="space-y-2">
