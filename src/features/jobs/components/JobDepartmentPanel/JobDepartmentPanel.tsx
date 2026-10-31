@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import { useJobLookupsDropdowns } from '../../hooks/useJobs';
@@ -20,6 +22,62 @@ function optionValue(opt: JobLookupNamedOption): string {
   return opt.name;
 }
 
+function displayName(value?: string | null): string {
+  const v = value?.trim() || '';
+  if (!v || isUuid(v)) return '';
+  return v;
+}
+
+/** Map master rows → name options for PATCH *_name fields. */
+function mastersToNamedOptions(
+  rows: Array<Record<string, unknown>>,
+): JobLookupNamedOption[] {
+  const out: JobLookupNamedOption[] = [];
+  const seen = new Set<string>();
+  for (const row of rows) {
+    const name = String(
+      row.name ?? row.display_name ?? row.displayName ?? row.label ?? '',
+    ).trim();
+    if (!name || isUuid(name) || seen.has(name.toLowerCase())) continue;
+    seen.add(name.toLowerCase());
+    const code = String(row.code ?? '').trim();
+    out.push({
+      name,
+      ...(code && !isUuid(code) ? { code } : {}),
+    });
+  }
+  return out;
+}
+
+function labelForMasterId(
+  rows: Array<Record<string, unknown>>,
+  id: string | undefined,
+): string {
+  if (!id || !isUuid(id)) return '';
+  const row = rows.find((r) => String(r.id ?? '') === id);
+  if (!row) return '';
+  return (
+    String(row.name ?? row.display_name ?? row.displayName ?? row.label ?? '').trim() ||
+    ''
+  );
+}
+
+function mergeNamedOptions(
+  primary: JobLookupNamedOption[],
+  fallback: JobLookupNamedOption[],
+): JobLookupNamedOption[] {
+  if (!primary.length) return fallback;
+  if (!fallback.length) return primary;
+  const seen = new Set(primary.map((o) => o.name.toLowerCase()));
+  const out = [...primary];
+  for (const opt of fallback) {
+    if (seen.has(opt.name.toLowerCase())) continue;
+    seen.add(opt.name.toLowerCase());
+    out.push(opt);
+  }
+  return out;
+}
+
 /** Department tab — names from GET /jobs/lookups/dropdowns; PATCH sends *_name. */
 export function JobDepartmentPanel({
   job,
@@ -32,41 +90,60 @@ export function JobDepartmentPanel({
   const lookupsQuery = useJobLookupsDropdowns(true);
   const lookups = lookupsQuery.data;
 
-  const [companyName, setCompanyName] = useState(job.company_name?.trim() || '');
-  const [branchName, setBranchName] = useState(job.branch_name?.trim() || '');
-  const [departmentName, setDepartmentName] = useState(
-    job.department_name?.trim() || '',
+  const { data: departmentMasters = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    true,
   );
-  const [salespersonName, setSalespersonName] = useState(
-    job.salesperson_name?.trim() || '',
+  const { data: branchMasters = [] } = useMasterOptions(
+    'branches',
+    MASTER_PATHS.branches,
+    true,
   );
+
+  const deptRows = departmentMasters as Array<Record<string, unknown>>;
+  const branchRows = branchMasters as Array<Record<string, unknown>>;
+
+  const resolvedDepartment =
+    displayName(job.department_name) ||
+    labelForMasterId(deptRows, job.department_id);
+  const resolvedBranch =
+    displayName(job.branch_name) || labelForMasterId(branchRows, job.branch_id);
+  const resolvedCompany = displayName(job.company_name);
+  const resolvedSalesperson = displayName(job.salesperson_name);
+
+  const [companyName, setCompanyName] = useState(resolvedCompany);
+  const [branchName, setBranchName] = useState(resolvedBranch);
+  const [departmentName, setDepartmentName] = useState(resolvedDepartment);
+  const [salespersonName, setSalespersonName] = useState(resolvedSalesperson);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
   useEffect(() => {
-    if (job.company_name?.trim() && !isUuid(job.company_name.trim())) {
-      setCompanyName(job.company_name.trim());
-    }
-    if (job.branch_name?.trim() && !isUuid(job.branch_name.trim())) {
-      setBranchName(job.branch_name.trim());
-    }
-    if (job.department_name?.trim() && !isUuid(job.department_name.trim())) {
-      setDepartmentName(job.department_name.trim());
-    }
-    if (job.salesperson_name?.trim() && !isUuid(job.salesperson_name.trim())) {
-      setSalespersonName(job.salesperson_name.trim());
-    }
-  }, [
-    job.company_name,
-    job.branch_name,
-    job.department_name,
-    job.salesperson_name,
-  ]);
+    if (resolvedCompany) setCompanyName(resolvedCompany);
+    if (resolvedBranch) setBranchName(resolvedBranch);
+    if (resolvedDepartment) setDepartmentName(resolvedDepartment);
+    if (resolvedSalesperson) setSalespersonName(resolvedSalesperson);
+  }, [resolvedCompany, resolvedBranch, resolvedDepartment, resolvedSalesperson]);
 
   const companies = lookups?.companies ?? [];
-  const branches = lookups?.branches ?? [];
-  const departments = lookups?.departments ?? [];
   const salespeople = lookups?.salespeople ?? [];
+  const branches = useMemo(
+    () =>
+      mergeNamedOptions(
+        lookups?.branches ?? [],
+        mastersToNamedOptions(branchRows),
+      ),
+    [lookups?.branches, branchRows],
+  );
+  const departments = useMemo(
+    () =>
+      mergeNamedOptions(
+        lookups?.departments ?? [],
+        mastersToNamedOptions(deptRows),
+      ),
+    [lookups?.departments, deptRows],
+  );
 
   const save = async () => {
     setError(null);
@@ -98,70 +175,102 @@ export function JobDepartmentPanel({
       ) : null}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Company</span>
-          <select
-            className={erpForm.input}
-            value={companyName}
-            onChange={(e) => setCompanyName(e.target.value)}
-            disabled={resources.patchDepartment.isPending}
-          >
-            <option value="">Select…</option>
-            {companies.map((c) => (
-              <option key={`co-${optionValue(c)}`} value={optionValue(c)}>
-                {namedLabel(c)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Branch</span>
-          <select
-            className={erpForm.input}
-            value={branchName}
-            onChange={(e) => setBranchName(e.target.value)}
-            disabled={resources.patchDepartment.isPending}
-          >
-            <option value="">Select…</option>
-            {branches.map((b) => (
-              <option key={`br-${optionValue(b)}`} value={optionValue(b)}>
-                {namedLabel(b)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Department</span>
-          <select
-            className={erpForm.input}
-            value={departmentName}
-            onChange={(e) => setDepartmentName(e.target.value)}
-            disabled={resources.patchDepartment.isPending}
-          >
-            <option value="">Select…</option>
-            {departments.map((d) => (
-              <option key={`dep-${optionValue(d)}`} value={optionValue(d)}>
-                {namedLabel(d)}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Salesperson</span>
-          <select
-            className={erpForm.input}
-            value={salespersonName}
-            onChange={(e) => setSalespersonName(e.target.value)}
-            disabled={resources.patchDepartment.isPending}
-          >
-            <option value="">Select…</option>
-            {salespeople.map((s) => (
-              <option key={`sp-${optionValue(s)}-${s.email ?? ''}`} value={optionValue(s)}>
-                {namedLabel(s)}
-              </option>
-            ))}
-          </select>
-        </label>
+        <div className="min-w-0">
+          <div className={erpForm.label}>Current company</div>
+          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
+            {resolvedCompany || '—'}
+          </div>
+        </div>
+        <div className="min-w-0">
+          <div className={erpForm.label}>Current branch</div>
+          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
+            {resolvedBranch || '—'}
+          </div>
+        </div>
+        <div className="min-w-0">
+          <div className={erpForm.label}>Current department</div>
+          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
+            {resolvedDepartment || '—'}
+          </div>
+        </div>
+        <div className="min-w-0">
+          <div className={erpForm.label}>Current salesperson</div>
+          <div className="flex h-8 items-center truncate rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[#F8FAFC] px-2.5 text-[#0f172a]">
+            {resolvedSalesperson || '—'}
+          </div>
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+          Edit
+        </p>
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <label className="block min-w-0">
+            <span className={erpForm.label}>Company</span>
+            <select
+              className={erpForm.input}
+              value={companyName}
+              onChange={(e) => setCompanyName(e.target.value)}
+              disabled={resources.patchDepartment.isPending}
+            >
+              <option value="">Select…</option>
+              {companies.map((c) => (
+                <option key={`co-${optionValue(c)}`} value={optionValue(c)}>
+                  {namedLabel(c)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block min-w-0">
+            <span className={erpForm.label}>Branch</span>
+            <select
+              className={erpForm.input}
+              value={branchName}
+              onChange={(e) => setBranchName(e.target.value)}
+              disabled={resources.patchDepartment.isPending}
+            >
+              <option value="">Select…</option>
+              {branches.map((b) => (
+                <option key={`br-${optionValue(b)}`} value={optionValue(b)}>
+                  {namedLabel(b)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block min-w-0">
+            <span className={erpForm.label}>Department</span>
+            <select
+              className={erpForm.input}
+              value={departmentName}
+              onChange={(e) => setDepartmentName(e.target.value)}
+              disabled={resources.patchDepartment.isPending}
+            >
+              <option value="">Select…</option>
+              {departments.map((d) => (
+                <option key={`dep-${optionValue(d)}`} value={optionValue(d)}>
+                  {namedLabel(d)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block min-w-0">
+            <span className={erpForm.label}>Salesperson</span>
+            <select
+              className={erpForm.input}
+              value={salespersonName}
+              onChange={(e) => setSalespersonName(e.target.value)}
+              disabled={resources.patchDepartment.isPending}
+            >
+              <option value="">Select…</option>
+              {salespeople.map((s) => (
+                <option key={`sp-${optionValue(s)}-${s.email ?? ''}`} value={optionValue(s)}>
+                  {namedLabel(s)}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
       </div>
 
       <Button

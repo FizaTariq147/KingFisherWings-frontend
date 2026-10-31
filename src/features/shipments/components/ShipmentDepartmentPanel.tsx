@@ -144,54 +144,59 @@ export function ShipmentDepartmentPanel({
       </div>
 
       {canEdit ? (
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <label className="block min-w-0">
-            <span className={erpForm.label}>Department</span>
-            <select
-              className={erpForm.input}
-              value={departmentId}
-              onChange={(e) => setDepartmentId(e.target.value)}
-              disabled={changeDepartment.isPending}
-            >
-              <option value="">Select…</option>
-              {deptRows
-                .filter((d) => isUuid(String(d.id)))
-                .map((d) => (
-                  <option key={String(d.id)} value={String(d.id)}>
-                    {optionLabel(d)}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <label className="block min-w-0">
-            <span className={erpForm.label}>Branch (optional)</span>
-            <select
-              className={erpForm.input}
-              value={branchId}
-              onChange={(e) => setBranchId(e.target.value)}
-              disabled={changeDepartment.isPending}
-            >
-              <option value="">Select…</option>
-              {branchRows
-                .filter((b) => isUuid(String(b.id)))
-                .map((b) => (
-                  <option key={String(b.id)} value={String(b.id)}>
-                    {optionLabel(b)}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <div className="sm:col-span-2">
-            <Button
-              type="button"
-              size="sm"
-              variant="edit"
-              leftIcon={<Save />}
-              disabled={changeDepartment.isPending || !isUuid(departmentId.trim())}
-              onClick={() => void save()}
-            >
-              {changeDepartment.isPending ? 'Saving…' : 'Save department'}
-            </Button>
+        <div className="space-y-2">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+            Edit
+          </p>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            <label className="block min-w-0">
+              <span className={erpForm.label}>Department</span>
+              <select
+                className={erpForm.input}
+                value={departmentId}
+                onChange={(e) => setDepartmentId(e.target.value)}
+                disabled={changeDepartment.isPending}
+              >
+                <option value="">Select…</option>
+                {deptRows
+                  .filter((d) => isUuid(String(d.id)))
+                  .map((d) => (
+                    <option key={String(d.id)} value={String(d.id)}>
+                      {optionLabel(d)}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <label className="block min-w-0">
+              <span className={erpForm.label}>Branch (optional)</span>
+              <select
+                className={erpForm.input}
+                value={branchId}
+                onChange={(e) => setBranchId(e.target.value)}
+                disabled={changeDepartment.isPending}
+              >
+                <option value="">Select…</option>
+                {branchRows
+                  .filter((b) => isUuid(String(b.id)))
+                  .map((b) => (
+                    <option key={String(b.id)} value={String(b.id)}>
+                      {optionLabel(b)}
+                    </option>
+                  ))}
+              </select>
+            </label>
+            <div className="sm:col-span-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="edit"
+                leftIcon={<Save />}
+                disabled={changeDepartment.isPending || !isUuid(departmentId.trim())}
+                onClick={() => void save()}
+              >
+                {changeDepartment.isPending ? 'Saving…' : 'Save department'}
+              </Button>
+            </div>
           </div>
         </div>
       ) : (

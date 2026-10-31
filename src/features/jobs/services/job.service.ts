@@ -1513,10 +1513,34 @@ export const jobService = {
       const v = dto[key];
       if (typeof v === 'string' && v.trim()) payload[key] = v.trim();
     }
-    return request(
-      () => axiosInstance.patch(JOB_API.department(id), payload),
-      normalizeJob,
-    );
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(JOB_API.department(id), payload),
+      );
+      const fromBody = normalizeJob(unwrapEntity(res.data) ?? res.data);
+      // Backend often returns a sparse ack (no job id) — do not throw "No data returned."
+      if (fromBody) {
+        return {
+          ...fromBody,
+          company_name: fromBody.company_name || dto.company_name || fromBody.company_name,
+          branch_name: fromBody.branch_name || dto.branch_name || fromBody.branch_name,
+          department_name:
+            fromBody.department_name || dto.department_name || fromBody.department_name,
+          salesperson_name:
+            fromBody.salesperson_name || dto.salesperson_name || fromBody.salesperson_name,
+        };
+      }
+      const fresh = await this.getById(id);
+      return {
+        ...fresh,
+        ...(dto.company_name ? { company_name: dto.company_name } : {}),
+        ...(dto.branch_name ? { branch_name: dto.branch_name } : {}),
+        ...(dto.department_name ? { department_name: dto.department_name } : {}),
+        ...(dto.salesperson_name ? { salesperson_name: dto.salesperson_name } : {}),
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
   /** POST /jobs/:id/exchange-rates */

@@ -6,6 +6,7 @@ import {
   unwrapData,
   unwrapList,
 } from '@/features/portal-shared/normalize';
+import { formatMilestoneHeading } from '@/features/jobs/utils/normalizeJob';
 import type {
   PortalContainerRequest,
   PortalMilestone,
@@ -212,10 +213,12 @@ export function normalizeMilestone(raw: unknown): PortalMilestone | null {
         .toUpperCase()
         .includes('CUSTOM'),
   );
+  const rawLabel = label || id || '';
   return {
     id: id || label,
     code,
-    label: label || id,
+    /** Display only — API codes for complete/update stay on `code`. */
+    label: formatMilestoneHeading(rawLabel),
     status,
     occurredAt,
     location: pickString(record.location, record.place) || undefined,

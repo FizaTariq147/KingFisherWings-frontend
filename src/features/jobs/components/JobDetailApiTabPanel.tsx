@@ -9,7 +9,13 @@ import { ShipmentSearchSelect } from '@/features/shared/entity-search';
 import { ShowAllEditModal } from '@/features/shared/show-all/ShowAllEditModal';
 import { mergeShowAllSavedOverlay } from '@/features/shared/show-all/extractPatchShowAllDefaults';
 import { useShipment, useShipments } from '@/features/shipments/hooks/useShipments';
-import { useJobDetailTab, useJobShipmentsList, useJobShowAll, usePatchJobShowAll } from '../hooks/useJobs';
+import {
+  useJob,
+  useJobDetailTab,
+  useJobShipmentsList,
+  useJobShowAll,
+  usePatchJobShowAll,
+} from '../hooks/useJobs';
 import { useJobTabResourceMutations } from '../hooks/useJobTabResources';
 import type { Job, PatchShowAllDto } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -676,6 +682,7 @@ function JobShowAllPanel({
   /** Rendered after all Show All sections (e.g. Track & Trace). */
   footer?: ReactNode;
 }) {
+  const jobQuery = useJob(jobId);
   const query = useJobShowAll(jobId, siblingTabKeys, true);
   const patchShowAll = usePatchJobShowAll(jobId);
   const [editOpen, setEditOpen] = useState(false);
@@ -749,11 +756,26 @@ function JobShowAllPanel({
           Edit Show All
         </Button>
       </div>
-      {sections.map((section) => (
-        <SectionCard key={section.key} title={section.title}>
-          <FormFieldsFromPayload data={section.data} />
-        </SectionCard>
-      ))}
+      {sections.map((section) => {
+        const sectionKey = normalizeJobDetailTabKey(section.key);
+        const isDepartment =
+          sectionKey === 'department' || sectionKey === 'departments';
+        return (
+          <SectionCard key={section.key} title={section.title}>
+            {isDepartment && jobQuery.data ? (
+              <JobDepartmentPanel
+                job={jobQuery.data}
+                onChanged={() => {
+                  void jobQuery.refetch();
+                  void query.refetch();
+                }}
+              />
+            ) : (
+              <FormFieldsFromPayload data={section.data} />
+            )}
+          </SectionCard>
+        );
+      })}
       {arrays.map((block) => (
         <SectionCard key={block.key} title={block.title}>
           <FormFieldsFromPayload data={block.rows} />
