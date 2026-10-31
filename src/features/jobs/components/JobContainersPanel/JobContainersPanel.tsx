@@ -502,23 +502,42 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
             <p className="text-sm text-[var(--color-neutral-400)]">No fill indicators.</p>
           ) : (
             <div className="space-y-2 text-sm">
-              {fill.map((row) => (
-                <div
-                  key={row.container_id}
-                  className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-neutral-100)] py-1.5"
-                >
-                  <span className="font-medium">
-                    {row.container_number || row.container_id.slice(0, 8)}
-                  </span>
-                  <span className="text-[var(--color-neutral-600)]">
-                    Fill {formatFillPercent(row.fill_percent)}
-                    {row.used_cbm != null || row.capacity_cbm != null
-                      ? ` · CBM ${row.used_cbm ?? '—'} / ${row.capacity_cbm ?? '—'}`
-                      : ''}
-                    {row.message ? ` · ${row.message}` : ''}
-                  </span>
-                </div>
-              ))}
+              {fill.map((row) => {
+                const match =
+                  containers.find((c) => c.id === row.container_id) ||
+                  (row.container_number
+                    ? containers.find(
+                        (c) => c.container_number === row.container_number,
+                      )
+                    : undefined);
+                const typeName = match
+                  ? resolveContainerTypeName(
+                      match.container_type_id,
+                      containerTypes,
+                      match.container_type_name,
+                    )
+                  : '—';
+                const title =
+                  row.container_number?.trim() ||
+                  match?.container_number?.trim() ||
+                  (typeName !== '—' ? typeName : null) ||
+                  'Container';
+                return (
+                  <div
+                    key={row.container_id}
+                    className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-neutral-100)] py-1.5"
+                  >
+                    <span className="font-medium">{title}</span>
+                    <span className="text-[var(--color-neutral-600)]">
+                      Fill {formatFillPercent(row.fill_percent)}
+                      {row.used_cbm != null || row.capacity_cbm != null
+                        ? ` · CBM ${row.used_cbm ?? '—'} / ${row.capacity_cbm ?? '—'}`
+                        : ''}
+                      {row.message ? ` · ${row.message}` : ''}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>

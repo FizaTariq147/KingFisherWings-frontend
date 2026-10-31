@@ -129,7 +129,11 @@ export const portalShipmentsService = {
   async getById(id: string): Promise<PortalShipmentDetail> {
     const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.detail(id));
     const detail = normalizeShipmentDetail(res.data);
-    if (!detail) throw new Error('Shipment not found.');
+    if (!detail) {
+      throw new Error(
+        'Shipment details could not be read from the server response (missing id).',
+      );
+    }
     return detail;
   },
 

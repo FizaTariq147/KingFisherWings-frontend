@@ -132,7 +132,10 @@ export function useJobTabResourceMutations(jobId: string) {
     // Department
     patchDepartment: useMutation({
       mutationFn: (dto: PatchJobDepartmentDto) => jobService.patchDepartment(id, dto),
-      onSuccess: after,
+      onSuccess: (job) => {
+        queryClient.setQueryData(jobKeys.detail(id), job);
+        after();
+      },
     }),
 
     // Exchange rates

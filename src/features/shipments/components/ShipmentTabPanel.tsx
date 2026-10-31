@@ -469,11 +469,21 @@ function ShipmentShowAllPanel({
           Edit Show All
         </Button>
       </div>
-      {sections.map((section) => (
-        <SectionCard key={section.key} title={section.title}>
-          <ShipmentApiPayloadView data={section.data} emptyMessage="No fields for this section." />
-        </SectionCard>
-      ))}
+      {sections.map((section) => {
+        const isDepartment = isShipmentDepartmentTab(section.key);
+        return (
+          <SectionCard key={section.key} title={section.title}>
+            {isDepartment ? (
+              <ShipmentDepartmentTabPanel shipmentId={shipmentId} />
+            ) : (
+              <ShipmentApiPayloadView
+                data={section.data}
+                emptyMessage="No fields for this section."
+              />
+            )}
+          </SectionCard>
+        );
+      })}
       {arrays.map((block) => (
         <SectionCard key={block.key} title={block.title}>
           <ArrayTable rows={block.rows} title={block.title} showTitle={false} />

@@ -76,8 +76,14 @@ export default function PortalShipmentDetailPage() {
       await containerRequestsQuery.refetch();
       await milestonesQuery.refetch();
     } catch (err) {
+      const msg =
+        err instanceof PortalApiError || err instanceof Error ? err.message : 'Action failed.';
+      const fromBackend404 =
+        err instanceof PortalApiError && (err.status === 404 || /not found/i.test(msg));
       setActionError(
-        err instanceof PortalApiError || err instanceof Error ? err.message : 'Action failed.',
+        fromBackend404
+          ? `${msg} (backend rejected this action for the shipment — check CRO / job link.)`
+          : msg,
       );
     }
   };
@@ -87,6 +93,8 @@ export default function PortalShipmentDetailPage() {
   }
 
   if (isError || !data) {
+    const notFound =
+      error instanceof PortalApiError && (error.status === 404 || /not found/i.test(error.message));
     return (
       <div className="space-y-2">
         <p className="text-sm text-[var(--color-danger-600)]">
@@ -94,6 +102,12 @@ export default function PortalShipmentDetailPage() {
             ? error.message
             : 'Shipment not found.'}
         </p>
+        {notFound ? (
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            The portal API returned 404 for this shipment id (backend: job not linked to this
+            customer, wrong id, or detail route unavailable).
+          </p>
+        ) : null}
         <Button type="button" size="sm" variant="secondary" onClick={() => refetch()}>
           Retry
         </Button>
@@ -279,15 +293,16 @@ export default function PortalShipmentDetailPage() {
             Container & port actions
           </h2>
           <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
-            Sea export flow: confirm yard pick (status → Picked) after CRO, confirm port token, then
-            request draft BL for Docs.
+            Sea export flow: after staff issues CRO / allocates a container, confirm yard pick
+            (status → Picked), then confirm port token, then request draft BL for Docs.
           </p>
 
           {containerRequestsQuery.isLoading ? (
             <p className="text-sm text-[var(--color-neutral-400)]">Loading container requests…</p>
           ) : containerRequests.length === 0 ? (
             <p className="mb-3 text-sm text-[var(--color-neutral-400)]">
-              No container requests yet. Staff must issue CRO / allocate first.
+              No container requests from the server yet. Staff must issue CRO / allocate on the
+              job first — this list stays empty until that backend data exists.
             </p>
           ) : (
             <PortalAnimatedList className="mb-3 space-y-2">
