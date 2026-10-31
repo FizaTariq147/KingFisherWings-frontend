@@ -190,7 +190,7 @@ export const portalShipmentsService = {
 
   async confirmPortToken(
     shipmentId: string,
-    dto: Record<string, unknown> = {},
+    dto: import('../types/portalShipments.types').PortalConfirmPortTokenDto,
   ): Promise<Record<string, unknown>> {
     const res = await portalApiClient.post(
       PORTAL_SHIPMENTS_API.confirmPortToken(shipmentId),
@@ -201,7 +201,7 @@ export const portalShipmentsService = {
 
   async requestDraftBl(
     shipmentId: string,
-    dto: Record<string, unknown> = {},
+    dto: import('../types/portalShipments.types').PortalRequestDraftBlDto,
   ): Promise<Record<string, unknown>> {
     const res = await portalApiClient.post(
       PORTAL_SHIPMENTS_API.requestDraftBl(shipmentId),

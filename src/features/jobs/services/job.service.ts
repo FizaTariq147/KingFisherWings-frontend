@@ -36,6 +36,7 @@ import { normalizeCode128Value } from '../utils/scannableBarcode';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { jobDetailTabLabel, toApiDetailTabKey } from '../utils/jobDetailTabs';
 import { resolveJobDocumentFileUrl } from '../utils/resolveJobDocumentFileUrl';
+import { sanitizeModeBookingFormPut } from '../utils/sanitizeModeBookingFormPut';
 
 function jobDetailTabLabelSafe(key: string): string {
   try {
@@ -158,6 +159,7 @@ import type {
   UpsertWarehouseBookingFormDto,
   UpsertCustomsClearanceBookingFormDto,
   ModeBookingForm,
+  StaffBookingFormMode,
   UpdateSeaFclJobDetailDto,
   UpdateSeaLclJobDetailDto,
   UpdateStuffingRecordDto,
@@ -421,8 +423,10 @@ function asModeBookingForm(raw: unknown): ModeBookingForm {
 async function putModeBookingFormRequest(
   url: string,
   dto: Record<string, unknown>,
+  mode?: StaffBookingFormMode,
 ): Promise<ModeBookingForm> {
-  const res = await withGatewayRetry(() => axiosInstance.put(url, dto));
+  const body = sanitizeModeBookingFormPut(dto, mode);
+  const res = await withGatewayRetry(() => axiosInstance.put(url, body));
   return asModeBookingForm(res.data);
 }
 
@@ -2634,7 +2638,11 @@ export const jobService = {
 
   async putSeaFclBookingForm(id: string, dto: UpsertSeaFclBookingFormDto): Promise<ModeBookingForm> {
     assertId(id);
-    return putModeBookingFormRequest(JOB_API.seaFclBookingForm(id), dto as Record<string, unknown>);
+    return putModeBookingFormRequest(
+      JOB_API.seaFclBookingForm(id),
+      dto as Record<string, unknown>,
+      'SEA_FCL',
+    );
   },
 
   async completeSeaFclBookingForm(id: string): Promise<unknown> {
@@ -2649,7 +2657,11 @@ export const jobService = {
 
   async putSeaLclBookingForm(id: string, dto: UpsertSeaLclBookingFormDto): Promise<ModeBookingForm> {
     assertId(id);
-    return putModeBookingFormRequest(JOB_API.seaLclBookingForm(id), dto as Record<string, unknown>);
+    return putModeBookingFormRequest(
+      JOB_API.seaLclBookingForm(id),
+      dto as Record<string, unknown>,
+      'SEA_LCL',
+    );
   },
 
   async completeSeaLclBookingForm(id: string): Promise<unknown> {
@@ -2720,7 +2732,11 @@ export const jobService = {
     dto: UpsertCourierBookingFormDto,
   ): Promise<ModeBookingForm> {
     assertId(id);
-    return putModeBookingFormRequest(JOB_API.courierBookingForm(id), dto as Record<string, unknown>);
+    return putModeBookingFormRequest(
+      JOB_API.courierBookingForm(id),
+      dto as Record<string, unknown>,
+      'COURIER',
+    );
   },
 
   async completeCourierBookingForm(id: string): Promise<unknown> {
@@ -2780,7 +2796,11 @@ export const jobService = {
 
   async putLandBookingForm(id: string, dto: UpsertLandBookingFormDto): Promise<ModeBookingForm> {
     assertId(id);
-    return putModeBookingFormRequest(JOB_API.landBookingForm(id), dto as Record<string, unknown>);
+    return putModeBookingFormRequest(
+      JOB_API.landBookingForm(id),
+      dto as Record<string, unknown>,
+      'LAND',
+    );
   },
 
   async completeLandBookingForm(id: string): Promise<unknown> {
@@ -2889,11 +2909,12 @@ export const jobService = {
     dto: UpsertRoadFreightBookingFormDto,
   ): Promise<ModeBookingForm> {
     assertId(id);
+    const body = sanitizeModeBookingFormPut(dto as Record<string, unknown>, 'ROAD_FREIGHT');
     return withRoadLandAclFallback(
       async () => {
         try {
           const res = await withGatewayRetry(() =>
-            axiosInstance.put(JOB_API.roadFreightBookingForm(id), dto, SOFT_ACL_AXIOS),
+            axiosInstance.put(JOB_API.roadFreightBookingForm(id), body, SOFT_ACL_AXIOS),
           );
           return asModeBookingForm(res.data);
         } catch (error) {
@@ -2901,7 +2922,7 @@ export const jobService = {
           throw formatAxiosError(error);
         }
       },
-      () => this.putLandBookingForm(id, dto as UpsertLandBookingFormDto),
+      () => this.putLandBookingForm(id, body as UpsertLandBookingFormDto),
     );
   },
 
@@ -2933,6 +2954,7 @@ export const jobService = {
     return putModeBookingFormRequest(
       JOB_API.warehouseBookingForm(id),
       dto as Record<string, unknown>,
+      'WAREHOUSE',
     );
   },
 
@@ -2989,6 +3011,7 @@ export const jobService = {
     return putModeBookingFormRequest(
       JOB_API.customsClearanceBookingForm(id),
       dto as Record<string, unknown>,
+      'CUSTOMS_CLEARANCE',
     );
   },
 

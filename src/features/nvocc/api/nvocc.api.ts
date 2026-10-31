@@ -69,11 +69,6 @@ export const NVOCC_API = {
     submitSi: (id: string) => `/nvocc/jobs/${id}/si/submit`,
     submitVgm: (id: string) => `/nvocc/jobs/${id}/vgm/submit`,
     podReceived: (id: string) => `/nvocc/jobs/${id}/pod/received`,
-    containerRequests: (id: string) => `/nvocc/jobs/${id}/container-requests`,
-    issueContainerRequest: (jobId: string, requestId: string) =>
-      `/nvocc/jobs/${jobId}/container-requests/${requestId}/issue`,
-    allocateContainerRequest: (jobId: string, requestId: string) =>
-      `/nvocc/jobs/${jobId}/container-requests/${requestId}/allocate`,
     stageLoading: (id: string) => `/nvocc/jobs/${id}/stage/loading`,
     confirmPayment: (id: string) => `/nvocc/jobs/${id}/accounts/confirm-payment`,
     closeReport: (id: string) => `/nvocc/jobs/${id}/close-report`,

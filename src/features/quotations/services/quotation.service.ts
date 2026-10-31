@@ -1982,8 +1982,12 @@ export const quotationService = {
   async upsertBookingForm(id: string, body: Record<string, unknown>): Promise<unknown> {
     assertId(id);
     try {
+      const { sanitizeModeBookingFormPut } = await import(
+        '@/features/jobs/utils/sanitizeModeBookingFormPut'
+      );
+      const payload = sanitizeModeBookingFormPut(body);
       const res = await withGatewayRetry(() =>
-        axiosInstance.put(QUOTATION_API.bookingForm(id), body),
+        axiosInstance.put(QUOTATION_API.bookingForm(id), payload),
       );
       return unwrapEntity(res.data);
     } catch (error) {

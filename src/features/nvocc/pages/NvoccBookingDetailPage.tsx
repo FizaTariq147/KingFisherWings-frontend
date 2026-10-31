@@ -1653,7 +1653,7 @@ export default function NvoccBookingDetailPage() {
             await navigateToConvertedJob(raw, invoiceForJob);
           } catch (error) {
             throw new Error(
-              `${extractAxiosErrorDetail(error)} Invoice was sent, but convert-to-job failed. Use “Retry convert to job” on the CRO step.`,
+              `${extractAxiosErrorDetail(error)} Invoice was sent, but convert-to-job failed. Use “Retry convert to job” on the convert step.`,
             );
           }
         } else {
@@ -1967,7 +1967,7 @@ export default function NvoccBookingDetailPage() {
                   <p className="text-xs text-amber-800">
                     {portalFormFilled
                       ? `Portal already has ${portalBookingQuery.data?.quoteNumber || 'the quote'} accepted with a booking form — Sync to jump to Ops review.`
-                      : 'After this: customer accepts → Ops booking form → auto invoice + convert to job → CRO.'}
+                      : 'After this: customer accepts → Ops booking form → auto invoice + convert to job.'}
                   </p>
                   <div className="flex flex-wrap gap-2">
                     <Button
@@ -2368,12 +2368,12 @@ export default function NvoccBookingDetailPage() {
               {currentStage === 'cro-container' ? (
                 <div className="rounded-md border border-violet-200 bg-violet-50 p-4 space-y-2">
                   <p className="text-sm font-medium text-violet-900">
-                    Now: CRO + container number
+                    Now: Convert to job
                   </p>
                   <p className="text-xs text-violet-800">
                     Booking is ready to convert (gate INVOICE_SENT + lifecycle CONFIRMED). Retry
                     posts convert-to-job (empty body first), then falls back to creating the job
-                    directly if the convert API fails. Then Issue CRO / Allocate on the job Ops tab.
+                    directly if the convert API fails.
                   </p>
                   <p className="text-xs text-violet-900">
                     Gate: <strong>{booking.booking_status || '—'}</strong>
@@ -2400,7 +2400,7 @@ export default function NvoccBookingDetailPage() {
                           const raw = await actions.convertToJob.mutateAsync({});
                           markDone('cro-container');
                           await navigateToConvertedJob(raw, workflowInvoiceId);
-                        }, 'Converted — open Ops for CRO / allocate.')
+                        }, 'Converted — continue on job Ops.')
                       }
                     >
                       {actions.convertToJob.isPending

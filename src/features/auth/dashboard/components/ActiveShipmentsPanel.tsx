@@ -19,6 +19,7 @@ import type { LucideIcon } from 'lucide-react';
 import { DashCard, DashEmpty, DashSkeleton } from './DashCard';
 import type { Job } from '@/features/jobs/types/job.types';
 import { jobDetailPath, jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
+import { pickJobContainerDisplay } from '@/features/jobs/utils/normalizeJobContainers';
 import {
   deptBadgeClass,
   deptForStatus,
@@ -303,13 +304,14 @@ export function ActiveShipmentsPanel({
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[980px] text-left">
+          <table className="w-full min-w-[1080px] text-left">
             <thead className="bg-[var(--color-neutral-50)]">
               <tr className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-neutral-400)]">
                 <th className="w-10 px-4 py-2.5" />
                 <th className="px-3 py-2.5 font-semibold">Job</th>
                 <th className="px-3 py-2.5 font-semibold">Route</th>
                 <th className="px-3 py-2.5 font-semibold">Mode</th>
+                <th className="px-3 py-2.5 font-semibold">Container</th>
                 <th className="px-3 py-2.5 font-semibold">With dept</th>
                 <th className="px-3 py-2.5 font-semibold">ETA</th>
                 <th className="px-3 py-2.5 font-semibold">Status</th>
@@ -328,6 +330,13 @@ export function ActiveShipmentsPanel({
                 const visibleHints = hints.slice(0, 2);
                 const extraHints = hints.length - visibleHints.length;
                 const eta = formatShortDate(job.eta || job.sea_fcl_details?.eta);
+                const container = pickJobContainerDisplay(job.containers, {
+                  number: job.primary_container_number,
+                  status: job.primary_container_status,
+                });
+                const containerNumber = container?.number || '';
+                const containerStatus = container?.status || '';
+                const containerKind = container?.kind;
 
                 return (
                   <tr
@@ -407,6 +416,36 @@ export function ActiveShipmentsPanel({
                         )}
                         {modeLabel}
                       </div>
+                    </td>
+                    <td className="px-3 py-3 align-top">
+                      {!containerNumber && !containerStatus ? (
+                        <span className="text-[11px] text-[var(--color-neutral-400)]">—</span>
+                      ) : (
+                        <div className="min-w-[110px]">
+                          <p className="text-[11px] font-semibold text-[var(--color-neutral-800)]">
+                            {containerNumber || '—'}
+                          </p>
+                          {(() => {
+                            const meta = [
+                              containerStatus
+                                ? String(containerStatus).replace(/_/g, ' ').toLowerCase()
+                                : null,
+                              containerKind === 'ACTUAL'
+                                ? 'Actual'
+                                : containerKind === 'PLANNED'
+                                  ? 'Planned'
+                                  : null,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ');
+                            return meta ? (
+                              <p className="mt-0.5 text-[10px] capitalize text-[var(--color-neutral-500)]">
+                                {meta}
+                              </p>
+                            ) : null;
+                          })()}
+                        </div>
+                      )}
                     </td>
                     <td className="px-3 py-3 align-top">
                       <span

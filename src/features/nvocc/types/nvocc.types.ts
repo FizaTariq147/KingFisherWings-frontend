@@ -464,32 +464,4 @@ export type UpdateNvoccBookingFormDto = {
   stage_override_reason?: string;
 };
 
-export interface NvoccContainerRequest {
-  id: string;
-  job_id?: string;
-  container_type_id?: string;
-  container_type_code?: string;
-  /** Display alias — API field is container_count. */
-  quantity?: number;
-  container_count?: number;
-  status?: string;
-  cro_number?: string;
-  container_number?: string;
-  issued_at?: string;
-  allocated_at?: string;
-  notes?: string;
-  created_at?: string;
-  updated_at?: string;
-}
-
-export interface CreateNvoccContainerRequestDto {
-  container_type_id?: string;
-  /** API expects container_count (integer 1–100). Prefer this over quantity. */
-  container_count?: number;
-  /** @deprecated Mapped to container_count — do not send as quantity. */
-  quantity?: number;
-  notes?: string;
-  [key: string]: unknown;
-}
-
 export type NvoccWorkflowActionDto = Record<string, unknown>;

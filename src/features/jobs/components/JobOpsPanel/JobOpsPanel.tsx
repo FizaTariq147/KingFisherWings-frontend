@@ -13,7 +13,7 @@ import { RoadLandWorkflowPanel } from '../RoadLandWorkflowPanel';
 import { staffBookingFormModeFromJob } from '../../hooks/useStaffBookingForm';
 import { isRoadOrLandJobType } from '../../hooks/useRoadLandJob';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
-import { useJobContainers, useJobCutoffs } from '../../hooks/useJobs';
+import { useJobContainers, useJobCutoffs, usePatchJobShowAll } from '../../hooks/useJobs';
 import type { Job } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import type { JobCutoffLane } from '../../utils/normalizeJobCutoffs';
@@ -78,13 +78,31 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
     isSeaFcl,
   );
   const mutations = useJobSubresourceMutations(job.id);
+  const patchShowAll = usePatchJobShowAll(job.id);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [hawb, setHawb] = useState(job.air_details?.hawb_number ?? '');
   const [mawb, setMawb] = useState(job.air_details?.mawb_number ?? '');
-  const [voyage, setVoyage] = useState(job.sea_fcl_details?.voyage_number ?? '');
+  const [voyage, setVoyage] = useState(
+    job.voyage_number || job.sea_fcl_details?.voyage_number || '',
+  );
   const [hbl, setHbl] = useState(job.sea_fcl_details?.hbl_number ?? '');
   const [mbl, setMbl] = useState(job.sea_fcl_details?.mbl_number ?? '');
+  const [blNumber, setBlNumber] = useState(job.bl_number ?? '');
+  const [vesselName, setVesselName] = useState(
+    job.vessel_name || job.sea_fcl_details?.vessel_name || '',
+  );
+  const [containerNumber, setContainerNumber] = useState(
+    job.primary_container_number ?? '',
+  );
+  const [containerStatus, setContainerStatus] = useState(
+    job.primary_container_status ?? '',
+  );
+  const [rotationNumber, setRotationNumber] = useState(job.rotation_number ?? '');
+  const [companyCode, setCompanyCode] = useState(
+    job.edi_company_code || job.company_code || '',
+  );
+  const [lineCode, setLineCode] = useState(job.line_code || job.line_no || '');
 
   const saveAir = async () => {
     setError(null);
@@ -107,7 +125,19 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
         hbl_number: hbl || undefined,
         mbl_number: mbl || undefined,
       });
-      setMsg('Sea FCL details saved.');
+      await patchShowAll.mutateAsync({
+        ...(voyage.trim() ? { voyage_number: voyage.trim() } : {}),
+        ...(hbl.trim() ? { hbl_number: hbl.trim() } : {}),
+        ...(mbl.trim() ? { mbl_number: mbl.trim() } : {}),
+        ...(blNumber.trim() ? { bl_number: blNumber.trim() } : {}),
+        ...(vesselName.trim() ? { vessel_name: vesselName.trim() } : {}),
+        ...(containerNumber.trim() ? { container_number: containerNumber.trim() } : {}),
+        ...(containerStatus.trim() ? { container_status: containerStatus.trim() } : {}),
+        ...(rotationNumber.trim() ? { rotation_number: rotationNumber.trim() } : {}),
+        ...(companyCode.trim() ? { company_code: companyCode.trim() } : {}),
+        ...(lineCode.trim() ? { line_code: lineCode.trim() } : {}),
+      });
+      setMsg('Sea FCL / ops fields saved.');
     } catch (err) {
       setError(getErrorMessage(err));
     }
@@ -160,13 +190,50 @@ export function JobOpsPanel({ job }: JobOpsPanelProps) {
                 value={voyage}
                 onChange={(e) => setVoyage(e.target.value)}
               />
+              <Input
+                placeholder="Vessel name"
+                value={vesselName}
+                onChange={(e) => setVesselName(e.target.value)}
+              />
               <Input placeholder="HBL" value={hbl} onChange={(e) => setHbl(e.target.value)} />
               <Input placeholder="MBL" value={mbl} onChange={(e) => setMbl(e.target.value)} />
+              <Input
+                placeholder="BL number"
+                value={blNumber}
+                onChange={(e) => setBlNumber(e.target.value)}
+              />
+              <Input
+                placeholder="Line code"
+                value={lineCode}
+                onChange={(e) => setLineCode(e.target.value)}
+              />
+              <Input
+                placeholder="Container number"
+                value={containerNumber}
+                onChange={(e) => setContainerNumber(e.target.value)}
+              />
+              <Input
+                placeholder="Container status"
+                value={containerStatus}
+                onChange={(e) => setContainerStatus(e.target.value)}
+              />
+              <Input
+                placeholder="Rotation number"
+                value={rotationNumber}
+                onChange={(e) => setRotationNumber(e.target.value)}
+              />
+              <Input
+                placeholder="EDI company code"
+                value={companyCode}
+                onChange={(e) => setCompanyCode(e.target.value)}
+              />
               <div className="flex flex-wrap gap-2 sm:col-span-2">
                 <Button
                   type="button"
                   onClick={saveSea}
-                  disabled={mutations.updateSeaFclDetails.isPending}
+                  disabled={
+                    mutations.updateSeaFclDetails.isPending || patchShowAll.isPending
+                  }
                 >
                   Save sea details
                 </Button>

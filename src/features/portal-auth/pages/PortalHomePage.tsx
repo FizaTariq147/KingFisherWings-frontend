@@ -312,25 +312,24 @@ export default function PortalHomePage() {
         loadingInvoices={invoicesKpiLoading}
       />
 
-      <div className="grid items-start gap-4 xl:grid-cols-[minmax(0,1.65fr)_minmax(300px,0.9fr)]">
-        <PortalActiveShipmentsPanel
-          items={shipmentItems}
-          loading={recentShipments.isLoading}
-          error={recentShipments.isError}
+      <PortalActiveShipmentsPanel
+        items={shipmentItems}
+        loading={recentShipments.isLoading}
+        error={recentShipments.isError}
+      />
+
+      <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">
+        <PortalPendingQuotesPanel
+          items={quoteItems}
+          openCount={quoteOpen}
+          loading={recentQuotes.isLoading}
+          error={recentQuotes.isError}
         />
-        <div className="flex flex-col gap-4">
-          <PortalPendingQuotesPanel
-            items={quoteItems}
-            openCount={quoteOpen}
-            loading={recentQuotes.isLoading}
-            error={recentQuotes.isError}
-          />
-          <PortalTodaysTasksPanel
-            tasks={tasks}
-            loading={portalTasks.isLoading || (dashboard.isLoading && !portalTasks.data)}
-            error={portalTasks.isError && !dashboard.data?.tasksPreview}
-          />
-        </div>
+        <PortalTodaysTasksPanel
+          tasks={tasks}
+          loading={portalTasks.isLoading || (dashboard.isLoading && !portalTasks.data)}
+          error={portalTasks.isError && !dashboard.data?.tasksPreview}
+        />
       </div>
     </PortalAnimatedPage>
   );

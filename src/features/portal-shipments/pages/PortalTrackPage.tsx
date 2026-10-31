@@ -6,6 +6,8 @@ import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { PortalPageHeader, PortalPanel } from '@/features/portal-auth/components/portal-ui';
 import { ApiDataView } from '@/features/jobs/components/ApiDataView';
+import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
+import { normalizePublicTrack } from '@/features/public-track/utils/normalizePublicTrack';
 import { usePortalTrackByReference } from '../hooks/usePortalShipments';
 import type { PortalTrackByRefResult } from '../types/portalShipments.types';
 
@@ -118,10 +120,16 @@ export default function PortalTrackPage() {
               </p>
             </div>
           </div>
-          <ApiDataView
-            data={result.data ?? {}}
-            emptyLabel="No tracking data returned."
-          />
+          {(() => {
+            const trackResult = normalizePublicTrack(result.data);
+            if (trackResult) return <PublicTrackTimeline result={trackResult} />;
+            return (
+              <ApiDataView
+                data={result.data ?? {}}
+                emptyLabel="No tracking data returned."
+              />
+            );
+          })()}
         </PortalPanel>
       ) : null}
     </div>

@@ -81,6 +81,15 @@ export interface Shipment {
   currency_code?: string;
   mbl_number?: string;
   hbl_number?: string;
+  bl_number?: string;
+  rotation_number?: string;
+  container_number?: string;
+  container_status?: string;
+  company_code?: string;
+  edi_company_code?: string;
+  line_code?: string;
+  line_no?: string;
+  vessel_number?: string;
   etd?: string;
   eta?: string;
   vessel_name?: string;

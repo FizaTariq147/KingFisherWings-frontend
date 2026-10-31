@@ -29,6 +29,16 @@ const FIELD_DEFS: Array<{
   { key: 'eta', label: 'ETA', kind: 'date', group: 'Dates' },
   { key: 'mbl_number', label: 'MBL number', kind: 'text', group: 'References' },
   { key: 'hbl_number', label: 'HBL number', kind: 'text', group: 'References' },
+  { key: 'bl_number', label: 'BL number', kind: 'text', group: 'References' },
+  { key: 'rotation_number', label: 'Rotation number', kind: 'text', group: 'Ops / EDI' },
+  { key: 'container_number', label: 'Container number', kind: 'text', group: 'Ops / EDI' },
+  { key: 'container_status', label: 'Container status', kind: 'text', group: 'Ops / EDI' },
+  { key: 'vessel_name', label: 'Vessel name', kind: 'text', group: 'Ops / EDI' },
+  { key: 'vessel_number', label: 'Vessel number', kind: 'text', group: 'Ops / EDI' },
+  { key: 'voyage_number', label: 'Voyage number', kind: 'text', group: 'Ops / EDI' },
+  { key: 'line_code', label: 'Line code', kind: 'text', group: 'Ops / EDI' },
+  { key: 'line_no', label: 'Line no', kind: 'text', group: 'Ops / EDI' },
+  { key: 'company_code', label: 'Company code (EDI)', kind: 'text', group: 'Ops / EDI' },
   { key: 'origin_port_name', label: 'Origin port name', kind: 'text', group: 'Ports' },
   { key: 'origin_port_code', label: 'Origin port code', kind: 'text', group: 'Ports' },
   { key: 'dest_port_name', label: 'Destination port name', kind: 'text', group: 'Ports' },
@@ -143,7 +153,7 @@ export function ShowAllEditModal({
         if (!pending) onClose();
       }}
       title={title}
-      size="lg"
+      size="full"
       footer={
         <div className="flex justify-end gap-2">
           <Button
@@ -175,13 +185,13 @@ export function ShowAllEditModal({
       {formError ? (
         <p className="mb-3 text-sm text-[var(--color-danger-600)]">{formError}</p>
       ) : null}
-      <div className="max-h-[60vh] space-y-4 overflow-y-auto pr-1">
+      <div className="max-h-[min(70vh,36rem)] space-y-4 overflow-y-auto pr-1">
         {groups.map(([group, fields]) => (
           <section key={group} className="space-y-2">
             <h4 className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
               {group}
             </h4>
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {fields.map((field) => {
                 const incomplete = isPatchShowAllFieldEmpty(defaults, field.key);
                 const value = draft[field.key];

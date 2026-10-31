@@ -86,9 +86,6 @@ export function QuotationOverviewPanel({ quotation: q }: QuotationOverviewPanelP
         </h3>
         <dl>
           <Row label="Customer" value={customerLabel} />
-          <Row label="Contact" value={q.contact_name} />
-          <Row label="Email" value={q.contact_email} />
-          <Row label="Phone" value={q.contact_phone} />
           <Row
             label="Department"
             value={quotationIdNameLabel(q.department_name, q.department_id, departmentMap)}

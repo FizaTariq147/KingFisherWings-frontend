@@ -1287,6 +1287,10 @@ export default function ShipmentDetailPage() {
             submissionsLoading={shipmentEdiSubmissionsQuery.isLoading}
             generatePending={generateShipmentEdi.isPending}
             downloadPending={downloadShipmentEdi.isPending}
+            initialCompanyCodes={[
+              typeof shipment.company_code === 'string' ? shipment.company_code : '',
+              typeof shipment.edi_company_code === 'string' ? shipment.edi_company_code : '',
+            ].filter((c) => Boolean(c.trim()))}
             onGenerate={async (dto) => {
               await generateShipmentEdi.mutateAsync(dto);
               setActionMessage(`EDI “${dto.edi_type}” generated.`);

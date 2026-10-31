@@ -98,17 +98,29 @@ export function PublicTrackTimeline({ result }: { result: PublicTrackResult }) {
                     <p className="text-sm font-medium text-[var(--color-neutral-900)]">
                       {m.label}
                     </p>
+                    {m.eventType ? (
+                      <Badge variant="info">{m.eventType.replaceAll('_', ' ')}</Badge>
+                    ) : null}
                     <Badge variant={done ? 'success' : 'warning'}>
                       {done ? 'Completed' : 'Pending'}
                     </Badge>
                   </div>
+                  {m.summary && m.summary !== m.description ? (
+                    <p className="mt-0.5 text-[13px] text-[var(--color-neutral-700)]">
+                      {m.summary}
+                    </p>
+                  ) : null}
                   {m.description ? (
                     <p className="mt-0.5 text-[13px] text-[var(--color-neutral-600)]">
                       {m.description}
                     </p>
                   ) : null}
                   <p className="mt-0.5 text-[12px] text-[var(--color-neutral-500)]">
-                    {[formatWhen(m.completedAt || m.occurredAt), m.location]
+                    {[
+                      formatWhen(m.completedAt || m.occurredAt),
+                      m.location,
+                      m.containerNumber ? `CTR ${m.containerNumber}` : null,
+                    ]
                       .filter(Boolean)
                       .join(' · ') || (done ? '—' : 'Awaiting update')}
                   </p>

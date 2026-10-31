@@ -223,10 +223,24 @@ export default function PortalShipmentsPage() {
                     </div>
                     <div className="min-w-0">
                       <div className="text-sm font-semibold text-[var(--color-neutral-900)] truncate">
-                        {s.reference}
+                        {s.jobNumber || s.reference}
                       </div>
                       <div className="text-xs text-[var(--color-neutral-500)] truncate">
                         {[s.origin, s.destination].filter(Boolean).join(' → ') || s.jobType || '—'}
+                      </div>
+                      <div className="mt-0.5 text-[11px] text-[var(--color-neutral-500)] truncate">
+                        {[
+                          s.blNumber || s.hblNumber || s.mblNumber
+                            ? `BL ${s.blNumber || s.hblNumber || s.mblNumber}`
+                            : null,
+                          s.containerNumbers?.length
+                            ? `CTR ${s.containerNumbers.join(', ')}`
+                            : null,
+                          s.containerStatus ? `Status ${s.containerStatus}` : null,
+                          s.rotationNumber ? `Rot ${s.rotationNumber}` : null,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ')}
                       </div>
                     </div>
                   </div>

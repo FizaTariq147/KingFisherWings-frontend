@@ -21,9 +21,19 @@ export interface PortalShipmentSummary {
   raw?: Record<string, unknown>;
 }
 
+export interface PortalShipmentHold {
+  holdReason?: string;
+  heldAt?: string;
+  expectedReleaseAt?: string;
+  resumeReason?: string;
+  resumedAt?: string;
+}
+
 export interface PortalShipmentListItem {
   id: string;
   reference: string;
+  /** Top-level job number when API returns it separately from reference. */
+  jobNumber?: string;
   jobType?: string;
   status?: string;
   origin?: string;
@@ -31,7 +41,35 @@ export interface PortalShipmentListItem {
   etd?: string;
   eta?: string;
   updatedAt?: string;
+  blNumber?: string;
+  hblNumber?: string;
+  mblNumber?: string;
+  hawbNumber?: string;
+  mawbNumber?: string;
+  trackingNumber?: string;
+  containerNumbers?: string[];
+  containerStatus?: string;
+  /** Prefer ACTUAL over PLANNED when both exist on the job. */
+  containerKind?: 'ACTUAL' | 'PLANNED';
+  rotationNumber?: string;
+  hold?: PortalShipmentHold;
   raw?: Record<string, unknown>;
+}
+
+/** POST /portal/shipments/:id/port-token/confirm */
+export interface PortalConfirmPortTokenDto {
+  bl_number: string;
+  container_number: string;
+  date: string;
+  delivery_location: string;
+  receiver_name: string;
+  receiver_contact: string;
+  port_gate_token?: string;
+}
+
+/** POST /portal/shipments/:id/request-draft-bl */
+export interface PortalRequestDraftBlDto {
+  comment: string;
 }
 
 /** Same-page Track & Trace result (portal lookup → tracking / quotation). */

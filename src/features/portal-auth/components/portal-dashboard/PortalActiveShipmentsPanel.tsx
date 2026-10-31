@@ -71,8 +71,8 @@ export function PortalActiveShipmentsPanel({
     () => active.filter((item) => matchesFilter(item, filter)),
     [active, filter],
   );
-  const visibleRows = filtered.slice(0, 6);
-  const loadingRowCount = Math.min(6, Math.max(1, active.length || 3));
+  const visibleRows = filtered.slice(0, 8);
+  const loadingRowCount = Math.min(8, Math.max(1, active.length || 3));
 
   return (
     <section className="h-auto w-full self-start rounded-[20px] bg-white p-5 shadow-[0_10px_30px_rgba(10,41,66,0.05)]">
@@ -102,12 +102,13 @@ export function PortalActiveShipmentsPanel({
         </div>
       </div>
 
-      <div className="overflow-x-auto">
+      <div className="portal-scrollbar overflow-x-auto">
         <table className="min-w-full text-left text-xs">
           <thead>
             <tr className={cn(dashType.panel.meta, 'font-semibold uppercase tracking-[0.12em]')}>
               <th className="pb-3 pr-3 font-semibold">Job / Route</th>
               <th className="pb-3 pr-3 font-semibold">Mode</th>
+              <th className="pb-3 pr-3 font-semibold">Container</th>
               <th className="pb-3 pr-3 font-semibold">Status</th>
               <th className="pb-3 text-right font-semibold">Eta</th>
             </tr>
@@ -116,45 +117,81 @@ export function PortalActiveShipmentsPanel({
             {loading ? (
               Array.from({ length: loadingRowCount }).map((_, i) => (
                 <tr key={i}>
-                  <td colSpan={4} className="py-3">
+                  <td colSpan={5} className="py-3">
                     <div className="h-10 animate-pulse rounded-lg bg-[#EEF2F5]" />
                   </td>
                 </tr>
               ))
             ) : error ? (
               <tr>
-                <td colSpan={4} className={cn('py-8', dashType.panel.body, 'text-[var(--color-danger-600)]')}>
+                <td colSpan={5} className={cn('py-8', dashType.panel.body, 'text-[var(--color-danger-600)]')}>
                   Could not load shipments.
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={4} className={cn('py-8', dashType.panel.body)}>
+                <td colSpan={5} className={cn('py-8', dashType.panel.body)}>
                   No active shipments for this filter.
                 </td>
               </tr>
             ) : (
-              visibleRows.map((item) => (
-                <tr key={item.id} className="border-t border-[#F1F4F7]">
-                  <td className="py-3.5 pr-3">
-                    <Link to={`/portal/shipments/${item.id}`} className="block min-w-[180px]">
-                      <p className={dashType.panel.rowTitle}>{item.reference}</p>
-                      <p className={dashType.panel.rowMeta}>
-                        {[item.origin, item.destination].filter(Boolean).join(' → ') || '—'}
-                      </p>
-                    </Link>
-                  </td>
-                  <td className="py-3.5 pr-3">
-                    <ModeIcon jobType={item.jobType} />
-                  </td>
-                  <td className="py-3.5 pr-3">
-                    <StatusBadge status={item.status} />
-                  </td>
-                  <td className={cn('py-3.5 text-right', dashType.panel.meta)}>
-                    ETA {formatShortDate(item.eta)}
-                  </td>
-                </tr>
-              ))
+              visibleRows.map((item) => {
+                const containerNumber = item.containerNumbers?.[0]?.trim() || '';
+                const extraContainers = Math.max(0, (item.containerNumbers?.length ?? 0) - 1);
+                const containerStatus = item.containerStatus?.trim() || '';
+                const containerMeta = [
+                  containerStatus
+                    ? containerStatus.replace(/_/g, ' ').toLowerCase()
+                    : null,
+                  item.containerKind === 'ACTUAL'
+                    ? 'Actual'
+                    : item.containerKind === 'PLANNED'
+                      ? 'Planned'
+                      : null,
+                ]
+                  .filter(Boolean)
+                  .join(' · ');
+                return (
+                  <tr key={item.id} className="border-t border-[#F1F4F7]">
+                    <td className="py-3.5 pr-3">
+                      <Link to={`/portal/shipments/${item.id}`} className="block min-w-[180px]">
+                        <p className={dashType.panel.rowTitle}>{item.reference}</p>
+                        <p className={dashType.panel.rowMeta}>
+                          {[item.origin, item.destination].filter(Boolean).join(' → ') || '—'}
+                        </p>
+                      </Link>
+                    </td>
+                    <td className="py-3.5 pr-3">
+                      <ModeIcon jobType={item.jobType} />
+                    </td>
+                    <td className="py-3.5 pr-3">
+                      {containerNumber || containerStatus ? (
+                        <div className="min-w-[100px]">
+                          <p className={dashType.panel.rowTitle}>
+                            {containerNumber || '—'}
+                            {extraContainers > 0 ? (
+                              <span className={cn('ml-1 font-normal', dashType.panel.rowMeta)}>
+                                +{extraContainers}
+                              </span>
+                            ) : null}
+                          </p>
+                          {containerMeta ? (
+                            <p className={cn(dashType.panel.rowMeta, 'capitalize')}>{containerMeta}</p>
+                          ) : null}
+                        </div>
+                      ) : (
+                        <span className={dashType.panel.rowMeta}>—</span>
+                      )}
+                    </td>
+                    <td className="py-3.5 pr-3">
+                      <StatusBadge status={item.status} />
+                    </td>
+                    <td className={cn('py-3.5 text-right', dashType.panel.meta)}>
+                      ETA {formatShortDate(item.eta)}
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>

@@ -1,13 +1,6 @@
-import { useMemo, useState } from 'react';
+﻿import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
-import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
-import {
-  containerTypeSelectOptions,
-  resolveContainerTypeName,
-} from '@/features/masters/utils/containerTypeLabel';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { NvoccSeaExportFlowRail } from './NvoccSeaExportFlowRail';
 import {
@@ -18,43 +11,19 @@ import {
   firstOpenStage,
   useSeaExportProgress,
 } from '../hooks/useSeaExportProgress';
-import {
-  useNvoccContainerRequests,
-  useNvoccJobActions,
-} from '../hooks/useNvoccJobs';
+import { useNvoccJobActions } from '../hooks/useNvoccJobs';
 
 interface NvoccJobWorkflowPanelProps {
   jobId: string;
 }
 
 export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
-  const { data: requests = [], isLoading, isError, error, refetch } = useNvoccContainerRequests(jobId);
   const actions = useNvoccJobActions(jobId);
   const { done, markDone, isDone } = useSeaExportProgress(`job:${jobId}`);
-  const { data: containerTypes = [] } = useMasterOptions(
-    'container-types',
-    MASTER_PATHS['container-types'],
-    true,
-  );
-  const containerTypeOptions = useMemo(
-    () => containerTypeSelectOptions(containerTypes),
-    [containerTypes],
-  );
   const [message, setMessage] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
-  const [containerTypeId, setContainerTypeId] = useState('');
-  const [containerCount, setContainerCount] = useState('1');
-  const [notes, setNotes] = useState('');
 
-  const hasCro = requests.some((r) => Boolean(r.cro_number));
-  const hasContainer = requests.some((r) => Boolean(r.container_number));
-
-  const derived = useMemo(() => {
-    const map: Partial<Record<SeaExportStageId, boolean>> = { ...done };
-    if (hasCro && hasContainer) map['cro-container'] = true;
-    return map;
-  }, [done, hasCro, hasContainer]);
-
+  const derived = useMemo(() => ({ ...done }), [done]);
   const currentStage = firstOpenStage(SEA_EXPORT_JOB_ACTION_ORDER, isDone, derived);
 
   const run = async (
@@ -68,7 +37,6 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
       await fn();
       if (complete) markDone(complete);
       setMessage(success);
-      await refetch();
     } catch (err) {
       setActionError(getErrorMessage(err));
     }
@@ -91,130 +59,6 @@ export function NvoccJobWorkflowPanel({ jobId }: NvoccJobWorkflowPanelProps) {
           {message ? <p className="text-sm text-[var(--color-success-700)]">{message}</p> : null}
         </div>
       </Card>
-
-      {currentStage === 'cro-container' ? (
-        <Card>
-          <CardHeader>
-            <CardTitle>Now: CRO + container number</CardTitle>
-          </CardHeader>
-          <div className="space-y-3 px-4 pb-4">
-            <div className="grid gap-2 sm:grid-cols-3">
-              <select
-                className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
-                value={containerTypeId}
-                onChange={(e) => setContainerTypeId(e.target.value)}
-              >
-                <option value="">Container type</option>
-                {containerTypeOptions.map((o) => (
-                  <option key={o.value} value={o.value}>
-                    {o.label}
-                  </option>
-                ))}
-              </select>
-              <Input
-                type="number"
-                min={1}
-                max={100}
-                step={1}
-                placeholder="Container count (1–100)"
-                value={containerCount}
-                onChange={(e) => setContainerCount(e.target.value)}
-              />
-              <Input placeholder="Notes" value={notes} onChange={(e) => setNotes(e.target.value)} />
-            </div>
-            <Button
-              type="button"
-              disabled={actions.createContainerRequest.isPending}
-              onClick={() =>
-                run(async () => {
-                  const n = Number(containerCount);
-                  const count = Number.isFinite(n)
-                    ? Math.min(100, Math.max(1, Math.trunc(n)))
-                    : 1;
-                  await actions.createContainerRequest.mutateAsync({
-                    ...(containerTypeId.trim()
-                      ? { container_type_id: containerTypeId.trim() }
-                      : {}),
-                    container_count: count,
-                    ...(notes.trim() ? { notes: notes.trim() } : {}),
-                  });
-                  setNotes('');
-                }, 'Container request created.')
-              }
-            >
-              Create request
-            </Button>
-
-            {isLoading ? (
-              <p className="text-sm text-[var(--color-neutral-400)]">Loading requests…</p>
-            ) : null}
-            {isError ? (
-              <p className="text-sm text-[var(--color-danger-600)]">{getErrorMessage(error)}</p>
-            ) : null}
-            {!isLoading && requests.length === 0 ? (
-              <p className="text-sm text-[var(--color-neutral-400)]">No container requests yet.</p>
-            ) : null}
-
-            <ul className="space-y-2">
-              {requests.map((req) => (
-                <li
-                  key={req.id}
-                  className="flex flex-wrap items-center justify-between gap-2 rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
-                >
-                  <div className="min-w-0">
-                    <p className="font-medium">
-                      {resolveContainerTypeName(req.container_type_id, containerTypes)}
-                      {(req.container_count ?? req.quantity) != null
-                        ? ` × ${req.container_count ?? req.quantity}`
-                        : ''}
-                    </p>
-                    <p className="text-xs text-[var(--color-neutral-500)]">
-                      {[req.status, req.cro_number && `CRO ${req.cro_number}`, req.container_number]
-                        .filter(Boolean)
-                        .join(' · ') || 'Request'}
-                    </p>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="secondary"
-                      disabled={actions.issueContainerRequest.isPending}
-                      onClick={() =>
-                        run(
-                          () => actions.issueContainerRequest.mutateAsync({ requestId: req.id }),
-                          'CRO issued.',
-                        )
-                      }
-                    >
-                      Issue CRO
-                    </Button>
-                    <Button
-                      type="button"
-                      size="sm"
-                      variant="secondary"
-                      disabled={actions.allocateContainerRequest.isPending}
-                      onClick={() =>
-                        run(async () => {
-                          await actions.allocateContainerRequest.mutateAsync({ requestId: req.id });
-                          markDone('cro-container');
-                        }, 'Container allocated — next: customer pick (portal).')
-                      }
-                    >
-                      Allocate
-                    </Button>
-                  </div>
-                </li>
-              ))}
-            </ul>
-            {hasCro && hasContainer ? (
-              <Button type="button" variant="secondary" onClick={() => markDone('cro-container')}>
-                CRO + container done — continue
-              </Button>
-            ) : null}
-          </div>
-        </Card>
-      ) : null}
 
       {currentStage === 'pick' ? (
         <Card>

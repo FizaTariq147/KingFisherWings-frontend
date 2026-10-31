@@ -117,6 +117,16 @@ const HIDDEN_DETAIL_KEYS = new Set([
   'opscontinuum',
   'continuum',
   'canopscontinuum',
+  // Catalog dumps — not useful on Show All overview
+  'partytype',
+  'partytypes',
+  'partytypeid',
+  'orgtype',
+  'orgtypes',
+  'organizationtype',
+  'organizationtypes',
+  'organisationtype',
+  'organisationtypes',
 ]);
 
 function normalizeDetailKey(key: string): string {
@@ -124,7 +134,23 @@ function normalizeDetailKey(key: string): string {
 }
 
 function isHiddenDetailKey(key: string): boolean {
-  return HIDDEN_DETAIL_KEYS.has(normalizeDetailKey(key));
+  const n = normalizeDetailKey(key);
+  if (HIDDEN_DETAIL_KEYS.has(n)) return true;
+  // Hide party-type / org-type catalog blocks from Show All payloads.
+  if (n.includes('partytype') || n.includes('orgtype') || n.includes('organizationtype')) {
+    return true;
+  }
+  return false;
+}
+
+function isPartyTypesSection(key: string, title?: string): boolean {
+  const blob = `${key} ${title ?? ''}`.toLowerCase().replace(/[-_\s]+/g, ' ');
+  return (
+    /\bparty types?\b/.test(blob) ||
+    /\borg(?:anisation|anization)? types?\b/.test(blob) ||
+    normalizeDetailKey(key).includes('partytype') ||
+    normalizeDetailKey(key).includes('orgtype')
+  );
 }
 
 function nestedEntityLabel(value: unknown): string {
@@ -813,7 +839,9 @@ function JobShowAllPanel({
           Edit Show All
         </Button>
       </div>
-      {sections.map((section) => {
+      {sections
+        .filter((section) => !isPartyTypesSection(section.key, section.title))
+        .map((section) => {
         const sectionKey = normalizeJobDetailTabKey(section.key);
         const isDepartment =
           sectionKey === 'department' || sectionKey === 'departments';
@@ -833,7 +861,9 @@ function JobShowAllPanel({
           </SectionCard>
         );
       })}
-      {arrays.map((block) => (
+      {arrays
+        .filter((block) => !isPartyTypesSection(block.key, block.title))
+        .map((block) => (
         <SectionCard key={block.key} title={block.title}>
           <FormFieldsFromPayload data={block.rows} />
         </SectionCard>

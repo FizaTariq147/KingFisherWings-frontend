@@ -20,7 +20,6 @@ import type {
   ConvertNvoccBookingToJobDto,
   CopyNvoccVoyageDto,
   CreateNvoccBookingDto,
-  CreateNvoccContainerRequestDto,
   CreateNvoccEnquiryDto,
   CreateNvoccTariffDto,
   CreateNvoccVoyageDto,
@@ -29,7 +28,6 @@ import type {
   NvoccBooking,
   NvoccBookingForm,
   NvoccBookingListParams,
-  NvoccContainerRequest,
   NvoccEnquiry,
   NvoccEnquiryListParams,
   NvoccLoadListItem,
@@ -56,7 +54,6 @@ import {
   normalizeMany,
   normalizeNvoccBooking,
   normalizeNvoccBookingForm,
-  normalizeNvoccContainerRequest,
   normalizeNvoccEnquiry,
   normalizeNvoccLoadListItem,
   normalizeNvoccTariff,
@@ -1285,94 +1282,6 @@ export const nvoccJobService = {
     postNvoccJobDocument(NVOCC_API.jobs.jobPnl(jobId), dto),
   proformaInvoice: (jobId: string, dto?: GenerateJobDocumentDto) =>
     postNvoccJobDocument(NVOCC_API.jobs.proformaInvoice(jobId), dto),
-
-  async listContainerRequests(jobId: string): Promise<NvoccContainerRequest[]> {
-    try {
-      const res = await withGatewayRetry(() =>
-        axiosInstance.get(NVOCC_API.jobs.containerRequests(jobId)),
-      );
-      const raw = unwrapList(res.data, ['items', 'container_requests', 'requests']);
-      return normalizeMany(raw.items, normalizeNvoccContainerRequest);
-    } catch (error) {
-      throw formatNvoccError(error);
-    }
-  },
-
-  async createContainerRequest(
-    jobId: string,
-    dto: CreateNvoccContainerRequestDto = {},
-  ): Promise<NvoccContainerRequest> {
-    try {
-      // API whitelist: container_count (int 1–100). `quantity` must not be sent.
-      const rawCount = dto.container_count ?? dto.quantity;
-      const parsed =
-        rawCount == null || rawCount === ''
-          ? 1
-          : Number(rawCount);
-      const containerCount = Number.isFinite(parsed)
-        ? Math.min(100, Math.max(1, Math.trunc(parsed)))
-        : 1;
-
-      const body: Record<string, unknown> = {
-        container_count: containerCount,
-      };
-      if (dto.container_type_id && isUuid(String(dto.container_type_id))) {
-        body.container_type_id = String(dto.container_type_id).trim();
-      }
-      if (typeof dto.notes === 'string' && dto.notes.trim()) {
-        body.notes = dto.notes.trim();
-      }
-
-      const raw = await mutateResource(
-        'post',
-        NVOCC_API.jobs.containerRequests(jobId),
-        prepareNvoccPayload(body),
-      );
-      const item = normalizeNvoccContainerRequest(raw);
-      if (!item) throw new Error('Container request was created but not returned.');
-      return item;
-    } catch (error) {
-      throw formatNvoccError(error);
-    }
-  },
-
-  async issueContainerRequest(
-    jobId: string,
-    requestId: string,
-    dto: NvoccWorkflowActionDto = {},
-  ): Promise<NvoccContainerRequest> {
-    try {
-      const raw = await mutateResource(
-        'post',
-        NVOCC_API.jobs.issueContainerRequest(jobId, requestId),
-        prepareNvoccPayload(dto),
-      );
-      const item = normalizeNvoccContainerRequest(raw);
-      if (!item) throw new Error('CRO issue did not return a container request.');
-      return item;
-    } catch (error) {
-      throw formatNvoccError(error);
-    }
-  },
-
-  async allocateContainerRequest(
-    jobId: string,
-    requestId: string,
-    dto: NvoccWorkflowActionDto = {},
-  ): Promise<NvoccContainerRequest> {
-    try {
-      const raw = await mutateResource(
-        'post',
-        NVOCC_API.jobs.allocateContainerRequest(jobId, requestId),
-        prepareNvoccPayload(dto),
-      );
-      const item = normalizeNvoccContainerRequest(raw);
-      if (!item) throw new Error('Container allocate did not return a container request.');
-      return item;
-    } catch (error) {
-      throw formatNvoccError(error);
-    }
-  },
 
   async stageLoading(jobId: string, dto: NvoccWorkflowActionDto = {}): Promise<Record<string, unknown>> {
     try {

@@ -92,8 +92,8 @@ export const SEA_EXPORT_STAGES: readonly SeaExportStage[] = [
   {
     id: 'cro-container',
     band: '1-2',
-    label: 'CRO + container number',
-    detail: 'Auto convert-to-job after invoice; then Issue CRO / allocate on job Ops',
+    label: 'Convert to job',
+    detail: 'Auto convert-to-job after invoice; retry convert on booking Ops if needed',
     owner: 'OPS',
     kind: 'document',
   },
@@ -162,7 +162,6 @@ export const SEA_EXPORT_BOOKING_ACTION_ORDER = [
 
 /** Job-page staff steps (Stage 3–4); portal steps are noted but done in portal. */
 export const SEA_EXPORT_JOB_ACTION_ORDER = [
-  'cro-container',
   'pick',
   'loading',
   'port-token',
@@ -297,12 +296,6 @@ export const SEA_EXPORT_BOOKING_QUOTE_STEPS = [
 
 /** @deprecated Prefer SEA_EXPORT_STAGES. */
 export const SEA_EXPORT_JOB_OPS_STEPS = [
-  {
-    key: 'container-request',
-    label: 'Container request → Issue CRO → Allocate',
-    owner: 'OPS',
-    path: 'POST /nvocc/jobs/:id/container-requests (+ issue / allocate)',
-  },
   {
     key: 'confirm-pick',
     label: 'Customer confirm pick',

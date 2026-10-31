@@ -6,6 +6,8 @@ import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { ApiDataView } from '@/features/jobs/components/ApiDataView';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
+import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
+import { normalizePublicTrack } from '@/features/public-track/utils/normalizePublicTrack';
 import {
   PortalAnimatedGrid,
   PortalAnimatedGridItem,
@@ -19,6 +21,7 @@ import {
   PortalStatCard,
 } from '@/features/portal-auth/components/portal-ui';
 import { PortalAcknowledgementPanel } from '../components/PortalAcknowledgementPanel';
+import { PortalPortTokenModal } from '../components/PortalPortTokenModal';
 import {
   useDownloadPortalShipmentDocument,
   usePortalShipment,
@@ -61,12 +64,13 @@ export default function PortalShipmentDetailPage() {
   const download = useDownloadPortalShipmentDocument();
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [portTokenOpen, setPortTokenOpen] = useState(false);
 
   const milestones = data?.milestones?.length ? data.milestones : milestonesQuery.data ?? [];
   const documents = data?.documents?.length ? data.documents : documentsQuery.data ?? [];
   const containerRequests = containerRequestsQuery.data ?? [];
 
-  const runAction = async (fn: () => Promise<unknown>, success: string) => {
+  const runAction = async (fn: () => Promise<unknown>, success: string): Promise<boolean> => {
     setActionError(null);
     setActionMessage(null);
     try {
@@ -75,16 +79,30 @@ export default function PortalShipmentDetailPage() {
       await refetch();
       await containerRequestsQuery.refetch();
       await milestonesQuery.refetch();
+      return true;
     } catch (err) {
-      const msg =
+      let msg =
         err instanceof PortalApiError || err instanceof Error ? err.message : 'Action failed.';
       const fromBackend404 =
         err instanceof PortalApiError && (err.status === 404 || /not found/i.test(msg));
+      // Air HAWB gate message on a sea/NVOCC job usually means wrong job_type on the shipment.
+      if (
+        isNvoccOrSea &&
+        /house air waybill|draft hawb|build-up started/i.test(msg)
+      ) {
+        msg = `${msg} This shipment is treated as ${data?.jobType || 'sea'} on the portal — if you expected draft BL, the job type may be wrong on the server.`;
+      } else if (
+        isAirExport &&
+        /invoice must be sent|build-up started/i.test(msg)
+      ) {
+        msg = `${msg} Ask ops to send the invoice or mark build-up, then try again.`;
+      }
       setActionError(
         fromBackend404
-          ? `${msg} (backend rejected this action for the shipment — check CRO / job link.)`
+          ? `${msg} Staff must finish convert-to-job and link this shipment to your portal customer before pick / port token / draft BL work.`
           : msg,
       );
+      return false;
     }
   };
 
@@ -133,7 +151,7 @@ export default function PortalShipmentDetailPage() {
         Back
       </button>
       <PortalPageHeader
-        title={data.reference}
+        title={data.jobNumber || data.reference}
         description={
           [data.origin, data.destination].filter(Boolean).join(' → ') || data.jobType || 'Shipment detail'
         }
@@ -177,17 +195,173 @@ export default function PortalShipmentDetailPage() {
         }
       />
 
-      <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-3">
-        <PortalAnimatedGridItem>
-          <PortalStatCard label="Pieces" value={data.pieces ?? '—'} Icon={Package} theme="orange" />
-        </PortalAnimatedGridItem>
-        <PortalAnimatedGridItem>
-          <PortalStatCard label="Gross weight" value={data.grossWeight ?? '—'} Icon={Scale} theme="navy" />
-        </PortalAnimatedGridItem>
-        <PortalAnimatedGridItem>
-          <PortalStatCard label="Volume (CBM)" value={data.volumeCbm ?? '—'} Icon={Box} theme="cyan" />
-        </PortalAnimatedGridItem>
-      </PortalAnimatedGrid>
+      {(() => {
+        const jobTypeUpper = String(data.jobType ?? '').toUpperCase();
+        const isAirJob = jobTypeUpper.startsWith('AIR');
+        const isCourierJob = jobTypeUpper.includes('COURIER');
+        const isRoadLandJob =
+          jobTypeUpper === 'LAND' ||
+          jobTypeUpper === 'ROAD_FREIGHT' ||
+          jobTypeUpper.includes('ROAD');
+
+        const documentRef = (() => {
+          if (isAirJob) {
+            if (data.hawbNumber) return { label: 'HAWB', value: data.hawbNumber };
+            if (data.mawbNumber) return { label: 'MAWB', value: data.mawbNumber };
+            return { label: 'HAWB / MAWB', value: '' };
+          }
+          if (isCourierJob) {
+            return {
+              label: 'Tracking number',
+              value: data.trackingNumber || '',
+            };
+          }
+          if (isRoadLandJob) {
+            return {
+              label: 'Reference',
+              value: data.reference && data.reference !== data.jobNumber ? data.reference : '',
+            };
+          }
+          // Sea / NVOCC / default — BL with HBL/MBL fallbacks
+          if (data.blNumber) return { label: 'BL number', value: data.blNumber };
+          if (data.hblNumber) return { label: 'HBL number', value: data.hblNumber };
+          if (data.mblNumber) return { label: 'MBL number', value: data.mblNumber };
+          return { label: 'BL number', value: '' };
+        })();
+
+        const containersValue = data.containerNumbers?.join(', ') || '';
+        const containersLabel = isAirJob ? 'ULD / pallets' : 'Containers';
+        const missingNotes: string[] = [];
+        if (!containersValue) {
+          missingNotes.push(
+            isAirJob
+              ? 'ULD / pallet numbers were not returned by the API.'
+              : 'Container numbers were not returned by the API.',
+          );
+        }
+        if (!documentRef.value) {
+          missingNotes.push(`${documentRef.label} was not returned by the API.`);
+        }
+
+        return (
+          <>
+            <PortalAnimatedGrid className="grid gap-4 sm:grid-cols-3">
+              <PortalAnimatedGridItem>
+                <PortalStatCard
+                  label="Job number"
+                  value={data.jobNumber || data.reference || '—'}
+                  Icon={Package}
+                  theme="orange"
+                />
+              </PortalAnimatedGridItem>
+              <PortalAnimatedGridItem>
+                <PortalStatCard
+                  label={containersLabel}
+                  value={containersValue || '—'}
+                  Icon={Box}
+                  theme="navy"
+                />
+              </PortalAnimatedGridItem>
+              <PortalAnimatedGridItem>
+                <PortalStatCard
+                  label={documentRef.label}
+                  value={documentRef.value || '—'}
+                  Icon={Scale}
+                  theme="cyan"
+                />
+              </PortalAnimatedGridItem>
+            </PortalAnimatedGrid>
+            {missingNotes.length ? (
+              <p className="text-xs text-[var(--color-neutral-500)]" role="status">
+                {missingNotes.join(' ')}
+              </p>
+            ) : null}
+          </>
+        );
+      })()}
+
+      {(data.rotationNumber ||
+        (data.hblNumber && data.blNumber) ||
+        (data.mblNumber && data.blNumber)) && (
+        <PortalPanel padded>
+          <h2 className="mb-3 text-sm font-semibold text-[var(--color-neutral-900)]">
+            Ops references
+          </h2>
+          <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              data.blNumber && data.hblNumber && data.blNumber !== data.hblNumber
+                ? (['HBL', data.hblNumber] as const)
+                : null,
+              data.blNumber && data.mblNumber && data.blNumber !== data.mblNumber
+                ? (['MBL', data.mblNumber] as const)
+                : null,
+              data.rotationNumber ? (['Rotation', data.rotationNumber] as const) : null,
+              data.containerStatus
+                ? (['Container status', data.containerStatus] as const)
+                : null,
+            ]
+              .filter((row): row is readonly [string, string] => Boolean(row))
+              .map(([label, value]) => (
+                <div key={label}>
+                  <dt className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+                    {label}
+                  </dt>
+                  <dd className="mt-1 text-sm font-medium text-[var(--color-neutral-800)]">
+                    {value}
+                  </dd>
+                </div>
+              ))}
+          </dl>
+        </PortalPanel>
+      )}
+
+      {data.hold ? (
+        <PortalPanel padded>
+          <h2 className="mb-2 text-sm font-semibold text-amber-950">Hold</h2>
+          <dl className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 text-sm text-[var(--color-neutral-800)]">
+            {data.hold.holdReason ? (
+              <div>
+                <dt className="text-[11px] uppercase tracking-wide text-[var(--color-neutral-500)]">
+                  Reason
+                </dt>
+                <dd>{data.hold.holdReason}</dd>
+              </div>
+            ) : null}
+            {data.hold.heldAt ? (
+              <div>
+                <dt className="text-[11px] uppercase tracking-wide text-[var(--color-neutral-500)]">
+                  Held at
+                </dt>
+                <dd>{new Date(data.hold.heldAt).toLocaleString()}</dd>
+              </div>
+            ) : null}
+            {data.hold.expectedReleaseAt ? (
+              <div>
+                <dt className="text-[11px] uppercase tracking-wide text-[var(--color-neutral-500)]">
+                  Expected release
+                </dt>
+                <dd>{new Date(data.hold.expectedReleaseAt).toLocaleString()}</dd>
+              </div>
+            ) : null}
+            {data.hold.resumeReason ? (
+              <div>
+                <dt className="text-[11px] uppercase tracking-wide text-[var(--color-neutral-500)]">
+                  Resume reason
+                </dt>
+                <dd>{data.hold.resumeReason}</dd>
+              </div>
+            ) : null}
+            {data.hold.resumedAt ? (
+              <div>
+                <dt className="text-[11px] uppercase tracking-wide text-[var(--color-neutral-500)]">
+                  Resumed at
+                </dt>
+                <dd>{new Date(data.hold.resumedAt).toLocaleString()}</dd>
+              </div>
+            ) : null}
+          </dl>
+        </PortalPanel>
+      ) : null}
 
       {data.cargoSummary ? (
         <PortalPanel padded>
@@ -249,7 +423,7 @@ export default function PortalShipmentDetailPage() {
           <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
             {isAirImport
               ? 'Import: request delivery order after payment / CAN gates.'
-              : 'Export: air pallet / ULD request APIs were removed. Request draft HAWB when ready.'}
+              : 'Export: request draft HAWB after staff has sent the invoice or marked build-up. The portal will reject the request until that gate is met.'}
           </p>
 
           {isAirExport ? (
@@ -292,17 +466,12 @@ export default function PortalShipmentDetailPage() {
           <h2 className="mb-2 text-sm font-semibold text-[var(--color-neutral-900)]">
             Container & port actions
           </h2>
-          <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
-            Sea export flow: after staff issues CRO / allocates a container, confirm yard pick
-            (status → Picked), then confirm port token, then request draft BL for Docs.
-          </p>
 
           {containerRequestsQuery.isLoading ? (
-            <p className="text-sm text-[var(--color-neutral-400)]">Loading container requests…</p>
+            <p className="text-sm text-[var(--color-neutral-400)]">Loading containers…</p>
           ) : containerRequests.length === 0 ? (
             <p className="mb-3 text-sm text-[var(--color-neutral-400)]">
-              No container requests from the server yet. Staff must issue CRO / allocate on the
-              job first — this list stays empty until that backend data exists.
+              No containers yet — refresh after staff has converted the booking to a job.
             </p>
           ) : (
             <PortalAnimatedList className="mb-3 space-y-2">
@@ -346,12 +515,7 @@ export default function PortalShipmentDetailPage() {
               size="sm"
               variant="secondary"
               disabled={actions.confirmPortToken.isPending}
-              onClick={() =>
-                void runAction(
-                  () => actions.confirmPortToken.mutateAsync({}),
-                  'Port token confirmed.',
-                )
-              }
+              onClick={() => setPortTokenOpen(true)}
             >
               Confirm port token
             </Button>
@@ -360,13 +524,39 @@ export default function PortalShipmentDetailPage() {
               size="sm"
               disabled={actions.requestDraftBl.isPending}
               onClick={() =>
-                void runAction(() => actions.requestDraftBl.mutateAsync({}), 'Draft BL requested.')
+                void runAction(
+                  () =>
+                    actions.requestDraftBl.mutateAsync({
+                      // Required by PortalRequestDraftBlDto; air HAWB posts {}.
+                      comment: 'Customer requested draft BL',
+                    }),
+                  'Draft BL requested.',
+                )
               }
             >
               Request draft BL
             </Button>
           </div>
         </PortalPanel>
+      ) : null}
+
+      {portTokenOpen ? (
+        <PortalPortTokenModal
+          open
+          pending={actions.confirmPortToken.isPending}
+          defaults={{
+            bl_number: data.blNumber || data.hblNumber || data.mblNumber || '',
+            container_number: data.containerNumbers?.[0] || '',
+          }}
+          onClose={() => setPortTokenOpen(false)}
+          onSubmit={async (dto) => {
+            const ok = await runAction(
+              () => actions.confirmPortToken.mutateAsync(dto),
+              'Port token confirmed.',
+            );
+            if (ok) setPortTokenOpen(false);
+          }}
+        />
       ) : null}
 
       {showTracking ? (
@@ -389,10 +579,16 @@ export default function PortalShipmentDetailPage() {
               {getErrorMessage(trackingQuery.error, 'Could not load tracking.')}
             </p>
           ) : (
-            <ApiDataView
-              data={trackingQuery.data ?? {}}
-              emptyLabel="No tracking data returned."
-            />
+            (() => {
+              const track = normalizePublicTrack(trackingQuery.data);
+              if (track) return <PublicTrackTimeline result={track} />;
+              return (
+                <ApiDataView
+                  data={trackingQuery.data ?? {}}
+                  emptyLabel="No tracking data returned."
+                />
+              );
+            })()
           )}
         </PortalPanel>
       ) : null}
@@ -402,20 +598,53 @@ export default function PortalShipmentDetailPage() {
         {milestones.length === 0 ? (
           <p className="text-sm text-[var(--color-neutral-400)]">No milestones yet.</p>
         ) : (
-          <PortalGsapTimeline>
+          <PortalGsapTimeline orientation="horizontal">
             {milestones.map((m, index) => (
               <PortalGsapTimelineItem
                 key={m.id}
                 isLast={index === milestones.length - 1}
                 tone={portalMilestoneDotTone(m)}
+                orientation="horizontal"
               >
-                <div className="text-sm font-medium text-[var(--color-neutral-800)]">{m.label}</div>
-                <div className="text-xs text-[var(--color-neutral-500)]">
-                  {[m.occurredAt, m.location, m.status].filter(Boolean).join(' · ') || '—'}
+                <div className="space-y-1">
+                  <div className="text-sm font-semibold leading-snug text-[var(--color-neutral-900)]">
+                    {m.label}
+                  </div>
+                  <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-[var(--color-neutral-600)]">
+                    {m.status ? (
+                      <span className="font-medium uppercase tracking-wide text-[var(--color-neutral-500)]">
+                        {m.status.replaceAll('_', ' ')}
+                      </span>
+                    ) : null}
+                    {m.status && (m.occurredAt || m.location) ? (
+                      <span aria-hidden className="text-[var(--color-neutral-300)]">
+                        ·
+                      </span>
+                    ) : null}
+                    {m.occurredAt ? (
+                      <span>
+                        {(() => {
+                          const t = Date.parse(m.occurredAt);
+                          return Number.isFinite(t)
+                            ? new Date(t).toLocaleString()
+                            : m.occurredAt;
+                        })()}
+                      </span>
+                    ) : null}
+                    {m.occurredAt && m.location ? (
+                      <span aria-hidden className="text-[var(--color-neutral-300)]">
+                        ·
+                      </span>
+                    ) : null}
+                    {m.location ? <span>{m.location}</span> : null}
+                    {!m.occurredAt && !m.location && !m.status ? (
+                      <span className="text-[var(--color-neutral-400)]">Awaiting update</span>
+                    ) : null}
+                  </div>
+                  {m.notes ? (
+                    <p className="text-xs text-[var(--color-neutral-600)]">{m.notes}</p>
+                  ) : null}
                 </div>
-                {m.notes ? (
-                  <p className="mt-1 text-xs text-[var(--color-neutral-600)]">{m.notes}</p>
-                ) : null}
               </PortalGsapTimelineItem>
             ))}
           </PortalGsapTimeline>
