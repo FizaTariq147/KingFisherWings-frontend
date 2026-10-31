@@ -3,6 +3,7 @@ import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import {
   useCompleteShipmentBookingForm,
@@ -341,9 +342,9 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
         <div className="grid gap-3 px-4 pb-4 sm:grid-cols-2 lg:grid-cols-3">
           {EDITABLE_KEYS.map((key) => (
             <label key={key} className="block text-[12px]">
-              <span className="mb-1 block font-medium text-[#64748b]">{formatKey(key)}</span>
+              <span className={erpForm.label}>{formatKey(key)}</span>
               <input
-                className="h-9 w-full rounded-sm bg-white px-2.5 text-[13px]"
+                className={erpForm.input}
                 value={draft[key] ?? ''}
                 onChange={(e) =>
                   setDraft((prev) => ({ ...prev, [key]: e.target.value }))
@@ -417,9 +418,9 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
                     />
                   )}
                   <label className="block text-[12px]">
-                    <span className="mb-1 block font-medium text-[#64748b]">Type</span>
+                    <span className={erpForm.label}>Type</span>
                     <select
-                      className="h-9 w-full rounded-sm border border-[#e8edf2] bg-white px-2 text-[13px]"
+                      className={erpForm.input}
                       value={field.type ?? 'text'}
                       onChange={(e) =>
                         updateCustomField(index, {
@@ -465,9 +466,9 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
               />
             </div>
             <label className="block text-[12px]">
-              <span className="mb-1 block font-medium text-[#64748b]">Type</span>
+              <span className={erpForm.label}>Type</span>
               <select
-                className="h-9 rounded-sm border border-[#e8edf2] bg-white px-2 text-[13px]"
+                className={erpForm.input}
                 value={newType}
                 onChange={(e) => setNewType(e.target.value as BookingCustomFieldType)}
               >

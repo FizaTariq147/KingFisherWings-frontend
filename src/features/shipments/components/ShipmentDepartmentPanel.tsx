@@ -128,24 +128,22 @@ export function ShipmentDepartmentPanel({
       {error ? <p className="text-[var(--color-danger-700)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Department</span>
-          <input
-            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
-            readOnly
-            value={currentDepartmentLabel || '—'}
-          />
-        </label>
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Branch</span>
-          <input
-            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
-            readOnly
-            value={currentBranchLabel || '—'}
-          />
-        </label>
-      </div>
+      <ul className="divide-y divide-[#e8edf2] rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white">
+        {[
+          { label: 'Department', value: currentDepartmentLabel },
+          { label: 'Branch', value: currentBranchLabel },
+        ].map((row) => (
+          <li
+            key={row.label}
+            className="grid grid-cols-1 gap-1 px-3 py-2 sm:grid-cols-[minmax(8rem,12rem)_1fr] sm:gap-4"
+          >
+            <span className="text-[12px] font-medium text-[#64748b]">{row.label}</span>
+            <span className="break-words text-[13px] font-medium text-[#0f172a]">
+              {row.value || '—'}
+            </span>
+          </li>
+        ))}
+      </ul>
 
       {canEdit ? (
         <div className="space-y-2">

@@ -174,40 +174,24 @@ export function JobDepartmentPanel({
         <p className="text-[var(--color-neutral-400)]">Loading name dropdowns…</p>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Company</span>
-          <input
-            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
-            readOnly
-            value={resolvedCompany || '—'}
-          />
-        </label>
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Branch</span>
-          <input
-            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
-            readOnly
-            value={resolvedBranch || '—'}
-          />
-        </label>
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Department</span>
-          <input
-            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
-            readOnly
-            value={resolvedDepartment || '—'}
-          />
-        </label>
-        <label className="block min-w-0">
-          <span className={erpForm.label}>Salesperson</span>
-          <input
-            className={`${erpForm.input} bg-[var(--fresa-page-bg,#F4F6F9)]`}
-            readOnly
-            value={resolvedSalesperson || '—'}
-          />
-        </label>
-      </div>
+      <ul className="divide-y divide-[#e8edf2] rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white">
+        {[
+          { label: 'Company', value: resolvedCompany },
+          { label: 'Branch', value: resolvedBranch },
+          { label: 'Department', value: resolvedDepartment },
+          { label: 'Salesperson', value: resolvedSalesperson },
+        ].map((row) => (
+          <li
+            key={row.label}
+            className="grid grid-cols-1 gap-1 px-3 py-2 sm:grid-cols-[minmax(8rem,12rem)_1fr] sm:gap-4"
+          >
+            <span className="text-[12px] font-medium text-[#64748b]">{row.label}</span>
+            <span className="break-words text-[13px] font-medium text-[#0f172a]">
+              {row.value || '—'}
+            </span>
+          </li>
+        ))}
+      </ul>
 
       <div className="space-y-2">
         <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">

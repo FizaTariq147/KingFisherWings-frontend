@@ -1,3 +1,4 @@
+import { isUuid } from '@/lib/isUuid';
 import { erpTable } from '@/lib/erpTypography';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -15,6 +16,13 @@ function tryParseJsonString(value: string): unknown | null {
   }
 }
 
+function readableString(value: unknown): string {
+  if (typeof value !== 'string') return '';
+  const trimmed = value.trim();
+  if (!trimmed || isUuid(trimmed)) return '';
+  return trimmed;
+}
+
 function formatCell(value: unknown): string {
   if (value == null || value === '') return '—';
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
@@ -24,6 +32,7 @@ function formatCell(value: unknown): string {
   if (typeof value === 'string') {
     const trimmed = value.trim();
     if (!trimmed) return '—';
+    if (isUuid(trimmed)) return '—';
     const parsed = tryParseJsonString(trimmed);
     if (parsed != null) return formatCell(parsed);
     return trimmed;
@@ -38,14 +47,15 @@ function formatCell(value: unknown): string {
   const rec = asRecord(value);
   if (!rec) return String(value);
   const label =
-    rec.name ??
-    rec.label ??
-    rec.code ??
-    rec.description ??
-    rec.shipment_number ??
-    rec.job_number ??
-    rec.id;
-  if (label != null && String(label).trim()) return String(label).trim();
+    readableString(rec.name) ||
+    readableString(rec.label) ||
+    readableString(rec.code) ||
+    readableString(rec.description) ||
+    readableString(rec.shipment_number) ||
+    readableString(rec.job_number) ||
+    readableString(rec.display_name) ||
+    readableString(rec.displayName);
+  if (label) return label;
   return Object.keys(rec).length ? `${Object.keys(rec).length} fields` : '—';
 }
 
@@ -128,12 +138,18 @@ function preferredColumns(rows: Record<string, unknown>[]): string[] {
   const present = new Set<string>();
   for (const row of rows) {
     for (const key of Object.keys(row)) {
-      if (!SKIP_KEYS.has(key) && typeof row[key] !== 'object') present.add(key);
+      const lower = key.toLowerCase();
+      if (SKIP_KEYS.has(key) || lower === 'id' || lower.endsWith('_id') || lower.endsWith('_uuid')) {
+        continue;
+      }
+      if (typeof row[key] === 'object') continue;
+      if (typeof row[key] === 'string' && isUuid(String(row[key]).trim())) continue;
+      present.add(key);
     }
   }
   const cols = preferred.filter((k) => present.has(k));
   if (cols.length > 0) return cols.slice(0, 8);
-  return [...present].filter((k) => k !== 'id').slice(0, 8);
+  return [...present].slice(0, 8);
 }
 
 interface ApiDataViewProps {
@@ -218,9 +234,13 @@ export function ApiDataView({
     return <p className="text-sm text-[#334155]">{formatCell(data)}</p>;
   }
 
-  const entries = Object.entries(rec).filter(
-    ([key, value]) => !SKIP_KEYS.has(key) && value != null && value !== '',
-  );
+  const entries = Object.entries(rec).filter(([key, value]) => {
+    if (SKIP_KEYS.has(key) || value == null || value === '') return false;
+    const lower = key.toLowerCase();
+    if (lower === 'id' || lower.endsWith('_id') || lower.endsWith('_uuid')) return false;
+    if (typeof value === 'string' && isUuid(value.trim())) return false;
+    return true;
+  });
   if (entries.length === 0) {
     return <p className="text-sm text-[var(--color-neutral-400)]">{emptyLabel}</p>;
   }
