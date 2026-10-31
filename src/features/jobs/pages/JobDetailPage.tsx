@@ -313,6 +313,7 @@ export default function JobDetailPage() {
   const [closedOverrideReason, setClosedOverrideReason] = useState('');
   const [stopOpen, setStopOpen] = useState(false);
   const [stopReason, setStopReason] = useState('');
+  const [stopHeldAt, setStopHeldAt] = useState('');
   const [stopExpectedRelease, setStopExpectedRelease] = useState('');
   const [stopConfirmed, setStopConfirmed] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
@@ -863,7 +864,14 @@ export default function JobDetailPage() {
                       <dt className="text-[11px] uppercase tracking-wide text-[#64748b]">
                         Held at
                       </dt>
-                      <dd>{job.held_at}</dd>
+                      <dd>
+                        {(() => {
+                          const t = Date.parse(job.held_at);
+                          return Number.isFinite(t)
+                            ? new Date(t).toLocaleString()
+                            : job.held_at;
+                        })()}
+                      </dd>
                     </div>
                   ) : null}
                   {job.expected_release_at ? (
@@ -950,6 +958,13 @@ export default function JobDetailPage() {
                 disabled={pending || actions.stop.isPending}
                 onClick={() => {
                   setStopReason('');
+                  {
+                    const now = new Date();
+                    const pad = (n: number) => String(n).padStart(2, '0');
+                    setStopHeldAt(
+                      `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`,
+                    );
+                  }
                   setStopExpectedRelease('');
                   setStopConfirmed(false);
                   setStopOpen(true);
@@ -1480,9 +1495,15 @@ export default function JobDetailPage() {
                 onClick={() =>
                   void run(async () => {
                     const reason = stopReason.trim();
+                    const heldAtIso = (() => {
+                      const raw = stopHeldAt.trim();
+                      if (!raw) return undefined;
+                      const d = new Date(raw);
+                      return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
+                    })();
                     await actions.stop.mutateAsync({
-                      hold_reason: reason,
                       reason,
+                      ...(heldAtIso ? { held_at: heldAtIso } : {}),
                       ...(stopExpectedRelease.trim()
                         ? { expected_release_at: stopExpectedRelease.trim() }
                         : {}),
@@ -1507,6 +1528,17 @@ export default function JobDetailPage() {
                 onChange={(e) => setStopReason(e.target.value)}
                 maxLength={500}
                 required
+              />
+            </label>
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Held at
+              </span>
+              <input
+                type="datetime-local"
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={stopHeldAt}
+                onChange={(e) => setStopHeldAt(e.target.value)}
               />
             </label>
             <label className="block text-[13px]">

@@ -820,7 +820,10 @@ export function normalizeJob(raw: unknown): Job | null {
     etd: schedule.etd,
     eta: schedule.eta,
     hold_reason:
-      pickString(r, 'hold_reason', 'holdReason', 'stop_reason', 'stopReason') || undefined,
+      pickString(r, 'hold_reason', 'holdReason', 'stop_reason', 'stopReason') ||
+      (String(r.status ?? '').toUpperCase() === 'ON_HOLD'
+        ? pickString(r, 'reason') || undefined
+        : undefined),
     held_at: pickString(r, 'held_at', 'heldAt', 'stopped_at', 'stoppedAt') || undefined,
     expected_release_at:
       pickString(r, 'expected_release_at', 'expectedReleaseAt', 'expected_release_date') ||

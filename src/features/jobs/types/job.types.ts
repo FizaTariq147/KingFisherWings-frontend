@@ -815,13 +815,15 @@ export interface ReopenJobDto {
   reason?: string;
 }
 
-/** POST /jobs/:id/stop — status → ON_HOLD */
+/** POST /jobs/:id/stop — status → ON_HOLD (Nest forbidNonWhitelisted: use `reason`, not hold_reason). */
 export interface StopJobDto {
-  /** Preferred hold reason (required by Phase 3 rules). */
-  hold_reason?: string;
-  /** Backward-compatible alias still accepted by older clients. */
+  /** Stop DTO field accepted by backend. */
   reason?: string;
+  /** @deprecated Mapped to `reason` in jobService.stop — do not send as hold_reason. */
+  hold_reason?: string;
   expected_release_at?: string;
+  /** Optional hold timestamp (ISO). */
+  held_at?: string;
 }
 
 /** POST /jobs/:id/resume — restore from ON_HOLD (default status IN_PROGRESS). */
@@ -832,8 +834,12 @@ export interface ResumeJobDto {
 
 /** PATCH /jobs/:id/hold — update hold metadata while ON_HOLD. */
 export interface PatchJobHoldDto {
+  /** Prefer `reason` for APIs that reject hold_reason. */
+  reason?: string;
+  /** @deprecated Mapped to `reason` when sending. */
   hold_reason?: string;
   expected_release_at?: string | null;
+  held_at?: string | null;
 }
 
 export interface UpsertJobPartyReferenceDto {
