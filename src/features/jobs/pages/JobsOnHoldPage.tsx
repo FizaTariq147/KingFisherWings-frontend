@@ -28,6 +28,7 @@ export default function JobsOnHoldPage() {
   const [page, setPage] = useState(1);
   const [editJob, setEditJob] = useState<Job | null>(null);
   const [holdReason, setHoldReason] = useState('');
+  const [heldAt, setHeldAt] = useState('');
   const [expectedRelease, setExpectedRelease] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -42,13 +43,15 @@ export default function JobsOnHoldPage() {
   const patchHold = useMutation({
     mutationFn: ({
       id,
-      hold_reason,
+      reason,
+      held_at,
       expected_release_at,
     }: {
       id: string;
-      hold_reason?: string;
+      reason?: string;
+      held_at?: string | null;
       expected_release_at?: string | null;
-    }) => jobService.patchHold(id, { hold_reason, expected_release_at }),
+    }) => jobService.patchHold(id, { reason, held_at, expected_release_at }),
     onSuccess: () => {
       void qc.invalidateQueries({ queryKey: ['jobs', 'by-category', 'on_hold'] });
     },
@@ -60,9 +63,18 @@ export default function JobsOnHoldPage() {
 
   const rows = useMemo(() => jobs, [jobs]);
 
+  const toDatetimeLocal = (iso?: string | null): string => {
+    if (!iso?.trim()) return '';
+    const d = new Date(iso);
+    if (Number.isNaN(d.getTime())) return '';
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  };
+
   const openEdit = (job: Job) => {
     setEditJob(job);
     setHoldReason(job.hold_reason ?? '');
+    setHeldAt(toDatetimeLocal(job.held_at));
     setExpectedRelease(
       job.expected_release_at ? job.expected_release_at.slice(0, 10) : '',
     );
@@ -75,9 +87,16 @@ export default function JobsOnHoldPage() {
     setError(null);
     setMsg(null);
     try {
+      const heldAtIso = (() => {
+        const raw = heldAt.trim();
+        if (!raw) return null;
+        const d = new Date(raw);
+        return Number.isNaN(d.getTime()) ? null : d.toISOString();
+      })();
       await patchHold.mutateAsync({
         id: editJob.id,
-        hold_reason: holdReason.trim() || undefined,
+        reason: holdReason.trim() || undefined,
+        held_at: heldAtIso,
         expected_release_at: expectedRelease.trim() || null,
       });
       setMsg('Hold details updated.');
@@ -238,6 +257,12 @@ export default function JobsOnHoldPage() {
               onChange={(e) => setHoldReason(e.target.value)}
             />
             <Input
+              label="Held at"
+              type="datetime-local"
+              value={heldAt}
+              onChange={(e) => setHeldAt(e.target.value)}
+            />
+            <Input
               label="Expected release date"
               type="date"
               value={expectedRelease}
@@ -250,12 +275,11 @@ export default function JobsOnHoldPage() {
               title="Hold-related documents"
               compact
             />
-            <p className="text-[12px] text-[#64748b]">
-              Held at: {formatWhen(editJob.held_at)}
-              {editJob.resume_reason
-                ? ` · Last resume reason: ${editJob.resume_reason}`
-                : ''}
-            </p>
+            {editJob.resume_reason ? (
+              <p className="text-[12px] text-[#64748b]">
+                Last resume reason: {editJob.resume_reason}
+              </p>
+            ) : null}
           </div>
         </Modal>
       ) : null}

@@ -1396,10 +1396,31 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.reopen(id), dto), normalizeJob);
   },
 
-  /** POST /jobs/:id/stop — status → ON_HOLD. */
+  /** POST /jobs/:id/stop — status → ON_HOLD. Only whitelisted DTO keys (Nest forbidNonWhitelisted). */
   async stop(id: string, dto: StopJobDto = {}): Promise<Job> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.stop(id), dto), normalizeJob);
+    const reason = String(dto.reason ?? dto.hold_reason ?? '').trim();
+    const body: Record<string, unknown> = {};
+    if (reason) body.reason = reason;
+    if (typeof dto.expected_release_at === 'string' && dto.expected_release_at.trim()) {
+      body.expected_release_at = dto.expected_release_at.trim();
+    }
+    if (typeof dto.held_at === 'string' && dto.held_at.trim()) {
+      body.held_at = dto.held_at.trim();
+    }
+    try {
+      return await request(() => axiosInstance.post(JOB_API.stop(id), body), normalizeJob);
+    } catch (error) {
+      // Some Stop DTOs only allow `reason` / `expected_release_at` — retry without held_at.
+      if (body.held_at) {
+        const msg = getErrorMessage(error);
+        if (/held_at/i.test(msg) && /should not exist|whitelist|forbidden/i.test(msg)) {
+          delete body.held_at;
+          return request(() => axiosInstance.post(JOB_API.stop(id), body), normalizeJob);
+        }
+      }
+      throw error;
+    }
   },
 
   /** POST /jobs/:id/resume — leave ON_HOLD (default status IN_PROGRESS). */
@@ -1409,17 +1430,15 @@ export const jobService = {
   },
 
   /**
-   * Update hold_reason / expected_release_at while ON_HOLD.
+   * Update hold metadata while ON_HOLD.
    * Prefer PATCH /jobs/:id/hold; if the route is missing (404/405/501), fall back to
-   * POST /jobs/:id/stop with the same metadata (many gateways never registered PATCH /hold).
+   * POST /jobs/:id/stop. Never send `hold_reason` — backend Stop/Hold DTOs use `reason`.
    */
   async patchHold(id: string, dto: PatchJobHoldDto): Promise<Job> {
     assertId(id);
+    const reason = String(dto.reason ?? dto.hold_reason ?? '').trim();
     const body: Record<string, unknown> = {};
-    if (typeof dto.hold_reason === 'string' && dto.hold_reason.trim()) {
-      body.hold_reason = dto.hold_reason.trim();
-      body.reason = dto.hold_reason.trim();
-    }
+    if (reason) body.reason = reason;
     if (dto.expected_release_at === null) {
       body.expected_release_at = null;
     } else if (
@@ -1427,6 +1446,11 @@ export const jobService = {
       dto.expected_release_at.trim()
     ) {
       body.expected_release_at = dto.expected_release_at.trim();
+    }
+    if (dto.held_at === null) {
+      body.held_at = null;
+    } else if (typeof dto.held_at === 'string' && dto.held_at.trim()) {
+      body.held_at = dto.held_at.trim();
     }
 
     try {
@@ -1439,14 +1463,13 @@ export const jobService = {
     } catch (error) {
       const status = (error as { response?: { status?: number } })?.response?.status;
       if (status === 404 || status === 405 || status === 501) {
-        // Backend: PATCH /jobs/:id/hold not found — update via stop (same hold fields).
         return this.stop(id, {
-          hold_reason:
-            typeof dto.hold_reason === 'string' ? dto.hold_reason.trim() || undefined : undefined,
-          reason:
-            typeof dto.hold_reason === 'string' ? dto.hold_reason.trim() || undefined : undefined,
+          reason: reason || undefined,
           ...(typeof dto.expected_release_at === 'string' && dto.expected_release_at.trim()
             ? { expected_release_at: dto.expected_release_at.trim() }
+            : {}),
+          ...(typeof dto.held_at === 'string' && dto.held_at.trim()
+            ? { held_at: dto.held_at.trim() }
             : {}),
         });
       }
