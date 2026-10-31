@@ -29,7 +29,10 @@ import {
   normalizeShipments,
   unwrapShipmentPayload,
 } from '../utils/normalizeShipment';
-import { normalizeShipmentBookingForm } from '../utils/normalizeShipmentBookingForm';
+import {
+  compactShipmentBookingFormPutBody,
+  normalizeShipmentBookingForm,
+} from '../utils/normalizeShipmentBookingForm';
 import {
   applyRememberedShipmentDepartment,
   getRememberedShipmentDepartment,
@@ -148,7 +151,13 @@ function formatAxiosError(error: unknown): Error {
     (typeof data?.detail === 'string' && data.detail.trim() && data.detail) ||
     axiosErr.message ||
     'Request failed';
-  return new Error(formatShipmentsPermissionError(String(raw)));
+  const err = new Error(formatShipmentsPermissionError(String(raw))) as Error & {
+    status?: number;
+    response?: unknown;
+  };
+  err.status = axiosErr.response?.status;
+  err.response = axiosErr.response;
+  return err;
 }
 
 function assertId(id: string) {
@@ -1278,14 +1287,18 @@ export const shipmentService = {
     body: Record<string, unknown>,
   ): Promise<Record<string, unknown>> {
     assertId(id);
+    const compact = compactShipmentBookingFormPutBody(body);
+    if (!Object.keys(compact).filter((k) => k !== 'mark_complete').length) {
+      throw new Error('Nothing to save — enter at least one booking-form field.');
+    }
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.put(SHIPMENT_API.bookingForm(id), body),
+        axiosInstance.put(SHIPMENT_API.bookingForm(id), compact),
       );
       const payload =
         asRecord(unwrapShipmentPayload(res.data)) ?? asRecord(res.data) ?? {};
       // Merge request body so sparse PUT acks still retain what we saved.
-      return normalizeShipmentBookingForm({ ...body, ...payload });
+      return normalizeShipmentBookingForm({ ...compact, ...payload });
     } catch (error) {
       throw formatAxiosError(error);
     }

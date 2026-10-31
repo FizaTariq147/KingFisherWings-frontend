@@ -18,6 +18,7 @@ import type {
 } from '../types/shipment.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import {
+  compactShipmentBookingFormPutBody,
   mergeBookingFormCache,
   pickBookingFormScalar,
 } from '../utils/normalizeShipmentBookingForm';
@@ -213,7 +214,7 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
       const v = draft[key]?.trim();
       if (v && !isUuid(v)) body[key] = v;
     }
-    body.custom_fields = customFields
+    const custom = customFields
       .filter((f) => f.key.trim() && f.label.trim())
       .map((f) => {
         const row: BookingCustomField = {
@@ -227,16 +228,13 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
           const n =
             typeof f.value === 'number' ? f.value : Number(String(f.value ?? '').trim());
           if (Number.isFinite(n)) row.value = n;
-          else if (f.value == null || f.value === '') row.value = null;
-          else row.value = String(f.value);
-        } else if (f.value == null || f.value === '') {
-          row.value = null;
-        } else {
+        } else if (f.value != null && f.value !== '') {
           row.value = String(f.value);
         }
         return row;
       });
-    return body;
+    if (custom.length) body.custom_fields = custom;
+    return compactShipmentBookingFormPutBody(body);
   };
 
   const applySavedToDraft = (body: Record<string, unknown>) => {
@@ -257,9 +255,21 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
 
   const saveErrorMessage = (e: unknown): string => {
     const msg = getErrorMessage(e);
-    const status = (e as { response?: { status?: number } })?.response?.status;
+    const status =
+      (e as { status?: number; response?: { status?: number } })?.status ??
+      (e as { response?: { status?: number } })?.response?.status;
     if (status === 500 || /internal server error/i.test(msg)) {
-      return `${msg} (backend failed on PUT /shipments/:id/booking-form — check server logs / DTO validation.)`;
+      return (
+        `${msg} — backend 500 on PUT /shipments/:id/booking-form. ` +
+        `FE sends only editable scalars + optional custom_fields (no GET envelope). ` +
+        `Check API logs / Upsert booking-form DTO; this cannot be fixed on the frontend alone.`
+      );
+    }
+    if (status === 404 || /not found/i.test(msg)) {
+      return `${msg} — booking-form route missing or shipment has no form handler (backend).`;
+    }
+    if (status === 400 || status === 422) {
+      return `${msg} — request rejected by booking-form validation (backend DTO).`;
     }
     return msg;
   };
