@@ -191,48 +191,47 @@ export function DashboardPage() {
           loadingDelivered={jobCounts.isLoading}
         />
 
-        <div className="grid grid-cols-1 items-start gap-4 xl:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.9fr)]">
-          <ActiveShipmentsPanel
-            jobs={jobsQuery.data?.jobs ?? []}
-            isLoading={jobsQuery.isLoading}
-            isError={jobsQuery.isError}
-            isFetching={jobsQuery.isFetching}
-            lastUpdated={jobsQuery.dataUpdatedAt}
-            onRefresh={() => void jobsQuery.refetch()}
-            userId={user?.id}
+        <ActiveShipmentsPanel
+          jobs={jobsQuery.data?.jobs ?? []}
+          isLoading={jobsQuery.isLoading}
+          isError={jobsQuery.isError}
+          isFetching={jobsQuery.isFetching}
+          lastUpdated={jobsQuery.dataUpdatedAt}
+          onRefresh={() => void jobsQuery.refetch()}
+          userId={user?.id}
+        />
+
+        <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <PendingQuotationsPanel
+            quotations={quoteStats.data?.quotations ?? []}
+            pipelineValue={quoteStats.data?.pipelineValue ?? 0}
+            isLoading={quoteStats.isLoading}
+            isError={quoteStats.isError}
           />
-          <div className="space-y-4">
-            <PendingQuotationsPanel
-              quotations={quoteStats.data?.quotations ?? []}
-              pipelineValue={quoteStats.data?.pipelineValue ?? 0}
-              isLoading={quoteStats.isLoading}
-              isError={quoteStats.isError}
-            />
-            <TodaysTasksPanel
-              items={tasks}
-              isLoading={followUps.isLoading}
-              isError={followUps.isError}
-              pendingToggleId={patchFollowUp.isPending ? patchFollowUp.variables?.id : undefined}
-              onToggle={(id: string, done: boolean) => {
-                void patchFollowUp.mutateAsync({
-                  id,
-                  dto: { status: done ? 'COMPLETED' : 'PENDING' },
-                });
-              }}
-            />
-            <RecentInvoicesPanel
-              invoices={invoicesQuery.data?.invoices ?? []}
-              isLoading={invoicesQuery.isLoading}
-              isError={invoicesQuery.isError}
-            />
-            <ReceivablesAgingPanel
-              report={agingReport}
-              isLoading={agingQuery.isLoading}
-              isError={agingQuery.isError}
-              isFetching={agingQuery.isFetching}
-              onRefresh={() => void agingQuery.refetch()}
-            />
-          </div>
+          <TodaysTasksPanel
+            items={tasks}
+            isLoading={followUps.isLoading}
+            isError={followUps.isError}
+            pendingToggleId={patchFollowUp.isPending ? patchFollowUp.variables?.id : undefined}
+            onToggle={(id: string, done: boolean) => {
+              void patchFollowUp.mutateAsync({
+                id,
+                dto: { status: done ? 'COMPLETED' : 'PENDING' },
+              });
+            }}
+          />
+          <RecentInvoicesPanel
+            invoices={invoicesQuery.data?.invoices ?? []}
+            isLoading={invoicesQuery.isLoading}
+            isError={invoicesQuery.isError}
+          />
+          <ReceivablesAgingPanel
+            report={agingReport}
+            isLoading={agingQuery.isLoading}
+            isError={agingQuery.isError}
+            isFetching={agingQuery.isFetching}
+            onRefresh={() => void agingQuery.refetch()}
+          />
         </div>
 
         <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

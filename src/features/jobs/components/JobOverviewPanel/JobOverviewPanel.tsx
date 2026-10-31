@@ -233,6 +233,13 @@ export function JobOverviewPanel({ job }: { job: Job }) {
           <Row label="Carrier booking ref" value={seaFcl?.carrier_booking_ref} />
           <Row label="HBL" value={seaFcl?.hbl_number} />
           <Row label="MBL" value={seaFcl?.mbl_number} />
+          <Row label="BL" value={job.bl_number} />
+          <Row label="Container" value={job.primary_container_number} />
+          <Row label="Container status" value={job.primary_container_status} />
+          <Row label="Rotation" value={job.rotation_number} />
+          <Row label="EDI company code" value={job.edi_company_code || job.company_code} />
+          <Row label="Line code" value={job.line_code || job.line_no} />
+          <Row label="Draft BL comment" value={job.draft_bl_customer_comment} />
           <Row label="HBL from agent" value={seaFcl?.hbl_number_from_agent} />
           <Row label="MBL from line" value={seaFcl?.mbl_number_from_line} />
           <Row label="Place of receipt" value={seaFcl?.place_of_receipt} />
@@ -284,6 +291,11 @@ export function JobOverviewPanel({ job }: { job: Job }) {
           <Row label="Consolidation" value={seaLcl?.consolidation_number} />
           <Row label="HBL" value={seaLcl?.hbl_number} />
           <Row label="MBL" value={seaLcl?.mbl_number} />
+          <Row label="BL" value={job.bl_number} />
+          <Row label="Container" value={job.primary_container_number} />
+          <Row label="Container status" value={job.primary_container_status} />
+          <Row label="Rotation" value={job.rotation_number} />
+          <Row label="EDI company code" value={job.edi_company_code || job.company_code} />
           <Row label="Place of receipt" value={seaLcl?.place_of_receipt} />
           <Row label="Place of delivery" value={seaLcl?.place_of_delivery} />
           <Row label="POL" value={labels.originLabel} />

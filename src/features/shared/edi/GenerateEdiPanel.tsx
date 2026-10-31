@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Download, Plus, Radio, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -27,6 +27,8 @@ interface GenerateEdiPanelProps {
   submissionsLoading?: boolean;
   generatePending?: boolean;
   downloadPending?: boolean;
+  /** Prefill from job show_all / edi_company_code when present. */
+  initialCompanyCodes?: string[];
   onGenerate: (dto: GenerateEdiRequest) => Promise<unknown>;
   onDownload: (submissionId: string) => Promise<unknown>;
   onChanged?: () => void;
@@ -44,6 +46,7 @@ export function GenerateEdiPanel({
   submissionsLoading,
   generatePending,
   downloadPending,
+  initialCompanyCodes,
   onGenerate,
   onDownload,
   onChanged,
@@ -59,6 +62,21 @@ export function GenerateEdiPanel({
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!initialCompanyCodes?.length) return;
+    setCompanyCodes((prev) => {
+      if (prev.length) return prev;
+      const next: string[] = [];
+      for (const raw of initialCompanyCodes) {
+        const code = normalizeCode(raw);
+        if (!code || code.length > 40) continue;
+        if (next.some((c) => normalizeCode(c) === code)) continue;
+        next.push(code);
+      }
+      return next;
+    });
+  }, [initialCompanyCodes]);
 
   const selected = ediType || types[0]?.code || '';
   const isManifestTxt = /MANIFEST_CSDP|CSDP/i.test(selected);

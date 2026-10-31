@@ -318,6 +318,10 @@ export default function JobDetailPage() {
   const [stopConfirmed, setStopConfirmed] = useState(false);
   const [resumeOpen, setResumeOpen] = useState(false);
   const [resumeReason, setResumeReason] = useState('');
+  const [editHoldOpen, setEditHoldOpen] = useState(false);
+  const [editHoldReason, setEditHoldReason] = useState('');
+  const [editHoldHeldAt, setEditHoldHeldAt] = useState('');
+  const [editHoldExpectedRelease, setEditHoldExpectedRelease] = useState('');
   const [actionPanel, setActionPanel] = useState<JobActionPanelKey | null>(null);
   const statusOptionsQuery = useJobStatusOptions(
     id,
@@ -815,12 +819,24 @@ export default function JobDetailPage() {
               label="MBL"
               value={job.sea_fcl_details?.mbl_number || job.sea_lcl_details?.mbl_number}
             />
+            <OptionalFresaField label="BL" value={job.bl_number} />
+            <OptionalFresaField label="Container" value={job.primary_container_number} />
+            <OptionalFresaField label="Container status" value={job.primary_container_status} />
+            <OptionalFresaField label="Rotation" value={job.rotation_number} />
+            <OptionalFresaField
+              label="EDI company code"
+              value={job.edi_company_code || job.company_code}
+            />
             <OptionalFresaField
               label="Carrier booking ref"
               value={
                 job.sea_fcl_details?.carrier_booking_ref ||
                 job.sea_lcl_details?.carrier_booking_ref
               }
+            />
+            <OptionalFresaField
+              label="Draft BL comment"
+              value={job.draft_bl_customer_comment}
             />
             <OptionalFresaField label="Customer remarks" value={job.customer_remarks} />
             <OptionalFresaField label="Notes" value={job.notes} />
@@ -974,19 +990,55 @@ export default function JobDetailPage() {
               </Button>
             ) : null}
             {canResume ? (
-              <Button
-                size="sm"
-                type="button"
-                variant="report"
-                leftIcon={<PlayCircle />}
-                disabled={pending || actions.resume.isPending}
-                onClick={() => {
-                  setResumeReason('');
-                  setResumeOpen(true);
-                }}
-              >
-                Resume job
-              </Button>
+              <>
+                <Button
+                  size="sm"
+                  type="button"
+                  variant="secondary"
+                  leftIcon={<Pencil />}
+                  disabled={pending || actions.patchHold.isPending}
+                  onClick={() => {
+                    setEditHoldReason(job.hold_reason ?? '');
+                    {
+                      const raw = job.held_at;
+                      if (raw?.trim()) {
+                        const d = new Date(raw);
+                        if (!Number.isNaN(d.getTime())) {
+                          const pad = (n: number) => String(n).padStart(2, '0');
+                          setEditHoldHeldAt(
+                            `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`,
+                          );
+                        } else {
+                          setEditHoldHeldAt('');
+                        }
+                      } else {
+                        setEditHoldHeldAt('');
+                      }
+                    }
+                    setEditHoldExpectedRelease(
+                      job.expected_release_at
+                        ? job.expected_release_at.slice(0, 10)
+                        : '',
+                    );
+                    setEditHoldOpen(true);
+                  }}
+                >
+                  Edit hold
+                </Button>
+                <Button
+                  size="sm"
+                  type="button"
+                  variant="report"
+                  leftIcon={<PlayCircle />}
+                  disabled={pending || actions.resume.isPending}
+                  onClick={() => {
+                    setResumeReason('');
+                    setResumeOpen(true);
+                  }}
+                >
+                  Resume job
+                </Button>
+              </>
             ) : null}
             {canReopen ? (
               <Button
@@ -1567,6 +1619,88 @@ export default function JobDetailPage() {
         </Modal>
       ) : null}
 
+      {editHoldOpen ? (
+        <Modal
+          open
+          onClose={() => !pending && setEditHoldOpen(false)}
+          title="Edit hold"
+          footer={
+            <div className="flex justify-end gap-2">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={pending}
+                onClick={() => setEditHoldOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="button"
+                size="sm"
+                variant="edit"
+                leftIcon={<Pencil />}
+                disabled={pending || actions.patchHold.isPending}
+                onClick={() =>
+                  void run(async () => {
+                    const heldAtIso = (() => {
+                      const raw = editHoldHeldAt.trim();
+                      if (!raw) return null;
+                      const d = new Date(raw);
+                      return Number.isNaN(d.getTime()) ? null : d.toISOString();
+                    })();
+                    await actions.patchHold.mutateAsync({
+                      reason: editHoldReason.trim() || undefined,
+                      held_at: heldAtIso,
+                      expected_release_at: editHoldExpectedRelease.trim() || null,
+                    });
+                    setEditHoldOpen(false);
+                  }, 'Hold details updated.')
+                }
+              >
+                {pending ? 'Saving…' : 'Save hold'}
+              </Button>
+            </div>
+          }
+        >
+          <div className="space-y-3">
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Hold reason
+              </span>
+              <input
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={editHoldReason}
+                onChange={(e) => setEditHoldReason(e.target.value)}
+                maxLength={500}
+              />
+            </label>
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Held at
+              </span>
+              <input
+                type="datetime-local"
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={editHoldHeldAt}
+                onChange={(e) => setEditHoldHeldAt(e.target.value)}
+              />
+            </label>
+            <label className="block text-[13px]">
+              <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                Expected release date
+              </span>
+              <input
+                type="date"
+                className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                value={editHoldExpectedRelease}
+                onChange={(e) => setEditHoldExpectedRelease(e.target.value)}
+              />
+            </label>
+          </div>
+        </Modal>
+      ) : null}
+
       {resumeOpen ? (
         <Modal
           open
@@ -1664,6 +1798,10 @@ export default function JobDetailPage() {
             submissionsLoading={jobEdiSubmissionsQuery.isLoading}
             generatePending={actions.generateJobEdi.isPending}
             downloadPending={actions.downloadJobEdiSubmission.isPending}
+            initialCompanyCodes={[
+              job.edi_company_code,
+              job.company_code,
+            ].filter((c): c is string => Boolean(c?.trim()))}
             onGenerate={(dto) => actions.generateJobEdi.mutateAsync(dto)}
             onDownload={(submissionId) =>
               actions.downloadJobEdiSubmission.mutateAsync(submissionId)

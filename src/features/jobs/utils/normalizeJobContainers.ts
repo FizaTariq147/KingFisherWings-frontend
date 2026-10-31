@@ -2,7 +2,7 @@ import {
   CONTAINER_STATUSES,
   type ContainerStatus,
 } from '../constants/job.constants';
-import type { JobContainer } from '../types/job.types';
+import type { JobContainer, JobContainerKind } from '../types/job.types';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -90,12 +90,17 @@ export function normalizeJobContainer(raw: unknown): JobContainer | null {
     nestedType?.iso_size,
   );
 
+  const kindRaw = pickString(r.container_kind, r.containerKind, r.kind)?.toUpperCase();
+  const container_kind: JobContainerKind | undefined =
+    kindRaw === 'ACTUAL' || kindRaw === 'PLANNED' ? kindRaw : undefined;
+
   return {
     id,
     container_type_id,
     container_type_name: typeName,
     container_type_code: typeCode || undefined,
     iso_size: pickString(r.iso_size, r.isoSize, typeCode) || undefined,
+    container_kind,
     container_number: pickString(
       r.container_number,
       r.containerNumber,
@@ -123,6 +128,46 @@ export function normalizeJobContainers(raw: unknown): JobContainer[] {
   return unwrapListItems(raw)
     .map(normalizeJobContainer)
     .filter((c): c is JobContainer => Boolean(c));
+}
+
+export interface JobContainerDisplay {
+  number: string;
+  status: string;
+  kind?: JobContainerKind;
+}
+
+/**
+ * Prefer ACTUAL container number/status, then PLANNED, then any numbered line.
+ * Used by dashboard Active Shipments (Planned / Actual container tabs).
+ */
+export function pickJobContainerDisplay(
+  containers?: JobContainer[] | null,
+  fallback?: { number?: string; status?: string },
+): JobContainerDisplay | null {
+  const list = containers ?? [];
+  const withNumber = (c: JobContainer) => Boolean(c.container_number?.trim());
+  const actual = list.find((c) => c.container_kind === 'ACTUAL' && withNumber(c));
+  const planned = list.find((c) => c.container_kind === 'PLANNED' && withNumber(c));
+  const anyNumbered = list.find(withNumber);
+  const anyActual = list.find((c) => c.container_kind === 'ACTUAL');
+  const anyPlanned = list.find((c) => c.container_kind === 'PLANNED');
+  const picked = actual ?? planned ?? anyNumbered ?? anyActual ?? anyPlanned ?? list[0];
+
+  const number =
+    picked?.container_number?.trim() ||
+    fallback?.number?.trim() ||
+    '';
+  const status =
+    String(picked?.status ?? '').trim() ||
+    fallback?.status?.trim() ||
+    '';
+
+  if (!number && !status) return null;
+  return {
+    number,
+    status,
+    kind: picked?.container_kind,
+  };
 }
 
 export interface ContainerFillInfo {

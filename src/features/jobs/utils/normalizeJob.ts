@@ -13,6 +13,7 @@ import type {
 } from '../types/job.types';
 import type { JobStatus } from '../constants/job.constants';
 import { canonicalizeJobType } from './canonicalizeJobType';
+import { normalizeJobContainers } from './normalizeJobContainers';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -830,6 +831,60 @@ export function normalizeJob(raw: unknown): Job | null {
       undefined,
     resume_reason: pickString(r, 'resume_reason', 'resumeReason') || undefined,
     resumed_at: pickString(r, 'resumed_at', 'resumedAt') || undefined,
+    bl_number:
+      pickString(r, 'bl_number', 'blNumber') ||
+      pickString(sea ?? {}, 'mbl_number', 'mblNumber', 'hbl_number', 'hblNumber') ||
+      pickString(seaLcl ?? {}, 'mbl_number', 'mblNumber', 'hbl_number', 'hblNumber') ||
+      undefined,
+    rotation_number: pickString(r, 'rotation_number', 'rotationNumber') || undefined,
+    primary_container_number:
+      pickString(
+        r,
+        'primary_container_number',
+        'primaryContainerNumber',
+        'container_number',
+        'containerNumber',
+      ) || undefined,
+    primary_container_status:
+      pickString(
+        r,
+        'primary_container_status',
+        'primaryContainerStatus',
+        'container_status',
+        'containerStatus',
+      ) || undefined,
+    edi_company_code:
+      pickString(r, 'edi_company_code', 'ediCompanyCode', 'company_code', 'companyCode') ||
+      undefined,
+    vessel_name:
+      pickString(r, 'vessel_name', 'vesselName') ||
+      pickString(sea ?? {}, 'vessel_name', 'vesselName') ||
+      pickString(seaLcl ?? {}, 'vessel_name', 'vesselName') ||
+      undefined,
+    vessel_number: pickString(r, 'vessel_number', 'vesselNumber') || undefined,
+    voyage_number:
+      pickString(r, 'voyage_number', 'voyageNumber') ||
+      pickString(sea ?? {}, 'voyage_number', 'voyageNumber') ||
+      pickString(seaLcl ?? {}, 'voyage_number', 'voyageNumber') ||
+      undefined,
+    line_code: pickString(r, 'line_code', 'lineCode') || undefined,
+    line_no: pickString(r, 'line_no', 'lineNo') || undefined,
+    company_code: pickString(r, 'company_code', 'companyCode') || undefined,
+    draft_bl_customer_comment:
+      pickString(r, 'draft_bl_customer_comment', 'draftBlCustomerComment') ||
+      pickString(
+        asRecord(r.nvocc_details) ?? asRecord(r.nvoccDetails) ?? {},
+        'draft_bl_customer_comment',
+        'draftBlCustomerComment',
+      ) ||
+      undefined,
+    port_token_form:
+      asRecord(
+        r.port_token_form ??
+          r.portTokenForm ??
+          asRecord(r.nvocc_details)?.port_token_form ??
+          asRecord(r.nvoccDetails)?.port_token_form,
+      ) ?? undefined,
     created_at: pickString(r, 'created_at', 'createdAt') || undefined,
     updated_at: pickString(r, 'updated_at', 'updatedAt') || undefined,
     air_details: air
@@ -1070,7 +1125,20 @@ export function normalizeJob(raw: unknown): Job | null {
     milestones,
     notes_list: notesList,
     house_jobs: houseJobs,
-    containers: Array.isArray(r.containers) ? (r.containers as Job['containers']) : undefined,
+    containers: (() => {
+      const merged = [
+        ...normalizeJobContainers(r.containers),
+        ...normalizeJobContainers(r.actual_container ?? r.actualContainer ?? r.actual_containers),
+        ...normalizeJobContainers(r.planned_container ?? r.plannedContainer ?? r.planned_containers),
+      ];
+      if (!merged.length) return undefined;
+      const seen = new Set<string>();
+      return merged.filter((c) => {
+        if (seen.has(c.id)) return false;
+        seen.add(c.id);
+        return true;
+      });
+    })(),
     cargo: Array.isArray(r.cargo) ? (r.cargo as Job['cargo']) : undefined,
     documents: Array.isArray(r.documents) ? (r.documents as Job['documents']) : undefined,
     bills_of_lading: Array.isArray(r.bills_of_lading ?? r.billsOfLading)

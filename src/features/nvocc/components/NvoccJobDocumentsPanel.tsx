@@ -136,7 +136,7 @@ export function NvoccJobDocumentsPanel({ jobId }: NvoccJobDocumentsPanelProps) {
   return (
     <div className="space-y-4">
       <p className="text-sm text-[var(--color-neutral-500)]">
-        CRO / loading / payment / close report live on the <strong>Ops / Mode</strong> tab.
+        Loading / payment / close report live on the <strong>Ops / Mode</strong> tab.
         Invoice header/footer on API PDFs only. Prefer gated HBL after portal draft + payment.
       </p>
 

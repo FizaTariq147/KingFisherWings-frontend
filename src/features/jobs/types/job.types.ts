@@ -469,6 +469,8 @@ export type ModeBookingForm = Record<string, unknown> & {
   attach_health_veterinary?: boolean;
   attach_fda_moh?: boolean;
   parties?: BookingFormPartyDto[];
+  /** null clears; omit leaves unchanged. */
+  custom_fields?: Record<string, unknown> | null;
   mark_complete?: boolean;
   consent_accepted?: boolean;
   etd?: string;
@@ -636,6 +638,8 @@ export interface JobNote {
   updated_at?: string;
 }
 
+export type JobContainerKind = 'PLANNED' | 'ACTUAL';
+
 export interface JobContainer {
   id: string;
   container_type_id: string;
@@ -644,6 +648,8 @@ export interface JobContainer {
   /** Type code / ISO size (e.g. 20GP) — preferred for create writes. */
   container_type_code?: string;
   iso_size?: string;
+  /** OpenAPI CreateJobContainerDto.container_kind — Planned vs Actual tab lines. */
+  container_kind?: JobContainerKind;
   container_number?: string;
   seal_number?: string;
   status?: ContainerStatus;
@@ -1134,6 +1140,25 @@ export interface Job {
   expected_release_at?: string;
   resume_reason?: string;
   resumed_at?: string;
+  /**
+   * Job-level ops identity (show_all / EDI / portal).
+   * BL alias prefers MBL when writing; container syncs to primary JobContainer.
+   */
+  bl_number?: string;
+  rotation_number?: string;
+  primary_container_number?: string;
+  primary_container_status?: string;
+  edi_company_code?: string;
+  vessel_name?: string;
+  vessel_number?: string;
+  voyage_number?: string;
+  line_code?: string;
+  line_no?: string;
+  company_code?: string;
+  /** Customer comment from portal request-draft-bl (NVOCC / Docs). */
+  draft_bl_customer_comment?: string;
+  /** Portal port-token form snapshot when present. */
+  port_token_form?: Record<string, unknown>;
   created_at?: string;
   updated_at?: string;
   /** From GET /jobs/:id/detail */
@@ -1419,6 +1444,23 @@ export interface PatchShowAllDto {
   job_date?: string | null;
   mbl_number?: string | null;
   hbl_number?: string | null;
+  /** Alias — prefers writing MBL when set. */
+  bl_number?: string | null;
+  rotation_number?: string | null;
+  /** Syncs to primary JobContainer number. */
+  container_number?: string | null;
+  /** Primary JobContainer status (EMPTY, PICKED, …). */
+  container_status?: string | null;
+  vessel_name?: string | null;
+  /** Alias for vessel_name. */
+  vessel_number?: string | null;
+  voyage_number?: string | null;
+  /** Shipping line code. */
+  line_code?: string | null;
+  /** Alias for line_code. */
+  line_no?: string | null;
+  /** EDI / CSDP company code. */
+  company_code?: string | null;
   origin_port_name?: string | null;
   origin_port_code?: string | null;
   dest_port_name?: string | null;

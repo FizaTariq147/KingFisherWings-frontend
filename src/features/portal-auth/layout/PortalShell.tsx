@@ -134,7 +134,11 @@ export function PortalShell() {
                   <X size={18} />
                 </button>
               </div>
-              <nav ref={mobileNavRef} className="flex-1 overflow-y-auto py-3" aria-label="Mobile portal navigation">
+              <nav
+                ref={mobileNavRef}
+                className="portal-scrollbar flex-1 overflow-y-auto py-3"
+                aria-label="Mobile portal navigation"
+              >
                 {PORTAL_NAV_SECTIONS.map((section) => (
                   <div key={section.id} className="mb-2">
                     <div className="mx-4 mb-1.5 mt-2.5 flex items-center gap-2">

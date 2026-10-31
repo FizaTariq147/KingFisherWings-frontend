@@ -1,7 +1,6 @@
 import type {
   NvoccBooking,
   NvoccBookingForm,
-  NvoccContainerRequest,
   NvoccEnquiry,
   NvoccLoadListItem,
   NvoccTariff,
@@ -383,30 +382,6 @@ export function normalizeNvoccBookingForm(raw: unknown): NvoccBookingForm {
     parties,
     // Only true when API explicitly marks the form complete (drafts omit / false).
     mark_complete: record.mark_complete === true,
-  };
-}
-
-export function normalizeNvoccContainerRequest(raw: unknown): NvoccContainerRequest | null {
-  const record = asRecord(raw);
-  if (!record) return null;
-  const id = idOf(record);
-  if (!id) return null;
-  return {
-    id,
-    job_id: str(record.job_id),
-    container_type_id: str(record.container_type_id),
-    container_type_code:
-      str(record.container_type_code) ?? nestedName(record, 'container_type'),
-    quantity: num(record.quantity) ?? num(record.container_count),
-    container_count: num(record.container_count) ?? num(record.quantity),
-    status: str(record.status),
-    cro_number: str(record.cro_number) ?? str(record.cro_reference),
-    container_number: str(record.container_number),
-    issued_at: str(record.issued_at),
-    allocated_at: str(record.allocated_at),
-    notes: str(record.notes),
-    created_at: str(record.created_at),
-    updated_at: str(record.updated_at),
   };
 }
 

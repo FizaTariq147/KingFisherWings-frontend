@@ -12,6 +12,7 @@ import type {
   PortalMilestone,
   PortalShipmentDetail,
   PortalShipmentDocument,
+  PortalShipmentHold,
   PortalShipmentListItem,
   PortalShipmentListResult,
   PortalShipmentSummary,
@@ -115,6 +116,135 @@ export function normalizeShipmentSummary(raw: unknown): PortalShipmentSummary {
   };
 }
 
+function containerKindOf(rec: Record<string, unknown> | null): 'ACTUAL' | 'PLANNED' | '' {
+  const kind = pickString(rec?.container_kind, rec?.containerKind, rec?.kind)?.toUpperCase();
+  if (kind === 'ACTUAL' || kind === 'PLANNED') return kind;
+  return '';
+}
+
+function normalizeContainerNumbers(raw: unknown): string[] | undefined {
+  if (Array.isArray(raw)) {
+    const rows = raw.map((v) => {
+      if (typeof v === 'string') {
+        const number = v.trim();
+        return number ? { number, kind: '' as const, status: '' } : null;
+      }
+      const rec = asRecord(v);
+      const number = pickString(
+        rec?.container_number,
+        rec?.containerNumber,
+        rec?.number,
+        rec?.code,
+      );
+      if (!number) return null;
+      return {
+        number,
+        kind: containerKindOf(rec),
+        status: pickString(rec?.status, rec?.container_status, rec?.containerStatus) || '',
+      };
+    }).filter((r): r is { number: string; kind: 'ACTUAL' | 'PLANNED' | ''; status: string } => Boolean(r));
+
+    // Prefer ACTUAL numbers, then PLANNED, then remaining.
+    const ordered = [
+      ...rows.filter((r) => r.kind === 'ACTUAL'),
+      ...rows.filter((r) => r.kind === 'PLANNED'),
+      ...rows.filter((r) => !r.kind),
+    ];
+    const out = ordered.map((r) => r.number);
+    return out.length ? out : undefined;
+  }
+  const single = pickString(raw);
+  return single ? [single] : undefined;
+}
+
+function mergeContainerSources(...sources: unknown[]): unknown[] {
+  const out: unknown[] = [];
+  for (const source of sources) {
+    if (Array.isArray(source)) out.push(...source);
+    else if (source != null && typeof source === 'object') {
+      const rec = asRecord(source);
+      const nested =
+        (rec && Array.isArray(rec.containers) && rec.containers) ||
+        (rec && Array.isArray(rec.items) && rec.items) ||
+        null;
+      if (nested) out.push(...nested);
+      else out.push(source);
+    } else if (typeof source === 'string' && source.trim()) {
+      out.push(source.trim());
+    }
+  }
+  return out;
+}
+
+function pickPreferredContainerRow(raw: unknown): {
+  number: string;
+  status: string;
+  kind: 'ACTUAL' | 'PLANNED' | '';
+} | null {
+  if (!Array.isArray(raw) || raw.length === 0) return null;
+  const rows = raw
+    .map((v) => {
+      if (typeof v === 'string') {
+        const number = v.trim();
+        return number ? { number, status: '', kind: '' as const } : null;
+      }
+      const rec = asRecord(v);
+      if (!rec) return null;
+      return {
+        kind: containerKindOf(rec),
+        status: pickString(rec.status, rec.container_status, rec.containerStatus) || '',
+        number: pickString(rec.container_number, rec.containerNumber, rec.number) || '',
+      };
+    })
+    .filter((r): r is { kind: 'ACTUAL' | 'PLANNED' | ''; status: string; number: string } => Boolean(r));
+
+  return (
+    rows.find((r) => r.kind === 'ACTUAL' && (r.number || r.status)) ||
+    rows.find((r) => r.kind === 'PLANNED' && (r.number || r.status)) ||
+    rows.find((r) => r.number || r.status) ||
+    null
+  );
+}
+
+function normalizeHoldBlock(record: Record<string, unknown>): PortalShipmentHold | undefined {
+  const nested =
+    asRecord(record.hold) ??
+    asRecord(record.hold_info) ??
+    asRecord(record.holdInfo) ??
+    asRecord(record.on_hold) ??
+    asRecord(record.onHold);
+  const source = nested ?? record;
+  const holdReason =
+    pickString(
+      source.hold_reason,
+      source.holdReason,
+      source.reason,
+      nested ? undefined : record.hold_reason,
+    ) || undefined;
+  const heldAt =
+    pickString(source.held_at, source.heldAt, nested ? undefined : record.held_at) ||
+    undefined;
+  const expectedReleaseAt =
+    pickString(
+      source.expected_release_at,
+      source.expectedReleaseAt,
+      nested ? undefined : record.expected_release_at,
+    ) || undefined;
+  const resumeReason =
+    pickString(
+      source.resume_reason,
+      source.resumeReason,
+      nested ? undefined : record.resume_reason,
+    ) || undefined;
+  const resumedAt =
+    pickString(source.resumed_at, source.resumedAt, nested ? undefined : record.resumed_at) ||
+    undefined;
+  if (!holdReason && !heldAt && !expectedReleaseAt && !resumeReason && !resumedAt) {
+    return undefined;
+  }
+  return { holdReason, heldAt, expectedReleaseAt, resumeReason, resumedAt };
+}
+
 export function normalizeShipmentListItem(raw: unknown): PortalShipmentListItem | null {
   const record = asRecord(raw);
   if (!record) return null;
@@ -123,6 +253,7 @@ export function normalizeShipmentListItem(raw: unknown): PortalShipmentListItem 
 
   const origin = routeLabel(record, 'origin');
   const destination = routeLabel(record, 'dest');
+  const refs = asRecord(record.references) ?? asRecord(record.refs);
 
   return {
     id,
@@ -137,6 +268,7 @@ export function normalizeShipmentListItem(raw: unknown): PortalShipmentListItem 
         record.mbl_number,
         record.number,
       ) || id,
+    jobNumber: pickString(record.job_number, record.jobNumber) || undefined,
     jobType: pickString(record.job_type, record.jobType) || undefined,
     status: pickString(record.status, record.job_status) || undefined,
     origin: origin || undefined,
@@ -144,6 +276,62 @@ export function normalizeShipmentListItem(raw: unknown): PortalShipmentListItem 
     etd: pickString(record.etd, record.etd_date) || undefined,
     eta: pickString(record.eta, record.eta_date) || undefined,
     updatedAt: pickString(record.updated_at, record.updatedAt) || undefined,
+    blNumber:
+      pickString(record.bl_number, record.blNumber, refs?.bl_number, refs?.bl) || undefined,
+    hblNumber:
+      pickString(record.hbl_number, record.hblNumber, refs?.hbl_number, refs?.hbl) ||
+      undefined,
+    mblNumber:
+      pickString(record.mbl_number, record.mblNumber, refs?.mbl_number, refs?.mbl) ||
+      undefined,
+    hawbNumber:
+      pickString(record.hawb_number, record.hawbNumber, refs?.hawb_number, refs?.hawb) ||
+      undefined,
+    mawbNumber:
+      pickString(record.mawb_number, record.mawbNumber, refs?.mawb_number, refs?.mawb) ||
+      undefined,
+    trackingNumber:
+      pickString(
+        record.tracking_number,
+        record.trackingNumber,
+        refs?.tracking_number,
+        refs?.tracking,
+      ) || undefined,
+    ...(() => {
+      const merged = mergeContainerSources(
+        record.actual_container,
+        record.actualContainer,
+        record.actual_containers,
+        record.containers,
+        record.planned_container,
+        record.plannedContainer,
+        record.planned_containers,
+        record.container_numbers,
+        record.containerNumbers,
+        record.primary_container_number,
+        record.container_number,
+      );
+      const preferred = pickPreferredContainerRow(merged);
+      const numbers = normalizeContainerNumbers(merged.length ? merged : undefined);
+      const status =
+        preferred?.status ||
+        pickString(
+          record.container_status,
+          record.containerStatus,
+          record.primary_container_status,
+          record.primaryContainerStatus,
+        ) ||
+        undefined;
+      const kind = preferred?.kind || undefined;
+      return {
+        containerNumbers: numbers,
+        containerStatus: status,
+        containerKind: kind === 'ACTUAL' || kind === 'PLANNED' ? kind : undefined,
+      };
+    })(),
+    rotationNumber:
+      pickString(record.rotation_number, record.rotationNumber) || undefined,
+    hold: normalizeHoldBlock(record),
     raw: record,
   };
 }
@@ -213,7 +401,16 @@ export function normalizeMilestone(raw: unknown): PortalMilestone | null {
         .toUpperCase()
         .includes('CUSTOM'),
   );
-  const rawLabel = label || id || '';
+  const eventType = pickString(record.event_type, record.eventType, record.type, record.kind);
+  const summary = pickString(
+    record.summary,
+    record.message,
+    record.comment_summary,
+    record.commentSummary,
+  );
+  const rawLabel = label || eventType || summary || id || '';
+  const notes =
+    pickString(record.notes, record.remark, record.description, summary) || undefined;
   return {
     id: id || label,
     code,
@@ -222,10 +419,13 @@ export function normalizeMilestone(raw: unknown): PortalMilestone | null {
     status,
     occurredAt,
     location: pickString(record.location, record.place) || undefined,
-    notes: pickString(record.notes, record.remark, record.description) || undefined,
+    notes,
     isCompleted,
     isCustom,
-    isHold,
+    isHold:
+      isHold ||
+      /HOLD|RESUME/i.test(eventType) ||
+      /HOLD|RESUME/i.test(codeUpper),
   };
 }
 

@@ -323,7 +323,7 @@ export default function QuotationDetailPage() {
       const life = linkedBooking.lifecycle_status;
       if (seaExportStage === 'cro-container') {
         return {
-          text: `Live booking gate: ${gate}${life ? ` · lifecycle ${life}` : ''}. Convert to job / Issue CRO on the booking Ops tab.`,
+          text: `Live booking gate: ${gate}${life ? ` · lifecycle ${life}` : ''}. Convert to job on the booking Ops tab.`,
           href: bookingHref,
           linkLabel: 'Open NVOCC booking',
         };
@@ -343,14 +343,14 @@ export default function QuotationDetailPage() {
     }
     if (seaExportStage === 'cro-container' || seaExportStage === 'invoice') {
       return {
-        text: 'Quote is past booking-form on the workflow rail. Open NVOCC Bookings to finish convert / CRO (link the booking if the rail still lags).',
+        text: 'Quote is past booking-form on the workflow rail. Open NVOCC Bookings to finish convert (link the booking if the rail still lags).',
         href: '/nvocc/booking-list',
         linkLabel: 'NVOCC Bookings',
       };
     }
     if (status === 'CONVERTED' || seaExportStage === 'cro-container') {
       return {
-        text: 'Quotation converted to job — continue CRO / allocate on the NVOCC booking or job Ops tab.',
+        text: 'Quotation converted to job — continue Stage 3–4 on the job Ops tab.',
         href: bookingHref,
         linkLabel: linkedBooking?.id ? 'Open NVOCC booking' : 'NVOCC Bookings',
       };
@@ -363,7 +363,7 @@ export default function QuotationDetailPage() {
       };
     }
     return {
-      text: 'After customer approve, continue Stage 1–2 on NVOCC Bookings: booking form → send invoice → CRO / container.',
+      text: 'After customer approve, continue Stage 1–2 on NVOCC Bookings: booking form → send invoice → convert to job.',
       href: '/nvocc/booking-list',
       linkLabel: 'NVOCC Bookings',
     };
@@ -1312,7 +1312,7 @@ export default function QuotationDetailPage() {
                 () => actions.markWon.mutateAsync(),
                 usesGatedFreightQuoteFlow(quotation.job_type)
                   ? isNvoccQuoteJobType(quotation.job_type)
-                    ? 'Approved only — no job created. Customer fills booking form in portal, then send invoice on NVOCC Bookings → CRO.'
+                    ? 'Approved only — no job created. Customer fills booking form in portal, then send invoice on NVOCC Bookings → convert to job.'
                     : 'Approved only — no job created. Customer fills booking form in portal, then send invoice on Air Ops (Start air ops job if needed).'
                   : 'Approved only — no shipment/job created. Next: Generate Shipment → confirm/approve → Generate Job.',
               );

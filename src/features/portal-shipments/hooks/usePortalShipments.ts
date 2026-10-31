@@ -4,7 +4,11 @@ import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore
 import type { ApiPeriodQuery, UiDashboardPeriod } from '@/lib/apiPeriod';
 import { uiPeriodToApi } from '@/lib/apiPeriod';
 import { portalShipmentsService } from '../services/portalShipments.service';
-import type { PortalShipmentListParams } from '../types/portalShipments.types';
+import type {
+  PortalConfirmPortTokenDto,
+  PortalRequestDraftBlDto,
+  PortalShipmentListParams,
+} from '../types/portalShipments.types';
 
 export const portalShipmentKeys = {
   all: (scope: string) => ['portal', scope, 'shipments'] as const,
@@ -157,12 +161,12 @@ export function usePortalShipmentActions(shipmentId: string) {
       onSuccess: invalidate,
     }),
     confirmPortToken: useMutation({
-      mutationFn: (dto: Record<string, unknown> = {}) =>
+      mutationFn: (dto: PortalConfirmPortTokenDto) =>
         portalShipmentsService.confirmPortToken(shipmentId, dto),
       onSuccess: invalidate,
     }),
     requestDraftBl: useMutation({
-      mutationFn: (dto: Record<string, unknown> = {}) =>
+      mutationFn: (dto: PortalRequestDraftBlDto) =>
         portalShipmentsService.requestDraftBl(shipmentId, dto),
       onSuccess: invalidate,
     }),

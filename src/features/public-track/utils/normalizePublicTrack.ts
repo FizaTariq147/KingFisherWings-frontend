@@ -42,25 +42,44 @@ export function normalizePublicMilestone(
     status?.toUpperCase() === 'PLANNED' ||
     (!completedAt && status?.toUpperCase() !== 'COMPLETED');
 
+  const eventType =
+    pickString(r.event_type, r.eventType, r.type, r.kind, r.category) || undefined;
+  const summary =
+    pickString(r.summary, r.message, r.detail, r.comment_summary, r.commentSummary) ||
+    undefined;
+  const containerNumber =
+    pickString(r.container_number, r.containerNumber, r.container_no, r.containerNo) ||
+    undefined;
+  const labelSource =
+    pickString(
+      r.label,
+      r.name,
+      r.milestone_name,
+      r.milestoneName,
+      r.milestone,
+      r.code,
+      eventType,
+      summary,
+    ) || 'Milestone';
+
   return {
     id: pickString(r.id) || String(index),
-    label: (() => {
-      const raw =
-        pickString(r.label, r.name, r.milestone_name, r.milestoneName, r.milestone, r.code) ||
-        'Milestone';
-      return raw
-        .replace(/[/\\|]+/g, ' ')
-        .replace(/[_-]+/g, ' ')
-        .replace(/\s+/g, ' ')
-        .trim()
-        .replace(/\b\w/g, (c) => c.toUpperCase());
-    })(),
-    description: pickString(r.description, r.notes, r.remark) || undefined,
+    label: labelSource
+      .replace(/[/\\|]+/g, ' ')
+      .replace(/[_-]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim()
+      .replace(/\b\w/g, (c) => c.toUpperCase()),
+    description:
+      pickString(r.description, r.notes, r.remark, summary) || undefined,
     occurredAt: completedAt,
     completedAt,
     location: pickString(r.location, r.place) || undefined,
     status,
     pending: Boolean(pending),
+    eventType,
+    summary,
+    containerNumber,
   };
 }
 
@@ -107,7 +126,15 @@ export function normalizePublicTrack(raw: unknown): PublicTrackResult | null {
     ? shipment.milestones
     : Array.isArray(d.milestones)
       ? d.milestones
-      : [];
+      : Array.isArray(d.events)
+        ? d.events
+        : Array.isArray(d.timeline)
+          ? d.timeline
+          : Array.isArray(shipment.events)
+            ? shipment.events
+            : Array.isArray(shipment.timeline)
+              ? shipment.timeline
+              : [];
 
   let progress = pickNumber(
     shipment.progress,

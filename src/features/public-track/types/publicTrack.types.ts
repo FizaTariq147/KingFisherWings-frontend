@@ -8,6 +8,10 @@ export interface PublicTrackMilestone {
   location?: string;
   status?: string;
   pending?: boolean;
+  /** Richer TrackTimelineService event kinds (CONTAINER, HOLD, PORT_TOKEN, DRAFT_BL, …). */
+  eventType?: string;
+  summary?: string;
+  containerNumber?: string;
 }
 
 export interface PublicTrackMatch {
