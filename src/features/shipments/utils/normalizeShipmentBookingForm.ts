@@ -63,6 +63,50 @@ export function pickBookingFormScalar(
   return s;
 }
 
+/**
+ * Compact PUT body for /shipments/:id/booking-form.
+ * Omits empty custom_fields[] and nullish values — empty arrays / nulls have caused
+ * Nest 500s on some booking-form handlers.
+ */
+export function compactShipmentBookingFormPutBody(
+  body: Record<string, unknown>,
+): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(body)) {
+    if (key === 'custom_fields') continue;
+    if (value == null || value === '') continue;
+    if (typeof value === 'string' && isUuid(value.trim())) continue;
+    out[key] = value;
+  }
+
+  const rawCustom = body.custom_fields;
+  if (Array.isArray(rawCustom) && rawCustom.length) {
+    const rows: Record<string, unknown>[] = [];
+    for (const item of rawCustom) {
+      const row = asRecord(item);
+      if (!row) continue;
+      const key = String(row.key ?? '').trim();
+      const label = String(row.label ?? '').trim();
+      if (!key || !label) continue;
+      const next: Record<string, unknown> = {
+        key,
+        label,
+        type: String(row.type ?? 'text'),
+      };
+      if (row.value !== undefined && row.value !== null && row.value !== '') {
+        next.value = row.value;
+      }
+      rows.push(next);
+    }
+    if (rows.length) out.custom_fields = rows;
+  }
+
+  // Draft save flag used by mode booking forms; harmless if DTO ignores it.
+  if (out.mark_complete == null) out.mark_complete = false;
+
+  return out;
+}
+
 /** Merge saved PUT body into existing cache so the UI keeps values if GET is sparse. */
 export function mergeBookingFormCache(
   previous: Record<string, unknown> | undefined,
