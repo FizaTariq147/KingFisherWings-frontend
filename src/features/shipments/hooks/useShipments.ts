@@ -298,6 +298,7 @@ export function useUpsertShipmentBookingForm(id: string) {
       invalidate(id);
     },
   });
+}
 
 export function useCompleteShipmentBookingForm(id: string) {
   const invalidate = useInvalidateShipments();
