@@ -182,15 +182,16 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
   const isCompleted =
     markComplete || status === 'COMPLETED' || status === 'COMPLETE';
 
+  /**
+   * PUT body = only UI-editable scalars + custom_fields.
+   * Do not echo the full GET envelope (status, ids, nested objects) — that often
+   * causes Nest 500s on /shipments/:id/booking-form.
+   */
   const buildBody = (): Record<string, unknown> => {
-    const body: Record<string, unknown> = { ...data };
+    const body: Record<string, unknown> = {};
     for (const key of EDITABLE_KEYS) {
       const v = draft[key]?.trim();
-      if (v) body[key] = v;
-      else delete body[key];
-    }
-    for (const [k, v] of Object.entries(body)) {
-      if (typeof v === 'string' && isUuid(v)) delete body[k];
+      if (v && !isUuid(v)) body[key] = v;
     }
     body.custom_fields = customFields
       .filter((f) => f.key.trim() && f.label.trim())
@@ -218,6 +219,15 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
     return body;
   };
 
+  const saveErrorMessage = (e: unknown): string => {
+    const msg = getErrorMessage(e);
+    const status = (e as { response?: { status?: number } })?.response?.status;
+    if (status === 500 || /internal server error/i.test(msg)) {
+      return `${msg} (backend failed on PUT /shipments/:id/booking-form — check server logs / DTO validation.)`;
+    }
+    return msg;
+  };
+
   const onSave = async () => {
     setErr(null);
     setMsg(null);
@@ -226,7 +236,7 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
       setMsg('Booking form saved (PUT /shipments/:id/booking-form).');
       void query.refetch();
     } catch (e) {
-      setErr(getErrorMessage(e));
+      setErr(saveErrorMessage(e));
     }
   };
 
@@ -240,7 +250,7 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
       setMsg('Booking form completed (POST /shipments/:id/booking-form/complete).');
       void query.refetch();
     } catch (e) {
-      setErr(getErrorMessage(e));
+      setErr(saveErrorMessage(e));
     }
   };
 
