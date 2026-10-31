@@ -304,7 +304,7 @@ export function ActiveShipmentsPanel({
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1080px] text-left">
+          <table className="w-full min-w-[1180px] text-left">
             <thead className="bg-[var(--color-neutral-50)]">
               <tr className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-neutral-400)]">
                 <th className="w-10 px-4 py-2.5" />
@@ -312,9 +312,10 @@ export function ActiveShipmentsPanel({
                 <th className="px-3 py-2.5 font-semibold">Route</th>
                 <th className="px-3 py-2.5 font-semibold">Mode</th>
                 <th className="px-3 py-2.5 font-semibold">Container</th>
+                <th className="px-3 py-2.5 font-semibold">Container status</th>
                 <th className="px-3 py-2.5 font-semibold">With dept</th>
                 <th className="px-3 py-2.5 font-semibold">ETA</th>
-                <th className="px-3 py-2.5 font-semibold">Status</th>
+                <th className="px-3 py-2.5 font-semibold">Job status</th>
                 <th className="w-10 px-3 py-2.5" />
               </tr>
             </thead>
@@ -418,33 +419,28 @@ export function ActiveShipmentsPanel({
                       </div>
                     </td>
                     <td className="px-3 py-3 align-top">
-                      {!containerNumber && !containerStatus ? (
-                        <span className="text-[11px] text-[var(--color-neutral-400)]">—</span>
-                      ) : (
-                        <div className="min-w-[110px]">
+                      {containerNumber ? (
+                        <div className="min-w-[100px]">
                           <p className="text-[11px] font-semibold text-[var(--color-neutral-800)]">
-                            {containerNumber || '—'}
+                            {containerNumber}
                           </p>
-                          {(() => {
-                            const meta = [
-                              containerStatus
-                                ? String(containerStatus).replace(/_/g, ' ').toLowerCase()
-                                : null,
-                              containerKind === 'ACTUAL'
-                                ? 'Actual'
-                                : containerKind === 'PLANNED'
-                                  ? 'Planned'
-                                  : null,
-                            ]
-                              .filter(Boolean)
-                              .join(' · ');
-                            return meta ? (
-                              <p className="mt-0.5 text-[10px] capitalize text-[var(--color-neutral-500)]">
-                                {meta}
-                              </p>
-                            ) : null;
-                          })()}
+                          {containerKind === 'ACTUAL' || containerKind === 'PLANNED' ? (
+                            <p className="mt-0.5 text-[10px] text-[var(--color-neutral-500)]">
+                              {containerKind === 'ACTUAL' ? 'Actual' : 'Planned'}
+                            </p>
+                          ) : null}
                         </div>
+                      ) : (
+                        <span className="text-[11px] text-[var(--color-neutral-400)]">—</span>
+                      )}
+                    </td>
+                    <td className="px-3 py-3 align-top">
+                      {containerStatus ? (
+                        <span className="inline-flex rounded-full bg-[#EEF2F5] px-2.5 py-1 text-[11px] font-semibold capitalize text-[var(--color-neutral-700)]">
+                          {String(containerStatus).replace(/_/g, ' ').toLowerCase()}
+                        </span>
+                      ) : (
+                        <span className="text-[11px] text-[var(--color-neutral-400)]">—</span>
                       )}
                     </td>
                     <td className="px-3 py-3 align-top">

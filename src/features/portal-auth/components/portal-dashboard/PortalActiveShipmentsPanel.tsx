@@ -109,7 +109,8 @@ export function PortalActiveShipmentsPanel({
               <th className="pb-3 pr-3 font-semibold">Job / Route</th>
               <th className="pb-3 pr-3 font-semibold">Mode</th>
               <th className="pb-3 pr-3 font-semibold">Container</th>
-              <th className="pb-3 pr-3 font-semibold">Status</th>
+              <th className="pb-3 pr-3 font-semibold">Container status</th>
+              <th className="pb-3 pr-3 font-semibold">Job status</th>
               <th className="pb-3 text-right font-semibold">Eta</th>
             </tr>
           </thead>
@@ -117,20 +118,20 @@ export function PortalActiveShipmentsPanel({
             {loading ? (
               Array.from({ length: loadingRowCount }).map((_, i) => (
                 <tr key={i}>
-                  <td colSpan={5} className="py-3">
+                  <td colSpan={6} className="py-3">
                     <div className="h-10 animate-pulse rounded-lg bg-[#EEF2F5]" />
                   </td>
                 </tr>
               ))
             ) : error ? (
               <tr>
-                <td colSpan={5} className={cn('py-8', dashType.panel.body, 'text-[var(--color-danger-600)]')}>
+                <td colSpan={6} className={cn('py-8', dashType.panel.body, 'text-[var(--color-danger-600)]')}>
                   Could not load shipments.
                 </td>
               </tr>
             ) : filtered.length === 0 ? (
               <tr>
-                <td colSpan={5} className={cn('py-8', dashType.panel.body)}>
+                <td colSpan={6} className={cn('py-8', dashType.panel.body)}>
                   No active shipments for this filter.
                 </td>
               </tr>
@@ -139,18 +140,6 @@ export function PortalActiveShipmentsPanel({
                 const containerNumber = item.containerNumbers?.[0]?.trim() || '';
                 const extraContainers = Math.max(0, (item.containerNumbers?.length ?? 0) - 1);
                 const containerStatus = item.containerStatus?.trim() || '';
-                const containerMeta = [
-                  containerStatus
-                    ? containerStatus.replace(/_/g, ' ').toLowerCase()
-                    : null,
-                  item.containerKind === 'ACTUAL'
-                    ? 'Actual'
-                    : item.containerKind === 'PLANNED'
-                      ? 'Planned'
-                      : null,
-                ]
-                  .filter(Boolean)
-                  .join(' · ');
                 return (
                   <tr key={item.id} className="border-t border-[#F1F4F7]">
                     <td className="py-3.5 pr-3">
@@ -165,20 +154,31 @@ export function PortalActiveShipmentsPanel({
                       <ModeIcon jobType={item.jobType} />
                     </td>
                     <td className="py-3.5 pr-3">
-                      {containerNumber || containerStatus ? (
+                      {containerNumber ? (
                         <div className="min-w-[100px]">
                           <p className={dashType.panel.rowTitle}>
-                            {containerNumber || '—'}
+                            {containerNumber}
                             {extraContainers > 0 ? (
                               <span className={cn('ml-1 font-normal', dashType.panel.rowMeta)}>
                                 +{extraContainers}
                               </span>
                             ) : null}
                           </p>
-                          {containerMeta ? (
-                            <p className={cn(dashType.panel.rowMeta, 'capitalize')}>{containerMeta}</p>
+                          {item.containerKind === 'ACTUAL' || item.containerKind === 'PLANNED' ? (
+                            <p className={dashType.panel.rowMeta}>
+                              {item.containerKind === 'ACTUAL' ? 'Actual' : 'Planned'}
+                            </p>
                           ) : null}
                         </div>
+                      ) : (
+                        <span className={dashType.panel.rowMeta}>—</span>
+                      )}
+                    </td>
+                    <td className="py-3.5 pr-3">
+                      {containerStatus ? (
+                        <span className="inline-flex rounded-full bg-[#EEF2F5] px-2.5 py-1 text-[10px] font-semibold capitalize text-[#5B6B7A]">
+                          {containerStatus.replace(/_/g, ' ').toLowerCase()}
+                        </span>
                       ) : (
                         <span className={dashType.panel.rowMeta}>—</span>
                       )}
