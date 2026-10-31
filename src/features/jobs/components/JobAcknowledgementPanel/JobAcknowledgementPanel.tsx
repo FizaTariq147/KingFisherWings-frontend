@@ -3,7 +3,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
@@ -90,39 +89,52 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
           </p>
         ) : null}
         {ack ? (
-          <div className="grid gap-2 sm:grid-cols-2">
-            <Field label="Receiver" value={ack.receiver_name} />
-            <Field label="Title" value={ack.receiver_title} />
-            <Field label="Goods condition" value={ack.goods_condition} />
-            <Field label="Acknowledged at" value={ack.acknowledged_at} />
-            <Field label="Delivery date" value={ack.actual_delivery_date} />
-            <Field label="Received at" value={ack.received_at} />
-            {ack.remarks ? (
-              <div className="sm:col-span-2">
-                <Field label="Remarks" value={ack.remarks} />
-              </div>
-            ) : null}
-            {ack.signature_url || ack.signature_s3_key ? (
-              <p className="sm:col-span-2 text-xs text-[var(--color-neutral-500)]">
-                Signature on file
-                {ack.signature_url ? (
-                  <>
-                    {' '}
-                    ·{' '}
-                    <a
-                      className="text-[var(--color-primary)] underline"
-                      href={ack.signature_url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      View
-                    </a>
-                  </>
-                ) : null}
-              </p>
-            ) : null}
+          <div className="space-y-3">
+            <ul className="divide-y divide-[#e8edf2] rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white">
+              {[
+                { label: 'Receiver', value: ack.receiver_name },
+                { label: 'Title', value: ack.receiver_title },
+                { label: 'Goods condition', value: ack.goods_condition },
+                { label: 'Acknowledged at', value: ack.acknowledged_at },
+                { label: 'Delivery date', value: ack.actual_delivery_date },
+                { label: 'Received at', value: ack.received_at },
+                ...(ack.remarks
+                  ? [{ label: 'Remarks', value: ack.remarks }]
+                  : []),
+                ...(ack.signature_url || ack.signature_s3_key
+                  ? [
+                      {
+                        label: 'Signature',
+                        value: ack.signature_url ? 'On file' : 'On file (key only)',
+                        href: ack.signature_url,
+                      },
+                    ]
+                  : []),
+              ].map((row) => (
+                <li
+                  key={row.label}
+                  className="grid grid-cols-1 gap-1 px-3 py-2 sm:grid-cols-[minmax(8rem,12rem)_1fr] sm:gap-4"
+                >
+                  <span className="text-[12px] font-medium text-[#64748b]">{row.label}</span>
+                  <span className="break-words text-[13px] font-medium text-[#0f172a]">
+                    {'href' in row && row.href ? (
+                      <a
+                        className="text-[var(--color-primary)] underline"
+                        href={row.href}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {row.value?.trim() || 'View'}
+                      </a>
+                    ) : (
+                      row.value?.trim() || '—'
+                    )}
+                  </span>
+                </li>
+              ))}
+            </ul>
             {ack.template_snapshot ? (
-              <div className="sm:col-span-2 space-y-1">
+              <div className="space-y-1">
                 <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
                   Template
                 </p>
@@ -172,13 +184,3 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   );
 }
 
-function Field({ label, value }: { label: string; value?: string }) {
-  return (
-    <label className="block">
-      <span className="mb-0.5 block text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
-        {label}
-      </span>
-      <Input readOnly value={value?.trim() || '—'} className="bg-[var(--color-neutral-50)]" />
-    </label>
-  );
-}

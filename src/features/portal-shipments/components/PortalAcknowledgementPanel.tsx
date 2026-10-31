@@ -3,7 +3,6 @@ import { Download, Paperclip, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { ApiDataView } from '@/features/jobs/components/ApiDataView';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { PortalPanel } from '@/features/portal-auth/components/portal-ui';
 import {
@@ -13,15 +12,48 @@ import {
   useSubmitPortalShipmentAcknowledgement,
   useUploadPortalAcknowledgementSignature,
 } from '../hooks/usePortalShipments';
+import {
+  portalAckToListRows,
+  type PortalAckListRow,
+} from '../utils/portalAckDisplay';
 
-/** Extra list/template blocks from acknowledgement payload (same shape as Show All). */
+function AckList({ rows, title }: { rows: PortalAckListRow[]; title?: string }) {
+  if (!rows.length) return null;
+  return (
+    <div className="space-y-1">
+      {title ? (
+        <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+          {title}
+        </p>
+      ) : null}
+      <ul className="divide-y divide-[#e8edf2] rounded-sm border border-[var(--color-neutral-200)] bg-white">
+        {rows.map((row, index) => (
+          <li
+            key={`${row.label}-${index}`}
+            className="grid grid-cols-1 gap-1 px-3 py-2 sm:grid-cols-[minmax(8rem,12rem)_1fr] sm:gap-4"
+          >
+            <span className="text-[12px] font-medium text-[var(--color-neutral-500)]">
+              {row.label}
+            </span>
+            <span className="break-words text-[13px] font-medium text-[var(--color-neutral-900)]">
+              {row.value || '—'}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+/** Extra list/template blocks from acknowledgement payload (names only — no UUIDs). */
 function acknowledgementTemplateBlocks(ack: {
   template_snapshot?: string | Record<string, unknown>;
   raw?: Record<string, unknown>;
-}): Array<{ key: string; title: string; data: unknown }> {
-  const blocks: Array<{ key: string; title: string; data: unknown }> = [];
+}): Array<{ key: string; title: string; rows: PortalAckListRow[] }> {
+  const blocks: Array<{ key: string; title: string; rows: PortalAckListRow[] }> = [];
   if (ack.template_snapshot != null && ack.template_snapshot !== '') {
-    blocks.push({ key: 'template', title: 'Template', data: ack.template_snapshot });
+    const rows = portalAckToListRows(ack.template_snapshot);
+    if (rows.length) blocks.push({ key: 'template', title: 'Template', rows });
   }
   const raw = ack.raw;
   if (!raw) return blocks;
@@ -52,20 +84,21 @@ function acknowledgementTemplateBlocks(ack: {
     'actualDeliveryDate',
     'path_hints',
     'pathHints',
+    'submitted_by_party_id',
+    'submittedByPartyId',
+    'received_by_user_id',
+    'receivedByUserId',
   ]);
   for (const [key, value] of Object.entries(raw)) {
     if (skip.has(key)) continue;
     if (value == null) continue;
-    if (Array.isArray(value) && value.length === 0) continue;
-    if (typeof value === 'object' && !Array.isArray(value) && !Object.keys(value).length) {
-      continue;
-    }
-    if (typeof value === 'string' && !value.trim()) continue;
+    const rows = portalAckToListRows(value);
+    if (!rows.length) continue;
     const title = key
       .replace(/([a-z])([A-Z])/g, '$1 $2')
       .replace(/[_-]+/g, ' ')
       .replace(/\b\w/g, (c) => c.toUpperCase());
-    blocks.push({ key, title, data: value });
+    blocks.push({ key, title, rows });
   }
   return blocks;
 }
@@ -162,87 +195,101 @@ export function PortalAcknowledgementPanel({
           {templateBlocks.length ? (
             <div className="sm:col-span-2 space-y-3">
               {templateBlocks.map((block) => (
-                <div
-                  key={block.key}
-                  className="rounded-sm border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-3"
-                >
-                  <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
-                    {block.title}
-                  </p>
-                  <ApiDataView
-                    data={block.data}
-                    emptyLabel="No fields returned for this block."
-                    maxHeightClass="max-h-72"
-                  />
-                </div>
+                <AckList key={block.key} title={block.title} rows={block.rows} />
               ))}
             </div>
           ) : null}
-          <label className="block text-sm sm:col-span-1">
-            <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-              Receiver name *
-            </span>
-            <Input
-              disabled={readOnly || submit.isPending}
-              value={receiverName}
-              onChange={(e) => setReceiverName(e.target.value)}
-            />
-          </label>
-          <label className="block text-sm">
-            <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-              Title
-            </span>
-            <Input
-              disabled={readOnly || submit.isPending}
-              value={receiverTitle}
-              onChange={(e) => setReceiverTitle(e.target.value)}
-            />
-          </label>
-          <label className="block text-sm">
-            <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-              Goods condition
-            </span>
-            <Input
-              disabled={readOnly || submit.isPending}
-              value={goodsCondition}
-              onChange={(e) => setGoodsCondition(e.target.value)}
-            />
-          </label>
-          <label className="block text-sm sm:col-span-2">
-            <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-              Remarks
-            </span>
-            <Input
-              disabled={readOnly || submit.isPending}
-              value={remarks}
-              onChange={(e) => setRemarks(e.target.value)}
-            />
-          </label>
-          {!readOnly ? (
-            <label className="block text-sm sm:col-span-2">
-              <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-                Signature image
-              </span>
-              <input
-                type="file"
-                accept="image/*,.pdf"
-                disabled={uploadSig.isPending}
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (!file) return;
-                  setError(null);
-                  void uploadSig
-                    .mutateAsync(file)
-                    .then(() => setMsg('Signature uploaded.'))
-                    .catch((err) =>
-                      setError(
-                        err instanceof Error ? err.message : 'Signature upload failed.',
-                      ),
-                    );
-                }}
-              />
-            </label>
-          ) : null}
+          {readOnly ? (
+            <ul className="sm:col-span-2 divide-y divide-[#e8edf2] rounded-sm border border-[var(--color-neutral-200)] bg-white">
+              {[
+                { label: 'Receiver name', value: receiverName },
+                { label: 'Title', value: receiverTitle },
+                { label: 'Goods condition', value: goodsCondition },
+                { label: 'Remarks', value: remarks },
+                ...(ack?.acknowledged_at
+                  ? [{ label: 'Acknowledged at', value: ack.acknowledged_at }]
+                  : []),
+              ].map((row) => (
+                <li
+                  key={row.label}
+                  className="grid grid-cols-1 gap-1 px-3 py-2 sm:grid-cols-[minmax(8rem,12rem)_1fr] sm:gap-4"
+                >
+                  <span className="text-[12px] font-medium text-[var(--color-neutral-500)]">
+                    {row.label}
+                  </span>
+                  <span className="break-words text-[13px] font-medium text-[var(--color-neutral-900)]">
+                    {row.value?.trim() || '—'}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <>
+              <label className="block text-sm sm:col-span-1">
+                <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
+                  Receiver name *
+                </span>
+                <Input
+                  disabled={submit.isPending}
+                  value={receiverName}
+                  onChange={(e) => setReceiverName(e.target.value)}
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
+                  Title
+                </span>
+                <Input
+                  disabled={submit.isPending}
+                  value={receiverTitle}
+                  onChange={(e) => setReceiverTitle(e.target.value)}
+                />
+              </label>
+              <label className="block text-sm">
+                <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
+                  Goods condition
+                </span>
+                <Input
+                  disabled={submit.isPending}
+                  value={goodsCondition}
+                  onChange={(e) => setGoodsCondition(e.target.value)}
+                />
+              </label>
+              <label className="block text-sm sm:col-span-2">
+                <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
+                  Remarks
+                </span>
+                <Input
+                  disabled={submit.isPending}
+                  value={remarks}
+                  onChange={(e) => setRemarks(e.target.value)}
+                />
+              </label>
+              <label className="block text-sm sm:col-span-2">
+                <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
+                  Signature image
+                </span>
+                <input
+                  type="file"
+                  accept="image/*,.pdf"
+                  disabled={uploadSig.isPending}
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    setError(null);
+                    void uploadSig
+                      .mutateAsync(file)
+                      .then(() => setMsg('Signature uploaded.'))
+                      .catch((err) =>
+                        setError(
+                          err instanceof Error ? err.message : 'Signature upload failed.',
+                        ),
+                      );
+                  }}
+                />
+              </label>
+            </>
+          )}
           <div className="sm:col-span-2 space-y-2 rounded-sm border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-3">
             <p className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[var(--color-neutral-800)]">
               <Paperclip className="h-3.5 w-3.5" aria-hidden />
