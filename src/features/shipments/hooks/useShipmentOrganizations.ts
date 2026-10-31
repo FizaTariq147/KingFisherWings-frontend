@@ -1,4 +1,6 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { isUuid } from '@/lib/isUuid';
+import { useAuthStore } from '@/store/authStore';
 import { shipmentService } from '../services/shipment.service';
 import { shipmentKeys } from './useShipments';
 
@@ -6,6 +8,19 @@ function invalidateOrg(qc: ReturnType<typeof useQueryClient>, shipmentId: string
   void qc.invalidateQueries({ queryKey: shipmentKeys.detail(shipmentId) });
   void qc.invalidateQueries({
     queryKey: shipmentKeys.detailTab(shipmentId, 'organization'),
+  });
+  void qc.invalidateQueries({
+    queryKey: [...shipmentKeys.detail(shipmentId), 'organizations'],
+  });
+}
+
+/** GET /shipments/:id/organizations */
+export function useShipmentOrganizationsList(shipmentId: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: [...shipmentKeys.detail(shipmentId), 'organizations'] as const,
+    queryFn: () => shipmentService.listOrganizations(shipmentId),
+    enabled: Boolean(accessToken) && isUuid(shipmentId) && enabled,
   });
 }
 

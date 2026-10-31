@@ -445,6 +445,18 @@ export function normalizeJobPnl(raw: unknown): JobPnl {
   };
 }
 
+/** Frontend display heading — drop API slashes/underscores (keep route key unchanged). */
+export function formatMilestoneHeading(raw: string): string {
+  const s = String(raw ?? '').trim();
+  if (!s) return 'Milestone';
+  return s
+    .replace(/[/\\|]+/g, ' ')
+    .replace(/[_-]+/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
 /**
  * Business key for PATCH /jobs/:id/milestones/:milestoneKey.
  * Prefer code/name from GET list — never UUID, never the literal "undefined".
@@ -511,35 +523,44 @@ export function normalizeMilestone(raw: unknown): JobMilestone | null {
   const name =
     pickString(
       r,
-      'milestone',
       'milestone_name',
       'milestoneName',
       'name',
       'label',
       'title',
-      'description',
+      'display_name',
+      'displayName',
     ) ||
-    (nested ? pickString(nested, 'name', 'label', 'title', 'description') : '');
+    (nested ? pickString(nested, 'name', 'label', 'title', 'display_name', 'displayName') : '');
 
-  // If `milestone` was a plain string it wins as both code fallback and display.
+  // If `milestone` was a plain string it wins as code fallback (and display when no label).
   const milestoneScalar =
     typeof r.milestone === 'string' || typeof r.milestone === 'number'
       ? String(r.milestone).trim()
       : '';
 
   const milestone_key = code || milestoneScalar || '';
-  const milestone = milestone_key || name;
-  if (!milestone) return null;
+  const milestone = name || milestoneScalar || milestone_key;
+  if (!milestone && !milestone_key) return null;
 
   const id = str(r.id) || milestone_key || milestone;
   return {
     id,
-    milestone,
+    milestone: milestone || milestone_key,
     milestone_key: milestone_key || milestone || undefined,
     planned_date: pickString(r, 'planned_date', 'plannedDate') || undefined,
     actual_date: pickString(r, 'actual_date', 'actualDate') || undefined,
+    completed_at: pickString(r, 'completed_at', 'completedAt') || undefined,
+    description:
+      pickString(r, 'description', 'milestone_description', 'milestoneDescription') || undefined,
     is_completed: Boolean(
-      r.actual_date ?? r.actualDate ?? r.is_completed ?? r.isCompleted ?? r.completed,
+      r.actual_date ??
+        r.actualDate ??
+        r.completed_at ??
+        r.completedAt ??
+        r.is_completed ??
+        r.isCompleted ??
+        r.completed,
     ),
     notes: pickString(r, 'notes') || undefined,
   };

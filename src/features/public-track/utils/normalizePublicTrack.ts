@@ -44,7 +44,17 @@ export function normalizePublicMilestone(
 
   return {
     id: pickString(r.id) || String(index),
-    label: pickString(r.label, r.name, r.code, r.milestone, r.description) || 'Milestone',
+    label: (() => {
+      const raw =
+        pickString(r.label, r.name, r.milestone_name, r.milestoneName, r.milestone, r.code) ||
+        'Milestone';
+      return raw
+        .replace(/[/\\|]+/g, ' ')
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/\b\w/g, (c) => c.toUpperCase());
+    })(),
     description: pickString(r.description, r.notes, r.remark) || undefined,
     occurredAt: completedAt,
     completedAt,

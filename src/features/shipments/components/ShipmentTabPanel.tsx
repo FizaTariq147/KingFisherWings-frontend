@@ -7,6 +7,8 @@ import { erpTable } from '@/lib/erpTypography';
 import { JobContainersPanel } from '@/features/jobs/components/JobContainersPanel';
 import { isUuid } from '@/lib/isUuid';
 import { ShowAllEditModal } from '@/features/shared/show-all/ShowAllEditModal';
+import { mergeShowAllSavedOverlay } from '@/features/shared/show-all/extractPatchShowAllDefaults';
+import type { PatchShowAllDto } from '@/features/jobs/types/job.types';
 import { isShipmentShowAllTab } from '../api/shipment.api';
 import {
   usePatchShipmentShowAll,
@@ -384,6 +386,13 @@ function ShipmentShowAllPanel({
   const query = useShipmentShowAll(shipmentId, siblingTabKeys, true);
   const patchShowAll = usePatchShipmentShowAll(shipmentId);
   const [editOpen, setEditOpen] = useState(false);
+  const [savedOverlay, setSavedOverlay] = useState<PatchShowAllDto>({});
+
+  const saveShowAll = async (dto: PatchShowAllDto) => {
+    const refreshed = await patchShowAll.mutateAsync(dto);
+    setSavedOverlay((prev) => mergeShowAllSavedOverlay(prev, dto, refreshed));
+    await query.refetch();
+  };
 
   if (query.isLoading) {
     return (
@@ -419,12 +428,9 @@ function ShipmentShowAllPanel({
       open={editOpen}
       onClose={() => setEditOpen(false)}
       title="Edit shipment Show All"
-      sources={[query.data, ...sections.map((s) => s.data)]}
+      sources={[savedOverlay, query.data, ...sections.map((s) => s.data)]}
       pending={patchShowAll.isPending}
-      onSubmit={async (dto) => {
-        await patchShowAll.mutateAsync(dto);
-        await query.refetch();
-      }}
+      onSubmit={saveShowAll}
     />
   );
 

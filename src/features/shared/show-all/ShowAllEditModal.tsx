@@ -169,8 +169,8 @@ export function ShowAllEditModal({
       }
     >
       <p className="mb-3 text-[13px] text-[var(--color-neutral-600)]">
-        Fill incomplete header fields. Only values you enter are sent — existing data is not
-        cleared. Incomplete fields are highlighted.
+        Saved values stay filled when you reopen. Only non-empty fields are sent on save —
+        blanks are not cleared on the server. Incomplete fields are highlighted.
       </p>
       {formError ? (
         <p className="mb-3 text-sm text-[var(--color-danger-600)]">{formError}</p>

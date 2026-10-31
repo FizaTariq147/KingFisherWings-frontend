@@ -5,7 +5,10 @@ import { isUuid } from '@/lib/isUuid';
 import { usePartyTypes } from '@/features/parties/hooks/useParties';
 import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTypeOptions';
 import { JOB_ORG_TYPES } from '@/features/shared/organizations/orgTypes';
-import { orgPartyLabel } from '@/features/shared/organizations/orgDisplay';
+import {
+  normalizeOrganizationRows,
+  orgPartyLabel,
+} from '@/features/shared/organizations/orgDisplay';
 import { PartyOrgSearchField } from '@/features/shared/organizations/PartyOrgSearchField';
 import { JobSearchSelect } from '@/features/shared/entity-search';
 import { useShipmentDetailTab } from '../hooks/useShipments';
@@ -13,30 +16,10 @@ import {
   useAddShipmentOrganization,
   useCopyShipmentOrganizations,
   useReplaceShipmentOrganization,
+  useShipmentOrganizationsList,
   useUnlinkShipmentOrganization,
 } from '../hooks/useShipmentOrganizations';
 import { getErrorMessage } from '../utils/getErrorMessage';
-
-function asRecord(value: unknown): Record<string, unknown> | null {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
-  return value as Record<string, unknown>;
-}
-
-function orgRows(raw: unknown): Record<string, unknown>[] {
-  if (Array.isArray(raw)) {
-    return raw.map(asRecord).filter((r): r is Record<string, unknown> => Boolean(r));
-  }
-  const rec = asRecord(raw);
-  if (!rec) return [];
-  for (const key of ['items', 'organizations', 'data', 'results', 'parties']) {
-    if (Array.isArray(rec[key])) {
-      return (rec[key] as unknown[])
-        .map(asRecord)
-        .filter((r): r is Record<string, unknown> => Boolean(r));
-    }
-  }
-  return [];
-}
 
 /**
  * Shipment Party / Organization tab — list / add / replace / delete / copy-from
@@ -50,6 +33,7 @@ export function ShipmentPartyPanel({
   onChanged?: () => void;
 }) {
   const tabQuery = useShipmentDetailTab(shipmentId, 'organization');
+  const orgsQuery = useShipmentOrganizationsList(shipmentId);
   const addOrg = useAddShipmentOrganization(shipmentId);
   const replaceOrg = useReplaceShipmentOrganization(shipmentId);
   const unlinkOrg = useUnlinkShipmentOrganization(shipmentId);
@@ -67,7 +51,11 @@ export function ShipmentPartyPanel({
 
   const typesQuery = usePartyTypes(true);
   const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
-  const rows = useMemo(() => orgRows(tabQuery.data), [tabQuery.data]);
+  const rows = useMemo(() => {
+    const fromOrgs = normalizeOrganizationRows(orgsQuery.data);
+    if (fromOrgs.length) return fromOrgs;
+    return normalizeOrganizationRows(tabQuery.data);
+  }, [orgsQuery.data, tabQuery.data]);
 
   const pending =
     addOrg.isPending ||
@@ -83,10 +71,13 @@ export function ShipmentPartyPanel({
       setMsg(success);
       onChanged?.();
       void tabQuery.refetch();
+      void orgsQuery.refetch();
     } catch (err) {
       setError(getErrorMessage(err));
     }
   };
+
+  const orgsLoading = tabQuery.isLoading && orgsQuery.isLoading;
 
   return (
     <div className="space-y-4 p-3 text-sm">
@@ -97,7 +88,7 @@ export function ShipmentPartyPanel({
         <p className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
           Organizations
         </p>
-        {tabQuery.isLoading ? (
+        {orgsLoading ? (
           <p className="text-[13px] text-[#64748b]">Loading organizations…</p>
         ) : rows.length === 0 ? (
           <p className="text-[13px] text-[#64748b]">No organizations linked.</p>
@@ -105,32 +96,43 @@ export function ShipmentPartyPanel({
           <ul className="space-y-2">
             {rows.map((row, i) => {
               const label = orgPartyLabel(row);
+              const canUnlink =
+                Boolean(label.orgType && label.orgType !== '—') &&
+                (Boolean(label.partyId) || label.primary !== '—');
               return (
                 <li
                   key={`${label.orgType}-${label.partyId || i}`}
                   className="flex flex-wrap items-center justify-between gap-2 rounded-sm border border-[#e8edf2] bg-white px-2.5 py-2"
                 >
                   <div className="min-w-0">
-                    <p className="font-medium text-[#0f172a]">{label.orgType}</p>
-                    <p className="truncate text-[12px] text-[#64748b]">
-                      {label.primary}
-                      {label.secondary ? ` · ${label.secondary}` : ''}
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-[#64748b]">
+                      {label.orgType.replaceAll('_', ' ')}
                     </p>
+                    <p className="truncate font-medium text-[#0f172a]">
+                      {label.primary}
+                    </p>
+                    {label.secondary ? (
+                      <p className="truncate text-[12px] text-[#64748b]">
+                        {label.secondary}
+                      </p>
+                    ) : null}
                   </div>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="danger"
-                    disabled={pending || !label.orgType || label.orgType === '—'}
-                    onClick={() =>
-                      void run(
-                        () => unlinkOrg.mutateAsync(label.orgType),
-                        `Unlinked ${label.orgType}.`,
-                      )
-                    }
-                  >
-                    Unlink
-                  </Button>
+                  {canUnlink ? (
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="danger"
+                      disabled={pending}
+                      onClick={() =>
+                        void run(
+                          () => unlinkOrg.mutateAsync(label.orgType),
+                          `Unlinked ${label.orgType}.`,
+                        )
+                      }
+                    >
+                      Unlink
+                    </Button>
+                  ) : null}
                 </li>
               );
             })}
