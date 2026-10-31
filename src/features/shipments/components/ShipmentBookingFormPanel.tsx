@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -6,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import {
+  shipmentKeys,
   useCompleteShipmentBookingForm,
   useShipmentBookingForm,
   useUpsertShipmentBookingForm,
@@ -15,6 +17,10 @@ import type {
   BookingCustomFieldType,
 } from '../types/shipment.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import {
+  mergeBookingFormCache,
+  pickBookingFormScalar,
+} from '../utils/normalizeShipmentBookingForm';
 
 function formatKey(key: string): string {
   return key
@@ -146,6 +152,7 @@ function customFieldDisplayValue(field: BookingCustomField): string {
  * Shows names (not UUIDs); supports custom_fields[] alongside typed fields.
  */
 export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string }) {
+  const queryClient = useQueryClient();
   const query = useShipmentBookingForm(shipmentId, true);
   const upsert = useUpsertShipmentBookingForm(shipmentId);
   const complete = useCompleteShipmentBookingForm(shipmentId);
@@ -161,24 +168,37 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
     [query.data],
   );
 
-  useEffect(() => {
-    const next: Record<string, string> = {};
+  /** API payload + current draft so the summary list does not go blank after a sparse GET. */
+  const displayData = useMemo(() => {
+    const merged: Record<string, unknown> = { ...data };
     for (const key of EDITABLE_KEYS) {
-      const v = data[key];
-      next[key] =
-        v == null || typeof v === 'object'
-          ? ''
-          : typeof v === 'string' && isUuid(v)
-            ? ''
-            : String(v);
+      const v = draft[key]?.trim();
+      if (v) merged[key] = v;
     }
-    setDraft(next);
-    setCustomFields(normalizeCustomFields(data.custom_fields));
+    if (customFields.length) merged.custom_fields = customFields;
+    return merged;
+  }, [data, draft, customFields]);
+
+  useEffect(() => {
+    setDraft((prev) => {
+      const next: Record<string, string> = {};
+      for (const key of EDITABLE_KEYS) {
+        const fromApi = pickBookingFormScalar(data, key);
+        // Keep in-progress / just-saved draft when GET is sparse or omits the key.
+        next[key] = fromApi || prev[key] || '';
+      }
+      return next;
+    });
+    const fromApiCustom = normalizeCustomFields(data.custom_fields);
+    if (fromApiCustom.length) {
+      setCustomFields(fromApiCustom);
+    }
   }, [data]);
 
-  const entries = displayEntries(data);
-  const markComplete = data.mark_complete === true;
-  const status = String(data.status ?? '').toUpperCase();
+  const entries = displayEntries(displayData);
+  const markComplete =
+    data.mark_complete === true || displayData.mark_complete === true;
+  const status = String(data.status ?? displayData.status ?? '').toUpperCase();
   const isCompleted =
     markComplete || status === 'COMPLETED' || status === 'COMPLETE';
 
@@ -219,6 +239,22 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
     return body;
   };
 
+  const applySavedToDraft = (body: Record<string, unknown>) => {
+    setDraft((prev) => {
+      const next = { ...prev };
+      for (const key of EDITABLE_KEYS) {
+        const v = body[key];
+        if (typeof v === 'string' && v.trim() && !isUuid(v.trim())) {
+          next[key] = v.trim();
+        }
+      }
+      return next;
+    });
+    if (Array.isArray(body.custom_fields)) {
+      setCustomFields(normalizeCustomFields(body.custom_fields));
+    }
+  };
+
   const saveErrorMessage = (e: unknown): string => {
     const msg = getErrorMessage(e);
     const status = (e as { response?: { status?: number } })?.response?.status;
@@ -231,10 +267,40 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
   const onSave = async () => {
     setErr(null);
     setMsg(null);
+    const body = buildBody();
+    if (
+      !Object.keys(body).some(
+        (k) => k !== 'custom_fields' && body[k] != null && body[k] !== '',
+      ) &&
+      !(Array.isArray(body.custom_fields) && body.custom_fields.length)
+    ) {
+      setErr('Enter at least one field before saving.');
+      return;
+    }
     try {
-      await upsert.mutateAsync(buildBody());
+      const saved = await upsert.mutateAsync(body);
+      const merged = mergeBookingFormCache(data, body, saved);
+      applySavedToDraft(merged);
+      const cacheKey = [...shipmentKeys.detail(shipmentId), 'booking-form'] as const;
+      queryClient.setQueryData(cacheKey, merged);
       setMsg('Booking form saved (PUT /shipments/:id/booking-form).');
-      void query.refetch();
+      const refreshed = await query.refetch();
+      const nextData = refreshed.data;
+      if (nextData && typeof nextData === 'object') {
+        const missing = EDITABLE_KEYS.filter(
+          (key) => Boolean(body[key]) && !pickBookingFormScalar(nextData, key),
+        );
+        if (missing.length) {
+          // Keep UI values; GET did not echo them (likely backend not persisting).
+          queryClient.setQueryData(
+            cacheKey,
+            mergeBookingFormCache(nextData, body, saved),
+          );
+          setErr(
+            `Saved request succeeded, but GET /shipments/:id/booking-form did not return: ${missing.join(', ')}. Backend may not be persisting those fields.`,
+          );
+        }
+      }
     } catch (e) {
       setErr(saveErrorMessage(e));
     }
@@ -243,9 +309,10 @@ export function ShipmentBookingFormPanel({ shipmentId }: { shipmentId: string })
   const onComplete = async () => {
     setErr(null);
     setMsg(null);
+    const body = buildBody();
     try {
-      // Persist custom fields with the form before completing.
-      await upsert.mutateAsync(buildBody());
+      const saved = await upsert.mutateAsync(body);
+      applySavedToDraft(mergeBookingFormCache(data, body, saved));
       await complete.mutateAsync();
       setMsg('Booking form completed (POST /shipments/:id/booking-form/complete).');
       void query.refetch();

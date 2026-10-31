@@ -29,6 +29,7 @@ import {
   normalizeShipments,
   unwrapShipmentPayload,
 } from '../utils/normalizeShipment';
+import { normalizeShipmentBookingForm } from '../utils/normalizeShipmentBookingForm';
 import {
   applyRememberedShipmentDepartment,
   getRememberedShipmentDepartment,
@@ -1263,7 +1264,9 @@ export const shipmentService = {
       const res = await withGatewayRetry(() =>
         axiosInstance.get(SHIPMENT_API.bookingForm(id)),
       );
-      return asRecord(unwrapShipmentPayload(res.data)) ?? asRecord(res.data) ?? {};
+      const payload =
+        asRecord(unwrapShipmentPayload(res.data)) ?? asRecord(res.data) ?? {};
+      return normalizeShipmentBookingForm(payload);
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -1279,7 +1282,10 @@ export const shipmentService = {
       const res = await withGatewayRetry(() =>
         axiosInstance.put(SHIPMENT_API.bookingForm(id), body),
       );
-      return asRecord(unwrapShipmentPayload(res.data)) ?? asRecord(res.data) ?? {};
+      const payload =
+        asRecord(unwrapShipmentPayload(res.data)) ?? asRecord(res.data) ?? {};
+      // Merge request body so sparse PUT acks still retain what we saved.
+      return normalizeShipmentBookingForm({ ...body, ...payload });
     } catch (error) {
       throw formatAxiosError(error);
     }
