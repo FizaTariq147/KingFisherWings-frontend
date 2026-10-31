@@ -282,12 +282,22 @@ export function useShipmentBookingForm(id: string, enabled = false) {
 
 export function useUpsertShipmentBookingForm(id: string) {
   const invalidate = useInvalidateShipments();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (body: Record<string, unknown>) =>
       shipmentService.upsertBookingForm(id, body),
-    onSuccess: () => invalidate(id),
+    onSuccess: (saved, body) => {
+      const key = [...shipmentKeys.detail(id), 'booking-form'] as const;
+      const previous = queryClient.getQueryData<Record<string, unknown>>(key);
+      queryClient.setQueryData(key, {
+        ...(previous ?? {}),
+        ...body,
+        ...(saved ?? {}),
+        ...(body.custom_fields != null ? { custom_fields: body.custom_fields } : {}),
+      });
+      invalidate(id);
+    },
   });
-}
 
 export function useCompleteShipmentBookingForm(id: string) {
   const invalidate = useInvalidateShipments();
