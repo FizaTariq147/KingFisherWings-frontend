@@ -227,16 +227,26 @@ export default function DebitNoteDetailPage() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {lines.map((line) => (
-                            <TableRow key={line.id}>
-                              <TableCell>{line.description || '—'}</TableCell>
-                              <TableCell mono>{line.quantity}</TableCell>
-                              <TableCell mono>{line.unit_price}</TableCell>
-                              <TableCell mono>
-                                {line.line_total != null ? line.line_total : '—'}
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                          {lines.map((line) => {
+                            const qty = Number(line.quantity);
+                            const unit = Number(line.unit_price);
+                            // Line Total = qty × unit price (ex-VAT). Do not show tax-inclusive
+                            // line_total here — VAT stays in the header Tax / Total fields.
+                            const lineAmount =
+                              Number.isFinite(qty) && Number.isFinite(unit)
+                                ? Math.round(qty * unit * 100) / 100
+                                : line.line_total;
+                            return (
+                              <TableRow key={line.id}>
+                                <TableCell>{line.description || '—'}</TableCell>
+                                <TableCell mono>{line.quantity}</TableCell>
+                                <TableCell mono>{line.unit_price}</TableCell>
+                                <TableCell mono>
+                                  {lineAmount != null ? lineAmount : '—'}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
                         </TableBody>
                       </Table>
                     )}
