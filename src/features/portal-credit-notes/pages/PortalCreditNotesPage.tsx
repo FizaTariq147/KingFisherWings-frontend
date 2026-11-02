@@ -92,7 +92,6 @@ export default function PortalCreditNotesPage() {
         amount: amt,
         currency_code: currency.trim().toUpperCase() || 'AED',
         remarks: remarks.trim() || undefined,
-        description: remarks.trim() || 'Advance payment on job',
         file: attachment ?? undefined,
       });
       setFormMsg(`Debit note ${created.number} created for the job ledger.`);

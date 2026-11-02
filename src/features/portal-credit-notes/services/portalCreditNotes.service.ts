@@ -146,15 +146,12 @@ export const portalCreditNotesService = {
     if (!Number.isFinite(amount) || amount < 0.01) {
       throw new Error('Enter an amount of at least 0.01.');
     }
+    // BE CreatePortalDebitNoteDto: job_id, amount, currency_code, remarks — no description.
     const body = {
       job_id: dto.job_id.trim(),
       amount,
       currency_code: dto.currency_code?.trim().toUpperCase() || 'AED',
       ...(dto.remarks?.trim() ? { remarks: dto.remarks.trim() } : {}),
-      description:
-        dto.description?.trim() ||
-        dto.remarks?.trim() ||
-        'Advance payment / job ledger debit',
     };
     const res = await portalApiClient.post(PORTAL_DEBIT_NOTES_API.create, body);
     let detail = normalizeCreditNoteDetail(unwrapData(res.data) ?? res.data, 'debit');
