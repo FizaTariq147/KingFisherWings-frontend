@@ -235,6 +235,13 @@ export function menuKeysFromMatrixPermissions(
       keys.add('menu_vendors');
       continue;
     }
+    // Vendor Services nav is gated on Masters today (no separate `vendors` matrix module
+    // from GET /users/permission-matrix yet). Masters grants unlock menu_vendors.
+    if (prefix === 'masters' || prefix === 'masters_module' || prefix.startsWith('masters_')) {
+      keys.add('menu_masters');
+      keys.add('menu_vendors');
+      continue;
+    }
     if (prefix === 'reports' || prefix === 'reports_module' || prefix.startsWith('reports_')) {
       keys.add('menu_reports');
       continue;
