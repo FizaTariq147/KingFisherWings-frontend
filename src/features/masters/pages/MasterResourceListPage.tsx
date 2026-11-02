@@ -83,6 +83,12 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
     MASTER_PATHS.currencies,
     isExchangeRates,
   );
+  const isDesignations = resourceKey === 'designations';
+  const { data: departmentOptions = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    isDesignations,
+  );
 
   useEffect(() => {
     setPage(1);
@@ -319,10 +325,25 @@ export default function MasterResourceListPage(props: MasterPageRouteProps = {})
   const tenantTotal = meta?.total ?? items.length;
   const totalPages = meta?.totalPages ?? Math.max(1, Math.ceil(tenantTotal / pageSize) || 1);
   const supportsActiveToggle = resource.fields.some((f) => f.name === 'is_active');
+  const departmentNameById = new Map(
+    departmentOptions.map((d) => {
+      const name = masterDisplayValue(d, 'name');
+      return [d.id, name !== '—' ? name : ''] as const;
+    }),
+  );
   const rows = items.map((item) => {
     const row: Record<string, string> = { id: item.id };
     for (const col of resource.columns) {
-      row[col.key] = masterDisplayValue(item, col.key);
+      let display = masterDisplayValue(item, col.key);
+      if (
+        col.key === 'department_id' &&
+        (display === '—' || isUuid(display)) &&
+        typeof item.department_id === 'string'
+      ) {
+        const mapped = departmentNameById.get(item.department_id);
+        if (mapped) display = mapped;
+      }
+      row[col.key] = display;
     }
     return row;
   });
