@@ -31,6 +31,11 @@ export interface PortalShipmentHold {
 
 export interface PortalShipmentListItem {
   id: string;
+  /**
+   * Canonical job UUID for APIs that key off jobs (debit notes, costing, documents).
+   * Prefer this over `id` when the list row is a shipment/wrapper and `job_id` differs.
+   */
+  jobId?: string;
   reference: string;
   /** Top-level job number when API returns it separately from reference. */
   jobNumber?: string;

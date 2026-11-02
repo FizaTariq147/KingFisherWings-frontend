@@ -248,7 +248,23 @@ function normalizeHoldBlock(record: Record<string, unknown>): PortalShipmentHold
 export function normalizeShipmentListItem(raw: unknown): PortalShipmentListItem | null {
   const record = asRecord(raw);
   if (!record) return null;
-  const id = pickString(record.id, record.job_id, record.jobId);
+  const nestedJob =
+    asRecord(record.job) ??
+    asRecord(record.freight_job) ??
+    asRecord(record.freightJob) ??
+    null;
+  // Prefer explicit job UUID when list row `id` is a shipment/wrapper id.
+  const jobId =
+    pickString(
+      record.job_id,
+      record.jobId,
+      nestedJob?.id,
+      nestedJob?.job_id,
+      nestedJob?.jobId,
+      record.freight_job_id,
+      record.freightJobId,
+    ) || undefined;
+  const id = pickString(record.id, jobId);
   if (!id) return null;
 
   const origin = routeLabel(record, 'origin');
@@ -257,6 +273,7 @@ export function normalizeShipmentListItem(raw: unknown): PortalShipmentListItem 
 
   return {
     id,
+    jobId: jobId || id,
     reference:
       pickString(
         record.reference,

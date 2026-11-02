@@ -136,6 +136,42 @@ export const portalCreditNotesService = {
   },
 
   /**
+   * Resolve the job UUID the debit-notes API expects.
+   * Portal shipment list `id` can be a wrapper/shipment id while `job_id` is the real job.
+   */
+  async resolveJobIdForDebitNote(candidateId: string): Promise<string> {
+    const trimmed = candidateId.trim();
+    if (!isUuid(trimmed)) return trimmed;
+    try {
+      const { portalShipmentsService } = await import(
+        '@/features/portal-shipments/services/portalShipments.service'
+      );
+      const detail = await portalShipmentsService.getById(trimmed);
+      const fromDetail = detail.jobId?.trim();
+      if (fromDetail && isUuid(fromDetail)) return fromDetail;
+      // Fall back to raw payload fields when normalize missed a nested shape.
+      const raw = detail.raw;
+      if (raw) {
+        const nested = (raw.job ?? raw.freight_job ?? raw.freightJob) as
+          | Record<string, unknown>
+          | undefined;
+        const rawJobId = [
+          raw.job_id,
+          raw.jobId,
+          nested && typeof nested === 'object' ? nested.id : undefined,
+          nested && typeof nested === 'object' ? nested.job_id : undefined,
+          raw.freight_job_id,
+          raw.freightJobId,
+        ].find((v) => typeof v === 'string' && isUuid(v.trim()));
+        if (typeof rawJobId === 'string') return rawJobId.trim();
+      }
+    } catch {
+      /* use candidate as-is */
+    }
+    return trimmed;
+  },
+
+  /**
    * POST /portal/debit-notes — customer creates a job-ledger debit note
    * (e.g. advance payment proof) with optional attachment. No invoice required.
    * Amount must be a JSON number ≥ 0.01 (multipart string fails BE @IsNumber/@Min).
@@ -146,14 +182,41 @@ export const portalCreditNotesService = {
     if (!Number.isFinite(amount) || amount < 0.01) {
       throw new Error('Enter an amount of at least 0.01.');
     }
+
+    const resolvedJobId = await this.resolveJobIdForDebitNote(dto.job_id);
+    const candidates = Array.from(
+      new Set([resolvedJobId, dto.job_id.trim()].filter((id) => isUuid(id))),
+    );
+
     // BE CreatePortalDebitNoteDto: job_id, amount, currency_code, remarks — no description.
-    const body = {
-      job_id: dto.job_id.trim(),
+    const baseBody = {
       amount,
       currency_code: dto.currency_code?.trim().toUpperCase() || 'AED',
       ...(dto.remarks?.trim() ? { remarks: dto.remarks.trim() } : {}),
     };
-    const res = await portalApiClient.post(PORTAL_DEBIT_NOTES_API.create, body);
+
+    let res: Awaited<ReturnType<typeof portalApiClient.post>> | null = null;
+    let lastErr: unknown;
+    for (const job_id of candidates) {
+      try {
+        res = await portalApiClient.post(PORTAL_DEBIT_NOTES_API.create, {
+          ...baseBody,
+          job_id,
+        });
+        break;
+      } catch (err) {
+        lastErr = err;
+        const msg =
+          err instanceof Error ? err.message : typeof err === 'string' ? err : '';
+        const notLinked =
+          /not found or not linked/i.test(msg) || /not linked to your party/i.test(msg);
+        if (!notLinked || candidates.indexOf(job_id) === candidates.length - 1) {
+          throw err;
+        }
+      }
+    }
+    if (!res) throw lastErr instanceof Error ? lastErr : new Error('Could not create debit note.');
+
     let detail = normalizeCreditNoteDetail(unwrapData(res.data) ?? res.data, 'debit');
     if (!detail) throw new Error('Could not create debit note.');
 
