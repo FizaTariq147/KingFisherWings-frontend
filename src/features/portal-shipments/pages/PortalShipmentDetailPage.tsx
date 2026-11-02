@@ -180,7 +180,11 @@ export default function PortalShipmentDetailPage() {
               type="button"
               size="sm"
               variant="secondary"
-              onClick={() => navigate(`/portal/documents?job_id=${encodeURIComponent(id)}`)}
+              onClick={() =>
+                navigate(
+                  `/portal/documents?job_id=${encodeURIComponent(data.jobId || id)}`,
+                )
+              }
             >
               All documents
             </Button>
@@ -189,7 +193,9 @@ export default function PortalShipmentDetailPage() {
               size="sm"
               variant="secondary"
               onClick={() =>
-                navigate(`/portal/debit-notes?job_id=${encodeURIComponent(id)}`)
+                navigate(
+                  `/portal/debit-notes?job_id=${encodeURIComponent(data.jobId || id)}`,
+                )
               }
             >
               Job ledger / debit
@@ -198,7 +204,9 @@ export default function PortalShipmentDetailPage() {
               type="button"
               size="sm"
               variant="secondary"
-              onClick={() => navigate(`/portal/messages?job_id=${encodeURIComponent(id)}`)}
+              onClick={() =>
+                navigate(`/portal/messages?job_id=${encodeURIComponent(data.jobId || id)}`)
+              }
             >
               Message
             </Button>

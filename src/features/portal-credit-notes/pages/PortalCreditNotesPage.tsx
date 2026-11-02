@@ -56,7 +56,7 @@ export default function PortalCreditNotesPage() {
   );
   const download = useDownloadPortalCreditNotePdf();
   const createDebit = useCreatePortalDebitNote();
-  const shipments = usePortalShipments({ page: 1, limit: 50 });
+  const shipments = usePortalShipments({ page: 1, limit: 100 });
   const [pdfError, setPdfError] = useState<string | null>(null);
   const [formError, setFormError] = useState<string | null>(null);
   const [formMsg, setFormMsg] = useState<string | null>(null);
@@ -72,7 +72,34 @@ export default function PortalCreditNotesPage() {
 
   const items = data?.items ?? [];
   const meta = data?.meta;
-  const jobOptions = (shipments.data?.items ?? []).filter((s) => isUuid(s.id));
+  /** Prefer canonical job UUID when list row id is a shipment/wrapper id. */
+  const jobOptions = (shipments.data?.items ?? [])
+    .map((s) => {
+      const value = (s.jobId && isUuid(s.jobId) ? s.jobId : null) || (isUuid(s.id) ? s.id : '');
+      return value
+        ? {
+            value,
+            label:
+              `${s.jobNumber || s.reference || value.slice(0, 8).toUpperCase()}${
+                s.origin || s.destination
+                  ? ` — ${[s.origin, s.destination].filter(Boolean).join(' → ')}`
+                  : ''
+              }`,
+          }
+        : null;
+    })
+    .filter((o): o is { value: string; label: string } => Boolean(o))
+    .filter((o, i, arr) => arr.findIndex((x) => x.value === o.value) === i);
+
+  useEffect(() => {
+    if (!isUuid(jobFromUrl)) return;
+    // If URL used a shipment/wrapper id, remap to the canonical job UUID.
+    const match = (shipments.data?.items ?? []).find(
+      (s) => s.id === jobFromUrl || s.jobId === jobFromUrl,
+    );
+    const canonical = match?.jobId;
+    if (canonical && isUuid(canonical)) setJobId(canonical);
+  }, [jobFromUrl, shipments.data?.items]);
 
   const submitDebit = async () => {
     setFormError(null);
@@ -174,11 +201,8 @@ export default function PortalCreditNotesPage() {
               >
                 <option value="">Select job…</option>
                 {jobOptions.map((s) => (
-                  <option key={s.id} value={s.id}>
-                    {s.jobNumber || s.reference || s.id.slice(0, 8).toUpperCase()}
-                    {s.origin || s.destination
-                      ? ` — ${[s.origin, s.destination].filter(Boolean).join(' → ')}`
-                      : ''}
+                  <option key={s.value} value={s.value}>
+                    {s.label}
                   </option>
                 ))}
               </select>
