@@ -371,15 +371,28 @@ export default function PortalCreditNoteDetailPage() {
           <p className="text-sm text-[var(--color-neutral-400)]">No lines.</p>
         ) : (
           <PortalAnimatedList className="space-y-2">
-            {data.lines.map((line) => (
-              <PortalAnimatedListItem
-                key={line.id}
-                className="flex justify-between gap-3 border-b border-[var(--color-neutral-100)] pb-2 text-sm last:border-0"
-              >
-                <span>{line.description}</span>
-                <span className="font-medium tabular-nums">{line.lineTotal ?? '—'}</span>
-              </PortalAnimatedListItem>
-            ))}
+            {data.lines.map((line) => {
+              const qty = Number(line.quantity);
+              const unit = Number(line.unitPrice);
+              const lineAmount =
+                Number.isFinite(qty) && Number.isFinite(unit)
+                  ? Math.round(qty * unit * 100) / 100
+                  : line.lineTotal;
+              return (
+                <PortalAnimatedListItem
+                  key={line.id}
+                  className="flex justify-between gap-3 border-b border-[var(--color-neutral-100)] pb-2 text-sm last:border-0"
+                >
+                  <span>
+                    {line.description}
+                    {Number.isFinite(qty) && Number.isFinite(unit)
+                      ? ` · ${qty} × ${unit}`
+                      : ''}
+                  </span>
+                  <span className="font-medium tabular-nums">{lineAmount ?? '—'}</span>
+                </PortalAnimatedListItem>
+              );
+            })}
           </PortalAnimatedList>
         )}
       </PortalPanel>

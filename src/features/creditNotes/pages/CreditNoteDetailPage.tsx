@@ -231,16 +231,24 @@ export default function CreditNoteDetailPage() {
                           </TableRow>
                         </TableHeader>
                         <TableBody>
-                          {lines.map((line) => (
-                            <TableRow key={line.id}>
-                              <TableCell>{line.description || '—'}</TableCell>
-                              <TableCell mono>{line.quantity}</TableCell>
-                              <TableCell mono>{line.unit_price}</TableCell>
-                              <TableCell mono>
-                                {line.line_total != null ? line.line_total : '—'}
-                              </TableCell>
-                            </TableRow>
-                          ))}
+                          {lines.map((line) => {
+                            const qty = Number(line.quantity);
+                            const unit = Number(line.unit_price);
+                            const lineAmount =
+                              Number.isFinite(qty) && Number.isFinite(unit)
+                                ? Math.round(qty * unit * 100) / 100
+                                : line.line_total;
+                            return (
+                              <TableRow key={line.id}>
+                                <TableCell>{line.description || '—'}</TableCell>
+                                <TableCell mono>{line.quantity}</TableCell>
+                                <TableCell mono>{line.unit_price}</TableCell>
+                                <TableCell mono>
+                                  {lineAmount != null ? lineAmount : '—'}
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })}
                         </TableBody>
                       </Table>
                     )}

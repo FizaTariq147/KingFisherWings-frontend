@@ -209,7 +209,8 @@ export function DebitNoteForm({
                 description: '',
                 quantity: 1,
                 unit_price: 0,
-                is_taxable: true,
+                // Job-ledger / advance lines: unit price is the amount (no auto VAT).
+                is_taxable: false,
                 sort_order: fields.length,
               })
             }
