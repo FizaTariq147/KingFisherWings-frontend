@@ -17,6 +17,8 @@ interface ProtectedRouteProps {
    * Checked even for Tenant Admin.
    */
   requireEnabledModule?: string
+  /** Pass if any of these enabled_modules keys is enough (e.g. vendors | masters). */
+  requireEnabledModuleAny?: string[]
   requireRole?:          string
   /** Pass if any of these role slugs is enough (e.g. admin | tenant_admin). */
   requireAnyRole?:       string[]
@@ -28,6 +30,7 @@ export default function ProtectedRoute({
   requireAnyPermission,
   requireMatrixModule,
   requireEnabledModule,
+  requireEnabledModuleAny,
   requireRole,
   requireAnyRole,
 }: ProtectedRouteProps) {
@@ -69,10 +72,13 @@ export default function ProtectedRoute({
       : false
 
   const enabledModuleKey = requireEnabledModule || requireMatrixModule
+  const enabledModuleDenied = requireEnabledModuleAny?.length
+    ? !requireEnabledModuleAny.some((key) => hasEnabledModule(key))
+    : Boolean(enabledModuleKey && !hasEnabledModule(enabledModuleKey))
 
   // ── Permission / role check
   const denied =
-    (enabledModuleKey && !hasEnabledModule(enabledModuleKey)) ||
+    enabledModuleDenied ||
     (requireMatrixModule && !hasMatrixModule(requireMatrixModule, 'see')) ||
     (requirePermissions   && !hasPermission(...requirePermissions))   ||
     (requireAnyPermission && !hasAnyPermission(...requireAnyPermission)) ||

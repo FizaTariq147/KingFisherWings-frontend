@@ -14,12 +14,15 @@ export function PortalPortTokenModal({
   open,
   pending,
   defaults,
+  containerOptions = [],
   onClose,
   onSubmit,
 }: {
   open: boolean;
   pending?: boolean;
   defaults?: Partial<PortalConfirmPortTokenDto>;
+  /** When multiple containers exist, customer must pick one. */
+  containerOptions?: string[];
   onClose: () => void;
   onSubmit: (dto: PortalConfirmPortTokenDto) => Promise<void>;
 }) {
@@ -32,10 +35,16 @@ export function PortalPortTokenModal({
   const [portGateToken, setPortGateToken] = useState(defaults?.port_gate_token ?? '');
   const [error, setError] = useState<string | null>(null);
 
+  const multiContainer = containerOptions.length > 1;
+
   useEffect(() => {
     if (!open) return;
     setBlNumber(defaults?.bl_number ?? '');
-    setContainerNumber(defaults?.container_number ?? '');
+    setContainerNumber(
+      defaults?.container_number ??
+        (containerOptions.length === 1 ? containerOptions[0] : '') ??
+        '',
+    );
     setDate(defaults?.date ?? todayIsoDate());
     setDeliveryLocation(defaults?.delivery_location ?? '');
     setReceiverName(defaults?.receiver_name ?? '');
@@ -66,7 +75,15 @@ export function PortalPortTokenModal({
       !dto.receiver_name ||
       !dto.receiver_contact
     ) {
-      setError('Fill all required port token fields.');
+      setError(
+        multiContainer
+          ? 'Fill all required fields and select a container.'
+          : 'Fill all required port token fields.',
+      );
+      return;
+    }
+    if (multiContainer && !containerOptions.includes(dto.container_number)) {
+      setError('Select a container from the list for this shipment.');
       return;
     }
     setError(null);
@@ -103,11 +120,31 @@ export function PortalPortTokenModal({
           value={blNumber}
           onChange={(e) => setBlNumber(e.target.value)}
         />
-        <Input
-          label="Container number *"
-          value={containerNumber}
-          onChange={(e) => setContainerNumber(e.target.value)}
-        />
+        {multiContainer ? (
+          <label className="block text-sm">
+            <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
+              Container number *
+            </span>
+            <select
+              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
+              value={containerNumber}
+              onChange={(e) => setContainerNumber(e.target.value)}
+            >
+              <option value="">Select container…</option>
+              {containerOptions.map((n) => (
+                <option key={n} value={n}>
+                  {n}
+                </option>
+              ))}
+            </select>
+          </label>
+        ) : (
+          <Input
+            label="Container number *"
+            value={containerNumber}
+            onChange={(e) => setContainerNumber(e.target.value)}
+          />
+        )}
         <Input
           label="Date *"
           type="date"

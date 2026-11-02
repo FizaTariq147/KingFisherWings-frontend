@@ -1318,6 +1318,7 @@ export function normalizeDeliveryAcknowledgement(raw: unknown): DeliveryAcknowle
   return {
     id: pickString(nested, 'id') || undefined,
     job_id: pickString(nested, 'job_id', 'jobId') || undefined,
+    container_id: pickString(nested, 'container_id', 'containerId') || undefined,
     status:
       pickString(nested, 'status', 'acknowledgement_status', 'ack_status').toUpperCase() ||
       'DRAFT',

@@ -107,12 +107,15 @@ interface PortalAcknowledgementPanelProps {
   shipmentId: string;
   /** Status from shipment detail when acknowledgement not yet loaded. */
   statusHint?: string;
+  /** Containers on the shipment/job — required when more than one. */
+  containers?: Array<{ id: string; label: string }>;
 }
 
 /** Customer delivery acknowledgement — load template fields, signature, submit. */
 export function PortalAcknowledgementPanel({
   shipmentId,
   statusHint,
+  containers = [],
 }: PortalAcknowledgementPanelProps) {
   const query = usePortalShipmentAcknowledgement(shipmentId);
   const submit = useSubmitPortalShipmentAcknowledgement(shipmentId);
@@ -125,6 +128,7 @@ export function PortalAcknowledgementPanel({
   const [receiverTitle, setReceiverTitle] = useState('');
   const [goodsCondition, setGoodsCondition] = useState('GOOD');
   const [remarks, setRemarks] = useState('');
+  const [containerId, setContainerId] = useState('');
   const [pendingFiles, setPendingFiles] = useState<File[]>([]);
   const [hydrated, setHydrated] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -132,7 +136,35 @@ export function PortalAcknowledgementPanel({
 
   const ack = query.data;
   const status = (ack?.status || statusHint || 'DRAFT').toUpperCase();
-  const readOnly = status === 'SUBMITTED' || status === 'RECEIVED_BY_ADMIN';
+  const readOnly =
+    status === 'SUBMITTED' ||
+    status === 'ACKNOWLEDGED_BY_CUSTOMER' ||
+    status === 'RECEIVED_BY_ADMIN';
+  const containerOptions = useMemo(() => {
+    if (containers.length) {
+      return containers
+        .filter((c) => c.id.trim())
+        .map((c) => ({ value: c.id, label: c.label || c.id.slice(0, 8).toUpperCase() }));
+    }
+    const raw = ack?.raw;
+    const list =
+      (Array.isArray(raw?.containers) ? raw!.containers : null) ??
+      (Array.isArray(raw?.job_containers) ? raw!.job_containers : null) ??
+      [];
+    return list
+      .map((row) => {
+        if (!row || typeof row !== 'object') return null;
+        const r = row as Record<string, unknown>;
+        const id = typeof r.id === 'string' ? r.id.trim() : '';
+        if (!id) return null;
+        const number =
+          (typeof r.container_number === 'string' && r.container_number.trim()) ||
+          (typeof r.containerNumber === 'string' && r.containerNumber.trim()) ||
+          id.slice(0, 8).toUpperCase();
+        return { value: id, label: number };
+      })
+      .filter((r): r is { value: string; label: string } => Boolean(r));
+  }, [ack?.raw, containers]);
   const templateBlocks = useMemo(
     () => (ack ? acknowledgementTemplateBlocks(ack) : []),
     [ack],
@@ -144,6 +176,7 @@ export function PortalAcknowledgementPanel({
     if (ack.receiver_title) setReceiverTitle(ack.receiver_title);
     if (ack.goods_condition) setGoodsCondition(ack.goods_condition);
     if (ack.remarks) setRemarks(ack.remarks);
+    if (ack.container_id) setContainerId(ack.container_id);
     setHydrated(true);
   }, [ack, hydrated]);
 
@@ -154,9 +187,14 @@ export function PortalAcknowledgementPanel({
       setError('Receiver name is required.');
       return;
     }
+    if (containerOptions.length > 1 && !containerId.trim()) {
+      setError('Select the container you are acknowledging.');
+      return;
+    }
     try {
       await submit.mutateAsync({
         receiver_name: receiverName.trim(),
+        ...(containerId.trim() ? { container_id: containerId.trim() } : {}),
         receiver_title: receiverTitle.trim() || undefined,
         goods_condition: goodsCondition.trim() || undefined,
         remarks: remarks.trim() || undefined,
@@ -179,7 +217,15 @@ export function PortalAcknowledgementPanel({
         <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">
           Delivery acknowledgement
         </h2>
-        <Badge variant={status === 'RECEIVED_BY_ADMIN' ? 'success' : 'info'}>
+        <Badge
+          variant={
+            status === 'RECEIVED_BY_ADMIN'
+              ? 'success'
+              : status === 'ACKNOWLEDGED_BY_CUSTOMER' || status === 'SUBMITTED'
+                ? 'info'
+                : 'neutral'
+          }
+        >
           {status.replaceAll('_', ' ')}
         </Badge>
       </div>
@@ -225,6 +271,26 @@ export function PortalAcknowledgementPanel({
             </ul>
           ) : (
             <>
+              {containerOptions.length > 1 ? (
+                <label className="block text-sm sm:col-span-2">
+                  <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
+                    Container *
+                  </span>
+                  <select
+                    className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
+                    disabled={submit.isPending}
+                    value={containerId}
+                    onChange={(e) => setContainerId(e.target.value)}
+                  >
+                    <option value="">Select container…</option>
+                    {containerOptions.map((opt) => (
+                      <option key={opt.value} value={opt.value}>
+                        {opt.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
               <label className="block text-sm sm:col-span-1">
                 <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
                   Receiver name *

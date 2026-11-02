@@ -10,9 +10,18 @@ export const JOB_API = {
   statusCatalogById: (id: string) => `/jobs/status-catalog/${encodeURIComponent(id)}`,
   /** Delivery acknowledgement (extends ProofOfDelivery). */
   acknowledgement: (id: string) => `/jobs/${id}/detail/acknowledgement`,
+  acknowledgementSend: (id: string) => `/jobs/${id}/acknowledgement/send`,
   acknowledgementReceive: (id: string) => `/jobs/${id}/acknowledgement/receive`,
   acknowledgementGeneratePdf: (id: string) =>
     `/jobs/${id}/acknowledgement/generate-pdf`,
+  /** Job finance ledger — invoices + credit/debit notes. */
+  ledger: (id: string) => `/jobs/${id}/ledger`,
+  /** Port token form + admin confirm. */
+  portToken: (id: string) => `/jobs/${id}/port-token`,
+  portTokenConfirm: (id: string) => `/jobs/${id}/port-token/confirm`,
+  /** One shipment per ACTUAL numbered container. */
+  generateShipmentsFromContainers: (id: string) =>
+    `/jobs/${id}/containers/generate-shipments`,
   /** Name dropdowns for department / GPUM (no UUIDs in UI). */
   lookupsDropdowns: '/jobs/lookups/dropdowns',
   byBarcode: (code: string) => `/jobs/by-barcode/${encodeURIComponent(code)}`,

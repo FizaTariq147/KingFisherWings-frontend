@@ -38,6 +38,16 @@ export interface PublicTrackMatch {
   status?: string;
 }
 
+export interface PublicTrackContainer {
+  id: string;
+  containerNumber?: string;
+  status?: string;
+  statusLabel?: string;
+  containerType?: string;
+  kind?: 'ACTUAL' | 'PLANNED';
+  sealNumber?: string;
+}
+
 export interface PublicTrackResult {
   reference: string;
   status?: string;
@@ -53,6 +63,8 @@ export interface PublicTrackResult {
   /** ISO / type label e.g. 45G1 (40HC). */
   containerType?: string;
   containerKind?: 'ACTUAL' | 'PLANNED';
+  /** All containers with statuses from track payload. */
+  containers?: PublicTrackContainer[];
   /** Horizontal POL / PTS / POD (or origin→dest) progress rail. */
   progressLegs: PublicTrackProgressLeg[];
   milestones: PublicTrackMilestone[];

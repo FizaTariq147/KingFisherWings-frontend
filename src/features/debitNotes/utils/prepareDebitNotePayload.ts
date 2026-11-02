@@ -1,8 +1,20 @@
 import { isUuid } from '@/lib/isUuid';
 
-const ALLOWED_HEADER_FIELDS = new Set(['credited_invoice_id', 'remarks']);
+const ALLOWED_HEADER_FIELDS = new Set([
+  'credited_invoice_id',
+  'job_id',
+  'party_id',
+  'currency_code',
+  'remarks',
+]);
 
-const UUID_FIELDS = new Set(['credited_invoice_id', 'charge_code_id', 'tax_rate_id']);
+const UUID_FIELDS = new Set([
+  'credited_invoice_id',
+  'job_id',
+  'party_id',
+  'charge_code_id',
+  'tax_rate_id',
+]);
 
 const ALLOWED_LINE_FIELDS = new Set([
   'description',

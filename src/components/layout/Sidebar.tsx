@@ -418,6 +418,38 @@ const DEPT_PERMISSION: Record<
   nvocc: { permission: 'menu_nvocc', matrixModule: 'nvocc' },
 };
 
+/**
+ * Map ops sidebar dept keys to visible_job_types tokens from /auth/me.
+ * null / undefined visibleJobTypes = unrestricted; [] = hide all scoped depts.
+ */
+function deptAllowedByVisibleJobTypes(
+  deptKey: string | undefined,
+  visibleJobTypes: string[] | null | undefined,
+): boolean {
+  if (!deptKey || deptKey === 'nvocc') return true;
+  if (visibleJobTypes === null || visibleJobTypes === undefined) return true;
+  if (!visibleJobTypes.length) return false;
+  const tokens = visibleJobTypes.map((t) => t.trim().toLowerCase().replace(/-/g, '_'));
+  const matches = (needles: string[]) =>
+    tokens.some((t) => needles.some((n) => t === n || t.includes(n) || n.includes(t)));
+  switch (deptKey) {
+    case 'air-export':
+      return matches(['air_export', 'air']);
+    case 'air-import':
+      return matches(['air_import', 'air']);
+    case 'sea-export':
+      return matches(['sea_export', 'sea_fcl_export', 'sea_lcl_export', 'fcl_export', 'lcl_export']);
+    case 'sea-import':
+      return matches(['sea_import', 'sea_fcl_import', 'sea_lcl_import', 'fcl_import', 'lcl_import']);
+    case 'road-freight':
+      return matches(['road_freight', 'road', 'land', 'courier']);
+    case 'customs-clearance':
+      return matches(['customs_clearance', 'customs']);
+    default:
+      return true;
+  }
+}
+
 const DEPARTMENT_NAV_ITEMS: NavItem[] = DEPARTMENT_NAV.map((dept) => {
   const perm = DEPT_PERMISSION[dept.key];
   return {
@@ -454,7 +486,8 @@ const WORKSPACE_NAV_ITEMS: NavItem[] = [
     path: '/vendors',
     Icon: Truck,
     permission: 'menu_vendors',
-    matrixModule: 'masters',
+    matrixModule: 'vendors',
+    enabledModuleAny: ['vendors', 'masters'],
   },
   {
     label: 'Quotations',
@@ -714,7 +747,11 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
         // Ops departments: require the matching submodule family (air / sea / …).
         // Do NOT treat any `operations_*` grant as access to every department.
         // Air export + import share one menu key and unlock together.
+        // visible_job_types from /auth/me further scopes which departments appear.
         if (item.matrixModule && item.matrixSubmodule) {
+          if (!deptAllowedByVisibleJobTypes(item.deptKey, authCtx?.user?.visibleJobTypes)) {
+            return false;
+          }
           const perms = authCtx?.user?.permissions ?? [];
           if (hasMatrixSubmoduleAccess(perms, item.matrixModule, item.matrixSubmodule, 'see')) {
             return true;

@@ -112,6 +112,11 @@ export interface AuthUser {
    * Missing/undefined = all modules enabled.
    */
   enabledModules?: string[]
+  /**
+   * Ops job-type scope from GET /auth/me / permission matrix.
+   * null = unrestricted; [] = none; string[] = allowed job types.
+   */
+  visibleJobTypes?: string[] | null
 }
 
 // Decoded JWT payload shape from NestJS backend

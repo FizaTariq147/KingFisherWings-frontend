@@ -96,8 +96,25 @@ export function normalizePublicMilestone(
     summary: pickString(r.notes, r.summary) || undefined,
     occurredAt: completedAt,
     completedAt,
-    location: pickString(r.location, r.place, r.port, r.port_name, r.city) || undefined,
-    terminal: pickString(r.terminal, r.terminal_name, r.facility, r.depot) || undefined,
+    location:
+      pickString(
+        r.location,
+        r.location_terminal,
+        r.locationTerminal,
+        r.place,
+        r.port,
+        r.port_name,
+        r.city,
+      ) || undefined,
+    terminal:
+      pickString(
+        r.terminal,
+        r.terminal_name,
+        r.location_terminal,
+        r.locationTerminal,
+        r.facility,
+        r.depot,
+      ) || undefined,
     status: pickString(r.status) || undefined,
     pending: !isCompleted,
     eventType: pickString(r.type, r.code) || undefined,
@@ -176,10 +193,11 @@ function normalizeProgressLegs(body: Record<string, unknown>): PublicTrackProgre
     .filter((l): l is PublicTrackProgressLeg => Boolean(l));
 }
 
-function pickContainerFromBody(body: Record<string, unknown>): {
+function pickContainersFromBody(body: Record<string, unknown>): {
   containerNumber?: string;
   containerType?: string;
   containerKind?: 'ACTUAL' | 'PLANNED';
+  containers: import('../types/publicTrack.types').PublicTrackContainer[];
 } {
   const topNumber = pickString(body.container_number, body.containerNumber);
   const topType = formatContainerType(
@@ -188,35 +206,45 @@ function pickContainerFromBody(body: Record<string, unknown>): {
   );
 
   const list = unwrapArray(body.containers);
-  const rows = list
-    .map((row) => {
+  const containers = list
+    .map((row, index) => {
       const r = asRecord(row);
       if (!r) return null;
       const number = pickString(r.container_number, r.containerNumber) || '';
       const type = formatContainerType(
-        pickString(r.container_type, r.containerType, r.status_label),
+        pickString(r.container_type, r.containerType),
         pickString(r.iso_size, r.isoSize),
       );
+      const status = pickString(r.status, r.status_code, r.statusCode) || undefined;
+      const statusLabel =
+        pickString(r.status_label, r.statusLabel) ||
+        (status ? status.replaceAll('_', ' ') : undefined);
+      if (!number && !type && !status) return null;
       return {
-        number,
-        type: type || '',
+        id: pickString(r.id) || number || String(index),
+        containerNumber: number || undefined,
+        status,
+        statusLabel,
+        containerType: type || undefined,
         kind: containerKindOf(r),
+        sealNumber: pickString(r.seal_number, r.sealNumber) || undefined,
       };
     })
-    .filter((r): r is { number: string; type: string; kind: 'ACTUAL' | 'PLANNED' | undefined } =>
-      Boolean(r && (r.number || r.type)),
+    .filter(
+      (r): r is import('../types/publicTrack.types').PublicTrackContainer => Boolean(r),
     );
 
   const preferred =
-    rows.find((r) => r.kind === 'ACTUAL' && r.number) ||
-    rows.find((r) => r.kind === 'PLANNED' && r.number) ||
-    rows.find((r) => r.number) ||
-    rows[0];
+    containers.find((r) => r.kind === 'ACTUAL' && r.containerNumber) ||
+    containers.find((r) => r.kind === 'PLANNED' && r.containerNumber) ||
+    containers.find((r) => r.containerNumber) ||
+    containers[0];
 
   return {
-    containerNumber: preferred?.number || topNumber || undefined,
-    containerType: preferred?.type || topType || undefined,
+    containerNumber: preferred?.containerNumber || topNumber || undefined,
+    containerType: preferred?.containerType || topType || undefined,
     containerKind: preferred?.kind,
+    containers,
   };
 }
 
@@ -330,7 +358,7 @@ export function normalizePublicTrack(
     pickString(body.destination, body.dest_name, body.pod, summary?.destination) ||
     undefined;
 
-  const container = pickContainerFromBody(body);
+  const container = pickContainersFromBody(body);
   let progressLegs = normalizeProgressLegs(body);
 
   if (!progressLegs.length && (origin || destination)) {
@@ -378,6 +406,7 @@ export function normalizePublicTrack(
     containerNumber: container.containerNumber,
     containerType: container.containerType,
     containerKind: container.containerKind,
+    containers: container.containers.length ? container.containers : undefined,
     progressLegs,
     milestones: ordered,
     matches: normalizeMatches(root.matches ?? root.results ?? root.alternates),

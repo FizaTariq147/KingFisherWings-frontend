@@ -1282,13 +1282,18 @@ export interface ProrateToShipmentsDto {
   job_charge_id?: string;
 }
 
-/** POST /jobs/:id/charges/composite — OpenAPI CompositeJobChargeDto (forbidNonWhitelisted). */
+/** POST /jobs/:id/charges/composite — OpenAPI ChargeSectionDto / CompositeJobChargeDto. */
 export interface ChargeSectionDto {
   line_no?: number;
-  /** Master charge UUID — do not send charge_code / charge_code_name. */
-  charge_code_id?: string;
+  /** Required master charge UUID. */
+  charge_code_id: string;
+  /** Echo-only; not persisted. Prefer charge_code_id. */
+  charge_code?: string;
+  /** Echo-only master name; ignored. Use `description` for the line narrative. */
+  charge_code_name?: string;
   unit?: string;
   remarks?: string;
+  /** Free-text line description — independent of charge_code_name. */
   description: string;
   quantity?: number;
   pp_cc?: 'PP' | 'CC';
@@ -1877,12 +1882,14 @@ export interface CreateProofOfDeliveryDto {
 export type DeliveryAcknowledgementStatus =
   | 'DRAFT'
   | 'SUBMITTED'
+  | 'ACKNOWLEDGED_BY_CUSTOMER'
   | 'RECEIVED_BY_ADMIN'
   | string;
 
 export interface DeliveryAcknowledgement {
   id?: string;
   job_id?: string;
+  container_id?: string;
   status: DeliveryAcknowledgementStatus;
   acknowledged_at?: string;
   receiver_name?: string;
@@ -1902,11 +1909,18 @@ export interface DeliveryAcknowledgement {
 
 export interface SubmitDeliveryAcknowledgementDto {
   receiver_name: string;
+  /** Required when the job has multiple containers. */
+  container_id?: string;
   receiver_title?: string;
   goods_condition?: string;
   remarks?: string;
   acknowledged_at?: string;
   actual_delivery_date?: string;
+}
+
+export interface SendDeliveryAcknowledgementDto {
+  container_id?: string;
+  remarks?: string;
 }
 
 export interface CreatePaymentRequestFromJobDto {

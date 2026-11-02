@@ -235,6 +235,35 @@ export function PublicTrackTimeline({
               </button>
             ) : null}
           </div>
+          {result.containers && result.containers.length > 1 ? (
+            <ul className="mt-2 flex flex-wrap gap-2 text-[12px]" style={{ color: C.sub }}>
+              {result.containers.map((c) => (
+                <li
+                  key={c.id}
+                  className="inline-flex items-center gap-1.5 rounded-sm px-2 py-1"
+                  style={{ backgroundColor: C.chip, border: `1px solid ${C.border}` }}
+                >
+                  <span className="font-semibold" style={{ color: C.navy }}>
+                    {c.containerNumber || 'Container'}
+                  </span>
+                  {c.statusLabel || c.status ? (
+                    <span className="uppercase tracking-wide">
+                      {formatStatusLabel(c.statusLabel || c.status)}
+                    </span>
+                  ) : null}
+                </li>
+              ))}
+            </ul>
+          ) : result.containers?.[0]?.statusLabel || result.containers?.[0]?.status ? (
+            <p className="mt-1 text-[12px]" style={{ color: C.sub }}>
+              Status{' '}
+              <span className="font-semibold uppercase tracking-wide" style={{ color: C.navy }}>
+                {formatStatusLabel(
+                  result.containers[0].statusLabel || result.containers[0].status,
+                )}
+              </span>
+            </p>
+          ) : null}
         </div>
 
         <Button

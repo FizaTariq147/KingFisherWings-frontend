@@ -508,7 +508,7 @@ export const router = createBrowserRouter([
             element: (
               <ProtectedRoute
                 requireAnyPermission={['menu_vendors', 'menu_finance']}
-                requireEnabledModule="masters"
+                requireEnabledModuleAny={['vendors', 'masters']}
               />
             ),
             children: [{ path: '/vendors', element: <VendorServiceMenuPage /> }],

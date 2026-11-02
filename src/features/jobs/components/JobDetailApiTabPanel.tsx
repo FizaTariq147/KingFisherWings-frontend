@@ -49,6 +49,9 @@ function humanizeFieldLabel(key: string): string {
     .replace(/(_id|_uuid|_name|_label|_code)$/i, '');
   if (norm === 'organization' || norm === 'organisation') return 'Party';
   if (norm === 'information' || norm === 'info') return 'Info';
+  if (norm === 'location_terminal' || norm === 'locationterminal') {
+    return 'Location / Terminal';
+  }
   return norm
     .split('_')
     .filter(Boolean)
