@@ -296,6 +296,7 @@ export function JobOverviewPanel({ job }: { job: Job }) {
           <Row label="Container status" value={job.primary_container_status} />
           <Row label="Rotation" value={job.rotation_number} />
           <Row label="EDI company code" value={job.edi_company_code || job.company_code} />
+          <Row label="Draft BL comment" value={job.draft_bl_customer_comment} />
           <Row label="Place of receipt" value={seaLcl?.place_of_receipt} />
           <Row label="Place of delivery" value={seaLcl?.place_of_delivery} />
           <Row label="POL" value={labels.originLabel} />

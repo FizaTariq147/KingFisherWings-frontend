@@ -21,6 +21,7 @@ import {
 } from '@/features/portal-auth/components/portal-ui';
 import { PortalAcknowledgementPanel } from '../components/PortalAcknowledgementPanel';
 import { PortalPortTokenModal } from '../components/PortalPortTokenModal';
+import { PortalRequestDraftBlModal } from '../components/PortalRequestDraftBlModal';
 import {
   useDownloadPortalShipmentDocument,
   usePortalShipment,
@@ -64,6 +65,7 @@ export default function PortalShipmentDetailPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [portTokenOpen, setPortTokenOpen] = useState(false);
+  const [draftBlOpen, setDraftBlOpen] = useState(false);
 
   const milestones = data?.milestones?.length ? data.milestones : milestonesQuery.data ?? [];
   const documents = data?.documents?.length ? data.documents : documentsQuery.data ?? [];
@@ -532,16 +534,7 @@ export default function PortalShipmentDetailPage() {
               type="button"
               size="sm"
               disabled={actions.requestDraftBl.isPending}
-              onClick={() =>
-                void runAction(
-                  () =>
-                    actions.requestDraftBl.mutateAsync({
-                      // Required by PortalRequestDraftBlDto; air HAWB posts {}.
-                      comment: 'Customer requested draft BL',
-                    }),
-                  'Draft BL requested.',
-                )
-              }
+              onClick={() => setDraftBlOpen(true)}
             >
               Request draft BL
             </Button>
@@ -571,6 +564,21 @@ export default function PortalShipmentDetailPage() {
               'Port token confirmed.',
             );
             if (ok) setPortTokenOpen(false);
+          }}
+        />
+      ) : null}
+
+      {draftBlOpen ? (
+        <PortalRequestDraftBlModal
+          open
+          pending={actions.requestDraftBl.isPending}
+          onClose={() => setDraftBlOpen(false)}
+          onSubmit={async (dto) => {
+            const ok = await runAction(
+              () => actions.requestDraftBl.mutateAsync(dto),
+              'Draft BL requested — staff will see your comment on the job.',
+            );
+            if (ok) setDraftBlOpen(false);
           }}
         />
       ) : null}

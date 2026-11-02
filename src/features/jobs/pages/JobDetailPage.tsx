@@ -844,10 +844,6 @@ export default function JobDetailPage() {
                 job.sea_lcl_details?.carrier_booking_ref
               }
             />
-            <OptionalFresaField
-              label="Draft BL comment"
-              value={job.draft_bl_customer_comment}
-            />
             <OptionalFresaField label="Customer remarks" value={job.customer_remarks} />
             <OptionalFresaField label="Notes" value={job.notes} />
             <OptionalFresaField label="Job date" value={formatDetailDate(job.job_date) || job.job_date} />
@@ -859,6 +855,27 @@ export default function JobDetailPage() {
         }
         afterDetail={
           <>
+            {job.draft_bl_customer_comment?.trim() ? (
+              <div
+                className="rounded-sm border px-3 py-2.5 text-sm"
+                style={{
+                  borderColor: '#FCD34D',
+                  background: '#FFFBEB',
+                  color: '#92400E',
+                }}
+                role="status"
+              >
+                <p className="text-[11px] font-semibold uppercase tracking-wide">
+                  Customer draft BL comment
+                </p>
+                <p className="mt-1 whitespace-pre-wrap break-words font-medium text-[#0f172a]">
+                  {job.draft_bl_customer_comment.trim()}
+                </p>
+                <p className="mt-1 text-[11px] text-[#78716C]">
+                  From portal Request draft BL — also under Actions → Bills of lading.
+                </p>
+              </div>
+            ) : null}
             <div className="flex flex-wrap items-center gap-2">
               <FclContinuumRail steps={continuumSteps} />
               <FavouriteToggle

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import type { PortalRequestDraftBlDto } from '../types/portalShipments.types';
@@ -16,6 +16,12 @@ export function PortalRequestDraftBlModal({
 }) {
   const [comment, setComment] = useState('');
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    setComment('');
+    setError(null);
+  }, [open]);
 
   if (!open) return null;
 
