@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Pencil } from 'lucide-react';
 import { OpsContinuumPanel } from '@/features/ops-activity';
 import { isUuid } from '@/lib/isUuid';
+import { erpForm } from '@/lib/erpForm';
 import { erpTable } from '@/lib/erpTypography';
 import { Button } from '@/components/ui/Button';
 import { ShipmentSearchSelect } from '@/features/shared/entity-search';
@@ -85,13 +86,14 @@ function formatFormScalar(value: unknown): string {
   return '—';
 }
 
+/** Fresa-style Label: value cell — used inside a 3-column Show All grid. */
 function FormFieldRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid grid-cols-1 gap-1 border-b border-[#e8edf2] py-2 sm:grid-cols-[minmax(8rem,14rem)_1fr] sm:gap-4">
-      <span className="text-[12px] font-medium text-[#64748b]">{label}</span>
-      <span className="whitespace-pre-wrap break-words text-[13px] font-medium text-[#0f172a]">
-        {value}
+    <div className="flex min-w-0 items-baseline gap-1.5 text-[13px] leading-5">
+      <span className="shrink-0 font-semibold text-[var(--fresa-header-text,#0A2942)]">
+        {label}:
       </span>
+      <span className="min-w-0 whitespace-pre-wrap break-words text-[#0f172a]">{value}</span>
     </div>
   );
 }
@@ -361,18 +363,20 @@ function FormFieldsFromPayload({
   }
 
   return (
-    <div className={depth > 0 ? 'space-y-1' : 'space-y-0'}>
-      {rows.map((row) => (
-        <FormFieldRow key={row.key} label={row.label} value={row.value} />
-      ))}
+    <div className={depth > 0 ? 'space-y-3' : 'space-y-3'}>
+      {rows.length ? (
+        <div className={erpForm.grid3}>
+          {rows.map((row) => (
+            <FormFieldRow key={row.key} label={row.label} value={row.value} />
+          ))}
+        </div>
+      ) : null}
       {nested.map((block) => (
-        <div key={block.key} className="border-b border-[#e8edf2] py-2 last:border-0">
-          <p className="mb-1 text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]">
+        <div key={block.key} className="space-y-2 border-t border-[#e8edf2] pt-3 first:border-0 first:pt-0">
+          <p className="text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]">
             {block.label}
           </p>
-          <div className="pl-0 sm:pl-2">
-            <FormFieldsFromPayload data={block.value} depth={depth + 1} />
-          </div>
+          <FormFieldsFromPayload data={block.value} depth={depth + 1} />
         </div>
       ))}
     </div>
@@ -746,11 +750,9 @@ function JobShipmentsTabPanel({
 
 function SectionCard({ title, children }: { title: string; children: ReactNode }) {
   return (
-    <div className="rounded-sm bg-white">
-      <div className="border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
-        {title}
-      </div>
-      <div className="max-h-[28rem] overflow-auto px-3 py-2">{children}</div>
+    <div className={erpForm.section}>
+      <div className={erpForm.sectionHeader}>{title}</div>
+      <div className="max-h-[28rem] overflow-auto px-3 py-3">{children}</div>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { EntityHistoryList } from '@/features/shared/history/EntityHistoryList';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import {
   useOpsActivityMutations,
@@ -835,24 +836,27 @@ export function OpsContinuumPanel({
         ) : null}
 
         {tab === 'history' ? (
-          <RowList
+          <EntityHistoryList
             loading={historyQ.isLoading}
             empty="No history events."
-            rows={history}
-            render={(row, i) => (
-              <li
-                key={rowId(row, i)}
-                className="rounded-sm bg-white px-3 py-2 text-sm"
-              >
-                <p className="font-medium">
-                  {cell(row, 'event', 'action', 'type', 'summary')}
-                </p>
-                <p className="text-[12px] text-[var(--color-neutral-500)]">
-                  {cell(row, 'created_at', 'timestamp', 'at')} ·{' '}
-                  {cell(row, 'actor_name', 'user_name', 'created_by')}
-                </p>
-              </li>
-            )}
+            items={history.map((row, i) => {
+              const title = cell(row, 'event', 'action', 'type', 'summary');
+              const summary = cell(row, 'summary', 'details', 'description', 'message');
+              return {
+                id: rowId(row, i),
+                title: title === '—' ? 'Event' : title,
+                subtitle:
+                  summary !== '—' && summary !== title ? summary : undefined,
+                when: (() => {
+                  const v = cell(row, 'created_at', 'timestamp', 'at');
+                  return v === '—' ? undefined : v;
+                })(),
+                actor: (() => {
+                  const v = cell(row, 'actor_name', 'user_name', 'created_by');
+                  return v === '—' ? undefined : v;
+                })(),
+              };
+            })}
           />
         ) : null}
       </div>

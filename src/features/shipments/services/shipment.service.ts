@@ -518,6 +518,16 @@ export const shipmentService = {
               pushArray(`${tab}-charges`, `${title} · Charges`, v);
               continue;
             }
+            // Skip party/org type catalog dumps (ids without names).
+            const catalogKey = k.toLowerCase().replace(/[-_\s]/g, '');
+            if (
+              catalogKey.includes('partytype') ||
+              catalogKey.includes('orgtype') ||
+              catalogKey.includes('organizationtype') ||
+              catalogKey.includes('organisationtype')
+            ) {
+              continue;
+            }
             pushArray(`${tab}-${k}`, `${title} · ${k.replace(/[-_]/g, ' ')}`, v);
           }
           pushSection(tab, title, root);

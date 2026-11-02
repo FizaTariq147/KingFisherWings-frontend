@@ -3,17 +3,17 @@ import { useSearchParams } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Modal } from '@/components/ui/Modal';
 import { usePublicTrackEmbed } from '../hooks/usePublicTrack';
 import { PublicTrackTimeline } from '../components/PublicTrackTimeline';
 import { publicTrackService } from '../services/publicTrack.service';
 import type { PublicTrackResult } from '../types/publicTrack.types';
 import {
-  rememberPublicTrackTenantSlug,
   resolveRefFromLocation,
   resolveTenantSlugFromLocation,
 } from '../utils/publicTrackContext';
 import { isSafeHttpUrl } from '@/lib/safeHttpUrl';
-import { normalizePublicTrack } from '../utils/normalizePublicTrack';
+import { toTrackResult } from '../utils/toTrackResult';
 
 export default function PublicTrackPage() {
   const [searchParams] = useSearchParams();
@@ -23,49 +23,39 @@ export default function PublicTrackPage() {
   );
   const initialRef = useMemo(() => resolveRefFromLocation(searchParams.toString()), [searchParams]);
 
-  const [tenantSlug, setTenantSlug] = useState(initialTenant);
   const [ref, setRef] = useState(initialRef);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PublicTrackResult | null>(null);
-  const [rawPayload, setRawPayload] = useState<unknown>(null);
+  const [modalOpen, setModalOpen] = useState(false);
   const [pending, setPending] = useState(false);
   const [autoRan, setAutoRan] = useState(false);
 
-  const embed = usePublicTrackEmbed(tenantSlug || undefined);
+  const embed = usePublicTrackEmbed(initialTenant || undefined);
 
   const branding = embed.data;
-  const resolvedTenant = branding?.tenantSlug || tenantSlug.trim();
-  const showTenantField = !branding?.tenantSlug;
+  const resolvedTenant = branding?.tenantSlug || initialTenant || undefined;
   const title = branding?.companyName ? `Track with ${branding.companyName}` : 'Find your shipment';
   const canSearch = ref.trim().length >= 2;
 
+  const closeModal = () => {
+    setModalOpen(false);
+  };
+
   const runLookup = async () => {
     setError(null);
-    setResult(null);
-    setRawPayload(null);
-    const slug = (resolvedTenant || tenantSlug).trim();
-    if (!slug) {
-      setError('Enter your workspace (tenant slug) to look up a shipment.');
-      return;
-    }
-    rememberPublicTrackTenantSlug(slug);
     setPending(true);
     try {
-      const raw = await publicTrackService.trackRaw(slug, ref.trim());
-      setRawPayload(raw);
-      setResult(normalizePublicTrack(raw));
+      const raw = await publicTrackService.trackRaw(resolvedTenant, ref.trim());
+      setResult(toTrackResult(raw, ref.trim()));
+      setModalOpen(true);
     } catch (err) {
+      setResult(null);
+      setModalOpen(false);
       setError(err instanceof Error ? err.message : 'Lookup failed.');
     } finally {
       setPending(false);
     }
   };
-
-  useEffect(() => {
-    if (branding?.tenantSlug && !tenantSlug.trim()) {
-      setTenantSlug(branding.tenantSlug);
-    }
-  }, [branding?.tenantSlug, tenantSlug]);
 
   useEffect(() => {
     if (autoRan || initialRef.trim().length < 2) return;
@@ -79,7 +69,7 @@ export default function PublicTrackPage() {
       className="min-h-screen bg-[var(--color-surface)]"
       style={branding?.primaryColor ? { ['--color-primary' as string]: branding.primaryColor } : undefined}
     >
-      <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
+      <div className="mx-auto max-w-xl px-4 py-12 sm:px-6">
         {branding?.logoUrl && isSafeHttpUrl(branding.logoUrl) ? (
           <img
             src={branding.logoUrl}
@@ -122,41 +112,34 @@ export default function PublicTrackPage() {
               void runLookup();
             }}
           >
-            {showTenantField ? (
-              <Input
-                label="Username"
-                value={tenantSlug}
-                onChange={(e) => setTenantSlug(e.target.value)}
-                placeholder="e.g. kingfisher"
-                hint="Optional when opened on your company domain"
-              />
-            ) : null}
             <Input
               label="Reference"
               required
               value={ref}
               onChange={(e) => setRef(e.target.value)}
               placeholder="Job / shipment / container / BL / AWB"
-              hint="GET /track?ref= — public timeline only; confidential fields are not shown."
+              hint="Enter the exact job or shipment number (e.g. KFW-J-00042)"
             />
             <Button type="submit" className="w-full" disabled={pending || !canSearch}>
               {pending ? 'Searching…' : 'Track'}
             </Button>
           </form>
         </div>
-
-        {result ? (
-          <div className="mt-6 rounded-xl bg-white p-5 sm:p-6">
-            <PublicTrackTimeline result={result} />
-          </div>
-        ) : rawPayload && !pending ? (
-          <div className="mt-6 rounded-xl bg-white p-5">
-            <p className="text-sm text-[var(--color-neutral-500)]">
-              Tracking response received but could not be normalized. Try a more specific reference.
-            </p>
-          </div>
-        ) : null}
       </div>
+
+      <Modal open={modalOpen && Boolean(result)} onClose={closeModal} title="Track & Trace" size="full">
+        {result ? (
+          <PublicTrackTimeline
+            result={result}
+            onNewSearch={() => {
+              closeModal();
+              setResult(null);
+              setError(null);
+              setRef('');
+            }}
+          />
+        ) : null}
+      </Modal>
     </div>
   );
 }

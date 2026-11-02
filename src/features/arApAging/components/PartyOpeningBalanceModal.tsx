@@ -1,12 +1,16 @@
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
 import { PartySearchSelect } from '@/features/shared/entity-search';
+import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
 import { arApAgingService } from '../services/arApAging.service';
 import type { OpeningBalanceResult } from '../types/openingBalance.types';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
+
+const selectClass =
+  'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]';
 
 export function PartyOpeningBalanceModal({
   open,
@@ -23,7 +27,7 @@ export function PartyOpeningBalanceModal({
 }) {
   const [partyId, setPartyId] = useState(defaultPartyId);
   const [amount, setAmount] = useState('');
-  const [currency, setCurrency] = useState('AED');
+  const [currencyCode, setCurrencyCode] = useState('AED');
   const [date, setDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [createInvoice, setCreateInvoice] = useState(true);
   const [linkCoa, setLinkCoa] = useState('');
@@ -31,16 +35,32 @@ export function PartyOpeningBalanceModal({
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<OpeningBalanceResult | null>(null);
 
+  const { data: currencies = [] } = useQuery({
+    queryKey: ['tenant', 'parties', 'currency-options'],
+    queryFn: loadPartyCurrencyOptions,
+    staleTime: 60_000,
+    enabled: open,
+  });
+
+  useEffect(() => {
+    if (!open || currencies.length === 0) return;
+    if (!currencies.some((c) => c.value === currencyCode)) {
+      setCurrencyCode(currencies[0]?.value || 'AED');
+    }
+  }, [open, currencies, currencyCode]);
+
   const mutation = useMutation({
     mutationFn: () => {
       const n = Number(amount);
+      const code = currencyCode.trim().toUpperCase();
       if (!partyId.trim()) throw new Error('Select a party.');
       if (!Number.isFinite(n) || n === 0) throw new Error('Enter a non-zero amount.');
       if (!date.trim()) throw new Error('Enter a transaction date.');
+      if (code.length < 3) throw new Error('Select a currency.');
       const dto = {
         party_id: partyId.trim(),
         amount: n,
-        currency: currency.trim().toUpperCase() || 'AED',
+        currency_code: code,
         date: date.trim(),
         create_manual_invoice: createInvoice,
         ...(linkCoa.trim() ? { link_coa: linkCoa.trim() } : {}),
@@ -131,12 +151,22 @@ export function PartyOpeningBalanceModal({
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
           />
-          <Input
-            label="Currency *"
-            value={currency}
-            onChange={(e) => setCurrency(e.target.value)}
-            maxLength={3}
-          />
+          <label className="space-y-1 text-xs font-medium text-[var(--color-neutral-500)]">
+            Currency *
+            <select
+              className={selectClass}
+              value={currencyCode}
+              onChange={(e) => setCurrencyCode(e.target.value)}
+              required
+            >
+              {currencies.length === 0 ? <option value="AED">AED</option> : null}
+              {currencies.map((c) => (
+                <option key={c.value} value={c.value}>
+                  {c.label}
+                </option>
+              ))}
+            </select>
+          </label>
           <Input
             label="Date *"
             type="date"

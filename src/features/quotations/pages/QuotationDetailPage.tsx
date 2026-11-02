@@ -21,6 +21,7 @@ import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
 import { Modal } from '@/components/ui/Modal';
 import { Button } from '@/components/ui/Button';
 import { erpForm } from '@/lib/erpForm';
+import { EntityHistoryList } from '@/features/shared/history/EntityHistoryList';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import { QuotationEmailModal } from '../components/QuotationEmailModal';
 import { QuotationLinesEditor } from '../components/QuotationLinesEditor';
@@ -1202,37 +1203,26 @@ export default function QuotationDetailPage() {
             key: 'history',
             label: 'History',
             content: (
-              <div className="space-y-2 text-sm">
-                {(quotation.status_history ?? []).length === 0 ? (
-                  <p className="text-[var(--color-neutral-400)]">No status history.</p>
-                ) : (
-                  (quotation.status_history ?? []).map((h, i) => {
-                    const actorName =
-                      h.changed_by_name ||
-                      h.performed_by_name ||
-                      (typeof h.actor === 'string'
-                        ? h.actor
-                        : h.actor && typeof h.actor === 'object'
-                          ? h.actor.name
-                          : undefined);
-                    return (
-                    <div
-                      key={h.id ?? i}
-                      className="rounded-md border border-[var(--color-neutral-200)] px-3 py-2"
-                    >
-                      <div className="font-medium">
-                        {h.from_status || '—'} → {h.to_status || h.status || '—'}
-                      </div>
-                      <div className="text-xs text-[var(--color-neutral-400)]">
-                        {h.created_at || ''}
-                        {actorName ? ` · ${actorName}` : ''}
-                        {h.comments ? ` · ${h.comments}` : ''}
-                      </div>
-                    </div>
-                    );
-                  })
-                )}
-              </div>
+              <EntityHistoryList
+                empty="No status history."
+                items={(quotation.status_history ?? []).map((h, i) => {
+                  const actorName =
+                    h.changed_by_name ||
+                    h.performed_by_name ||
+                    (typeof h.actor === 'string'
+                      ? h.actor
+                      : h.actor && typeof h.actor === 'object'
+                        ? h.actor.name
+                        : undefined);
+                  return {
+                    id: String(h.id ?? i),
+                    title: `${h.from_status || '—'} → ${h.to_status || h.status || '—'}`,
+                    subtitle: h.comments || undefined,
+                    when: h.created_at || undefined,
+                    actor: actorName || undefined,
+                  };
+                })}
+              />
             ),
           },
           {

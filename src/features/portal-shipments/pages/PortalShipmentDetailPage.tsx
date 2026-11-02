@@ -4,10 +4,9 @@ import { ArrowLeft, Download, Package, Scale, Box } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
-import { ApiDataView } from '@/features/jobs/components/ApiDataView';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
-import { normalizePublicTrack } from '@/features/public-track/utils/normalizePublicTrack';
+import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
 import {
   PortalAnimatedGrid,
   PortalAnimatedGridItem,
@@ -563,11 +562,8 @@ export default function PortalShipmentDetailPage() {
         <PortalPanel padded>
           <div
             id="portal-shipment-track-trace"
-            className="mb-3 flex items-center justify-between gap-2"
+            className="mb-4 flex items-center justify-end"
           >
-            <h2 className="text-sm font-semibold text-[var(--color-neutral-900)]">
-              Track &amp; Trace
-            </h2>
             <Button type="button" size="sm" variant="secondary" onClick={() => setShowTracking(false)}>
               Hide
             </Button>
@@ -579,16 +575,12 @@ export default function PortalShipmentDetailPage() {
               {getErrorMessage(trackingQuery.error, 'Could not load tracking.')}
             </p>
           ) : (
-            (() => {
-              const track = normalizePublicTrack(trackingQuery.data);
-              if (track) return <PublicTrackTimeline result={track} />;
-              return (
-                <ApiDataView
-                  data={trackingQuery.data ?? {}}
-                  emptyLabel="No tracking data returned."
-                />
-              );
-            })()
+            <PublicTrackTimeline
+              result={toTrackResult(
+                trackingQuery.data,
+                data?.reference || data?.jobNumber || id,
+              )}
+            />
           )}
         </PortalPanel>
       ) : null}

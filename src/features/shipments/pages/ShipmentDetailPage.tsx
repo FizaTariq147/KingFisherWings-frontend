@@ -50,6 +50,8 @@ import {
   ShipmentApiPayloadView,
   ShipmentTabPanel,
 } from '../components/ShipmentTabPanel';
+import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
+import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
 import { useShipmentPaths } from '../hooks/useShipmentPaths';
 import { useShipmentResolvedLabels } from '../hooks/useShipmentResolvedLabels';
 import {
@@ -1051,7 +1053,7 @@ export default function ShipmentDetailPage() {
                           Hide
                         </Button>
                       </div>
-                      <div className="px-3 py-2">
+                      <div className="px-5 py-6 sm:px-8">
                         {trackingQuery.isLoading ? (
                           <p className="text-[13px] text-[#64748b]">Loading tracking…</p>
                         ) : trackingQuery.isError ? (
@@ -1059,9 +1061,11 @@ export default function ShipmentDetailPage() {
                             {getErrorMessage(trackingQuery.error)}
                           </p>
                         ) : (
-                          <ShipmentApiPayloadView
-                            data={trackingQuery.data ?? {}}
-                            emptyMessage="No tracking data returned."
+                          <PublicTrackTimeline
+                            result={toTrackResult(
+                              trackingQuery.data,
+                              shipmentDisplayNumber(shipment) || id,
+                            )}
                           />
                         )}
                       </div>

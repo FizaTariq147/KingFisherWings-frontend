@@ -41,19 +41,14 @@ export const publicTrackService = {
    * Raw GET /track?ref=… (or GET /track/{ref} fallback) for staff panels that
    * render the API payload as-is.
    *
-   * OpenAPI: resolve tenant via `tenant_slug` or Host/domain. On localhost /
-   * Vite proxy, `tenant_slug` is required because Host is the API origin.
+   * OpenAPI: resolve tenant via Host / `x-tenant-domain`, optional `tenant_slug`
+   * (URL / subdomain / remembered login). Callers do not collect a username.
    */
   async trackRaw(tenantSlug: string | undefined, ref: string): Promise<unknown> {
     const reference = ref.trim();
     if (!reference) throw new Error('Reference is required.');
-    const slug = tenantSlug?.trim();
-    if (!slug) {
-      throw new Error(
-        'Username is required for Track & Trace when not on your company domain.',
-      );
-    }
-    const headers = buildPublicTrackHeaders();
+    const slug = tenantSlug?.trim() || undefined;
+    const headers = buildPublicTrackHeaders(slug);
     try {
       const res = await publicClient.get(PUBLIC_TRACK_API.track, {
         params: trackParams(slug, reference),
@@ -63,13 +58,16 @@ export const publicTrackService = {
     } catch (firstError) {
       try {
         const res = await publicClient.get(PUBLIC_TRACK_API.trackByRef(reference), {
-          params: { tenant_slug: slug },
+          params: slug ? { tenant_slug: slug } : undefined,
           headers,
         });
         return res.data;
       } catch {
         throw new Error(
-          getPublicTrackErrorMessage(firstError, 'Track lookup failed.'),
+          getPublicTrackErrorMessage(
+            firstError,
+            'Shipment not found for that reference. Check the job, shipment, container, or BL number.',
+          ),
         );
       }
     }
@@ -78,8 +76,12 @@ export const publicTrackService = {
   async track(tenantSlug: string | undefined, ref: string): Promise<PublicTrackResult> {
     try {
       const raw = await this.trackRaw(tenantSlug, ref);
-      const result = normalizePublicTrack(raw);
-      if (!result) throw new Error('Shipment not found for that reference.');
+      const result = normalizePublicTrack(raw, { fallbackRef: ref.trim() });
+      if (!result) {
+        throw new Error(
+          'Tracking data returned but could not be read. Ask ops if public track is enabled for this job.',
+        );
+      }
       return result;
     } catch (error) {
       throw new Error(
@@ -94,7 +96,7 @@ export const publicTrackService = {
     try {
       const res = await publicClient.get(PUBLIC_TRACK_API.embed, {
         params: tenantSlug?.trim() ? { tenant_slug: tenantSlug.trim() } : undefined,
-        headers: buildPublicTrackHeaders(),
+        headers: buildPublicTrackHeaders(tenantSlug),
       });
       const config = normalizeEmbedConfig(res.data);
       return {
