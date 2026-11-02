@@ -1,12 +1,13 @@
 import { Link } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
-import { RefreshCw } from 'lucide-react';
+import { FileMinus2, FilePlus2, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { CREDIT_NOTE_ROUTE_PREFIX } from '@/features/creditNotes/api/creditNote.api';
 import { DEBIT_NOTE_ROUTE_PREFIX } from '@/features/debitNotes/api/debitNote.api';
 import { INVOICE_ROUTE_PREFIX } from '@/features/invoices/api/invoice.api';
 import { isUuid } from '@/lib/isUuid';
+import { cn } from '@/lib/utils';
 import { useAuthStore } from '@/store/authStore';
 import { jobKeys } from '../../hooks/useJobs';
 import { jobService } from '../../services/job.service';
@@ -153,15 +154,23 @@ export function JobLedgerPanel({ jobId, partyId }: JobLedgerPanelProps) {
         <div className="flex flex-wrap items-center gap-2">
           <Link
             to={createCnHref}
-            className="text-xs font-medium text-[var(--color-primary-600)] underline"
+            className={cn(
+              'inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-semibold text-white shadow-sm',
+              'bg-emerald-600 hover:bg-emerald-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40',
+            )}
           >
-            New credit note
+            <FilePlus2 className="h-3.5 w-3.5" aria-hidden />
+            Credit note
           </Link>
           <Link
             to={createDnHref}
-            className="text-xs font-medium text-[var(--color-primary-600)] underline"
+            className={cn(
+              'inline-flex h-8 items-center gap-1.5 rounded-md px-3 text-xs font-semibold text-white shadow-sm',
+              'bg-violet-600 hover:bg-violet-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/40',
+            )}
           >
-            New debit note
+            <FileMinus2 className="h-3.5 w-3.5" aria-hidden />
+            Debit note
           </Link>
           <Button
             type="button"

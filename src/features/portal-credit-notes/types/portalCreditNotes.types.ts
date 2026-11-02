@@ -52,7 +52,6 @@ export interface PortalCreateDebitNoteDto {
   amount: number;
   currency_code?: string;
   remarks?: string;
-  description?: string;
   file?: File;
 }
 
