@@ -58,3 +58,18 @@ export function usePostDebitNote(id: string) {
     onSuccess: () => invalidate(id),
   });
 }
+
+export function useDownloadDebitNoteAttachment() {
+  return useMutation({
+    mutationFn: ({ id, name }: { id: string; name?: string }) =>
+      debitNoteService.downloadAttachment(id, name || 'debit-note-attachment'),
+  });
+}
+
+export function useUploadDebitNoteAttachment(id: string) {
+  const invalidate = useInvalidateDebitNotes();
+  return useMutation({
+    mutationFn: (file: File) => debitNoteService.uploadAttachment(id, file),
+    onSuccess: () => invalidate(id),
+  });
+}

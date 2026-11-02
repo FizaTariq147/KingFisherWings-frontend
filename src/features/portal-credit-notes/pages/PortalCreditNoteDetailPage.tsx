@@ -1,9 +1,13 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
-import { ArrowLeft, CreditCard, Download, Paperclip } from 'lucide-react';
+import { ArrowLeft, CreditCard, Download, Paperclip, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
+import {
+  ATTACHMENT_UPLOAD_OPTIONS,
+  handleValidatedFileInput,
+} from '@/lib/fileUploadValidation';
 import {
   isPortalOnlinePayAvailable,
   portalPaymentStatusBadgeVariant,
@@ -25,6 +29,7 @@ import {
   usePayPortalDebitNote,
   usePortalCreditNote,
   usePortalDebitNotePaymentStatus,
+  useUploadPortalDebitAttachment,
 } from '../hooks/usePortalCreditNotes';
 import type { PortalNoteKind } from '../services/portalCreditNotes.service';
 
@@ -43,11 +48,19 @@ export default function PortalCreditNoteDetailPage() {
   const { data, isLoading, isError, error, refetch } = usePortalCreditNote(id, kind);
   const download = useDownloadPortalCreditNotePdf();
   const downloadAttachment = useDownloadPortalDebitAttachment();
+  const uploadAttachment = useUploadPortalDebitAttachment(id);
   const stripeConfig = usePortalInvoiceStripeConfig();
   const payDebit = usePayPortalDebitNote(id);
+  const fileRef = useRef<HTMLInputElement>(null);
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [attachError, setAttachError] = useState<string | null>(null);
+  const [attachMsg, setAttachMsg] = useState<string | null>(null);
   const [payError, setPayError] = useState<string | null>(null);
   const [payStarted, setPayStarted] = useState(false);
+  const flash =
+    typeof (location.state as { flash?: unknown } | null)?.flash === 'string'
+      ? String((location.state as { flash?: string }).flash)
+      : null;
 
   const balanceDue = useMemo(() => {
     if (!data) return null;
@@ -204,6 +217,11 @@ export default function PortalCreditNoteDetailPage() {
           </div>
         }
       />
+      {flash ? (
+        <p className="text-sm text-[var(--color-success-700)]" role="status">
+          {flash}
+        </p>
+      ) : null}
       {pdfError ? (
         <p className="text-sm text-[var(--color-danger-600)]" role="alert">
           {pdfError}
@@ -245,6 +263,106 @@ export default function PortalCreditNoteDetailPage() {
       {data.remarks ? (
         <PortalPanel padded>
           <p className="text-sm">{data.remarks}</p>
+        </PortalPanel>
+      ) : null}
+      {kind === 'debit' ? (
+        <PortalPanel padded>
+          <h2 className="mb-1 text-sm font-semibold">Attachment</h2>
+          <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
+            Payment proof for this debit note. Staff can view the same file on the admin debit note
+            detail.
+          </p>
+          {attachError ? (
+            <p className="mb-2 text-sm text-[var(--color-danger-600)]" role="alert">
+              {attachError}
+            </p>
+          ) : null}
+          {attachMsg ? (
+            <p className="mb-2 text-sm text-[var(--color-success-700)]" role="status">
+              {attachMsg}
+            </p>
+          ) : null}
+          {data.hasAttachment ? (
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2 rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2">
+              <div className="min-w-0">
+                <p className="truncate text-sm font-medium">
+                  {data.attachmentName || 'Payment proof'}
+                </p>
+                <p className="text-[11px] text-[var(--color-neutral-500)]">Attached file</p>
+              </div>
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                disabled={downloadAttachment.isPending}
+                onClick={() => {
+                  setPdfError(null);
+                  setAttachError(null);
+                  void downloadAttachment
+                    .mutateAsync({
+                      id: data.id,
+                      name: data.attachmentName || 'debit-note-attachment',
+                    })
+                    .catch((err) => {
+                      setAttachError(
+                        err instanceof PortalApiError || err instanceof Error
+                          ? err.message
+                          : 'Could not download attachment.',
+                      );
+                    });
+                }}
+              >
+                <Download size={14} aria-hidden="true" />
+                {downloadAttachment.isPending ? 'Downloading…' : 'Download'}
+              </Button>
+            </div>
+          ) : (
+            <p className="mb-3 text-sm text-[var(--color-neutral-400)]">No file attached yet.</p>
+          )}
+          <input
+            ref={fileRef}
+            type="file"
+            className="hidden"
+            onChange={(e) => {
+              handleValidatedFileInput(
+                e.target.files,
+                (file) => {
+                  if (!file) return;
+                  setAttachError(null);
+                  setAttachMsg(null);
+                  void uploadAttachment
+                    .mutateAsync(file)
+                    .then(() => {
+                      setAttachMsg(`Uploaded “${file.name}”.`);
+                      void refetch();
+                    })
+                    .catch((err) => {
+                      setAttachError(
+                        err instanceof PortalApiError || err instanceof Error
+                          ? err.message
+                          : 'Could not upload attachment.',
+                      );
+                    });
+                },
+                undefined,
+                ATTACHMENT_UPLOAD_OPTIONS,
+              );
+            }}
+          />
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            disabled={uploadAttachment.isPending}
+            onClick={() => fileRef.current?.click()}
+          >
+            <Upload size={14} aria-hidden="true" />
+            {uploadAttachment.isPending
+              ? 'Uploading…'
+              : data.hasAttachment
+                ? 'Replace file'
+                : 'Upload file'}
+          </Button>
         </PortalPanel>
       ) : null}
       <PortalPanel padded>

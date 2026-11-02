@@ -110,6 +110,7 @@ export function normalizeCreditNoteListItem(
     hasAttachment: (() => {
       const flagged = pickBoolean(r.has_attachment, r.hasAttachment);
       if (flagged != null) return flagged;
+      const nested = asRecord(r.attachment) ?? asRecord(r.file);
       return Boolean(
         pickString(
           r.attachment_name,
@@ -118,6 +119,10 @@ export function normalizeCreditNoteListItem(
           r.attachmentUrl,
           r.file_name,
           r.fileName,
+          nested?.file_name,
+          nested?.fileName,
+          nested?.name,
+          nested?.url,
         ),
       );
     })(),
@@ -128,6 +133,9 @@ export function normalizeCreditNoteListItem(
         r.file_name,
         r.fileName,
         r.original_name,
+        asRecord(r.attachment)?.file_name,
+        asRecord(r.attachment)?.name,
+        asRecord(r.file)?.name,
       ) || undefined,
     kind,
   };

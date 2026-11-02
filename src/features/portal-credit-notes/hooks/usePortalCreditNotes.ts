@@ -112,3 +112,17 @@ export function useDownloadPortalDebitAttachment() {
       portalCreditNotesService.downloadDebitAttachment(id, name),
   });
 }
+
+export function useUploadPortalDebitAttachment(id: string) {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: (file: File) => portalCreditNotesService.uploadDebitAttachment(id, file),
+    onSuccess: (data) => {
+      void qc.invalidateQueries({ queryKey: portalCreditNoteKeys.all(scope, 'debit') });
+      if (data?.id) {
+        qc.setQueryData(portalCreditNoteKeys.detail(scope, 'debit', data.id), data);
+      }
+    },
+  });
+}

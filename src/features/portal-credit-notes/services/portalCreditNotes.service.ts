@@ -227,9 +227,24 @@ export const portalCreditNotesService = {
           {},
           dto.file,
         );
-        detail = { ...detail, hasAttachment: true, attachmentName: dto.file.name };
-      } catch {
-        /* note created; attachment optional if endpoint not ready */
+        try {
+          const refreshed = await this.getById(detail.id, 'debit');
+          detail = {
+            ...refreshed,
+            hasAttachment: true,
+            attachmentName: refreshed.attachmentName || dto.file.name,
+          };
+        } catch {
+          detail = { ...detail, hasAttachment: true, attachmentName: dto.file.name };
+        }
+      } catch (err) {
+        const reason =
+          err instanceof PortalApiError || err instanceof Error
+            ? err.message
+            : 'Attachment upload failed.';
+        throw new Error(
+          `Debit note ${detail.number} was created, but the file could not be attached (${reason}). Open the note and upload again.`,
+        );
       }
     }
     return detail;
@@ -244,6 +259,29 @@ export const portalCreditNotesService = {
       safeDownloadFilename(fallbackName, 'debit-note-attachment'),
       { accept: 'application/octet-stream, */*' },
     );
+  },
+
+  /** POST /portal/debit-notes/:id/attachment — attach / replace payment proof. */
+  async uploadDebitAttachment(id: string, file: File): Promise<PortalCreditNoteDetail> {
+    if (!isUuid(id)) throw new Error('Invalid debit note.');
+    await postPortalWithOptionalFile(PORTAL_DEBIT_NOTES_API.attachment(id), {}, file);
+    try {
+      const refreshed = await this.getById(id, 'debit');
+      return {
+        ...refreshed,
+        hasAttachment: true,
+        attachmentName: refreshed.attachmentName || file.name,
+      };
+    } catch {
+      return {
+        id,
+        number: id.slice(0, 8).toUpperCase(),
+        lines: [],
+        kind: 'debit',
+        hasAttachment: true,
+        attachmentName: file.name,
+      };
+    }
   },
 
   /** POST /portal/debit-notes/:id/pay — start online payment for an admin-issued DN. */

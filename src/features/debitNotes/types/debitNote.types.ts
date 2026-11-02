@@ -59,6 +59,9 @@ export interface DebitNote {
   updated_at?: string;
   created_by?: string;
   lines?: DebitNoteLine[];
+  /** Customer / staff payment-proof file on the debit note itself. */
+  has_attachment?: boolean;
+  attachment_name?: string;
 }
 
 export type CreateDebitNoteDto = CreateDebitNoteFormValues;
