@@ -256,6 +256,11 @@ export default function JobDetailPage() {
                 trackingQuery.data?.data ?? trackingQuery.data,
                 job?.job_number || job?.id,
               )}
+              pdfSource={
+                job?.id
+                  ? { kind: 'job', jobId: job.id }
+                  : undefined
+              }
             />
           )}
         </div>

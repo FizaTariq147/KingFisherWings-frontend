@@ -50,6 +50,14 @@ function pickVisibleJobTypesFromRecord(
     .filter(Boolean)
 }
 
+function pickUnrestrictedOpsFromRecord(
+  record: Record<string, unknown>,
+): boolean | undefined {
+  if (typeof record.unrestricted_ops === 'boolean') return record.unrestricted_ops
+  if (typeof record.unrestrictedOps === 'boolean') return record.unrestrictedOps
+  return undefined
+}
+
 function parseMeAccess(raw: unknown): MeMatrixGrant['access'] | null {
   if (typeof raw !== 'string') return null
   const v = raw.trim().toLowerCase()
@@ -384,6 +392,7 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
   const warehouseFromMe = pickWarehouseSummariesFromMe(record)
   const enabledModules = pickEnabledModulesFromRecord(record)
   const visibleJobTypes = pickVisibleJobTypesFromRecord(record)
+  const unrestrictedOps = pickUnrestrictedOpsFromRecord(record)
 
   return {
     id: id || email,
@@ -399,6 +408,7 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     ...(matrixFromMe.summary.length ? { permissionMatrix: matrixFromMe.summary } : {}),
     ...(enabledModules ? { enabledModules } : {}),
     ...(visibleJobTypes !== undefined ? { visibleJobTypes } : {}),
+    ...(unrestrictedOps !== undefined ? { unrestrictedOps } : {}),
   }
 }
 

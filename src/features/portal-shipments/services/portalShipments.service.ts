@@ -71,6 +71,16 @@ export const portalShipmentsService = {
     return unwrapData(res.data) ?? res.data;
   },
 
+  /** GET /portal/shipments/:id/tracking/pdf — live Track & Trace PDF. */
+  async downloadTrackingPdf(id: string, container?: string): Promise<Blob> {
+    const res = await portalApiClient.get<Blob>(PORTAL_SHIPMENTS_API.trackingPdf(id), {
+      params: container?.trim() ? { container: container.trim() } : undefined,
+      responseType: 'blob',
+      headers: { Accept: 'application/pdf, application/octet-stream, */*' },
+    });
+    return res.data;
+  },
+
   /**
    * Same-page Track & Trace for the customer portal.
    * 1. GET /portal/shipments/lookup?ref=…

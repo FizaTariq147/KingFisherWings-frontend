@@ -8,9 +8,16 @@ import {
   Truck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { appType } from '@/lib/erpTypography';
 import { cn } from '@/lib/utils';
 import type { PublicTrackMilestone, PublicTrackResult } from '../types/publicTrack.types';
+
+/** Prefer server PDF endpoints; fall back to client HTML print. */
+export type PublicTrackPdfSource =
+  | { kind: 'public'; ref: string; tenantSlug?: string }
+  | { kind: 'job'; jobId: string; container?: string }
+  | { kind: 'portal'; shipmentId: string; container?: string };
 
 /** Reference palette (rail / badges) — title uses system appType */
 const C = {
@@ -96,8 +103,37 @@ function buildTrackPrintHtml(result: PublicTrackResult, status: string): string 
     </body></html>`;
 }
 
+async function downloadServerPdf(
+  source: PublicTrackPdfSource,
+  fallbackName: string,
+): Promise<boolean> {
+  try {
+    let blob: Blob;
+    if (source.kind === 'public') {
+      const { publicTrackService } = await import('../services/publicTrack.service');
+      blob = await publicTrackService.downloadPdf(source.ref, source.tenantSlug);
+    } else if (source.kind === 'job') {
+      const { jobService } = await import('@/features/jobs/services/job.service');
+      blob = await jobService.downloadTrackingPdf(source.jobId, source.container);
+    } else {
+      const { portalShipmentsService } = await import(
+        '@/features/portal-shipments/services/portalShipments.service'
+      );
+      blob = await portalShipmentsService.downloadTrackingPdf(
+        source.shipmentId,
+        source.container,
+      );
+    }
+    const name = `${fallbackName.replace(/[^\w.-]+/g, '_') || 'tracking'}.pdf`;
+    triggerBlobDownload(blob, name);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /** Print via hidden iframe — avoids popup blockers that break window.open(). */
-function exportPdf(result: PublicTrackResult, status: string) {
+function exportPdfClient(result: PublicTrackResult, status: string) {
   const html = buildTrackPrintHtml(result, status);
 
   const cleanupExisting = document.getElementById('track-export-print-frame');
@@ -171,14 +207,18 @@ export function PublicTrackTimeline({
   result,
   onNewSearch,
   className,
+  pdfSource,
 }: {
   result: PublicTrackResult;
   onNewSearch?: () => void;
   className?: string;
+  /** Server PDF: /track/pdf, /jobs/:id/tracking/pdf, or portal tracking/pdf. */
+  pdfSource?: PublicTrackPdfSource;
   /** @deprecated Ignored — same chrome everywhere. */
   compact?: boolean;
 }) {
   const [showPrevious, setShowPrevious] = useState(false);
+  const [pdfPending, setPdfPending] = useState(false);
 
   const status = formatStatusLabel(result.currentStatus || result.status);
   const legs = result.progressLegs ?? [];
@@ -190,6 +230,34 @@ export function PublicTrackTimeline({
   }, [history]);
 
   const visibleRows = showPrevious ? history : latest;
+
+  const handleExportPdf = async () => {
+    setPdfPending(true);
+    try {
+      const source: PublicTrackPdfSource | undefined =
+        pdfSource ??
+        (result.reference
+          ? { kind: 'public', ref: result.reference }
+          : undefined);
+      if (source) {
+        const resolved: PublicTrackPdfSource =
+          source.kind === 'job' || source.kind === 'portal'
+            ? {
+                ...source,
+                container: source.container || result.containerNumber,
+              }
+            : source;
+        const ok = await downloadServerPdf(
+          resolved,
+          `tracking-${result.reference || result.containerNumber || 'export'}`,
+        );
+        if (ok) return;
+      }
+      exportPdfClient(result, status);
+    } finally {
+      setPdfPending(false);
+    }
+  };
 
   return (
     <div className={cn('w-full bg-white text-[#1E293B]', className)}>
@@ -268,10 +336,11 @@ export function PublicTrackTimeline({
 
         <Button
           type="button"
-          onClick={() => exportPdf(result, status)}
+          disabled={pdfPending}
+          onClick={() => void handleExportPdf()}
           className="h-10 shrink-0 px-5"
         >
-          Export PDF
+          {pdfPending ? 'Exporting…' : 'Export PDF'}
         </Button>
       </div>
 

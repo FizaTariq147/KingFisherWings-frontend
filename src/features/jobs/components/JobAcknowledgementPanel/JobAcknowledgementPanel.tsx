@@ -113,9 +113,9 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
         {query.isLoading ? (
           <p className="text-[var(--color-neutral-400)]">Loading acknowledgement…</p>
         ) : null}
-        {query.isError ? (
+        {query.isError || (!query.isLoading && !ack) ? (
           <p className="text-[var(--color-neutral-500)]">
-            No acknowledgement yet — customer submits from the portal when goods are delivered.
+            No acknowledgement yet — send one to the customer (they confirm receipt in the portal).
           </p>
         ) : null}
         {ack ? (

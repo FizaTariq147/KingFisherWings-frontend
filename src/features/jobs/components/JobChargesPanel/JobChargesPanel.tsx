@@ -1141,8 +1141,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       setAddTab('charge');
       return;
     }
-    const chargeOpt = chargeCodeOpts.find((c) => c.id === chargeCodeId.trim());
-    // Description is independent of charge master name (OpenAPI ChargeSectionDto).
+    // Description is free text — independent of charge-code master name/code.
     const desc = description.trim();
     if (!desc) {
       setError('Description is required on the Charge tab (independent of charge code name).');
@@ -1159,12 +1158,10 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     }
 
     const sQty = saleQty === '' ? qty : Number(saleQty);
-    // charge_code / charge_code_name are echo-only (ignored by BE); description is authoritative.
+    // API rejects charge_code / charge_code_name on composite create — send UUID + description only.
     const dto: CreateJobChargesCompositeDto = {
       charge: {
         charge_code_id: chargeCodeId.trim(),
-        ...(chargeOpt?.code ? { charge_code: chargeOpt.code } : {}),
-        ...(chargeOpt?.name ? { charge_code_name: chargeOpt.name } : {}),
         description: desc,
         quantity: Number.isFinite(qty) ? qty : 1,
         ...(unit.trim() ? { unit: unit.trim() } : {}),

@@ -1287,13 +1287,13 @@ export interface ChargeSectionDto {
   line_no?: number;
   /** Required master charge UUID. */
   charge_code_id: string;
-  /** Echo-only; not persisted. Prefer charge_code_id. */
+  /** Do not send on create — live API rejects this field. Read responses only. */
   charge_code?: string;
-  /** Echo-only master name; ignored. Use `description` for the line narrative. */
+  /** Do not send on create — use `description` for the line narrative. */
   charge_code_name?: string;
   unit?: string;
   remarks?: string;
-  /** Free-text line description — independent of charge_code_name. */
+  /** Free-text line description — independent of charge-code master name. */
   description: string;
   quantity?: number;
   pp_cc?: 'PP' | 'CC';
@@ -1458,6 +1458,12 @@ export interface PatchShowAllDto {
   line_code?: string | null;
   /** Alias for line_code. */
   line_no?: string | null;
+  /** Depot / terminal / location — appears on track & trace history. */
+  location_terminal?: string | null;
+  /** Alias for location_terminal. */
+  terminal?: string | null;
+  /** Alias for location_terminal. */
+  location?: string | null;
   /** EDI / CSDP company code. */
   company_code?: string | null;
   origin_port_name?: string | null;

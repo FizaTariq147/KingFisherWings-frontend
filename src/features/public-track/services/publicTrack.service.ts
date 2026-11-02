@@ -92,6 +92,30 @@ export const publicTrackService = {
     }
   },
 
+  /**
+   * GET /track/pdf?ref=… — server PDF. Ref only (container / BL / AWB); tenant_slug optional.
+   */
+  async downloadPdf(ref: string, tenantSlug?: string): Promise<Blob> {
+    const reference = ref.trim();
+    if (!reference) throw new Error('Reference is required.');
+    const slug = tenantSlug?.trim() || undefined;
+    try {
+      const res = await publicClient.get<Blob>(PUBLIC_TRACK_API.trackPdf, {
+        params: trackParams(slug, reference),
+        headers: {
+          ...buildPublicTrackHeaders(slug),
+          Accept: 'application/pdf, application/octet-stream, */*',
+        },
+        responseType: 'blob',
+      });
+      return res.data;
+    } catch (error) {
+      throw new Error(
+        getPublicTrackErrorMessage(error, 'Could not download track PDF.'),
+      );
+    }
+  },
+
   async embed(tenantSlug?: string): Promise<PublicTrackEmbedConfig> {
     try {
       const res = await publicClient.get(PUBLIC_TRACK_API.embed, {

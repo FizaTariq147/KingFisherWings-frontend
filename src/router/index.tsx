@@ -516,7 +516,8 @@ export const router = createBrowserRouter([
           {
             element: (
               <ProtectedRoute
-                requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]}
+                requirePermissions={['menu_customers']}
+                requireEnabledModule="support"
               />
             ),
             children: [
@@ -525,6 +526,15 @@ export const router = createBrowserRouter([
               { path: '/parties/:id', element: <PartyDetailPage /> },
               { path: '/parties/:id/edit', element: <PartyEditPage /> },
               { path: '/parties/:id/transaction-summary', element: <PartyTransactionSummaryPage /> },
+            ],
+          },
+          {
+            element: (
+              <ProtectedRoute
+                requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]}
+              />
+            ),
+            children: [
               {
                 path: '/organization',
                 element: <OrganizationShell />,

@@ -135,6 +135,11 @@ export default function PortalTrackPage() {
           >
             <PublicTrackTimeline
               result={toTrackResult(result.data, result.reference)}
+              pdfSource={
+                result.kind === 'shipment'
+                  ? { kind: 'portal', shipmentId: result.id }
+                  : { kind: 'public', ref: result.reference }
+              }
               onNewSearch={() => {
                 setResult(null);
                 setError(null);

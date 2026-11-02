@@ -33,6 +33,8 @@ export const JOB_API = {
     `/jobs/${id}/detail/${encodeURIComponent(tab)}`,
   /** GET /jobs/:id/tracking — current status, progress, full history */
   tracking: (id: string) => `/jobs/${id}/tracking`,
+  /** GET /jobs/:id/tracking/pdf — Track & Trace PDF (live data) */
+  trackingPdf: (id: string) => `/jobs/${id}/tracking/pdf`,
   changeStatus: (id: string) => `/jobs/${id}/change-status`,
   reopen: (id: string) => `/jobs/${id}/reopen`,
   stop: (id: string) => `/jobs/${id}/stop`,

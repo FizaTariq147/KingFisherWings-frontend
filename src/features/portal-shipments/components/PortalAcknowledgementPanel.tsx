@@ -230,7 +230,8 @@ export function PortalAcknowledgementPanel({
         </Badge>
       </div>
       <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
-        Confirm receipt of goods. Staff will mark the acknowledgement as received.
+        Confirm receipt of the acknowledgement sent by staff. Pick a container when more than one
+        applies. Staff will then mark it as received.
       </p>
       {error ? <p className="mb-2 text-sm text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="mb-2 text-sm text-[var(--color-success-700)]">{msg}</p> : null}

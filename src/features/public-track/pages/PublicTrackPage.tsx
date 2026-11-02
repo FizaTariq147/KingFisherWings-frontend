@@ -131,6 +131,11 @@ export default function PublicTrackPage() {
         {result ? (
           <PublicTrackTimeline
             result={result}
+            pdfSource={{
+              kind: 'public',
+              ref: result.reference || ref.trim(),
+              tenantSlug: resolvedTenant,
+            }}
             onNewSearch={() => {
               closeModal();
               setResult(null);

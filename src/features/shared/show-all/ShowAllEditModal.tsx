@@ -38,6 +38,12 @@ const FIELD_DEFS: Array<{
   { key: 'voyage_number', label: 'Voyage number', kind: 'text', group: 'Ops / EDI' },
   { key: 'line_code', label: 'Line code', kind: 'text', group: 'Ops / EDI' },
   { key: 'line_no', label: 'Line no', kind: 'text', group: 'Ops / EDI' },
+  {
+    key: 'location_terminal',
+    label: 'Location / terminal',
+    kind: 'text',
+    group: 'Ops / EDI',
+  },
   { key: 'company_code', label: 'Company code (EDI)', kind: 'text', group: 'Ops / EDI' },
   { key: 'origin_port_name', label: 'Origin port name', kind: 'text', group: 'Ports' },
   { key: 'origin_port_code', label: 'Origin port code', kind: 'text', group: 'Ports' },

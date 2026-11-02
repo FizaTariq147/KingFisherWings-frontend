@@ -924,7 +924,10 @@ function InteractiveTabBody({
         <p className="text-[12px] text-[#64748b]">
           {key === 'planned_container' ? 'Planned containers' : 'Actual containers'}
         </p>
-        <JobContainersPanel jobId={job.id} />
+        <JobContainersPanel
+          jobId={job.id}
+          containerKind={key === 'actual_container' ? 'ACTUAL' : 'PLANNED'}
+        />
       </div>
     );
   }

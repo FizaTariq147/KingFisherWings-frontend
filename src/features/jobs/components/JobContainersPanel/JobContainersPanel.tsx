@@ -41,6 +41,8 @@ import { ApiDataView } from '../ApiDataView';
 
 interface JobContainersPanelProps {
   jobId: string;
+  /** When set from Planned/Actual detail tabs — sent on create. */
+  containerKind?: 'PLANNED' | 'ACTUAL';
 }
 
 function formatUpdatedAt(value?: string): string {
@@ -50,7 +52,10 @@ function formatUpdatedAt(value?: string): string {
   return new Date(t).toLocaleString();
 }
 
-export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
+export function JobContainersPanel({
+  jobId,
+  containerKind = 'ACTUAL',
+}: JobContainersPanelProps) {
   const { data: containers = [], refetch } = useJobContainers(jobId);
   const { data: fill = [], refetch: refetchFill } = useJobContainersFill(jobId);
   const { data: cargo = [] } = useJobCargo(jobId);
@@ -144,6 +149,7 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
     const typeCode = String(
       typeRow?.code ?? typeRow?.size ?? typeRow?.iso_size ?? '',
     ).trim();
+    const number = containerNumber.trim();
     const ok = await addValidation.runValidated(
       createJobContainerSchema,
       {
@@ -151,7 +157,8 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         ...(typeCode
           ? { container_type_code: typeCode, iso_size: typeCode }
           : { container_type_id: containerTypeId.trim() || undefined }),
-        container_number: containerNumber.trim() || undefined,
+        container_kind: containerKind,
+        container_number: number || undefined,
         seal_number: sealNumber.trim() || undefined,
         status,
         cubic_capacity:
@@ -167,7 +174,11 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
         setStatus('EMPTY');
         setAddCubicCapacity('');
         setAddMaxPayload('');
-        setMsg('Container added.');
+        setMsg(
+          containerKind === 'ACTUAL' && number
+            ? 'ACTUAL container added — a linked shipment may be auto-created when numbered.'
+            : 'Container added.',
+        );
         await Promise.all([refetch(), refetchFill()]);
       },
     );
