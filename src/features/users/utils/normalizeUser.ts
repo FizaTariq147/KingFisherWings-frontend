@@ -56,6 +56,31 @@ export function normalizeUser(raw: Record<string, unknown>): User {
         ? raw.unrestrictedOps
         : undefined;
 
+  const pickStr = (...keys: string[]): string | undefined => {
+    for (const key of keys) {
+      const v = raw[key];
+      if (typeof v === 'string' && v.trim()) return v.trim();
+    }
+    return undefined;
+  };
+
+  const tenantObj =
+    raw.tenant && typeof raw.tenant === 'object' && !Array.isArray(raw.tenant)
+      ? (raw.tenant as Record<string, unknown>)
+      : null;
+  const companyObj =
+    raw.company && typeof raw.company === 'object' && !Array.isArray(raw.company)
+      ? (raw.company as Record<string, unknown>)
+      : null;
+  const branchObj =
+    raw.branch && typeof raw.branch === 'object' && !Array.isArray(raw.branch)
+      ? (raw.branch as Record<string, unknown>)
+      : null;
+  const departmentObj =
+    raw.department && typeof raw.department === 'object' && !Array.isArray(raw.department)
+      ? (raw.department as Record<string, unknown>)
+      : null;
+
   return {
     ...BOOLEAN_DEFAULTS,
     ...(raw as unknown as User),
@@ -68,6 +93,31 @@ export function normalizeUser(raw: Record<string, unknown>): User {
     max_concurrent_sessions:
       typeof raw.max_concurrent_sessions === 'number' ? raw.max_concurrent_sessions : 3,
     deleted_at: deletedAt,
+    tenant_name:
+      pickStr('tenant_name', 'tenantName', 'tenant_display_name') ||
+      (tenantObj
+        ? [
+            tenantObj.display_name,
+            tenantObj.displayName,
+            tenantObj.name,
+            tenantObj.code,
+          ].find((v): v is string => typeof v === 'string' && Boolean(v.trim()))?.trim()
+        : undefined),
+    company_name:
+      pickStr('company_name', 'companyName') ||
+      (typeof companyObj?.name === 'string' && companyObj.name.trim()
+        ? companyObj.name.trim()
+        : undefined),
+    branch_name:
+      pickStr('branch_name', 'branchName') ||
+      (typeof branchObj?.name === 'string' && branchObj.name.trim()
+        ? branchObj.name.trim()
+        : undefined),
+    department_name:
+      pickStr('department_name', 'departmentName') ||
+      (typeof departmentObj?.name === 'string' && departmentObj.name.trim()
+        ? departmentObj.name.trim()
+        : undefined),
     ...(visibleJobTypes !== undefined ? { visible_job_types: visibleJobTypes } : {}),
     ...(unrestrictedOps !== undefined ? { unrestricted_ops: unrestrictedOps } : {}),
   };

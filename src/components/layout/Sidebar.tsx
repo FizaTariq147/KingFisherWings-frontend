@@ -43,6 +43,10 @@ import {
   resolveAuthRoleSlug,
   TENANT_USER_MANAGER_ROLE_SLUGS,
 } from '@/features/users/constants/userPermissions';
+import {
+  hasAnyOpsMatrixGrant,
+  hasMatrixSubmoduleAccess,
+} from '@/features/users/utils/matrixPermissionAccess';
 import { DEPARTMENT_NAV } from '@/features/jobs/config/departmentNav';
 import type { PermissionKey } from '@/types/auth.types';
 import { useShellLogout } from './useShellLogout';
@@ -64,6 +68,11 @@ interface NavItem {
    * Checked against JWT keys like `wms_module.see` — not hardcoded role lists.
    */
   matrixModule?: string;
+  /**
+   * Ops department submodule (e.g. `air_export`) — requires
+   * `operations_air_export.see`, not any `operations_*` grant.
+   */
+  matrixSubmodule?: string;
   /**
    * Alternate Super Admin `enabled_modules` keys — item shows if any key is enabled
    * (e.g. Shipments when either `shipments` or legacy `operations` is on).
@@ -370,31 +379,40 @@ const DEPT_PERMISSION: Record<
     permission: PermissionKey;
     permissionAny?: PermissionKey[];
     matrixModule?: string;
+    /** Specific ops submodule — Air Export must not unlock Sea / Road / Customs. */
+    matrixSubmodule?: string;
   }
 > = {
-  'air-export': { permission: 'menu_jobs_air_export', matrixModule: 'operations' },
-  'air-import': { permission: 'menu_jobs_air_export', matrixModule: 'operations' },
-  'sea-export': { permission: 'menu_jobs_sea_export', matrixModule: 'operations' },
-  'sea-import': { permission: 'menu_jobs_sea_import', matrixModule: 'operations' },
+  'air-export': {
+    permission: 'menu_jobs_air_export',
+    matrixModule: 'operations',
+    matrixSubmodule: 'air_export',
+  },
+  'air-import': {
+    permission: 'menu_jobs_air_export',
+    matrixModule: 'operations',
+    matrixSubmodule: 'air_import',
+  },
+  'sea-export': {
+    permission: 'menu_jobs_sea_export',
+    matrixModule: 'operations',
+    matrixSubmodule: 'sea_export',
+  },
+  'sea-import': {
+    permission: 'menu_jobs_sea_import',
+    matrixModule: 'operations',
+    matrixSubmodule: 'sea_import',
+  },
   'road-freight': {
     permission: 'menu_jobs_air_export',
-    permissionAny: [
-      'menu_jobs_air_export',
-      'menu_jobs_sea_export',
-      'menu_jobs_sea_import',
-      'menu_documentation',
-    ],
     matrixModule: 'operations',
+    matrixSubmodule: 'road_freight',
   },
   'customs-clearance': {
-    permission: 'menu_jobs_air_export',
-    permissionAny: [
-      'menu_jobs_air_export',
-      'menu_jobs_sea_export',
-      'menu_jobs_sea_import',
-      'menu_documentation',
-    ],
+    permission: 'menu_documentation',
+    permissionAny: ['menu_documentation'],
     matrixModule: 'operations',
+    matrixSubmodule: 'customs_clearance',
   },
   nvocc: { permission: 'menu_nvocc', matrixModule: 'nvocc' },
 };
@@ -409,6 +427,7 @@ const DEPARTMENT_NAV_ITEMS: NavItem[] = DEPARTMENT_NAV.map((dept) => {
     permission: perm?.permission ?? 'menu_jobs_air_export',
     permissionAny: perm?.permissionAny,
     matrixModule: perm?.matrixModule,
+    matrixSubmodule: perm?.matrixSubmodule,
     activePrefix: dept.hubPath,
     deptKey: dept.useNativeMenu ? undefined : dept.key,
     jobsPath: dept.useNativeMenu ? undefined : dept.jobsPath,
@@ -690,6 +709,24 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
           return false;
         }
         if (isTenantAdmin) return true;
+
+        // Ops departments: require the specific submodule (air_export / air_import / …).
+        // Do NOT treat any `operations_*` grant as access to every department.
+        if (item.matrixModule && item.matrixSubmodule) {
+          const perms = authCtx?.user?.permissions ?? [];
+          if (hasMatrixSubmoduleAccess(perms, item.matrixModule, item.matrixSubmodule, 'see')) {
+            return true;
+          }
+          // Legacy staff (no ops matrix keys at all) — fall back to coarse menu_* only.
+          if (!hasAnyOpsMatrixGrant(perms)) {
+            if (item.permissionAny?.length) {
+              return item.permissionAny.some((p) => authCtx?.hasPermission(p) ?? false);
+            }
+            if (item.permission) return authCtx?.hasPermission(item.permission) ?? false;
+          }
+          return false;
+        }
+
         if (item.matrixModule) {
           if (authCtx?.hasMatrixModule(item.matrixModule, 'see')) return true;
         }

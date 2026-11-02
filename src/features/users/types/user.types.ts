@@ -41,6 +41,8 @@ export interface UserSecurity {
 export interface User extends UserFlags, UserVisibility, UserSecurity {
   id: string;
   tenant_id: string;
+  /** Display label when API embeds tenant (else resolve via organization profile). */
+  tenant_name?: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -48,8 +50,11 @@ export interface User extends UserFlags, UserVisibility, UserSecurity {
   phone?: string;
   avatar_url?: string;
   company_id?: string;
+  company_name?: string;
   branch_id?: string;
+  branch_name?: string;
   department_id?: string;
+  department_name?: string;
   role: UserRole;
   status: UserStatus;
   role_ids?: string[];

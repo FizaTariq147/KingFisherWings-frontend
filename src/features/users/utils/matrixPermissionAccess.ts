@@ -17,6 +17,12 @@ export type MatrixAccessLevel = 'see' | 'read' | 'write';
 
 const GRANT_FLAGS = new Set(['see', 'read', 'write', 'view', 'manage']);
 
+function levelsAtLeast(level: MatrixAccessLevel): MatrixAccessLevel[] {
+  if (level === 'write') return ['write'];
+  if (level === 'read') return ['read', 'write'];
+  return ['see', 'read', 'write'];
+}
+
 function addOpsJobMenus(keys: Set<PermissionKey>, sub: string) {
   if (!sub || sub === 'module') {
     keys.add('menu_jobs_air_export');
@@ -25,6 +31,7 @@ function addOpsJobMenus(keys: Set<PermissionKey>, sub: string) {
     keys.add('menu_documentation');
     return;
   }
+  // Air export / import share the air jobs route group (no separate menu_jobs_air_import yet).
   if (sub.includes('air')) keys.add('menu_jobs_air_export');
   if (sub.includes('sea_export') || sub.includes('fcl_export') || sub.includes('lcl_export')) {
     keys.add('menu_jobs_sea_export');
@@ -32,18 +39,90 @@ function addOpsJobMenus(keys: Set<PermissionKey>, sub: string) {
   if (sub.includes('sea_import') || sub.includes('fcl_import') || sub.includes('lcl_import')) {
     keys.add('menu_jobs_sea_import');
   }
-  // road_freight / land / courier / customs share the ops job route group
-  if (
-    sub.includes('road') ||
-    sub.includes('land') ||
-    sub.includes('courier') ||
-    sub.includes('customs')
-  ) {
+  // Road / land / courier — do NOT unlock sea or paint every ops department.
+  if (sub.includes('road') || sub.includes('land') || sub.includes('courier')) {
     keys.add('menu_jobs_air_export');
-    keys.add('menu_jobs_sea_export');
-    keys.add('menu_jobs_sea_import');
+  }
+  // Customs clearance department — documentation + air route group only.
+  if (sub.includes('customs')) {
+    keys.add('menu_jobs_air_export');
+    keys.add('menu_documentation');
   }
   if (sub.includes('doc')) keys.add('menu_documentation');
+}
+
+function flagSatisfies(flag: string, level: MatrixAccessLevel): boolean {
+  const accepted = new Set(levelsAtLeast(level));
+  if (flag === 'manage') return true;
+  if (flag === 'view' && (level === 'see' || level === 'read')) return true;
+  if (flag === 'see' || flag === 'read' || flag === 'write') {
+    if (accepted.has(flag)) return true;
+    if (level === 'see') return true;
+    if (level === 'read' && (flag === 'read' || flag === 'write')) return true;
+  }
+  return false;
+}
+
+/**
+ * True when JWT/matrix permissions grant a specific submodule
+ * (e.g. operations + air_export → `operations_air_export.see`).
+ * Module-level `operations_module.*` / `operations.*` still unlocks every submodule.
+ */
+export function hasMatrixSubmoduleAccess(
+  permissions: readonly string[],
+  moduleKey: string,
+  submodule: string,
+  level: MatrixAccessLevel = 'see',
+): boolean {
+  const mod = moduleKey.trim().toLowerCase();
+  const sub = submodule.trim().toLowerCase().replace(/-/g, '_');
+  if (!mod || !sub || permissions.length === 0) return false;
+
+  const aliases = new Set<string>([sub]);
+  // Common catalog variants for air departments.
+  if (sub === 'air_export' || sub === 'airexport') {
+    aliases.add('air_export');
+    aliases.add('air_export_operations');
+  }
+  if (sub === 'air_import' || sub === 'airimport') {
+    aliases.add('air_import');
+    aliases.add('air_import_operations');
+  }
+  if (sub === 'sea_export') aliases.add('sea_fcl_export');
+  if (sub === 'sea_import') aliases.add('sea_fcl_import');
+  if (sub === 'road_freight') {
+    aliases.add('road');
+    aliases.add('land');
+  }
+  if (sub === 'customs_clearance') aliases.add('customs');
+
+  const prefixes = new Set<string>([`${mod}_module`, mod]);
+  for (const alias of aliases) {
+    prefixes.add(`${mod}_${alias}`);
+  }
+
+  for (const raw of permissions) {
+    if (typeof raw !== 'string' || !raw.trim()) continue;
+    const key = raw.trim().toLowerCase();
+    const dot = key.lastIndexOf('.');
+    if (dot <= 0) continue;
+    const prefix = key.slice(0, dot);
+    const flag = key.slice(dot + 1);
+    if (!prefixes.has(prefix)) continue;
+    if (flagSatisfies(flag, level)) return true;
+  }
+
+  return false;
+}
+
+/** True when any `operations_*` / `operations.*` matrix grant exists — used for legacy fallbacks. */
+export function hasAnyOpsMatrixGrant(permissions: readonly string[]): boolean {
+  for (const raw of permissions) {
+    if (typeof raw !== 'string' || !raw.trim()) continue;
+    const key = raw.trim().toLowerCase();
+    if (key.startsWith('operations_') || key.startsWith('operations.')) return true;
+  }
+  return false;
 }
 
 /**
@@ -155,12 +234,6 @@ export function menuKeysFromMatrixPermissions(
   }
 
   return [...keys];
-}
-
-function levelsAtLeast(level: MatrixAccessLevel): MatrixAccessLevel[] {
-  if (level === 'write') return ['write'];
-  if (level === 'read') return ['read', 'write'];
-  return ['see', 'read', 'write'];
 }
 
 /** True when JWT/matrix permissions grant the module at the requested level. */

@@ -264,7 +264,9 @@ export default function UserDetailPage() {
           {
             key: 'overview',
             label: 'Overview',
-            content: <UserOverviewPanel user={user} />,
+            content: (
+              <UserOverviewPanel user={user} tenantId={tenantId || undefined} />
+            ),
           },
           {
             key: 'permissions',

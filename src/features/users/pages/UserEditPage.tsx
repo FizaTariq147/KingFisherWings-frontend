@@ -2,6 +2,7 @@ import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { AlertCircle } from 'lucide-react';
 import { FormPageHeader } from '@/components/ui/FormPageHeader';
+import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
 import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import { UserForm } from '../components/UserForm';
 import { UserDetailSkeleton } from '../components/UserDetailSkeleton';
@@ -23,12 +24,19 @@ export default function UserEditPage() {
   const updateUser = useUpdateUser(tenantId || 'session', id);
   const assignmentQuery = useUserPermissions(id);
   const updatePermissions = useUpdateUserPermissions(id);
+  const orgQuery = useOrganizationProfile();
   const [apiError, setApiError] = useState<string | null>(null);
 
   const initialPermissionGrants = useMemo(
     () => assignmentQuery.data?.grants ?? [],
     [assignmentQuery.data?.grants],
   );
+
+  const tenantLabel = useMemo(() => {
+    if (user?.tenant_name?.trim()) return user.tenant_name.trim();
+    const org = orgQuery.data;
+    return org?.display_name?.trim() || org?.name?.trim() || 'Current workspace';
+  }, [user?.tenant_name, orgQuery.data]);
 
   if (!tenantId && !sessionScoped) {
     return (
@@ -85,6 +93,7 @@ export default function UserEditPage() {
       <UserForm
         mode="edit"
         tenantId={tenantId}
+        tenantLabel={tenantLabel}
         defaultValues={userToFormValues(user)}
         initialPermissionGrants={initialPermissionGrants}
         isSubmitting={updateUser.isPending || updatePermissions.isPending}
