@@ -8,7 +8,6 @@ import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { ApiDataView } from '../ApiDataView';
-import { JobPortTokenPanel } from '../JobPortTokenPanel';
 import { jobService } from '../../services/job.service';
 import { jobKeys, useJobContainers } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -99,7 +98,6 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   };
 
   return (
-    <div className="space-y-4">
     <Card>
       <CardHeader>
         <CardTitle className="flex flex-wrap items-center gap-2">
@@ -258,8 +256,6 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
         </div>
       </div>
     </Card>
-      <JobPortTokenPanel jobId={jobId} />
-    </div>
   );
 }
 

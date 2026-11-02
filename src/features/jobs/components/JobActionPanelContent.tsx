@@ -4,12 +4,12 @@ import { JobCargoPanel } from './JobCargoPanel';
 import { JobDocumentsPanel } from './JobDocumentsPanel';
 import { JobGpumPanel } from './JobGpumPanel/JobGpumPanel';
 import { JobInvoicesPanel } from './JobInvoicesPanel';
-import { JobLedgerPanel } from './JobLedgerPanel';
 import { JobLogisticsPanel } from './JobLogisticsPanel';
 import { JobMilestonesPanel } from './JobMilestonesPanel';
 import { JobNotesPanel } from './JobNotesPanel';
 import { OpsContinuumPanel } from '@/features/ops-activity';
 import { JobPnlPanel } from './JobPnlPanel';
+import { JobPortTokenPanel } from './JobPortTokenPanel';
 import { JobSeaScansPanel } from './JobSeaScansPanel';
 import { JobStuffingPanel } from './JobStuffingPanel';
 import { JobVouchersPanel } from './JobVouchersPanel';
@@ -40,6 +40,7 @@ export const JOB_ACTION_BUTTON_STYLE: Record<JobActionPanelKey, CSSProperties> =
   bl: { backgroundColor: '#F97316', borderColor: '#EA580C', color: '#FFFFFF' },
   stuffing: { backgroundColor: '#84CC16', borderColor: '#65A30D', color: '#FFFFFF' },
   'sea-scans': { backgroundColor: '#EA580C', borderColor: '#C2410C', color: '#FFFFFF' },
+  'port-token': { backgroundColor: '#0EA5E9', borderColor: '#0284C7', color: '#FFFFFF' },
   house: { backgroundColor: '#64748B', borderColor: '#475569', color: '#FFFFFF' },
   'cc-details': { backgroundColor: '#10B981', borderColor: '#059669', color: '#FFFFFF' },
   'cc-lines': { backgroundColor: '#0D9488', borderColor: '#0F766E', color: '#FFFFFF' },
@@ -78,17 +79,11 @@ export function JobActionPanelContent({
       return <JobDocumentsPanel jobId={jobId} jobType={job.job_type} />;
     case 'invoices':
       return (
-        <div className="space-y-4">
-          <JobInvoicesPanel
-            jobId={jobId}
-            job={job}
-            highlightInvoiceId={highlightInvoiceId}
-          />
-          <JobLedgerPanel
-            jobId={jobId}
-            partyId={job.shipper_id || job.billing_party_id}
-          />
-        </div>
+        <JobInvoicesPanel
+          jobId={jobId}
+          job={job}
+          highlightInvoiceId={highlightInvoiceId}
+        />
       );
     case 'pnl':
       return <JobPnlPanel jobId={jobId} />;
@@ -126,6 +121,8 @@ export function JobActionPanelContent({
       return <JobStuffingPanel jobId={jobId} />;
     case 'sea-scans':
       return <JobSeaScansPanel jobId={jobId} />;
+    case 'port-token':
+      return <JobPortTokenPanel jobId={jobId} />;
     case 'house':
       return (
         <ul className="space-y-2 text-sm">

@@ -33,7 +33,7 @@ interface JobPortTokenPanelProps {
   jobId: string;
 }
 
-/** Admin GET/POST /jobs/:id/port-token (+ confirm). */
+/** Admin GET/POST /jobs/:id/port-token (+ confirm / send to customer). */
 export function JobPortTokenPanel({ jobId }: JobPortTokenPanelProps) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const qc = useQueryClient();
@@ -52,7 +52,25 @@ export function JobPortTokenPanel({ jobId }: JobPortTokenPanelProps) {
     asRecord(snapshot?.form) ??
     asRecord(snapshot?.port_token_form) ??
     asRecord(snapshot?.portTokenForm) ??
+    asRecord(snapshot?.customer_form) ??
+    asRecord(snapshot?.request) ??
     snapshot;
+
+  const hasCustomerRequest = Boolean(
+    formSnap &&
+      (pickStr(
+        formSnap.bl_number,
+        formSnap.blNumber,
+        formSnap.container_number,
+        formSnap.containerNumber,
+        formSnap.receiver_name,
+        formSnap.receiverName,
+        formSnap.port_gate_token,
+        formSnap.portGateToken,
+        formSnap.status,
+      ) ||
+        query.data),
+  );
 
   const [blNumber, setBlNumber] = useState('');
   const [containerNumber, setContainerNumber] = useState('');
@@ -137,7 +155,7 @@ export function JobPortTokenPanel({ jobId }: JobPortTokenPanelProps) {
     }
     try {
       await confirm.mutateAsync();
-      setMsg('Port token recorded.');
+      setMsg('Port token sent to customer.');
       await query.refetch();
     } catch (err) {
       setError(getErrorMessage(err));
@@ -145,93 +163,108 @@ export function JobPortTokenPanel({ jobId }: JobPortTokenPanelProps) {
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Port token</CardTitle>
-      </CardHeader>
-      <div className="space-y-3 px-4 pb-4 text-sm">
-        <p className="text-[12px] text-[#64748b]">
-          View the customer port-token form and issue/record a token when the customer has not.
-        </p>
-        {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
-        {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
-        {query.isLoading ? (
-          <p className="text-[var(--color-neutral-400)]">Loading port token…</p>
-        ) : null}
-        {query.data ? (
-          <ApiDataView
-            data={query.data}
-            emptyLabel="No port-token payload."
-            maxHeightClass="max-h-56"
-          />
-        ) : null}
-        <div className="grid gap-3 sm:grid-cols-2">
-          <Input
-            label="BL number *"
-            value={blNumber}
-            onChange={(e) => setBlNumber(e.target.value)}
-          />
-          {containerNumbers.length > 1 ? (
-            <label className="block text-sm">
-              <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-                Container number *
-              </span>
-              <select
-                className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
+    <div className="space-y-4">
+      <Card>
+        <CardHeader>
+          <CardTitle>Customer token request</CardTitle>
+        </CardHeader>
+        <div className="space-y-3 px-4 pb-4 text-sm">
+          <p className="text-[12px] text-[#64748b]">
+            Portal port-token submissions appear here. Review the request, then send / issue the
+            token to the customer below.
+          </p>
+          {query.isLoading ? (
+            <p className="text-[var(--color-neutral-400)]">Loading token request…</p>
+          ) : hasCustomerRequest ? (
+            <ApiDataView
+              data={query.data}
+              emptyLabel="No customer token request yet."
+              maxHeightClass="max-h-56"
+            />
+          ) : (
+            <p className="text-[var(--color-neutral-500)]">
+              No customer request yet — you can still fill the form and send a token to the
+              customer.
+            </p>
+          )}
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Send port token to customer</CardTitle>
+        </CardHeader>
+        <div className="space-y-3 px-4 pb-4 text-sm">
+          {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
+          {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <Input
+              label="BL number *"
+              value={blNumber}
+              onChange={(e) => setBlNumber(e.target.value)}
+            />
+            {containerNumbers.length > 1 ? (
+              <label className="block text-sm">
+                <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
+                  Container number *
+                </span>
+                <select
+                  className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
+                  value={containerNumber}
+                  onChange={(e) => setContainerNumber(e.target.value)}
+                >
+                  <option value="">Select container…</option>
+                  {containerNumbers.map((n) => (
+                    <option key={n} value={n}>
+                      {n}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            ) : (
+              <Input
+                label="Container number *"
                 value={containerNumber}
                 onChange={(e) => setContainerNumber(e.target.value)}
-              >
-                <option value="">Select container…</option>
-                {containerNumbers.map((n) => (
-                  <option key={n} value={n}>
-                    {n}
-                  </option>
-                ))}
-              </select>
-            </label>
-          ) : (
+              />
+            )}
             <Input
-              label="Container number *"
-              value={containerNumber}
-              onChange={(e) => setContainerNumber(e.target.value)}
+              label="Date *"
+              type="date"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
             />
-          )}
-          <Input
-            label="Date *"
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-          />
-          <Input
-            label="Delivery location *"
-            value={deliveryLocation}
-            onChange={(e) => setDeliveryLocation(e.target.value)}
-          />
-          <Input
-            label="Receiver name *"
-            value={receiverName}
-            onChange={(e) => setReceiverName(e.target.value)}
-          />
-          <Input
-            label="Receiver contact *"
-            value={receiverContact}
-            onChange={(e) => setReceiverContact(e.target.value)}
-          />
-          <Input
-            label="Port gate token (optional)"
-            value={portGateToken}
-            onChange={(e) => setPortGateToken(e.target.value)}
-          />
+            <Input
+              label="Delivery location *"
+              value={deliveryLocation}
+              onChange={(e) => setDeliveryLocation(e.target.value)}
+            />
+            <Input
+              label="Receiver name *"
+              value={receiverName}
+              onChange={(e) => setReceiverName(e.target.value)}
+            />
+            <Input
+              label="Receiver contact *"
+              value={receiverContact}
+              onChange={(e) => setReceiverContact(e.target.value)}
+            />
+            <Input
+              label="Port gate token (optional)"
+              value={portGateToken}
+              onChange={(e) => setPortGateToken(e.target.value)}
+            />
+          </div>
+          <Button
+            type="button"
+            size="sm"
+            disabled={confirm.isPending}
+            onClick={() => void submit()}
+          >
+            {confirm.isPending ? 'Sending…' : 'Send to customer'}
+          </Button>
         </div>
-        <Button
-          type="button"
-          size="sm"
-          disabled={confirm.isPending}
-          onClick={() => void submit()}
-        >
-          {confirm.isPending ? 'Saving…' : 'Confirm port token'}
-        </Button>
-      </div>
-    </Card>
+      </Card>
+    </div>
   );
 }

@@ -421,6 +421,7 @@ export const JOB_DETAIL_TABS = [
   'shipping_bill_boe',
   'booking_form',
   'acknowledgement',
+  'ledger',
 ] as const;
 
 export type JobDetailTabKey = (typeof JOB_DETAIL_TABS)[number];
