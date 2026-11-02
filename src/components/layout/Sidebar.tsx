@@ -527,7 +527,15 @@ const OPERATIONS_EXTRA_NAV_ITEMS: NavItem[] = [
     label: 'Transport',
     path: '/operations/transport-requests',
     Icon: Truck,
-    permission: 'menu_documentation',
+    // BE Guards use transport.view — do not reuse menu_documentation (that leaked the item to docs staff).
+    permission: 'transport.view',
+    permissionAny: [
+      'transport.view',
+      'transport.manage',
+      'transport.read',
+      'transport.see',
+      'menu_transport',
+    ],
     matrixModule: 'transport',
   },
   {

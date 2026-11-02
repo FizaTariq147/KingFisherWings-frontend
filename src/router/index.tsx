@@ -800,7 +800,12 @@ export const router = createBrowserRouter([
           { path: '/settings/billing/invoices/:id', element: <TenantPlatformInvoiceDetailPage /> },
           { path: '/settings/billing/payments/:id', element: <TenantPlatformPaymentDetailPage /> },
           { path: '/settings/tools', element: <StaffToolsPage /> },
-          { path: '/operations/transport-requests', element: <TransportRequestsPage /> },
+          {
+            element: <ProtectedRoute requireMatrixModule="transport" />,
+            children: [
+              { path: '/operations/transport-requests', element: <TransportRequestsPage /> },
+            ],
+          },
           { path: '/operations/reports', element: <OperationsReportsHubPage /> },
           { path: '/operations/reports/:reportKey', element: <OperationsReportPage /> },
           { path: '/operations/shipments', element: <ShipmentListPage /> },

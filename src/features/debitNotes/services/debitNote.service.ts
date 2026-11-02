@@ -2,6 +2,8 @@ import { axiosInstance } from '@/lib/axios';
 import type { ApiEnvelope } from '@/lib/apiEnvelope';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { filenameFromContentDisposition } from '@/features/portal-shared/normalize';
 import { DEBIT_NOTE_API } from '../api/debitNote.api';
 import { enrichDebitNotesDisplay } from '../utils/enrichDebitNoteDisplay';
 import {
@@ -155,6 +157,66 @@ export const debitNoteService = {
       const debitNote = normalizeDebitNote(unwrapEntity(res.data));
       if (!debitNote) throw new Error('Post succeeded but no debit note was returned.');
       return debitNote;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /debit-notes/:id/attachment — download customer/staff payment proof. */
+  async downloadAttachment(id: string, fallbackName = 'debit-note-attachment'): Promise<void> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<Blob>(DEBIT_NOTE_API.attachment(id), {
+          responseType: 'blob',
+          headers: { Accept: 'application/octet-stream, */*' },
+        }),
+      );
+      const fromHeader = filenameFromContentDisposition(
+        String(res.headers?.['content-disposition'] ?? ''),
+      );
+      triggerBlobDownload(res.data, fromHeader || fallbackName);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /debit-notes/:id/attachment — upload payment proof (multipart `file` or `attachment`). */
+  async uploadAttachment(id: string, file: File): Promise<DebitNote> {
+    assertId(id);
+    const attempt = async (field: 'file' | 'attachment') => {
+      const form = new FormData();
+      form.append(field, file, file.name);
+      return withGatewayRetry(() =>
+        axiosInstance.post<unknown>(DEBIT_NOTE_API.attachment(id), form),
+      );
+    };
+    try {
+      let res;
+      try {
+        res = await attempt('file');
+      } catch (error) {
+        const status = (error as { response?: { status?: number } }).response?.status;
+        if (status === 400 || status === 422) {
+          res = await attempt('attachment');
+        } else {
+          throw error;
+        }
+      }
+      const note = normalizeDebitNote(unwrapEntity(res.data));
+      if (!note) {
+        const refreshed = await this.getById(id);
+        return {
+          ...refreshed,
+          has_attachment: true,
+          attachment_name: refreshed.attachment_name || file.name,
+        };
+      }
+      return {
+        ...note,
+        has_attachment: true,
+        attachment_name: note.attachment_name || file.name,
+      };
     } catch (error) {
       throw formatAxiosError(error);
     }

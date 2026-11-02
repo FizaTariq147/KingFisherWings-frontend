@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useSearchParams } from 'react-router-dom';
-import { Download, Receipt } from 'lucide-react';
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { Download, Paperclip, Receipt } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -32,6 +32,7 @@ const STATUSES = ['DRAFT', 'POSTED', 'SENT', 'PARTIALLY_PAID', 'PAID', 'CANCELLE
 
 export default function PortalCreditNotesPage() {
   const location = useLocation();
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const kind: PortalNoteKind = location.pathname.includes('/debit-notes') ? 'debit' : 'credit';
   const basePath = kind === 'debit' ? '/portal/debit-notes' : '/portal/credit-notes';
@@ -121,11 +122,21 @@ export default function PortalCreditNotesPage() {
         remarks: remarks.trim() || undefined,
         file: attachment ?? undefined,
       });
-      setFormMsg(`Debit note ${created.number} created for the job ledger.`);
       setAmount('');
       setRemarks('');
       setAttachment(null);
       void refetch();
+      if (created.id) {
+        navigate(`${basePath}/${created.id}`, {
+          state: {
+            flash: created.hasAttachment
+              ? `Debit note ${created.number} created with attachment.`
+              : `Debit note ${created.number} created for the job ledger.`,
+          },
+        });
+        return;
+      }
+      setFormMsg(`Debit note ${created.number} created for the job ledger.`);
     } catch (err) {
       setFormError(
         err instanceof PortalApiError || err instanceof Error
@@ -358,12 +369,22 @@ export default function PortalCreditNotesPage() {
                       cn.creditDate,
                       cn.currencyCode,
                       cn.totalAmount != null ? cn.totalAmount.toLocaleString() : null,
+                      cn.hasAttachment ? 'Has attachment' : null,
                     ]
                       .filter((v) => v != null && v !== '')
                       .join(' · ') || '—'}
                   </div>
                 </Link>
                 <div className="flex items-center gap-2 shrink-0">
+                  {cn.hasAttachment ? (
+                    <span
+                      className="inline-flex items-center text-[var(--color-neutral-500)]"
+                      title={cn.attachmentName || 'Attachment'}
+                    >
+                      <Paperclip size={14} aria-hidden="true" />
+                      <span className="sr-only">Has attachment</span>
+                    </span>
+                  ) : null}
                   {cn.status ? (
                     <Badge variant="info">{cn.status.replaceAll('_', ' ')}</Badge>
                   ) : null}

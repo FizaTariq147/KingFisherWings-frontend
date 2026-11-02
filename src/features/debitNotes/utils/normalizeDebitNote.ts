@@ -134,6 +134,29 @@ export function normalizeDebitNote(raw: unknown): DebitNote | null {
     updated_at: str(r.updated_at),
     created_by: str(r.created_by),
     lines: normalizeDebitNoteLines(r.lines ?? r.invoice_lines),
+    has_attachment: (() => {
+      const flagged = bool(r.has_attachment) ?? bool(r.hasAttachment);
+      if (flagged != null) return flagged;
+      const nested = asRecord(r.attachment) ?? asRecord(r.file);
+      return Boolean(
+        str(r.attachment_name) ||
+          str(r.attachmentName) ||
+          str(r.file_name) ||
+          str(r.fileName) ||
+          str(nested?.file_name) ||
+          str(nested?.name) ||
+          str(r.attachment_url) ||
+          str(r.attachmentUrl),
+      );
+    })(),
+    attachment_name:
+      str(r.attachment_name) ??
+      str(r.attachmentName) ??
+      str(r.file_name) ??
+      str(r.fileName) ??
+      str(asRecord(r.attachment)?.file_name) ??
+      str(asRecord(r.attachment)?.name) ??
+      str(asRecord(r.file)?.name),
   };
 }
 

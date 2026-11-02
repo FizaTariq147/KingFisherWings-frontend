@@ -21,6 +21,7 @@ import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import { DEBIT_NOTE_ROUTE_PREFIX } from '../api/debitNote.api';
+import { DebitNoteAttachmentPanel } from '../components/DebitNoteAttachmentPanel';
 import { useDebitNote, usePostDebitNote } from '../hooks/useDebitNotes';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { debitNoteDisplayNumber } from '../utils/normalizeDebitNote';
@@ -241,13 +242,18 @@ export default function DebitNoteDetailPage() {
                     )}
                   </div>
                 </Card>
+                <DebitNoteAttachmentPanel
+                  debitNoteId={debitNote.id}
+                  hasAttachment={Boolean(debitNote.has_attachment)}
+                  attachmentName={debitNote.attachment_name}
+                />
                 {debitNote.job_id && isUuid(debitNote.job_id) ? (
                   <SectionAttachmentsPanel
                     entity="jobs"
                     entityId={debitNote.job_id}
                     section="payment_requests"
                     recordId={debitNote.id}
-                    title="Payment proof / attachments (visible on job + portal documents)"
+                    title="Job documents (payment requests section)"
                   />
                 ) : null}
               </div>

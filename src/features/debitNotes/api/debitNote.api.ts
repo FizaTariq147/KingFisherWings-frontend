@@ -6,4 +6,6 @@ export const DEBIT_NOTE_API = {
   create: '/debit-notes',
   byId: (id: string) => `/debit-notes/${id}`,
   post: (id: string) => `/debit-notes/${id}/post`,
+  /** GET download / POST upload — customer portal payment proof (same file as /portal/debit-notes/:id/attachment). */
+  attachment: (id: string) => `/debit-notes/${id}/attachment`,
 } as const;
