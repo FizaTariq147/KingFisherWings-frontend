@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/Input';
 import { BlDraftFromBookingPanel } from '@/features/shared/bl-draft/BlDraftFromBookingPanel';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
-import { useJobBillsOfLading } from '../../hooks/useJobs';
+import { useJob, useJobBillsOfLading } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface JobBillsOfLadingPanelProps {
@@ -13,11 +13,13 @@ interface JobBillsOfLadingPanelProps {
 }
 
 export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
+  const { data: job } = useJob(jobId);
   const { data: bills = [], refetch } = useJobBillsOfLading(jobId);
   const mutations = useJobSubresourceMutations(jobId);
   const [error, setError] = useState<string | null>(null);
   const [blType, setBlType] = useState('HBL');
   const [blNumber, setBlNumber] = useState('');
+  const draftBlComment = job?.draft_bl_customer_comment?.trim();
 
   const run = async (fn: () => Promise<unknown>) => {
     setError(null);
@@ -32,6 +34,26 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
   return (
     <div className="space-y-4">
       {error && <p className="text-sm text-[var(--color-danger-600)]">{error}</p>}
+      {draftBlComment ? (
+        <Card>
+          <CardHeader>
+            <CardTitle>Customer draft BL request</CardTitle>
+          </CardHeader>
+          <div className="space-y-1 px-4 pb-4 text-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+              Comment from portal
+            </p>
+            <p className="whitespace-pre-wrap break-words text-[13px] font-medium text-[#0f172a]">
+              {draftBlComment}
+            </p>
+          </div>
+        </Card>
+      ) : (
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          No customer draft BL comment yet. When the portal submits Request draft BL with a
+          comment, it appears here for Docs / ops.
+        </p>
+      )}
       <BlDraftFromBookingPanel
         jobId={jobId}
         onGenerated={() => {

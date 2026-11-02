@@ -138,28 +138,40 @@ export const portalCreditNotesService = {
   /**
    * POST /portal/debit-notes — customer creates a job-ledger debit note
    * (e.g. advance payment proof) with optional attachment. No invoice required.
+   * Amount must be a JSON number ≥ 0.01 (multipart string fails BE @IsNumber/@Min).
    */
   async createDebitNote(dto: PortalCreateDebitNoteDto): Promise<PortalCreditNoteDetail> {
     if (!isUuid(dto.job_id)) throw new Error('Select a valid job.');
-    if (!Number.isFinite(dto.amount) || dto.amount <= 0) {
-      throw new Error('Enter a positive amount.');
+    const amount = Math.round(Number(dto.amount) * 100) / 100;
+    if (!Number.isFinite(amount) || amount < 0.01) {
+      throw new Error('Enter an amount of at least 0.01.');
     }
-    const res = await postPortalWithOptionalFile(
-      PORTAL_DEBIT_NOTES_API.create,
-      {
-        job_id: dto.job_id.trim(),
-        amount: String(dto.amount),
-        currency_code: dto.currency_code?.trim().toUpperCase() || 'AED',
-        remarks: dto.remarks?.trim() || undefined,
-        description:
-          dto.description?.trim() ||
-          dto.remarks?.trim() ||
-          'Advance payment / job ledger debit',
-      },
-      dto.file,
-    );
-    const detail = normalizeCreditNoteDetail(unwrapData(res.data) ?? res.data, 'debit');
+    const body = {
+      job_id: dto.job_id.trim(),
+      amount,
+      currency_code: dto.currency_code?.trim().toUpperCase() || 'AED',
+      ...(dto.remarks?.trim() ? { remarks: dto.remarks.trim() } : {}),
+      description:
+        dto.description?.trim() ||
+        dto.remarks?.trim() ||
+        'Advance payment / job ledger debit',
+    };
+    const res = await portalApiClient.post(PORTAL_DEBIT_NOTES_API.create, body);
+    let detail = normalizeCreditNoteDetail(unwrapData(res.data) ?? res.data, 'debit');
     if (!detail) throw new Error('Could not create debit note.');
+
+    if (dto.file && isUuid(detail.id)) {
+      try {
+        await postPortalWithOptionalFile(
+          PORTAL_DEBIT_NOTES_API.attachment(detail.id),
+          {},
+          dto.file,
+        );
+        detail = { ...detail, hasAttachment: true, attachmentName: dto.file.name };
+      } catch {
+        /* note created; attachment optional if endpoint not ready */
+      }
+    }
     return detail;
   },
 

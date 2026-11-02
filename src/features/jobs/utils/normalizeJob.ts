@@ -877,6 +877,25 @@ export function normalizeJob(raw: unknown): Job | null {
         'draft_bl_customer_comment',
         'draftBlCustomerComment',
       ) ||
+      pickString(
+        asRecord(r.sea_fcl_details) ?? asRecord(r.seaFclDetails) ?? {},
+        'draft_bl_customer_comment',
+        'draftBlCustomerComment',
+      ) ||
+      pickString(
+        asRecord(r.sea_lcl_details) ?? asRecord(r.seaLclDetails) ?? {},
+        'draft_bl_customer_comment',
+        'draftBlCustomerComment',
+      ) ||
+      pickString(
+        asRecord(r.draft_bl_request) ??
+          asRecord(r.draftBlRequest) ??
+          asRecord(r.request_draft_bl) ??
+          {},
+        'comment',
+        'customer_comment',
+        'customerComment',
+      ) ||
       undefined,
     port_token_form:
       asRecord(

@@ -77,13 +77,13 @@ export default function PortalCreditNotesPage() {
   const submitDebit = async () => {
     setFormError(null);
     setFormMsg(null);
-    const amt = Number(amount);
+    const amt = Math.round(Number(String(amount).replace(/,/g, '')) * 100) / 100;
     if (!isUuid(jobId)) {
       setFormError('Select the job this advance / charge belongs to.');
       return;
     }
-    if (!Number.isFinite(amt) || amt <= 0) {
-      setFormError('Enter a positive amount.');
+    if (!Number.isFinite(amt) || amt < 0.01) {
+      setFormError('Enter an amount of at least 0.01.');
       return;
     }
     try {
