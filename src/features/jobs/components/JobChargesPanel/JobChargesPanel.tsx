@@ -1122,13 +1122,10 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       return;
     }
     const chargeOpt = chargeCodeOpts.find((c) => c.id === chargeCodeId.trim());
-    const desc =
-      description.trim() ||
-      chargeOpt?.name ||
-      chargeOpt?.label ||
-      '';
+    // Description is independent of charge master name (OpenAPI ChargeSectionDto).
+    const desc = description.trim();
     if (!desc) {
-      setError('Description is required on the Charge tab.');
+      setError('Description is required on the Charge tab (independent of charge code name).');
       setAddTab('charge');
       return;
     }
@@ -1142,13 +1139,12 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     }
 
     const sQty = saleQty === '' ? qty : Number(saleQty);
-    // CompositeJobChargeDto forbids charge_code / charge_code_name / *_code / *_name —
-    // send UUID refs only (charge_code_id, bill_to, vendor) + description.
+    // charge_code / charge_code_name are echo-only (ignored by BE); description is authoritative.
     const dto: CreateJobChargesCompositeDto = {
       charge: {
-        ...(isUuid(chargeCodeId.trim())
-          ? { charge_code_id: chargeCodeId.trim() }
-          : {}),
+        charge_code_id: chargeCodeId.trim(),
+        ...(chargeOpt?.code ? { charge_code: chargeOpt.code } : {}),
+        ...(chargeOpt?.name ? { charge_code_name: chargeOpt.name } : {}),
         description: desc,
         quantity: Number.isFinite(qty) ? qty : 1,
         ...(unit.trim() ? { unit: unit.trim() } : {}),
@@ -2303,12 +2299,8 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                     className={`${FIELD_CONTROL} min-w-0 flex-1`}
                     value={chargeCodeId}
                     onChange={(e) => {
-                      const next = e.target.value;
-                      setChargeCodeId(next);
-                      const opt = chargeCodeOpts.find((c) => c.id === next);
-                      if (opt && !description.trim()) {
-                        setDescription(opt.name || opt.label);
-                      }
+                      setChargeCodeId(e.target.value);
+                      // Description stays independent of charge master name.
                     }}
                   >
                     <option value="">Select charge…</option>
@@ -3826,10 +3818,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
             return;
           }
           setChargeCodeId(id);
-          const desc = String(
-            record.description ?? record.name ?? record.code ?? '',
-          ).trim();
-          if (desc && !description.trim()) setDescription(desc);
+          // Do not auto-fill description from master — OpenAPI keeps them independent.
         }}
       />
     </div>

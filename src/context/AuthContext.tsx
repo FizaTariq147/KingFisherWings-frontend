@@ -37,6 +37,19 @@ import type { AuthUser, PermissionKey, Role } from '@/types/auth.types'
 
 type MeMatrixGrant = NonNullable<AuthUser['permissionMatrix']>[number]
 
+/** null = unrestricted; [] = none; string[] = scoped; undefined = omitted from /me. */
+function pickVisibleJobTypesFromRecord(
+  record: Record<string, unknown>,
+): string[] | null | undefined {
+  const raw = record.visible_job_types ?? record.visibleJobTypes
+  if (raw === null) return null
+  if (raw === undefined) return undefined
+  if (!Array.isArray(raw)) return undefined
+  return raw
+    .map((v) => (typeof v === 'string' ? v.trim() : ''))
+    .filter(Boolean)
+}
+
 function parseMeAccess(raw: unknown): MeMatrixGrant['access'] | null {
   if (typeof raw !== 'string') return null
   const v = raw.trim().toLowerCase()
@@ -370,6 +383,7 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
 
   const warehouseFromMe = pickWarehouseSummariesFromMe(record)
   const enabledModules = pickEnabledModulesFromRecord(record)
+  const visibleJobTypes = pickVisibleJobTypesFromRecord(record)
 
   return {
     id: id || email,
@@ -384,6 +398,7 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     mustChangePassword,
     ...(matrixFromMe.summary.length ? { permissionMatrix: matrixFromMe.summary } : {}),
     ...(enabledModules ? { enabledModules } : {}),
+    ...(visibleJobTypes !== undefined ? { visibleJobTypes } : {}),
   }
 }
 
@@ -560,7 +575,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     (moduleKey: string) => {
       if (DEV_BYPASS_AUTH) return true
       if (!user) return false
-      // Tenant Admin still respects Super Admin enabled_modules allow-list.
+      const key = moduleKey.trim().toLowerCase()
+      // TENANT_ADMIN always keeps parties (support) + vendor services.
+      if (
+        (isTenantUserManagerRole(user.role.slug) || isTenantUserManagerRole(user.role.name)) &&
+        (key === 'vendors' || key === 'support' || key === 'parties')
+      ) {
+        return true
+      }
+      // Tenant Admin still respects Super Admin enabled_modules allow-list for other modules.
       return isModuleEnabled(user.enabledModules, moduleKey)
     },
     [user],

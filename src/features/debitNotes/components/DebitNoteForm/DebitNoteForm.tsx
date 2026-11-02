@@ -1,4 +1,4 @@
-import { useFieldArray, type Resolver } from 'react-hook-form';
+import { Controller, useFieldArray, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -8,6 +8,7 @@ import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { invoiceDisplayNumber } from '@/features/invoices/utils/normalizeInvoice';
 import { useInvoices } from '@/features/invoices/hooks/useInvoices';
+import { JobSearchSelect, PartySearchSelect } from '@/features/shared/entity-search';
 import { createDebitNoteSchema } from '../../schemas/debitNote.schema';
 import type { CreateDebitNoteFormValues } from '../../types/debitNote.types';
 
@@ -16,6 +17,8 @@ const selectClass =
 
 const DEBIT_NOTE_FORM_DEFAULTS: CreateDebitNoteFormValues = {
   credited_invoice_id: '',
+  job_id: '',
+  party_id: '',
   remarks: undefined,
   lines: [],
 };
@@ -131,14 +134,14 @@ export function DebitNoteForm({
               htmlFor="dn-debited-invoice"
               className="text-xs font-medium text-[var(--color-neutral-500)]"
             >
-              Debited invoice *
+              Debited invoice
             </label>
             <select
               id="dn-debited-invoice"
               className={selectClass}
               {...register('credited_invoice_id')}
             >
-              <option value="">Select posted invoice…</option>
+              <option value="">Select posted invoice (optional if job + party)…</option>
               {invoiceOptions.map((opt) => (
                 <option key={opt.id} value={opt.id}>
                   {opt.label}
@@ -147,7 +150,36 @@ export function DebitNoteForm({
               ))}
             </select>
             <FieldError message={fieldError('credited_invoice_id')} />
+            <p className="text-xs text-[var(--color-neutral-400)]">
+              Against a posted invoice, or use job + party for a job-ledger debit note.
+            </p>
           </div>
+          <Controller
+            name="job_id"
+            control={control}
+            render={({ field }) => (
+              <JobSearchSelect
+                name="job_id"
+                label="Job"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || '')}
+                error={fieldError('job_id')}
+              />
+            )}
+          />
+          <Controller
+            name="party_id"
+            control={control}
+            render={({ field }) => (
+              <PartySearchSelect
+                name="party_id"
+                label="Party"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || '')}
+                error={fieldError('party_id')}
+              />
+            )}
+          />
           <div className="space-y-1 sm:col-span-2">
             <label
               htmlFor="dn-remarks"

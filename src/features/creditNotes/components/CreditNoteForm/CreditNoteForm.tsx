@@ -1,4 +1,4 @@
-import { useFieldArray, type Resolver } from 'react-hook-form';
+import { Controller, useFieldArray, type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -8,6 +8,7 @@ import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { invoiceDisplayNumber } from '@/features/invoices/utils/normalizeInvoice';
 import { useInvoices } from '@/features/invoices/hooks/useInvoices';
+import { JobSearchSelect, PartySearchSelect } from '@/features/shared/entity-search';
 import { createCreditNoteSchema } from '../../schemas/creditNote.schema';
 import type { CreateCreditNoteFormValues } from '../../types/creditNote.types';
 
@@ -16,6 +17,8 @@ const selectClass =
 
 const CREDIT_NOTE_FORM_DEFAULTS: CreateCreditNoteFormValues = {
   credited_invoice_id: '',
+  job_id: '',
+  party_id: '',
   remarks: undefined,
   lines: [],
 };
@@ -128,10 +131,10 @@ export function CreditNoteForm({
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">
             <label htmlFor="cn-credited-invoice" className="text-xs font-medium text-[var(--color-neutral-500)]">
-              Credited invoice *
+              Credited invoice
             </label>
             <select id="cn-credited-invoice" className={selectClass} {...register('credited_invoice_id')}>
-              <option value="">Select posted invoice…</option>
+              <option value="">Select posted invoice (optional if job + party)…</option>
               {invoiceOptions.map((opt) => (
                 <option key={opt.id} value={opt.id}>
                   {opt.label}
@@ -141,9 +144,35 @@ export function CreditNoteForm({
             </select>
             <FieldError message={fieldError('credited_invoice_id')} />
             <p className="text-xs text-[var(--color-neutral-400)]">
-              Create a credit note against a posted customer invoice.
+              Against a posted invoice, or use job + party for a job-ledger credit note.
             </p>
           </div>
+          <Controller
+            name="job_id"
+            control={control}
+            render={({ field }) => (
+              <JobSearchSelect
+                name="job_id"
+                label="Job"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || '')}
+                error={fieldError('job_id')}
+              />
+            )}
+          />
+          <Controller
+            name="party_id"
+            control={control}
+            render={({ field }) => (
+              <PartySearchSelect
+                name="party_id"
+                label="Party"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || '')}
+                error={fieldError('party_id')}
+              />
+            )}
+          />
           <div className="space-y-1 sm:col-span-2">
             <label htmlFor="cn-remarks" className="text-xs font-medium text-[var(--color-neutral-500)]">Remarks</label>
             <textarea

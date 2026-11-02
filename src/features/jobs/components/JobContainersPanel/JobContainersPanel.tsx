@@ -402,6 +402,18 @@ export function JobContainersPanel({ jobId }: JobContainersPanelProps) {
             >
               Push to sub-jobs
             </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={() =>
+                void run(
+                  () => jobService.generateShipmentsFromContainers(jobId),
+                  'Shipments generated from ACTUAL containers.',
+                )
+              }
+            >
+              Generate shipments
+            </Button>
           </div>
           {containers.length === 0 ? (
             <p className="text-[var(--color-neutral-400)]">No containers.</p>

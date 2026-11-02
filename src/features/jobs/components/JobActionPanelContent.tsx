@@ -4,6 +4,7 @@ import { JobCargoPanel } from './JobCargoPanel';
 import { JobDocumentsPanel } from './JobDocumentsPanel';
 import { JobGpumPanel } from './JobGpumPanel/JobGpumPanel';
 import { JobInvoicesPanel } from './JobInvoicesPanel';
+import { JobLedgerPanel } from './JobLedgerPanel';
 import { JobLogisticsPanel } from './JobLogisticsPanel';
 import { JobMilestonesPanel } from './JobMilestonesPanel';
 import { JobNotesPanel } from './JobNotesPanel';
@@ -77,11 +78,17 @@ export function JobActionPanelContent({
       return <JobDocumentsPanel jobId={jobId} jobType={job.job_type} />;
     case 'invoices':
       return (
-        <JobInvoicesPanel
-          jobId={jobId}
-          job={job}
-          highlightInvoiceId={highlightInvoiceId}
-        />
+        <div className="space-y-4">
+          <JobInvoicesPanel
+            jobId={jobId}
+            job={job}
+            highlightInvoiceId={highlightInvoiceId}
+          />
+          <JobLedgerPanel
+            jobId={jobId}
+            partyId={job.shipper_id || job.billing_party_id}
+          />
+        </div>
       );
     case 'pnl':
       return <JobPnlPanel jobId={jobId} />;

@@ -1269,6 +1269,25 @@ export const jobService = {
     }
   },
 
+  /** POST /jobs/:id/acknowledgement/send — admin sends to customer (optional container_id). */
+  async sendAcknowledgement(
+    id: string,
+    body: { container_id?: string; remarks?: string } = {},
+  ): Promise<DeliveryAcknowledgement> {
+    assertId(id);
+    try {
+      const payload: Record<string, unknown> = {};
+      if (body.container_id?.trim()) payload.container_id = body.container_id.trim();
+      if (body.remarks?.trim()) payload.remarks = body.remarks.trim();
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.acknowledgementSend(id), payload),
+      );
+      return normalizeDeliveryAcknowledgement(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   /** POST /jobs/:id/acknowledgement/receive — mark RECEIVED_BY_ADMIN. */
   async receiveAcknowledgement(
     id: string,
@@ -1291,6 +1310,57 @@ export const jobService = {
     try {
       const res = await withGatewayRetry(() =>
         axiosInstance.post(JOB_API.acknowledgementGeneratePdf(id)),
+      );
+      return unwrapEntity(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /jobs/:id/ledger — invoices + credit/debit notes for the job. */
+  async getLedger(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.ledger(id)));
+      return unwrapEntity(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /jobs/:id/port-token — admin view of customer port-token form + containers. */
+  async getPortToken(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.portToken(id)));
+      return unwrapEntity(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/port-token/confirm — admin issue/record port token. */
+  async confirmPortToken(
+    id: string,
+    body: Record<string, unknown>,
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.portTokenConfirm(id), body),
+      );
+      return unwrapEntity(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/containers/generate-shipments — one shipment per ACTUAL container. */
+  async generateShipmentsFromContainers(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.generateShipmentsFromContainers(id)),
       );
       return unwrapEntity(res.data) ?? res.data;
     } catch (error) {

@@ -547,6 +547,13 @@ export default function PortalShipmentDetailPage() {
             bl_number: data.blNumber || data.hblNumber || data.mblNumber || '',
             container_number: data.containerNumbers?.[0] || '',
           }}
+          containerOptions={
+            (data.containerNumbers?.length
+              ? data.containerNumbers
+              : containerRequests
+                  .map((r) => r.containerNumber)
+                  .filter((n): n is string => Boolean(n?.trim()))) ?? []
+          }
           onClose={() => setPortTokenOpen(false)}
           onSubmit={async (dto) => {
             const ok = await runAction(
@@ -706,6 +713,16 @@ export default function PortalShipmentDetailPage() {
       <PortalAcknowledgementPanel
         shipmentId={id}
         statusHint={data.acknowledgementStatus}
+        containers={containerRequests
+          .filter((r) => Boolean(r.id))
+          .map((r) => ({
+            id: r.id,
+            label:
+              r.containerNumber?.trim() ||
+              r.croNumber?.trim() ||
+              r.containerType?.trim() ||
+              r.id.slice(0, 8).toUpperCase(),
+          }))}
       />
     </div>
   );

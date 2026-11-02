@@ -166,6 +166,19 @@ export function menuKeysFromMatrixPermissions(
       continue;
     }
 
+    // Classic / product keys: vendor.users | vendor.permissions | vendor.disputes
+    if (
+      key === 'vendor.users' ||
+      key === 'vendor.permissions' ||
+      key === 'vendor.disputes' ||
+      key.startsWith('vendor.users') ||
+      key.startsWith('vendor.permissions') ||
+      key.startsWith('vendor.disputes')
+    ) {
+      keys.add('menu_vendors');
+      continue;
+    }
+
     const dot = key.lastIndexOf('.');
     if (dot <= 0) continue;
     const prefix = key.slice(0, dot);
@@ -231,15 +244,20 @@ export function menuKeysFromMatrixPermissions(
       keys.add('menu_customers');
       continue;
     }
-    if (prefix === 'vendors' || prefix === 'vendors_module' || prefix.startsWith('vendors_')) {
+    // Vendor Services matrix: vendors_* / vendor.users|permissions|disputes (+ classic bridge).
+    if (
+      prefix === 'vendors' ||
+      prefix === 'vendors_module' ||
+      prefix.startsWith('vendors_') ||
+      prefix === 'vendor' ||
+      prefix.startsWith('vendor_') ||
+      prefix.startsWith('vendor.')
+    ) {
       keys.add('menu_vendors');
       continue;
     }
-    // Vendor Services nav is gated on Masters today (no separate `vendors` matrix module
-    // from GET /users/permission-matrix yet). Masters grants unlock menu_vendors.
     if (prefix === 'masters' || prefix === 'masters_module' || prefix.startsWith('masters_')) {
       keys.add('menu_masters');
-      keys.add('menu_vendors');
       continue;
     }
     if (prefix === 'reports' || prefix === 'reports_module' || prefix.startsWith('reports_')) {

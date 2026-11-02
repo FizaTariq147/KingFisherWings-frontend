@@ -15,12 +15,17 @@ export default function DebitNoteCreatePage() {
   const [error, setError] = useState<string | null>(null);
 
   const prefillInvoiceId = searchParams.get('invoice')?.trim() ?? '';
+  const prefillJobId = searchParams.get('job')?.trim() ?? '';
+  const prefillPartyId = searchParams.get('party')?.trim() ?? '';
   const defaultValues = useMemo(() => {
+    const next: Partial<CreateDebitNoteFormValues> = {};
     if (prefillInvoiceId && isUuid(prefillInvoiceId)) {
-      return { credited_invoice_id: prefillInvoiceId };
+      next.credited_invoice_id = prefillInvoiceId;
     }
-    return undefined;
-  }, [prefillInvoiceId]);
+    if (prefillJobId && isUuid(prefillJobId)) next.job_id = prefillJobId;
+    if (prefillPartyId && isUuid(prefillPartyId)) next.party_id = prefillPartyId;
+    return Object.keys(next).length ? next : undefined;
+  }, [prefillInvoiceId, prefillJobId, prefillPartyId]);
 
   return (
     <div className="space-y-4">
@@ -34,7 +39,7 @@ export default function DebitNoteCreatePage() {
       <div>
         <h2 className={appType.pageTitle}>New debit note</h2>
         <p className="mt-0.5 text-sm text-[var(--color-neutral-400)]">
-          Create a debit note against a posted customer invoice (extra charge).
+          Create against a posted invoice, or with job + party for the job ledger.
         </p>
       </div>
 

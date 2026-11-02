@@ -1,7 +1,7 @@
-import type { CreateUserFormValues } from '../types/user.types';
+import type { CreateUserFormValues, UpdateUserFormValues } from '../types/user.types';
 import type { User } from '../types/user.types';
 
-export function userToFormValues(user: User): CreateUserFormValues {
+export function userToFormValues(user: User): CreateUserFormValues & UpdateUserFormValues {
   return {
     tenant_id: user.tenant_id,
     email: user.email,
@@ -35,6 +35,8 @@ export function userToFormValues(user: User): CreateUserFormValues {
     office_hours_end: user.office_hours_end ?? '',
     office_hours_timezone: user.office_hours_timezone ?? 'Asia/Dubai',
     max_concurrent_sessions: user.max_concurrent_sessions,
+    single_device_login: user.single_device_login,
+    single_device_policy: user.single_device_policy,
   };
 }
 

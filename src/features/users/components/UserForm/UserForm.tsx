@@ -430,6 +430,27 @@ export function UserForm({
         error={fieldError('max_concurrent_sessions')}
         {...register('max_concurrent_sessions', { valueAsNumber: true })}
       />
+      {mode === 'edit' ? (
+        <>
+          <label className="inline-flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
+            <input type="checkbox" {...register('single_device_login')} />
+            Single-device login
+          </label>
+          <div className="space-y-1">
+            <label className="text-xs font-medium text-[var(--color-neutral-500)]">
+              Single-device policy
+            </label>
+            <select
+              className={selectClass}
+              {...register('single_device_policy')}
+            >
+              <option value="">Default</option>
+              <option value="TERMINATE_OLDEST">Terminate oldest</option>
+              <option value="REJECT_NEW">Reject new</option>
+            </select>
+          </div>
+        </>
+      ) : null}
       <Input
         label="Avatar URL"
         type="url"

@@ -8,6 +8,7 @@ export const TENANT_ENABLED_MODULE_OPTIONS = [
   { key: 'sales', label: 'Sales' },
   { key: 'finance', label: 'Finance' },
   { key: 'masters', label: 'Masters' },
+  { key: 'vendors', label: 'Vendor Services' },
   { key: 'admin', label: 'Admin' },
   { key: 'hr', label: 'HR' },
   { key: 'wms', label: 'Warehouse (WMS)' },

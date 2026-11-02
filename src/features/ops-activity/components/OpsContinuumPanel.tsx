@@ -842,11 +842,27 @@ export function OpsContinuumPanel({
             items={history.map((row, i) => {
               const title = cell(row, 'event', 'action', 'type', 'summary');
               const summary = cell(row, 'summary', 'details', 'description', 'message');
+              const location = cell(
+                row,
+                'location',
+                'location_terminal',
+                'locationTerminal',
+                'place',
+              );
+              const terminal = cell(row, 'terminal', 'terminal_name', 'facility');
+              const placeBits = [
+                location !== '—' ? location : '',
+                terminal !== '—' && terminal !== location ? terminal : '',
+              ].filter(Boolean);
+              const placeLine = placeBits.length ? placeBits.join(' · ') : '';
+              const subtitleParts = [
+                summary !== '—' && summary !== title ? summary : '',
+                placeLine,
+              ].filter(Boolean);
               return {
                 id: rowId(row, i),
                 title: title === '—' ? 'Event' : title,
-                subtitle:
-                  summary !== '—' && summary !== title ? summary : undefined,
+                subtitle: subtitleParts.length ? subtitleParts.join(' — ') : undefined,
                 when: (() => {
                   const v = cell(row, 'created_at', 'timestamp', 'at');
                   return v === '—' ? undefined : v;
