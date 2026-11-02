@@ -5,6 +5,7 @@ import {
   Clock3,
   Container,
   MapPin,
+  Ship,
   Truck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -12,6 +13,7 @@ import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload'
 import { appType } from '@/lib/erpTypography';
 import { cn } from '@/lib/utils';
 import type { PublicTrackMilestone, PublicTrackResult } from '../types/publicTrack.types';
+import { resolveTrackStatusIcon } from '../utils/trackStatusIcon';
 
 /** Prefer server PDF endpoints; fall back to client HTML print. */
 export type PublicTrackPdfSource =
@@ -67,6 +69,14 @@ function legBadge(code: string): string {
   if (u === 'POD' || u === 'DEST' || u === 'DESTINATION') return 'POD';
   if (u === 'PTS' || u === 'TS' || u === 'TRANSSHIPMENT') return 'PTS';
   return u.slice(0, 3) || 'PTS';
+}
+
+function legRailIcon(code: string) {
+  const u = code.toUpperCase();
+  if (u === 'POL' || u === 'ORIGIN') return Ship;
+  if (u === 'POD' || u === 'DEST' || u === 'DESTINATION') return MapPin;
+  if (u === 'PTS' || u === 'TS' || u === 'TRANSSHIPMENT') return Truck;
+  return MapPin;
 }
 
 function buildTrackPrintHtml(result: PublicTrackResult, status: string): string {
@@ -221,6 +231,9 @@ export function PublicTrackTimeline({
   const [pdfPending, setPdfPending] = useState(false);
 
   const status = formatStatusLabel(result.currentStatus || result.status);
+  const HeaderStatusIcon = resolveTrackStatusIcon({
+    status: result.currentStatus || result.status,
+  });
   const legs = result.progressLegs ?? [];
   const history = result.milestones ?? [];
 
@@ -268,9 +281,10 @@ export function PublicTrackTimeline({
             <h2 className={cn(appType.pageTitle, 'leading-none')}>Tracking details</h2>
             {status ? (
               <span
-                className="inline-flex rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.03em] text-white"
+                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.03em] text-white"
                 style={{ backgroundColor: C.badge }}
               >
+                <HeaderStatusIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
                 {status}
               </span>
             ) : null}
@@ -305,22 +319,28 @@ export function PublicTrackTimeline({
           </div>
           {result.containers && result.containers.length > 1 ? (
             <ul className="mt-2 flex flex-wrap gap-2 text-[12px]" style={{ color: C.sub }}>
-              {result.containers.map((c) => (
-                <li
-                  key={c.id}
-                  className="inline-flex items-center gap-1.5 rounded-sm px-2 py-1"
-                  style={{ backgroundColor: C.chip, border: `1px solid ${C.border}` }}
-                >
-                  <span className="font-semibold" style={{ color: C.navy }}>
-                    {c.containerNumber || 'Container'}
-                  </span>
-                  {c.statusLabel || c.status ? (
-                    <span className="uppercase tracking-wide">
-                      {formatStatusLabel(c.statusLabel || c.status)}
+              {result.containers.map((c) => {
+                const ContIcon = resolveTrackStatusIcon({
+                  status: c.statusLabel || c.status,
+                });
+                return (
+                  <li
+                    key={c.id}
+                    className="inline-flex items-center gap-1.5 rounded-sm px-2 py-1"
+                    style={{ backgroundColor: C.chip, border: `1px solid ${C.border}` }}
+                  >
+                    <ContIcon className="h-3.5 w-3.5 shrink-0" style={{ color: C.red }} aria-hidden />
+                    <span className="font-semibold" style={{ color: C.navy }}>
+                      {c.containerNumber || 'Container'}
                     </span>
-                  ) : null}
-                </li>
-              ))}
+                    {c.statusLabel || c.status ? (
+                      <span className="uppercase tracking-wide">
+                        {formatStatusLabel(c.statusLabel || c.status)}
+                      </span>
+                    ) : null}
+                  </li>
+                );
+              })}
             </ul>
           ) : result.containers?.[0]?.statusLabel || result.containers?.[0]?.status ? (
             <p className="mt-1 text-[12px]" style={{ color: C.sub }}>
@@ -373,6 +393,8 @@ export function PublicTrackTimeline({
             <ol className="relative flex w-full items-start justify-between">
               {legs.map((leg, index) => {
                 const isLast = index === legs.length - 1;
+                const LegIcon = legRailIcon(leg.code);
+                const active = Boolean(leg.current || leg.completed || isLast);
                 return (
                   <li
                     key={leg.id}
@@ -384,21 +406,16 @@ export function PublicTrackTimeline({
                     >
                       {legBadge(leg.code)}
                     </span>
-                    {isLast ? (
-                      <span className="-mt-1 flex h-6 w-6 items-center justify-center bg-white">
-                        <MapPin
-                          className="h-[22px] w-[22px]"
-                          style={{ color: C.red }}
-                          fill={C.red}
-                          aria-hidden
-                        />
-                      </span>
-                    ) : (
-                      <span
-                        className="mt-1 h-3.5 w-3.5 rounded-full ring-[3px] ring-white"
-                        style={{ backgroundColor: C.red }}
+                    <span className="-mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white ring-[3px] ring-white">
+                      <LegIcon
+                        className="h-[20px] w-[20px]"
+                        style={{ color: active ? C.red : C.muted }}
+                        {...(isLast && LegIcon === MapPin
+                          ? { fill: active ? C.red : 'transparent' }
+                          : {})}
+                        aria-hidden
                       />
-                    )}
+                    </span>
                     <p
                       className="mt-2.5 max-w-[8.5rem] text-center text-[11px] font-bold uppercase leading-snug"
                       style={{ color: C.text }}
@@ -460,6 +477,13 @@ export function PublicTrackTimeline({
             {visibleRows.map((m) => {
               const when = parseWhen(m.completedAt || m.occurredAt);
               const move = m.move || m.label;
+              const StatusIcon = resolveTrackStatusIcon({
+                status: m.status,
+                move: m.move,
+                eventType: m.eventType,
+                label: m.label,
+                pending: m.pending,
+              });
               const vesselLine = [m.vessel, m.voyage ? `(${m.voyage})` : null]
                 .filter(Boolean)
                 .join(' ');
@@ -470,9 +494,9 @@ export function PublicTrackTimeline({
                   style={{ borderColor: C.rowBorder }}
                 >
                   <div className="flex items-start gap-2.5">
-                    <Truck
+                    <StatusIcon
                       className="mt-0.5 h-4 w-4 shrink-0"
-                      style={{ color: C.red }}
+                      style={{ color: m.pending ? C.muted : C.red }}
                       aria-hidden
                     />
                     <div>
@@ -493,9 +517,10 @@ export function PublicTrackTimeline({
 
                   <div>
                     <span
-                      className="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.03em] text-white"
+                      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.03em] text-white"
                       style={{ backgroundColor: C.badge }}
                     >
+                      <StatusIcon className="h-3 w-3 shrink-0 opacity-95" aria-hidden />
                       {move}
                     </span>
                   </div>
