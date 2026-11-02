@@ -79,20 +79,34 @@ export function hasMatrixSubmoduleAccess(
   if (!mod || !sub || permissions.length === 0) return false;
 
   const aliases = new Set<string>([sub]);
-  // Common catalog variants for air departments.
-  if (sub === 'air_export' || sub === 'airexport') {
+  /**
+   * Air Export + Air Import share one classic menu (`menu_jobs_air_export`) and the same
+   * ops family. Accept either submodule (and common catalog labels) so both departments
+   * appear the same when the user is granted any air ops scope.
+   */
+  if (sub.startsWith('air')) {
+    aliases.add('air');
     aliases.add('air_export');
-    aliases.add('air_export_operations');
-  }
-  if (sub === 'air_import' || sub === 'airimport') {
     aliases.add('air_import');
+    aliases.add('air_export_operations');
     aliases.add('air_import_operations');
+    aliases.add('airexport');
+    aliases.add('airimport');
   }
-  if (sub === 'sea_export') aliases.add('sea_fcl_export');
-  if (sub === 'sea_import') aliases.add('sea_fcl_import');
+  if (sub === 'sea_export' || (sub.startsWith('sea_') && sub.includes('export'))) {
+    aliases.add('sea_export');
+    aliases.add('sea_fcl_export');
+    aliases.add('sea_lcl_export');
+  }
+  if (sub === 'sea_import' || (sub.startsWith('sea_') && sub.includes('import'))) {
+    aliases.add('sea_import');
+    aliases.add('sea_fcl_import');
+    aliases.add('sea_lcl_import');
+  }
   if (sub === 'road_freight') {
     aliases.add('road');
     aliases.add('land');
+    aliases.add('courier');
   }
   if (sub === 'customs_clearance') aliases.add('customs');
 
@@ -110,6 +124,14 @@ export function hasMatrixSubmoduleAccess(
     const flag = key.slice(dot + 1);
     if (!prefixes.has(prefix)) continue;
     if (flagSatisfies(flag, level)) return true;
+  }
+
+  // Also match bridged menu keys for air (export+import share one menu).
+  if (mod === 'operations' && sub.startsWith('air')) {
+    for (const raw of permissions) {
+      if (typeof raw !== 'string') continue;
+      if (raw.trim().toLowerCase() === 'menu_jobs_air_export') return true;
+    }
   }
 
   return false;

@@ -68,7 +68,6 @@ export function UserOverviewPanel({ user, tenantId, readOnly = false }: UserOver
         <p className="text-sm text-[var(--color-neutral-500)]">
           This user is deleted — restore them before editing.
         </p>
-        <ApiGapsNote />
       </div>
     );
   }
@@ -113,52 +112,6 @@ export function UserOverviewPanel({ user, tenantId, readOnly = false }: UserOver
           }
         }}
       />
-
-      <ApiGapsNote />
     </div>
-  );
-}
-
-function ApiGapsNote() {
-  return (
-    <Card className="border-dashed">
-      <CardHeader className="mb-0 pb-2">
-        <CardTitle className="text-[13px]">Backend API notes</CardTitle>
-      </CardHeader>
-      <ul className="list-disc space-y-1.5 px-5 pb-4 text-[12px] text-[var(--color-neutral-600)]">
-        <li>
-          <code className="text-[11px]">GET /users/:id</code> does not reliably return{' '}
-          <code className="text-[11px]">tenant_name</code> (or nested tenant). The UI resolves the
-          name from organization profile for the current workspace.
-        </li>
-        <li>
-          Prefer embedding <code className="text-[11px]">tenant_name</code>,{' '}
-          <code className="text-[11px]">company_name</code>,{' '}
-          <code className="text-[11px]">branch_name</code>, and{' '}
-          <code className="text-[11px]">department_name</code> on the user payload so Overview can
-          show labels without extra lookups.
-        </li>
-        <li>
-          <code className="text-[11px]">role_ids</code> /{' '}
-          <code className="text-[11px]">permission_ids</code> are UUID lists with no name catalog on
-          this endpoint — use the Permissions matrix tab (
-          <code className="text-[11px]">GET/PUT /users/:id/permission-matrix</code>).
-        </li>
-        <li>
-          Ops scope (<code className="text-[11px]">visible_job_types</code>,{' '}
-          <code className="text-[11px]">unrestricted_ops</code>) is derived from the matrix; there is
-          no dedicated PATCH field on <code className="text-[11px]">PATCH /users/:id</code>.
-        </li>
-        <li>
-          <code className="text-[11px]">single_device_login</code> /{' '}
-          <code className="text-[11px]">single_device_policy</code> exist on the update DTO but are
-          not exposed in this Overview UI yet.
-        </li>
-        <li>
-          Tenant cannot be reassigned on update (<code className="text-[11px]">tenant_id</code> is
-          create-only); changing workspace requires backend support.
-        </li>
-      </ul>
-    </Card>
   );
 }

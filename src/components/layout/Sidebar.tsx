@@ -364,10 +364,11 @@ const DEPT_ICONS: Record<string, LucideIcon> = {
 };
 
 const DEPT_ICON_STYLE: Record<string, NavIconStyle> = {
+  // Same accent for Air Export / Air Import so they read as one air family.
   'air-export': navStyle('#60A5FA'),
-  'air-import': navStyle('#38BDF8'),
+  'air-import': navStyle('#60A5FA'),
   'sea-export': navStyle('#2DD4BF'),
-  'sea-import': navStyle('#14B8A6'),
+  'sea-import': navStyle('#2DD4BF'),
   'road-freight': navStyle('#F59E0B'),
   'customs-clearance': navStyle('#0F766E'),
   nvocc: navStyle('#9333EA'),
@@ -710,14 +711,15 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
         }
         if (isTenantAdmin) return true;
 
-        // Ops departments: require the specific submodule (air_export / air_import / …).
+        // Ops departments: require the matching submodule family (air / sea / …).
         // Do NOT treat any `operations_*` grant as access to every department.
+        // Air export + import share one menu key and unlock together.
         if (item.matrixModule && item.matrixSubmodule) {
           const perms = authCtx?.user?.permissions ?? [];
           if (hasMatrixSubmoduleAccess(perms, item.matrixModule, item.matrixSubmodule, 'see')) {
             return true;
           }
-          // Legacy staff (no ops matrix keys at all) — fall back to coarse menu_* only.
+          // Legacy staff (no ops matrix keys) — fall back to coarse menu_* only.
           if (!hasAnyOpsMatrixGrant(perms)) {
             if (item.permissionAny?.length) {
               return item.permissionAny.some((p) => authCtx?.hasPermission(p) ?? false);
