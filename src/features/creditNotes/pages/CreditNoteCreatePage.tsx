@@ -39,7 +39,8 @@ export default function CreditNoteCreatePage() {
       <div>
         <h2 className={appType.pageTitle}>New credit note</h2>
         <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-          Create against a posted invoice, or with job + party for the job ledger.
+          Create against a posted invoice, or with job + party for the job ledger (e.g. advance
+          received — no invoice). After save, upload the payment proof on the detail page.
         </p>
       </div>
 

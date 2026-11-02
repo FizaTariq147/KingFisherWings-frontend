@@ -144,7 +144,9 @@ export function CreditNoteForm({
             </select>
             <FieldError message={fieldError('credited_invoice_id')} />
             <p className="text-xs text-[var(--color-neutral-400)]">
-              Against a posted invoice, or use job + party for a job-ledger credit note.
+              Against a posted invoice, or use job + party for a job-ledger credit note (advance
+              received without invoice). Add a line for the amount, then attach proof on the detail
+              page.
             </p>
           </div>
           <Controller

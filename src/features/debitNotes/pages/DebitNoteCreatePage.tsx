@@ -39,7 +39,8 @@ export default function DebitNoteCreatePage() {
       <div>
         <h2 className={appType.pageTitle}>New debit note</h2>
         <p className="mt-0.5 text-sm text-[var(--color-neutral-400)]">
-          Create against a posted invoice, or with job + party for the job ledger.
+          Create against a posted invoice, or with job + party for the job ledger (customer can see
+          and pay — no invoice required). After save, upload the payment proof on the detail page.
         </p>
       </div>
 

@@ -239,17 +239,19 @@ export function menuKeysFromMatrixPermissions(
       prefix === 'parties_module' ||
       prefix.startsWith('parties_')
     ) {
+      // Parties + Customer Services share the classic menu_customers route key.
       keys.add('menu_customers');
       continue;
     }
-    // Vendor Services matrix: vendors_* / vendor.users|permissions|disputes (+ classic bridge).
+    // Vendor Services matrix: vendor_* / vendors_* / vendor.users|permissions|disputes.
     if (
+      prefix === 'vendor' ||
+      prefix === 'vendor_module' ||
+      prefix.startsWith('vendor_') ||
+      prefix.startsWith('vendor.') ||
       prefix === 'vendors' ||
       prefix === 'vendors_module' ||
-      prefix.startsWith('vendors_') ||
-      prefix === 'vendor' ||
-      prefix.startsWith('vendor_') ||
-      prefix.startsWith('vendor.')
+      prefix.startsWith('vendors_')
     ) {
       keys.add('menu_vendors');
       continue;
@@ -290,31 +292,49 @@ export function hasMatrixModuleAccess(
   const mod = moduleKey.trim().toLowerCase();
   if (!mod || permissions.length === 0) return false;
 
+  // `vendor` ↔ `vendors` (BE enabled_modules / matrix use singular `vendor`).
+  const modAliases =
+    mod === 'vendor' || mod === 'vendors'
+      ? (['vendor', 'vendors'] as const)
+      : ([mod] as const);
+
   const accepted = new Set(levelsAtLeast(level));
 
   for (const raw of permissions) {
     if (typeof raw !== 'string' || !raw.trim()) continue;
     const key = raw.trim().toLowerCase();
 
-    // menu_{module} if backend emits it
-    if (key === `menu_${mod}` && (level === 'see' || accepted.has('see'))) return true;
+    for (const alias of modAliases) {
+      // menu_{module} if backend emits it
+      if (key === `menu_${alias}` && (level === 'see' || accepted.has('see'))) return true;
+      // menu_vendors is the classic sidebar key for Vendor Services
+      if (
+        (alias === 'vendor' || alias === 'vendors') &&
+        key === 'menu_vendors' &&
+        (level === 'see' || accepted.has('see'))
+      ) {
+        return true;
+      }
 
-    // {module}.view / {module}.manage (route guards)
-    if (key === `${mod}.view` && (level === 'see' || level === 'read')) return true;
-    if (key === `${mod}.manage`) return true;
-    if (key === `${mod}.read` && (level === 'see' || level === 'read')) return true;
-    if (key === `${mod}.write` && level === 'write') return true;
-    if (key === `${mod}.see` && level === 'see') return true;
+      // {module}.view / {module}.manage (route guards)
+      if (key === `${alias}.view` && (level === 'see' || level === 'read')) return true;
+      if (key === `${alias}.manage`) return true;
+      if (key === `${alias}.read` && (level === 'see' || level === 'read')) return true;
+      if (key === `${alias}.write` && level === 'write') return true;
+      if (key === `${alias}.see` && level === 'see') return true;
+    }
 
     const dot = key.lastIndexOf('.');
     if (dot <= 0) continue;
     const prefix = key.slice(0, dot);
     const flag = key.slice(dot + 1) as MatrixAccessLevel | 'view' | 'manage';
 
-    const matchesModule =
-      prefix === `${mod}_module` ||
-      prefix === mod ||
-      prefix.startsWith(`${mod}_`);
+    const matchesModule = modAliases.some(
+      (alias) =>
+        prefix === `${alias}_module` ||
+        prefix === alias ||
+        prefix.startsWith(`${alias}_`),
+    );
 
     if (!matchesModule) continue;
 

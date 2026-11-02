@@ -2,10 +2,11 @@ import { isUuid } from '@/lib/isUuid';
 import {
   asRecord,
   normalizeMeta,
+  pickBoolean,
   pickNumber,
   pickString,
   unwrapData,
-  unwrapList
+  unwrapList,
 } from '@/features/portal-shared/normalize';
 import type {
   PortalCreditNoteDetail, PortalCreditNoteLine, PortalCreditNoteListItem, PortalCreditNoteListResult,
@@ -37,6 +38,7 @@ export function normalizeCreditNoteListItem(
   const r = asRecord(raw); if (!r) return null;
   const id = pickString(r.id); if (!id) return null;
   const credited = asRecord(r.credited_invoice) ?? asRecord(r.invoice) ?? asRecord(r.source_invoice);
+  const job = asRecord(r.job) ?? asRecord(r.shipment);
   const prefix = kind === 'debit' ? 'DN' : 'CN';
   const number =
     humanCode(
@@ -64,6 +66,15 @@ export function normalizeCreditNoteListItem(
         r.created_at,
       ) || undefined,
     totalAmount: pickNumber(r.total_amount, r.totalAmount, r.total),
+    outstandingBalance: pickNumber(
+      r.outstanding_balance,
+      r.outstandingBalance,
+      r.balance_due,
+      r.balanceDue,
+      r.remaining_amount,
+      r.remainingAmount,
+    ),
+    paidAmount: pickNumber(r.paid_amount, r.paidAmount, r.amount_paid, r.amountPaid),
     creditedInvoiceId:
       pickString(
         r.credited_invoice_id,
@@ -82,6 +93,41 @@ export function normalizeCreditNoteListItem(
           credited?.number,
         ),
         // Avoid treating the note's own number / UUID as the source invoice label.
+      ) || undefined,
+    jobId: pickString(r.job_id, r.jobId, job?.id) || undefined,
+    jobNumber:
+      humanCode(
+        pickString(
+          r.job_number,
+          r.jobNumber,
+          r.job_no,
+          job?.job_number,
+          job?.jobNumber,
+          job?.number,
+          job?.reference,
+        ),
+      ) || undefined,
+    hasAttachment: (() => {
+      const flagged = pickBoolean(r.has_attachment, r.hasAttachment);
+      if (flagged != null) return flagged;
+      return Boolean(
+        pickString(
+          r.attachment_name,
+          r.attachmentName,
+          r.attachment_url,
+          r.attachmentUrl,
+          r.file_name,
+          r.fileName,
+        ),
+      );
+    })(),
+    attachmentName:
+      pickString(
+        r.attachment_name,
+        r.attachmentName,
+        r.file_name,
+        r.fileName,
+        r.original_name,
       ) || undefined,
     kind,
   };

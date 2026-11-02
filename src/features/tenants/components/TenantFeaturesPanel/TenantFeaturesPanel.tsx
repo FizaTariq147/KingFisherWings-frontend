@@ -5,6 +5,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import {
   TENANT_ENABLED_MODULE_KEYS,
   TENANT_ENABLED_MODULE_OPTIONS,
+  canonicalizeTenantModuleKey,
 } from '../../constants/tenantModules.constants';
 import { useUpdateTenantFeatures } from '../../hooks/useTenants';
 import { tenantService } from '../../services/tenant.service';
@@ -23,7 +24,12 @@ const FALLBACK_OPTIONS: ModuleOption[] = TENANT_ENABLED_MODULE_OPTIONS.map((m) =
 
 function defaultSelectedModules(tenant: Tenant, catalogKeys: Set<string>): string[] {
   if (tenant.enabled_modules?.length) {
-    return tenant.enabled_modules.filter((key) => catalogKeys.has(key));
+    const selected = new Set<string>();
+    for (const raw of tenant.enabled_modules) {
+      const key = canonicalizeTenantModuleKey(raw) || raw.trim();
+      if (catalogKeys.has(key)) selected.add(key);
+    }
+    return [...selected];
   }
   // Missing/empty from API = unrestricted workspace → show full catalog checked.
   return [...catalogKeys];
@@ -96,7 +102,13 @@ export function TenantFeaturesPanel({ tenant }: TenantFeaturesPanelProps) {
   const save = async () => {
     setError(null);
     setMessage(null);
-    const enabled_modules = selected.filter((key) => validKeys.has(key));
+    const enabled_modules = [
+      ...new Set(
+        selected
+          .map((key) => canonicalizeTenantModuleKey(key) || key.trim())
+          .filter((key) => validKeys.has(key)),
+      ),
+    ];
     if (enabled_modules.length === 0) {
       setError('Select at least one module. An empty allow-list would lock out the workspace.');
       return;
@@ -107,7 +119,7 @@ export function TenantFeaturesPanel({ tenant }: TenantFeaturesPanelProps) {
         quote_requests_bridge: bridge,
       });
       setMessage(
-        'Features saved. Permission matrix, role presets, and reports filter to these modules. Ask tenant users to sign in again so JWT picks up the change. Run Sync permissions after enabling Shipments so roles receive shipments.view / create / update / generate.',
+        'Features saved. Permission matrix, role presets, and reports filter to these modules (use vendor + parties — not vendors). Ask tenant users to sign in again so JWT picks up the change. Run Sync permissions after enabling Shipments / Vendor so roles receive the new keys.',
       );
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to update features.');

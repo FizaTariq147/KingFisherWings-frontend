@@ -11,6 +11,7 @@ import type {
   RoleSummary,
   UserPermissionAssignment,
 } from '../types/userPermissionMatrix.types';
+import { canonicalizeTenantModuleKey } from '@/features/tenants/constants/tenantModules.constants';
 import {
   flagsFromAccess,
   normalizeGrantFlags,
@@ -83,11 +84,13 @@ function normalizeSubmodule(raw: unknown): PermissionSubmoduleNode | null {
 function normalizeModule(raw: unknown): PermissionModuleNode | null {
   const record = asRecord(raw);
   if (!record) return null;
-  const module =
+  const rawModule =
     pickString(record.module, record.key, record.slug, record.code, record.name) || '';
-  if (!module) return null;
+  if (!rawModule) return null;
+  const module = canonicalizeTenantModuleKey(rawModule) || rawModule;
   const label =
-    pickString(record.label, record.name, record.title, record.module_label) || titleCase(module);
+    pickString(record.label, record.name, record.title, record.module_label) ||
+    (module === 'vendor' ? 'Vendor Services' : titleCase(module));
 
   const nested =
     (Array.isArray(record.submodules) && record.submodules) ||
@@ -278,10 +281,25 @@ export function applyGrantsToMatrix(
       return [`${n.module}::${n.submodule}`, n] as const;
     }),
   );
+  const lookup = (moduleKey: string, submoduleKey: string) => {
+    const mod = normalizeGrantFlags({
+      module: moduleKey,
+      submodule: submoduleKey,
+      access: 'none',
+    }).module;
+    const sub = submoduleKey.trim().toLowerCase();
+    return (
+      map.get(`${mod}::${sub}`) ||
+      map.get(`${moduleKey}::${submoduleKey}`) ||
+      // Legacy misspelling: vendors ↔ vendor
+      (mod === 'vendor' ? map.get(`vendors::${sub}`) : undefined) ||
+      (mod === 'vendors' ? map.get(`vendor::${sub}`) : undefined)
+    );
+  };
   return modules.map((mod) => ({
     ...mod,
     submodules: mod.submodules.map((sub) => {
-      const grant = map.get(`${mod.module}::${sub.submodule}`);
+      const grant = lookup(mod.module, sub.submodule);
       if (!grant) {
         return { ...sub, access: 'none' as const, see: false, read: false, write: false };
       }
@@ -392,4 +410,4 @@ export function matrixGrantsFromAccessGrants(
     }),
   );
 }
-
+
