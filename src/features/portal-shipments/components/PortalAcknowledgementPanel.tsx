@@ -136,10 +136,16 @@ export function PortalAcknowledgementPanel({
 
   const ack = query.data;
   const status = (ack?.status || statusHint || 'DRAFT').toUpperCase();
+  const canMarkReceived = status === 'SENT_TO_CUSTOMER';
   const readOnly =
     status === 'SUBMITTED' ||
     status === 'ACKNOWLEDGED_BY_CUSTOMER' ||
-    status === 'RECEIVED_BY_ADMIN';
+    status === 'RECEIVED_BY_ADMIN' ||
+    !canMarkReceived;
+  const waitingForForwarder = status === 'DRAFT' || (!ack?.id && status !== 'SENT_TO_CUSTOMER');
+  const adminMessage =
+    ack?.admin_message || ack?.template_message || undefined;
+  const ackAttachments = ack?.attachments ?? [];
   const containerOptions = useMemo(() => {
     if (containers.length) {
       return containers
@@ -230,15 +236,70 @@ export function PortalAcknowledgementPanel({
         </Badge>
       </div>
       <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
-        Confirm receipt of the acknowledgement sent by staff. Pick a container when more than one
-        applies. Staff will then mark it as received.
+        Your forwarder sends a written acknowledgement first. When status is Sent to customer, mark
+        it received below. Staff will then close it on their side.
       </p>
       {error ? <p className="mb-2 text-sm text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="mb-2 text-sm text-[var(--color-success-700)]">{msg}</p> : null}
+      {waitingForForwarder && !canMarkReceived ? (
+        <p className="mb-3 rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2 text-sm text-[var(--color-neutral-600)]">
+          Waiting for forwarder — acknowledgement has not been sent yet.
+        </p>
+      ) : null}
+      {status === 'ACKNOWLEDGED_BY_CUSTOMER' || status === 'SUBMITTED' ? (
+        <p className="mb-3 rounded-md border border-[var(--color-primary-100)] bg-[var(--color-primary-50)] px-3 py-2 text-sm text-[var(--color-neutral-700)]">
+          You marked this received
+          {ack?.customer_acknowledged_at || ack?.acknowledged_at
+            ? ` at ${ack.customer_acknowledged_at || ack.acknowledged_at}`
+            : ''}
+          . Waiting for the forwarder to close it.
+        </p>
+      ) : null}
+      {status === 'RECEIVED_BY_ADMIN' ? (
+        <p className="mb-3 rounded-md border border-[var(--color-success-200,#BBF7D0)] bg-[var(--color-success-50,#F0FDF4)] px-3 py-2 text-sm text-[var(--color-neutral-700)]">
+          Already completed — forwarder marked this acknowledgement received.
+        </p>
+      ) : null}
       {query.isLoading ? (
         <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>
       ) : (
         <div className="grid gap-3 sm:grid-cols-2">
+          {adminMessage ? (
+            <div className="sm:col-span-2 rounded-md border border-[var(--color-neutral-200)] bg-white px-3 py-2">
+              <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--color-neutral-500)]">
+                Message from forwarder
+              </p>
+              <p className="mt-1 whitespace-pre-wrap text-sm text-[var(--color-neutral-900)]">
+                {adminMessage}
+              </p>
+            </div>
+          ) : null}
+          {ackAttachments.length > 0 ? (
+            <div className="sm:col-span-2 space-y-1">
+              <p className="inline-flex items-center gap-1.5 text-[12px] font-semibold text-[var(--color-neutral-800)]">
+                <Paperclip className="h-3.5 w-3.5" aria-hidden />
+                Forwarder attachments
+              </p>
+              <ul className="space-y-1 text-[13px]">
+                {ackAttachments.map((a) => (
+                  <li key={a.id}>
+                    {a.file_url ? (
+                      <a
+                        className="text-[var(--color-primary)] underline"
+                        href={a.file_url}
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {a.file_name || 'Attachment'}
+                      </a>
+                    ) : (
+                      a.file_name || 'Attachment'
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
           {templateBlocks.length ? (
             <div className="sm:col-span-2 space-y-3">
               {templateBlocks.map((block) => (
@@ -246,7 +307,7 @@ export function PortalAcknowledgementPanel({
               ))}
             </div>
           ) : null}
-          {readOnly ? (
+          {readOnly && !canMarkReceived ? (
             <ul className="sm:col-span-2 divide-y divide-[#e8edf2] rounded-sm border border-[var(--color-neutral-200)] bg-white">
               {[
                 { label: 'Receiver name', value: receiverName },
@@ -454,7 +515,7 @@ export function PortalAcknowledgementPanel({
           </div>
         </div>
       )}
-      {!readOnly ? (
+      {canMarkReceived ? (
         <div className="mt-4">
           <Button
             type="button"
@@ -462,7 +523,7 @@ export function PortalAcknowledgementPanel({
             disabled={submit.isPending || !receiverName.trim()}
             onClick={() => void onSubmit()}
           >
-            {submit.isPending ? 'Submitting…' : 'Submit acknowledgement'}
+            {submit.isPending ? 'Submitting…' : 'Mark received'}
           </Button>
         </div>
       ) : null}

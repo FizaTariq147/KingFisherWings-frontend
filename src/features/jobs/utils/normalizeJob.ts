@@ -1325,7 +1325,9 @@ export function normalizeDeliveryAcknowledgement(raw: unknown): DeliveryAcknowle
     asRecord(r.delivery_acknowledgement) ??
     asRecord(r.proof_of_delivery) ??
     r;
-  const pathHintsRaw = nested.path_hints ?? nested.pathHints ?? r.path_hints;
+  const template = asRecord(r.template) ?? asRecord(nested.template);
+  const pathHintsRaw =
+    nested.path_hints ?? nested.pathHints ?? r.path_hints ?? r.pathHints;
   let path_hints: DeliveryAcknowledgement['path_hints'];
   if (Array.isArray(pathHintsRaw)) {
     path_hints = pathHintsRaw.map(String);
@@ -1334,13 +1336,82 @@ export function normalizeDeliveryAcknowledgement(raw: unknown): DeliveryAcknowle
       Object.entries(asRecord(pathHintsRaw)!).map(([k, v]) => [k, String(v ?? '')]),
     );
   }
+  const attachmentsRaw =
+    nested.attachments ?? r.attachments ?? template?.attachments;
+  const attachments: DeliveryAcknowledgement['attachments'] = Array.isArray(attachmentsRaw)
+    ? attachmentsRaw
+        .map((row) => {
+          const a = asRecord(row);
+          if (!a) return null;
+          const id = pickString(a, 'id', 'attachment_id');
+          if (!id) return null;
+          return {
+            id,
+            file_name:
+              pickString(a, 'file_name', 'fileName', 'filename', 'name') || undefined,
+            file_url: pickString(a, 'file_url', 'fileUrl', 'url', 'download_url') || undefined,
+            mime_type: pickString(a, 'mime_type', 'mimeType', 'content_type') || undefined,
+          };
+        })
+        .filter((a): a is NonNullable<typeof a> => Boolean(a))
+    : undefined;
+
+  const customerMarked =
+    nested.customer_marked_received === true ||
+    nested.customerMarkedReceived === true ||
+    r.customer_marked_received === true ||
+    r.customerMarkedReceived === true
+      ? true
+      : nested.customer_marked_received === false ||
+          nested.customerMarkedReceived === false ||
+          r.customer_marked_received === false
+        ? false
+        : undefined;
+
+  const status =
+    pickString(
+      nested,
+      'status',
+      'acknowledgement_status',
+      'ack_status',
+    ).toUpperCase() ||
+    pickString(r, 'acknowledgement_status', 'status').toUpperCase() ||
+    'DRAFT';
+
   return {
     id: pickString(nested, 'id') || undefined,
-    job_id: pickString(nested, 'job_id', 'jobId') || undefined,
+    job_id:
+      pickString(nested, 'job_id', 'jobId') ||
+      pickString(r, 'job_id', 'jobId') ||
+      undefined,
+    job_number:
+      pickString(nested, 'job_number', 'jobNumber') ||
+      pickString(r, 'job_number', 'jobNumber') ||
+      undefined,
     container_id: pickString(nested, 'container_id', 'containerId') || undefined,
-    status:
-      pickString(nested, 'status', 'acknowledgement_status', 'ack_status').toUpperCase() ||
-      'DRAFT',
+    status,
+    admin_message:
+      pickString(
+        nested,
+        'admin_message',
+        'adminMessage',
+        'message',
+      ) ||
+      pickString(template ?? {}, 'message') ||
+      undefined,
+    customer_marked_received:
+      customerMarked ??
+      (status === 'ACKNOWLEDGED_BY_CUSTOMER' || status === 'RECEIVED_BY_ADMIN'
+        ? true
+        : status === 'SENT_TO_CUSTOMER' || status === 'DRAFT'
+          ? false
+          : undefined),
+    customer_acknowledged_at:
+      pickString(
+        nested,
+        'customer_acknowledged_at',
+        'customerAcknowledgedAt',
+      ) || undefined,
     acknowledged_at:
       pickString(nested, 'acknowledged_at', 'acknowledgedAt') || undefined,
     receiver_name: pickString(nested, 'receiver_name', 'receiverName', 'received_by') || undefined,
@@ -1355,15 +1426,19 @@ export function normalizeDeliveryAcknowledgement(raw: unknown): DeliveryAcknowle
       pickString(nested, 'signature_url', 'signatureUrl', 'signature_file_url') || undefined,
     template_snapshot:
       (nested.template_snapshot as string | Record<string, unknown> | undefined) ??
-      (nested.templateSnapshot as string | Record<string, unknown> | undefined),
+      (nested.templateSnapshot as string | Record<string, unknown> | undefined) ??
+      (template as Record<string, unknown> | undefined),
+    template_message: pickString(template ?? {}, 'message') || undefined,
     submitted_by_party_id:
       pickString(nested, 'submitted_by_party_id', 'submittedByPartyId') || undefined,
     received_by_user_id:
       pickString(nested, 'received_by_user_id', 'receivedByUserId') || undefined,
+    sent_at: pickString(nested, 'sent_at', 'sentAt') || undefined,
     received_at: pickString(nested, 'received_at', 'receivedAt') || undefined,
     actual_delivery_date:
       pickString(nested, 'actual_delivery_date', 'actualDeliveryDate') || undefined,
+    attachments,
     path_hints,
-    raw: nested,
+    raw: { ...r, ...nested },
   };
 }

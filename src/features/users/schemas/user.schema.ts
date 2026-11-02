@@ -77,10 +77,14 @@ export const createUserSchema = userBasicSchema
   .merge(userOrganizationSchema)
   .merge(userRoleSchema)
   .merge(userFlagsSchema)
-  .merge(userSecuritySchema);
+  .merge(userSecuritySchema)
+  .extend({
+    /** POST /users — email login + temporary password (default true, like portal/vendor). */
+    send_email: z.boolean().default(true),
+  });
 
 export const updateUserSchema = createUserSchema
-  .omit({ tenant_id: true })
+  .omit({ tenant_id: true, send_email: true })
   .partial()
   .extend({
     single_device_login: z.boolean().optional(),

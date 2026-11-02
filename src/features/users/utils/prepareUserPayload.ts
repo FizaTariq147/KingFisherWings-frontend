@@ -38,6 +38,7 @@ const ALLOWED_USER_FIELDS = new Set([
   'permission_grants_mode',
   'single_device_login',
   'single_device_policy',
+  'send_email',
 ]);
 
 const OPTIONAL_UUID_FIELDS = ['company_id', 'branch_id', 'department_id', 'tenant_id'] as const;

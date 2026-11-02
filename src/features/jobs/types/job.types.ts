@@ -1887,16 +1887,30 @@ export interface CreateProofOfDeliveryDto {
 /** Delivery acknowledgement (extends ProofOfDelivery / 1:1 job). */
 export type DeliveryAcknowledgementStatus =
   | 'DRAFT'
+  | 'SENT_TO_CUSTOMER'
   | 'SUBMITTED'
   | 'ACKNOWLEDGED_BY_CUSTOMER'
   | 'RECEIVED_BY_ADMIN'
   | string;
 
+export interface DeliveryAcknowledgementAttachment {
+  id: string;
+  file_name?: string;
+  file_url?: string;
+  mime_type?: string;
+}
+
 export interface DeliveryAcknowledgement {
   id?: string;
   job_id?: string;
+  job_number?: string;
   container_id?: string;
   status: DeliveryAcknowledgementStatus;
+  /** Admin written text shown to the customer. */
+  admin_message?: string;
+  /** True after customer marks received (ACKNOWLEDGED_BY_CUSTOMER). */
+  customer_marked_received?: boolean;
+  customer_acknowledged_at?: string;
   acknowledged_at?: string;
   receiver_name?: string;
   receiver_title?: string;
@@ -1905,10 +1919,14 @@ export interface DeliveryAcknowledgement {
   signature_s3_key?: string;
   signature_url?: string;
   template_snapshot?: string | Record<string, unknown>;
+  /** Template.message from GET acknowledgement envelope. */
+  template_message?: string;
   submitted_by_party_id?: string;
   received_by_user_id?: string;
+  sent_at?: string;
   received_at?: string;
   actual_delivery_date?: string;
+  attachments?: DeliveryAcknowledgementAttachment[];
   path_hints?: Record<string, string> | string[];
   raw?: Record<string, unknown>;
 }
@@ -1925,8 +1943,12 @@ export interface SubmitDeliveryAcknowledgementDto {
 }
 
 export interface SendDeliveryAcknowledgementDto {
-  container_id?: string;
+  /** Required written acknowledgement for the customer (alias: remarks). */
+  message?: string;
   remarks?: string;
+  container_id?: string;
+  /** Optional multipart attachment. */
+  file?: File;
 }
 
 export interface CreatePaymentRequestFromJobDto {

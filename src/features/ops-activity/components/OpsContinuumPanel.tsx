@@ -52,6 +52,49 @@ function cell(row: Record<string, unknown>, ...keys: string[]): string {
   return '—';
 }
 
+/** Prefer nested actor.name from TimelineEvent; fall back to flat fields / summary suffix. */
+function resolveHistoryActor(row: Record<string, unknown>): string | undefined {
+  const nested = asRecord(row.actor);
+  const fromNested =
+    (typeof nested?.name === 'string' && nested.name.trim()) ||
+    (typeof nested?.full_name === 'string' && nested.full_name.trim()) ||
+    (typeof nested?.display_name === 'string' && nested.display_name.trim()) ||
+    '';
+  if (fromNested) return fromNested;
+  const flat = cell(
+    row,
+    'actor_name',
+    'actorName',
+    'user_name',
+    'userName',
+    'created_by_name',
+    'createdByName',
+    'created_by',
+    'performed_by',
+    'performedBy',
+  );
+  if (flat !== '—') return flat;
+  const summary = cell(row, 'summary', 'details', 'description', 'message');
+  const byMatch = /(?:—|-)?\s*by\s+(.+)$/i.exec(summary);
+  if (byMatch?.[1]?.trim()) return byMatch[1].trim();
+  return undefined;
+}
+
+function humanizeHistoryAction(action: string): string {
+  const key = action.trim().toUpperCase();
+  const labels: Record<string, string> = {
+    ACK_SENT_TO_CUSTOMER: 'Acknowledgement sent to customer',
+    ACK_BY_CUSTOMER: 'Customer marked acknowledgement received',
+    ACK_RECEIVED_BY_ADMIN: 'Admin marked acknowledgement received',
+    JOB_STATUS_CHANGE: 'Status changed',
+  };
+  if (labels[key]) return labels[key];
+  return action
+    .replace(/[_-]+/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim();
+}
+
 function RowList({
   loading,
   empty,
@@ -840,8 +883,14 @@ export function OpsContinuumPanel({
             loading={historyQ.isLoading}
             empty="No history events."
             items={history.map((row, i) => {
-              const title = cell(row, 'event', 'action', 'type', 'summary');
+              const actionRaw = cell(row, 'action', 'event', 'type');
               const summary = cell(row, 'summary', 'details', 'description', 'message');
+              const title =
+                actionRaw !== '—'
+                  ? humanizeHistoryAction(actionRaw)
+                  : summary !== '—'
+                    ? summary
+                    : 'Event';
               const location = cell(
                 row,
                 'location',
@@ -861,16 +910,13 @@ export function OpsContinuumPanel({
               ].filter(Boolean);
               return {
                 id: rowId(row, i),
-                title: title === '—' ? 'Event' : title,
+                title,
                 subtitle: subtitleParts.length ? subtitleParts.join(' — ') : undefined,
                 when: (() => {
                   const v = cell(row, 'created_at', 'timestamp', 'at');
                   return v === '—' ? undefined : v;
                 })(),
-                actor: (() => {
-                  const v = cell(row, 'actor_name', 'user_name', 'created_by');
-                  return v === '—' ? undefined : v;
-                })(),
+                actor: resolveHistoryActor(row),
               };
             })}
           />
