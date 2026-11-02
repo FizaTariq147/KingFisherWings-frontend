@@ -208,7 +208,7 @@ function CostingGridIconButton({
 const FIELD_LABEL =
   'mb-1 block text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]';
 const FIELD_CONTROL =
-  'w-full rounded-sm bg-white px-2 py-1.5 text-[13px] text-[#334155] focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]';
+  'h-9 w-full rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 text-[13px] text-[#334155] focus:outline-none focus:ring-1 focus:ring-[#FF751F] focus:border-[#FF751F]';
 const TAB_BTN =
   'px-3 py-1.5 text-[13px] font-medium border-b-2 -mb-px transition-colors';
 const TAB_ACTIVE =
@@ -698,14 +698,34 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     () =>
       chargeCodes
         .filter((c) => isUuid(String(c.id)))
-        .map((c) => ({
-          id: String(c.id),
-          code: String(c.code ?? '').trim(),
-          label: String(c.code ?? c.name ?? c.id),
-          name: String(c.name ?? c.code ?? '').trim(),
-        })),
+        .map((c) => {
+          const code = String(c.code ?? '').trim();
+          const name = String(c.name ?? '').trim();
+          const description = String(c.description ?? '').trim();
+          // Prefer human description/name for labels and the Description field — not code alone.
+          const narrative = description || name;
+          const label = narrative
+            ? code && narrative !== code
+              ? `${narrative} (${code})`
+              : narrative
+            : code || String(c.id);
+          return {
+            id: String(c.id),
+            code,
+            name,
+            description: narrative,
+            label,
+          };
+        }),
     [chargeCodes],
   );
+
+  const descriptionForChargeCode = (id: string): string => {
+    const opt = chargeCodeOpts.find((c) => c.id === id);
+    if (!opt) return '';
+    // Never fall back to code — description field should show narrative text.
+    return opt.description || opt.name || '';
+  };
 
   const taxRateOptions = useMemo(
     () =>
@@ -1466,7 +1486,10 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     const code = prorateCodeId.trim();
     closeDialog();
     resetAddForm();
-    if (isUuid(code)) setChargeCodeId(code);
+    if (isUuid(code)) {
+      setChargeCodeId(code);
+      setDescription(descriptionForChargeCode(code));
+    }
     setAddTab('cost');
     setDialog('add');
   };
@@ -2299,8 +2322,14 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                     className={`${FIELD_CONTROL} min-w-0 flex-1`}
                     value={chargeCodeId}
                     onChange={(e) => {
-                      setChargeCodeId(e.target.value);
-                      // Description stays independent of charge master name.
+                      const nextId = e.target.value;
+                      setChargeCodeId(nextId);
+                      // Prefill Description with charge description/name (not code).
+                      if (isUuid(nextId)) {
+                        setDescription(descriptionForChargeCode(nextId));
+                      } else {
+                        setDescription('');
+                      }
                     }}
                   >
                     <option value="">Select charge…</option>
@@ -3818,7 +3847,10 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
             return;
           }
           setChargeCodeId(id);
-          // Do not auto-fill description from master — OpenAPI keeps them independent.
+          const narrative =
+            String(record.description ?? '').trim() ||
+            String(record.name ?? '').trim();
+          if (narrative) setDescription(narrative);
         }}
       />
     </div>
