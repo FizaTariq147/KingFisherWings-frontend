@@ -1,3 +1,4 @@
+import { canonicalizeTenantModuleKey } from '@/features/tenants/constants/tenantModules.constants';
 import type {
   PermissionAccessLevel,
   PermissionAccessGrant,
@@ -42,19 +43,22 @@ export function parseAccessLevel(raw: unknown): PermissionAccessLevel | null {
   return null;
 }
 
-/** Ensure grant has both `access` and cascade booleans. */
+/** Ensure grant has both `access` and cascade booleans. Canonicalize module (vendors→vendor). */
 export function normalizeGrantFlags(
   partial: Partial<PermissionMatrixGrant> & {
     module: string;
     submodule: string;
   },
 ): PermissionMatrixGrant {
+  const module =
+    canonicalizeTenantModuleKey(partial.module) || partial.module.trim().toLowerCase();
+  const submodule = partial.submodule.trim().toLowerCase();
   const fromAccess = parseAccessLevel(partial.access);
   if (fromAccess) {
     const flags = flagsFromAccess(fromAccess);
     return {
-      module: partial.module,
-      submodule: partial.submodule,
+      module,
+      submodule,
       access: fromAccess,
       ...flags,
     };
@@ -65,8 +69,8 @@ export function normalizeGrantFlags(
   const access = accessFromFlags(see, read, write);
   const flags = flagsFromAccess(access);
   return {
-    module: partial.module,
-    submodule: partial.submodule,
+    module,
+    submodule,
     access,
     ...flags,
   };
@@ -83,7 +87,10 @@ export function toAccessGrants(grants: PermissionMatrixGrant[]): PermissionAcces
   });
 }
 
-/** Payload for PUT /users/:id/permission-matrix — prefer `access`, keep booleans for older APIs. */
+/**
+ * Payload for PUT /users/:id/permission-matrix.
+ * Canonical module keys (`vendor` not `vendors`) + `access` with see/read/write cascade.
+ */
 export function toMatrixUpdateGrants(grants: PermissionMatrixGrant[]): PermissionMatrixGrant[] {
   return grants.map((g) => normalizeGrantFlags(g));
 }

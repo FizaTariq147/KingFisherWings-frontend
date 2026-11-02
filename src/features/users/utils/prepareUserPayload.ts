@@ -130,8 +130,10 @@ export function prepareUserPayload<T extends Record<string, unknown>>(
       .map((row) => {
         if (!row || typeof row !== 'object') return null;
         const r = row as Record<string, unknown>;
-        const module = typeof r.module === 'string' ? r.module.trim() : '';
-        const submodule = typeof r.submodule === 'string' ? r.submodule.trim() : '';
+        const rawModule = typeof r.module === 'string' ? r.module.trim() : '';
+        const module =
+          rawModule.toLowerCase() === 'vendors' ? 'vendor' : rawModule.toLowerCase() || rawModule;
+        const submodule = typeof r.submodule === 'string' ? r.submodule.trim().toLowerCase() : '';
         const accessRaw = typeof r.access === 'string' ? r.access.trim().toLowerCase() : '';
         const access =
           accessRaw === 'none' || accessRaw === 'read' || accessRaw === 'write' ? accessRaw : null;

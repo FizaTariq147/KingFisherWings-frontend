@@ -487,8 +487,8 @@ const WORKSPACE_NAV_ITEMS: NavItem[] = [
     path: '/parties',
     Icon: Briefcase,
     permission: 'menu_customers',
-    matrixModule: 'support',
-    enabledModuleAny: ['support'],
+    matrixModule: 'parties',
+    enabledModuleAny: ['parties', 'support'],
     activePrefix: '/parties',
   },
   {
@@ -496,8 +496,8 @@ const WORKSPACE_NAV_ITEMS: NavItem[] = [
     path: '/vendors',
     Icon: Truck,
     permission: 'menu_vendors',
-    matrixModule: 'vendors',
-    enabledModuleAny: ['vendors', 'masters'],
+    matrixModule: 'vendor',
+    enabledModuleAny: ['vendor', 'masters'],
   },
   {
     label: 'Quotations',

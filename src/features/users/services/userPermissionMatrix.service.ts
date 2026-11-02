@@ -16,6 +16,7 @@ import {
   normalizeRolePresets,
   normalizeUserPermissionAssignment,
 } from '../utils/normalizeUserPermissionMatrix';
+import { toMatrixUpdateGrants } from '../utils/permissionAccess';
 
 function formatAxiosError(error: unknown): Error {
   if (error instanceof Error && !(error as { response?: unknown }).response) {
@@ -82,10 +83,10 @@ export const userPermissionMatrixService = {
     dto: UpdatePermissionMatrixDto | UpdateUserPermissionsDto,
   ): Promise<UserPermissionAssignment> {
     assertUserId(userId);
-    const grants =
-      'grants' in dto && Array.isArray(dto.grants)
-        ? dto.grants
-        : [];
+    const rawGrants =
+      'grants' in dto && Array.isArray(dto.grants) ? dto.grants : [];
+    // Canonicalize module keys (vendors→vendor) so Vendor Services grants persist.
+    const grants = toMatrixUpdateGrants(rawGrants);
     const body: UpdatePermissionMatrixDto = { grants };
 
     try {

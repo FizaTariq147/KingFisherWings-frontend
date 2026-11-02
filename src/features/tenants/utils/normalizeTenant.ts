@@ -117,15 +117,21 @@ function pickDeletedAt(raw: Record<string, unknown>): string | null {
 function pickEnabledModules(raw: Record<string, unknown>): string[] | undefined {
   const value = raw.enabled_modules ?? raw.enabledModules;
   if (!Array.isArray(value)) return undefined;
-  const modules = value
-    .map((item) => {
-      if (typeof item === 'string') return item.trim();
-      const record = asRecord(item);
-      if (!record) return '';
-      return coerceStringField(record.key ?? record.module ?? record.code ?? record.name);
-    })
-    .filter(Boolean);
-  return modules;
+  const modules = [
+    ...new Set(
+      value
+        .map((item) => {
+          if (typeof item === 'string') return item.trim();
+          const record = asRecord(item);
+          if (!record) return '';
+          return coerceStringField(record.key ?? record.module ?? record.code ?? record.name);
+        })
+        .filter(Boolean)
+        // Live API rejects `vendors` — canonicalize to `vendor`.
+        .map((key) => (key.toLowerCase() === 'vendors' ? 'vendor' : key)),
+    ),
+  ];
+  return modules.length ? modules : undefined;
 }
 
 function pickQuoteRequestsBridge(raw: Record<string, unknown>): boolean | undefined {

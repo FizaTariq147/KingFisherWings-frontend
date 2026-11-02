@@ -186,6 +186,16 @@ export default function PortalShipmentDetailPage() {
               type="button"
               size="sm"
               variant="secondary"
+              onClick={() =>
+                navigate(`/portal/debit-notes?job_id=${encodeURIComponent(id)}`)
+              }
+            >
+              Job ledger / debit
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
               onClick={() => navigate(`/portal/messages?job_id=${encodeURIComponent(id)}`)}
             >
               Message

@@ -1,10 +1,15 @@
-import { useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { useEffect, useMemo, useState } from 'react';
+import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { Download, Receipt } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { PortalApiError } from '@/lib/portalApiClient';
+import {
+  ATTACHMENT_UPLOAD_OPTIONS,
+  handleValidatedFileInput,
+} from '@/lib/fileUploadValidation';
+import { isUuid } from '@/lib/isUuid';
 import {
   PortalAnimatedList,
   PortalAnimatedListItem,
@@ -15,32 +20,94 @@ import {
   PortalPanel,
   portalSelectClassName,
 } from '@/features/portal-auth/components/portal-ui';
-import { useDownloadPortalCreditNotePdf, usePortalCreditNotes } from '../hooks/usePortalCreditNotes';
+import { usePortalShipments } from '@/features/portal-shipments/hooks/usePortalShipments';
+import {
+  useCreatePortalDebitNote,
+  useDownloadPortalCreditNotePdf,
+  usePortalCreditNotes,
+} from '../hooks/usePortalCreditNotes';
 import type { PortalNoteKind } from '../services/portalCreditNotes.service';
 
 const STATUSES = ['DRAFT', 'POSTED', 'SENT', 'PARTIALLY_PAID', 'PAID', 'CANCELLED', 'VOID'];
 
 export default function PortalCreditNotesPage() {
   const location = useLocation();
+  const [searchParams] = useSearchParams();
   const kind: PortalNoteKind = location.pathname.includes('/debit-notes') ? 'debit' : 'credit';
   const basePath = kind === 'debit' ? '/portal/debit-notes' : '/portal/credit-notes';
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('');
+  const jobFromUrl = searchParams.get('job_id')?.trim() || '';
+
   const params = useMemo(
     () => ({
       page,
       limit: 20,
       search: search.trim() || undefined,
       status: status || undefined,
+      job_id: isUuid(jobFromUrl) ? jobFromUrl : undefined,
     }),
-    [page, search, status],
+    [page, search, status, jobFromUrl],
   );
-  const { data, isLoading, isError, error, refetch, isFetching } = usePortalCreditNotes(params, kind);
+  const { data, isLoading, isError, error, refetch, isFetching } = usePortalCreditNotes(
+    params,
+    kind,
+  );
   const download = useDownloadPortalCreditNotePdf();
+  const createDebit = useCreatePortalDebitNote();
+  const shipments = usePortalShipments({ page: 1, limit: 50 });
   const [pdfError, setPdfError] = useState<string | null>(null);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [formMsg, setFormMsg] = useState<string | null>(null);
+  const [jobId, setJobId] = useState('');
+  const [amount, setAmount] = useState('');
+  const [currency, setCurrency] = useState('AED');
+  const [remarks, setRemarks] = useState('');
+  const [attachment, setAttachment] = useState<File | null>(null);
+
+  useEffect(() => {
+    if (isUuid(jobFromUrl)) setJobId(jobFromUrl);
+  }, [jobFromUrl]);
+
   const items = data?.items ?? [];
   const meta = data?.meta;
+  const jobOptions = (shipments.data?.items ?? []).filter((s) => isUuid(s.id));
+
+  const submitDebit = async () => {
+    setFormError(null);
+    setFormMsg(null);
+    const amt = Number(amount);
+    if (!isUuid(jobId)) {
+      setFormError('Select the job this advance / charge belongs to.');
+      return;
+    }
+    if (!Number.isFinite(amt) || amt <= 0) {
+      setFormError('Enter a positive amount.');
+      return;
+    }
+    try {
+      const created = await createDebit.mutateAsync({
+        job_id: jobId,
+        amount: amt,
+        currency_code: currency.trim().toUpperCase() || 'AED',
+        remarks: remarks.trim() || undefined,
+        description: remarks.trim() || 'Advance payment on job',
+        file: attachment ?? undefined,
+      });
+      setFormMsg(`Debit note ${created.number} created for the job ledger.`);
+      setAmount('');
+      setRemarks('');
+      setAttachment(null);
+      void refetch();
+    } catch (err) {
+      setFormError(
+        err instanceof PortalApiError || err instanceof Error
+          ? err.message
+          : 'Could not create debit note.',
+      );
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -48,8 +115,8 @@ export default function PortalCreditNotesPage() {
         title={kind === 'debit' ? 'Debit notes' : 'Credit notes'}
         description={
           kind === 'debit'
-            ? 'Debit notes issued on your account.'
-            : 'Credit notes applied to your account.'
+            ? 'Debit notes on your jobs — pay admin-issued notes, or create one with a payment proof for an advance.'
+            : 'Credit notes applied to your account (including advances recorded by staff on a job).'
         }
         actions={
           <div className="flex gap-2">
@@ -76,6 +143,110 @@ export default function PortalCreditNotesPage() {
           </div>
         }
       />
+
+      {kind === 'debit' ? (
+        <PortalPanel padded>
+          <h2 className="mb-1 text-sm font-semibold text-[var(--color-neutral-900)]">
+            New debit note (job ledger)
+          </h2>
+          <p className="mb-3 text-xs text-[var(--color-neutral-500)]">
+            Record an advance payment you made on a job (no invoice required). Attach a receipt or
+            proof — staff see it on the job ledger.
+          </p>
+          {formError ? (
+            <p className="mb-2 text-sm text-[var(--color-danger-600)]" role="alert">
+              {formError}
+            </p>
+          ) : null}
+          {formMsg ? (
+            <p className="mb-2 text-sm text-[var(--color-success-700)]" role="status">
+              {formMsg}
+            </p>
+          ) : null}
+          <div className="grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm sm:col-span-2">
+              <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+                Job *
+              </span>
+              <select
+                className={portalSelectClassName}
+                value={jobId}
+                onChange={(e) => setJobId(e.target.value)}
+              >
+                <option value="">Select job…</option>
+                {jobOptions.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.jobNumber || s.reference || s.id.slice(0, 8).toUpperCase()}
+                    {s.origin || s.destination
+                      ? ` — ${[s.origin, s.destination].filter(Boolean).join(' → ')}`
+                      : ''}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <Input
+              label="Amount *"
+              type="number"
+              min={0}
+              step="0.01"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+            />
+            <Input
+              label="Currency"
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value.toUpperCase())}
+              maxLength={3}
+            />
+            <label className="block text-sm sm:col-span-2">
+              <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+                Remarks
+              </span>
+              <textarea
+                className="min-h-[72px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+                placeholder="e.g. Advance payment for job — bank transfer proof attached"
+              />
+            </label>
+            <label className="block text-sm sm:col-span-2">
+              <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+                Attachment (optional)
+              </span>
+              <input
+                type="file"
+                key={attachment ? attachment.name : 'dn-no-file'}
+                className="block w-full text-sm text-[var(--color-neutral-700)] file:mr-3 file:rounded-md file:border-0 file:bg-[var(--color-neutral-100)] file:px-3 file:py-1.5 file:text-sm"
+                onChange={(e) =>
+                  handleValidatedFileInput(
+                    e.target.files,
+                    setAttachment,
+                    undefined,
+                    ATTACHMENT_UPLOAD_OPTIONS,
+                  )
+                }
+              />
+              {attachment ? (
+                <p className="mt-1 text-xs text-[var(--color-neutral-500)]">{attachment.name}</p>
+              ) : (
+                <p className="mt-1 text-xs text-[var(--color-neutral-400)]">
+                  Payment proof (PDF, image, or spreadsheet).
+                </p>
+              )}
+            </label>
+          </div>
+          <div className="mt-3">
+            <Button
+              type="button"
+              disabled={createDebit.isPending}
+              onClick={() => void submitDebit()}
+            >
+              {createDebit.isPending ? 'Creating…' : 'Create debit note'}
+            </Button>
+          </div>
+        </PortalPanel>
+      ) : null}
+
       <PortalPanel padded>
         <div className="grid gap-3 sm:grid-cols-2">
           <Input
@@ -107,6 +278,14 @@ export default function PortalCreditNotesPage() {
             </select>
           </label>
         </div>
+        {isUuid(jobFromUrl) ? (
+          <p className="mt-2 text-xs text-[var(--color-neutral-500)]">
+            Filtered to job {jobFromUrl.slice(0, 8).toUpperCase()}.{' '}
+            <Link to={basePath} className="underline">
+              Clear
+            </Link>
+          </p>
+        ) : null}
       </PortalPanel>
       {pdfError ? (
         <p className="text-sm text-[var(--color-danger-600)]" role="alert">
@@ -133,8 +312,8 @@ export default function PortalCreditNotesPage() {
             title={kind === 'debit' ? 'No debit notes' : 'No credit notes'}
             description={
               kind === 'debit'
-                ? 'Debit notes will appear here when issued.'
-                : 'Credit notes will appear here when issued.'
+                ? 'Create a debit note above for an advance, or wait for staff to issue one.'
+                : 'Credit notes will appear here when issued on your account or job ledger.'
             }
             Icon={Receipt}
           />
@@ -149,6 +328,7 @@ export default function PortalCreditNotesPage() {
                   <div className="text-sm font-semibold truncate">{cn.number}</div>
                   <div className="text-xs text-[var(--color-neutral-500)]">
                     {[
+                      cn.jobNumber ? `Job ${cn.jobNumber}` : null,
                       cn.creditedInvoiceNumber
                         ? `Invoice ${cn.creditedInvoiceNumber}`
                         : null,
@@ -161,7 +341,9 @@ export default function PortalCreditNotesPage() {
                   </div>
                 </Link>
                 <div className="flex items-center gap-2 shrink-0">
-                  {cn.status ? <Badge variant="info">{cn.status.replaceAll('_', ' ')}</Badge> : null}
+                  {cn.status ? (
+                    <Badge variant="info">{cn.status.replaceAll('_', ' ')}</Badge>
+                  ) : null}
                   <Button
                     type="button"
                     size="sm"

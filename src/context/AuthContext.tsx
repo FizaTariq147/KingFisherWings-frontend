@@ -586,10 +586,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (DEV_BYPASS_AUTH) return true
       if (!user) return false
       const key = moduleKey.trim().toLowerCase()
-      // TENANT_ADMIN always keeps parties (support) + vendor services.
+      // TENANT_ADMIN always keeps parties + vendor services (BE keys: parties, vendor).
       if (
         (isTenantUserManagerRole(user.role.slug) || isTenantUserManagerRole(user.role.name)) &&
-        (key === 'vendors' || key === 'support' || key === 'parties')
+        (key === 'vendor' ||
+          key === 'vendors' ||
+          key === 'support' ||
+          key === 'parties')
       ) {
         return true
       }

@@ -18,6 +18,8 @@ import {
 } from '@/features/invoices/constants/invoice.constants';
 import { useJob } from '@/features/jobs/hooks/useJobs';
 import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
+import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
+import { isUuid } from '@/lib/isUuid';
 import { DEBIT_NOTE_ROUTE_PREFIX } from '../api/debitNote.api';
 import { useDebitNote, usePostDebitNote } from '../hooks/useDebitNotes';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -239,6 +241,15 @@ export default function DebitNoteDetailPage() {
                     )}
                   </div>
                 </Card>
+                {debitNote.job_id && isUuid(debitNote.job_id) ? (
+                  <SectionAttachmentsPanel
+                    entity="jobs"
+                    entityId={debitNote.job_id}
+                    section="payment_requests"
+                    recordId={debitNote.id}
+                    title="Payment proof / attachments (visible on job + portal documents)"
+                  />
+                ) : null}
               </div>
             ),
           },

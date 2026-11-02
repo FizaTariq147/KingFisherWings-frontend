@@ -6,12 +6,14 @@ import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf
 import { portalInvoiceToPdfModel } from '@/features/invoices/utils/invoiceToPdfModel';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
 import { applyPortalInvoicePdfChrome } from '@/features/portal-shared/applyPortalInvoicePdfChrome';
-import { fetchPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
-import { safeDownloadFilename } from '@/features/portal-shared/normalize';
+import { downloadPortalBlob, fetchPortalBlob } from '@/features/portal-shared/downloadPortalBlob';
+import { postPortalWithOptionalFile } from '@/features/portal-shared/portalMultipart';
+import { safeDownloadFilename, unwrapData, pickString, pickNumber, asRecord } from '@/features/portal-shared/normalize';
 import { PORTAL_CREDIT_NOTES_API, PORTAL_DEBIT_NOTES_API } from '../api/portalCreditNotes.api';
 import { portalInvoicesService } from '@/features/portal-invoices/services/portalInvoices.service';
 import { isUuid } from '@/lib/isUuid';
 import type {
+  PortalCreateDebitNoteDto,
   PortalCreditNoteDetail,
   PortalCreditNoteListItem,
   PortalCreditNoteListParams,
@@ -131,6 +133,85 @@ export const portalCreditNotesService = {
     if (!detail) throw new Error(`${kind === 'debit' ? 'Debit' : 'Credit'} note not found.`);
     const [enriched] = await enrichPortalNoteInvoiceNumbers([detail]);
     return { ...detail, ...(enriched ?? {}) };
+  },
+
+  /**
+   * POST /portal/debit-notes — customer creates a job-ledger debit note
+   * (e.g. advance payment proof) with optional attachment. No invoice required.
+   */
+  async createDebitNote(dto: PortalCreateDebitNoteDto): Promise<PortalCreditNoteDetail> {
+    if (!isUuid(dto.job_id)) throw new Error('Select a valid job.');
+    if (!Number.isFinite(dto.amount) || dto.amount <= 0) {
+      throw new Error('Enter a positive amount.');
+    }
+    const res = await postPortalWithOptionalFile(
+      PORTAL_DEBIT_NOTES_API.create,
+      {
+        job_id: dto.job_id.trim(),
+        amount: String(dto.amount),
+        currency_code: dto.currency_code?.trim().toUpperCase() || 'AED',
+        remarks: dto.remarks?.trim() || undefined,
+        description:
+          dto.description?.trim() ||
+          dto.remarks?.trim() ||
+          'Advance payment / job ledger debit',
+      },
+      dto.file,
+    );
+    const detail = normalizeCreditNoteDetail(unwrapData(res.data) ?? res.data, 'debit');
+    if (!detail) throw new Error('Could not create debit note.');
+    return detail;
+  },
+
+  async downloadDebitAttachment(
+    id: string,
+    fallbackName = 'debit-note-attachment',
+  ): Promise<void> {
+    await downloadPortalBlob(
+      PORTAL_DEBIT_NOTES_API.attachment(id),
+      safeDownloadFilename(fallbackName, 'debit-note-attachment'),
+      { accept: 'application/octet-stream, */*' },
+    );
+  },
+
+  /** POST /portal/debit-notes/:id/pay — start online payment for an admin-issued DN. */
+  async payDebitNote(
+    id: string,
+    body: Record<string, unknown> = {},
+  ): Promise<{ checkoutUrl?: string; status?: string }> {
+    const res = await portalApiClient.post(PORTAL_DEBIT_NOTES_API.pay(id), body);
+    const data = asRecord(unwrapData(res.data) ?? res.data) ?? {};
+    return {
+      checkoutUrl:
+        pickString(
+          data.checkout_url,
+          data.checkoutUrl,
+          data.url,
+          data.payment_url,
+          data.paymentUrl,
+        ) || undefined,
+      status: pickString(data.status, data.payment_status, data.paymentStatus) || undefined,
+    };
+  },
+
+  async debitPaymentStatus(id: string): Promise<{
+    status?: string;
+    paidAmount?: number;
+    outstandingAmount?: number;
+  }> {
+    const res = await portalApiClient.get(PORTAL_DEBIT_NOTES_API.paymentStatus(id));
+    const data = asRecord(unwrapData(res.data) ?? res.data) ?? {};
+    return {
+      status: pickString(data.status, data.payment_status, data.paymentStatus) || undefined,
+      paidAmount: pickNumber(data.paid_amount, data.paidAmount) ?? undefined,
+      outstandingAmount:
+        pickNumber(
+          data.outstanding_amount,
+          data.outstandingAmount,
+          data.balance_due,
+          data.remaining_amount,
+        ) ?? undefined,
+    };
   },
 
   async downloadPdf(

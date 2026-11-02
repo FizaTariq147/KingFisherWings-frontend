@@ -18,6 +18,8 @@ import {
 } from '@/features/invoices/constants/invoice.constants';
 import { useJob } from '@/features/jobs/hooks/useJobs';
 import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
+import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
+import { isUuid } from '@/lib/isUuid';
 import { CREDIT_NOTE_ROUTE_PREFIX } from '../api/creditNote.api';
 import { useCreditNote, usePostCreditNote } from '../hooks/useCreditNotes';
 import { getErrorMessage } from '../utils/getErrorMessage';
@@ -244,6 +246,15 @@ export default function CreditNoteDetailPage() {
                     )}
                   </div>
                 </Card>
+                {creditNote.job_id && isUuid(creditNote.job_id) ? (
+                  <SectionAttachmentsPanel
+                    entity="jobs"
+                    entityId={creditNote.job_id}
+                    section="payment_requests"
+                    recordId={creditNote.id}
+                    title="Payment proof / attachments (visible on job + portal documents)"
+                  />
+                ) : null}
               </div>
             ),
           },

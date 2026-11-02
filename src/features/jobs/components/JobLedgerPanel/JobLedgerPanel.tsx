@@ -114,7 +114,6 @@ function normalizeLedger(raw: unknown): LedgerRow[] {
     }
   }
 
-  // Deduplicate by id
   const map = new Map<string, LedgerRow>();
   for (const row of rows) map.set(row.id, row);
   void root;
@@ -126,7 +125,7 @@ interface JobLedgerPanelProps {
   partyId?: string;
 }
 
-/** GET /jobs/:id/ledger — invoices + CN/DN for the job. */
+/** GET /jobs/:id/ledger — invoices + CN/DN for the job (invoice optional for notes). */
 export function JobLedgerPanel({ jobId, partyId }: JobLedgerPanelProps) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const enabled = Boolean(accessToken) && isUuid(jobId);
@@ -178,9 +177,16 @@ export function JobLedgerPanel({ jobId, partyId }: JobLedgerPanelProps) {
       </CardHeader>
       <div className="space-y-3 px-4 pb-4">
         <p className="text-xs text-[var(--color-neutral-500)]">
-          Invoices and credit/debit notes linked to this job (CN/DN can be created with job + party,
-          no invoice required).
+          Job finance without an invoice: record an advance you received as a{' '}
+          <strong>credit note</strong> (job + party), or issue a <strong>debit note</strong> the
+          customer can see and pay. After creating a note, upload the payment proof on its detail
+          page. Customers can also create a debit note from the portal for the same job.
         </p>
+        {!partyId ? (
+          <p className="text-xs text-[var(--color-warning-700,#B45309)]">
+            Set the job customer / billing party so New CN/DN can prefill party.
+          </p>
+        ) : null}
         {query.isLoading ? (
           <p className="text-sm text-[var(--color-neutral-400)]">Loading ledger…</p>
         ) : null}

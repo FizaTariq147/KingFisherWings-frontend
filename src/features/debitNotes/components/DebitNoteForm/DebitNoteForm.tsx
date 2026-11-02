@@ -151,7 +151,8 @@ export function DebitNoteForm({
             </select>
             <FieldError message={fieldError('credited_invoice_id')} />
             <p className="text-xs text-[var(--color-neutral-400)]">
-              Against a posted invoice, or use job + party for a job-ledger debit note.
+              Against a posted invoice, or use job + party for a job-ledger debit note (customer can
+              see and pay it). Add a line for the amount, then attach proof on the detail page.
             </p>
           </div>
           <Controller

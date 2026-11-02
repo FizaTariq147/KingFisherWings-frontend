@@ -1,11 +1,14 @@
-import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { usePortalQueryScope } from '@/features/portal-shared/usePortalQueryScope';
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore';
 import {
   portalCreditNotesService,
   type PortalNoteKind,
 } from '../services/portalCreditNotes.service';
-import type { PortalCreditNoteListParams } from '../types/portalCreditNotes.types';
+import type {
+  PortalCreateDebitNoteDto,
+  PortalCreditNoteListParams,
+} from '../types/portalCreditNotes.types';
 
 export const portalCreditNoteKeys = {
   all: (scope: string, kind: PortalNoteKind = 'credit') =>
@@ -14,6 +17,8 @@ export const portalCreditNoteKeys = {
     [...portalCreditNoteKeys.all(scope, kind), 'list', params] as const,
   detail: (scope: string, kind: PortalNoteKind, id: string) =>
     [...portalCreditNoteKeys.all(scope, kind), 'detail', id] as const,
+  paymentStatus: (scope: string, id: string) =>
+    [...portalCreditNoteKeys.all(scope, 'debit'), 'payment-status', id] as const,
 };
 
 export function usePortalCreditNotes(
@@ -53,5 +58,57 @@ export function useDownloadPortalCreditNotePdf() {
       kind?: PortalNoteKind;
       name?: string;
     }) => portalCreditNotesService.downloadPdf(id, kind ?? 'credit', name),
+  });
+}
+
+export function useCreatePortalDebitNote() {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: (dto: PortalCreateDebitNoteDto) =>
+      portalCreditNotesService.createDebitNote(dto),
+    onSuccess: (data) => {
+      void qc.invalidateQueries({ queryKey: portalCreditNoteKeys.all(scope, 'debit') });
+      if (data?.id) {
+        qc.setQueryData(portalCreditNoteKeys.detail(scope, 'debit', data.id), data);
+      }
+    },
+  });
+}
+
+export function usePayPortalDebitNote(id: string) {
+  const qc = useQueryClient();
+  const scope = usePortalQueryScope();
+  return useMutation({
+    mutationFn: (body: Record<string, unknown> = {}) =>
+      portalCreditNotesService.payDebitNote(id, body),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: portalCreditNoteKeys.detail(scope, 'debit', id) });
+      void qc.invalidateQueries({ queryKey: portalCreditNoteKeys.paymentStatus(scope, id) });
+      void qc.invalidateQueries({ queryKey: portalCreditNoteKeys.all(scope, 'debit') });
+    },
+  });
+}
+
+export function usePortalDebitNotePaymentStatus(id: string, enabled = true) {
+  const accessToken = usePortalAuthStore((s) => s.accessToken);
+  const scope = usePortalQueryScope();
+  return useQuery({
+    queryKey: portalCreditNoteKeys.paymentStatus(scope, id),
+    queryFn: () => portalCreditNotesService.debitPaymentStatus(id),
+    enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
+    staleTime: 5_000,
+    refetchInterval: (q) => {
+      const status = String(q.state.data?.status ?? '').toUpperCase();
+      if (!status || /PAID|SUCCESS|COMPLETE|SETTLED|CANCEL/.test(status)) return false;
+      return 4_000;
+    },
+  });
+}
+
+export function useDownloadPortalDebitAttachment() {
+  return useMutation({
+    mutationFn: ({ id, name }: { id: string; name?: string }) =>
+      portalCreditNotesService.downloadDebitAttachment(id, name),
   });
 }

@@ -1,7 +1,10 @@
+import { tenantModuleKeyMatchers } from '../constants/tenantModules.constants';
+
 /**
  * Tenant `enabled_modules` allow-list semantics (matches Super Admin Features + /auth/me).
  * - undefined / null → unrestricted (all modules on)
  * - non-empty array → membership required (case-insensitive)
+ * - aliases: `vendors` ↔ `vendor`
  */
 export function isModuleEnabled(
   enabledModules: readonly string[] | null | undefined,
@@ -9,9 +12,9 @@ export function isModuleEnabled(
 ): boolean {
   if (enabledModules == null) return true;
   if (enabledModules.length === 0) return true;
-  const target = moduleKey.trim().toLowerCase();
-  if (!target) return true;
-  return enabledModules.some((key) => key.trim().toLowerCase() === target);
+  const matchers = new Set(tenantModuleKeyMatchers(moduleKey));
+  if (!matchers.size) return true;
+  return enabledModules.some((key) => matchers.has(key.trim().toLowerCase()));
 }
 
 export function pickEnabledModulesFromRecord(
