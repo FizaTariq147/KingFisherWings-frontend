@@ -138,56 +138,58 @@ function FieldInput({
   }
 
   if (resourceKey === 'departments' && field.name === 'name') {
+    const listId = `${field.name}-department-suggestions`;
     const current = value == null ? '' : String(value);
-    const withCurrent =
-      current && !DEPARTMENT_NAME_OPTIONS.some((o) => o.value === current)
-        ? [{ value: current, label: current }, ...DEPARTMENT_NAME_OPTIONS]
-        : [...DEPARTMENT_NAME_OPTIONS];
     return (
-      <SearchableSelect
-        name={field.name}
-        label={field.label}
-        required={field.required}
-        value={current}
-        options={withCurrent}
-        onChange={(next) => {
-          onChange(next);
-          onBlurValidate?.(field.name, next);
-        }}
-        error={error}
-        placeholder={field.placeholder ?? 'Select or type a department name…'}
-        emptyMessage="No matches — type your own name and press Enter"
-        allowManualUuid={false}
-        allowManualValue
-        hint="Pick a common department or type your own valid name"
-      />
+      <div className="space-y-1">
+        <Input
+          label={field.label}
+          name={field.name}
+          required={field.required}
+          value={current}
+          list={listId}
+          placeholder={field.placeholder ?? 'Type any department name…'}
+          error={error}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={(e) => onBlurValidate?.(field.name, e.target.value)}
+        />
+        <datalist id={listId}>
+          {DEPARTMENT_NAME_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value} />
+          ))}
+        </datalist>
+        <p className="text-[11px] text-[var(--color-neutral-400)]">
+          Type your own name, or pick a suggestion from the list.
+        </p>
+      </div>
     );
   }
 
   if (resourceKey === 'designations' && field.name === 'name') {
+    const listId = `${field.name}-designation-suggestions`;
     const current = value == null ? '' : String(value);
-    const withCurrent =
-      current && !DESIGNATION_NAME_OPTIONS.some((o) => o.value === current)
-        ? [{ value: current, label: current }, ...DESIGNATION_NAME_OPTIONS]
-        : [...DESIGNATION_NAME_OPTIONS];
     return (
-      <SearchableSelect
-        name={field.name}
-        label={field.label}
-        required={field.required}
-        value={current}
-        options={withCurrent}
-        onChange={(next) => {
-          onChange(next);
-          onBlurValidate?.(field.name, next);
-        }}
-        error={error}
-        placeholder={field.placeholder ?? 'Select or type a designation…'}
-        emptyMessage="No matches — type your own name and press Enter"
-        allowManualUuid={false}
-        allowManualValue
-        hint="Pick a common designation or type your own valid name"
-      />
+      <div className="space-y-1">
+        <Input
+          label={field.label}
+          name={field.name}
+          required={field.required}
+          value={current}
+          list={listId}
+          placeholder={field.placeholder ?? 'Type any designation…'}
+          error={error}
+          onChange={(e) => onChange(e.target.value)}
+          onBlur={(e) => onBlurValidate?.(field.name, e.target.value)}
+        />
+        <datalist id={listId}>
+          {DESIGNATION_NAME_OPTIONS.map((o) => (
+            <option key={o.value} value={o.value} />
+          ))}
+        </datalist>
+        <p className="text-[11px] text-[var(--color-neutral-400)]">
+          Type your own title, or pick a suggestion from the list.
+        </p>
+      </div>
     );
   }
 

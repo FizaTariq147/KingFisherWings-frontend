@@ -186,13 +186,57 @@ export function normalizeMasterRecords(raw: unknown): MasterRecord[] {
     .filter((item): item is MasterRecord => Boolean(item));
 }
 
-/** Display string for a cell / title. */
+function nestedRelationName(record: MasterRecord, key: string): string | undefined {
+  // department_id → department / department_name / nested { name }
+  if (!key.endsWith('_id') && !key.endsWith('Id')) return undefined;
+  const base = key.replace(/_id$/i, '').replace(/Id$/, '');
+  const camelBase = base.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase());
+  const nameDirect = pickScalar(
+    record[`${base}_name`],
+    record[`${camelBase}Name`],
+    record[`${base}Name`],
+  );
+  if (typeof nameDirect === 'string' && nameDirect.trim()) return nameDirect.trim();
+
+  const nested = asRecord(record[base]) ?? asRecord(record[camelBase]);
+  if (!nested) return undefined;
+  const nestedName = pickScalar(
+    nested.name,
+    nested.label,
+    nested.code,
+    nested.display_name,
+    nested.displayName,
+  );
+  return typeof nestedName === 'string' && nestedName.trim() ? nestedName.trim() : undefined;
+}
+
+/** Display string for a cell / title. Prefer relation names over raw UUIDs. */
 export function masterDisplayValue(record: MasterRecord, key: string): string {
+  const related = nestedRelationName(record, key);
+  if (related) return related;
+
   const value = pickMasterField(record, key);
   if (value == null) return '—';
   if (typeof value === 'boolean') return value ? 'Yes' : 'No';
   if (typeof value === 'number') return String(value);
-  if (typeof value === 'string') return value.trim() || '—';
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (!trimmed) return '—';
+    // UUID without a resolved name — hide raw id in UI (list/detail).
+    if (
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        trimmed,
+      )
+    ) {
+      return '—';
+    }
+    return trimmed;
+  }
   if (Array.isArray(value)) return value.map(String).join(', ') || '—';
+  const nested = asRecord(value);
+  if (nested) {
+    const name = pickScalar(nested.name, nested.label, nested.code);
+    if (typeof name === 'string' && name.trim()) return name.trim();
+  }
   return String(value);
 }

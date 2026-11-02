@@ -5,8 +5,14 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { PageBackLink } from '@/components/ui/PageBackLink';
+import { isUuid } from '@/lib/isUuid';
+import { MASTER_PATHS } from '../api/masterPaths';
 import { getMasterResource } from '../config/masterResources';
-import { useMasterDetail, useMasterMutations } from '../hooks/useMasterResource';
+import {
+  useMasterDetail,
+  useMasterMutations,
+  useMasterOptions,
+} from '../hooks/useMasterResource';
 import {
   useMasterPageRoute,
   type MasterPageRouteProps,
@@ -17,6 +23,11 @@ export default function MasterResourceDetailPage(props: MasterPageRouteProps = {
   const navigate = useNavigate();
   const { resourceKey, id, listPath, editPath } = useMasterPageRoute(props);
   const resource = getMasterResource(resourceKey);
+  const { data: departmentOptions = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    resourceKey === 'designations',
+  );
 
   // Exchange rates etc. — API has no GET /:id
   useEffect(() => {
@@ -149,14 +160,26 @@ export default function MasterResourceDetailPage(props: MasterPageRouteProps = {
           <CardTitle>Details</CardTitle>
         </CardHeader>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm">
-          {resource.fields.map((field) => (
-            <div key={field.name}>
-              <dt className="text-xs text-[var(--color-neutral-400)]">{field.label}</dt>
-              <dd className="mt-0.5 text-[var(--color-neutral-800)]">
-                {masterDisplayValue(data, field.name)}
-              </dd>
-            </div>
-          ))}
+          {resource.fields.map((field) => {
+            let display = masterDisplayValue(data, field.name);
+            if (
+              field.name === 'department_id' &&
+              (display === '—' || isUuid(display)) &&
+              typeof data.department_id === 'string'
+            ) {
+              const match = departmentOptions.find((d) => d.id === data.department_id);
+              if (match) {
+                const name = masterDisplayValue(match, 'name');
+                if (name !== '—') display = name;
+              }
+            }
+            return (
+              <div key={field.name}>
+                <dt className="text-xs text-[var(--color-neutral-400)]">{field.label}</dt>
+                <dd className="mt-0.5 text-[var(--color-neutral-800)]">{display}</dd>
+              </div>
+            );
+          })}
         </dl>
       </Card>
     </div>

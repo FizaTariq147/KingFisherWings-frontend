@@ -458,7 +458,7 @@ export const MASTER_RESOURCES: Record<MasterResourceKey, MasterResourceConfig> =
         optionsValueKey: 'id',
         optionsLabelKey: 'name',
       },
-      { name: 'name', label: 'Department name', type: 'text', required: true, placeholder: 'Select or type a department name…' },
+      { name: 'name', label: 'Department name', type: 'text', required: true, placeholder: 'Type any department name…' },
       {
         name: 'code',
         label: 'Department code',
@@ -487,7 +487,7 @@ export const MASTER_RESOURCES: Record<MasterResourceKey, MasterResourceConfig> =
     supportsDelete: true,
     columns: [
       { key: 'name', label: 'Name' },
-      { key: 'department_id', label: 'Department', mono: true },
+      { key: 'department_id', label: 'Department' },
     ],
     fields: [
       {
@@ -503,7 +503,7 @@ export const MASTER_RESOURCES: Record<MasterResourceKey, MasterResourceConfig> =
         label: 'Designation name',
         type: 'text',
         required: true,
-        placeholder: 'Select or type a designation…',
+        placeholder: 'Type a designation (or pick a suggestion)…',
       },
       {
         name: 'department_id',
