@@ -1282,13 +1282,11 @@ export interface ProrateToShipmentsDto {
   job_charge_id?: string;
 }
 
-/** POST /jobs/:id/charges/composite — OpenAPI CompositeJobChargeDto */
+/** POST /jobs/:id/charges/composite — OpenAPI CompositeJobChargeDto (forbidNonWhitelisted). */
 export interface ChargeSectionDto {
   line_no?: number;
-  /** UUID optional when charge_code / charge_code_name is sent. */
+  /** Master charge UUID — do not send charge_code / charge_code_name. */
   charge_code_id?: string;
-  charge_code?: string;
-  charge_code_name?: string;
   unit?: string;
   remarks?: string;
   description: string;
@@ -1298,10 +1296,8 @@ export interface ChargeSectionDto {
 }
 
 export interface SaleSectionDto {
-  /** UUID optional when bill_to_code / bill_to_name is sent. */
+  /** Party UUID — do not send bill_to_code / bill_to_name. */
   bill_to?: string;
-  bill_to_code?: string;
-  bill_to_name?: string;
   amount?: number;
   qty?: number;
   dr_cr?: 'DR' | 'CR';
@@ -1318,10 +1314,8 @@ export interface SaleSectionDto {
 }
 
 export interface CostSectionDto {
-  /** UUID optional when vendor_code / vendor_name is sent. */
+  /** Vendor party UUID — do not send vendor_code / vendor_name. */
   vendor?: string;
-  vendor_code?: string;
-  vendor_name?: string;
   declaration_no?: string;
   dr_cr?: 'DR' | 'CR';
   amount?: number;

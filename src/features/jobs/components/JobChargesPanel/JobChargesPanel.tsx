@@ -1141,16 +1141,14 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       return;
     }
 
-    const billToParty = partyAccountOpts.find((p) => p.id === saleBillTo.trim());
-    const vendorParty = vendorOpts.find((p) => p.id === costVendor.trim());
     const sQty = saleQty === '' ? qty : Number(saleQty);
+    // CompositeJobChargeDto forbids charge_code / charge_code_name / *_code / *_name —
+    // send UUID refs only (charge_code_id, bill_to, vendor) + description.
     const dto: CreateJobChargesCompositeDto = {
       charge: {
         ...(isUuid(chargeCodeId.trim())
           ? { charge_code_id: chargeCodeId.trim() }
           : {}),
-        ...(chargeOpt?.code ? { charge_code: chargeOpt.code } : {}),
-        ...(chargeOpt?.name ? { charge_code_name: chargeOpt.name } : {}),
         description: desc,
         quantity: Number.isFinite(qty) ? qty : 1,
         ...(unit.trim() ? { unit: unit.trim() } : {}),
@@ -1170,12 +1168,6 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               currency: saleCurrency.trim().toUpperCase() || 'AED',
               ex_rate: Number(saleExRate) || 1,
               ...(isUuid(saleBillTo.trim()) ? { bill_to: saleBillTo.trim() } : {}),
-              ...(billToParty?.code?.trim()
-                ? { bill_to_code: billToParty.code.trim() }
-                : {}),
-              ...(billToParty?.name?.trim()
-                ? { bill_to_name: billToParty.name.trim() }
-                : {}),
               ...(saleFcy !== '' && Number.isFinite(Number(saleFcy))
                 ? { fcy_amount: Number(saleFcy) }
                 : {}),
@@ -1203,12 +1195,6 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               currency: costCurrency.trim().toUpperCase() || 'AED',
               ex_rate: Number(costExRate) || 1,
               ...(isUuid(costVendor.trim()) ? { vendor: costVendor.trim() } : {}),
-              ...(vendorParty?.code?.trim()
-                ? { vendor_code: vendorParty.code.trim() }
-                : {}),
-              ...(vendorParty?.name?.trim()
-                ? { vendor_name: vendorParty.name.trim() }
-                : {}),
               ...(costFcy !== '' && Number.isFinite(Number(costFcy))
                 ? { fcy_amount: Number(costFcy) }
                 : {}),
