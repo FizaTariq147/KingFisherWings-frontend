@@ -251,7 +251,46 @@ export default function OrganizationProfilePage() {
               setValue('country_code', iso, { shouldValidate: true, shouldDirty: true })
             }
           />
-          <Input label="Email" type="email" error={errors.email?.message} {...register('email')} />
+          <div className="sm:col-span-2 space-y-1">
+            <Input
+              label="Email"
+              type="email"
+              error={errors.email?.message}
+              {...register('email')}
+            />
+            <p className="text-xs text-[var(--color-neutral-500)]">
+              Tenant signup / organization email. Used with active TENANT_ADMIN users for staff
+              activity mail (see below).
+            </p>
+          </div>
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Staff activity emails</CardTitle>
+        </CardHeader>
+        <div className="space-y-2 px-1 pb-1 text-sm text-[var(--color-neutral-600)]">
+          <p>
+            Staff create/update/delete actions (jobs, status changes, invoices, quotes, and similar
+            POST/PUT/PATCH/DELETE) automatically email:
+          </p>
+          <ul className="list-disc space-y-1 pl-5 text-[var(--color-neutral-700)]">
+            <li>This organization email (tenant signup email), and</li>
+            <li>Every active user with role TENANT_ADMIN</li>
+          </ul>
+          <p>
+            Subject looks like:{' '}
+            <span className="font-mono text-xs text-[var(--color-neutral-800)]">
+              [Kingfisher ERP] Staff Activity: Created Job — KF-J-001
+            </span>
+          </p>
+          <p className="text-xs text-[var(--color-neutral-500)]">
+            Delivery is controlled on the API (
+            <span className="font-mono">STAFF_ACTIVITY_EMAILS</span> /{' '}
+            <span className="font-mono">TENANT_ADMIN_NOTIFICATION_EMAILS</span>). Keep this email set
+            and ensure admin accounts use role TENANT_ADMIN so they receive the mail.
+          </p>
         </div>
       </Card>
 
