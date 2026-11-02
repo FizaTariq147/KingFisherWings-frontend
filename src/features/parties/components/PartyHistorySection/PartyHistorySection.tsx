@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { EntityHistoryList } from '@/features/shared/history/EntityHistoryList';
 import { usePartyHistory } from '../../hooks/useParties';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
@@ -11,7 +12,7 @@ export function PartyHistorySection({ partyId }: PartyHistorySectionProps) {
   const { data = [], isLoading, isError, error, refetch, isFetching } = usePartyHistory(partyId);
 
   return (
-    <Card className="p-4 space-y-3">
+    <Card className="space-y-3 p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <h3 className="text-sm font-semibold text-[var(--color-neutral-900)]">Transaction history</h3>
         <Button type="button" size="sm" variant="secondary" onClick={() => void refetch()}>
@@ -19,9 +20,7 @@ export function PartyHistorySection({ partyId }: PartyHistorySectionProps) {
         </Button>
       </div>
 
-      {isLoading ? (
-        <p className="text-sm text-[var(--color-neutral-400)]">Loading history…</p>
-      ) : isError ? (
+      {isError ? (
         <div className="space-y-2">
           <p className="text-sm text-[var(--color-danger-600)]">
             {getErrorMessage(error) || 'Failed to load party history.'}
@@ -30,31 +29,17 @@ export function PartyHistorySection({ partyId }: PartyHistorySectionProps) {
             Retry
           </Button>
         </div>
-      ) : data.length === 0 ? (
-        <p className="text-sm text-[var(--color-neutral-400)]">
-          No history entries yet for this party. Ops history stays empty until the customer has at
-          least one converted quote.
-        </p>
       ) : (
-        <ul className="divide-y divide-[var(--color-neutral-100)]">
-          {data.map((entry, index) => (
-            <li key={entry.id || `${entry.label}-${entry.date}-${index}`} className="py-2.5">
-              <div className="flex flex-wrap items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-[var(--color-neutral-800)]">{entry.label}</p>
-                  <p className="text-xs text-[var(--color-neutral-500)]">
-                    {[entry.type, entry.reference, entry.status].filter(Boolean).join(' · ')}
-                  </p>
-                </div>
-                {entry.date ? (
-                  <span className="text-xs text-[var(--color-neutral-400)] whitespace-nowrap">
-                    {entry.date}
-                  </span>
-                ) : null}
-              </div>
-            </li>
-          ))}
-        </ul>
+        <EntityHistoryList
+          loading={isLoading}
+          empty="No history entries yet for this party. Ops history stays empty until the customer has at least one converted quote."
+          items={data.map((entry, index) => ({
+            id: entry.id || `${entry.label}-${entry.date}-${index}`,
+            title: entry.label,
+            subtitle: [entry.type, entry.reference, entry.status].filter(Boolean).join(' · ') || undefined,
+            when: entry.date || undefined,
+          }))}
+        />
       )}
     </Card>
   );

@@ -66,7 +66,49 @@ const HIDDEN_KEYS = new Set([
   'pathhints',
   'hints',
   'path_hint',
+  // Catalog dumps — not useful on Show All overview
+  'party_type',
+  'party_types',
+  'party_type_id',
+  'org_type',
+  'org_types',
+  'organization_type',
+  'organization_types',
+  'organisation_type',
+  'organisation_types',
 ]);
+
+function normalizeShowAllKey(key: string): string {
+  return key.trim().toLowerCase().replace(/[-_\s]/g, '');
+}
+
+function isHiddenShowAllKey(key: string): boolean {
+  const lower = key.toLowerCase();
+  if (HIDDEN_KEYS.has(lower)) return true;
+  const n = normalizeShowAllKey(key);
+  if (
+    n.includes('partytype') ||
+    n.includes('orgtype') ||
+    n.includes('organizationtype') ||
+    n.includes('organisationtype')
+  ) {
+    return true;
+  }
+  return false;
+}
+
+/** Hide party/org type catalog blocks from Show All (ids without names). */
+function isPartyTypesSection(key: string, title?: string): boolean {
+  const blob = `${key} ${title ?? ''}`.toLowerCase().replace(/[-_\s]+/g, ' ');
+  return (
+    /\bparty types?\b/.test(blob) ||
+    /\borg(?:anisation|anization)? types?\b/.test(blob) ||
+    normalizeShowAllKey(key).includes('partytype') ||
+    normalizeShowAllKey(key).includes('orgtype') ||
+    normalizeShowAllKey(key).includes('organizationtype') ||
+    normalizeShowAllKey(key).includes('organisationtype')
+  );
+}
 
 function isUuidish(value: unknown): boolean {
   if (typeof value !== 'string') return false;
@@ -131,13 +173,14 @@ function siblingNameLabel(key: string, data: Record<string, unknown>): string {
   return '';
 }
 
+/** Fresa-style Label: value cell — used inside a 3-column Show All grid. */
 function FormFieldRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid grid-cols-1 gap-1 border-b border-[#e8edf2] py-2 sm:grid-cols-[minmax(8rem,14rem)_1fr] sm:gap-4">
-      <span className="text-[12px] font-medium text-[#64748b]">{label}</span>
-      <span className="whitespace-pre-wrap break-words text-[13px] font-medium text-[#0f172a]">
-        {value}
+    <div className="flex min-w-0 items-baseline gap-1.5 text-[13px] leading-5">
+      <span className="shrink-0 font-semibold text-[var(--fresa-header-text,#0A2942)]">
+        {label}:
       </span>
+      <span className="min-w-0 whitespace-pre-wrap break-words text-[#0f172a]">{value}</span>
     </div>
   );
 }
@@ -159,7 +202,12 @@ function ArrayTable({
   const cols = first
     ? Object.keys(first).filter((k) => {
         const lower = k.toLowerCase();
-        if (HIDDEN_KEYS.has(lower) || lower === 'id' || lower.endsWith('_id') || lower.endsWith('_uuid')) {
+        if (
+          isHiddenShowAllKey(k) ||
+          lower === 'id' ||
+          lower.endsWith('_id') ||
+          lower.endsWith('_uuid')
+        ) {
           return false;
         }
         const sample = first[k];
@@ -306,7 +354,7 @@ export function FormFieldsFromPayload({
   const arrays: { key: string; label: string; rows: unknown[] }[] = [];
 
   for (const key of keys) {
-    if (skip.has(key) || HIDDEN_KEYS.has(key.toLowerCase())) continue;
+    if (skip.has(key) || isHiddenShowAllKey(key)) continue;
     const lower = key.toLowerCase();
 
     if (lower.endsWith('_id') || lower.endsWith('_uuid')) {
@@ -362,9 +410,9 @@ export function FormFieldsFromPayload({
   }
 
   return (
-    <div className={depth > 0 ? 'space-y-1' : 'space-y-3'}>
+    <div className="space-y-3">
       {rows.length ? (
-        <div className="space-y-0">
+        <div className={erpForm.grid3}>
           {rows.map((row) => (
             <FormFieldRow key={row.key} label={row.label} value={row.value} />
           ))}
@@ -374,13 +422,14 @@ export function FormFieldsFromPayload({
         <ArrayTable key={block.key} rows={block.rows} title={block.label} />
       ))}
       {nested.map((block) => (
-        <div key={block.key} className="border-b border-[#e8edf2] py-2 last:border-0">
-          <p className="mb-1 text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]">
+        <div
+          key={block.key}
+          className="space-y-2 border-t border-[#e8edf2] pt-3 first:border-0 first:pt-0"
+        >
+          <p className="text-[12px] font-semibold text-[var(--fresa-header-text,#0A2942)]">
             {block.label}
           </p>
-          <div className="pl-0 sm:pl-2">
-            <FormFieldsFromPayload data={block.value} depth={depth + 1} />
-          </div>
+          <FormFieldsFromPayload data={block.value} depth={depth + 1} />
         </div>
       ))}
     </div>
@@ -518,7 +567,9 @@ function ShipmentShowAllPanel({
           Edit Show All
         </Button>
       </div>
-      {sections.map((section) => {
+      {sections
+        .filter((section) => !isPartyTypesSection(section.key, section.title))
+        .map((section) => {
         const isDepartment = isShipmentDepartmentTab(section.key);
         return (
           <SectionCard key={section.key} title={section.title}>
@@ -533,7 +584,9 @@ function ShipmentShowAllPanel({
           </SectionCard>
         );
       })}
-      {arrays.map((block) => (
+      {arrays
+        .filter((block) => !isPartyTypesSection(block.key, block.title))
+        .map((block) => (
         <SectionCard key={block.key} title={block.title}>
           <ArrayTable rows={block.rows} title={block.title} showTitle={false} />
         </SectionCard>

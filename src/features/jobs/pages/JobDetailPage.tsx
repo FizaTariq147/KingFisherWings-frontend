@@ -65,7 +65,8 @@ import {
   useJobStatusOptions,
   useJobTracking,
 } from '../hooks/useJobs';
-import { ApiDataView } from '../components/ApiDataView';
+import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
+import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
@@ -242,7 +243,7 @@ export default function JobDetailPage() {
             Hide
           </Button>
         </div>
-        <div className="px-3 py-2">
+        <div className="px-5 py-6 sm:px-8">
           {trackingQuery.isLoading ? (
             <p className="text-[13px] text-[#64748b]">Loading tracking…</p>
           ) : trackingQuery.isError ? (
@@ -250,9 +251,11 @@ export default function JobDetailPage() {
               {getErrorMessage(trackingQuery.error)}
             </p>
           ) : (
-            <ApiDataView
-              data={trackingQuery.data?.data ?? {}}
-              emptyLabel="No tracking data returned."
+            <PublicTrackTimeline
+              result={toTrackResult(
+                trackingQuery.data?.data ?? trackingQuery.data,
+                job?.job_number || job?.id,
+              )}
             />
           )}
         </div>
@@ -264,6 +267,8 @@ export default function JobDetailPage() {
     trackingQuery.isError,
     trackingQuery.error,
     trackingQuery.data,
+    job?.job_number,
+    job?.id,
   ]);
 
   const needsEnquiryLink = Boolean(

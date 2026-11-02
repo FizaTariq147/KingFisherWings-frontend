@@ -43,13 +43,27 @@ export function getPublicTrackTenantDomain(): string {
 }
 
 /**
- * Headers for GET /track*. Do not set `Host` — browsers forbid it; the UA sets
- * the real Host (via proxy → backend origin when changeOrigin is on).
+ * Headers for GET /track*.
+ * Do not set HTTP `Host` (browsers forbid it). OpenAPI documents `host` +
+ * `x-tenant-domain` as tenant hints — send both when we have a domain/slug.
  */
-export function buildPublicTrackHeaders(): Record<string, string> {
+export function buildPublicTrackHeaders(tenantSlug?: string): Record<string, string> {
+  const headers: Record<string, string> = {};
   const tenantDomain = getPublicTrackTenantDomain();
-  if (!tenantDomain) return {};
-  return { 'x-tenant-domain': tenantDomain };
+  const slug = tenantSlug?.trim().toLowerCase();
+  const hint =
+    tenantDomain ||
+    (slug && typeof window !== 'undefined' && !isLoopbackHost(window.location.host)
+      ? window.location.host
+      : '') ||
+    (slug ? `${slug}.localhost` : '');
+
+  if (hint) {
+    headers['x-tenant-domain'] = hint;
+    // Custom tenant hint (not the forbidden Host header).
+    headers.host = hint;
+  }
+  return headers;
 }
 
 const LAST_TENANT_SLUG_KEY = 'kf_public_track_tenant_slug';

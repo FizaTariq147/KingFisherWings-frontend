@@ -11,7 +11,9 @@ export function getPublicTrackErrorMessage(error: unknown, fallback = 'Request f
         if (joined) return joined;
       }
     }
-    if (error.response?.status === 404) return 'Shipment not found for that reference.';
+    if (error.response?.status === 404) {
+      return 'Shipment not found for that reference. Use the exact job/container/BL number and the correct workspace username.';
+    }
   }
   if (error instanceof Error && error.message.trim()) return error.message.trim();
   if (typeof error === 'string' && error.trim()) return error.trim();

@@ -1,7 +1,8 @@
 export interface PostArApOpeningBalanceDto {
   party_id: string;
   amount: number;
-  currency: string;
+  /** ISO 4217 code (min 3 chars) — OpenAPI `currency_code`. */
+  currency_code: string;
   date: string;
   /** Default true — posts a Customer/Purchase Invoice with job_id null. */
   create_manual_invoice?: boolean;

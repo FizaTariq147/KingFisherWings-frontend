@@ -3,13 +3,11 @@ import { Link } from 'react-router-dom'
 import { ChevronRight, LogIn, Package, Search, Shield } from 'lucide-react'
 import loginBg from '@/assets/login-bg.mp4'
 import logo from '@/assets/logo.png'
-import { ApiDataView } from '@/features/jobs/components/ApiDataView'
+import { Modal } from '@/components/ui/Modal'
+import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline'
 import { publicTrackService } from '@/features/public-track/services/publicTrack.service'
-import {
-  rememberPublicTrackTenantSlug,
-  resolveTenantSlugFromLocation,
-} from '@/features/public-track/utils/publicTrackContext'
-import { normalizePublicTrack } from '@/features/public-track/utils/normalizePublicTrack'
+import { resolveTenantSlugFromLocation } from '@/features/public-track/utils/publicTrackContext'
+import { toTrackResult } from '@/features/public-track/utils/toTrackResult'
 
 const NAVY = '#0A2942'
 
@@ -81,11 +79,15 @@ export function AuthLandingShell({
 }) {
   const defaultTenant = useMemo(() => resolveTenantSlugFromLocation(), [])
   const [trackRef, setTrackRef] = useState('')
-  const [tenantSlug, setTenantSlug] = useState(defaultTenant)
   const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [rawPayload, setRawPayload] = useState<unknown>(null)
-  const summary = rawPayload ? normalizePublicTrack(rawPayload) : null
+  const [modalOpen, setModalOpen] = useState(false)
+  const summary = rawPayload ? toTrackResult(rawPayload, trackRef.trim()) : null
+
+  const closeModal = () => {
+    setModalOpen(false)
+  }
 
   const onTrack = async (e: FormEvent) => {
     e.preventDefault()
@@ -94,19 +96,16 @@ export function AuthLandingShell({
       setError('Enter at least 2 characters.')
       return
     }
-    const slug = tenantSlug.trim()
-    if (!slug) {
-      setError('Enter your username to track without login.')
-      return
-    }
     setError(null)
     setRawPayload(null)
     setPending(true)
-    rememberPublicTrackTenantSlug(slug)
     try {
-      const data = await publicTrackService.trackRaw(slug, ref)
+      const data = await publicTrackService.trackRaw(defaultTenant || undefined, ref)
       setRawPayload(data)
+      setModalOpen(true)
     } catch (err) {
+      setRawPayload(null)
+      setModalOpen(false)
       setError(err instanceof Error ? err.message : 'Track lookup failed.')
     } finally {
       setPending(false)
@@ -132,7 +131,7 @@ export function AuthLandingShell({
 
       {!videoOnly && (
       <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-10">
-        <div className={`w-full ${rawPayload ? 'max-w-3xl' : 'max-w-[440px]'}`}>
+        <div className="w-full max-w-[440px]">
           <div className="mx-auto mb-4 flex w-fit items-center justify-center rounded-2xl bg-white px-4 py-2.5 shadow-lg">
             <img src={logo} alt="KingFisher Wings" className="h-12 w-auto sm:h-14" />
           </div>
@@ -179,25 +178,16 @@ export function AuthLandingShell({
               <div>
                 <p className="text-[13.5px] font-semibold">Track a Shipment</p>
                 <p className="text-[11.5px] leading-snug text-white/75">
-                  Job, shipment, HAWB/MAWB/HBL — results stay on this page.
+                  Enter job, shipment, container, or BL number.
                 </p>
               </div>
             </div>
-            {!defaultTenant ? (
-              <input
-                type="text"
-                value={tenantSlug}
-                onChange={(e) => setTenantSlug(e.target.value)}
-                placeholder="Username"
-                className="mb-2 h-10 w-full rounded-lg border-0 bg-white/90 px-3 text-[13px] text-slate-800 outline-none placeholder:text-slate-400"
-              />
-            ) : null}
             <div className="flex gap-2">
               <input
                 type="text"
                 value={trackRef}
                 onChange={(e) => setTrackRef(e.target.value)}
-                placeholder="Enter reference..."
+                placeholder="Job / shipment / container / BL…"
                 className="h-10 min-w-0 flex-1 rounded-lg border-0 bg-white px-3 text-[13px] text-slate-800 outline-none placeholder:text-slate-400"
               />
               <button
@@ -214,25 +204,28 @@ export function AuthLandingShell({
               </p>
             ) : null}
           </form>
-
-          {rawPayload ? (
-            <div className="mt-4 max-h-[50vh] overflow-y-auto rounded-2xl bg-white p-4 shadow-[0_8px_32px_rgba(10,41,66,0.18)]">
-              {summary ? (
-                <div className="mb-3">
-                  <p className="text-lg font-semibold text-slate-900">{summary.reference}</p>
-                  <p className="text-sm text-slate-500">
-                    {[summary.origin, summary.destination].filter(Boolean).join(' → ') ||
-                      summary.status ||
-                      '—'}
-                  </p>
-                </div>
-              ) : null}
-              <ApiDataView data={rawPayload} emptyLabel="No tracking data returned." />
-            </div>
-          ) : null}
         </div>
       </main>
       )}
+
+      <Modal
+        open={modalOpen && Boolean(summary)}
+        onClose={closeModal}
+        title="Track & Trace"
+        size="full"
+      >
+        {summary ? (
+          <PublicTrackTimeline
+            result={summary}
+            onNewSearch={() => {
+              closeModal()
+              setRawPayload(null)
+              setError(null)
+              setTrackRef('')
+            }}
+          />
+        ) : null}
+      </Modal>
 
       {children}
     </div>
