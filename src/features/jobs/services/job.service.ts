@@ -88,6 +88,7 @@ import type {
   CreatePaymentRequestFromJobDto,
   CreateProofOfDeliveryDto,
   DeliveryAcknowledgement,
+  SendDeliveryAcknowledgementDto,
   CreateStuffingRecordDto,
   CreateSubJobDto,
   CreateTransportRequestDto,
@@ -1269,19 +1270,34 @@ export const jobService = {
     }
   },
 
-  /** POST /jobs/:id/acknowledgement/send — admin sends to customer (optional container_id). */
+  /** POST /jobs/:id/acknowledgement/send — admin written ack (+ optional file). */
   async sendAcknowledgement(
     id: string,
-    body: { container_id?: string; remarks?: string } = {},
+    body: SendDeliveryAcknowledgementDto = {},
   ): Promise<DeliveryAcknowledgement> {
     assertId(id);
+    const message = (body.message ?? body.remarks ?? '').trim();
+    if (!message) {
+      throw new Error('Enter a written acknowledgement message for the customer.');
+    }
     try {
-      const payload: Record<string, unknown> = {};
-      if (body.container_id?.trim()) payload.container_id = body.container_id.trim();
-      if (body.remarks?.trim()) payload.remarks = body.remarks.trim();
-      const res = await withGatewayRetry(() =>
-        axiosInstance.post(JOB_API.acknowledgementSend(id), payload),
-      );
+      let res;
+      if (body.file) {
+        const form = new FormData();
+        form.append('message', message);
+        form.append('remarks', message);
+        if (body.container_id?.trim()) form.append('container_id', body.container_id.trim());
+        form.append('file', body.file, body.file.name);
+        res = await withGatewayRetry(() =>
+          axiosInstance.post(JOB_API.acknowledgementSend(id), form),
+        );
+      } else {
+        const payload: Record<string, unknown> = { message, remarks: message };
+        if (body.container_id?.trim()) payload.container_id = body.container_id.trim();
+        res = await withGatewayRetry(() =>
+          axiosInstance.post(JOB_API.acknowledgementSend(id), payload),
+        );
+      }
       return normalizeDeliveryAcknowledgement(res.data);
     } catch (error) {
       throw formatAxiosError(error);
@@ -1291,12 +1307,16 @@ export const jobService = {
   /** POST /jobs/:id/acknowledgement/receive — mark RECEIVED_BY_ADMIN. */
   async receiveAcknowledgement(
     id: string,
-    body: Record<string, unknown> = {},
+    body: { notes?: string } | Record<string, unknown> = {},
   ): Promise<DeliveryAcknowledgement> {
     assertId(id);
     try {
+      const payload: Record<string, unknown> = {};
+      if (typeof body.notes === 'string' && body.notes.trim()) {
+        payload.notes = body.notes.trim();
+      }
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(JOB_API.acknowledgementReceive(id), body),
+        axiosInstance.post(JOB_API.acknowledgementReceive(id), payload),
       );
       return normalizeDeliveryAcknowledgement(res.data);
     } catch (error) {

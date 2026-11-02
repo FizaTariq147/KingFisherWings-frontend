@@ -272,9 +272,15 @@ export default function OrganizationProfilePage() {
         </CardHeader>
         <div className="space-y-2 px-1 pb-1 text-sm text-[var(--color-neutral-600)]">
           <p>
-            Staff create/update/delete actions (jobs, status changes, invoices, quotes, and similar
-            POST/PUT/PATCH/DELETE) automatically email:
+            From staff login through logout, admins are emailed for session events and mutations
+            (create/update/delete/status on jobs, invoices, quotes, and similar). List/detail GETs
+            are not emailed.
           </p>
+          <ul className="list-disc space-y-1 pl-5 text-[var(--color-neutral-700)]">
+            <li>Login, logout, logout-all, and session revoke</li>
+            <li>Staff POST / PUT / PATCH / DELETE mutations</li>
+          </ul>
+          <p>Mail goes to:</p>
           <ul className="list-disc space-y-1 pl-5 text-[var(--color-neutral-700)]">
             <li>This organization email (tenant signup email), and</li>
             <li>Every active user with role TENANT_ADMIN</li>
@@ -286,10 +292,10 @@ export default function OrganizationProfilePage() {
             </span>
           </p>
           <p className="text-xs text-[var(--color-neutral-500)]">
-            Delivery is controlled on the API (
+            Server-side only — no FE send action. Controlled by API env (
             <span className="font-mono">STAFF_ACTIVITY_EMAILS</span> /{' '}
             <span className="font-mono">TENANT_ADMIN_NOTIFICATION_EMAILS</span>). Keep this email set
-            and ensure admin accounts use role TENANT_ADMIN so they receive the mail.
+            and ensure admin accounts use role TENANT_ADMIN.
           </p>
         </div>
       </Card>

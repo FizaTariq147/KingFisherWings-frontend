@@ -127,6 +127,8 @@ export interface UserListResult {
 export interface CreateUserResult {
   user: User;
   temporary_password?: string;
+  /** True when create was requested with send_email (credentials mail attempted). */
+  email_sent?: boolean;
 }
 
 export interface AdminResetPasswordResult {

@@ -73,6 +73,7 @@ const FORM_DEFAULTS: Partial<CreateUserFormValues> = {
   // Staff role — not TENANT_ADMIN. Created users get the ops dashboard, not Users admin.
   role: 'SALES_EXECUTIVE',
   status: 'ACTIVE',
+  send_email: true,
   phone: '',
   avatar_url: '',
   company_id: '',
@@ -519,6 +520,18 @@ export function UserForm({
                 {permissionsFields}
               </div>
             ) : null}
+            <label className="flex items-start gap-2 rounded-lg border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2.5 text-sm">
+              <input type="checkbox" className="mt-0.5" {...register('send_email')} />
+              <span>
+                <span className="font-medium text-[var(--color-neutral-800)]">
+                  Send credentials email
+                </span>
+                <span className="mt-0.5 block text-xs text-[var(--color-neutral-500)]">
+                  Email login details and a temporary password to the new user (same pattern as
+                  portal / vendor invites).
+                </span>
+              </span>
+            </label>
             <div>
               <div className="mb-3 flex items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
@@ -565,6 +578,25 @@ export function UserForm({
         </CardHeader>
         {assignFields}
       </Card>
+
+      {mode === 'create' ? (
+        <Card>
+          <CardHeader className="mb-0 pb-3">
+            <CardTitle>Credentials email</CardTitle>
+          </CardHeader>
+          <label className="flex items-start gap-2 px-1 pb-1 text-sm">
+            <input type="checkbox" className="mt-0.5" {...register('send_email')} />
+            <span>
+              <span className="font-medium text-[var(--color-neutral-800)]">
+                Send credentials email
+              </span>
+              <span className="mt-0.5 block text-xs text-[var(--color-neutral-500)]">
+                Email login + temporary password to the new user (like portal / vendor).
+              </span>
+            </span>
+          </label>
+        </Card>
+      ) : null}
 
       <Card>
         <CardHeader className="mb-0 pb-3">

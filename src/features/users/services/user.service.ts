@@ -212,9 +212,12 @@ export const userService = {
     const tenantId = resolveSessionTenantId();
     assertSameTenant(dto.tenant_id, tenantId);
     // CreateUserDto has no password — API generates a temporary password.
+    // send_email defaults true (credentials email like portal/vendor).
+    const sendEmail = dto.send_email !== false;
     const body = prepareUserPayload({
       ...dto,
       status: 'ACTIVE',
+      send_email: sendEmail,
       ...(tenantId ? { tenant_id: tenantId } : { tenant_id: undefined }),
     });
     // Never send undocumented password fields (API ignores / may reject them).
@@ -241,14 +244,19 @@ export const userService = {
           // Non-fatal — login may still work if already ACTIVE.
         }
 
-        // Prefer admin-reset so require_password_change is set (first login → set own password).
-        try {
-          const reset = await this.adminResetPassword(tenantId || user.tenant_id || '', user.id);
-          if (reset.temporary_password) {
-            temporaryPassword = reset.temporary_password;
-          }
-        } catch (resetErr) {
-          if (!temporaryPassword) {
+        // When credentials were emailed, do NOT admin-reset — that would invalidate
+        // the password the user already received. Only reset when email was skipped
+        // and create did not return a temporary password for the admin to copy.
+        if (!sendEmail && !temporaryPassword) {
+          try {
+            const reset = await this.adminResetPassword(
+              tenantId || user.tenant_id || '',
+              user.id,
+            );
+            if (reset.temporary_password) {
+              temporaryPassword = reset.temporary_password;
+            }
+          } catch (resetErr) {
             throw new Error(
               `User was created, but no temporary password was returned. ` +
                 `Open the user and click “Reset password”. ` +
@@ -258,15 +266,10 @@ export const userService = {
         }
       }
 
-      if (!temporaryPassword) {
-        throw new Error(
-          'User was created, but the API did not return a temporary password. Open the user and reset password.',
-        );
-      }
-
       return {
         user,
         temporary_password: temporaryPassword,
+        email_sent: sendEmail,
       };
     } catch (error) {
       throw formatAxiosError(error);

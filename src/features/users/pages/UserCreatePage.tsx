@@ -7,6 +7,7 @@ import { Card } from '@/components/ui/Card';
 import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
 import { tenantSlugFromAccessToken } from '@/lib/tenantFromAuth';
 import { useAuthStore } from '@/store/authStore';
+import { toast } from '@/store/toastStore';
 import { UserForm } from '../components/UserForm';
 import { useCreateUser } from '../hooks/useUsers';
 import { useUserTenantScope } from '../hooks/useUserTenantScope';
@@ -59,6 +60,7 @@ export default function UserCreatePage() {
     userId: string;
     email: string;
     temporaryPassword: string;
+    emailSent?: boolean;
   } | null>(null);
 
   if (!tenantId && !sessionScoped) {
@@ -91,16 +93,17 @@ export default function UserCreatePage() {
               Staff / User login credentials
             </h3>
             <p className="text-xs text-[var(--color-neutral-500)] mt-1">
-              Share these once. Open ERP Login → <strong>Staff / User</strong>, sign in with slug +
-              email + temporary password. The user will then be prompted to set their own password
-              for future logins.
+              {createdLogin.emailSent
+                ? 'Credentials were emailed to the user. You can still copy the temporary password below if SMTP failed or they need a resend via Reset password.'
+                : 'Share these once. Open ERP Login → Staff / User, sign in with slug + email + temporary password. The user will then be prompted to set their own password.'}
             </p>
           </div>
 
           {!createdLogin.temporaryPassword && (
             <p className="text-xs text-[var(--color-danger-700)]">
-              User was created, but the API did not return a temporary password. Click “Generate
-              password” below, then try Staff / User login again.
+              {createdLogin.emailSent
+                ? 'User created and email was requested, but no temporary password was returned for copy. If they did not receive mail, click “Generate password”.'
+                : 'User was created, but the API did not return a temporary password. Click “Generate password” below, then try Staff / User login again.'}
             </p>
           )}
 
@@ -213,9 +216,11 @@ export default function UserCreatePage() {
               const sendGrants =
                 Boolean(meta?.matrixTouched) || hasExplicitAccess;
 
+              const sendEmail = (values as CreateUserDto).send_email !== false;
               const dto: CreateUserDto = {
                 ...(values as CreateUserDto),
                 status: 'ACTIVE',
+                send_email: sendEmail,
                 ...(tenantId ? { tenant_id: tenantId } : {}),
                 ...(sendGrants
                   ? {
@@ -243,12 +248,17 @@ export default function UserCreatePage() {
                     userId: result.user.id,
                     email,
                     temporaryPassword: result.temporary_password || '',
+                    emailSent: Boolean(result.email_sent ?? sendEmail),
                   });
                   return;
                 }
               }
 
-              if (!result.temporary_password) {
+              if (result.email_sent ?? sendEmail) {
+                toast.success(`Credentials emailed to ${email}`, {
+                  title: 'User created',
+                });
+              } else if (!result.temporary_password) {
                 setApiError(
                   'User created but no temporary password was returned. Open the user and click Reset password.',
                 );
@@ -257,6 +267,7 @@ export default function UserCreatePage() {
                 userId: result.user.id,
                 email,
                 temporaryPassword: result.temporary_password || '',
+                emailSent: Boolean(result.email_sent ?? sendEmail),
               });
             } catch (err) {
               setApiError(getErrorMessage(err) || 'Failed to create user.');

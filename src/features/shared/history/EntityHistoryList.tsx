@@ -76,7 +76,24 @@ export function EntityHistoryList({
                   <p className="text-[11px] font-medium uppercase tracking-wide text-[#94a3b8] sm:hidden">
                     By
                   </p>
-                  <p className="text-[13px] text-[#334155]">{item.actor?.trim() || '—'}</p>
+                  {item.actor?.trim() ? (
+                    <div className="flex items-center gap-2">
+                      <span
+                        className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[var(--color-primary-50)] text-[11px] font-semibold text-[var(--color-primary-700)]"
+                        aria-hidden
+                      >
+                        {item.actor
+                          .trim()
+                          .split(/\s+/)
+                          .slice(0, 2)
+                          .map((p) => p[0]?.toUpperCase() ?? '')
+                          .join('') || '?'}
+                      </span>
+                      <p className="text-[13px] text-[#334155]">{item.actor.trim()}</p>
+                    </div>
+                  ) : (
+                    <p className="text-[13px] text-[#334155]">—</p>
+                  )}
                 </div>
               </li>
             ))}
