@@ -8,8 +8,14 @@ import { Input } from '@/components/ui/Input';
 import { PhoneInput } from '@/components/ui/PhoneInput';
 import { useAppForm } from '@/lib/validation';
 import { QuotationWizardNav } from '@/features/quotations/components/quotation-wizard';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { ASSIGNABLE_USER_ROLES } from '../../constants/user.constants';
 import type { UserRole } from '../../constants/user.constants';
+import {
+  USER_FUNCTIONAL_FLAGS,
+  USER_VISIBILITY_PERMISSIONS,
+} from '../../constants/userPermissions';
 import { useTenantCompanies } from '../../hooks/useTenantCompanies';
 import { useRolePresets } from '../../hooks/useUserPermissionMatrix';
 import { createUserSchema, updateUserSchema, USER_STATUSES } from '../../schemas/user.schema';
@@ -36,6 +42,8 @@ interface UserFormProps {
   /** `wizard` = FRESA-like 3-step create UI; `flat` = existing single-page (edit default). */
   layout?: 'flat' | 'wizard';
   tenantId?: string;
+  /** Human-readable tenant label (never show raw UUID in UI). */
+  tenantLabel?: string;
   defaultValues?: Partial<CreateUserFormValues>;
   /** Existing matrix grants when editing (GET /users/:id/permission-matrix). */
   initialPermissionGrants?: PermissionMatrixGrant[];
@@ -45,6 +53,17 @@ interface UserFormProps {
   ) => void | Promise<void>;
   onCancel?: () => void;
   isSubmitting?: boolean;
+  /** When true, hide permission matrix (Overview can keep matrix on its own tab). */
+  hidePermissionMatrix?: boolean;
+}
+
+function formatFlagLabel(key: string) {
+  return key
+    .replace(/^can_see_/, 'Can see ')
+    .replace(/^is_/, '')
+    .split('_')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
 }
 
 const selectClass =
@@ -106,16 +125,25 @@ export function UserForm({
   mode,
   layout = 'flat',
   tenantId,
+  tenantLabel,
   defaultValues,
   initialPermissionGrants,
   onSubmit,
   onCancel,
   isSubmitting,
+  hidePermissionMatrix = false,
 }: UserFormProps) {
   const isWizard = layout === 'wizard' && mode === 'create';
   const [step, setStep] = useState(0);
   const schema = mode === 'create' ? createUserSchema : updateUserSchema;
   const { data: companies = [] } = useTenantCompanies(!!tenantId || isWizard);
+  const { data: branches = [] } = useMasterOptions('branches', MASTER_PATHS.branches, true);
+  const { data: departments = [] } = useMasterOptions(
+    'departments',
+    MASTER_PATHS.departments,
+    true,
+    true,
+  );
   const rolePresetsQuery = useRolePresets();
   /** After admin edits the matrix, stop re-applying role presets on role change. */
   const [matrixTouched, setMatrixTouched] = useState(false);
@@ -185,10 +213,8 @@ export function UserForm({
     ...(mode === 'create'
       ? {
           ...(tenantId ? { tenant_id: tenantId } : { tenant_id: '' }),
-          branch_id: '',
-          department_id: '',
-          role_ids: [],
-          permission_ids: [],
+          role_ids: values.role_ids ?? [],
+          permission_ids: values.permission_ids ?? [],
         }
       : {
           role_ids: values.role_ids ?? [],
@@ -239,6 +265,15 @@ export function UserForm({
 
   const assignFields = (
     <Grid>
+      {tenantLabel || tenantId ? (
+        <div className="flex flex-col gap-1 sm:col-span-2">
+          <span className="text-xs font-medium text-[var(--color-neutral-600)]">Tenant</span>
+          <div className="flex h-9 items-center rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 text-sm text-[var(--color-neutral-800)]">
+            {tenantLabel || 'Current workspace'}
+          </div>
+          {mode === 'create' ? <input type="hidden" {...register('tenant_id')} /> : null}
+        </div>
+      ) : null}
       <FormSelect label="Company" error={fieldError('company_id')} {...register('company_id')}>
         <option value="">No company assigned</option>
         {companies.map((company) => (
@@ -247,6 +282,32 @@ export function UserForm({
             {company.code ? ` (${company.code})` : ''}
           </option>
         ))}
+      </FormSelect>
+      <FormSelect label="Branch" error={fieldError('branch_id')} {...register('branch_id')}>
+        <option value="">No branch assigned</option>
+        {branches.map((b) => {
+          const label = String(b.name ?? b.code ?? b.id ?? '').trim() || b.id;
+          return (
+            <option key={b.id} value={b.id}>
+              {label}
+            </option>
+          );
+        })}
+      </FormSelect>
+      <FormSelect
+        label="Department"
+        error={fieldError('department_id')}
+        {...register('department_id')}
+      >
+        <option value="">No department assigned</option>
+        {departments.map((d) => {
+          const label = String(d.name ?? d.code ?? d.id ?? '').trim() || d.id;
+          return (
+            <option key={d.id} value={d.id}>
+              {label}
+            </option>
+          );
+        })}
       </FormSelect>
       {!isWizard ? (
         <FormSelect
@@ -270,9 +331,36 @@ export function UserForm({
           </option>
         ))}
       </FormSelect>
-      <input type="hidden" {...register('branch_id')} />
-      <input type="hidden" {...register('department_id')} />
     </Grid>
+  );
+
+  const flagsFields = (
+    <div className="space-y-4">
+      <div>
+        <p className="mb-2 text-xs font-medium text-[var(--color-neutral-600)]">Functional flags</p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {USER_FUNCTIONAL_FLAGS.map((key) => (
+            <label key={key} className="flex items-center gap-2 text-sm text-[var(--color-neutral-800)]">
+              <input type="checkbox" className="h-4 w-4" {...register(key)} />
+              {formatFlagLabel(key)}
+            </label>
+          ))}
+        </div>
+      </div>
+      <div>
+        <p className="mb-2 text-xs font-medium text-[var(--color-neutral-600)]">
+          Visibility permissions
+        </p>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+          {USER_VISIBILITY_PERMISSIONS.map((key) => (
+            <label key={key} className="flex items-center gap-2 text-sm text-[var(--color-neutral-800)]">
+              <input type="checkbox" className="h-4 w-4" {...register(key)} />
+              {formatFlagLabel(key)}
+            </label>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 
   const permissionsFields = (
@@ -360,7 +448,6 @@ export function UserForm({
         }}
         className="mx-auto max-w-5xl space-y-6"
       >
-        {mode === 'create' && <input type="hidden" {...register('tenant_id')} />}
         <input type="hidden" {...register('role')} />
 
         <UserWizardStepper currentStep={step} />
@@ -388,21 +475,29 @@ export function UserForm({
             </div>
             <div>
               <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
-                Company & status
+                Organization & status
               </h3>
               {assignFields}
+            </div>
+            <div>
+              <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
+                Flags & visibility
+              </h3>
+              {flagsFields}
             </div>
           </div>
         ) : null}
 
         {step === 2 ? (
           <div className="rounded-xl bg-white p-5 sm:p-6 space-y-6">
-            <div>
-              <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
-                Assign permissions
-              </h3>
-              {permissionsFields}
-            </div>
+            {!hidePermissionMatrix ? (
+              <div>
+                <h3 className="mb-3 text-sm font-semibold text-[var(--color-neutral-800)]">
+                  Assign permissions
+                </h3>
+                {permissionsFields}
+              </div>
+            ) : null}
             <div>
               <div className="mb-3 flex items-center justify-between gap-2">
                 <h3 className="text-sm font-semibold text-[var(--color-neutral-800)]">
@@ -436,8 +531,6 @@ export function UserForm({
 
   return (
     <form onSubmit={submitForm} className="space-y-4">
-      {mode === 'create' && <input type="hidden" {...register('tenant_id')} />}
-
       <Card>
         <CardHeader className="mb-0 pb-3">
           <CardTitle>Basic Information</CardTitle>
@@ -447,17 +540,26 @@ export function UserForm({
 
       <Card>
         <CardHeader className="mb-0 pb-3">
-          <CardTitle>Assign role</CardTitle>
+          <CardTitle>Organization & role</CardTitle>
         </CardHeader>
         {assignFields}
       </Card>
 
       <Card>
         <CardHeader className="mb-0 pb-3">
-          <CardTitle>Assign permissions</CardTitle>
+          <CardTitle>Flags & visibility</CardTitle>
         </CardHeader>
-        {permissionsFields}
+        {flagsFields}
       </Card>
+
+      {!hidePermissionMatrix ? (
+        <Card>
+          <CardHeader className="mb-0 pb-3">
+            <CardTitle>Assign permissions</CardTitle>
+          </CardHeader>
+          {permissionsFields}
+        </Card>
+      ) : null}
 
       <div className="flex items-center justify-between">
         <button
@@ -479,6 +581,11 @@ export function UserForm({
       ) : null}
 
       <div className="flex justify-end gap-3 pt-2">
+        {onCancel ? (
+          <Button type="button" variant="secondary" disabled={isSubmitting} onClick={onCancel}>
+            Cancel
+          </Button>
+        ) : null}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? 'Saving…' : mode === 'create' ? 'Create user' : 'Save changes'}
         </Button>

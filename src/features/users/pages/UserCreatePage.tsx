@@ -4,6 +4,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { AlertCircle, Copy, Check } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
 import { tenantSlugFromAccessToken } from '@/lib/tenantFromAuth';
 import { useAuthStore } from '@/store/authStore';
 import { UserForm } from '../components/UserForm';
@@ -47,6 +48,11 @@ export default function UserCreatePage() {
   const createUser = useCreateUser();
   const accessToken = useAuthStore((s) => s.accessToken);
   const tenantSlug = useMemo(() => tenantSlugFromAccessToken(accessToken), [accessToken]);
+  const orgQuery = useOrganizationProfile();
+  const tenantLabel = useMemo(() => {
+    const org = orgQuery.data;
+    return org?.display_name?.trim() || org?.name?.trim() || 'Current workspace';
+  }, [orgQuery.data]);
   const [apiError, setApiError] = useState<string | null>(null);
   const [resetting, setResetting] = useState(false);
   const [createdLogin, setCreatedLogin] = useState<{
@@ -195,6 +201,7 @@ export default function UserCreatePage() {
           mode="create"
           layout="wizard"
           tenantId={tenantId}
+          tenantLabel={tenantLabel}
           isSubmitting={createUser.isPending}
           onCancel={() => navigate(userPath())}
           onSubmit={async (values, meta) => {

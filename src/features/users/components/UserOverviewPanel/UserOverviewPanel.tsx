@@ -1,154 +1,164 @@
-import type { ReactNode } from 'react';
+import { useMemo, useState } from 'react';
+import { AlertCircle } from 'lucide-react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
-import {
-  USER_FUNCTIONAL_FLAGS,
-  USER_VISIBILITY_PERMISSIONS,
-} from '../../constants/userPermissions';
-import { UserStatusBadge } from '../UserStatusBadge';
-import type { User } from '../../types/user.types';
-import { formatUserRole } from '../../utils/formatUserRole';
+import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
+import { UserForm } from '../UserForm';
+import { useUpdateUser } from '../../hooks/useUsers';
+import type { UpdateUserFormValues, User } from '../../types/user.types';
+import { getErrorMessage } from '../../utils/getErrorMessage';
+import { userToFormValues } from '../../utils/userToFormValues';
 
 interface UserOverviewPanelProps {
   user: User;
+  tenantId?: string;
+  readOnly?: boolean;
 }
 
-export function UserOverviewPanel({ user }: UserOverviewPanelProps) {
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-      <Card>
-        <CardHeader className="mb-0 pb-3">
-          <CardTitle>Basic Information</CardTitle>
-        </CardHeader>
-        <dl className="space-y-0">
-          <DetailRow label="Full name" value={`${user.first_name} ${user.last_name}`} />
-          <DetailRow label="Email" value={user.email} />
-          <DetailRow label="Phone" value={user.phone || '—'} />
-          <DetailRow label="Avatar URL" value={user.avatar_url || '—'} />
-          <DetailRow label="Status">
-            <UserStatusBadge user={user} />
-          </DetailRow>
-          <DetailRow label="Last login" value={formatDate(user.last_login_at)} />
-          <DetailRow label="Created" value={formatDate(user.created_at)} />
-          <DetailRow label="Updated" value={formatDate(user.updated_at)} />
-        </dl>
-      </Card>
+/**
+ * Overview tab — editable user profile (same fields as create/edit).
+ * Tenant is shown by name; UUID is never primary UI.
+ */
+export function UserOverviewPanel({ user, tenantId, readOnly = false }: UserOverviewPanelProps) {
+  const orgQuery = useOrganizationProfile();
+  const updateUser = useUpdateUser(tenantId || 'session', user.id);
+  const [apiError, setApiError] = useState<string | null>(null);
+  const [savedMsg, setSavedMsg] = useState<string | null>(null);
 
-      <Card>
-        <CardHeader className="mb-0 pb-3">
-          <CardTitle>Organization Assignment</CardTitle>
-        </CardHeader>
-        <dl className="space-y-0">
-          <DetailRow label="Tenant" value={user.tenant_id} mono />
-          <DetailRow label="Company" value={user.company_id || '—'} mono />
-          <DetailRow label="Branch" value={user.branch_id || '—'} mono />
-          <DetailRow label="Department" value={user.department_id || '—'} mono />
-        </dl>
-      </Card>
+  const tenantLabel = useMemo(() => {
+    if (user.tenant_name?.trim()) return user.tenant_name.trim();
+    const org = orgQuery.data;
+    const fromOrg =
+      org?.display_name?.trim() || org?.name?.trim() || '';
+    if (fromOrg) return fromOrg;
+    return 'Current workspace';
+  }, [user.tenant_name, orgQuery.data]);
 
-      <Card>
-        <CardHeader className="mb-0 pb-3">
-          <CardTitle>Role and Status</CardTitle>
-        </CardHeader>
-        <dl className="space-y-0">
-          <DetailRow label="Role" value={formatUserRole(user.role)} />
-          <DetailRow label="Role IDs" value={formatList(user.role_ids)} />
-          <DetailRow label="Permission IDs" value={formatList(user.permission_ids)} />
-          <DetailRow
-            label="Ops scope"
-            value={
-              user.unrestricted_ops
-                ? 'Unrestricted (no ops matrix grants)'
-                : user.visible_job_types === null
-                  ? 'Unrestricted'
-                  : user.visible_job_types?.length
-                    ? user.visible_job_types.join(', ')
-                    : '—'
-            }
-          />
-        </dl>
-      </Card>
-
-      <Card>
-        <CardHeader className="mb-0 pb-3">
-          <CardTitle>Functional Flags</CardTitle>
-        </CardHeader>
-        <dl className="space-y-0">
-          {USER_FUNCTIONAL_FLAGS.map((key) => (
-            <DetailRow key={key} label={formatFieldLabel(key)} value={user[key] ? 'Yes' : 'No'} />
-          ))}
-        </dl>
-      </Card>
-
-      <Card className="lg:col-span-2">
-        <CardHeader className="mb-0 pb-3">
-          <CardTitle>Visibility Permissions</CardTitle>
-        </CardHeader>
-        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-          {USER_VISIBILITY_PERMISSIONS.map((key) => (
-            <DetailRow key={key} label={formatFieldLabel(key)} value={user[key] ? 'Yes' : 'No'} />
-          ))}
-        </dl>
-      </Card>
-
-      <Card className="lg:col-span-2">
-        <CardHeader className="mb-0 pb-3">
-          <CardTitle>Security Settings</CardTitle>
-        </CardHeader>
-        <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-6">
-          <DetailRow label="Allowed IPs" value={formatList(user.allowed_ips)} />
-          <DetailRow label="Allowed MAC addresses" value={formatList(user.allowed_mac_addresses)} />
-          <DetailRow label="Office hours start" value={user.office_hours_start || '—'} />
-          <DetailRow label="Office hours end" value={user.office_hours_end || '—'} />
-          <DetailRow label="Office hours timezone" value={user.office_hours_timezone || '—'} />
-          <DetailRow label="Max concurrent sessions" value={String(user.max_concurrent_sessions)} />
-        </dl>
-      </Card>
-    </div>
-  );
-}
-
-function DetailRow({
-  label,
-  value,
-  mono,
-  children,
-}: {
-  label: string;
-  value?: string;
-  mono?: boolean;
-  children?: ReactNode;
-}) {
-  return (
-    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 py-2.5 border-b border-[var(--color-neutral-50)] last:border-0">
-      <dt className="text-xs text-[var(--color-neutral-500)]">{label}</dt>
-      <dd
-        className={`text-sm text-[var(--color-neutral-800)] ${mono ? 'font-mono text-xs break-all' : ''}`}
-      >
-        {children ?? value ?? '—'}
-      </dd>
-    </div>
-  );
-}
-
-function formatDate(value?: string | null) {
-  if (!value) return '—';
-  try {
-    return new Date(value).toLocaleString();
-  } catch {
-    return value;
+  if (readOnly || user.deleted_at) {
+    return (
+      <div className="space-y-4">
+        <Card>
+          <CardHeader className="mb-0 pb-3">
+            <CardTitle>Organization</CardTitle>
+          </CardHeader>
+          <dl className="space-y-0 px-1">
+            <div className="flex flex-col gap-1 border-b border-[var(--color-neutral-50)] py-2.5 sm:flex-row sm:justify-between">
+              <dt className="text-xs text-[var(--color-neutral-500)]">Tenant</dt>
+              <dd className="text-sm text-[var(--color-neutral-800)]">{tenantLabel}</dd>
+            </div>
+            <div className="flex flex-col gap-1 border-b border-[var(--color-neutral-50)] py-2.5 sm:flex-row sm:justify-between">
+              <dt className="text-xs text-[var(--color-neutral-500)]">Company</dt>
+              <dd className="text-sm text-[var(--color-neutral-800)]">
+                {user.company_name || '—'}
+              </dd>
+            </div>
+            <div className="flex flex-col gap-1 border-b border-[var(--color-neutral-50)] py-2.5 sm:flex-row sm:justify-between">
+              <dt className="text-xs text-[var(--color-neutral-500)]">Branch</dt>
+              <dd className="text-sm text-[var(--color-neutral-800)]">
+                {user.branch_name || '—'}
+              </dd>
+            </div>
+            <div className="flex flex-col gap-1 py-2.5 sm:flex-row sm:justify-between">
+              <dt className="text-xs text-[var(--color-neutral-500)]">Department</dt>
+              <dd className="text-sm text-[var(--color-neutral-800)]">
+                {user.department_name || '—'}
+              </dd>
+            </div>
+          </dl>
+        </Card>
+        <p className="text-sm text-[var(--color-neutral-500)]">
+          This user is deleted — restore them before editing.
+        </p>
+        <ApiGapsNote />
+      </div>
+    );
   }
+
+  return (
+    <div className="space-y-4">
+      {apiError ? (
+        <div
+          role="alert"
+          className="flex items-start gap-2 rounded-lg border px-4 py-3 text-sm"
+          style={{
+            background: 'var(--color-danger-100)',
+            borderColor: '#FECACA',
+            color: 'var(--color-danger-700)',
+          }}
+        >
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>{apiError}</span>
+        </div>
+      ) : null}
+      {savedMsg ? (
+        <p className="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm text-emerald-800">
+          {savedMsg}
+        </p>
+      ) : null}
+
+      <UserForm
+        mode="edit"
+        tenantId={tenantId}
+        tenantLabel={tenantLabel}
+        defaultValues={userToFormValues(user)}
+        hidePermissionMatrix
+        isSubmitting={updateUser.isPending}
+        onSubmit={async (values) => {
+          setApiError(null);
+          setSavedMsg(null);
+          try {
+            await updateUser.mutateAsync(values as UpdateUserFormValues);
+            setSavedMsg('User saved.');
+          } catch (err) {
+            setApiError(getErrorMessage(err) || 'Failed to update user.');
+          }
+        }}
+      />
+
+      <ApiGapsNote />
+    </div>
+  );
 }
 
-function formatList(values?: string[]) {
-  if (!values?.length) return '—';
-  return values.join(', ');
-}
-
-function formatFieldLabel(key: string) {
-  return key
-    .replace(/^can_see_/, 'Can see ')
-    .replace(/^is_/, '')
-    .split('_')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
+function ApiGapsNote() {
+  return (
+    <Card className="border-dashed">
+      <CardHeader className="mb-0 pb-2">
+        <CardTitle className="text-[13px]">Backend API notes</CardTitle>
+      </CardHeader>
+      <ul className="list-disc space-y-1.5 px-5 pb-4 text-[12px] text-[var(--color-neutral-600)]">
+        <li>
+          <code className="text-[11px]">GET /users/:id</code> does not reliably return{' '}
+          <code className="text-[11px]">tenant_name</code> (or nested tenant). The UI resolves the
+          name from organization profile for the current workspace.
+        </li>
+        <li>
+          Prefer embedding <code className="text-[11px]">tenant_name</code>,{' '}
+          <code className="text-[11px]">company_name</code>,{' '}
+          <code className="text-[11px]">branch_name</code>, and{' '}
+          <code className="text-[11px]">department_name</code> on the user payload so Overview can
+          show labels without extra lookups.
+        </li>
+        <li>
+          <code className="text-[11px]">role_ids</code> /{' '}
+          <code className="text-[11px]">permission_ids</code> are UUID lists with no name catalog on
+          this endpoint — use the Permissions matrix tab (
+          <code className="text-[11px]">GET/PUT /users/:id/permission-matrix</code>).
+        </li>
+        <li>
+          Ops scope (<code className="text-[11px]">visible_job_types</code>,{' '}
+          <code className="text-[11px]">unrestricted_ops</code>) is derived from the matrix; there is
+          no dedicated PATCH field on <code className="text-[11px]">PATCH /users/:id</code>.
+        </li>
+        <li>
+          <code className="text-[11px]">single_device_login</code> /{' '}
+          <code className="text-[11px]">single_device_policy</code> exist on the update DTO but are
+          not exposed in this Overview UI yet.
+        </li>
+        <li>
+          Tenant cannot be reassigned on update (<code className="text-[11px]">tenant_id</code> is
+          create-only); changing workspace requires backend support.
+        </li>
+      </ul>
+    </Card>
+  );
 }
