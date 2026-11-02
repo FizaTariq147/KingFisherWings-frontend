@@ -49,6 +49,8 @@ export function jobDetailTabLabel(key: string): string {
       return 'Booking form';
     case 'acknowledgement':
       return 'Delivery acknowledgement';
+    case 'ledger':
+      return 'Job ledger';
     case 'section_files':
       return 'Section files';
     default:
@@ -100,6 +102,12 @@ export function toApiDetailTabKey(value: string): string {
   }
   if (norm === 'shipping_bill' || norm === 'boe') return 'shipping_bill_boe';
   if (norm === 'dept') return 'department';
+  if (norm === 'ledger' || norm === 'job_ledger' || norm === 'finance_ledger') {
+    return 'ledger';
+  }
+  if (norm === 'port_token' || norm === 'porttoken' || norm === 'token') {
+    return 'port_token';
+  }
 
   // Pass through unknown API keys unchanged (backend is source of truth).
   return norm;
@@ -122,6 +130,8 @@ export const JOB_ACTION_PANEL_KEYS = [
   'bl',
   'stuffing',
   'sea-scans',
+  /** Customer port-token request + admin confirm / send to customer. */
+  'port-token',
   'house',
   'cc-details',
   'cc-lines',
@@ -179,6 +189,8 @@ export function jobActionPanelLabel(key: JobActionPanelKey): string {
       return 'Stuffing';
     case 'sea-scans':
       return 'Sea scans';
+    case 'port-token':
+      return 'Port token';
     case 'house':
       return 'House jobs';
     case 'cc-details':
@@ -219,6 +231,7 @@ const JOB_ACTION_PANEL_FLAGS: Record<JobActionPanelKey, string[]> = {
   bl: ['can_bl', 'can_bills_of_lading', 'can_bl_entry'],
   stuffing: ['can_stuffing'],
   'sea-scans': ['can_sea_scans', 'can_sea_scan'],
+  'port-token': ['can_port_token', 'can_port_token_form', 'can_token'],
   house: ['can_house', 'can_house_jobs'],
   'cc-details': ['can_cc_details', 'can_cc'],
   'cc-lines': ['can_cc_lines'],
@@ -272,6 +285,8 @@ function heuristicJobActionPanels(
   if (jobType.includes('SEA') || jobType.includes('NVOCC')) {
     out.push('sea-scans');
   }
+  // Token request — always available in Actions so admin can review / send to customer.
+  out.push('port-token');
   if (houseCount > 0) out.push('house');
   if (isCcJobType(jobType)) {
     out.push(
@@ -341,6 +356,11 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
         ? apiLabel
         : jobDetailTabLabel(key);
     out.push({ key, label });
+  }
+
+  // FE-owned finance tab — GET /jobs/:id/ledger (not a detail/:tab envelope).
+  if (!seen.has('ledger')) {
+    out.push({ key: 'ledger', label: jobDetailTabLabel('ledger') });
   }
 
   return out;

@@ -80,18 +80,20 @@ export function hasMatrixSubmoduleAccess(
 
   const aliases = new Set<string>([sub]);
   /**
-   * Air Export + Air Import share one classic menu (`menu_jobs_air_export`) and the same
-   * ops family. Accept either submodule (and common catalog labels) so both departments
-   * appear the same when the user is granted any air ops scope.
+   * Keep Air Export and Air Import independent so the sidebar only shows
+   * departments the matrix actually grants (e.g. only those two when both are set).
+   * Still accept catalog label variants per side.
    */
-  if (sub.startsWith('air')) {
-    aliases.add('air');
+  if (sub === 'air_export' || sub === 'airexport' || sub === 'air_export_operations') {
     aliases.add('air_export');
-    aliases.add('air_import');
-    aliases.add('air_export_operations');
-    aliases.add('air_import_operations');
     aliases.add('airexport');
+    aliases.add('air_export_operations');
+  } else if (sub === 'air_import' || sub === 'airimport' || sub === 'air_import_operations') {
+    aliases.add('air_import');
     aliases.add('airimport');
+    aliases.add('air_import_operations');
+  } else if (sub === 'air' || sub.startsWith('air_')) {
+    aliases.add(sub);
   }
   if (sub === 'sea_export' || (sub.startsWith('sea_') && sub.includes('export'))) {
     aliases.add('sea_export');
@@ -124,14 +126,6 @@ export function hasMatrixSubmoduleAccess(
     const flag = key.slice(dot + 1);
     if (!prefixes.has(prefix)) continue;
     if (flagSatisfies(flag, level)) return true;
-  }
-
-  // Also match bridged menu keys for air (export+import share one menu).
-  if (mod === 'operations' && sub.startsWith('air')) {
-    for (const raw of permissions) {
-      if (typeof raw !== 'string') continue;
-      if (raw.trim().toLowerCase() === 'menu_jobs_air_export') return true;
-    }
   }
 
   return false;
@@ -239,7 +233,11 @@ export function menuKeysFromMatrixPermissions(
       prefix === 'customers_module' ||
       prefix.startsWith('customers_') ||
       prefix === 'support' ||
-      prefix === 'support_module'
+      prefix === 'support_module' ||
+      prefix.startsWith('support_') ||
+      prefix === 'parties' ||
+      prefix === 'parties_module' ||
+      prefix.startsWith('parties_')
     ) {
       keys.add('menu_customers');
       continue;

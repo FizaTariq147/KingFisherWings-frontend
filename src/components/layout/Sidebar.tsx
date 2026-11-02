@@ -434,9 +434,10 @@ function deptAllowedByVisibleJobTypes(
     tokens.some((t) => needles.some((n) => t === n || t.includes(n) || n.includes(t)));
   switch (deptKey) {
     case 'air-export':
-      return matches(['air_export', 'air']);
+      // Do not use bare "air" — that would also unlock Air Import.
+      return matches(['air_export', 'airexport']);
     case 'air-import':
-      return matches(['air_import', 'air']);
+      return matches(['air_import', 'airimport']);
     case 'sea-export':
       return matches(['sea_export', 'sea_fcl_export', 'sea_lcl_export', 'fcl_export', 'lcl_export']);
     case 'sea-import':
@@ -480,6 +481,15 @@ const WORKSPACE_NAV_ITEMS: NavItem[] = [
     Icon: Users,
     permission: 'menu_customers',
     matrixModule: 'support',
+  },
+  {
+    label: 'Parties',
+    path: '/parties',
+    Icon: Briefcase,
+    permission: 'menu_customers',
+    matrixModule: 'support',
+    enabledModuleAny: ['support'],
+    activePrefix: '/parties',
   },
   {
     label: 'Vendor Services',
@@ -654,14 +664,6 @@ const ADMIN_USERS_NAV_ITEM: NavItem = {
   adminOnly: true,
 };
 
-const ADMIN_PARTIES_NAV_ITEM: NavItem = {
-  label: 'Parties',
-  path: '/parties',
-  Icon: Briefcase,
-  permission: null,
-  adminOnly: true,
-};
-
 const ADMIN_ORGANIZATION_NAV_ITEM: NavItem = {
   label: 'Organization',
   path: '/organization',
@@ -746,10 +748,13 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
 
         // Ops departments: require the matching submodule family (air / sea / …).
         // Do NOT treat any `operations_*` grant as access to every department.
-        // Air export + import share one menu key and unlock together.
+        // Air export and air import are independent matrix submodules.
         // visible_job_types from /auth/me further scopes which departments appear.
         if (item.matrixModule && item.matrixSubmodule) {
-          if (!deptAllowedByVisibleJobTypes(item.deptKey, authCtx?.user?.visibleJobTypes)) {
+          if (
+            !authCtx?.user?.unrestrictedOps &&
+            !deptAllowedByVisibleJobTypes(item.deptKey, authCtx?.user?.visibleJobTypes)
+          ) {
             return false;
           }
           const perms = authCtx?.user?.permissions ?? [];
@@ -898,7 +903,6 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
             {[
               ADMIN_MASTERS_NAV_ITEM,
               ADMIN_ORGANIZATION_NAV_ITEM,
-              ADMIN_PARTIES_NAV_ITEM,
               ADMIN_USERS_NAV_ITEM,
               ADMIN_QUOTE_REQUESTS_NAV_ITEM,
               ADMIN_BILLING_NAV_ITEM,

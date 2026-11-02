@@ -8,7 +8,6 @@ import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { ApiDataView } from '../ApiDataView';
-import { JobPortTokenPanel } from '../JobPortTokenPanel';
 import { jobService } from '../../services/job.service';
 import { jobKeys, useJobContainers } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -99,7 +98,6 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   };
 
   return (
-    <div className="space-y-4">
     <Card>
       <CardHeader>
         <CardTitle className="flex flex-wrap items-center gap-2">
@@ -115,9 +113,9 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
         {query.isLoading ? (
           <p className="text-[var(--color-neutral-400)]">Loading acknowledgement…</p>
         ) : null}
-        {query.isError ? (
+        {query.isError || (!query.isLoading && !ack) ? (
           <p className="text-[var(--color-neutral-500)]">
-            No acknowledgement yet — customer submits from the portal when goods are delivered.
+            No acknowledgement yet — send one to the customer (they confirm receipt in the portal).
           </p>
         ) : null}
         {ack ? (
@@ -258,8 +256,6 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
         </div>
       </div>
     </Card>
-      <JobPortTokenPanel jobId={jobId} />
-    </div>
   );
 }
 

@@ -587,6 +587,7 @@ export default function PortalShipmentDetailPage() {
                 trackingQuery.data,
                 data?.reference || data?.jobNumber || id,
               )}
+              pdfSource={{ kind: 'portal', shipmentId: id }}
             />
           )}
         </PortalPanel>

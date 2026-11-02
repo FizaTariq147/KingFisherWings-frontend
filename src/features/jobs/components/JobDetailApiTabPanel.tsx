@@ -23,6 +23,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { JobBarcodePanel } from './JobBarcodePanel';
 import { JobChargesPanel } from './JobChargesPanel';
 import { JobContainersPanel } from './JobContainersPanel';
+import { JobLedgerPanel } from './JobLedgerPanel';
 import { JobCustomsRefsPanel } from './JobCustomsRefsPanel/JobCustomsRefsPanel';
 import { JobDepartmentPanel } from './JobDepartmentPanel/JobDepartmentPanel';
 import { JobDimensionsPanel } from './JobDimensionsPanel/JobDimensionsPanel';
@@ -923,7 +924,10 @@ function InteractiveTabBody({
         <p className="text-[12px] text-[#64748b]">
           {key === 'planned_container' ? 'Planned containers' : 'Actual containers'}
         </p>
-        <JobContainersPanel jobId={job.id} />
+        <JobContainersPanel
+          jobId={job.id}
+          containerKind={key === 'actual_container' ? 'ACTUAL' : 'PLANNED'}
+        />
       </div>
     );
   }
@@ -938,6 +942,14 @@ function InteractiveTabBody({
   }
   if (key === 'acknowledgement') {
     return <JobAcknowledgementPanel jobId={job.id} />;
+  }
+  if (key === 'ledger') {
+    return (
+      <JobLedgerPanel
+        jobId={job.id}
+        partyId={job.shipper_id || job.billing_party_id}
+      />
+    );
   }
   if (key === 'shipments') {
     return <JobShipmentsTabPanel job={job} tabData={tabData} onChanged={onChanged} />;
@@ -966,7 +978,8 @@ function SingleJobDetailTabPanel({
   job: Job;
   onChanged?: () => void;
 }) {
-  const tabQuery = useJobDetailTab(job.id, apiKey);
+  // ledger is FE-owned (GET /jobs/:id/ledger) — do not hit detail/:tab.
+  const tabQuery = useJobDetailTab(job.id, apiKey, apiKey !== 'ledger');
   const hasInteractive = [
     'info',
     'information',
@@ -979,6 +992,7 @@ function SingleJobDetailTabPanel({
     'history',
     'booking_form',
     'acknowledgement',
+    'ledger',
     'shipments',
     'department',
     'ex_rate',

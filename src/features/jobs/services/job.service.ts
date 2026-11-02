@@ -2125,7 +2125,15 @@ export const jobService = {
     dto: CreateJobChargesCompositeDto,
   ): Promise<unknown> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.chargesComposite(id), dto));
+    // Live API rejects charge_code / charge_code_name on composite create.
+    const { charge_code: _cc, charge_code_name: _ccn, ...charge } = dto.charge ?? {};
+    void _cc;
+    void _ccn;
+    const body: CreateJobChargesCompositeDto = {
+      ...dto,
+      charge: charge as CreateJobChargesCompositeDto['charge'],
+    };
+    return request(() => axiosInstance.post(JOB_API.chargesComposite(id), body));
   },
 
   /** PATCH /jobs/:id/charges/:chargeId/sale */
@@ -4207,6 +4215,23 @@ export const jobService = {
       return this.getById(quotation.job_id);
     }
     throw new Error('Convert succeeded but no job id was returned.');
+  },
+
+  /** GET /jobs/:id/tracking/pdf — live Track & Trace PDF. */
+  async downloadTrackingPdf(id: string, container?: string): Promise<Blob> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<Blob>(JOB_API.trackingPdf(id), {
+          params: container?.trim() ? { container: container.trim() } : undefined,
+          responseType: 'blob',
+          headers: { Accept: 'application/pdf, application/octet-stream, */*' },
+        }),
+      );
+      return res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
   /**

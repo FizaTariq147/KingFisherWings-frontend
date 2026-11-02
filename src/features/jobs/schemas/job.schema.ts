@@ -270,6 +270,8 @@ export const createJobContainerSchema = z
     container_type_id: optionalUuid(),
     container_type_code: optionalTextUndef({ max: 20 }),
     iso_size: optionalTextUndef({ max: 20 }),
+    /** PLANNED vs ACTUAL — ACTUAL numbered lines can auto-create linked shipments. */
+    container_kind: z.enum(['PLANNED', 'ACTUAL']).optional(),
     container_number: optionalTextUndef({ max: 20 }),
     seal_number: optionalTextUndef({ max: 50 }),
     tare_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),

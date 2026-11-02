@@ -117,6 +117,8 @@ export interface AuthUser {
    * null = unrestricted; [] = none; string[] = allowed job types.
    */
   visibleJobTypes?: string[] | null
+  /** When true, ops departments are not filtered by visible_job_types. */
+  unrestrictedOps?: boolean
 }
 
 // Decoded JWT payload shape from NestJS backend
