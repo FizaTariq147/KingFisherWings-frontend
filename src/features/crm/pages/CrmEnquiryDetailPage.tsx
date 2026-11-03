@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom';
@@ -17,6 +17,8 @@ import {
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
+import type { JobType as OpsJobType } from '@/features/jobs/constants/job.constants';
+import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
 import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { buildFclContinuumSteps } from '@/features/shared/continuum/buildFclContinuumSteps';
@@ -26,7 +28,12 @@ import { OpsContinuumRail } from '@/features/ops-activity';
 import { isUuid } from '@/lib/isUuid';
 import { cn } from '@/lib/utils';
 import { useAppForm } from '@/lib/validation';
-import { ENQUIRY_STATUSES, SERVICE_TYPES, crmLabel } from '../constants/crm.constants';
+import {
+  ENQUIRY_STATUSES,
+  SERVICE_TYPES,
+  crmLabel,
+  type ServiceType,
+} from '../constants/crm.constants';
 import { CrmCurrencySelect, CrmPartySelect, CrmSalespersonSelect } from '../components/CrmFormControls';
 import { CrmSection } from '../components/CrmSection';
 import { OperationTypeBadge } from '@/components/erp';
@@ -117,12 +124,23 @@ function FresaReadonlyField({
   );
 }
 
+const ENQUIRY_SERVICE_CANDIDATES = SERVICE_TYPES as readonly OpsJobType[];
+
 export default function CrmEnquiryDetailPage() {
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
   const formRef = useRef<HTMLFormElement>(null);
   const query = useCrmEnquiry(id);
+  const allowedJobTypes = useStaffAllowedJobTypes(ENQUIRY_SERVICE_CANDIDATES);
+  const serviceTypeOptions = useMemo(() => {
+    const allowed = allowedJobTypes as readonly ServiceType[];
+    const current = query.data?.service_type as ServiceType | undefined;
+    if (current && !allowed.includes(current)) {
+      return [...allowed, current];
+    }
+    return [...allowed];
+  }, [allowedJobTypes, query.data?.service_type]);
   const update = useUpdateCrmEnquiry(id);
   const convert = useConvertCrmEnquiry();
   const generateQuotation = useGenerateCrmEnquiryQuotation();
@@ -764,7 +782,7 @@ export default function CrmEnquiryDetailPage() {
               <div className={erpForm.grid3}>
                 <Field label="Department / Service" error={err('service_type')}>
                   <SelectInput {...register('service_type')}>
-                    {SERVICE_TYPES.map((x) => (
+                    {serviceTypeOptions.map((x) => (
                       <option key={x} value={x}>
                         {crmLabel(x)}
                       </option>

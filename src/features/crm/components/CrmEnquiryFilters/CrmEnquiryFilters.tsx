@@ -93,6 +93,8 @@ interface CrmEnquiryFiltersProps {
   onDraftChange: (next: CrmEnquiryFilterDraft) => void;
   onSubmit: () => void;
   isSubmitting?: boolean;
+  /** Staff-scoped service types for the Department type dropdown. */
+  serviceTypeOptions?: readonly ServiceType[];
 }
 
 /** Permanently shown Fresa / Enquiry Sheet filter panel for CRM enquiries. */
@@ -101,9 +103,13 @@ export function CrmEnquiryFilters({
   onDraftChange,
   onSubmit,
   isSubmitting,
+  serviceTypeOptions,
 }: CrmEnquiryFiltersProps) {
   const patch = (partial: Partial<CrmEnquiryFilterDraft>) =>
     onDraftChange({ ...draft, ...partial });
+  const scopedServiceTypes = serviceTypeOptions?.length
+    ? serviceTypeOptions
+    : SERVICE_TYPES;
 
   const { data: departments = [] } = useMasterOptions(
     'departments',
@@ -118,7 +124,7 @@ export function CrmEnquiryFilters({
   ];
   const serviceOptions = [
     allOpt,
-    ...SERVICE_TYPES.map((t) => ({ value: t, label: crmLabel(t) })),
+    ...scopedServiceTypes.map((t) => ({ value: t, label: crmLabel(t) })),
   ];
   const departmentOptions = [
     allOpt,

@@ -218,6 +218,8 @@ export function buildCreateShipmentDtoFromForm(
 
 type ShipmentFormProps = {
   defaultValues?: Partial<ShipmentFormValues>;
+  /** Staff-scoped job types for the create wizard. Defaults to full catalog. */
+  jobTypeOptions?: readonly JobType[];
   onSubmit: (dto: CreateShipmentDto) => void | Promise<void>;
   onCancel: () => void;
   isSubmitting?: boolean;
@@ -225,10 +227,12 @@ type ShipmentFormProps = {
 
 export function ShipmentForm({
   defaultValues,
+  jobTypeOptions,
   onSubmit,
   onCancel,
   isSubmitting,
 }: ShipmentFormProps) {
+  const typeOptions = jobTypeOptions?.length ? jobTypeOptions : undefined;
   const [step, setStep] = useState(0);
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof ShipmentFormValues, string>>>(
     {},
@@ -423,6 +427,7 @@ export function ShipmentForm({
         <div className={panelClass}>
           <JobTypeSelectGrid
             value={watched.job_type}
+            jobTypeOptions={typeOptions}
             heading="What type of Shipment would you like to create?"
             onChange={(jobType: JobType) => {
               setValue('job_type', jobType, { shouldDirty: true });

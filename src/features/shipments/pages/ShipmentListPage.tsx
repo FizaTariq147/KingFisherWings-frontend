@@ -10,13 +10,14 @@ import {
   StatusBadge,
 } from '@/components/erp';
 import { departmentByKey } from '@/features/jobs/config/departmentNav';
+import { JOB_TYPES, type JobType } from '@/features/jobs/constants/job.constants';
+import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
 import { appType, erpTable, listShell } from '@/lib/erpTypography';
 import {
   ShipmentFilters,
   shipmentFilterDraftToListParams,
   useShipmentFilterDraft,
 } from '../components/ShipmentFilters';
-import type { JobType } from '@/features/jobs/constants/job.constants';
 import { useShipmentPaths } from '../hooks/useShipmentPaths';
 import { useShipments } from '../hooks/useShipments';
 import { useShipmentsPermissions } from '../hooks/useShipmentsPermissions';
@@ -29,6 +30,11 @@ export default function ShipmentListPage() {
   const dept = departmentByKey(searchParams.get('dept'));
   const paths = useShipmentPaths();
   const { canReadApi, canWriteCreate } = useShipmentsPermissions();
+  const allowedJobTypes = useStaffAllowedJobTypes(JOB_TYPES);
+  const allowedTypeSet = useMemo(
+    () => new Set(allowedJobTypes.map(String)),
+    [allowedJobTypes],
+  );
   const [page, setPage] = useState(1);
   const { draft, setDraft, applied, submit, applyPatch } = useShipmentFilterDraft(20);
 
@@ -43,24 +49,43 @@ export default function ShipmentListPage() {
   }, [dept?.key]); // eslint-disable-line react-hooks/exhaustive-deps -- sync from ?dept=
 
   useEffect(() => {
+    if (!applied.jobType) return;
+    if (allowedTypeSet.has(String(applied.jobType))) return;
+    applyPatch({ jobType: '' });
+  }, [allowedTypeSet, applied.jobType]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  useEffect(() => {
     setPage(1);
   }, [applied]);
 
-  const listParams = useMemo(
-    () => shipmentFilterDraftToListParams(applied, page),
-    [applied, page],
-  );
+  const listParams = useMemo(() => {
+    const base = shipmentFilterDraftToListParams(applied, page);
+    if (!base.job_type && allowedJobTypes.length === 1) {
+      return { ...base, job_type: allowedJobTypes[0] };
+    }
+    return base;
+  }, [applied, page, allowedJobTypes]);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useShipments(listParams);
   const shipments = useMemo(() => {
-    const rows = data?.shipments ?? [];
-    if (!dept || dept.jobTypes.length <= 1) return rows;
-    const allowed = new Set(dept.jobTypes.map(String));
-    return rows.filter((s) => {
-      const code = s.job_type || s.service_type;
-      return Boolean(code && allowed.has(String(code)));
-    });
-  }, [data?.shipments, dept]);
+    let rows = data?.shipments ?? [];
+    if (allowedTypeSet.size > 0) {
+      rows = rows.filter((s) => {
+        const code = s.job_type || s.service_type;
+        return Boolean(code && allowedTypeSet.has(String(code)));
+      });
+    } else {
+      rows = [];
+    }
+    if (dept && dept.jobTypes.length > 1) {
+      const deptAllowed = new Set(dept.jobTypes.map(String));
+      rows = rows.filter((s) => {
+        const code = s.job_type || s.service_type;
+        return Boolean(code && deptAllowed.has(String(code)));
+      });
+    }
+    return rows;
+  }, [data?.shipments, dept, allowedTypeSet]);
   const meta = data?.meta;
 
   return (
@@ -105,6 +130,7 @@ export default function ShipmentListPage() {
             submit();
           }}
           isSubmitting={isFetching}
+          jobTypeOptions={allowedJobTypes}
         />
 
         {!canReadApi ? (
@@ -124,6 +150,11 @@ export default function ShipmentListPage() {
               <div key={i} className="h-8 animate-pulse rounded-sm bg-[#eef2f6]" />
             ))}
           </div>
+        ) : allowedJobTypes.length === 0 ? (
+          <EmptyState
+            title="No shipment types available."
+            description="Ask an admin to grant Air Import / Air Export (or other operations) access for your departments."
+          />
         ) : shipments.length === 0 ? (
           <EmptyState
             title="No shipments found."
@@ -190,9 +221,7 @@ export default function ShipmentListPage() {
                           .filter(Boolean)
                           .join(' → ') || '—'}
                       </td>
-                      <td className={erpTable.td}>
-                        {s.job_number || '—'}
-                      </td>
+                      <td className={erpTable.td}>{s.job_number || '—'}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -203,7 +232,12 @@ export default function ShipmentListPage() {
               <div className="flex items-center justify-between border-t border-[#d0d7de] px-3 py-2 text-[13px]">
                 <span className="text-[#64748b]">{meta.total} shipment(s)</span>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="secondary" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+                  <Button
+                    size="sm"
+                    variant="secondary"
+                    disabled={page <= 1}
+                    onClick={() => setPage((p) => p - 1)}
+                  >
                     Previous
                   </Button>
                   <span className="px-2 py-1.5">
