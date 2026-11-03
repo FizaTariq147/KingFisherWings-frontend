@@ -16,6 +16,13 @@ import {
   type StatusMapRow,
 } from '../components/StatusMapEditor';
 import {
+  defaultsForProvider,
+  isKnownDefaultBaseUrl,
+  normalizeProvider,
+  normalizeQuoteRequestBaseUrl,
+  providerLabel,
+} from '../constants/quoteRequestProviders';
+import {
   useQuoteRequestConnection,
   useQuoteRequestsList,
   useQuoteRequestSyncRuns,
@@ -24,6 +31,15 @@ import {
   useUpsertQuoteRequestConnection,
 } from '../hooks/useAdminQuoteRequests';
 import type { QuoteRequestProvider } from '../types/adminQuoteRequests.types';
+import {
+  displayCustomerCompany,
+  displayCustomerContact,
+  displayCustomerName,
+  displayReference,
+  isKfqaStyleQuote,
+  itemsSummary,
+  sourceBadgeLabel,
+} from '../utils/quoteRequestDisplay';
 import {
   canManageQuoteRequestConnection,
   canSyncQuoteRequests,
@@ -42,10 +58,6 @@ function formatWhen(value: string | null | undefined): string {
 function isFeatureOffError(error: unknown): boolean {
   const status = (error as { response?: { status?: number } })?.response?.status;
   return status === 404;
-}
-
-function providerLabel(provider: QuoteRequestProvider): string {
-  return provider === 'GENERIC_REST' ? 'Generic REST' : 'WordPress KFPP';
 }
 
 export default function AdminQuoteRequestsPage() {
@@ -89,11 +101,13 @@ export default function AdminQuoteRequestsPage() {
 
   useEffect(() => {
     if (!connection.data || formHydrated) return;
+    const nextProvider = normalizeProvider(String(connection.data.provider));
     setBaseUrl(connection.data.base_url || '');
-    setProvider(
-      connection.data.provider === 'GENERIC_REST' ? 'GENERIC_REST' : 'KFPP_WP',
+    setProvider(nextProvider);
+    setAuthHeader(
+      connection.data.auth_header_name ||
+        defaultsForProvider(nextProvider).auth_header_name,
     );
-    setAuthHeader(connection.data.auth_header_name || 'X-KFPP-Api-Key');
     setIsActive(connection.data.is_active);
     setStatusMapRows(rowsFromStatusMap(connection.data.status_map));
     setFormHydrated(true);
@@ -111,14 +125,30 @@ export default function AdminQuoteRequestsPage() {
 
   const rows = list.data?.items ?? [];
   const runs = syncRuns.data?.items ?? [];
+  const isKfqaConnection = provider === 'KFQA_WP' || connection.data?.provider === 'KFQA_WP';
+  const useKfqaList =
+    isKfqaConnection || rows.some((row) => isKfqaStyleQuote(row, connection.data?.provider));
 
   const healthLabel = useMemo(() => {
     const row = connection.data;
     if (!row) return 'Not configured';
     if (row.last_health_error) return `Needs attention — ${row.last_health_error}`;
-    if (row.last_health_at) return `Healthy · ${formatWhen(row.last_health_at)}`;
+    if (row.last_health_ok === false) return 'Last health check failed';
+    if (row.last_health_at) {
+      const okBit = row.last_health_ok ? 'Healthy' : 'Checked';
+      return `${okBit} · ${formatWhen(row.last_health_at)}`;
+    }
     return row.is_active ? 'Active · not tested yet' : 'Inactive';
   }, [connection.data]);
+
+  const onProviderChange = (next: QuoteRequestProvider) => {
+    setProvider(next);
+    const defaults = defaultsForProvider(next);
+    setAuthHeader(defaults.auth_header_name);
+    if (isKnownDefaultBaseUrl(baseUrl) || !baseUrl.trim()) {
+      setBaseUrl(defaults.base_url);
+    }
+  };
 
   const runAction = async (label: string, fn: () => Promise<unknown>) => {
     setError(null);
@@ -157,37 +187,42 @@ export default function AdminQuoteRequestsPage() {
   };
 
   const saveConnection = async () => {
-    if (!baseUrl.trim()) {
+    const cleanedUrl = normalizeQuoteRequestBaseUrl(baseUrl);
+    if (!cleanedUrl) {
       setError('Base URL is required.');
       return;
     }
-    if (!apiKey.trim()) {
-      setError('Enter the website API key to save (it is write-only and never shown again).');
+    if (!apiKey.trim() || apiKey.trim().length < 8) {
+      setError('Enter the website API key (min 8 characters). It is write-only and never shown again.');
       return;
     }
 
-    const incompleteMap = statusMapRows.some(
-      (row) =>
-        (row.remote.trim() && !row.local.trim()) ||
-        (!row.remote.trim() && row.local.trim()),
-    );
-    if (incompleteMap) {
-      setError('Each status mapping needs both a website status and a KingFisher status.');
-      return;
+    if (provider !== 'KFQA_WP') {
+      const incompleteMap = statusMapRows.some(
+        (row) =>
+          (row.remote.trim() && !row.local.trim()) ||
+          (!row.remote.trim() && row.local.trim()),
+      );
+      if (incompleteMap) {
+        setError('Each status mapping needs both a website status and a KingFisher status.');
+        return;
+      }
     }
 
-    const statusMap = statusMapFromRows(statusMapRows);
+    const statusMap = provider === 'KFQA_WP' ? null : statusMapFromRows(statusMapRows);
+    const defaults = defaultsForProvider(provider);
 
     await runAction('Connection saved', () =>
       upsert.mutateAsync({
-        base_url: baseUrl.trim(),
+        base_url: cleanedUrl,
         api_key: apiKey.trim(),
         provider,
-        auth_header_name: authHeader.trim() || 'X-KFPP-Api-Key',
+        auth_header_name: authHeader.trim() || defaults.auth_header_name,
         is_active: isActive,
         ...(statusMap ? { status_map: statusMap } : {}),
       }),
     );
+    setBaseUrl(cleanedUrl);
     setApiKey('');
   };
 
@@ -209,7 +244,7 @@ export default function AdminQuoteRequestsPage() {
         <div>
           <h1 className={appType.pageTitle}>Quote Requests Integration</h1>
           <p className={appType.pageSubtitle}>
-            Sync website quote requests into KingFisher for Sales follow-up and freight quoting.
+            Sync website quote requests (KFPP inquiries or KFQA General Trading) into KingFisher.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -258,8 +293,8 @@ export default function AdminQuoteRequestsPage() {
 
       {!featureOff && connectionMissing ? (
         <Card className="border-sky-200 bg-sky-50 p-4 text-sm text-sky-900">
-          Setup required: enter your website API base URL and key, save, then test the connection
-          before syncing.
+          Setup required: choose provider (use <strong>KFQA</strong> for General Trading), enter
+          base URL and API key, save, then test before syncing.
         </Card>
       ) : null}
 
@@ -281,6 +316,14 @@ export default function AdminQuoteRequestsPage() {
           ) : null}
           <dl className="grid gap-3 text-sm sm:grid-cols-2">
             <div>
+              <dt className="text-xs text-[var(--color-neutral-400)]">Provider</dt>
+              <dd className="text-[var(--color-neutral-700)]">
+                {connection.data
+                  ? providerLabel(String(connection.data.provider))
+                  : 'Not configured'}
+              </dd>
+            </div>
+            <div>
               <dt className="text-xs text-[var(--color-neutral-400)]">Stored key</dt>
               <dd className="text-[var(--color-neutral-700)]">
                 {connection.data?.api_key_prefix
@@ -298,39 +341,10 @@ export default function AdminQuoteRequestsPage() {
                 {formatWhen(connection.data?.last_sync_at)}
               </dd>
             </div>
-            <div>
-              <dt className="text-xs text-[var(--color-neutral-400)]">Last website id</dt>
-              <dd className="text-[var(--color-neutral-700)]">
-                {connection.data?.last_external_id ||
-                  connection.data?.sync_cursor ||
-                  '—'}
-              </dd>
-            </div>
           </dl>
 
           {canManage ? (
             <div className="space-y-3 border-t border-[var(--color-neutral-100)] pt-3">
-              <Input
-                label="Base URL"
-                placeholder="https://example.com/wp-json/kfpp/v1"
-                value={baseUrl}
-                onChange={(e) => setBaseUrl(e.target.value)}
-                disabled={featureOff}
-              />
-              <Input
-                label="API key"
-                type="password"
-                autoComplete="off"
-                hint={
-                  connection.data?.api_key_prefix
-                    ? 'Leave blank only if you are not changing the key — saving still requires re-entry to rotate.'
-                    : 'Paste the website plugin API key. It is never shown again after save.'
-                }
-                placeholder="Website API key"
-                value={apiKey}
-                onChange={(e) => setApiKey(e.target.value)}
-                disabled={featureOff}
-              />
               <div className="grid gap-3 sm:grid-cols-2">
                 <label className="block text-sm">
                   <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
@@ -341,9 +355,10 @@ export default function AdminQuoteRequestsPage() {
                     value={provider}
                     disabled={featureOff}
                     onChange={(e) =>
-                      setProvider(e.target.value as QuoteRequestProvider)
+                      onProviderChange(e.target.value as QuoteRequestProvider)
                     }
                   >
+                    <option value="KFQA_WP">{providerLabel('KFQA_WP')}</option>
                     <option value="KFPP_WP">{providerLabel('KFPP_WP')}</option>
                     <option value="GENERIC_REST">{providerLabel('GENERIC_REST')}</option>
                   </select>
@@ -353,8 +368,37 @@ export default function AdminQuoteRequestsPage() {
                   value={authHeader}
                   onChange={(e) => setAuthHeader(e.target.value)}
                   disabled={featureOff}
+                  hint={
+                    provider === 'KFQA_WP'
+                      ? 'Default X-API-Key for KFQA'
+                      : provider === 'KFPP_WP'
+                        ? 'Default X-KFPP-Api-Key for KFPP'
+                        : undefined
+                  }
                 />
               </div>
+              <Input
+                label="Base URL"
+                placeholder={
+                  provider === 'KFQA_WP'
+                    ? 'https://kingfisherwingsgroup.com/wp-json/kfqa/v1'
+                    : 'https://example.com/wp-json/kfpp/v1'
+                }
+                value={baseUrl}
+                onChange={(e) => setBaseUrl(e.target.value)}
+                disabled={featureOff}
+                hint="Paste the API root (trailing /quotes is stripped on save)."
+              />
+              <Input
+                label="API key"
+                type="password"
+                autoComplete="off"
+                hint="Required on every save (min 8 characters). Full key is never returned by the API."
+                placeholder="Website API key"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+                disabled={featureOff}
+              />
               <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
                 <input
                   type="checkbox"
@@ -365,11 +409,17 @@ export default function AdminQuoteRequestsPage() {
                 Keep connection active for scheduled and manual sync
               </label>
 
-              <StatusMapEditor
-                rows={statusMapRows}
-                onChange={setStatusMapRows}
-                disabled={featureOff}
-              />
+              {provider !== 'KFQA_WP' ? (
+                <StatusMapEditor
+                  rows={statusMapRows}
+                  onChange={setStatusMapRows}
+                  disabled={featureOff}
+                />
+              ) : (
+                <p className="text-xs text-[var(--color-neutral-500)]">
+                  KFQA uses fixed statuses (new → closed). Status map is not required.
+                </p>
+              )}
 
               <div className="flex flex-wrap gap-2">
                 <Button
@@ -469,11 +519,13 @@ export default function AdminQuoteRequestsPage() {
 
       <Card className={listShell.card}>
         <div className={listShell.header}>
-          <h2 className={appType.sectionTitle}>Website quote requests</h2>
+          <h2 className={appType.sectionTitle}>
+            {useKfqaList ? 'General Trading quote requests' : 'Website quote requests'}
+          </h2>
           <div className="flex flex-wrap gap-2">
             <input
               className="rounded-md border border-[var(--color-neutral-200)] px-3 py-1.5 text-sm"
-              placeholder="Search name, email, or id"
+              placeholder="Search email, name, company, commodity, id…"
               value={search}
               onChange={(e) => {
                 setPage(1);
@@ -509,21 +561,93 @@ export default function AdminQuoteRequestsPage() {
               <table className={listShell.table}>
                 <thead>
                   <tr>
-                    <th className={erpTable.th}>Request</th>
-                    <th className={erpTable.th}>Contact</th>
-                    <th className={erpTable.th}>Status</th>
-                    <th className={erpTable.th}>Submitted</th>
-                    <th className={erpTable.th}>CRM</th>
-                    <th className={erpTable.th}>Last sync</th>
+                    {useKfqaList ? (
+                      <>
+                        <th className={erpTable.th}>Reference</th>
+                        <th className={erpTable.th}>Source</th>
+                        <th className={erpTable.th}>Customer</th>
+                        <th className={erpTable.th}>Contact</th>
+                        <th className={erpTable.th}>Items</th>
+                        <th className={erpTable.th}>Status</th>
+                        <th className={erpTable.th}>Submitted</th>
+                        <th className={erpTable.th}>Sync / push</th>
+                      </>
+                    ) : (
+                      <>
+                        <th className={erpTable.th}>Request</th>
+                        <th className={erpTable.th}>Contact</th>
+                        <th className={erpTable.th}>Status</th>
+                        <th className={erpTable.th}>Submitted</th>
+                        <th className={erpTable.th}>CRM</th>
+                        <th className={erpTable.th}>Last sync</th>
+                      </>
+                    )}
                   </tr>
                 </thead>
                 <tbody>
                   {rows.length === 0 ? (
                     <tr>
-                      <td className={listShell.empty} colSpan={6}>
+                      <td className={listShell.empty} colSpan={useKfqaList ? 8 : 6}>
                         No quote requests yet. Save the connection and run Sync.
                       </td>
                     </tr>
+                  ) : useKfqaList ? (
+                    rows.map((row) => (
+                      <tr key={row.id} className={listShell.row}>
+                        <td className={erpTable.td}>
+                          <Link
+                            className="font-medium text-[var(--color-primary,#0A2942)] underline-offset-2 hover:underline"
+                            to={`/admin/integrations/quote-requests/${encodeURIComponent(row.id)}`}
+                          >
+                            {displayReference(row)}
+                          </Link>
+                          {row.external_id && row.reference ? (
+                            <div className="text-xs text-[var(--color-neutral-500)]">
+                              {row.external_id}
+                            </div>
+                          ) : null}
+                        </td>
+                        <td className={erpTable.td}>
+                          <span className="inline-flex rounded bg-[var(--color-neutral-100)] px-1.5 py-0.5 text-xs text-[var(--color-neutral-700)]">
+                            {sourceBadgeLabel(row.source, row.source_label)}
+                          </span>
+                        </td>
+                        <td className={erpTable.td}>
+                          <div>{displayCustomerName(row)}</div>
+                          {displayCustomerCompany(row) ? (
+                            <div className="text-xs text-[var(--color-neutral-500)]">
+                              {displayCustomerCompany(row)}
+                            </div>
+                          ) : null}
+                        </td>
+                        <td className={erpTable.td}>
+                          <div className="text-xs text-[var(--color-neutral-600)]">
+                            {displayCustomerContact(row)}
+                          </div>
+                        </td>
+                        <td className={erpTable.td}>
+                          <div>{itemsSummary(row)}</div>
+                          {row.items.length > 0 ? (
+                            <div className="text-xs text-[var(--color-neutral-500)]">
+                              {row.items.length} line{row.items.length === 1 ? '' : 's'}
+                            </div>
+                          ) : null}
+                        </td>
+                        <td className={erpTable.td}>
+                          <span className="capitalize">{row.status || '—'}</span>
+                        </td>
+                        <td className={erpTable.td}>{formatWhen(row.submitted_at)}</td>
+                        <td className={erpTable.td}>
+                          {row.sync_error ? (
+                            <span className="text-[var(--color-danger-600)]">{row.sync_error}</span>
+                          ) : row.status_push_pending ? (
+                            <span className="text-xs text-amber-700">Push pending</span>
+                          ) : (
+                            formatWhen(row.last_synced_at)
+                          )}
+                        </td>
+                      </tr>
+                    ))
                   ) : (
                     rows.map((row) => (
                       <tr key={row.id} className={listShell.row}>

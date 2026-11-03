@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 import { X } from 'lucide-react'
-import logo from '@/assets/logo.png'
+import { BrandLogo } from '@/features/branding/components/BrandLogo'
 
 const NAVY = '#0A2942'
 
@@ -11,12 +11,15 @@ export function LoginPopupFrame({
   children,
   labelledBy,
   compact = false,
+  logoUrl,
 }: {
   title: string
   onClose: () => void
   children: ReactNode
   labelledBy?: string
   compact?: boolean
+  /** Tenant logo from ?tenant_slug= / embed; falls back to assets/logo.png */
+  logoUrl?: string | null
 }) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -39,7 +42,11 @@ export function LoginPopupFrame({
           <X size={16} />
         </button>
         <div className={`flex justify-center ${compact ? 'mb-2' : 'mb-3'}`}>
-          <img src={logo} alt="KingFisher Wings" className={compact ? 'h-10 w-auto' : 'h-12 w-auto'} />
+          <BrandLogo
+            logoUrl={logoUrl}
+            alt="KingFisher Wings"
+            className={compact ? 'h-10 w-auto' : 'h-12 w-auto'}
+          />
         </div>
         <p
           id={labelledBy ?? 'login-popup-title'}

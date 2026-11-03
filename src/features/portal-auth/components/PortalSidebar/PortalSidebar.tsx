@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { LogOut, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import logo from '@/assets/logo.png';
+import { BrandLogo } from '@/features/branding/components/BrandLogo';
 import { usePortalAutoAnimate } from '../portal-ui/usePortalAutoAnimate';
 import { usePortalBrand } from '../../hooks/usePortalBrand';
 import { usePortalAuthStore } from '../../store/portalAuthStore';
@@ -173,13 +173,12 @@ export function PortalSidebar({
     >
       {collapsed ? (
         <div className="flex justify-center border-b border-white/8 px-2 py-3">
-          <img src={logo} alt="KingFisher Wings" className="h-9 w-9 rounded-lg object-contain" />
+          <BrandLogo alt="KingFisher Wings" className="h-9 w-9 rounded-lg object-contain" />
         </div>
       ) : (
         <div className="border-b border-white/8 px-4 py-4">
           <div className="flex items-start gap-3">
-            <img
-              src={logo}
+            <BrandLogo
               alt="KingFisher Wings"
               className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1"
             />

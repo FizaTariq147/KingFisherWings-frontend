@@ -28,12 +28,15 @@ import {
 } from '../../schemas/tenant.schema';
 import type { CreateTenantFormValues, UpdateTenantFormValues } from '../../types/tenant.types';
 import { applyCompanyToTenantForm, companyOptionLabel } from '../../utils/applyCompanyToTenantForm';
+import { LogoFileField } from '@/features/branding/components/LogoFileField';
 import { TenantWizardStepper } from '../tenant-wizard';
 
 interface TenantFormProps {
   mode: 'create' | 'edit';
   /** `wizard` = create multi-step UI; `flat` = edit / default. */
   layout?: 'flat' | 'wizard';
+  /** Required for live logo upload on edit (`POST /tenants/:id/logo`). */
+  tenantId?: string;
   defaultValues?: Partial<CreateTenantFormValues>;
   onSubmit: (values: CreateTenantFormValues | UpdateTenantFormValues) => void | Promise<void>;
   onCancel?: () => void;
@@ -119,6 +122,7 @@ const SUBSCRIPTION_FIELDS: (keyof CreateTenantFormValues)[] = [
 export function TenantForm({
   mode,
   layout = 'flat',
+  tenantId,
   defaultValues,
   onSubmit,
   onCancel,
@@ -390,7 +394,17 @@ export function TenantForm({
     <Grid>
       <Input label="Custom domain" {...register('domain')} />
       <Input label="Website" type="url" placeholder="https://" {...register('website')} />
-      <Input label="Logo URL" type="url" error={fieldError('logo_url')} {...register('logo_url')} />
+      <LogoFileField
+        label="Tenant logo"
+        value={watch('logo_url')}
+        error={fieldError('logo_url')}
+        uploadMode="tenant"
+        tenantId={tenantId}
+        disabled={isSubmitting}
+        onChange={(url) =>
+          setValue('logo_url', url, { shouldDirty: true, shouldValidate: true })
+        }
+      />
       <Input
         label="Brand color"
         placeholder="#0A2942"

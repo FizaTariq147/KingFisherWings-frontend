@@ -49,8 +49,9 @@ import {
 } from '@/features/users/utils/matrixPermissionAccess';
 import { DEPARTMENT_NAV } from '@/features/jobs/config/departmentNav';
 import type { PermissionKey } from '@/types/auth.types';
+import { BrandLogo } from '@/features/branding/components/BrandLogo';
+import { useBrandLogoUrl } from '@/features/branding/hooks/useBrandLogoUrl';
 import { useShellLogout } from './useShellLogout';
-import logo from '@/assets/logo.png';
 
 interface NavIconStyle {
   bg: string;
@@ -323,10 +324,15 @@ function SidebarBrand({
   collapsed: boolean;
   product?: string;
 }) {
+  const logoSrc = useBrandLogoUrl();
   if (collapsed) {
     return (
       <div className="flex justify-center border-b border-white/8 px-2 py-3">
-        <img src={logo} alt="KingFisher Wings" className="h-9 w-9 rounded-lg object-contain" />
+        <BrandLogo
+          logoUrl={logoSrc}
+          alt="KingFisher Wings"
+          className="h-9 w-9 rounded-lg object-contain"
+        />
       </div>
     );
   }
@@ -334,8 +340,8 @@ function SidebarBrand({
   return (
     <div className="border-b border-white/8 px-4 py-4">
       <div className="flex items-start gap-3">
-        <img
-          src={logo}
+        <BrandLogo
+          logoUrl={logoSrc}
           alt="KingFisher Wings"
           className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1"
         />
