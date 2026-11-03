@@ -1,3 +1,8 @@
+import {
+  isTenantUserManagerRole,
+  resolveAuthRoleSlug,
+} from '@/features/users/constants/userPermissions';
+import { useAuthStore } from '@/store/authStore';
 import { organizationService } from '../services/organization.service';
 import type { NumberFormat, NumberFormatFormValues } from '../types/organization.types';
 
@@ -15,6 +20,12 @@ const DEFAULT_JOB_NUMBER_FORMAT: NumberFormatFormValues = {
   reset_frequency: 'YEARLY',
   is_active: true,
 };
+
+function canManageNumberFormats(): boolean {
+  const user = useAuthStore.getState().user;
+  if (!user?.role) return false;
+  return isTenantUserManagerRole(resolveAuthRoleSlug(user.role));
+}
 
 function normalizeDocTypeKey(value: string | null | undefined): string {
   return String(value ?? '')
@@ -53,21 +64,26 @@ async function resolveJobNumberFormat(): Promise<NumberFormat | null> {
 
 /**
  * Best-effort JOB_NUMBER housekeeping before job create / quote convert.
- * Never throws — staff without TENANT_ADMIN must still be able to create jobs
- * when the tenant format already exists.
+ *
+ * Staff (non–Tenant Admin) skip entirely — they cannot create/update formats
+ * (BE requires TENANT_ADMIN) and must not be blocked when the format already exists.
+ * Tenant Admin may auto-create / patch include_branch_code.
+ * Never throws.
  */
 export async function ensureJobNumberFormatReady(): Promise<void> {
+  // Staff portal / ops users: do not call number-format APIs at all.
+  if (!canManageNumberFormats()) return;
+
   try {
     let format = await resolveJobNumberFormat();
 
     if (!format) {
       try {
         await organizationService.createNumberFormat(DEFAULT_JOB_NUMBER_FORMAT);
-        return;
       } catch {
-        // Common for staff: create requires TENANT_ADMIN. Format usually already exists.
-        return;
+        /* ignore — job create will still run */
       }
+      return;
     }
 
     const typeKey = String(format.document_type || JOB_NUMBER_TYPE).trim() || JOB_NUMBER_TYPE;
@@ -79,7 +95,7 @@ export async function ensureJobNumberFormatReady(): Promise<void> {
       try {
         await organizationService.updateNumberFormat(typeKey, patches);
       } catch {
-        /* staff cannot patch — continue */
+        /* ignore */
       }
     }
 
