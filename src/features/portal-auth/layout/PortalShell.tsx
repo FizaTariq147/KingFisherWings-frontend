@@ -3,7 +3,7 @@ import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { LogOut, X } from 'lucide-react';
 import { useApplyTheme } from '@/hooks/useApplyTheme';
 import { cn } from '@/lib/utils';
-import logo from '@/assets/logo.png';
+import { BrandLogo } from '@/features/branding/components/BrandLogo';
 import { portalAuthService } from '../services/portalAuth.service';
 import { PortalSidebar } from '../components/PortalSidebar/PortalSidebar';
 import { PortalTopbar } from '../components/PortalTopbar/PortalTopbar';
@@ -110,8 +110,7 @@ export function PortalShell() {
             <div className="portal-mobile-drawer absolute right-0 top-0 flex h-full w-[min(320px,88vw)] flex-col bg-[var(--color-sidebar-bg)] text-white shadow-xl">
               <div className="flex items-start justify-between gap-3 border-b border-white/8 px-4 py-4">
                 <div className="flex min-w-0 flex-1 items-start gap-3 pr-2">
-                  <img
-                    src={logo}
+                  <BrandLogo
                     alt=""
                     className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1"
                   />

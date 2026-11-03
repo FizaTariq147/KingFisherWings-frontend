@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import type { LucideIcon } from 'lucide-react';
 import { LogOut, Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import logo from '@/assets/logo.png';
+import { BrandLogo } from '@/features/branding/components/BrandLogo';
 import { usePortalAutoAnimate } from '@/features/portal-auth/components/portal-ui';
 import { useVendorBrand } from '../hooks/useVendorBrand';
 import { VENDOR_NAV, VENDOR_NAV_SECTIONS, type VendorNavIconStyle } from '../nav';
@@ -157,8 +157,7 @@ export function VendorSidebar({ onLogout, collapsed = false }: VendorSidebarProp
     >
       {collapsed ? (
         <div className="flex justify-center border-b border-white/8 px-2 py-3">
-          <img
-            src={logo}
+          <BrandLogo
             alt="KingFisher Wings"
             className="h-9 w-9 rounded-lg bg-white object-contain p-0.5"
           />
@@ -169,8 +168,7 @@ export function VendorSidebar({ onLogout, collapsed = false }: VendorSidebarProp
             {portalLabel}
           </p>
           <div className="mt-2 flex items-start gap-3">
-            <img
-              src={logo}
+            <BrandLogo
               alt="KingFisher Wings"
               className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1"
             />

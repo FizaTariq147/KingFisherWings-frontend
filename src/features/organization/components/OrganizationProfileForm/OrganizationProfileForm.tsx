@@ -27,6 +27,7 @@ import {
 } from '../../hooks/useOrganizationProfile';
 import { updateOrganizationProfileSchema } from '../../schemas/organization.schema';
 import type { OrganizationProfileFormValues } from '../../types/organization.types';
+import { LogoFileField } from '@/features/branding/components/LogoFileField';
 import { profileToFormValues } from '../../utils/prepareOrganizationPayload';
 
 const selectClass =
@@ -363,7 +364,15 @@ export default function OrganizationProfilePage() {
           <CardTitle>Branding Information</CardTitle>
         </CardHeader>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          <Input label="Logo URL" error={errors.logo_url?.message} {...register('logo_url')} />
+          <LogoFileField
+            label="Company logo"
+            value={watch('logo_url')}
+            error={errors.logo_url?.message}
+            uploadMode="organization"
+            onChange={(url) =>
+              setValue('logo_url', url, { shouldDirty: true, shouldValidate: true })
+            }
+          />
           <div className="flex flex-col gap-1">
             <label htmlFor="org-primary-color" className="text-xs font-medium text-[var(--color-neutral-600)]">
               Primary color

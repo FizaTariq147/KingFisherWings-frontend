@@ -61,6 +61,7 @@ export default function TenantEditPage() {
 
       <TenantForm
         mode="edit"
+        tenantId={tenant.id}
         defaultValues={{
           ...tenant,
           trial_ends: toDateInputValue(tenant.trial_ends),

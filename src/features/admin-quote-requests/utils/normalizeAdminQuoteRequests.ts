@@ -7,12 +7,14 @@ import {
   unwrapData,
   unwrapList,
 } from '@/features/portal-shared/normalize';
+import { normalizeProvider } from '../constants/quoteRequestProviders';
 import type {
   ExternalQuoteRequest,
+  QuoteLineItem,
   QuoteRequestConnection,
+  QuoteRequestCustomer,
   QuoteRequestHealthResult,
   QuoteRequestListResult,
-  QuoteRequestProvider,
   QuoteRequestSyncResult,
   QuoteRequestSyncRun,
   QuoteRequestSyncRunListResult,
@@ -46,6 +48,93 @@ function asRawJson(value: unknown): Record<string, unknown> | null {
   return null;
 }
 
+function asStringArray(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+  return value
+    .map((entry) => (typeof entry === 'string' ? entry.trim() : String(entry ?? '').trim()))
+    .filter(Boolean);
+}
+
+function normalizeCustomer(raw: unknown, fallback: Record<string, unknown>): QuoteRequestCustomer {
+  const record = asRecord(raw) ?? {};
+  return {
+    type: pickNullableString(record.type, record.customer_type, record.customerType),
+    name: pickNullableString(
+      record.name,
+      record.contact_name,
+      record.contactName,
+      fallback.contact_name,
+      fallback.contactName,
+      fallback.name,
+    ),
+    company: pickNullableString(
+      record.company,
+      record.company_name,
+      record.companyName,
+      fallback.company_name,
+      fallback.companyName,
+    ),
+    email: pickNullableString(
+      record.email,
+      record.contact_email,
+      record.contactEmail,
+      fallback.contact_email,
+      fallback.contactEmail,
+      fallback.email,
+    ),
+    phone: pickNullableString(
+      record.phone,
+      record.contact_phone,
+      record.contactPhone,
+      record.mobile,
+      fallback.contact_phone,
+      fallback.contactPhone,
+      fallback.phone,
+    ),
+  };
+}
+
+function normalizeLineItem(raw: unknown): QuoteLineItem | null {
+  const record = asRecord(raw);
+  if (!record) return null;
+  const name = pickNullableString(record.name, record.product_name, record.productName, record.title);
+  const sku = pickNullableString(record.sku, record.product_sku, record.productSku);
+  const productId = pickNumber(record.product_id, record.productId, record.id);
+  if (!name && !sku && productId == null) return null;
+  return {
+    product_id: productId,
+    name,
+    sku,
+    variation: pickNullableString(record.variation, record.variant),
+    quantity: pickNumber(record.quantity, record.qty),
+    unit: pickNullableString(record.unit, record.uom),
+    pcs_per_carton: pickNumber(
+      record.pcs_per_carton,
+      record.pcsPerCarton,
+      record.pieces_per_carton,
+    ),
+    total_pieces: pickNumber(record.total_pieces, record.totalPieces, record.pcs),
+    price: pickNumber(record.price, record.unit_price, record.unitPrice),
+    currency: pickNullableString(record.currency, record.currency_code, record.currencyCode),
+    url: pickNullableString(record.url, record.product_url, record.productUrl, record.link),
+    image: pickNullableString(
+      record.image,
+      record.image_url,
+      record.imageUrl,
+      record.thumbnail,
+      record.thumb,
+    ),
+    categories: asStringArray(record.categories ?? record.category),
+  };
+}
+
+function normalizeLineItems(raw: unknown): QuoteLineItem[] {
+  if (!Array.isArray(raw)) return [];
+  return raw
+    .map((item) => normalizeLineItem(item))
+    .filter((item): item is QuoteLineItem => Boolean(item));
+}
+
 export function normalizeQuoteRequestConnection(raw: unknown): QuoteRequestConnection | null {
   const record = asRecord(unwrapData(raw)) ?? asRecord(raw);
   if (!record) return null;
@@ -61,17 +150,20 @@ export function normalizeQuoteRequestConnection(raw: unknown): QuoteRequestConne
   const configured =
     pickBoolean(record.configured, record.is_configured, record.isConfigured) ??
     Boolean(baseUrl || prefix || id);
+  const provider = normalizeProvider(pickString(record.provider, 'KFPP_WP'));
 
   return {
     id: id || 'connection',
     tenant_id: pickNullableString(record.tenant_id, record.tenantId) ?? undefined,
-    provider: (pickString(record.provider, 'KFPP_WP') || 'KFPP_WP') as QuoteRequestProvider,
+    provider,
     base_url: baseUrl,
     api_key_prefix: prefix,
     auth_header_name:
-      pickString(record.auth_header_name, record.authHeaderName) || 'X-KFPP-Api-Key',
+      pickString(record.auth_header_name, record.authHeaderName) ||
+      (provider === 'KFQA_WP' ? 'X-API-Key' : 'X-KFPP-Api-Key'),
     is_active: pickBoolean(record.is_active, record.isActive) ?? true,
     last_health_at: pickNullableString(record.last_health_at, record.lastHealthAt),
+    last_health_ok: pickBoolean(record.last_health_ok, record.lastHealthOk) ?? null,
     last_health_error: pickNullableString(record.last_health_error, record.lastHealthError),
     last_sync_at: pickNullableString(record.last_sync_at, record.lastSyncAt),
     last_external_id: pickNullableString(
@@ -109,25 +201,40 @@ export function normalizeExternalQuoteRequest(raw: unknown): ExternalQuoteReques
     record.goods,
   );
 
+  const customer = normalizeCustomer(record.customer, record);
+  const items = normalizeLineItems(record.items ?? record.line_items ?? record.lineItems);
+  const remote =
+    asRawJson(record.remote) ??
+    asRawJson(record.raw_json ?? record.rawJson ?? record.payload);
+
   return {
     id: id || externalId,
+    tenant_id: pickNullableString(record.tenant_id, record.tenantId),
     external_id: externalId || id,
     contact_name: pickNullableString(
       record.contact_name,
       record.contactName,
       record.name,
       record.customer_name,
+      customer.name,
     ),
     contact_email: pickNullableString(
       record.contact_email,
       record.contactEmail,
       record.email,
+      customer.email,
     ),
     contact_phone: pickNullableString(
       record.contact_phone,
       record.contactPhone,
       record.phone,
       record.mobile,
+      customer.phone,
+    ),
+    company_name: pickNullableString(
+      record.company_name,
+      record.companyName,
+      customer.company,
     ),
     message,
     commodity,
@@ -147,12 +254,42 @@ export function normalizeExternalQuoteRequest(raw: unknown): ExternalQuoteReques
     sync_error: pickNullableString(record.sync_error, record.syncError),
     status_push_pending:
       pickBoolean(
+        record.pending_status_push,
+        record.pendingStatusPush,
         record.status_push_pending,
         record.statusPushPending,
         record.push_pending,
         record.pushPending,
       ) ?? false,
-    raw_json: asRawJson(record.raw_json ?? record.rawJson ?? record.payload),
+    remote_status_at_pull: pickNullableString(
+      record.remote_status_at_pull,
+      record.remoteStatusAtPull,
+    ),
+    created_at: pickNullableString(record.created_at, record.createdAt),
+    updated_at: pickNullableString(record.updated_at, record.updatedAt),
+    deleted_at: pickNullableString(record.deleted_at, record.deletedAt),
+    raw_json: asRawJson(record.raw_json ?? record.rawJson ?? record.payload) ?? remote,
+    reference: pickNullableString(record.reference, record.ref, record.quote_ref),
+    source: pickNullableString(record.source, record.source_code, record.sourceCode),
+    source_label: pickNullableString(
+      record.source_label,
+      record.sourceLabel,
+      record.source_name,
+      record.sourceName,
+    ),
+    software_ref: pickNullableString(
+      record.software_ref,
+      record.softwareRef,
+      record.so_number,
+      record.soNumber,
+    ),
+    synced: pickBoolean(record.synced, record.is_synced, record.isSynced) ?? null,
+    page_url: pickNullableString(record.page_url, record.pageUrl, record.storefront_url),
+    admin_url: pickNullableString(record.admin_url, record.adminUrl, record.wp_admin_url),
+    customer,
+    items,
+    service: record.service ?? record.service_inquiry ?? record.serviceInquiry ?? null,
+    remote,
     raw: record,
   };
 }

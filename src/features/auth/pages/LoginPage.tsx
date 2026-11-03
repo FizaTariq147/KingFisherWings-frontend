@@ -73,6 +73,7 @@ function LoginModal({
   loginMode,
   onLoginModeChange,
   lockedTenantSlug,
+  brandLogoUrl,
 }: {
   open: boolean
   onClose: () => void
@@ -80,6 +81,8 @@ function LoginModal({
   onLoginModeChange: (mode: LoginMode) => void
   /** From ?tenant_slug= (WordPress portals) — prefill + hide/lock. */
   lockedTenantSlug?: string | null
+  /** Tenant logo for popup chrome (embed); falls back to assets/logo.png */
+  brandLogoUrl?: string | null
 }) {
   const navigate = useNavigate()
   const { loginTenant, loginStaff, isLoading } = useAuthStore()
@@ -262,7 +265,7 @@ function LoginModal({
 
   return (
     <>
-      <LoginPopupFrame title="Admin Sign In" onClose={onClose} compact>
+      <LoginPopupFrame title="Admin Sign In" onClose={onClose} compact logoUrl={brandLogoUrl}>
         <form onSubmit={handleSubmit(onSubmit)} noValidate className="space-y-2.5">
           <div className="grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-0.5">
             <button
@@ -432,7 +435,7 @@ function LoginModal({
       </LoginPopupFrame>
 
       {forgotOpen && (
-        <LoginPopupFrame title="Forgot Password" onClose={() => setForgotOpen(false)}>
+        <LoginPopupFrame title="Forgot Password" onClose={() => setForgotOpen(false)} logoUrl={brandLogoUrl}>
           {forgotSent ? (
             <div className="rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3 text-[12.5px] text-emerald-700">
               If an account exists for that email, a reset link has been sent. Open the link to set a
@@ -499,9 +502,29 @@ export default function LoginPage() {
   const staffPath = isStaffLoginPath(location.pathname)
   const lockedTenantSlug = readTenantSlugFromSearch(searchParams)
   const loginMode: LoginMode = staffPath ? 'staff' : 'tenant_admin'
+  const [brandLogoUrl, setBrandLogoUrl] = useState<string | null>(null)
   const [inviteToken] = useState(() =>
     readInviteTokenFromSearch(window.location.search, 'staff'),
   )
+
+  useEffect(() => {
+    if (!lockedTenantSlug) {
+      setBrandLogoUrl(null)
+      return
+    }
+    let cancelled = false
+    void import('@/features/public-track/services/publicTrack.service')
+      .then(({ publicTrackService }) => publicTrackService.embed(lockedTenantSlug))
+      .then((cfg) => {
+        if (!cancelled && cfg.logoUrl) setBrandLogoUrl(cfg.logoUrl)
+      })
+      .catch(() => {
+        if (!cancelled) setBrandLogoUrl(null)
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [lockedTenantSlug])
   /** ?admin=1 means Company Admin even when tenant_slug is present (after param is stripped). */
   const preferCompanyAdminRef = useRef(searchParams.get('admin') === '1')
   const [loginOpen, setLoginOpen] = useState(
@@ -589,6 +612,7 @@ export default function LoginPage() {
         loginMode={loginMode}
         onLoginModeChange={onLoginModeChange}
         lockedTenantSlug={lockedTenantSlug}
+        brandLogoUrl={brandLogoUrl}
       />
       {inviteOpen && inviteToken && (
         <AcceptInvitePopup

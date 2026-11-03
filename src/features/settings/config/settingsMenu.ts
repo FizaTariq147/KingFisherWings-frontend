@@ -57,7 +57,7 @@ export const settingsMenu: MenuTile[] = [
     id: 'quote-requests-bridge',
     title: 'Quote Requests Integration',
     description:
-      'Connect website KFPP quote requests, sync mirror + CRM, and push status updates.',
+      'Connect KFPP or KFQA (General Trading) quote requests, sync mirror + CRM, and push status.',
     icon: Link2,
     iconColor: 'bg-violet-700',
     path: '/admin/integrations/quote-requests',
