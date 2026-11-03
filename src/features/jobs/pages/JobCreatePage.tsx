@@ -1,29 +1,20 @@
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { appType } from '@/lib/erpTypography';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
-import { useAuth } from '@/hooks/useAuth';
-import {
-  isTenantUserManagerRole,
-  resolveAuthRoleSlug,
-  TENANT_USER_MANAGER_ROLE_SLUGS,
-} from '@/features/users/constants/userPermissions';
 import { JobForm } from '../components/JobForm';
 import {
   JOB_SEGMENTS,
-  JOB_TYPE_WIZARD_OPTIONS,
   JOB_TYPES,
   type JobSegmentKey,
   type JobType,
 } from '../constants/job.constants';
+import { useStaffAllowedJobTypes } from '../hooks/useStaffAllowedJobTypes';
 import { jobKeys, useCreateJob } from '../hooks/useJobs';
 import type { CreateJobFormValues } from '../types/job.types';
 import type { JobWizardCostingPayload } from '../types/jobWizardCosting.types';
-import {
-  filterJobTypesByStaffAccess,
-  pickDefaultJobType,
-} from '../utils/filterJobTypesByStaffAccess';
+import { pickDefaultJobType } from '../utils/filterJobTypesByStaffAccess';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobDetailPath, jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 import { persistJobWizardCosting } from '../utils/persistJobWizardCosting';
@@ -44,36 +35,12 @@ export default function JobCreatePage() {
   const queryClient = useQueryClient();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
-  const { user, hasRole, hasEnabledModule } = useAuth();
   const segment = segmentFromPath(pathname);
   const isGenericCreate = pathname === '/jobs/new' || !segment;
   const create = useCreateJob();
   const [persistingCosting, setPersistingCosting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  const roleSlug = resolveAuthRoleSlug(user?.role);
-  const isTenantAdmin =
-    isTenantUserManagerRole(roleSlug) ||
-    TENANT_USER_MANAGER_ROLE_SLUGS.some((s) => hasRole(s));
-
-  const allowedJobTypes = useMemo(
-    () =>
-      filterJobTypesByStaffAccess({
-        permissions: user?.permissions ?? [],
-        visibleJobTypes: user?.visibleJobTypes,
-        unrestrictedOps: user?.unrestrictedOps,
-        isTenantAdmin,
-        isModuleEnabled: hasEnabledModule,
-        candidates: JOB_TYPE_WIZARD_OPTIONS,
-      }),
-    [
-      user?.permissions,
-      user?.visibleJobTypes,
-      user?.unrestrictedOps,
-      isTenantAdmin,
-      hasEnabledModule,
-    ],
-  );
+  const allowedJobTypes = useStaffAllowedJobTypes();
 
   const queryType = parseJobTypeParam(searchParams.get('job_type'));
   const preferredType =

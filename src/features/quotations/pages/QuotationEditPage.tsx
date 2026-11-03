@@ -1,12 +1,17 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { FormPageHeader } from '@/components/ui/FormPageHeader';
 import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
+import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
+import type { JobType as OpsJobType } from '@/features/jobs/constants/job.constants';
 import { QuotationForm } from '../components/QuotationForm';
+import { JOB_TYPES, type JobType } from '../constants/quotation.constants';
 import { useQuotation, useUpdateQuotation } from '../hooks/useQuotations';
 import type { UpdateQuotationFormValues } from '../types/quotation.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { quotationToFormValues } from '../utils/quotationToFormValues';
+
+const QUOTE_JOB_TYPE_CANDIDATES = JOB_TYPES as readonly OpsJobType[];
 
 export default function QuotationEditPage() {
   const { id = '' } = useParams();
@@ -15,6 +20,15 @@ export default function QuotationEditPage() {
   const { data: quotation, isLoading, isError, error } = useQuotation(id);
   const update = useUpdateQuotation(id);
   const [formError, setFormError] = useState<string | null>(null);
+  const allowedJobTypes = useStaffAllowedJobTypes(QUOTE_JOB_TYPE_CANDIDATES);
+
+  const jobTypeOptions = useMemo(() => {
+    const current = quotation?.job_type as JobType | undefined;
+    if (current && !allowedJobTypes.includes(current as OpsJobType)) {
+      return [...allowedJobTypes, current as OpsJobType];
+    }
+    return allowedJobTypes;
+  }, [allowedJobTypes, quotation?.job_type]);
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -69,6 +83,7 @@ export default function QuotationEditPage() {
       )}
       <QuotationForm
         mode="edit"
+        jobTypeOptions={jobTypeOptions}
         defaultValues={quotationToFormValues(quotation)}
         isSubmitting={update.isPending}
         onCancel={goBack}

@@ -5,6 +5,8 @@ import { Plus, RefreshCw, TimerReset } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState, ErrorState } from '@/components/erp';
 import { departmentByKey } from '@/features/jobs/config/departmentNav';
+import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
+import type { JobType as OpsJobType } from '@/features/jobs/constants/job.constants';
 import { QuotationConfirmModal } from '../components/QuotationConfirmModal';
 import {
   QuotationFilters,
@@ -14,6 +16,7 @@ import {
 import { QuotationTable } from '../components/QuotationTable';
 import {
   DEFAULT_QUOTATION_PAGE_SIZE,
+  JOB_TYPES,
   QUOTATION_STATUS_FILTERS,
   type JobType,
   type LostReason,
@@ -25,11 +28,18 @@ import { useExpireDueQuotations, useQuotations } from '../hooks/useQuotations';
 import type { Quotation } from '../types/quotation.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
+const QUOTE_JOB_TYPE_CANDIDATES = JOB_TYPES as readonly OpsJobType[];
+
 export default function QuotationListPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const [searchParams] = useSearchParams();
   const dept = departmentByKey(searchParams.get('dept'));
+  const allowedJobTypes = useStaffAllowedJobTypes(QUOTE_JOB_TYPE_CANDIDATES);
+  const allowedTypeSet = useMemo(
+    () => new Set(allowedJobTypes.map(String)),
+    [allowedJobTypes],
+  );
   const [page, setPage] = useState(1);
   const [pendingActionId, setPendingActionId] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -59,10 +69,21 @@ export default function QuotationListPage() {
     setPage(1);
   }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps -- sync from ?status=
 
-  const listParams = useMemo(
-    () => quotationFilterDraftToListParams(applied, page),
-    [applied, page],
-  );
+  // Drop a filter job type the staff can no longer access.
+  useEffect(() => {
+    if (applied.jobType === 'all') return;
+    if (allowedTypeSet.has(String(applied.jobType))) return;
+    applyPatch({ jobType: 'all' });
+  }, [allowedTypeSet, applied.jobType]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const listParams = useMemo(() => {
+    const base = quotationFilterDraftToListParams(applied, page);
+    // When staff has exactly one allowed type and filter is "all", push it to the API.
+    if (!base.job_type && allowedJobTypes.length === 1) {
+      return { ...base, job_type: allowedJobTypes[0] as JobType };
+    }
+    return base;
+  }, [applied, page, allowedJobTypes]);
 
   useEffect(() => {
     setPage(1);
@@ -70,11 +91,19 @@ export default function QuotationListPage() {
 
   const { data, isLoading, isFetching, isError, error, refetch } = useQuotations(listParams);
   const quotations = useMemo(() => {
-    const rows = data?.quotations ?? [];
-    if (!dept || dept.jobTypes.length <= 1) return rows;
-    const allowed = new Set(dept.jobTypes.map(String));
-    return rows.filter((q) => q.job_type && allowed.has(String(q.job_type)));
-  }, [data?.quotations, dept]);
+    let rows = data?.quotations ?? [];
+    // Same department scope as sidebar / create-job.
+    if (allowedTypeSet.size > 0) {
+      rows = rows.filter((q) => q.job_type && allowedTypeSet.has(String(q.job_type)));
+    } else {
+      rows = [];
+    }
+    if (dept && dept.jobTypes.length > 1) {
+      const deptAllowed = new Set(dept.jobTypes.map(String));
+      rows = rows.filter((q) => q.job_type && deptAllowed.has(String(q.job_type)));
+    }
+    return rows;
+  }, [data?.quotations, dept, allowedTypeSet]);
   const meta = data?.meta;
   const runAction = async (q: Quotation, action: () => Promise<unknown>) => {
     setActionError(null);
@@ -190,6 +219,7 @@ export default function QuotationListPage() {
             submit();
           }}
           isSubmitting={isFetching}
+          jobTypeOptions={allowedJobTypes as readonly JobType[]}
         />
 
         {actionError ? (
@@ -222,6 +252,11 @@ export default function QuotationListPage() {
               <div key={i} className="h-8 animate-pulse rounded-sm bg-[#eef2f6]" />
             ))}
           </div>
+        ) : allowedJobTypes.length === 0 ? (
+          <EmptyState
+            title="No quotation types available."
+            description="Ask an admin to grant Air Import / Air Export (or other operations) access for your departments."
+          />
         ) : quotations.length === 0 ? (
           <EmptyState
             title={emptyDefault ? 'No quotations yet.' : 'No quotations found.'}

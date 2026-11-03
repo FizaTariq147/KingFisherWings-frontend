@@ -9,6 +9,8 @@ type JobTypeSelectGridProps = {
   onChange: (jobType: JobType) => void;
   error?: string;
   heading?: string;
+  /** When set, only these types are offered (staff department scope). */
+  jobTypeOptions?: readonly JobType[];
 };
 
 export function JobTypeSelectGrid({
@@ -16,14 +18,22 @@ export function JobTypeSelectGrid({
   onChange,
   error,
   heading = 'What type of Quotation would you like to create?',
+  jobTypeOptions,
 }: JobTypeSelectGridProps) {
+  const options = jobTypeOptions?.length ? jobTypeOptions : JOB_TYPES;
+
   return (
     <div className="space-y-4">
       <h3 className="text-center text-base font-semibold text-[var(--color-neutral-800)] sm:text-lg">
         {heading}
       </h3>
+      {options.length === 0 ? (
+        <p className="text-center text-sm text-amber-800">
+          No quotation types are available for your departments.
+        </p>
+      ) : null}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {JOB_TYPES.map((jobType) => {
+        {options.map((jobType) => {
           const style = JOB_TYPE_CARD_STYLES[jobType];
           const Icon = style.icon;
           const selected = value === jobType;
