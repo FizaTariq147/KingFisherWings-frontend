@@ -334,6 +334,9 @@ export const router = createBrowserRouter([
 
   { path: '/', element: <Navigate to="/login" replace /> },
   { path: '/login', element: <LoginPage /> },
+  /** Staff / User sign-in (Company Admin stays on /login). */
+  { path: '/staff/login', element: <LoginPage /> },
+  { path: '/login/staff', element: <Navigate to="/staff/login" replace /> },
   { path: '/accept-invite', element: <LoginPage /> },
   /** Staff invite emails may use /login/accept-invite?token=… */
   { path: '/login/accept-invite', element: <LoginPage /> },

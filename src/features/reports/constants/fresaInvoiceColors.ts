@@ -4,17 +4,20 @@
  * Used as defaults and when layout themes were remapped to KingFisher T&C navy.
  */
 export const FRESA_UI = {
-  /** Format-6 / standard ink navy */
-  navy: '#0F4D96',
-  /** Format-7 header accent */
-  sky: '#2286C8',
+  /**
+   * From live Fresa sample PDFs on
+   * https://fresatechnologies.com/sample-report-formats/
+   * (air-quotation / invoice / ASN streams). FE capture still cannot be
+   * pixel-identical to Jasper — packs are required for exact parity.
+   */
+  navy: '#0E4D95',
+  sky: '#2285C8',
   skySoft: '#2788C9',
-  /** Format-6 light-blue table header */
-  cyan: '#9AD7FF',
-  /** Formats 8–10 panel fill */
+  cyan: '#99D6FF',
+  asnPanel: '#E2F4FF',
   panel: '#EBF0F4',
-  orange: '#F7A21C',
-  red: '#DE1F26',
+  orange: '#F6A21B',
+  red: '#DE1F25',
   gray: '#656565',
   ink: '#101010',
   hairline: '#EAEAEA',
@@ -28,15 +31,16 @@ export const FRESA_UI = {
 export const KF_TC_NAVY = '#0A2942';
 
 export const FRESA_PDF = {
-  navy: { r: 0.0588, g: 0.302, b: 0.5882 },
-  sky: { r: 0.1333, g: 0.5216, b: 0.7843 },
-  cyan: { r: 0.6039, g: 0.8431, b: 1.0 },
-  panel: { r: 0.9216, g: 0.9412, b: 0.9569 },
-  orange: { r: 0.9686, g: 0.6353, b: 0.1098 },
-  red: { r: 0.8706, g: 0.1216, b: 0.149 },
-  gray: { r: 0.3961, g: 0.3961, b: 0.3961 },
-  ink: { r: 0.0627, g: 0.0627, b: 0.0627 },
-  hairline: { r: 0.9176, g: 0.9176, b: 0.9176 },
+  navy: { r: 0.055, g: 0.302, b: 0.584 },
+  sky: { r: 0.133, g: 0.522, b: 0.784 },
+  cyan: { r: 0.6, g: 0.839, b: 1.0 },
+  panel: { r: 0.922, g: 0.941, b: 0.957 },
+  asnPanel: { r: 0.886, g: 0.957, b: 1.0 },
+  orange: { r: 0.965, g: 0.635, b: 0.106 },
+  red: { r: 0.871, g: 0.122, b: 0.145 },
+  gray: { r: 0.396, g: 0.396, b: 0.396 },
+  ink: { r: 0.063, g: 0.063, b: 0.063 },
+  hairline: { r: 0.918, g: 0.918, b: 0.918 },
 } as const;
 
 function hexEq(a?: string, b?: string): boolean {

@@ -4,6 +4,7 @@
  */
 import type { ReportFamily } from '../types/reportCatalog.types';
 import { FRESA_INVOICE_FORMAT_1 } from '../constants/fresaPdfParity.constants';
+import { FRESA_OPS_LIST_PACK } from '../constants/fresaCorePackShells.constants';
 import { getRegistryByCode } from '../data/fresaReportRegistry';
 
 export type ReportPackOption = { key: string; label?: string; description?: string };
@@ -105,10 +106,20 @@ export function suggestReportPackKey(
     /LIST_REPORT|DAILY_STATUS|PENDING_SHIPMENT|JOB_STATUS/i.test(c)
   ) {
     const ops = pick(options, [
+      (k) => k === FRESA_OPS_LIST_PACK.key,
       (k) => /ops\.list|list_generic|delivered_jobs|dsr/i.test(k),
       hasPrefix('ops'),
     ]);
     if (ops) return ops;
+  }
+
+  if (fam === 'quotation' || /QUOTATION_REPORT|AIR_QUOTATION/i.test(c)) {
+    const quote = pick(options, [
+      (k) => /quotation\.shell|quotation/i.test(k),
+      hasPrefix('quotation'),
+      hasPrefix('commercial'),
+    ]);
+    if (quote) return quote;
   }
 
   if (

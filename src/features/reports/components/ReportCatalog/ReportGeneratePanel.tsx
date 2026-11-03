@@ -38,12 +38,14 @@ import {
   mergeReportContextIds,
   type ReportContextIds,
 } from '../../utils/reportParameterUtils';
+import { allowClientLayoutGenerate } from '../../utils/clientLayoutFallback';
+import { isReportPackReady } from '../../utils/reportPackGenerate';
+import { resolveReportLogoUrl } from '../../constants/reportBranding.constants';
 import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
 import { isInvoiceReportFormatCode } from '../../types/invoiceFormatPreview.types';
 import { InvoiceFormatAutoPdf } from './InvoiceFormatAutoPdf';
 import { ReportParameterForm } from './ReportParameterForm';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
-import logoUrl from '@/assets/logo.png';
 
 type ReportGeneratePanelProps = {
   template: ReportTemplate;
@@ -129,7 +131,14 @@ export function ReportGeneratePanel({
   );
 
   useEffect(() => {
-    setFormat((formats[0] ?? 'PDF') as ReportExportFormat);
+    // MY REPORTS / ops lists prefer XLSX when the template supports it.
+    const preferred =
+      resolved.family === 'ops_list' && formats.includes('XLSX')
+        ? 'XLSX'
+        : formats.includes('PDF')
+          ? 'PDF'
+          : (formats[0] ?? 'PDF');
+    setFormat(preferred as ReportExportFormat);
     setParams(buildInitialReportParams(detail.data?.parameters ?? fields, context));
     setJobId(null);
     setError(null);
@@ -159,6 +168,7 @@ export function ReportGeneratePanel({
     context?.quotation_id,
     context?.party_id,
     suggestedPack,
+    resolved.family,
   ]);
 
   // When URL has no pack yet but template already has a ready key, seed it once.
@@ -217,45 +227,64 @@ export function ReportGeneratePanel({
     setError(null);
     setMessage(null);
 
-    const canLiveGenerate = !detailFailed && resolved.is_active;
     const hasLayout = hasCatalogLayoutPdf(resolved.code);
     const contextIds = mergeReportContextIds(context, params);
     const entityBound = hasReportEntityContext(contextIds);
+    const packReady = isReportPackReady(resolved);
 
-    // Entity-bound catalogue PDFs: hydrate from live quotation / invoice / job / party
-    // the same way document PDFs use the record — even when a backend pack is active.
-    // Without entity context, client layout is still used when live generate is unavailable.
-    // Never call POST /invoices/:id/pdf or /quotations/:id/pdf (see documentPdfPreserve.ts).
-    const useEntityHydratedClientPdf =
-      format === 'PDF' &&
-      (isInvoiceFormatPdf || hasLayout) &&
-      (entityBound || !canLiveGenerate);
+    const { parameters, error: coerceError } = coerceReportParameters(fields, params);
+    if (coerceError && !hasLayout) {
+      setError(coerceError);
+      return;
+    }
 
-    if (useEntityHydratedClientPdf) {
+    const runLiveGenerate = async (templateForGenerate: ReportTemplate) => {
+      const job = await generate.mutateAsync({
+        template_id: isUuid(templateForGenerate.id) ? templateForGenerate.id : undefined,
+        code: templateForGenerate.code,
+        format,
+        parameters:
+          !coerceError && Object.keys(parameters).length ? parameters : undefined,
+        context: entityBound ? contextIds : context,
+      });
+      handledReadyJobId.current = null;
+      setPdfReadyOpen(false);
+      setPdfReadyBlob(null);
+      setPdfReadyUrl(null);
+      setJobId(job.id);
+      setMessage(
+        entityBound
+          ? `Generating Fresa-parity pack with this record's data… (${job.status})`
+          : job.status === 'ready'
+            ? 'Report ready.'
+            : `Job ${job.status}…`,
+      );
+    };
+
+    const runClientSamplePdf = async () => {
       setClientGenerating(true);
       try {
+        // Empty / partial data keeps layout JSON `demo` (Fresa sample dummy fields).
+        // Entity-bound overlays live values via mergeInvoiceFormatDemo.
         let data = await resolveCatalogContextPdfData(contextIds, {
           formatCode: resolved.code,
         });
-        const liveReady = Boolean(
-          data.invoiceNumber || data.billToName || data.lines?.length || data.total,
-        );
+        const logo = resolveReportLogoUrl();
 
         if (isInvoiceFormatPdf) {
-          // Prefer dedicated invoice preview path when available (preserves prior behavior).
           const invoiceId = contextIds.invoice_id;
-          if (invoiceId && isUuid(invoiceId) && Object.keys(data).length === 0) {
+          if (invoiceId && isUuid(invoiceId)) {
             try {
               const invoice = await invoiceService.getById(invoiceId);
-              data = invoiceRecordToFormatPdfData(invoice);
+              data = { ...invoiceRecordToFormatPdfData(invoice), ...data, entityBound: true };
             } catch {
-              /* demo layout */
+              /* keep demo */
             }
           }
           const preview = getInvoiceFormatPreview(resolved.code);
           if (preview) {
             const blob = await generateInvoiceFormatLayoutPdf(preview, data, {
-              logoUrl: typeof logoUrl === 'string' ? logoUrl : undefined,
+              logoUrl: logo,
             });
             const fileName = formatPdfFilename(
               `Format-${preview.formatNumber}-${resolved.code}`,
@@ -267,9 +296,9 @@ export function ReportGeneratePanel({
             setPdfReadyOpen(true);
             setJobId(null);
             setMessage(
-              liveReady || entityBound
-                ? 'Report PDF ready with live record data.'
-                : 'Layout preview PDF ready (client). Bind + Activate for live backend PDF.',
+              entityBound
+                ? 'Report PDF ready (Fresa layout + KingFisher logo, live record data).'
+                : 'Sample report ready — Fresa layout/colors/footer with KingFisher logo and dummy data (as on fresatechnologies.com/sample-report-formats).',
             );
             return;
           }
@@ -277,11 +306,7 @@ export function ReportGeneratePanel({
 
         const generated = await generateCatalogLayoutPdf(resolved.code, data);
         if (!generated) {
-          setError(
-            detailFailed
-              ? 'Template is not on the backend yet. Import registry first, or open the layout preview above.'
-              : 'No KingFisher layout PDF for this code. Bind a pack and Activate for live PDF.',
-          );
+          setError('No Fresa sample layout registered for this format code.');
           return;
         }
         const fileName = formatPdfFilename(
@@ -294,53 +319,92 @@ export function ReportGeneratePanel({
         setPdfReadyOpen(true);
         setJobId(null);
         setMessage(
-          liveReady || entityBound
-            ? 'Report PDF ready with live record data.'
-            : 'Layout preview PDF ready (client). Bind + Activate for live backend PDF.',
+          entityBound
+            ? 'Report PDF ready (Fresa layout + KingFisher logo, live record data).'
+            : 'Sample report ready — Fresa layout/colors/footer with KingFisher logo and dummy data (as on fresatechnologies.com/sample-report-formats).',
         );
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Could not generate layout PDF.');
+        setError(err instanceof Error ? err.message : 'Could not generate sample PDF.');
       } finally {
         setClientGenerating(false);
       }
+    };
+
+    // Default: Fresa-sample client PDF with dummy data (+ KF logo).
+    // Entity + ready pack: use backend Fresa-parity pack instead.
+    const preferClientSample =
+      format === 'PDF' &&
+      (isInvoiceFormatPdf || hasLayout) &&
+      allowClientLayoutGenerate({
+        packReady,
+        templateActive: resolved.is_active,
+        entityBound,
+      });
+
+    if (preferClientSample && (!entityBound || !packReady)) {
+      await runClientSamplePdf();
+      return;
+    }
+
+    if (!detailFailed) {
+      let working: ReportTemplate = resolved;
+      try {
+        if (!isReportPackReady(working)) {
+          const packKey =
+            selectedPack.trim() ||
+            suggestReportPackKey(working.code, working.family, packOptions) ||
+            '';
+          if (packKey) {
+            setMessage(`Binding Fresa pack ${packKey}…`);
+            try {
+              working = await bindRenderer.mutateAsync({
+                code: working.code,
+                dto: { renderer_key: packKey, activate: true },
+              });
+              onTemplateUpdated?.(working);
+            } catch {
+              working = await activate.mutateAsync({
+                template: working,
+                renderer_key: packKey,
+              });
+              onTemplateUpdated?.(working);
+            }
+          }
+        }
+        if (isReportPackReady(working)) {
+          await runLiveGenerate(working);
+          return;
+        }
+      } catch (err) {
+        if (preferClientSample) {
+          await runClientSamplePdf();
+          return;
+        }
+        setError(
+          err instanceof Error
+            ? err.message
+            : 'Generate failed. Open a sample layout or bind a Fresa pack.',
+        );
+        return;
+      }
+    }
+
+    if (preferClientSample) {
+      await runClientSamplePdf();
       return;
     }
 
     if (detailFailed) {
-      setError('Template is not on the backend yet. Import registry first.');
-      return;
-    }
-    if (!resolved.is_active) {
       setError(
         hasLayout
-          ? 'Template is inactive for live generate. Use Generate for layout preview PDF, or Bind + Activate for live backend PDF.'
-          : 'Template is inactive. Bind a Puppeteer pack and Activate first.',
+          ? 'Backend template missing — use Import registry, or Generate still opens the Fresa sample layout with dummy data when client layouts are enabled.'
+          : 'Template is not on the backend yet. Import registry first.',
       );
       return;
     }
-    const { parameters, error: coerceError } = coerceReportParameters(fields, params);
-    if (coerceError) {
-      setError(coerceError);
-      return;
-    }
-    try {
-      const job = await generate.mutateAsync({
-        template_id: isUuid(resolved.id) ? resolved.id : undefined,
-        code: resolved.code,
-        format,
-        parameters: Object.keys(parameters).length ? parameters : undefined,
-        // Always forward merged entity ids so backend packs can bind live data too.
-        context: entityBound ? contextIds : context,
-      });
-      handledReadyJobId.current = null;
-      setPdfReadyOpen(false);
-      setPdfReadyBlob(null);
-      setPdfReadyUrl(null);
-      setJobId(job.id);
-      setMessage(job.status === 'ready' ? 'Report ready.' : `Job ${job.status}…`);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Generate failed.');
-    }
+    setError(
+      'No Fresa sample layout and no active pack for this format. Import registry / bind pack, then retry.',
+    );
   };
 
   /** Bind pack + activate in one shot (bind-renderer activate=true). */
@@ -428,13 +492,20 @@ export function ReportGeneratePanel({
     jobQuery.data?.status === 'queued' ||
     jobQuery.data?.status === 'running';
 
+  const packReadyForGenerate = isReportPackReady(resolved);
+  const entityBoundForUi = hasReportEntityContext(mergeReportContextIds(context, params));
   const canClientLayoutPdf =
     format === 'PDF' &&
-    (isInvoiceReportFormatCode(resolved.code) || hasCatalogLayoutPdf(resolved.code));
+    (isInvoiceReportFormatCode(resolved.code) || hasCatalogLayoutPdf(resolved.code)) &&
+    allowClientLayoutGenerate({
+      packReady: packReadyForGenerate,
+      templateActive: resolved.is_active,
+      entityBound: entityBoundForUi,
+    });
   const generateBlocked =
     busy ||
     detail.isLoading ||
-    (!canClientLayoutPdf && (detailFailed || !resolved.is_active));
+    (!packReadyForGenerate && !canClientLayoutPdf);
 
   const rendererStatus = reportRendererStatus(resolved);
   const activateLikely = canActivateReportTemplate(resolved);
@@ -461,7 +532,13 @@ export function ReportGeneratePanel({
         </Button>
       </div>
 
-      {isInvoiceFormat && !omitClientPreview ? (
+      {isInvoiceFormat &&
+      !omitClientPreview &&
+      allowClientLayoutGenerate({
+        packReady: packReadyForGenerate,
+        templateActive: resolved.is_active,
+        entityBound: entityBoundForUi,
+      }) ? (
         <InvoiceFormatAutoPdf
           code={resolved.code}
           invoiceId={context?.invoice_id}
@@ -485,7 +562,7 @@ export function ReportGeneratePanel({
           Template not on API yet. Use <strong>Import registry</strong>, then Live API + Include
           inactive.
           {canClientLayoutPdf
-            ? ' Generate still opens the KingFisher layout preview PDF.'
+            ? ' Generate still opens the Fresa-sample PDF (dummy data + KingFisher logo).'
             : ''}
         </div>
       ) : null}
@@ -496,10 +573,10 @@ export function ReportGeneratePanel({
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"
         >
           {canClientLayoutPdf
-            ? resolved.gapStatus === 'covered_document_pdf'
-              ? 'Client layout PDF is available via Generate. Bind a Puppeteer pack + Activate only if you need live backend print parity (default invoice/quotation PDFs stay unchanged).'
-              : 'Layout preview PDF is available via Generate. Bind a Puppeteer pack + Activate for live backend PDF (default invoice/quotation PDFs stay unchanged).'
-            : 'Bind a Puppeteer pack, then Activate to enable Generate.'}
+            ? entityBoundForUi
+              ? 'Live pack not bound yet — Generate uses Fresa sample chrome with your record overlaid when possible. Bind + Activate a pack for full Fresa-parity print.'
+              : 'Generate opens the Fresa sample format (same colors/header/footer as fresatechnologies.com/sample-report-formats) with KingFisher logo and dummy data.'
+            : 'Format not enabled for print yet. Bind a Puppeteer pack, then Activate to enable Generate (KingFisher logo branding on packs).'}
         </div>
       ) : null}
 
@@ -549,9 +626,9 @@ export function ReportGeneratePanel({
           role="status"
           className="rounded-md border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-900"
         >
-          Client layout PDF is available via Generate (FE coverage). Binding a Puppeteer pack
-          remains optional for live backend print parity — default invoice/quotation PDFs stay
-          unchanged.
+          Fresa-sample layout PDF is available via Generate (dummy data + KingFisher logo). Binding
+          a Puppeteer pack remains optional for live backend print — default invoice/quotation PDFs
+          stay unchanged.
         </div>
       ) : null}
 
@@ -657,8 +734,8 @@ export function ReportGeneratePanel({
         >
           {busy && (generate.isPending || clientGenerating)
             ? 'Generating…'
-            : !resolved.is_active && canClientLayoutPdf
-              ? 'Generate layout PDF'
+            : canClientLayoutPdf && (!entityBoundForUi || !packReadyForGenerate)
+              ? 'Generate sample PDF'
               : 'Generate'}
         </Button>
       </div>

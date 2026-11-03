@@ -64,7 +64,16 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
   const footerBlock = blocks.find((b) => b.type === 'colorfulFooter') as
     | Extract<InvoiceFormatUiBlock, { type: 'colorfulFooter' }>
     | undefined;
-  const footerVariant = footerBlock?.variant === 'plain' ? 'plain' : 'bar';
+  // Fresa tax invoices (black primary) use the plain Printed-By row; ASN/ops use the
+  // navy|orange|red bar. Explicit JSON variant always wins.
+  const footerVariant: 'bar' | 'plain' =
+    footerBlock?.variant === 'plain'
+      ? 'plain'
+      : footerBlock?.variant === 'bar'
+        ? 'bar'
+        : theme.primary === '#000000'
+          ? 'plain'
+          : 'bar';
   const bodyBlocks = blocks.filter((b) => b.type !== 'colorfulFooter');
   const hasTopChrome = bodyBlocks.some(
     (b) => b.type === 'colorBar' || b.type === 'summaryHero',
@@ -77,21 +86,26 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
   return (
     <div
       dir={rtl ? 'rtl' : 'ltr'}
-      className={`mx-auto flex flex-col border bg-white text-[10px] leading-normal shadow-sm ${className}`}
+      className={className}
       style={{
         // Exact CSS width (border-box) keeps html2canvas → jsPDF mapping stable.
-        // minHeight = one physical page. Body is content-sized (flex: 0 0 auto); a
-        // separate flex-grow spacer pushes the footer down on short pages. Never let
-        // the body flex-shrink — that painted report text under the colorful footer.
+        // Inline flex only — Tailwind flex/min-height classes are unreliable in capture.
+        display: 'flex',
+        flexDirection: 'column',
         boxSizing: 'border-box',
         width: geom.cssWidth,
         maxWidth: geom.cssWidth,
         minHeight: geom.cssHeight,
+        marginLeft: 'auto',
+        marginRight: 'auto',
         overflow: 'visible',
+        backgroundColor: theme.white || '#FFFFFF',
         borderWidth: 1,
         borderStyle: 'solid',
         borderColor: theme.primary === '#000000' ? '#999999' : theme.primary,
         color: theme.ink,
+        fontSize: 10,
+        lineHeight: 1.35,
         breakInside: 'avoid',
         pageBreakInside: 'avoid',
       }}
@@ -100,8 +114,13 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
       data-orientation={geom.orientation}
     >
       <div
-        className="flex w-full flex-col"
-        style={{ flex: '0 0 auto', breakInside: 'avoid' }}
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          width: '100%',
+          flex: '0 0 auto',
+          breakInside: 'avoid',
+        }}
         data-invoice-body="true"
       >
         {!hasTopChrome && !startsWithFormChrome ? (
@@ -122,11 +141,19 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
             />
           </div>
         ))}
-        {/* Disclaimer stays in the body flow (not inside the color footer band). */}
+        {/* Fresa samples: disclaimer sits just above the footer band (not under it). */}
         <p
-          className="px-3 text-[8px] leading-normal"
           data-invoice-disclaimer="true"
-          style={{ color: theme.gray, paddingTop: 8, paddingBottom: 20 }}
+          style={{
+            color: theme.gray,
+            fontSize: 8,
+            lineHeight: 1.35,
+            paddingTop: 8,
+            paddingBottom: 6,
+            paddingLeft: 12,
+            paddingRight: 12,
+            margin: 0,
+          }}
         >
           This is a computer generated document and does not require a signature
         </p>
@@ -138,9 +165,9 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
         style={{ flex: '1 1 auto', minHeight: 0 }}
       />
       <div
-        className="w-full"
         data-invoice-footer="sample"
         style={{
+          width: '100%',
           flex: '0 0 auto',
           position: 'relative',
           zIndex: 2,

@@ -6,6 +6,10 @@ Base: `https://kingfisherwings-backend.onrender.com` (tenant Bearer auth)
 Frontend catalog UI: `/reports/catalog` (FRESA-like **Sample report formats** browse)  
 Client: `src/features/reports/api/reportCatalog.api.ts` + `reportCatalog.service.ts`
 
+**100% Fresa visual parity (same layout, colors, UI) is a backend pack requirement** — see  
+[`BACKEND_FRESA_100_PERCENT_PARITY.md`](./BACKEND_FRESA_100_PERCENT_PARITY.md).  
+Samples: https://fresatechnologies.com/sample-report-formats/
+
 Restart the API after deploy so Swagger picks up new routes.
 
 ---
@@ -40,7 +44,9 @@ FE status (do not re-do on BE / do not regress catalogue Generate):
 - Document formats covered on FE (`covered_document_pdf` = **787**) via client JSON layouts
 - Preserve: `POST /invoices|quotations/:id/pdf` + live `POST /reports/generate` when pack bound
 
-**BE optional (additive):** live FRESA-like PDF bytes via Puppeteer packs (`suggestedPackKey` in complete catalog JSON). Client layout PDF already closes the FE document gap — packs are print-parity only, not a blocker for catalogue coverage.
+**BE required for Fresa-parity product print:** live FRESA-like PDF/XLSX via Puppeteer/Excel packs (`suggestedPackKey` / `fresaCorePackShells.constants.ts`). Inject **KingFisher / tenant logo** (never Fresa logos). FE catalogue Generate prefers packs; client JSON layout is Dev/fallback only (`VITE_REPORTS_CLIENT_LAYOUT_FALLBACK`).
+
+**Phase-1 pipeline packs (must smoke with entity deep-links):** `sea.hbl_draft`, `air.hawb_draft`, `commercial.invoice_tax_india_1` (additive — do not replace `POST /invoices/:id/pdf`). **Lists:** `ops.list_generic` (prefer XLSX).
 
 ### A. Preserve (must not break)
 
@@ -78,14 +84,15 @@ Ship in this order (matches FE `reportRollout.constants.ts` / `fresaPdfParity.co
 | 6 | `wms` | 46 | `wms.asn`, `wms.grn`, `wms.gdo` (+ ASN location/summary variants) |
 | — | `other` | 30 | Booking confirmation, pre-alert shells |
 
-**Per pack checklist**
+**Per pack checklist (100% Fresa look)**
 
-1. HTML/CSS matching FRESA sample (margins, header, logo, tables, field placement).  
-2. Register on `GET /reports/templates/renderers`.  
-3. Data loader from template params: `job_id`, `invoice_id`, `quotation_id`, `party_id`, date range, `branch_id`, ASN id, list filters + tenant branding (logo, legal name, address, GSTIN/VAT, bank).  
-4. Smoke: bind → activate → generate → download → visual check vs FRESA sample.  
-5. Prefer **one pack → many template codes** when layouts share structure.  
-6. Regression: default invoice/quotation PDFs + previously activated packs still work.
+1. HTML/CSS (or Excel) matching FRESA sample **exactly** — same layout, **same colors**, same fonts/weights, same table/borders (see `BACKEND_FRESA_100_PERCENT_PARITY.md`).  
+2. Logo slot = KingFisher / tenant only — never Fresa branding.  
+3. Register on `GET /reports/templates/renderers`.  
+4. Data loader from template params: `job_id`, `invoice_id`, `quotation_id`, `party_id`, `shipment_id`, date range, `branch_id`, ASN id, list filters + tenant branding.  
+5. Smoke: bind → activate → generate → download → **side-by-side visual QA vs FRESA sample**.  
+6. Prefer **one pack → many template codes** when layouts share structure.  
+7. Regression: default invoice/quotation PDFs + previously activated packs still work.
 
 ### D. Auto-map `pending.{CODE}` → pack (recommended)
 
@@ -106,15 +113,17 @@ BOOKING_CONFIRMATION_* / PRE_ALERT_*     → other.* (or sea/air pre-alert shell
 QUOTATION_REPORT_FORMAT_*                → commercial.quotation or ops.quotation shell
 ```
 
-### E. Explicit non-goals
+### E. Explicit non-goals / scope
 
-- No Jasper upload; do not scrape Fresa sample site into the API.  
-- FE client layout PDF closes catalogue document coverage (`covered_document_pdf`); BE packs remain optional for live print parity and must not rely on FE mock data.  
-- Do not replace module analytics screens (P&L, trial balance, AR/AP aging, WMS stock) — those are `covered_analytics` on FE hubs.
+- No Jasper upload API; rebuild samples as Puppeteer HTML/CSS or Excel templates (do not scrape Fresa into the API at runtime).  
+- FE client layout PDF is **Dev/fallback only** — **not** product print; BE packs are **required** for 100% Fresa parity.  
+- Do not replace module analytics screens (P&L, trial balance, AR/AP aging, WMS stock) — those are `covered_analytics` on FE hubs.  
+- Do not replace `POST /invoices|quotations/:id/pdf`.
 
-FE handoff: `src/features/reports/constants/fresaPdfParity.constants.ts`,  
-`src/features/reports/data/fresaReportRegistry.json` (852),  
-`src/features/reports/data/REPORT_GAP_MATRIX.md`.
+FE handoff:  
+`BACKEND_FRESA_100_PERCENT_PARITY.md` (visual QA + loaders),  
+`fresaCorePackShells.constants.ts`, `fresaPdfParity.constants.ts`,  
+`fresaReportCatalogComplete.json` (852), `REPORT_GAP_MATRIX.md`.
 
 ---
 

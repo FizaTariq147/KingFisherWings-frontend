@@ -178,10 +178,14 @@ function StaffJobDocumentsPanel({ jobId, jobType }: JobDocumentsPanelProps) {
       });
       if (catalog?.blob) {
         setPdfReadyBlob(catalog.blob);
+        const sourceLabel =
+          catalog.source === 'report-pack'
+            ? 'Fresa-parity pack'
+            : catalog.source === 'classic-bl'
+              ? 'classic HBL layout'
+              : 'catalog layout fallback';
         setMessage(
-          `${meta.documentTitle} PDF ready (${
-            catalog.source === 'classic-bl' ? 'classic HBL layout' : 'catalog layout'
-          }: ${catalog.formatCode}).`,
+          `${meta.documentTitle} PDF ready (${sourceLabel}: ${catalog.formatCode}).`,
         );
         return;
       }

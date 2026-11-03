@@ -22,6 +22,9 @@ import {
 } from '../utils/reportCatalogSearch';
 import { parseCatalogFamiliesParam } from '../utils/moduleCatalogFamily';
 import { hasReportEntityContext } from '../utils/reportParameterUtils';
+import { templateCompatibleWithEntityContext } from '../utils/reportContextCompatibility';
+import { isClientLayoutFallbackEnabled } from '../utils/clientLayoutFallback';
+import { REPORT_BRANDING } from '../constants/reportBranding.constants';
 import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
 import { InvoiceFormatBrowseStrip } from '../components/ReportCatalog/InvoiceFormatBrowseStrip';
 import { InvoiceFormatAutoPdf } from '../components/ReportCatalog/InvoiceFormatAutoPdf';
@@ -414,6 +417,15 @@ export default function ReportCatalogPage() {
       ) {
         return;
       }
+      // Entity deep-link: only formats whose contexts fit this invoice/quote/job/…
+      if (
+        !templateCompatibleWithEntityContext(
+          { contexts: entry.contexts ?? [] },
+          reportContext,
+        )
+      ) {
+        return;
+      }
       const live = liveByCode.get(entry.code.toUpperCase());
       if (live) {
         rows.push(live);
@@ -448,6 +460,7 @@ export default function ReportCatalogPage() {
     contextFilter,
     enabledModules,
     registeredLayoutEntries,
+    reportContext,
   ]);
   const metaTotal = items.length;
   const completeReportTotal = useMemo(
@@ -479,10 +492,18 @@ export default function ReportCatalogPage() {
           continue;
         }
       }
+      if (
+        !templateCompatibleWithEntityContext(
+          { contexts: entry.contexts ?? [] },
+          reportContext,
+        )
+      ) {
+        continue;
+      }
       set.add(entry.code.toUpperCase());
     }
     return set;
-  }, [registeredLayoutEntries, family, familiesFilter, contextFilter]);
+  }, [registeredLayoutEntries, family, familiesFilter, contextFilter, reportContext]);
 
   const familyOptions = useMemo(() => {
     const fromCatalog = new Set<string>();
@@ -994,6 +1015,9 @@ export default function ReportCatalogPage() {
     hasSeaDocsExtraLayout ||
     hasLeftoverLayout;
 
+  /** Default ON: Fresa sample layouts with dummy data + KF logo (set VITE_REPORTS_CLIENT_LAYOUT_FALLBACK=false to hide). */
+  const showClientLayoutPreview = isClientLayoutFallbackEnabled();
+
   return (
     <div className="space-y-4">
       <PageBackLink to="/reports" label="Back to Reports" />
@@ -1003,23 +1027,37 @@ export default function ReportCatalogPage() {
           role="status"
           className="rounded-sm border border-[var(--color-primary-200,#BFDBFE)] bg-[var(--color-primary-50,#EFF6FF)] px-3 py-2 text-[13px] text-[var(--color-primary-900,#1E3A5F)]"
         >
-          Showing formats for <strong>{entityBannerLabel}</strong>
+          Showing formats compatible with <strong>{entityBannerLabel}</strong>
           {familiesFilter.length
             ? ` · families: ${familiesFilter.map((f) => reportFamilyLabel(f)).join(', ')}`
             : ''}
-          . Selected formats use this record’s live fields (not demo placeholders).
+          . Generate prefers a live backend pack when ready; otherwise the Fresa sample layout
+          with this record overlaid and {REPORT_BRANDING.brandName} logo. Default invoice/quotation
+          PDF buttons are unchanged.
         </div>
       ) : null}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <h2 className={appType.pageTitle}>Report catalogue</h2>
+          <h2 className={appType.pageTitle}>Sample report formats</h2>
           <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
-            {metaTotal} of {completeReportTotal} registered reports
+            Inspired by{' '}
+            <a
+              className="underline underline-offset-2"
+              href="https://fresatechnologies.com/sample-report-formats/"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Fresa sample report formats
+            </a>
+            . Client previews use {REPORT_BRANDING.brandName} logo + dummy data — exact
+            Fresa pixel match needs backend packs · {metaTotal} of {completeReportTotal}{' '}
+            registered
             {isReportSearchActive(searchQuery) ||
             family !== 'all' ||
             familiesFilter.length > 0 ||
-            contextFilter !== 'all'
+            contextFilter !== 'all' ||
+            entityBound
               ? ' (filtered)'
               : ''}
             .
@@ -1270,41 +1308,41 @@ export default function ReportCatalogPage() {
         emptyHint="No reports match these filters."
       />
 
-      {hasInvoiceLayout ? (
+      {showClientLayoutPreview && hasInvoiceLayout ? (
         <InvoiceFormatAutoPdf
           code={selectedCode}
           invoiceId={invoiceId}
           context={reportContext}
         />
-      ) : hasAccountsLayout ? (
+      ) : showClientLayoutPreview && hasAccountsLayout ? (
         <AccountsFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasWmsLayout ? (
+      ) : showClientLayoutPreview && hasWmsLayout ? (
         <WmsFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasArrivalNoticeLayout ? (
+      ) : showClientLayoutPreview && hasArrivalNoticeLayout ? (
         <ArrivalNoticeFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasDeliveryOrderLayout ? (
+      ) : showClientLayoutPreview && hasDeliveryOrderLayout ? (
         <DeliveryOrderFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasHawbLayout ? (
+      ) : showClientLayoutPreview && hasHawbLayout ? (
         <HawbFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasHblLayout ? (
+      ) : showClientLayoutPreview && hasHblLayout ? (
         <HblFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasOtherReportsLayout ? (
+      ) : showClientLayoutPreview && hasOtherReportsLayout ? (
         <OtherReportsFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasQuotationLayout ? (
+      ) : showClientLayoutPreview && hasQuotationLayout ? (
         <QuotationFormatAutoPdf
           code={selectedCode}
           quotationId={quotationId}
           context={reportContext}
         />
-      ) : hasOpsListLayout ? (
+      ) : showClientLayoutPreview && hasOpsListLayout ? (
         <OpsListFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasCommercialExtraLayout ? (
+      ) : showClientLayoutPreview && hasCommercialExtraLayout ? (
         <CommercialExtraFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasSeaDocsExtraLayout ? (
+      ) : showClientLayoutPreview && hasSeaDocsExtraLayout ? (
         <SeaDocsExtraFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasLeftoverLayout ? (
+      ) : showClientLayoutPreview && hasLeftoverLayout ? (
         <LeftoverFormatAutoPdf code={selectedCode} context={reportContext} />
-      ) : hasRegisteredLayout ? (
+      ) : showClientLayoutPreview && hasRegisteredLayout ? (
         <CatalogReportAutoPdf
           code={selectedCode}
           invoiceId={invoiceId}
@@ -1312,10 +1350,10 @@ export default function ReportCatalogPage() {
         />
       ) : null}
 
-      {selected && !hasRegisteredLayout && !showSpecificAutoPdf ? (
+      {selected && !showClientLayoutPreview && !hasRegisteredLayout && !showSpecificAutoPdf ? (
         <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
-          No layout PDF is registered for this report yet. Use Import registry / bind pack to
-          generate from the backend when available.
+          No Fresa sample layout for this report yet. Import registry / bind a backend pack to
+          generate when available.
         </p>
       ) : null}
 

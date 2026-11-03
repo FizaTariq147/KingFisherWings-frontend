@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react'
-import { Link, useNavigate, useSearchParams } from 'react-router-dom'
+import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
@@ -55,13 +55,26 @@ function defaultDeviceName(): string {
   return 'Web'
 }
 
+function isStaffLoginPath(pathname: string): boolean {
+  return pathname === '/staff/login' || pathname === '/login/staff'
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 // LOGIN MODAL
 // ─────────────────────────────────────────────────────────────────────────
-function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
+function LoginModal({
+  open,
+  onClose,
+  loginMode,
+  onLoginModeChange,
+}: {
+  open: boolean
+  onClose: () => void
+  loginMode: LoginMode
+  onLoginModeChange: (mode: LoginMode) => void
+}) {
   const navigate = useNavigate()
   const { loginTenant, loginStaff, isLoading } = useAuthStore()
-  const [loginMode, setLoginMode] = useState<LoginMode>('tenant_admin')
   const [showPw, setShowPw]   = useState(false)
   const [apiErr, setApiErr]   = useState<string | null>(null)
   const [statusMsg, setStatusMsg] = useState<string | null>(null)
@@ -102,10 +115,22 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
   useEffect(() => {
     if (!open) {
       reset(); setApiErr(null); setStatusMsg(null); setShowPw(false); setAgreed(false); setAgreedTouched(false)
-      setLoginMode('tenant_admin')
       setForgotOpen(false); setForgotSlug(''); setForgotEmail(''); setForgotErr(null); setForgotSent(false)
     }
   }, [open, reset])
+
+  useEffect(() => {
+    // Clear field errors when switching Company Admin ↔ Staff via the URL.
+    reset({
+      tenant_slug: '',
+      email: '',
+      password: '',
+      remember_me: true,
+    })
+    setApiErr(null)
+    setStatusMsg(null)
+    setShowPw(false)
+  }, [loginMode, reset])
 
   useEffect(() => {
     if (forgotOpen) {
@@ -221,7 +246,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
           <div className="grid grid-cols-2 gap-1 rounded-lg bg-slate-100 p-0.5">
             <button
               type="button"
-              onClick={() => { setLoginMode('tenant_admin'); setApiErr(null) }}
+              onClick={() => onLoginModeChange('tenant_admin')}
               className="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors"
               style={{
                 background: loginMode === 'tenant_admin' ? NAVY : 'transparent',
@@ -232,7 +257,7 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
             </button>
             <button
               type="button"
-              onClick={() => { setLoginMode('staff'); setApiErr(null) }}
+              onClick={() => onLoginModeChange('staff')}
               className="rounded-md px-3 py-1.5 text-[12px] font-semibold transition-colors"
               style={{
                 background: loginMode === 'staff' ? NAVY : 'transparent',
@@ -439,12 +464,17 @@ function LoginModal({ open, onClose }: { open: boolean; onClose: () => void }) {
 
 export default function LoginPage() {
   const navigate = useNavigate()
+  const location = useLocation()
   const [searchParams, setSearchParams] = useSearchParams()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
+  const staffPath = isStaffLoginPath(location.pathname)
+  const loginMode: LoginMode = staffPath ? 'staff' : 'tenant_admin'
   const [inviteToken] = useState(() =>
     readInviteTokenFromSearch(window.location.search, 'staff'),
   )
-  const [loginOpen, setLoginOpen] = useState(() => searchParams.get('admin') === '1' && !inviteToken)
+  const [loginOpen, setLoginOpen] = useState(
+    () => staffPath || (searchParams.get('admin') === '1' && !inviteToken),
+  )
   const [inviteOpen, setInviteOpen] = useState(() => Boolean(inviteToken))
   const [inviteDone, setInviteDone] = useState(false)
 
@@ -465,17 +495,43 @@ export default function LoginPage() {
       setLoginOpen(true)
       searchParams.delete('admin')
       setSearchParams(searchParams, { replace: true })
+      if (staffPath) navigate('/login', { replace: true })
     }
-  }, [searchParams, setSearchParams, inviteToken])
+  }, [searchParams, setSearchParams, inviteToken, staffPath, navigate])
 
-  const closeAdmin = () => setLoginOpen(false)
+  useEffect(() => {
+    // Visiting /staff/login opens Staff / User sign-in.
+    if (staffPath && !inviteToken) setLoginOpen(true)
+  }, [staffPath, inviteToken])
+
+  const closeAdmin = () => {
+    setLoginOpen(false)
+    if (staffPath) navigate('/login', { replace: true })
+  }
+
+  const onLoginModeChange = (mode: LoginMode) => {
+    setLoginOpen(true)
+    if (mode === 'staff') {
+      if (!staffPath) navigate('/staff/login', { replace: true })
+      return
+    }
+    if (staffPath) navigate('/login', { replace: true })
+  }
 
   return (
     <AuthLandingShell
-      onAdminClick={() => setLoginOpen(true)}
+      onAdminClick={() => {
+        if (staffPath) navigate('/login', { replace: true })
+        setLoginOpen(true)
+      }}
       videoOnly={loginOpen || inviteOpen}
     >
-      <LoginModal open={loginOpen} onClose={closeAdmin} />
+      <LoginModal
+        open={loginOpen}
+        onClose={closeAdmin}
+        loginMode={loginMode}
+        onLoginModeChange={onLoginModeChange}
+      />
       {inviteOpen && inviteToken && (
         <AcceptInvitePopup
           token={inviteToken}
@@ -484,6 +540,7 @@ export default function LoginPage() {
             clearInviteTokenSession('staff')
             setInviteOpen(false)
             setInviteDone(true)
+            navigate('/staff/login', { replace: true })
             setLoginOpen(true)
           }}
         />

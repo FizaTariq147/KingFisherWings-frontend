@@ -149,8 +149,11 @@ export async function generateInvoiceFormatPreviewPdf(
     const prevSheetDisplay = sheet.style.display;
     const prevBodyDisplay = bodyEl.style.display;
 
+    // Lock capture geometry to paper CSS width so body/footer share one pt scale.
+    // Using canvas.width alone caused bodyScale ≠ footerScale → footer overlap.
+    const CAPTURE_SCALE = 2;
     const h2cOpts = {
-      scale: 2,
+      scale: CAPTURE_SCALE,
       useCORS: true,
       allowTaint: true,
       backgroundColor: '#ffffff' as string,
@@ -158,6 +161,9 @@ export async function generateInvoiceFormatPreviewPdf(
       foreignObjectRendering: false,
       onclone: (clonedDoc: Document, clonedElement: HTMLElement) => {
         sanitizeHtml2CanvasClone(clonedDoc, clonedElement);
+        clonedElement.style.width = `${geom.cssWidth}px`;
+        clonedElement.style.maxWidth = `${geom.cssWidth}px`;
+        clonedElement.style.boxSizing = 'border-box';
       },
     };
 
@@ -167,13 +173,19 @@ export async function generateInvoiceFormatPreviewPdf(
     sheet.style.display = 'block';
     sheet.style.minHeight = '0';
     sheet.style.height = 'auto';
+    sheet.style.borderWidth = '0';
     bodyEl.style.display = 'block';
+    bodyEl.style.width = `${geom.cssWidth}px`;
+    bodyEl.style.maxWidth = `${geom.cssWidth}px`;
+    bodyEl.style.boxSizing = 'border-box';
     await wait(16);
     sanitizeHtml2CanvasClone(document, bodyEl);
     const bodyCanvas = await html2canvas(bodyEl, {
       ...h2cOpts,
       width: geom.cssWidth,
       windowWidth: geom.cssWidth,
+      x: 0,
+      y: 0,
     });
 
     // 2) Footer-only capture in an isolated host so flex/minHeight on the sheet
@@ -199,6 +211,8 @@ export async function generateInvoiceFormatPreviewPdf(
       footerEl.style.position = 'static';
       footerEl.style.flex = 'none';
       footerEl.style.width = `${geom.cssWidth}px`;
+      footerEl.style.maxWidth = `${geom.cssWidth}px`;
+      footerEl.style.boxSizing = 'border-box';
       footerEl.style.minHeight = '0';
       footerEl.style.height = 'auto';
       footerIsolate.appendChild(footerEl);
@@ -212,6 +226,8 @@ export async function generateInvoiceFormatPreviewPdf(
         windowWidth: geom.cssWidth,
         height: footerDomCssH,
         windowHeight: footerDomCssH,
+        x: 0,
+        y: 0,
       });
     }
 
@@ -223,7 +239,11 @@ export async function generateInvoiceFormatPreviewPdf(
     sheet.style.display = prevSheetDisplay;
     sheet.style.minHeight = prevSheetMinH;
     sheet.style.height = prevSheetH;
+    sheet.style.borderWidth = '';
     bodyEl.style.display = prevBodyDisplay;
+    bodyEl.style.width = '';
+    bodyEl.style.maxWidth = '';
+    bodyEl.style.boxSizing = '';
     if (footerEl) footerEl.style.display = prevFooterDisplay;
     if (spacerEl) spacerEl.style.display = prevSpacerDisplay;
 
@@ -236,39 +256,35 @@ export async function generateInvoiceFormatPreviewPdf(
     const pageW = pdf.internal.pageSize.getWidth();
     const pageH = pdf.internal.pageSize.getHeight();
 
-    const imgW = bodyCanvas.width;
     const bodyImgH = bodyCanvas.height;
-    if (!Number.isFinite(imgW) || !Number.isFinite(bodyImgH) || imgW < 1 || bodyImgH < 1) {
+    if (!Number.isFinite(bodyImgH) || bodyCanvas.width < 1 || bodyImgH < 1) {
       throw new Error(`PDF capture produced an empty body canvas for ${preview.code}.`);
     }
 
-    const bodyScale = pageW / imgW;
-    if (!Number.isFinite(bodyScale) || bodyScale <= 0) {
+    // One shared scale: paper CSS width → page points (ignore canvas width drift).
+    const canvasPxToPt = pageW / (geom.cssWidth * CAPTURE_SCALE);
+    if (!Number.isFinite(canvasPxToPt) || canvasPxToPt <= 0) {
       throw new Error(`Invalid PDF scale for ${preview.code}.`);
     }
     const drawW = pageW;
     const jpegQuality = 0.93;
     const ptPerCssPx = pageW / geom.cssWidth;
     const footerImgH = footerCanvas?.height ?? 0;
-    const footerCanvasScale =
-      footerCanvas && footerCanvas.width > 0 ? pageW / footerCanvas.width : bodyScale;
-    // Prefer the larger of canvas vs DOM so we never reserve less than the real bar.
-    const footerImageDrawH = footerImgH > 0 ? footerImgH * footerCanvasScale : 0;
+    const footerImageDrawH = footerImgH > 0 ? footerImgH * canvasPxToPt : 0;
     const footerDomDrawH = footerDomCssH > 0 ? footerDomCssH * ptPerCssPx : 0;
-    // Never reserve less than a real bar (~28pt) or last lines sit flush on the footer.
+    // Never reserve less than a real bar (~30pt) or last lines sit flush on the footer.
     const footerDrawH =
       footerImageDrawH > 0 || footerDomDrawH > 0
-        ? Math.max(footerImageDrawH, footerDomDrawH, 28)
+        ? Math.max(footerImageDrawH, footerDomDrawH, 30)
         : 0;
-    // Clearance between last body ink and the footer band (pt). 10pt still looked
-    // like overlap on dense invoices; 20pt keeps a visible white strip.
-    const gapPt = footerDrawH > 0 ? 24 : 0;
+    // Clearance between last body ink and the footer band (pt).
+    const gapPt = footerDrawH > 0 ? 18 : 0;
     const footerBandPt = footerDrawH + gapPt;
     const contentPageH = Math.max(8, pageH - footerBandPt);
-    const contentPageSrcH = Math.max(1, Math.floor(contentPageH / bodyScale));
+    const contentPageSrcH = Math.max(1, Math.floor(contentPageH / canvasPxToPt));
     // Search up to ~1.5 lines for a clean (near-white) break so we don't bisect
     // text flush against the footer — that reads as "footer overlap".
-    const breakSearchPx = Math.max(24, Math.round(18 / bodyScale));
+    const breakSearchPx = Math.max(24, Math.round(18 / canvasPxToPt));
 
     const rowInkRatio = (src: HTMLCanvasElement, y: number): number => {
       const ctx = src.getContext('2d');
@@ -305,42 +321,61 @@ export async function generateInvoiceFormatPreviewPdf(
       srcH: number,
       destY: number,
       destH: number,
+      format: 'JPEG' | 'PNG' = 'JPEG',
     ) => {
       const sliceCanvas = document.createElement('canvas');
-      sliceCanvas.width = src.width;
+      sliceCanvas.width = Math.max(1, Math.round(geom.cssWidth * CAPTURE_SCALE));
       sliceCanvas.height = Math.max(1, Math.ceil(srcH));
       const ctx = sliceCanvas.getContext('2d');
       if (!ctx) throw new Error(`PDF page slice failed for ${preview.code}.`);
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
-      ctx.drawImage(src, 0, srcY, src.width, srcH, 0, 0, src.width, srcH);
-      pdf.addImage(
-        sliceCanvas.toDataURL('image/jpeg', jpegQuality),
-        'JPEG',
+      // Fit source into locked paper width so body/footer stay aligned.
+      ctx.drawImage(
+        src,
         0,
-        destY,
-        drawW,
-        destH,
+        srcY,
+        src.width,
+        srcH,
+        0,
+        0,
+        sliceCanvas.width,
+        srcH,
       );
+      if (format === 'PNG') {
+        pdf.addImage(sliceCanvas.toDataURL('image/png'), 'PNG', 0, destY, drawW, destH);
+      } else {
+        pdf.addImage(
+          sliceCanvas.toDataURL('image/jpeg', jpegQuality),
+          'JPEG',
+          0,
+          destY,
+          drawW,
+          destH,
+        );
+      }
     };
 
     const stampFooter = () => {
-      if (!footerCanvas || footerImgH < 1 || footerImageDrawH < 1) return;
-      // Bottom-align the captured footer inside the reserved band (never stretch,
-      // never draw past pageH).
+      if (!footerCanvas || footerImgH < 1 || footerDrawH < 1) return;
+      // Erase the reserved band so body ink never shows through the footer.
+      const bandTop = Math.max(0, pageH - footerBandPt);
+      pdf.setFillColor(255, 255, 255);
+      pdf.rect(0, bandTop, pageW, footerBandPt + 1, 'F');
+      // Bottom-align the captured footer; PNG keeps navy/orange/red crisp.
       const destY = Math.max(0, pageH - footerImageDrawH);
-      drawCanvas(footerCanvas, 0, footerImgH, destY, footerImageDrawH);
+      drawCanvas(footerCanvas, 0, footerImgH, destY, footerImageDrawH, 'PNG');
     };
 
-    // Always clip body to the content band — the old single-page full-bleed
-    // addImage could paint last rows into the footer zone when heights were tight.
+    // Always clip body to the content band — never paint into the footer zone.
     let srcY = 0;
     let pageIndex = 0;
     while (srcY < bodyImgH) {
       const maxSlice = Math.min(contentPageSrcH, bodyImgH - srcY);
       const sliceH = findCleanSliceHeight(srcY, maxSlice);
       if (pageIndex > 0) pdf.addPage();
-      drawCanvas(bodyCanvas, srcY, sliceH, 0, sliceH * bodyScale);
+      const destH = Math.min(sliceH * canvasPxToPt, contentPageH);
+      drawCanvas(bodyCanvas, srcY, sliceH, 0, destH, 'JPEG');
       stampFooter();
       srcY += sliceH;
       pageIndex += 1;

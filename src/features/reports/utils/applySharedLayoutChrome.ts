@@ -23,8 +23,9 @@ export const SHARED_LAYOUT_CHROME: SharedLayoutChrome = {
 
 /**
  * Runtime override: KingFisher logo / company text only.
- * Restores Fresa sample theme colors when JSON themes were remapped to T&C navy.
- * Body blocks / field schemas stay as in the Fresa sample JSON.
+ * Restores Fresa sample theme colors (same navy/orange/red/cyan as Fresa PDFs).
+ * Body blocks + demo/dummy field data stay as in the Fresa sample JSON.
+ * Header/footer chrome is always KF-branded — never Fresa company identity.
  */
 export function applySharedLayoutChrome(
   layout: InvoiceFormatUiLayout,
@@ -34,11 +35,11 @@ export function applySharedLayoutChrome(
     ...layout,
     theme: normalizeFresaThemeColors(layout.theme),
     branding: {
-      company: chrome.company,
-      address: chrome.address,
-      web: chrome.web,
-      phone: chrome.phone,
-      email: chrome.email,
+      company: chrome.company || SHARED_LAYOUT_CHROME.company,
+      address: chrome.address || SHARED_LAYOUT_CHROME.address,
+      web: chrome.web || SHARED_LAYOUT_CHROME.web,
+      phone: chrome.phone || SHARED_LAYOUT_CHROME.phone,
+      email: chrome.email || SHARED_LAYOUT_CHROME.email,
       logo: 'kingfisher',
     },
   };

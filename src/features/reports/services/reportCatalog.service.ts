@@ -126,7 +126,13 @@ export function buildReportGenerateBody(dto: ReportGenerateRequest): Record<stri
 
   if (dto.context) {
     const context: Record<string, string> = {};
-    for (const key of ['job_id', 'quotation_id', 'invoice_id', 'party_id'] as const) {
+    for (const key of [
+      'job_id',
+      'quotation_id',
+      'invoice_id',
+      'party_id',
+      'shipment_id',
+    ] as const) {
       const value = dto.context[key]?.trim();
       if (value) context[key] = value;
     }

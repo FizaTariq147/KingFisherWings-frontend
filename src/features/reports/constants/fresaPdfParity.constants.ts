@@ -3,14 +3,11 @@ import { buildCatalogHref } from '../utils/moduleCatalogFamily';
 /**
  * FRESA exact PDF parity — backend pack priority (handoff for kingfisherwings-backend).
  *
- * Exact sample-report layouts are NOT used as the live generate engine in this frontend.
- * Catalog shows Invoice Format-* previews from invoiceFormatPreviews.json (sample PDF URL
- * or layout mock). Backend owns Puppeteer HTML/CSS packs for Generate;
- * FE only binds keys from GET /reports/templates/renderers and generates via PdfReadyModal.
+ * Product generate = POST /reports/generate with bound packs (KF logo branding).
+ * Client JSON layouts are frozen Dev fallback only (reportPreserveMatrix.ts).
+ * Catalog may still show Invoice Format-* previews for browse — not product print.
  *
- * Registry counts (local taxonomy): ops_list 110, sea_docs 134, air_docs 75,
- * commercial 99, finance 91, wms 58, quotation 18, other 22 (~607 total).
- *
+ * Core shells: fresaCorePackShells.constants.ts
  * Raise ACTIVE_REPORT_ROLLOUT_PHASE in reportRollout.constants.ts as packs ship.
  */
 export const FRESA_PDF_PACK_PRIORITY = [
