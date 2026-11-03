@@ -91,7 +91,7 @@ export function readRememberedPublicTrackTenantSlug(): string {
 /** Resolve tenant slug from `?tenant=` / `?tenant_slug=` / remembered login / subdomain. */
 export function resolveTenantSlugFromLocation(search = ''): string {
   const params = new URLSearchParams(search);
-  for (const key of ['tenant', 'tenant_slug', 'workspace'] as const) {
+  for (const key of ['tenant', 'tenant_slug', 'tenantSlug', 'workspace'] as const) {
     const value = params.get(key);
     if (value?.trim()) return value.trim().toLowerCase();
   }
