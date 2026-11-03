@@ -17,6 +17,7 @@ import {
   normalizeUserPermissionAssignment,
 } from '../utils/normalizeUserPermissionMatrix';
 import { toMatrixUpdateGrants } from '../utils/permissionAccess';
+import { visibleJobTypesFromMatrixGrants } from '../utils/visibleJobTypesFromMatrixGrants';
 
 function formatAxiosError(error: unknown): Error {
   if (error instanceof Error && !(error as { response?: unknown }).response) {
@@ -87,7 +88,15 @@ export const userPermissionMatrixService = {
       'grants' in dto && Array.isArray(dto.grants) ? dto.grants : [];
     // Canonicalize module keys (vendors→vendor) so Vendor Services grants persist.
     const grants = toMatrixUpdateGrants(rawGrants);
-    const body: UpdatePermissionMatrixDto = { grants };
+    const explicitVisible =
+      'visible_job_types' in dto ? dto.visible_job_types : undefined;
+    const derivedVisible = visibleJobTypesFromMatrixGrants(grants);
+    const visible_job_types =
+      explicitVisible !== undefined ? explicitVisible : derivedVisible;
+    const body: UpdatePermissionMatrixDto = {
+      grants,
+      ...(visible_job_types !== undefined ? { visible_job_types } : {}),
+    };
 
     try {
       const res = await axiosInstance.put(USER_API.userPermissionMatrix(userId), body);

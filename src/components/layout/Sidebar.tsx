@@ -48,6 +48,10 @@ import {
   hasMatrixSubmoduleAccess,
 } from '@/features/users/utils/matrixPermissionAccess';
 import { DEPARTMENT_NAV } from '@/features/jobs/config/departmentNav';
+import {
+  deptAllowedByVisibleJobTypes,
+  effectiveVisibleJobTypes,
+} from '@/features/jobs/utils/deptAccessFromStaffGrants';
 import type { PermissionKey } from '@/types/auth.types';
 import { BrandLogo } from '@/features/branding/components/BrandLogo';
 import { useBrandLogoUrl } from '@/features/branding/hooks/useBrandLogoUrl';
@@ -424,38 +428,6 @@ const DEPT_PERMISSION: Record<
   nvocc: { permission: 'menu_nvocc', matrixModule: 'nvocc' },
 };
 
-/**
- * Map ops sidebar dept keys to visible_job_types tokens from /auth/me.
- * null / undefined visibleJobTypes = unrestricted; [] = hide all scoped depts.
- */
-function deptAllowedByVisibleJobTypes(
-  deptKey: string | undefined,
-  visibleJobTypes: string[] | null | undefined,
-): boolean {
-  if (!deptKey || deptKey === 'nvocc') return true;
-  if (visibleJobTypes === null || visibleJobTypes === undefined) return true;
-  if (!visibleJobTypes.length) return false;
-  const tokens = visibleJobTypes.map((t) => t.trim().toLowerCase().replace(/-/g, '_'));
-  const matches = (needles: string[]) =>
-    tokens.some((t) => needles.some((n) => t === n || t.includes(n) || n.includes(t)));
-  switch (deptKey) {
-    case 'air-export':
-      // Do not use bare "air" — that would also unlock Air Import.
-      return matches(['air_export', 'airexport']);
-    case 'air-import':
-      return matches(['air_import', 'airimport']);
-    case 'sea-export':
-      return matches(['sea_export', 'sea_fcl_export', 'sea_lcl_export', 'fcl_export', 'lcl_export']);
-    case 'sea-import':
-      return matches(['sea_import', 'sea_fcl_import', 'sea_lcl_import', 'fcl_import', 'lcl_import']);
-    case 'road-freight':
-      return matches(['road_freight', 'road', 'land', 'courier']);
-    case 'customs-clearance':
-      return matches(['customs_clearance', 'customs']);
-    default:
-      return true;
-  }
-}
 
 const DEPARTMENT_NAV_ITEMS: NavItem[] = DEPARTMENT_NAV.map((dept) => {
   const perm = DEPT_PERMISSION[dept.key];
@@ -763,20 +735,35 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
         // Ops departments: require the matching submodule family (air / sea / …).
         // Do NOT treat any `operations_*` grant as access to every department.
         // Air export and air import are independent matrix submodules.
-        // visible_job_types from /auth/me further scopes which departments appear.
+        // Matrix grant unlocks the dept; visible_job_types further scopes when set
+        // (empty [] with matrix grants derives tokens from those grants).
         if (item.matrixModule && item.matrixSubmodule) {
-          if (
-            !authCtx?.user?.unrestrictedOps &&
-            !deptAllowedByVisibleJobTypes(item.deptKey, authCtx?.user?.visibleJobTypes)
-          ) {
-            return false;
-          }
           const perms = authCtx?.user?.permissions ?? [];
-          if (hasMatrixSubmoduleAccess(perms, item.matrixModule, item.matrixSubmodule, 'see')) {
-            return true;
+          const matrixOk = hasMatrixSubmoduleAccess(
+            perms,
+            item.matrixModule,
+            item.matrixSubmodule,
+            'see',
+          );
+          if (matrixOk) {
+            if (authCtx?.user?.unrestrictedOps) return true;
+            const effectiveVisible = effectiveVisibleJobTypes(
+              authCtx?.user?.visibleJobTypes,
+              perms,
+            );
+            return deptAllowedByVisibleJobTypes(item.deptKey, effectiveVisible);
           }
           // Legacy staff (no ops matrix keys) — fall back to coarse menu_* only.
           if (!hasAnyOpsMatrixGrant(perms)) {
+            if (
+              !authCtx?.user?.unrestrictedOps &&
+              !deptAllowedByVisibleJobTypes(
+                item.deptKey,
+                effectiveVisibleJobTypes(authCtx?.user?.visibleJobTypes, perms),
+              )
+            ) {
+              return false;
+            }
             if (item.permissionAny?.length) {
               return item.permissionAny.some((p) => authCtx?.hasPermission(p) ?? false);
             }

@@ -803,6 +803,19 @@ export const jobService = {
             throw err;
           }
         }
+        // Silent ACL: typed list returns 200 [] while create/detail still work.
+        // Recover via unfiltered GET + client type filter (same as ROAD soft-fail).
+        if (result.jobs.length === 0) {
+          try {
+            const recovered = await fetchJobsFilteredByTypes(
+              safeParams,
+              hydrateTypes(multiTypes),
+            );
+            if (recovered.jobs.length) result = recovered;
+          } catch {
+            /* keep typed empty */
+          }
+        }
         const hydrated = await hydrateJobsFromConvertedQuotes(
           result.jobs,
           hydrateTypes(multiTypes),

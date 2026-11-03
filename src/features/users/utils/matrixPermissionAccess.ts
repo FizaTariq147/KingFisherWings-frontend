@@ -119,7 +119,12 @@ export function hasMatrixSubmoduleAccess(
 
   for (const raw of permissions) {
     if (typeof raw !== 'string' || !raw.trim()) continue;
-    const key = raw.trim().toLowerCase();
+    // Normalize hyphens/spaces so `operations_air-export.see` matches `air_export`.
+    const key = raw
+      .trim()
+      .toLowerCase()
+      .replace(/[\s-]+/g, '_')
+      .replace(/_+/g, '_');
     const dot = key.lastIndexOf('.');
     if (dot <= 0) continue;
     const prefix = key.slice(0, dot);

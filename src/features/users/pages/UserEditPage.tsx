@@ -14,6 +14,7 @@ import type { UpdateUserFormValues } from '../types/user.types';
 import { userToFormValues } from '../utils/userToFormValues';
 import { formatUserLabel } from '../utils/userToFormValues';
 import { toAccessGrants } from '../utils/permissionAccess';
+import { visibleJobTypesFromMatrixGrants } from '../utils/visibleJobTypesFromMatrixGrants';
 
 export default function UserEditPage() {
   const { id = '' } = useParams();
@@ -101,6 +102,8 @@ export default function UserEditPage() {
           setApiError(null);
           try {
             const accessGrants = toAccessGrants(meta?.permissionGrants ?? []);
+            const grants = meta?.permissionGrants ?? [];
+            const visibleJobTypes = visibleJobTypesFromMatrixGrants(grants);
 
             await updateUser.mutateAsync({
               ...(values as UpdateUserFormValues),
@@ -108,12 +111,19 @@ export default function UserEditPage() {
                 ? {
                     permission_grants: accessGrants,
                     permission_grants_mode: 'replace' as const,
+                    ...(visibleJobTypes !== undefined
+                      ? { visible_job_types: visibleJobTypes }
+                      : {}),
                   }
                 : {}),
             });
-            const grants = meta?.permissionGrants ?? [];
             if (grants.length > 0) {
-              await updatePermissions.mutateAsync({ grants });
+              await updatePermissions.mutateAsync({
+                grants,
+                ...(visibleJobTypes !== undefined
+                  ? { visible_job_types: visibleJobTypes }
+                  : {}),
+              });
             }
             goBack();
           } catch (err) {
