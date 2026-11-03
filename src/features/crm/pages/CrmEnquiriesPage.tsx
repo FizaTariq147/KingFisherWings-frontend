@@ -9,17 +9,21 @@ import {
   OperationTypeBadge,
 } from '@/components/erp';
 import { departmentByKey } from '@/features/jobs/config/departmentNav';
+import type { JobType as OpsJobType } from '@/features/jobs/constants/job.constants';
+import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
 import {
   CrmEnquiryFilters,
   crmEnquiryFilterDraftToListParams,
   useCrmEnquiryFilterDraft,
 } from '../components/CrmEnquiryFilters';
-import type { ServiceType } from '../constants/crm.constants';
+import { SERVICE_TYPES, type ServiceType } from '../constants/crm.constants';
 import { useCrmEnquiries } from '../hooks/useCrmEnquiries';
 import { CrmStatusBadge } from '../components/CrmStatusBadge';
 import { Pagination, tdClass, thClass } from '../components/CrmUi';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { appType, erpTable, listShell } from '@/lib/erpTypography';
+
+const ENQUIRY_SERVICE_CANDIDATES = SERVICE_TYPES as readonly OpsJobType[];
 
 function formatDate(iso?: string) {
   if (!iso) return '—';
@@ -37,6 +41,12 @@ export default function CrmEnquiriesPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const dept = departmentByKey(searchParams.get('dept'));
+  const allowedJobTypes = useStaffAllowedJobTypes(ENQUIRY_SERVICE_CANDIDATES);
+  const allowedServiceTypes = allowedJobTypes as readonly ServiceType[];
+  const allowedTypeSet = useMemo(
+    () => new Set(allowedServiceTypes.map(String)),
+    [allowedServiceTypes],
+  );
   const [page, setPage] = useState(1);
   const { draft, setDraft, applied, submit, applyPatch } = useCrmEnquiryFilterDraft();
 
@@ -49,6 +59,12 @@ export default function CrmEnquiriesPage() {
     applyPatch({ serviceType });
     setPage(1);
   }, [dept?.key]); // eslint-disable-line react-hooks/exhaustive-deps -- sync from ?dept=
+
+  useEffect(() => {
+    if (!applied.serviceType) return;
+    if (allowedTypeSet.has(String(applied.serviceType))) return;
+    applyPatch({ serviceType: '' });
+  }, [allowedTypeSet, applied.serviceType]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     setPage(1);
@@ -68,10 +84,15 @@ export default function CrmEnquiriesPage() {
 
   const query = useCrmEnquiries(listParams);
 
+  const canCreateSeaExport = allowedTypeSet.has('SEA_FCL_EXPORT');
+  const canCreateSeaImport = allowedTypeSet.has('SEA_FCL_IMPORT');
+
   const items = (query.data?.items ?? []).filter((x) => {
+    if (allowedTypeSet.size === 0) return false;
+    if (!x.service_type || !allowedTypeSet.has(String(x.service_type))) return false;
     if (serviceTypeFilter && x.service_type !== serviceTypeFilter) return false;
     if (deptTypes && deptTypes.size > 1) {
-      return Boolean(x.service_type && deptTypes.has(String(x.service_type)));
+      return deptTypes.has(String(x.service_type));
     }
     return true;
   });
@@ -91,28 +112,33 @@ export default function CrmEnquiriesPage() {
             </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <Button
-              size="sm"
-              variant="secondary"
-              leftIcon={<Ship />}
-              onClick={() => navigate('/sales/enquiries/new?service_type=SEA_FCL_EXPORT')}
-            >
-              FCL Export
-            </Button>
-            <Button
-              size="sm"
-              variant="secondary"
-              leftIcon={<Ship />}
-              onClick={() => navigate('/sales/enquiries/new?service_type=SEA_FCL_IMPORT')}
-            >
-              FCL Import
-            </Button>
+            {canCreateSeaExport ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                leftIcon={<Ship />}
+                onClick={() => navigate('/sales/enquiries/new?service_type=SEA_FCL_EXPORT')}
+              >
+                FCL Export
+              </Button>
+            ) : null}
+            {canCreateSeaImport ? (
+              <Button
+                size="sm"
+                variant="secondary"
+                leftIcon={<Ship />}
+                onClick={() => navigate('/sales/enquiries/new?service_type=SEA_FCL_IMPORT')}
+              >
+                FCL Import
+              </Button>
+            ) : null}
             <Button
               size="sm"
               type="button"
               variant="create"
               leftIcon={<Plus />}
               onClick={() => navigate('/sales/enquiries/new')}
+              disabled={allowedServiceTypes.length === 0}
             >
               Create
             </Button>
@@ -127,6 +153,7 @@ export default function CrmEnquiriesPage() {
             submit();
           }}
           isSubmitting={query.isFetching}
+          serviceTypeOptions={allowedServiceTypes}
         />
 
         {query.isLoading ? (
@@ -142,6 +169,11 @@ export default function CrmEnquiriesPage() {
               onRetry={() => void query.refetch()}
             />
           </div>
+        ) : allowedServiceTypes.length === 0 ? (
+          <EmptyState
+            title="No enquiry types available."
+            description="Ask an admin to grant Air Import / Air Export (or other operations) access for your departments."
+          />
         ) : !items.length ? (
           <EmptyState
             title="No enquiries found."

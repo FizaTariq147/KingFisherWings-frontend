@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { type Resolver, useFieldArray } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2 } from 'lucide-react';
@@ -8,6 +8,8 @@ import { Modal } from '@/components/ui/Modal';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import type { JobType as OpsJobType } from '@/features/jobs/constants/job.constants';
+import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
 import { isUuid } from '@/lib/isUuid';
 import { appType } from '@/lib/erpTypography';
 import { useAppForm } from '@/lib/validation';
@@ -29,6 +31,8 @@ import type { CreateEnquiryDto } from '../types/crm.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { prepareCrmPayload } from '../utils/prepareCrmPayload';
 import { CUSTOMER_SERVICE_PATHS } from '@/features/customers/utils/customerServicePaths';
+
+const ENQUIRY_SERVICE_CANDIDATES = SERVICE_TYPES as readonly OpsJobType[];
 
 const defaults: CreateEnquiryFormValues = {
   service_type: 'SEA_FCL_EXPORT',
@@ -62,10 +66,18 @@ export default function CrmEnquiryCreatePage() {
   const [stepIndex, setStepIndex] = useState(0);
   const [finishConfirmOpen, setFinishConfirmOpen] = useState(false);
   const step = ENQUIRY_WIZARD_STEPS[stepIndex]?.key ?? 'ports';
+  const allowedJobTypes = useStaffAllowedJobTypes(ENQUIRY_SERVICE_CANDIDATES);
+  const allowedServiceTypes = allowedJobTypes as readonly ServiceType[];
+  const defaultServiceType = useMemo(
+    () =>
+      (allowedServiceTypes[0] ??
+        'SEA_FCL_EXPORT') as CreateEnquiryFormValues['service_type'],
+    [allowedServiceTypes],
+  );
 
   const form = useAppForm<CreateEnquiryFormValues>({
     resolver: zodResolver(createEnquirySchema) as unknown as Resolver<CreateEnquiryFormValues>,
-    defaultValues: defaults,
+    defaultValues: { ...defaults, service_type: defaultServiceType },
   });
   const {
     register,
@@ -97,12 +109,24 @@ export default function CrmEnquiryCreatePage() {
     if (partyId && isUuid(partyId)) setValue('party_id', partyId, { shouldValidate: true });
     if (leadId && isUuid(leadId)) setValue('lead_id', leadId, { shouldValidate: true });
     const service = searchParams.get('service_type');
-    if (service && (SERVICE_TYPES as readonly string[]).includes(service)) {
+    if (
+      service &&
+      (SERVICE_TYPES as readonly string[]).includes(service) &&
+      allowedServiceTypes.includes(service as ServiceType)
+    ) {
       setValue('service_type', service as CreateEnquiryFormValues['service_type'], {
         shouldValidate: true,
       });
+      return;
     }
-  }, [searchParams, setValue]);
+    if (
+      values.service_type &&
+      !allowedServiceTypes.includes(values.service_type as ServiceType) &&
+      allowedServiceTypes.length
+    ) {
+      setValue('service_type', defaultServiceType, { shouldValidate: true });
+    }
+  }, [searchParams, setValue, allowedServiceTypes, defaultServiceType, values.service_type]);
 
   const goNext = async () => {
     if (step === 'create') {
@@ -156,6 +180,15 @@ export default function CrmEnquiryCreatePage() {
       </div>
       {mutation.isError ? <CrmAlert>{getErrorMessage(mutation.error)}</CrmAlert> : null}
 
+      {allowedServiceTypes.length === 0 ? (
+        <div
+          role="status"
+          className="mx-auto max-w-5xl rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+        >
+          No enquiry types are available for your departments. Ask an admin to grant Air Import /
+          Air Export (or other operations) access.
+        </div>
+      ) : (
       <form
         className="mx-auto max-w-5xl space-y-6"
         onSubmit={(e) => {
@@ -174,6 +207,7 @@ export default function CrmEnquiryCreatePage() {
           <div className={panelClass}>
             <ServiceTypeSelectGrid
               value={values.service_type}
+              serviceTypeOptions={allowedServiceTypes}
               onChange={(serviceType: ServiceType) =>
                 setValue('service_type', serviceType, { shouldValidate: true, shouldDirty: true })
               }
@@ -535,6 +569,7 @@ export default function CrmEnquiryCreatePage() {
           disableNext={step === 'create' && !values.service_type}
         />
       </form>
+      )}
 
       <Modal
         open={finishConfirmOpen}

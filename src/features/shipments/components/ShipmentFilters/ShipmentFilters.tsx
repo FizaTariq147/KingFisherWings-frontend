@@ -114,6 +114,8 @@ interface ShipmentFiltersProps {
   onDraftChange: (next: ShipmentFilterDraft) => void;
   onSubmit: () => void;
   isSubmitting?: boolean;
+  /** Staff-scoped job types for the Job Type dropdown. Defaults to full catalog. */
+  jobTypeOptions?: readonly JobType[];
 }
 
 /**
@@ -125,9 +127,11 @@ export function ShipmentFilters({
   onDraftChange,
   onSubmit,
   isSubmitting,
+  jobTypeOptions,
 }: ShipmentFiltersProps) {
   const patch = (partial: Partial<ShipmentFilterDraft>) =>
     onDraftChange({ ...draft, ...partial });
+  const scopedJobTypes = jobTypeOptions?.length ? jobTypeOptions : JOB_TYPES;
 
   const { data: partiesResult } = useParties({
     page: 1,
@@ -150,9 +154,9 @@ export function ShipmentFilters({
     allOpt,
     ...SHIPMENT_STATUSES.map((s) => ({ value: s, label: s.replaceAll('_', ' ') })),
   ];
-  const jobTypeOptions = [
+  const jobTypeSelectOptions = [
     allOpt,
-    ...JOB_TYPES.map((t) => ({ value: t, label: JOB_TYPE_LABELS[t] })),
+    ...scopedJobTypes.map((t) => ({ value: t, label: JOB_TYPE_LABELS[t] })),
   ];
 
   return (
@@ -168,7 +172,7 @@ export function ShipmentFilters({
 
         <FilterField label="Job type">
           <SelectInput
-            options={jobTypeOptions}
+            options={jobTypeSelectOptions}
             value={draft.jobType}
             onChange={(e) => patch({ jobType: e.target.value as JobType | '' })}
           />

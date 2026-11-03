@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { appType } from '@/lib/erpTypography';
 import { isUuid } from '@/lib/isUuid';
+import type { JobType as OpsJobType } from '@/features/jobs/constants/job.constants';
+import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
 import { JOB_TYPES, type JobType } from '@/features/quotations/constants/quotation.constants';
 import {
   SHIPMENT_FORM_DEFAULTS,
@@ -15,6 +17,8 @@ import { useShipmentsPermissions } from '../hooks/useShipmentsPermissions';
 import type { CreateShipmentDto } from '../types/shipment.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { shipmentDisplayNumber } from '../utils/normalizeShipment';
+
+const SHIPMENT_JOB_TYPE_CANDIDATES = JOB_TYPES as readonly OpsJobType[];
 
 function loadDraft(): Partial<ShipmentFormValues> | null {
   try {
@@ -47,16 +51,23 @@ export default function ShipmentCreatePage() {
   const create = useCreateShipment();
   const { canWriteCreate } = useShipmentsPermissions();
   const [error, setError] = useState<string | null>(null);
+  const allowedJobTypes = useStaffAllowedJobTypes(SHIPMENT_JOB_TYPE_CANDIDATES);
 
   const defaults = useMemo(() => {
     const draft = loadDraft();
     const jobType = parseJobType(searchParams.get('job_type'));
     const customer =
       searchParams.get('customer_id') || searchParams.get('party_id') || '';
+    const preferred =
+      jobType && allowedJobTypes.includes(jobType as OpsJobType)
+        ? jobType
+        : draft?.job_type && allowedJobTypes.includes(draft.job_type as OpsJobType)
+          ? draft.job_type
+          : allowedJobTypes[0] ?? '';
     return {
       ...SHIPMENT_FORM_DEFAULTS,
       ...draft,
-      ...(jobType ? { job_type: jobType } : {}),
+      ...(preferred ? { job_type: preferred } : {}),
       ...(isUuid(customer) ? { customer_id: customer } : {}),
       ...(isUuid(searchParams.get('quotation_id') || '')
         ? { quotation_id: searchParams.get('quotation_id')! }
@@ -65,7 +76,7 @@ export default function ShipmentCreatePage() {
         ? { enquiry_id: searchParams.get('enquiry_id')! }
         : {}),
     } satisfies Partial<ShipmentFormValues>;
-  }, [searchParams]);
+  }, [searchParams, allowedJobTypes]);
 
   return (
     <div className="space-y-4">
@@ -103,29 +114,42 @@ export default function ShipmentCreatePage() {
         </div>
       ) : null}
 
-      <ShipmentForm
-        defaultValues={defaults}
-        isSubmitting={create.isPending}
-        onCancel={() => navigate(paths.list)}
-        onSubmit={async (dto: CreateShipmentDto) => {
-          if (!canWriteCreate) {
-            setError('Missing permission: shipments.create');
-            return;
-          }
-          setError(null);
-          try {
-            const created = await create.mutateAsync(dto);
-            clearDraft();
-            navigate(paths.detail(created.id), {
-              replace: true,
-              state: { message: `Shipment ${shipmentDisplayNumber(created)} created.` },
-            });
-          } catch (err) {
-            setError(getErrorMessage(err));
-            throw err;
-          }
-        }}
-      />
+      {canWriteCreate && allowedJobTypes.length === 0 ? (
+        <div
+          role="status"
+          className="mx-auto max-w-5xl rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+        >
+          No shipment types are available for your departments. Ask an admin to grant Air Import /
+          Air Export (or other operations) access.
+        </div>
+      ) : null}
+
+      {canWriteCreate && allowedJobTypes.length > 0 ? (
+        <ShipmentForm
+          defaultValues={defaults}
+          jobTypeOptions={allowedJobTypes}
+          isSubmitting={create.isPending}
+          onCancel={() => navigate(paths.list)}
+          onSubmit={async (dto: CreateShipmentDto) => {
+            if (!canWriteCreate) {
+              setError('Missing permission: shipments.create');
+              return;
+            }
+            setError(null);
+            try {
+              const created = await create.mutateAsync(dto);
+              clearDraft();
+              navigate(paths.detail(created.id), {
+                replace: true,
+                state: { message: `Shipment ${shipmentDisplayNumber(created)} created.` },
+              });
+            } catch (err) {
+              setError(getErrorMessage(err));
+              throw err;
+            }
+          }}
+        />
+      ) : null}
     </div>
   );
 }

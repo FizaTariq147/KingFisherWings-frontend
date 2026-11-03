@@ -9,6 +9,8 @@ type ServiceTypeSelectGridProps = {
   onChange: (serviceType: ServiceType) => void;
   error?: string;
   heading?: string;
+  /** Staff-scoped service types (department access). Defaults to full catalog. */
+  serviceTypeOptions?: readonly ServiceType[];
 };
 
 export function ServiceTypeSelectGrid({
@@ -16,14 +18,22 @@ export function ServiceTypeSelectGrid({
   onChange,
   error,
   heading = 'Select the required Department',
+  serviceTypeOptions,
 }: ServiceTypeSelectGridProps) {
+  const options = serviceTypeOptions?.length ? serviceTypeOptions : SERVICE_TYPES;
+
   return (
     <div className="space-y-4">
       <h3 className="text-center text-base font-semibold text-[var(--color-neutral-800)] sm:text-lg">
         {heading}
       </h3>
+      {options.length === 0 ? (
+        <p className="text-center text-sm text-amber-800">
+          No enquiry types are available for your departments.
+        </p>
+      ) : null}
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {SERVICE_TYPES.map((serviceType) => {
+        {options.map((serviceType) => {
           const style = JOB_TYPE_CARD_STYLES[serviceType as keyof typeof JOB_TYPE_CARD_STYLES];
           const Icon = style?.icon;
           const selected = value === serviceType;
