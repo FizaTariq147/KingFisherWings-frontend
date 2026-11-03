@@ -44,7 +44,7 @@ export default function JobCreatePage() {
   const queryClient = useQueryClient();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
-  const { user, hasRole } = useAuth();
+  const { user, hasRole, hasEnabledModule } = useAuth();
   const segment = segmentFromPath(pathname);
   const isGenericCreate = pathname === '/jobs/new' || !segment;
   const create = useCreateJob();
@@ -63,6 +63,7 @@ export default function JobCreatePage() {
         visibleJobTypes: user?.visibleJobTypes,
         unrestrictedOps: user?.unrestrictedOps,
         isTenantAdmin,
+        isModuleEnabled: hasEnabledModule,
         candidates: JOB_TYPE_WIZARD_OPTIONS,
       }),
     [
@@ -70,6 +71,7 @@ export default function JobCreatePage() {
       user?.visibleJobTypes,
       user?.unrestrictedOps,
       isTenantAdmin,
+      hasEnabledModule,
     ],
   );
 

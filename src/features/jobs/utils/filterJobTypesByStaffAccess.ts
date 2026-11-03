@@ -1,6 +1,7 @@
 import type { PermissionKey } from '@/types/auth.types';
 import {
   hasAnyOpsMatrixGrant,
+  hasMatrixModuleAccess,
   hasMatrixSubmoduleAccess,
 } from '@/features/users/utils/matrixPermissionAccess';
 import { DEPARTMENT_NAV, type DepartmentNavKey } from '../config/departmentNav';
@@ -73,7 +74,7 @@ const DEPT_JOB_TYPE_RULES: DeptAccessRule[] = [
   },
 ];
 
-/** Types that are not department-scoped — only shown when staff has unrestricted ops. */
+/** Types that are not department-scoped — only shown when staff has unrestricted ops / tenant admin. */
 const UNSCOPED_WIZARD_TYPES: JobType[] = ['SERVICE_JOB', 'WAREHOUSE'];
 
 function normalizeVisibleTokens(visibleJobTypes: string[] | null | undefined): string[] | null {
@@ -85,6 +86,7 @@ function deptAllowedByVisibleJobTypes(
   deptKey: DepartmentNavKey,
   visibleJobTypes: string[] | null | undefined,
 ): boolean {
+  // Same as Sidebar: NVOCC is not scoped by visible_job_types tokens.
   if (deptKey === 'nvocc') return true;
   const tokens = normalizeVisibleTokens(visibleJobTypes);
   if (tokens === null) return true;
@@ -116,23 +118,42 @@ function hasPermission(
   return permissions.includes(key);
 }
 
+/** Mirror Sidebar enabled_modules gate (operations vs nvocc). */
+function deptModuleEnabled(
+  deptKey: DepartmentNavKey,
+  isModuleEnabled?: (moduleKey: string) => boolean,
+): boolean {
+  if (!isModuleEnabled) return true;
+  if (deptKey === 'nvocc') return isModuleEnabled('nvocc');
+  return isModuleEnabled('operations');
+}
+
+/**
+ * Same rules as Sidebar department visibility (permissions / matrix).
+ * `unrestrictedOps` only skips visible_job_types scoping — it must NOT unlock NVOCC
+ * (or any other dept) without the matching grant.
+ */
 function staffCanAccessDept(
   rule: DeptAccessRule,
   opts: {
     permissions: readonly string[];
     visibleJobTypes?: string[] | null;
     unrestrictedOps?: boolean;
-    isTenantAdmin?: boolean;
+    isModuleEnabled?: (moduleKey: string) => boolean;
   },
 ): boolean {
-  if (opts.isTenantAdmin) return true;
+  if (!deptModuleEnabled(rule.deptKey, opts.isModuleEnabled)) return false;
+
   if (!opts.unrestrictedOps && !deptAllowedByVisibleJobTypes(rule.deptKey, opts.visibleJobTypes)) {
     return false;
   }
 
   const perms = opts.permissions;
+
+  // NVOCC uses module-level matrix (Sidebar: hasMatrixModule('nvocc') / menu_nvocc).
   if (rule.deptKey === 'nvocc') {
     return (
+      hasMatrixModuleAccess(perms, 'nvocc', 'see') ||
       hasMatrixSubmoduleAccess(perms, 'nvocc', 'module', 'see') ||
       hasPermission(perms, 'menu_nvocc')
     );
@@ -152,11 +173,31 @@ function staffCanAccessDept(
   return false;
 }
 
+function collectTypesForRule(
+  rule: DeptAccessRule,
+  candidateSet: Set<JobType>,
+  into: Set<JobType>,
+) {
+  const fromNav = DEPARTMENT_NAV.find((d) => d.key === rule.deptKey)?.jobTypes ?? rule.jobTypes;
+  for (const t of fromNav) {
+    if (candidateSet.has(t)) into.add(t);
+  }
+  for (const t of rule.jobTypes) {
+    if (candidateSet.has(t)) into.add(t);
+  }
+}
+
 export type FilterJobTypesByStaffAccessOpts = {
   permissions?: readonly string[] | null;
   visibleJobTypes?: string[] | null;
+  /**
+   * When true, skip visible_job_types department scoping only.
+   * Does NOT grant every job type — matrix / menu permissions still apply (same as Sidebar).
+   */
   unrestrictedOps?: boolean;
   isTenantAdmin?: boolean;
+  /** Super Admin Features allow-list — same gate as Sidebar `hasEnabledModule`. */
+  isModuleEnabled?: (moduleKey: string) => boolean;
   /** Candidate list (defaults to wizard radios). */
   candidates?: readonly JobType[];
 };
@@ -164,6 +205,7 @@ export type FilterJobTypesByStaffAccessOpts = {
 /**
  * Filter create-job type radios to departments the staff can see in the sidebar.
  * Example: only `operations_air_export` + `operations_air_import` → AIR_EXPORT + AIR_IMPORT.
+ * NVOCC appears only when the NVOCC nav item would (matrix / menu_nvocc + enabled module).
  */
 export function filterJobTypesByStaffAccess(
   opts: FilterJobTypesByStaffAccessOpts = {},
@@ -172,33 +214,44 @@ export function filterJobTypesByStaffAccess(
     ? [...opts.candidates]
     : [...JOB_TYPE_WIZARD_OPTIONS];
   const candidateSet = new Set(candidates);
-
-  if (opts.isTenantAdmin || opts.unrestrictedOps) {
-    return candidates;
-  }
-
-  const perms = opts.permissions ?? [];
   const allowed = new Set<JobType>();
 
-  for (const rule of DEPT_JOB_TYPE_RULES) {
-    if (!staffCanAccessDept(rule, { ...opts, permissions: perms })) continue;
-    const fromNav = DEPARTMENT_NAV.find((d) => d.key === rule.deptKey)?.jobTypes ?? rule.jobTypes;
-    for (const t of fromNav) {
-      if (candidateSet.has(t)) allowed.add(t);
+  // Tenant admins: all enabled departments (Sidebar shows every enabled dept).
+  if (opts.isTenantAdmin) {
+    for (const rule of DEPT_JOB_TYPE_RULES) {
+      if (!deptModuleEnabled(rule.deptKey, opts.isModuleEnabled)) continue;
+      collectTypesForRule(rule, candidateSet, allowed);
     }
-    for (const t of rule.jobTypes) {
-      if (candidateSet.has(t)) allowed.add(t);
+    const opsOn = !opts.isModuleEnabled || opts.isModuleEnabled('operations');
+    if (opsOn) {
+      for (const t of UNSCOPED_WIZARD_TYPES) {
+        if (candidateSet.has(t)) allowed.add(t);
+      }
     }
+    return candidates.filter((t) => allowed.has(t));
   }
 
-  // If matrix grants nothing (and not legacy menu fallback), keep candidates unchanged
-  // only when there are no ops matrix keys AND no menu grants — callers still get a list.
+  // Staff: never unlock all types via unrestrictedOps — match Sidebar permission checks.
+  const perms = opts.permissions ?? [];
+  for (const rule of DEPT_JOB_TYPE_RULES) {
+    if (
+      !staffCanAccessDept(rule, {
+        permissions: perms,
+        visibleJobTypes: opts.visibleJobTypes,
+        unrestrictedOps: opts.unrestrictedOps,
+        isModuleEnabled: opts.isModuleEnabled,
+      })
+    ) {
+      continue;
+    }
+    collectTypesForRule(rule, candidateSet, allowed);
+  }
+
   if (allowed.size === 0) {
-    // No department access → do not offer SERVICE_JOB/WAREHOUSE as a loophole.
     return [];
   }
 
-  // Unscoped types stay hidden unless unrestricted / tenant admin (handled above).
+  // Unscoped types stay hidden for department-scoped staff.
   for (const t of UNSCOPED_WIZARD_TYPES) {
     if (allowed.has(t)) allowed.delete(t);
   }
