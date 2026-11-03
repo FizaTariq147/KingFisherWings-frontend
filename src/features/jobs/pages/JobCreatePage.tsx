@@ -15,7 +15,6 @@ import { jobKeys, useCreateJob } from '../hooks/useJobs';
 import type { CreateJobFormValues } from '../types/job.types';
 import type { JobWizardCostingPayload } from '../types/jobWizardCosting.types';
 import { pickDefaultJobType } from '../utils/filterJobTypesByStaffAccess';
-import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobDetailPath, jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 import { persistJobWizardCosting } from '../utils/persistJobWizardCosting';
 
@@ -39,7 +38,6 @@ export default function JobCreatePage() {
   const isGenericCreate = pathname === '/jobs/new' || !segment;
   const create = useCreateJob();
   const [persistingCosting, setPersistingCosting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const allowedJobTypes = useStaffAllowedJobTypes();
 
   const queryType = parseJobTypeParam(searchParams.get('job_type'));
@@ -58,19 +56,6 @@ export default function JobCreatePage() {
       <div className="text-center">
         <h2 className={appType.pageTitle}>Create Job</h2>
       </div>
-      {error ? (
-        <div
-          role="alert"
-          className="rounded-lg border px-4 py-3 text-sm"
-          style={{
-            background: 'var(--color-danger-100)',
-            borderColor: '#FECACA',
-            color: 'var(--color-danger-700)',
-          }}
-        >
-          {error}
-        </div>
-      ) : null}
       {allowedJobTypes.length === 0 ? (
         <div
           role="status"
@@ -80,16 +65,14 @@ export default function JobCreatePage() {
           Air Export (or other operations) access.
         </div>
       ) : (
-      <JobForm
-        mode="create"
-        layout="wizard"
-        jobTypeOptions={allowedJobTypes}
-        defaultJobType={defaultJobType}
-        isSubmitting={create.isPending || persistingCosting}
-        onCancel={() => navigate(backPath)}
-        onSubmit={async (values, options) => {
-          setError(null);
-          try {
+        <JobForm
+          mode="create"
+          layout="wizard"
+          jobTypeOptions={allowedJobTypes}
+          defaultJobType={defaultJobType}
+          isSubmitting={create.isPending || persistingCosting}
+          onCancel={() => navigate(backPath)}
+          onSubmit={async (values, options) => {
             const created = await create.mutateAsync(values as CreateJobFormValues);
             const costing = options?.costing as JobWizardCostingPayload | undefined;
             let target = created;
@@ -111,12 +94,8 @@ export default function JobCreatePage() {
             navigate(jobDetailPath(target), {
               state: costingWarnings?.length ? { costingWarnings } : undefined,
             });
-          } catch (err) {
-            setError(getErrorMessage(err));
-            throw err;
-          }
-        }}
-      />
+          }}
+        />
       )}
     </div>
   );

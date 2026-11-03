@@ -1350,7 +1350,7 @@ export const quotationService = {
         'This quotation has no Company. Save a company on the quotation, then continue.',
       );
     }
-    await ensureJobNumberFormatReady();
+    await ensureJobNumberFormatReady().catch(() => undefined);
     const branchId = await ensureJobBranchReady(companyId);
     return createBookingOpsJobShellFromQuotation({
       ...quotation,
@@ -1392,7 +1392,7 @@ export const quotationService = {
         'This quotation has no Company. Save a company on the quotation, then continue.',
       );
     }
-    await ensureJobNumberFormatReady();
+    await ensureJobNumberFormatReady().catch(() => undefined);
     const branchId = await ensureJobBranchReady(companyId);
     return createJobFallbackFromQuotation({
       ...quotation,
@@ -1587,7 +1587,7 @@ export const quotationService = {
 
       quotation = { ...quotation, company_id: companyId };
 
-      await ensureJobNumberFormatReady();
+      await ensureJobNumberFormatReady().catch(() => undefined);
       const branchId = await ensureJobBranchReady(quotation.company_id);
 
       try {

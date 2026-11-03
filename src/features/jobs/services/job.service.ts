@@ -1411,7 +1411,8 @@ export const jobService = {
   },
 
   async create(dto: CreateJobDto): Promise<Job> {
-    await ensureJobNumberFormatReady();
+    // Best-effort only — must not block staff when TENANT_ADMIN is required to manage formats.
+    await ensureJobNumberFormatReady().catch(() => undefined);
 
     const companyId = await resolveSessionCompanyIdAsync(
       typeof dto.company_id === 'string' ? dto.company_id : undefined,
