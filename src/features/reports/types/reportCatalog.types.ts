@@ -135,6 +135,8 @@ export interface ReportGenerateRequest {
     quotation_id?: string;
     invoice_id?: string;
     party_id?: string;
+    /** Forwarded for job/shipment document packs when supported by BE. */
+    shipment_id?: string;
   };
 }
 

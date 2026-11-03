@@ -21,7 +21,10 @@ export const REPORT_FAMILY_ROLLOUT = {
  * Active FE rollout ceiling for "?rollout=active" filter.
  * Full catalog remains browsable via family/phase chips; raise this as backend
  * Puppeteer packs ship (exact FRESA PDF look): 1 ops → 2 sea → 3 air → 4 commercial → 5 finance → 6 wms.
- * See fresaPdfParity.constants.ts + BACKEND_REPORT_CATALOG_API.md — FE never owns per-report layouts.
+ * See fresaCorePackShells.constants.ts + BACKEND_REPORT_CATALOG_API.md.
+ * FE never owns per-report product layouts (JSON layouts frozen).
+ *
+ * Pipeline target: ops.list_generic + sea.hbl_draft + air.hawb_draft + commercial.invoice_tax_india_1.
  */
 export const ACTIVE_REPORT_ROLLOUT_PHASE = REPORT_FAMILY_ROLLOUT.phase1;
 

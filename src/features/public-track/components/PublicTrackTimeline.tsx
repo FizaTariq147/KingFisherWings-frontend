@@ -14,6 +14,11 @@ import { appType } from '@/lib/erpTypography';
 import { cn } from '@/lib/utils';
 import type { PublicTrackMilestone, PublicTrackResult } from '../types/publicTrack.types';
 import { resolveTrackStatusIcon } from '../utils/trackStatusIcon';
+import {
+  TRACK_TONE_COLORS,
+  trackMilestoneTone,
+  type TrackMilestoneTone,
+} from '../utils/trackMilestoneTone';
 
 /** Prefer server PDF endpoints; fall back to client HTML print. */
 export type PublicTrackPdfSource =
@@ -24,9 +29,10 @@ export type PublicTrackPdfSource =
 /** Reference palette (rail / badges) — title uses system appType */
 const C = {
   navy: '#0A2942',
-  badge: '#1E7AB8',
+  badge: TRACK_TONE_COLORS.active,
   line: '#0A2942',
-  red: '#E31B23',
+  red: TRACK_TONE_COLORS.hold,
+  green: TRACK_TONE_COLORS.complete,
   muted: '#8B95A1',
   text: '#1E293B',
   sub: '#64748B',
@@ -34,6 +40,26 @@ const C = {
   border: '#D8DEE6',
   rowBorder: '#EEF2F6',
 } as const;
+
+function toneColor(tone: TrackMilestoneTone): string {
+  if (tone === 'hold') return C.red;
+  if (tone === 'complete') return C.green;
+  return C.muted;
+}
+
+function headerStatusColor(status?: string): string {
+  const blob = String(status ?? '').toUpperCase();
+  if (blob.includes('HOLD')) return C.red;
+  if (
+    blob.includes('COMPLETE') ||
+    blob.includes('DELIVER') ||
+    blob === 'DONE' ||
+    blob === 'ARRIVED'
+  ) {
+    return C.green;
+  }
+  return C.badge;
+}
 
 function parseWhen(value?: string): { date: string; time: string } | null {
   if (!value?.trim()) return null;
@@ -80,7 +106,7 @@ function legRailIcon(code: string) {
 }
 
 function buildTrackPrintHtml(result: PublicTrackResult, status: string): string {
-  const history = result.milestones ?? [];
+  const history = (result.milestones ?? []).filter((m) => trackMilestoneTone(m) !== 'pending');
   const rows = history
     .map((m) => {
       const when = parseWhen(m.completedAt || m.occurredAt);
@@ -231,11 +257,16 @@ export function PublicTrackTimeline({
   const [pdfPending, setPdfPending] = useState(false);
 
   const status = formatStatusLabel(result.currentStatus || result.status);
+  const headerBadgeColor = headerStatusColor(result.currentStatus || result.status);
   const HeaderStatusIcon = resolveTrackStatusIcon({
     status: result.currentStatus || result.status,
   });
   const legs = result.progressLegs ?? [];
-  const history = result.milestones ?? [];
+  // Track & Trace history: completed + hold only (never pending placeholders).
+  const history = useMemo(
+    () => (result.milestones ?? []).filter((m) => trackMilestoneTone(m) !== 'pending'),
+    [result.milestones],
+  );
 
   const { latest, previous } = useMemo(() => {
     if (history.length <= 1) return { latest: history, previous: [] as PublicTrackMilestone[] };
@@ -282,7 +313,7 @@ export function PublicTrackTimeline({
             {status ? (
               <span
                 className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.03em] text-white"
-                style={{ backgroundColor: C.badge }}
+                style={{ backgroundColor: headerBadgeColor }}
               >
                 <HeaderStatusIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
                 {status}
@@ -391,10 +422,11 @@ export function PublicTrackTimeline({
               style={{ backgroundColor: C.line }}
             />
             <ol className="relative flex w-full items-start justify-between">
-              {legs.map((leg, index) => {
-                const isLast = index === legs.length - 1;
+              {legs.map((leg) => {
                 const LegIcon = legRailIcon(leg.code);
-                const active = Boolean(leg.current || leg.completed || isLast);
+                const completed = Boolean(leg.completed);
+                const current = Boolean(leg.current);
+                const accent = completed ? C.green : current ? C.badge : C.muted;
                 return (
                   <li
                     key={leg.id}
@@ -409,9 +441,9 @@ export function PublicTrackTimeline({
                     <span className="-mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white ring-[3px] ring-white">
                       <LegIcon
                         className="h-[20px] w-[20px]"
-                        style={{ color: active ? C.red : C.muted }}
-                        {...(isLast && LegIcon === MapPin
-                          ? { fill: active ? C.red : 'transparent' }
+                        style={{ color: accent }}
+                        {...(LegIcon === MapPin
+                          ? { fill: completed || current ? accent : 'transparent' }
                           : {})}
                         aria-hidden
                       />
@@ -470,19 +502,21 @@ export function PublicTrackTimeline({
 
         {history.length === 0 ? (
           <p className="py-8 text-sm" style={{ color: C.sub }}>
-            No history returned for this reference yet.
+            No completed moves for this reference yet.
           </p>
         ) : (
           <ul>
             {visibleRows.map((m) => {
               const when = parseWhen(m.completedAt || m.occurredAt);
               const move = m.move || m.label;
+              const tone = trackMilestoneTone(m);
+              const accent = toneColor(tone);
               const StatusIcon = resolveTrackStatusIcon({
                 status: m.status,
                 move: m.move,
                 eventType: m.eventType,
                 label: m.label,
-                pending: m.pending,
+                pending: false,
               });
               const vesselLine = [m.vessel, m.voyage ? `(${m.voyage})` : null]
                 .filter(Boolean)
@@ -496,12 +530,12 @@ export function PublicTrackTimeline({
                   <div className="flex items-start gap-2.5">
                     <StatusIcon
                       className="mt-0.5 h-4 w-4 shrink-0"
-                      style={{ color: m.pending ? C.muted : C.red }}
+                      style={{ color: accent }}
                       aria-hidden
                     />
                     <div>
                       <p className="text-[13px] font-bold" style={{ color: C.navy }}>
-                        {when?.date || (m.pending ? 'Pending' : '—')}
+                        {when?.date || '—'}
                       </p>
                       {when?.time ? (
                         <p
@@ -518,7 +552,7 @@ export function PublicTrackTimeline({
                   <div>
                     <span
                       className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.03em] text-white"
-                      style={{ backgroundColor: C.badge }}
+                      style={{ backgroundColor: accent }}
                     >
                       <StatusIcon className="h-3 w-3 shrink-0 opacity-95" aria-hidden />
                       {move}

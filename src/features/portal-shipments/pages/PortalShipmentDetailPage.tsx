@@ -621,14 +621,23 @@ export default function PortalShipmentDetailPage() {
 
       <PortalPanel padded>
         <h2 className="mb-4 text-sm font-semibold text-[var(--color-neutral-900)]">Milestones</h2>
-        {milestones.length === 0 ? (
-          <p className="text-sm text-[var(--color-neutral-400)]">No milestones yet.</p>
-        ) : (
+        {(() => {
+          const visibleMilestones = milestones.filter(
+            (m) => portalMilestoneDotTone(m) !== 'pending',
+          );
+          if (visibleMilestones.length === 0) {
+            return (
+              <p className="text-sm text-[var(--color-neutral-400)]">
+                No completed milestones yet.
+              </p>
+            );
+          }
+          return (
           <PortalGsapTimeline orientation="horizontal">
-            {milestones.map((m, index) => (
+            {visibleMilestones.map((m, index, rows) => (
               <PortalGsapTimelineItem
                 key={m.id}
-                isLast={index === milestones.length - 1}
+                isLast={index === rows.length - 1}
                 tone={portalMilestoneDotTone(m)}
                 orientation="horizontal"
               >
@@ -674,7 +683,8 @@ export default function PortalShipmentDetailPage() {
               </PortalGsapTimelineItem>
             ))}
           </PortalGsapTimeline>
-        )}
+          );
+        })()}
       </PortalPanel>
 
       <PortalPanel padded>

@@ -24,13 +24,30 @@ export function TcBrandColorBar({
   primary,
   accent,
 }: ColorBarProps) {
-  const h = size === 'lg' ? 'h-2.5' : 'h-1';
+  // Inline sizes only — Tailwind height/width classes are often dropped by html2canvas.
+  const heightPx = size === 'lg' ? 10 : 4;
   const left = primary || FRESA_UI.navy;
   const right = accent || FRESA_UI.orange;
-  const a = <div className="w-[68%]" style={{ backgroundColor: left }} />;
-  const b = <div className="w-[32%]" style={{ backgroundColor: right }} />;
+  const a = (
+    <div style={{ width: '68%', height: '100%', backgroundColor: left, flex: '0 0 68%' }} />
+  );
+  const b = (
+    <div style={{ width: '32%', height: '100%', backgroundColor: right, flex: '0 0 32%' }} />
+  );
   return (
-    <div className={`flex w-full ${h} ${className}`}>
+    <div
+      className={className}
+      data-fresa-color-bar="true"
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        width: '100%',
+        height: heightPx,
+        minHeight: heightPx,
+        overflow: 'hidden',
+        flexShrink: 0,
+      }}
+    >
       {reverse ? (
         <>
           {b}

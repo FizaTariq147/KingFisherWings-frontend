@@ -27,7 +27,7 @@ export function InvoiceUserFooter({
   className = '',
   theme,
   pageLabel = 'Page 1 of 1',
-  poweredBy = 'KingFisher Logistic',
+  poweredBy = 'KingFisher Wings',
   variant = 'bar',
 }: Props) {
   const email =
@@ -41,21 +41,31 @@ export function InvoiceUserFooter({
   const white = theme?.white || FRESA_UI.white || '#FFFFFF';
 
   if (variant === 'plain') {
+    // Fresa tax/standard invoices: single meta row (not the navy|orange|red bar).
     return (
       <footer
-        className={`w-full shrink-0 ${className}`}
+        className={className}
         data-invoice-colorful-footer="plain"
-        style={{ color: ink, fontSize: 8, lineHeight: 1.35 }}
+        style={{
+          width: '100%',
+          flexShrink: 0,
+          color: ink,
+          fontSize: 8,
+          lineHeight: 1.35,
+          backgroundColor: white,
+        }}
       >
         <div style={{ borderTop: `1px solid ${navy}` }} />
         <div
           style={{
             display: 'flex',
             flexWrap: 'nowrap',
-            gap: 16,
-            padding: '8px 12px',
+            gap: 14,
+            padding: '6px 12px',
             backgroundColor: panel,
             alignItems: 'baseline',
+            boxSizing: 'border-box',
+            width: '100%',
           }}
         >
           <span>
@@ -77,29 +87,43 @@ export function InvoiceUserFooter({
     color: white,
     fontSize: 8,
     lineHeight: 1.25,
-    padding: '6px 8px',
+    padding: '7px 8px',
     display: 'flex',
     alignItems: 'center',
     minWidth: 0,
+    boxSizing: 'border-box',
   };
 
+  // Fresa ASN / arrival / many ops samples: navy | orange | red footer band.
   return (
     <footer
-      className={`w-full shrink-0 overflow-hidden ${className}`}
+      className={className}
       data-invoice-colorful-footer="bar"
-      style={{ color: white }}
+      style={{
+        width: '100%',
+        flexShrink: 0,
+        overflow: 'hidden',
+        color: white,
+        backgroundColor: white,
+      }}
     >
-      <div style={{ display: 'flex', width: '100%', flexWrap: 'nowrap' }}>
-        <div style={{ ...cell, flex: '1 1 40%', backgroundColor: navy }}>
+      <div
+        style={{
+          display: 'flex',
+          width: '100%',
+          flexWrap: 'nowrap',
+          alignItems: 'stretch',
+        }}
+      >
+        <div style={{ ...cell, flex: '1 1 42%', backgroundColor: navy }}>
           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-            {/* Fresa ASN / Job Houses / arrival samples use "User :" on the navy bar */}
             <strong>User :</strong> {email}
           </span>
         </div>
         <div
           style={{
             ...cell,
-            flex: '1 1 30%',
+            flex: '1 1 28%',
             backgroundColor: orange,
             justifyContent: 'center',
             textAlign: 'center',

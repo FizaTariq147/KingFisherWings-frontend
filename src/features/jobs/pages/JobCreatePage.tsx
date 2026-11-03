@@ -1,8 +1,14 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { appType } from '@/lib/erpTypography';
 import { useQueryClient } from '@tanstack/react-query';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { PageBackLink } from '@/components/ui/PageBackLink';
+import { useAuth } from '@/hooks/useAuth';
+import {
+  isTenantUserManagerRole,
+  resolveAuthRoleSlug,
+  TENANT_USER_MANAGER_ROLE_SLUGS,
+} from '@/features/users/constants/userPermissions';
 import { JobForm } from '../components/JobForm';
 import {
   JOB_SEGMENTS,
@@ -14,6 +20,10 @@ import {
 import { jobKeys, useCreateJob } from '../hooks/useJobs';
 import type { CreateJobFormValues } from '../types/job.types';
 import type { JobWizardCostingPayload } from '../types/jobWizardCosting.types';
+import {
+  filterJobTypesByStaffAccess,
+  pickDefaultJobType,
+} from '../utils/filterJobTypesByStaffAccess';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobDetailPath, jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 import { persistJobWizardCosting } from '../utils/persistJobWizardCosting';
@@ -34,15 +44,39 @@ export default function JobCreatePage() {
   const queryClient = useQueryClient();
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
+  const { user, hasRole } = useAuth();
   const segment = segmentFromPath(pathname);
   const isGenericCreate = pathname === '/jobs/new' || !segment;
   const create = useCreateJob();
   const [persistingCosting, setPersistingCosting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  const roleSlug = resolveAuthRoleSlug(user?.role);
+  const isTenantAdmin =
+    isTenantUserManagerRole(roleSlug) ||
+    TENANT_USER_MANAGER_ROLE_SLUGS.some((s) => hasRole(s));
+
+  const allowedJobTypes = useMemo(
+    () =>
+      filterJobTypesByStaffAccess({
+        permissions: user?.permissions ?? [],
+        visibleJobTypes: user?.visibleJobTypes,
+        unrestrictedOps: user?.unrestrictedOps,
+        isTenantAdmin,
+        candidates: JOB_TYPE_WIZARD_OPTIONS,
+      }),
+    [
+      user?.permissions,
+      user?.visibleJobTypes,
+      user?.unrestrictedOps,
+      isTenantAdmin,
+    ],
+  );
+
   const queryType = parseJobTypeParam(searchParams.get('job_type'));
-  const defaultJobType =
+  const preferredType =
     queryType ?? (isGenericCreate ? 'SERVICE_JOB' : defaultTypeForSegment(segment));
+  const defaultJobType = pickDefaultJobType(preferredType, allowedJobTypes);
 
   const backPath = isGenericCreate ? '/dashboard' : jobRoutePrefix(segment!);
   const backLabel = isGenericCreate
@@ -68,10 +102,19 @@ export default function JobCreatePage() {
           {error}
         </div>
       ) : null}
+      {allowedJobTypes.length === 0 ? (
+        <div
+          role="status"
+          className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900"
+        >
+          No job types are available for your departments. Ask an admin to grant Air Import /
+          Air Export (or other operations) access.
+        </div>
+      ) : (
       <JobForm
         mode="create"
         layout="wizard"
-        jobTypeOptions={JOB_TYPE_WIZARD_OPTIONS}
+        jobTypeOptions={allowedJobTypes}
         defaultJobType={defaultJobType}
         isSubmitting={create.isPending || persistingCosting}
         onCancel={() => navigate(backPath)}
@@ -105,6 +148,7 @@ export default function JobCreatePage() {
           }
         }}
       />
+      )}
     </div>
   );
 }

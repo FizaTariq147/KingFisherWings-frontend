@@ -26,6 +26,8 @@ export const router = createBrowserRouter([
 
   // ── Auth routes ────────────────────────────────────────────────────────
   { path: '/login',           element: <LoginPage /> },
+  { path: '/staff/login',     element: <LoginPage /> },
+  { path: '/login/staff',     element: <Navigate to="/staff/login" replace /> },
   { path: '/forgot-password', element: <ForgotPasswordPage /> },
   { path: '/reset-password',  element: <ResetPasswordPage /> },
   { path: '/403',             element: <Forbidden /> },

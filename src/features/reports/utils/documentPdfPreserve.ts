@@ -1,25 +1,25 @@
 /**
  * Document PDF preservation (do not regress).
  *
+ * Full matrix: `reportPreserveMatrix.ts`. Branding: `reportBranding.constants.ts`.
+ *
  * Existing flows that MUST remain unchanged by the FRESA report catalog:
  * - quotations/utils/generateQuotationPdf.ts + QuotationPdfModal + POST /quotations/:id/pdf
  * - invoices/utils/generateInvoicePdf.ts + InvoiceDetailPage "Generate PDF"
+ * - classic BL draft until sea.hbl_* packs proven
  * - portal/vendor PDF fallbacks
  * - files/utils/triggerBlobDownload.ts + stampPdfBranding
  *
  * Catalog "Invoice Report Format-N" templates are ADDITIONAL formats via
  * POST /reports/generate — never replace the default invoice/quotation PDF buttons.
  *
- * FE document coverage for catalogue formats uses client KingFisher layout PDF
- * (`generateCatalogLayoutPdf` from *FormatUiLayouts.json`). That path must never
- * call POST /invoices/:id/pdf or POST /quotations/:id/pdf. Optional Puppeteer pack
- * bind/activate remains additive for live backend print parity.
+ * Product path for catalogue formats = backend Puppeteer/Excel packs.
+ * Client KingFisher layout PDF (`generateCatalogLayoutPdf`) is Dev/offline fallback
+ * only (`VITE_REPORTS_CLIENT_LAYOUT_FALLBACK` / DEV). That path must never call
+ * POST /invoices/:id/pdf or POST /quotations/:id/pdf.
  *
  * Format-1 Tax Invoice India = backend pack `commercial.invoice_tax_india_1`
- * (see BACKEND_REPORT_CATALOG_API.md + fresaPdfParity.constants.ts). Invoice detail
- * "FRESA formats" deep-links the catalog. Catalog may show sample/mock previews from
- * invoiceFormatPreviews.json — those are preview-only and do not replace Generate or
- * default invoice PDF.
+ * (see BACKEND_REPORT_CATALOG_API.md + fresaPdfParity.constants.ts).
  */
 export const DOCUMENT_PDF_PRESERVE = {
   quotationClient: 'src/features/quotations/utils/generateQuotationPdf.ts',
@@ -27,7 +27,10 @@ export const DOCUMENT_PDF_PRESERVE = {
   wmsClient: 'src/features/wms/utils/generateWmsDocumentPdf.ts',
   quotationApi: 'POST /quotations/:id/pdf',
   invoiceApi: 'POST /invoices/:id/pdf',
+  classicBlClient: 'src/features/shared/bl-draft/generateBlDraftPdf.ts',
+  catalogProductGenerate: 'POST /reports/generate',
   catalogClientLayoutFallback: 'src/features/reports/utils/generateCatalogLayoutPdf.ts',
   fresaFormat1Code: 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA',
   fresaFormat1Pack: 'commercial.invoice_tax_india_1',
+  brandingLogo: 'kingfisher',
 } as const;
