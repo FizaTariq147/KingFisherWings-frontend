@@ -19,6 +19,7 @@ import { wakeApi } from '@/lib/wakeApi'
 import { AuthLandingShell } from '@/features/auth/components/AuthLandingShell'
 import { AcceptInvitePopup } from '@/features/auth/components/AcceptInvitePopup'
 import { LoginPopupFrame, popupInputClass, popupLabelClass, popupSubmitClass } from '@/features/auth/components/LoginPopupFrame'
+import { LockedWorkspaceField } from '@/features/auth/components/LockedWorkspaceField'
 import {
   readTenantSlugFromSearch,
   withTenantSlugQuery,
@@ -291,13 +292,7 @@ function LoginModal({
           {slugLocked ? (
             <div>
               <input type="hidden" {...register('tenant_slug')} />
-              <p className={popupLabelClass}>Workspace</p>
-              <div
-                className={`${popupInputClass} flex items-center bg-slate-50 text-slate-700`}
-                aria-label={`Workspace ${lockedTenantSlug}`}
-              >
-                {lockedTenantSlug}
-              </div>
+              <LockedWorkspaceField slug={lockedTenantSlug || ''} />
             </div>
           ) : (
             <div>

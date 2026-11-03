@@ -14,6 +14,7 @@ import {
   popupLabelClass,
   popupSubmitClass,
 } from '@/features/auth/components/LoginPopupFrame'
+import { LockedWorkspaceField } from '@/features/auth/components/LockedWorkspaceField'
 import { readTenantSlugFromSearch } from '@/features/auth/utils/tenantSlugFromQuery'
 import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
@@ -367,13 +368,7 @@ export default function VendorLoginPage() {
             {lockedTenantSlug ? (
               <div>
                 <input type="hidden" {...form.register('tenant_slug')} />
-                <p className={popupLabelClass}>Workspace</p>
-                <div
-                  className={`${popupInputClass} flex items-center bg-slate-50 text-slate-700`}
-                  aria-label={`Workspace ${lockedTenantSlug}`}
-                >
-                  {lockedTenantSlug}
-                </div>
+                <LockedWorkspaceField slug={lockedTenantSlug} />
               </div>
             ) : (
               <div>
