@@ -288,6 +288,45 @@ export function permissionsFromAccessToken(token?: string | null): string[] {
   return normalizePermissionKeys(payload.permissions);
 }
 
+/**
+ * Super Admin `enabled_modules` allow-list when the claim is embedded in the JWT
+ * (fallback when GET /auth/me omits the field).
+ */
+export function enabledModulesFromAccessToken(token?: string | null): string[] | undefined {
+  if (!token) return undefined;
+  const payload = decodeJwtPayload(token);
+  if (!payload) return undefined;
+  // Local coerce — avoid importing feature utils into this shared lib.
+  const tenant =
+    payload.tenant && typeof payload.tenant === 'object' && !Array.isArray(payload.tenant)
+      ? (payload.tenant as Record<string, unknown>)
+      : null;
+  const featuresRaw = payload.features ?? tenant?.features;
+  const features =
+    featuresRaw && typeof featuresRaw === 'object' && !Array.isArray(featuresRaw)
+      ? (featuresRaw as Record<string, unknown>)
+      : null;
+  const value =
+    payload.enabled_modules ??
+    payload.enabledModules ??
+    tenant?.enabled_modules ??
+    tenant?.enabledModules ??
+    features?.enabled_modules ??
+    features?.enabledModules;
+  if (typeof value === 'string' && value.trim()) {
+    const parts = value
+      .split(/[,|;]+/)
+      .map((item) => item.trim())
+      .filter(Boolean);
+    return parts.length ? parts : undefined;
+  }
+  if (!Array.isArray(value)) return undefined;
+  const modules = value
+    .map((item) => (typeof item === 'string' ? item.trim() : ''))
+    .filter(Boolean);
+  return modules.length ? modules : undefined;
+}
+
 /** Normalize company id from /auth/me-like payloads. */
 export function resolveCompanyIdFromUserLike(raw: unknown): string {
   if (!raw || typeof raw !== 'object') return '';

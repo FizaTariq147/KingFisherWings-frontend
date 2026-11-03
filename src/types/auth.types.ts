@@ -109,7 +109,8 @@ export interface AuthUser {
   }>
   /**
    * Tenant allow-list from GET /auth/me (Super Admin Features → enabled_modules).
-   * Missing/undefined = all modules enabled.
+   * When present, membership is required. When omitted, UI falls back to JWT grants
+   * so Super Admin–disabled modules do not remain in the sidebar.
    */
   enabledModules?: string[]
   /**
