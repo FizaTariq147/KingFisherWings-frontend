@@ -6,6 +6,10 @@ import {
 } from '@/features/users/utils/matrixPermissionAccess';
 import { DEPARTMENT_NAV, type DepartmentNavKey } from '../config/departmentNav';
 import { JOB_TYPE_WIZARD_OPTIONS, type JobType } from '../constants/job.constants';
+import {
+  deptAllowedByVisibleJobTypes,
+  effectiveVisibleJobTypes,
+} from './deptAccessFromStaffGrants';
 
 type DeptAccessRule = {
   deptKey: DepartmentNavKey;
@@ -77,40 +81,6 @@ const DEPT_JOB_TYPE_RULES: DeptAccessRule[] = [
 /** Types that are not department-scoped — only shown when staff has unrestricted ops / tenant admin. */
 const UNSCOPED_WIZARD_TYPES: JobType[] = ['SERVICE_JOB', 'WAREHOUSE'];
 
-function normalizeVisibleTokens(visibleJobTypes: string[] | null | undefined): string[] | null {
-  if (visibleJobTypes === null || visibleJobTypes === undefined) return null;
-  return visibleJobTypes.map((t) => t.trim().toLowerCase().replace(/-/g, '_'));
-}
-
-function deptAllowedByVisibleJobTypes(
-  deptKey: DepartmentNavKey,
-  visibleJobTypes: string[] | null | undefined,
-): boolean {
-  // Same as Sidebar: NVOCC is not scoped by visible_job_types tokens.
-  if (deptKey === 'nvocc') return true;
-  const tokens = normalizeVisibleTokens(visibleJobTypes);
-  if (tokens === null) return true;
-  if (!tokens.length) return false;
-  const matches = (needles: string[]) =>
-    tokens.some((t) => needles.some((n) => t === n || t.includes(n) || n.includes(t)));
-  switch (deptKey) {
-    case 'air-export':
-      return matches(['air_export', 'airexport']);
-    case 'air-import':
-      return matches(['air_import', 'airimport']);
-    case 'sea-export':
-      return matches(['sea_export', 'sea_fcl_export', 'sea_lcl_export', 'fcl_export', 'lcl_export']);
-    case 'sea-import':
-      return matches(['sea_import', 'sea_fcl_import', 'sea_lcl_import', 'fcl_import', 'lcl_import']);
-    case 'road-freight':
-      return matches(['road_freight', 'road', 'land', 'courier']);
-    case 'customs-clearance':
-      return matches(['customs_clearance', 'customs']);
-    default:
-      return true;
-  }
-}
-
 function hasPermission(
   permissions: readonly string[],
   key: PermissionKey,
@@ -144,11 +114,8 @@ function staffCanAccessDept(
 ): boolean {
   if (!deptModuleEnabled(rule.deptKey, opts.isModuleEnabled)) return false;
 
-  if (!opts.unrestrictedOps && !deptAllowedByVisibleJobTypes(rule.deptKey, opts.visibleJobTypes)) {
-    return false;
-  }
-
   const perms = opts.permissions;
+  const effectiveVisible = effectiveVisibleJobTypes(opts.visibleJobTypes, perms);
 
   // NVOCC uses module-level matrix (Sidebar: hasMatrixModule('nvocc') / menu_nvocc).
   if (rule.deptKey === 'nvocc') {
@@ -159,12 +126,22 @@ function staffCanAccessDept(
     );
   }
 
-  if (hasMatrixSubmoduleAccess(perms, rule.matrixModule, rule.matrixSubmodule, 'see')) {
-    return true;
+  const matrixOk = hasMatrixSubmoduleAccess(
+    perms,
+    rule.matrixModule,
+    rule.matrixSubmodule,
+    'see',
+  );
+  if (matrixOk) {
+    if (opts.unrestrictedOps) return true;
+    return deptAllowedByVisibleJobTypes(rule.deptKey, effectiveVisible);
   }
 
   // Legacy staff (no ops matrix keys) — coarse menu_* only (same as Sidebar).
   if (!hasAnyOpsMatrixGrant(perms)) {
+    if (!opts.unrestrictedOps && !deptAllowedByVisibleJobTypes(rule.deptKey, effectiveVisible)) {
+      return false;
+    }
     if (rule.permissionAny?.length) {
       return rule.permissionAny.some((p) => hasPermission(perms, p));
     }

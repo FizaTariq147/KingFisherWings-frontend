@@ -16,6 +16,7 @@ import { userPermissionMatrixService } from '../services/userPermissionMatrix.se
 import type { CreateUserDto } from '../types/user.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { toAccessGrants } from '../utils/permissionAccess';
+import { visibleJobTypesFromMatrixGrants } from '../utils/visibleJobTypesFromMatrixGrants';
 
 function CopyValue({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = useState(false);
@@ -215,6 +216,8 @@ export default function UserCreatePage() {
               // Prefer BE role preset when Step 3 was left on defaults and grid is empty.
               const sendGrants =
                 Boolean(meta?.matrixTouched) || hasExplicitAccess;
+              const matrixGrants = meta?.permissionGrants ?? [];
+              const visibleJobTypes = visibleJobTypesFromMatrixGrants(matrixGrants);
 
               const sendEmail = (values as CreateUserDto).send_email !== false;
               const dto: CreateUserDto = {
@@ -226,6 +229,9 @@ export default function UserCreatePage() {
                   ? {
                       permission_grants: accessGrants,
                       permission_grants_mode: 'replace' as const,
+                      ...(visibleJobTypes !== undefined
+                        ? { visible_job_types: visibleJobTypes }
+                        : {}),
                     }
                   : {}),
               };
@@ -238,7 +244,10 @@ export default function UserCreatePage() {
               if (sendGrants) {
                 try {
                   await userPermissionMatrixService.updateUserPermissions(result.user.id, {
-                    grants: meta?.permissionGrants ?? [],
+                    grants: matrixGrants,
+                    ...(visibleJobTypes !== undefined
+                      ? { visible_job_types: visibleJobTypes }
+                      : {}),
                   });
                 } catch (permErr) {
                   setApiError(

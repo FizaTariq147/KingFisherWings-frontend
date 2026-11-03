@@ -70,7 +70,9 @@ export function UserPermissionMatrixSection({ userId }: UserPermissionMatrixSect
               {assignmentQuery.data.unrestricted_ops ||
               assignmentQuery.data.visible_job_types === null
                 ? 'Ops job-type scope: unrestricted (lists are not filtered by job type).'
-                : `Ops job-type scope: ${(assignmentQuery.data.visible_job_types ?? []).join(', ') || 'none'}. Quotations, shipments, enquiries, invoices, and search are filtered to these types.`}
+                : (assignmentQuery.data.visible_job_types ?? []).length === 0
+                  ? 'Ops job-type scope: none — staff can open departments from the matrix but job/quote/shipment lists stay empty until you Save permissions (scope is derived from ops grants).'
+                  : `Ops job-type scope: ${(assignmentQuery.data.visible_job_types ?? []).join(', ')}. Quotations, shipments, enquiries, invoices, and search are filtered to these types.`}
             </p>
           ) : null}
           {message ? (

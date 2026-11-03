@@ -81,32 +81,32 @@ function extractMePermissionMatrix(record: Record<string, unknown>): {
     if (!module || !submodule) return
     summary.push({ module, submodule, access })
     if (access === 'none') return
+    const modKey = module.trim().toLowerCase().replace(/[\s-]+/g, '_')
+    const subKey = submodule.trim().toLowerCase().replace(/[\s-]+/g, '_')
     const levels =
       access === 'write' ? (['see', 'read', 'write'] as const) : (['see', 'read'] as const)
     for (const level of levels) {
-      if (submodule === 'module') {
-        keys.push(`${module}_module.${level}`)
+      if (subKey === 'module') {
+        keys.push(`${modKey}_module.${level}`)
       } else {
-        keys.push(`${module}_${submodule}.${level}`)
+        keys.push(`${modKey}_${subKey}.${level}`)
       }
     }
     // Classic bridge-style hints (BE also puts these on JWT after re-login)
     if (access === 'read' || access === 'write') {
-      keys.push(`${module}.view`)
-      keys.push(`${module}.read`)
+      keys.push(`${modKey}.view`)
+      keys.push(`${modKey}.read`)
     }
     if (access === 'write') {
-      keys.push(`${module}.write`)
-      keys.push(`${module}.manage`)
+      keys.push(`${modKey}.write`)
+      keys.push(`${modKey}.manage`)
     }
     // Shipments API guards: view | create | update | generate (not operations.view).
     // Matrix may nest under operations/sales → shipments, or a top-level shipments module.
-    const mod = module.toLowerCase()
-    const sub = submodule.toLowerCase()
-    const isShipmentsModule = mod === 'shipments'
+    const isShipmentsModule = modKey === 'shipments'
     const isShipmentsSub =
-      (mod === 'operations' || mod === 'sales') &&
-      (sub === 'shipments' || sub === 'shipment' || sub === 'booking')
+      (modKey === 'operations' || modKey === 'sales') &&
+      (subKey === 'shipments' || subKey === 'shipment' || subKey === 'booking')
     if (isShipmentsModule || isShipmentsSub) {
       if (access === 'read' || access === 'write') keys.push('shipments.view')
       if (access === 'write') {

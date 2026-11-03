@@ -51,6 +51,11 @@ export interface UserPermissionAssignment {
 
 export interface UpdatePermissionMatrixDto {
   grants: PermissionMatrixGrant[];
+  /**
+   * Ops job-type scope for GET /jobs (and quotes/shipments/search).
+   * Derived from grants when omitted by callers. `null` = unrestricted.
+   */
+  visible_job_types?: string[] | null;
 }
 
 /** @deprecated Legacy flat permission ids/keys — kept for optional role PUT. */

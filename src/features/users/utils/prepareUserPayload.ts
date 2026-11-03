@@ -36,6 +36,8 @@ const ALLOWED_USER_FIELDS = new Set([
   'permission_ids',
   'permission_grants',
   'permission_grants_mode',
+  'visible_job_types',
+  'unrestricted_ops',
   'single_device_login',
   'single_device_policy',
   'send_email',
@@ -75,6 +77,8 @@ export function prepareUserPayload<T extends Record<string, unknown>>(
 
   for (const key of Object.keys(out)) {
     const value = out[key];
+    // `visible_job_types: null` means unrestricted — must be sent, not stripped.
+    if (key === 'visible_job_types' && value === null) continue;
     if (value === '' || value === null || value === undefined) {
       delete out[key];
     }
