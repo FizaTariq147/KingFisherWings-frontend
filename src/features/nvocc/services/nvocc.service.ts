@@ -796,7 +796,7 @@ export const nvoccBookingService = {
         );
       }
 
-      await ensureJobNumberFormatReady();
+      await ensureJobNumberFormatReady().catch(() => undefined);
       const branchId =
         (dto.branch_id && isUuid(dto.branch_id) ? dto.branch_id : undefined) ||
         (await ensureJobBranchReady(companyId));
