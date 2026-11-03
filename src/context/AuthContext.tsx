@@ -6,6 +6,7 @@ import { authService } from '@/features/auth/services/auth.service'
 import { pickMustChangePassword, hasMustChangePasswordFlag } from '@/features/auth/utils/normalizeAuthResponse'
 import {
   companyIdFromAccessToken,
+  enabledModulesFromAccessToken,
   normalizePermissionKeys,
   permissionsFromAccessToken,
   resolveCompanyIdFromUserLike,
@@ -28,6 +29,7 @@ import {
 import {
   isModuleEnabled,
   pickEnabledModulesFromRecord,
+  sessionAllowsTenantModule,
 } from '@/features/tenants/utils/isModuleEnabled'
 import { bootstrapLocaleSession, clearLocaleSession } from '@/features/locale/bootstrap/localeBootstrap'
 import { pickPreferredCountryCode } from '@/store/locale/localeSlice'
@@ -269,7 +271,9 @@ export interface AuthContextValue {
   hasMatrixModule:  (moduleKey: string, level?: MatrixAccessLevel) => boolean
   /**
    * Tenant `enabled_modules` allow-list from /auth/me (Super Admin Features).
-   * Missing list = all modules on. Applies to Tenant Admin too.
+   * Explicit list is authoritative. When omitted, falls back to session grants
+   * so Super Admin–disabled modules (keys stripped from the login token) stay hidden.
+   * Applies to Tenant Admin too.
    */
   hasEnabledModule: (moduleKey: string) => boolean
   hasRole:          (roleSlug: string) => boolean
@@ -390,7 +394,8 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     : undefined
 
   const warehouseFromMe = pickWarehouseSummariesFromMe(record)
-  const enabledModules = pickEnabledModulesFromRecord(record)
+  const enabledModules =
+    pickEnabledModulesFromRecord(record) ?? enabledModulesFromAccessToken(accessToken)
   const visibleJobTypes = pickVisibleJobTypesFromRecord(record)
   const unrestrictedOps = pickUnrestrictedOpsFromRecord(record)
 
@@ -434,6 +439,8 @@ function seedUserFromAuthStore(accessToken: string): AuthUser | null {
   const id = storeUser.id || storeUser.email
   if (!id) return null
 
+  const enabledModules = enabledModulesFromAccessToken(accessToken)
+
   return {
     id,
     name: storeUser.name || storeUser.email,
@@ -455,6 +462,7 @@ function seedUserFromAuthStore(accessToken: string): AuthUser | null {
     permissions,
     product: storeUser.product,
     mustChangePassword: storeUser.mustChangePassword,
+    ...(enabledModules ? { enabledModules } : {}),
   }
 }
 
@@ -596,10 +604,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ) {
         return true
       }
-      // Tenant Admin still respects Super Admin enabled_modules allow-list for other modules.
-      return isModuleEnabled(user.enabledModules, moduleKey)
+      // Explicit Super Admin Features allow-list wins when present on the session.
+      if (user.enabledModules != null && user.enabledModules.length > 0) {
+        return isModuleEnabled(user.enabledModules, moduleKey)
+      }
+      // Allow-list omitted: infer from the login token (not FE staff-flag menu bridges),
+      // so SA-disabled modules whose keys were stripped from the JWT stay hidden.
+      const jwtPerms = permissionsFromAccessToken(accessToken)
+      const grantPerms = jwtPerms.length > 0 ? jwtPerms : user.permissions
+      if (grantPerms.length > 0) {
+        return sessionAllowsTenantModule(grantPerms, moduleKey)
+      }
+      return true
     },
-    [user],
+    [user, accessToken],
   )
 
   const hasMatrixModule = useCallback(
