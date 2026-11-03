@@ -14,6 +14,7 @@ import {
   popupLabelClass,
   popupSubmitClass,
 } from '@/features/auth/components/LoginPopupFrame'
+import { readTenantSlugFromSearch } from '@/features/auth/utils/tenantSlugFromQuery'
 import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage';
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache';
 import { vendorErrorMessage } from '@/features/vendor-shared/vendorUnavailable';
@@ -82,9 +83,15 @@ export default function VendorLoginPage() {
   const [forgotSending, setForgotSending] = useState(false);
   const [forgotSent, setForgotSent] = useState(false);
 
+  const lockedTenantSlug = readTenantSlugFromSearch(searchParams);
+
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { tenant_slug: '', email: '', password: '' },
+    defaultValues: {
+      tenant_slug: lockedTenantSlug || '',
+      email: '',
+      password: '',
+    },
   });
 
   const inviteForm = useForm<InviteFormValues>({
@@ -97,6 +104,12 @@ export default function VendorLoginPage() {
       stripSensitiveSearchParams(searchParams, setSearchParams);
     }
   }, [inviteToken, searchParams, setSearchParams]);
+
+  useEffect(() => {
+    if (!lockedTenantSlug) return;
+    form.setValue('tenant_slug', lockedTenantSlug, { shouldValidate: true });
+    setForgotSlug(lockedTenantSlug);
+  }, [lockedTenantSlug, form]);
 
   const applySession = async (user: Parameters<typeof setSession>[0], token: string, refresh: string) => {
     clearOtherAuthSessions();
@@ -233,12 +246,13 @@ export default function VendorLoginPage() {
               </p>
               <div>
                 <label htmlFor="vendor_forgot_slug" className={popupLabelClass}>
-                  Username
+                  {lockedTenantSlug ? 'Workspace' : 'Username'}
                 </label>
                 <input
                   id="vendor_forgot_slug"
                   className={popupInputClass}
                   value={forgotSlug}
+                  readOnly={Boolean(lockedTenantSlug)}
                   disabled={forgotSending}
                   onChange={(e) => setForgotSlug(e.target.value)}
                 />
@@ -350,21 +364,34 @@ export default function VendorLoginPage() {
             noValidate
             className="space-y-3.5"
           >
-            <div>
-              <label htmlFor="vendor_tenant_slug" className={popupLabelClass}>
-               Username
-              </label>
-              <input
-                id="vendor_tenant_slug"
-                autoComplete="organization"
-                placeholder="Username"
-                className={popupInputClass}
-                {...form.register('tenant_slug')}
-              />
-              {form.formState.errors.tenant_slug && (
-                <p className="mt-1 text-xs text-red-600">{form.formState.errors.tenant_slug.message}</p>
-              )}
-            </div>
+            {lockedTenantSlug ? (
+              <div>
+                <input type="hidden" {...form.register('tenant_slug')} />
+                <p className={popupLabelClass}>Workspace</p>
+                <div
+                  className={`${popupInputClass} flex items-center bg-slate-50 text-slate-700`}
+                  aria-label={`Workspace ${lockedTenantSlug}`}
+                >
+                  {lockedTenantSlug}
+                </div>
+              </div>
+            ) : (
+              <div>
+                <label htmlFor="vendor_tenant_slug" className={popupLabelClass}>
+                  Username
+                </label>
+                <input
+                  id="vendor_tenant_slug"
+                  autoComplete="organization"
+                  placeholder="Username"
+                  className={popupInputClass}
+                  {...form.register('tenant_slug')}
+                />
+                {form.formState.errors.tenant_slug && (
+                  <p className="mt-1 text-xs text-red-600">{form.formState.errors.tenant_slug.message}</p>
+                )}
+              </div>
+            )}
             <div>
               <label htmlFor="vendor_email" className={popupLabelClass}>
                 Email

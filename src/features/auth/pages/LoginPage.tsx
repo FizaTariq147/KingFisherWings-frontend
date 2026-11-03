@@ -19,6 +19,10 @@ import { wakeApi } from '@/lib/wakeApi'
 import { AuthLandingShell } from '@/features/auth/components/AuthLandingShell'
 import { AcceptInvitePopup } from '@/features/auth/components/AcceptInvitePopup'
 import { LoginPopupFrame, popupInputClass, popupLabelClass, popupSubmitClass } from '@/features/auth/components/LoginPopupFrame'
+import {
+  readTenantSlugFromSearch,
+  withTenantSlugQuery,
+} from '@/features/auth/utils/tenantSlugFromQuery'
 
 function erpHomeFromAuthStore(): string {
   return erpPostAuthPath(useAuthStore.getState().user)
@@ -67,11 +71,14 @@ function LoginModal({
   onClose,
   loginMode,
   onLoginModeChange,
+  lockedTenantSlug,
 }: {
   open: boolean
   onClose: () => void
   loginMode: LoginMode
   onLoginModeChange: (mode: LoginMode) => void
+  /** From ?tenant_slug= (WordPress portals) — prefill + hide/lock. */
+  lockedTenantSlug?: string | null
 }) {
   const navigate = useNavigate()
   const { loginTenant, loginStaff, isLoading } = useAuthStore()
@@ -89,14 +96,15 @@ function LoginModal({
   const [forgotSent, setForgotSent]     = useState(false)
   const forgotSlugRef = useRef<HTMLInputElement>(null)
   const forgotInputRef = useRef<HTMLInputElement>(null)
+  const slugLocked = Boolean(lockedTenantSlug)
 
   const schema = loginMode === 'staff' ? staffSchema : tenantAdminSchema
 
-  const { register, handleSubmit, formState: { errors }, watch, reset, setFocus } = useForm<FormValues>({
+  const { register, handleSubmit, formState: { errors }, watch, reset, setFocus, setValue } = useForm<FormValues>({
     resolver: zodResolver(schema),
     mode: 'onTouched',
     defaultValues: {
-      tenant_slug: '',
+      tenant_slug: lockedTenantSlug || '',
       email: '',
       password: '',
       remember_me: true,
@@ -109,20 +117,32 @@ function LoginModal({
   useEffect(() => { if (apiErr) setApiErr(null) }, [slug, email, pv, loginMode]) // eslint-disable-line
 
   useEffect(() => {
-    if (open) setTimeout(() => setFocus('tenant_slug'), 80)
-  }, [open, setFocus])
+    if (!open) return
+    if (slugLocked) {
+      setValue('tenant_slug', lockedTenantSlug || '', { shouldValidate: true })
+      setTimeout(() => setFocus(loginMode === 'staff' ? 'email' : 'password'), 80)
+    } else {
+      setTimeout(() => setFocus('tenant_slug'), 80)
+    }
+  }, [open, slugLocked, lockedTenantSlug, loginMode, setFocus, setValue])
 
   useEffect(() => {
     if (!open) {
-      reset(); setApiErr(null); setStatusMsg(null); setShowPw(false); setAgreed(false); setAgreedTouched(false)
+      reset({
+        tenant_slug: lockedTenantSlug || '',
+        email: '',
+        password: '',
+        remember_me: true,
+      })
+      setApiErr(null); setStatusMsg(null); setShowPw(false); setAgreed(false); setAgreedTouched(false)
       setForgotOpen(false); setForgotSlug(''); setForgotEmail(''); setForgotErr(null); setForgotSent(false)
     }
-  }, [open, reset])
+  }, [open, reset, lockedTenantSlug])
 
   useEffect(() => {
-    // Clear field errors when switching Company Admin ↔ Staff via the URL.
+    // Clear credentials when switching Company Admin ↔ Staff; keep locked workspace slug.
     reset({
-      tenant_slug: '',
+      tenant_slug: lockedTenantSlug || '',
       email: '',
       password: '',
       remember_me: true,
@@ -130,7 +150,7 @@ function LoginModal({
     setApiErr(null)
     setStatusMsg(null)
     setShowPw(false)
-  }, [loginMode, reset])
+  }, [loginMode, reset, lockedTenantSlug])
 
   useEffect(() => {
     if (forgotOpen) {
@@ -268,24 +288,37 @@ function LoginModal({
             </button>
           </div>
 
-          <div>
-            <label htmlFor="kf-tenant-slug" className={popupLabelClass}>Username</label>
-            <input
-              id="kf-tenant-slug"
-              type="text"
-              autoComplete="off"
-              placeholder="username"
-              disabled={isLoading}
-              aria-invalid={!!errors.tenant_slug}
-              {...register('tenant_slug')}
-              className={popupInputClass}
-            />
-            {errors.tenant_slug && (
-              <p role="alert" className="mt-1 flex items-center gap-1 text-[11px] text-red-500">
-                <AlertCircle size={11} />{errors.tenant_slug.message}
-              </p>
-            )}
-          </div>
+          {slugLocked ? (
+            <div>
+              <input type="hidden" {...register('tenant_slug')} />
+              <p className={popupLabelClass}>Workspace</p>
+              <div
+                className={`${popupInputClass} flex items-center bg-slate-50 text-slate-700`}
+                aria-label={`Workspace ${lockedTenantSlug}`}
+              >
+                {lockedTenantSlug}
+              </div>
+            </div>
+          ) : (
+            <div>
+              <label htmlFor="kf-tenant-slug" className={popupLabelClass}>Username</label>
+              <input
+                id="kf-tenant-slug"
+                type="text"
+                autoComplete="off"
+                placeholder="username"
+                disabled={isLoading}
+                aria-invalid={!!errors.tenant_slug}
+                {...register('tenant_slug')}
+                className={popupInputClass}
+              />
+              {errors.tenant_slug && (
+                <p role="alert" className="mt-1 flex items-center gap-1 text-[11px] text-red-500">
+                  <AlertCircle size={11} />{errors.tenant_slug.message}
+                </p>
+              )}
+            </div>
+          )}
 
           {loginMode === 'staff' && (
             <div>
@@ -424,6 +457,7 @@ function LoginModal({
                 autoComplete="organization"
                 placeholder="username"
                 value={forgotSlug}
+                readOnly={slugLocked}
                 disabled={forgotSending}
                 onChange={(e) => setForgotSlug(e.target.value)}
                 className={popupInputClass}
@@ -468,12 +502,18 @@ export default function LoginPage() {
   const [searchParams, setSearchParams] = useSearchParams()
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const staffPath = isStaffLoginPath(location.pathname)
+  const lockedTenantSlug = readTenantSlugFromSearch(searchParams)
   const loginMode: LoginMode = staffPath ? 'staff' : 'tenant_admin'
   const [inviteToken] = useState(() =>
     readInviteTokenFromSearch(window.location.search, 'staff'),
   )
+  /** ?admin=1 means Company Admin even when tenant_slug is present (after param is stripped). */
+  const preferCompanyAdminRef = useRef(searchParams.get('admin') === '1')
   const [loginOpen, setLoginOpen] = useState(
-    () => staffPath || (searchParams.get('admin') === '1' && !inviteToken),
+    () =>
+      staffPath ||
+      Boolean(lockedTenantSlug) ||
+      (searchParams.get('admin') === '1' && !inviteToken),
   )
   const [inviteOpen, setInviteOpen] = useState(() => Boolean(inviteToken))
   const [inviteDone, setInviteDone] = useState(false)
@@ -493,11 +533,25 @@ export default function LoginPage() {
   useEffect(() => {
     if (searchParams.get('admin') === '1' && !inviteToken) {
       setLoginOpen(true)
-      searchParams.delete('admin')
-      setSearchParams(searchParams, { replace: true })
-      if (staffPath) navigate('/login', { replace: true })
+      const next = new URLSearchParams(searchParams)
+      next.delete('admin')
+      setSearchParams(next, { replace: true })
+      // Company Admin deep-link — keep /login (preserve tenant_slug).
+      if (staffPath) {
+        navigate(withTenantSlugQuery('/login', lockedTenantSlug), { replace: true })
+      }
     }
-  }, [searchParams, setSearchParams, inviteToken, staffPath, navigate])
+  }, [searchParams, setSearchParams, inviteToken, staffPath, navigate, lockedTenantSlug])
+
+  useEffect(() => {
+    // WordPress Employee: /login?tenant_slug=… → Staff sign-in with locked slug.
+    // Company Admin deep-link (?admin=1) stays on /login with the same locked slug.
+    if (inviteToken) return
+    if (!lockedTenantSlug) return
+    setLoginOpen(true)
+    if (staffPath || preferCompanyAdminRef.current) return
+    navigate(withTenantSlugQuery('/staff/login', lockedTenantSlug), { replace: true })
+  }, [lockedTenantSlug, staffPath, inviteToken, navigate])
 
   useEffect(() => {
     // Visiting /staff/login opens Staff / User sign-in.
@@ -506,22 +560,30 @@ export default function LoginPage() {
 
   const closeAdmin = () => {
     setLoginOpen(false)
-    if (staffPath) navigate('/login', { replace: true })
+    if (staffPath) {
+      navigate(withTenantSlugQuery('/login', lockedTenantSlug), { replace: true })
+    }
   }
 
   const onLoginModeChange = (mode: LoginMode) => {
     setLoginOpen(true)
     if (mode === 'staff') {
-      if (!staffPath) navigate('/staff/login', { replace: true })
+      if (!staffPath) {
+        navigate(withTenantSlugQuery('/staff/login', lockedTenantSlug), { replace: true })
+      }
       return
     }
-    if (staffPath) navigate('/login', { replace: true })
+    if (staffPath) {
+      navigate(withTenantSlugQuery('/login', lockedTenantSlug), { replace: true })
+    }
   }
 
   return (
     <AuthLandingShell
       onAdminClick={() => {
-        if (staffPath) navigate('/login', { replace: true })
+        if (staffPath) {
+          navigate(withTenantSlugQuery('/login', lockedTenantSlug), { replace: true })
+        }
         setLoginOpen(true)
       }}
       videoOnly={loginOpen || inviteOpen}
@@ -531,6 +593,7 @@ export default function LoginPage() {
         onClose={closeAdmin}
         loginMode={loginMode}
         onLoginModeChange={onLoginModeChange}
+        lockedTenantSlug={lockedTenantSlug}
       />
       {inviteOpen && inviteToken && (
         <AcceptInvitePopup
@@ -540,7 +603,7 @@ export default function LoginPage() {
             clearInviteTokenSession('staff')
             setInviteOpen(false)
             setInviteDone(true)
-            navigate('/staff/login', { replace: true })
+            navigate(withTenantSlugQuery('/staff/login', lockedTenantSlug), { replace: true })
             setLoginOpen(true)
           }}
         />
