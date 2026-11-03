@@ -100,6 +100,8 @@ interface QuotationFormProps {
   /** `wizard` = FRESA-like 5-step create UI; `flat` = existing single-page (edit default). */
   layout?: 'flat' | 'wizard';
   defaultValues?: Partial<CreateQuotationFormValues>;
+  /** Staff-scoped job types (create/edit). Defaults to full JOB_TYPES catalog. */
+  jobTypeOptions?: readonly JobType[];
   onSubmit: (
     values: CreateQuotationFormValues | UpdateQuotationFormValues,
     options?: { costing?: QuotationWizardCostingPayload },
@@ -118,11 +120,13 @@ export function QuotationForm({
   mode,
   layout = 'flat',
   defaultValues,
+  jobTypeOptions,
   onSubmit,
   onCancel,
   isSubmitting,
   onValuesChange,
 }: QuotationFormProps) {
+  const typeOptions = jobTypeOptions?.length ? jobTypeOptions : JOB_TYPES;
   const isWizard = layout === 'wizard' && mode === 'create';
   const [step, setStep] = useState(0);
   const [draftLines, setDraftLines] = useState<QuotationDraftChargeLine[]>([]);
@@ -424,6 +428,7 @@ export function QuotationForm({
           <div className="rounded-xl bg-white p-5 sm:p-6">
             <JobTypeSelectGrid
               value={watched.job_type}
+              jobTypeOptions={typeOptions}
               onChange={(jobType: JobType) =>
                 setValue('job_type', jobType, { shouldValidate: true, shouldDirty: true })
               }
@@ -833,7 +838,7 @@ export function QuotationForm({
               Job type *
             </label>
             <select id="job_type" className={selectClass} {...register('job_type')}>
-              {JOB_TYPES.map((t) => (
+              {typeOptions.map((t) => (
                 <option key={t} value={t}>
                   {JOB_TYPE_LABELS[t]}
                 </option>

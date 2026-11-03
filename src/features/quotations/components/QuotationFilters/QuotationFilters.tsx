@@ -100,6 +100,8 @@ interface QuotationFiltersProps {
   onDraftChange: (next: QuotationFilterDraft) => void;
   onSubmit: () => void;
   isSubmitting?: boolean;
+  /** Staff-scoped job types for the Job Type dropdown. Defaults to full catalog. */
+  jobTypeOptions?: readonly JobType[];
 }
 
 /**
@@ -110,9 +112,11 @@ export function QuotationFilters({
   onDraftChange,
   onSubmit,
   isSubmitting,
+  jobTypeOptions,
 }: QuotationFiltersProps) {
   const patch = (partial: Partial<QuotationFilterDraft>) =>
     onDraftChange({ ...draft, ...partial });
+  const scopedJobTypes = jobTypeOptions?.length ? jobTypeOptions : JOB_TYPES;
 
   const applyPreset = (preset: DateRangePreset) => {
     if (preset === 'custom') {
@@ -200,9 +204,9 @@ export function QuotationFilters({
         return { value: String(p.id), label };
       }),
   ];
-  const jobTypeOptions = [
+  const jobTypeSelectOptions = [
     { value: 'all', label: 'All' },
-    ...JOB_TYPES.map((t) => ({ value: t, label: JOB_TYPE_LABELS[t] })),
+    ...scopedJobTypes.map((t) => ({ value: t, label: JOB_TYPE_LABELS[t] })),
   ];
   const statusOptions = [
     { value: 'all', label: 'All' },
@@ -321,7 +325,7 @@ export function QuotationFilters({
 
         <EnquirySheetFilterField label="Job type">
           <EnquirySheetSelect
-            options={jobTypeOptions}
+            options={jobTypeSelectOptions}
             value={draft.jobType}
             onChange={(e) =>
               patch({ jobType: e.target.value as JobType | 'all' })
