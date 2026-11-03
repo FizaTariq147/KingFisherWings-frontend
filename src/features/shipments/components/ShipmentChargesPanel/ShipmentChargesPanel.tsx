@@ -3,9 +3,7 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
-import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
-import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
-import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { ChargeCodeSelectWithAdd } from '@/features/masters/components/ChargeCodeSelectWithAdd';
 import { JobSearchSelect, PartySearchSelect } from '@/features/shared/entity-search';
 import { erpTable } from '@/lib/erpTypography';
 import { isUuid } from '@/lib/isUuid';
@@ -57,24 +55,6 @@ export function ShipmentChargesPanel({
   /** Fallback when GET /charges is empty — detail/{tab} payload. */
   const costingTabQuery = useShipmentDetailTab(shipment.id, tabKey);
   const mutations = useShipmentChargeMutations(shipment.id);
-  const { data: chargeCodes = [] } = useMasterOptions(
-    'charge-codes',
-    MASTER_PATHS['charge-codes'],
-    true,
-  );
-  const chargeCodeOptions = useMemo(
-    () =>
-      chargeCodes
-        .filter((c) => isUuid(String(c.id)))
-        .map((c) => {
-          const code = String(c.code ?? '').trim();
-          const name = String(c.name ?? '').trim();
-          const label = code && name ? `${code} — ${name}` : code || name || 'Charge code';
-          return { value: String(c.id), label };
-        }),
-    [chargeCodes],
-  );
-
   const charges = useMemo(() => {
     if (chargesQuery.data?.length) return chargesQuery.data;
     const fromTab = normalizeShipmentCharges(costingTabQuery.data);
@@ -399,14 +379,16 @@ export function ShipmentChargesPanel({
           {error && dialog === 'add' ? (
             <p className="text-sm text-[var(--color-danger-600)] sm:col-span-2">{error}</p>
           ) : null}
-          <SearchableSelect
-            name="shipment_charge_code_id"
+          <ChargeCodeSelectWithAdd
+            id="shipment_charge_code_id"
             label="Charge code"
             value={chargeCodeId}
-            options={chargeCodeOptions}
-            onChange={setChargeCodeId}
-            placeholder="Search charge code by name…"
-            allowManualUuid={false}
+            nestedModal
+            onChange={(id, meta) => {
+              setChargeCodeId(id);
+              if (meta.description) setDescription(meta.description);
+              else if (!id) setDescription('');
+            }}
           />
           <Input
             label="Description"

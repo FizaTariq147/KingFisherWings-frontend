@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { ChargeCodeSelectWithAdd } from '@/features/masters/components/ChargeCodeSelectWithAdd';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useInvoiceActions } from '../../hooks/useInvoiceActions';
 import { createInvoiceLineSchema } from '../../schemas/invoice.schema';
@@ -30,17 +31,14 @@ export function InvoiceLinesEditor({ invoiceId, lines, editable }: InvoiceLinesE
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [editingLineId, setEditingLineId] = useState<string | null>(null);
-  const { data: chargeCodes = [] } = useMasterOptions(
-    'charge-codes',
-    MASTER_PATHS['charge-codes'],
-    true,
-  );
   const { data: taxRates = [] } = useMasterOptions('tax-rates', MASTER_PATHS['tax-rates'], true);
 
   const {
     register,
     handleValidatedSubmit,
     reset,
+    setValue,
+    watch,
     applyApiErrors,
     formState: { errors },
   } = useAppForm<CreateInvoiceLineFormValues>({
@@ -154,26 +152,21 @@ export function InvoiceLinesEditor({ invoiceId, lines, editable }: InvoiceLinesE
             />
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label htmlFor="invoice-line-charge-code" className="text-xs font-medium text-[var(--color-neutral-500)]">
-                Charge code
-              </label>
-              <select id="invoice-line-charge-code" className={selectClass} {...register('charge_code_id', uuidSelect)}>
-                <option value="">—</option>
-                {(() => {
-                  const opts = [];
-                  for (const c of chargeCodes) {
-                    if (!isUuid(String(c.id))) continue;
-                    opts.push(
-                      <option key={String(c.id)} value={String(c.id)}>
-                        {String(c.code ?? c.name ?? c.id)}
-                      </option>,
-                    );
-                  }
-                  return opts;
-                })()}
-              </select>
-            </div>
+            <ChargeCodeSelectWithAdd
+              id="invoice-line-charge-code"
+              label="Charge code"
+              value={watch('charge_code_id') || ''}
+              selectClassName={selectClass}
+              emptyLabel="—"
+              onChange={(id, meta) => {
+                setValue('charge_code_id', id && isUuid(id) ? id : undefined, {
+                  shouldValidate: true,
+                });
+                if (meta.description) {
+                  setValue('description', meta.description, { shouldValidate: true });
+                }
+              }}
+            />
             <div className="space-y-1">
               <label htmlFor="invoice-line-tax-rate" className="text-xs font-medium text-[var(--color-neutral-500)]">
                 Tax rate

@@ -28,6 +28,7 @@ import { Modal } from '@/components/ui/Modal';
 import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { AddChargeCodeModal } from '@/features/masters/components/AddChargeCodeModal';
+import { mapChargeCodeOptions } from '@/features/masters/utils/chargeCodeDisplay';
 import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
@@ -696,35 +697,20 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
 
   const chargeCodeOpts = useMemo(
     () =>
-      chargeCodes
-        .filter((c) => isUuid(String(c.id)))
-        .map((c) => {
-          const code = String(c.code ?? '').trim();
-          const name = String(c.name ?? '').trim();
-          const description = String(c.description ?? '').trim();
-          // Prefer human description/name for labels and the Description field — not code alone.
-          const narrative = description || name;
-          const label = narrative
-            ? code && narrative !== code
-              ? `${narrative} (${code})`
-              : narrative
-            : code || String(c.id);
-          return {
-            id: String(c.id),
-            code,
-            name,
-            description: narrative,
-            label,
-          };
-        }),
+      mapChargeCodeOptions(chargeCodes, isUuid).map((o) => ({
+        id: o.id,
+        code: o.code,
+        name: o.description,
+        description: o.description,
+        label: o.label,
+      })),
     [chargeCodes],
   );
 
   const descriptionForChargeCode = (id: string): string => {
     const opt = chargeCodeOpts.find((c) => c.id === id);
-    if (!opt) return '';
-    // Never fall back to code — description field should show narrative text.
-    return opt.description || opt.name || '';
+    // Never fall back to code — Description tab shows narrative text only.
+    return opt?.description || '';
   };
 
   const taxRateOptions = useMemo(

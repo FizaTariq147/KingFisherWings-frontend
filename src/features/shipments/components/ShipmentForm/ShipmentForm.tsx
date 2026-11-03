@@ -7,8 +7,10 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { ChargeCodeSelectWithAdd } from '@/features/masters/components/ChargeCodeSelectWithAdd';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { chargeCodeOptionLabel } from '@/features/masters/utils/chargeCodeDisplay';
 import { useParties } from '@/features/parties/hooks/useParties';
 import {
   EnquirySearchSelect,
@@ -334,7 +336,7 @@ export function ShipmentForm({
     const map = new Map<string, string>();
     for (const c of chargeCodes) {
       if (!isUuid(String(c.id))) continue;
-      map.set(String(c.id), String(c.code ?? c.name ?? c.id));
+      map.set(String(c.id), chargeCodeOptionLabel(c));
     }
     return map;
   }, [chargeCodes]);
@@ -846,35 +848,20 @@ export function ShipmentForm({
 
           {showChargeForm ? (
             <div className="grid grid-cols-1 gap-3 rounded-lg border border-[var(--color-neutral-200)] p-4 sm:grid-cols-2">
-              <div className="space-y-1 sm:col-span-2">
-                <label htmlFor="ship_charge_code" className={labelClass}>
-                  Charge code
-                </label>
-                <select
+              <div className="sm:col-span-2">
+                <ChargeCodeSelectWithAdd
                   id="ship_charge_code"
-                  className={selectClass}
+                  label="Charge code"
                   value={chargeDraft.charge_code_id}
-                  onChange={(e) => {
-                    const id = e.target.value;
-                    const code = chargeCodes.find((c) => String(c.id) === id);
+                  selectClassName={selectClass}
+                  onChange={(id, meta) => {
                     setChargeDraft((prev) => ({
                       ...prev,
                       charge_code_id: id,
-                      description:
-                        prev.description ||
-                        (code ? String(code.name ?? code.code ?? '') : prev.description),
+                      description: meta.description || prev.description,
                     }));
                   }}
-                >
-                  <option value="">Select…</option>
-                  {chargeCodes
-                    .filter((c) => isUuid(String(c.id)))
-                    .map((c) => (
-                      <option key={String(c.id)} value={String(c.id)}>
-                        {String(c.code ?? c.name ?? c.id)}
-                      </option>
-                    ))}
-                </select>
+                />
               </div>
               <Input
                 label="Description *"
