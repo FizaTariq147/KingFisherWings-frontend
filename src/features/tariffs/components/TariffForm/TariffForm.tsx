@@ -9,8 +9,10 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { ChargeCodeSelectWithAdd } from '@/features/masters/components/ChargeCodeSelectWithAdd';
 import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSelect';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { chargeCodeOptionLabel } from '@/features/masters/utils/chargeCodeDisplay';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { loadPartyCurrencyOptions } from '@/features/parties/utils/partyCurrencyOptions';
 import type { JobType } from '@/features/quotations/constants/quotation.constants';
@@ -159,7 +161,7 @@ export function TariffForm({
     const id = watched.charge_code_id;
     if (!id) return '—';
     const match = chargeCodes.find((c) => String(c.id) === id);
-    return match ? String(match.code ?? match.name ?? id) : id;
+    return match ? chargeCodeOptionLabel(match) : id;
   })();
 
   const containerLabel = (() => {
@@ -221,26 +223,19 @@ export function TariffForm({
   );
 
   const chargeCodeSelect = (
-    <div className="space-y-1">
-      <label htmlFor="charge_code_id" className={labelClass}>
-        Charge code *
-      </label>
-      <select
-        id="charge_code_id"
-        className={selectClass}
-        {...register('charge_code_id', uuidSelect)}
-      >
-        <option value="">Select…</option>
-        {chargeCodes
-          .filter((c) => isUuid(String(c.id)))
-          .map((c) => (
-            <option key={String(c.id)} value={String(c.id)}>
-              {String(c.code ?? c.name ?? c.id)}
-            </option>
-          ))}
-      </select>
-      <FieldError message={fieldError('charge_code_id')} />
-    </div>
+    <ChargeCodeSelectWithAdd
+      id="charge_code_id"
+      label="Charge code"
+      required
+      value={typeof watched.charge_code_id === 'string' ? watched.charge_code_id : ''}
+      selectClassName={selectClass}
+      error={fieldError('charge_code_id')}
+      onChange={(id) => {
+        setValue('charge_code_id', id && isUuid(id) ? id : ('' as never), {
+          shouldValidate: true,
+        });
+      }}
+    />
   );
 
   const customerSelect = (

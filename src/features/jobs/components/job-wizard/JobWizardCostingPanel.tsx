@@ -7,7 +7,9 @@ import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { ChargeCodeSelectWithAdd } from '@/features/masters/components/ChargeCodeSelectWithAdd';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { chargeCodeNarrative, chargeCodeOptionLabel } from '@/features/masters/utils/chargeCodeDisplay';
 import {
   createJobChargeSchema,
   type CreateJobChargeFormValues,
@@ -49,7 +51,17 @@ export function JobWizardCostingPanel({
     const map = new Map<string, string>();
     for (const c of chargeCodes) {
       if (!isUuid(String(c.id))) continue;
-      map.set(String(c.id), String(c.code ?? c.name ?? c.id));
+      map.set(String(c.id), chargeCodeOptionLabel(c));
+    }
+    return map;
+  }, [chargeCodes]);
+
+  const chargeDescriptionById = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const c of chargeCodes) {
+      if (!isUuid(String(c.id))) continue;
+      const narrative = chargeCodeNarrative(c);
+      if (narrative) map.set(String(c.id), narrative);
     }
     return map;
   }, [chargeCodes]);
@@ -59,6 +71,7 @@ export function JobWizardCostingPanel({
     handleValidatedSubmit,
     reset,
     setValue,
+    watch,
     formState: { errors },
   } = useAppForm<CreateJobChargeFormValues>({
     resolver: zodResolver(createJobChargeSchema) as Resolver<CreateJobChargeFormValues>,
@@ -92,14 +105,17 @@ export function JobWizardCostingPanel({
 
   const onAddLine = handleValidatedSubmit((values) => {
     const chargeId = values.charge_code_id;
-    const codeLabel = chargeLabelById.get(chargeId);
+    const narrative =
+      values.description?.trim() ||
+      chargeDescriptionById.get(chargeId) ||
+      'Charge';
     const unitPrice = Number(values.unit_price);
     onLinesChange([
       ...lines,
       {
         localId: newLocalId(),
         charge_code_id: chargeId,
-        description: values.description?.trim() || codeLabel || 'Charge',
+        description: narrative,
         unit_price: Number.isFinite(unitPrice) ? unitPrice : 0,
         currency_code: values.currency_code || currencyCode || 'AED',
         quantity: values.quantity ?? 1,
@@ -215,38 +231,23 @@ export function JobWizardCostingPanel({
 
       {showForm ? (
         <div className="grid grid-cols-1 gap-3 rounded-lg border border-[var(--color-neutral-200)] p-4 sm:grid-cols-2">
-          <div className="space-y-1 sm:col-span-2">
-            <label htmlFor="job_draft_charge_code_id" className={labelClass}>
-              Charge code *
-            </label>
-            <select
+          <div className="sm:col-span-2">
+            <ChargeCodeSelectWithAdd
               id="job_draft_charge_code_id"
-              className={selectClass}
-              {...register('charge_code_id')}
-              onChange={(e) => {
-                const id = e.target.value;
+              label="Charge code"
+              required
+              value={watch('charge_code_id') || ''}
+              selectClassName={selectClass}
+              error={errors.charge_code_id?.message as string | undefined}
+              onChange={(id, meta) => {
                 setValue('charge_code_id', id, { shouldValidate: true });
-                const code = chargeCodes.find((c) => String(c.id) === id);
-                if (code) {
-                  const desc = String(code.name ?? code.code ?? '');
-                  if (desc) setValue('description', desc, { shouldValidate: true });
+                if (meta.description) {
+                  setValue('description', meta.description, { shouldValidate: true });
+                } else if (!id) {
+                  setValue('description', '', { shouldValidate: true });
                 }
               }}
-            >
-              <option value="">Select…</option>
-              {chargeCodes
-                .filter((c) => isUuid(String(c.id)))
-                .map((c) => (
-                  <option key={String(c.id)} value={String(c.id)}>
-                    {String(c.code ?? c.name ?? c.id)}
-                  </option>
-                ))}
-            </select>
-            {errors.charge_code_id ? (
-              <p className="text-xs text-[var(--color-danger-500)]">
-                {errors.charge_code_id.message as string}
-              </p>
-            ) : null}
+            />
           </div>
           <Input
             label="Description *"

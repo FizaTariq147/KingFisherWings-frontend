@@ -361,7 +361,7 @@ function FormFieldsFromPayload({
     }
     return (
       <p className="text-[13px] text-[#64748b]">
-        No displayable fields (API returned ids only without names).
+        No displayable fields.
       </p>
     );
   }
