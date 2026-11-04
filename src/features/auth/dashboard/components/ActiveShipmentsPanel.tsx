@@ -120,7 +120,7 @@ export function ActiveShipmentsPanel({
   lastUpdated,
   isFetching,
   /** Shared open-ops total (KPI / header) — keeps All jobs badge aligned across roles. */
-  activeTotal,
+  activeTotal: _activeTotal,
   /** Tenant dashboard always defaults to All jobs (any creator). */
   defaultView = 'all',
 }: {
@@ -131,9 +131,11 @@ export function ActiveShipmentsPanel({
   userId?: string;
   lastUpdated?: number;
   isFetching?: boolean;
+  /** @deprecated Badge uses loaded row count so grid and All jobs stay aligned. */
   activeTotal?: number;
   defaultView?: ViewKey;
 }) {
+  void _activeTotal;
   const navigate = useNavigate();
   const [view, setView] = useState<ViewKey>(defaultView);
   const [chip, setChip] = useState<ShipmentStatusChip>('all');
@@ -149,19 +151,14 @@ export function ActiveShipmentsPanel({
 
   const viewCounts = useMemo(
     () => ({
-      // Prefer exact loaded rows so badge matches the grid (not a separate open KPI).
-      all:
-        active.length > 0
-          ? active.length
-          : typeof activeTotal === 'number' && Number.isFinite(activeTotal)
-            ? activeTotal
-            : 0,
+      // Badge = rows in the grid (full department set for All jobs).
+      all: active.length,
       mine: active.filter((job) => matchesView(job, 'mine', userId)).length,
       customs: active.filter((job) => matchesView(job, 'customs')).length,
       docs: active.filter((job) => matchesView(job, 'docs')).length,
       air: active.filter((job) => matchesView(job, 'air')).length,
     }),
-    [active, activeTotal, userId],
+    [active, userId],
   );
 
   const chipCounts = useMemo(() => {
@@ -203,16 +200,19 @@ export function ActiveShipmentsPanel({
     });
   }, [active, view, chip, query, userId]);
 
-  const visibleRows = filtered.slice(0, 8);
+  // Show every in-scope row (All jobs = full department set; My jobs = own only).
+  const visibleRows = filtered;
   const accessToken = useAuthStore((s) => s.accessToken);
-  /** Air jobs missing AWB on list — hydrate from GET /jobs/:id/detail. */
+  /** Air jobs missing AWB on list — hydrate from GET /jobs/:id/detail (cap fan-out). */
   const airJobsNeedingDetail = useMemo(
     () =>
-      visibleRows.filter((job) => {
-        if (!isAirwayBillJobType(job.job_type) || !isUuid(job.id)) return false;
-        const awb = jobMawbHawb(job);
-        return !awb.mawb && !awb.hawb;
-      }),
+      visibleRows
+        .filter((job) => {
+          if (!isAirwayBillJobType(job.job_type) || !isUuid(job.id)) return false;
+          const awb = jobMawbHawb(job);
+          return !awb.mawb && !awb.hawb;
+        })
+        .slice(0, 25),
     [visibleRows],
   );
   const airDetailQueries = useQueries({
@@ -358,15 +358,7 @@ export function ActiveShipmentsPanel({
             );
           })}
           <span className="ml-auto text-[11px] text-[var(--color-neutral-400)]">
-            {view === 'all' && chip === 'all' && typeof activeTotal === 'number'
-              ? activeTotal
-              : filtered.length}{' '}
-            shipment
-            {(view === 'all' && chip === 'all' && typeof activeTotal === 'number'
-              ? activeTotal
-              : filtered.length) === 1
-              ? ''
-              : 's'}
+            {filtered.length} shipment{filtered.length === 1 ? '' : 's'}
           </span>
         </div>
       </div>

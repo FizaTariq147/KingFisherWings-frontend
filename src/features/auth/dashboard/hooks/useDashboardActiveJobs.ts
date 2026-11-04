@@ -15,11 +15,22 @@ function jobSortTime(job: Job): number {
   return Number.isFinite(t) ? t : 0;
 }
 
+const FALLBACK_STAFF_TYPES: JobType[] = [
+  'AIR_EXPORT',
+  'AIR_IMPORT',
+  'SEA_FCL_EXPORT',
+  'SEA_FCL_IMPORT',
+  'SEA_LCL_EXPORT',
+  'SEA_LCL_IMPORT',
+  'ROAD_FREIGHT',
+  'CUSTOMS_CLEARANCE',
+];
+
 /**
  * Active shipments grid rows.
  * - Staff: all open jobs for Ops visible ∪ writable types (any creator — admin or staff).
  * - Admin: all open jobs (no job_types filter).
- * - openTotal always equals the number of unique open jobs returned (badge = rows).
+ * - openTotal = unique open rows loaded (All jobs badge matches the grid).
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -33,9 +44,10 @@ export function useDashboardActiveJobs(options?: {
   const rowLimit = options?.rowLimit ?? 100;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
+  const unrestricted = isOpsUnrestrictedUser(user);
 
   const staffJobTypes = useMemo((): JobType[] => {
-    if (isOpsUnrestrictedUser(user)) return [];
+    if (unrestricted) return [];
     const types = new Set<JobType>();
     for (const raw of [
       ...(Array.isArray(user?.visibleJobTypes) ? user.visibleJobTypes : []),
@@ -44,25 +56,15 @@ export function useDashboardActiveJobs(options?: {
       types.add(canonicalizeJobType(raw));
     }
     if (!types.size) {
-      (
-        [
-          'AIR_EXPORT',
-          'AIR_IMPORT',
-          'SEA_FCL_EXPORT',
-          'SEA_FCL_IMPORT',
-          'SEA_LCL_EXPORT',
-          'SEA_LCL_IMPORT',
-          'ROAD_FREIGHT',
-          'CUSTOMS_CLEARANCE',
-        ] as JobType[]
-      ).forEach((t) => types.add(t));
+      FALLBACK_STAFF_TYPES.forEach((t) => types.add(t));
     }
     return [...types];
-  }, [user]);
+  }, [user, unrestricted]);
 
   const filterParams: Pick<JobListParams, 'job_type' | 'branch_id' | 'job_types'> = {
     ...(jobType ? { job_type: jobType as JobListParams['job_type'] } : {}),
     ...(branchId ? { branch_id: branchId } : {}),
+    // Staff: always pass job_types so list() runs search-prefix recovery (admin creates).
     ...(!jobType && staffJobTypes.length ? { job_types: staffJobTypes } : {}),
   };
 
@@ -76,25 +78,52 @@ export function useDashboardActiveJobs(options?: {
       branchId,
       staffJobTypes,
       rowLimit,
+      unrestricted,
     ],
     queryFn: async () => {
       const pageLimit = Math.min(100, Math.max(rowLimit, 100));
+      const openSet = new Set<string>(OPEN_JOB_STATUSES);
+      const byId = new Map<string, Job>();
 
-      // One department-scoped list (search-prefix recovery inside job.service for staff).
-      // Do NOT sum per-status meta.totals — that inflated "All jobs" vs visible rows.
+      const takeOpen = (jobs: Job[] | undefined) => {
+        for (const job of jobs ?? []) {
+          if (!job?.id) continue;
+          if (!openSet.has(String(job.status))) continue;
+          byId.set(job.id, job);
+        }
+      };
+
+      // Primary: department-scoped list (search-prefix recovery inside job.service).
       const page = await jobService.list({
         page: 1,
         limit: pageLimit,
         order: 'desc',
         ...filterParams,
       });
+      takeOpen(page.jobs);
 
-      const openSet = new Set<string>(OPEN_JOB_STATUSES);
-      const byId = new Map<string, Job>();
-      for (const job of page.jobs ?? []) {
-        if (!job?.id) continue;
-        if (!openSet.has(String(job.status))) continue;
-        byId.set(job.id, job);
+      // Staff secondary: JWT default list (no job_types) — some BE builds only
+      // expose certain admin rows on this path; keep those that match staff types.
+      if (!unrestricted && staffJobTypes.length && !jobType) {
+        const allowed = new Set(staffJobTypes.map((t) => canonicalizeJobType(String(t))));
+        try {
+          const jwtPage = await jobService.list({
+            page: 1,
+            limit: pageLimit,
+            order: 'desc',
+            skip_client_hydrate: true,
+            ...(branchId ? { branch_id: branchId } : {}),
+          });
+          for (const job of jwtPage.jobs ?? []) {
+            if (!job?.id) continue;
+            if (!openSet.has(String(job.status))) continue;
+            const t = canonicalizeJobType(String(job.job_type ?? ''));
+            if (!allowed.has(t)) continue;
+            if (!byId.has(job.id)) byId.set(job.id, job);
+          }
+        } catch {
+          /* keep primary rows */
+        }
       }
 
       const openJobs = [...byId.values()].sort(
@@ -103,7 +132,7 @@ export function useDashboardActiveJobs(options?: {
 
       return {
         jobs: openJobs.slice(0, rowLimit),
-        /** Exact unique open rows — matches All jobs badge to the grid. */
+        /** Exact unique open rows — All jobs badge matches the grid. */
         openTotal: openJobs.length,
       };
     },

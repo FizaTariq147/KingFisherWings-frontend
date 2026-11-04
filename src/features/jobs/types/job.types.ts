@@ -1223,6 +1223,8 @@ export interface Job {
   billing_party_name?: string;
   ops_user_name?: string;
   ops_user_id?: string;
+  /** User id that created the job (My jobs / creator filters). */
+  created_by?: string;
   origin_port_id?: string;
   dest_port_id?: string;
   origin_port_code?: string;
