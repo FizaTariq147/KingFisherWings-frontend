@@ -1719,9 +1719,8 @@ export interface CreateJobContainerDto {
   gross_weight?: number;
   vgm_weight?: number;
   cbm?: number;
-  /** Catalog / enum code — any active catalog value. */
+  /** Catalog / enum code — any active catalog value (BE rejects status_code on write). */
   status?: ContainerStatus | string;
-  status_code?: string;
   gate_in_at?: string;
   is_soc?: boolean;
 }

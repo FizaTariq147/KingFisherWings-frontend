@@ -3470,9 +3470,11 @@ export const jobService = {
     try {
       const { normalizeJobContainer } = await import('../utils/normalizeJobContainers');
       // Drop undefined so PATCH is never an empty `{}` when callers pass sparse objects.
+      // Nest forbidNonWhitelisted: status_code is read-only / not on UpdateJobContainerDto.
       const body: Record<string, unknown> = {};
       for (const [key, value] of Object.entries(dto)) {
-        if (value !== undefined) body[key] = value;
+        if (value === undefined || key === 'status_code') continue;
+        body[key] = value;
       }
       if (!Object.keys(body).length) {
         throw new Error('Nothing to update on container.');

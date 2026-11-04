@@ -1,12 +1,18 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import {
+  MasterCodeDatalist,
+  useMasterCodeOptions,
+} from '@/features/masters/hooks/useMasterCodeOptions';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJobDetailTab } from '../../hooks/useJobs';
 import type { AirMawbPayload, AirPalletLineDto, UpdateAirMawbDto } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { AIR_BOOKING_FORM_LIMITS, clipAirField } from '../../utils/airBookingFormLimits';
+
+const AIR_PALLET_LIST_ID = 'kfw-air-mawb-pallet-types';
 
 type MawbForm = {
   flight_no: string;
@@ -22,6 +28,17 @@ type MawbForm = {
   width_cm: string;
   height_cm: string;
   weight_kg: string;
+};
+
+type SavedMawbRow = {
+  flight_no: string;
+  flight_status: string;
+  mawb_no: string;
+  hawb_no: string;
+  pallet_count: string;
+  dimensions: string;
+  weight: string;
+  pallet_type: string;
 };
 
 function emptyForm(): MawbForm {
@@ -96,6 +113,30 @@ function payloadToForm(raw: unknown): MawbForm {
   };
 }
 
+function formToSavedRow(form: MawbForm): SavedMawbRow | null {
+  const hasAny = [
+    form.flight_no,
+    form.flight_status,
+    form.mawb_no,
+    form.hawb_no,
+    form.pallet_count,
+    form.dimensions,
+    form.weight,
+    form.pallet_type,
+  ].some((v) => v.trim());
+  if (!hasAny) return null;
+  return {
+    flight_no: form.flight_no.trim(),
+    flight_status: form.flight_status.trim(),
+    mawb_no: form.mawb_no.trim(),
+    hawb_no: form.hawb_no.trim(),
+    pallet_count: form.pallet_count.trim(),
+    dimensions: form.dimensions.trim(),
+    weight: form.weight.trim(),
+    pallet_type: form.pallet_type.trim(),
+  };
+}
+
 interface JobAirMawbPanelProps {
   jobId: string;
 }
@@ -107,6 +148,7 @@ interface JobAirMawbPanelProps {
 export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
   const tabQuery = useJobDetailTab(jobId, 'planned_container', true);
   const mutations = useJobSubresourceMutations(jobId);
+  const palletTypeOptions = useMasterCodeOptions('air-pallet-types', true);
   const [form, setForm] = useState<MawbForm>(emptyForm);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -115,6 +157,8 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
     if (!tabQuery.data) return;
     setForm(payloadToForm(tabQuery.data as AirMawbPayload));
   }, [tabQuery.data]);
+
+  const savedRow = useMemo(() => formToSavedRow(form), [form]);
 
   const setField = (key: keyof MawbForm, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -172,7 +216,7 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
   return (
     <div className="space-y-3">
       <p className="text-[12px] text-[#64748b]">
-        Air jobs use flight / MAWB / HAWB / pallet fields here instead of planned containers.
+        Flight, MAWB / HAWB, and air pallet details for this job.
       </p>
       {error ? (
         <p className="text-sm text-[var(--color-danger-600)]">{error}</p>
@@ -230,12 +274,21 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
             value={form.weight}
             onChange={(e) => setField('weight', e.target.value)}
           />
-          <Input
-            label="Pallet type"
-            maxLength={AIR_BOOKING_FORM_LIMITS.pallet_type}
-            value={form.pallet_type}
-            onChange={(e) => setField('pallet_type', e.target.value)}
-          />
+          <label className="block space-y-1 text-xs font-medium text-[var(--color-neutral-600)]">
+            Pallet type
+            <span className="ml-1 font-normal text-[var(--color-neutral-400)]">
+              (master list or type your own)
+            </span>
+            <Input
+              className="mt-1"
+              maxLength={AIR_BOOKING_FORM_LIMITS.pallet_type}
+              list={AIR_PALLET_LIST_ID}
+              value={form.pallet_type}
+              onChange={(e) => setField('pallet_type', e.target.value)}
+              placeholder="Select or type"
+            />
+          </label>
+          <MasterCodeDatalist id={AIR_PALLET_LIST_ID} options={palletTypeOptions} />
           <Input
             label="Pallet line count"
             type="number"
@@ -275,6 +328,44 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
               {mutations.updateAirMawb.isPending ? 'Saving…' : 'Save MAWB'}
             </Button>
           </div>
+        </div>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Saved MAWB / flight</CardTitle>
+        </CardHeader>
+        <div className="px-4 pb-4 text-sm">
+          {!savedRow ? (
+            <p className="text-[var(--color-neutral-400)]">No MAWB / flight details yet.</p>
+          ) : (
+            <ul className="divide-y divide-[var(--color-neutral-100)]">
+              <li className="flex flex-wrap items-start justify-between gap-2 py-2">
+                <div>
+                  <p className="font-medium">
+                    {savedRow.mawb_no
+                      ? `MAWB ${savedRow.mawb_no}`
+                      : savedRow.hawb_no
+                        ? `HAWB ${savedRow.hawb_no}`
+                        : 'Flight / MAWB'}
+                  </p>
+                  <p className="text-xs text-[var(--color-neutral-500)]">
+                    Flight: {savedRow.flight_no || '—'}
+                    {savedRow.flight_status ? ` · ${savedRow.flight_status}` : ''}
+                    {savedRow.hawb_no && savedRow.mawb_no
+                      ? ` · HAWB ${savedRow.hawb_no}`
+                      : ''}
+                  </p>
+                  <p className="text-xs text-[var(--color-neutral-500)]">
+                    Pallets: {savedRow.pallet_count || '—'}
+                    {savedRow.pallet_type ? ` · ${savedRow.pallet_type}` : ''}
+                    {savedRow.weight ? ` · ${savedRow.weight} kg` : ''}
+                    {savedRow.dimensions ? ` · ${savedRow.dimensions} CBM` : ''}
+                  </p>
+                </div>
+              </li>
+            </ul>
+          )}
         </div>
       </Card>
     </div>

@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -24,6 +25,7 @@ import {
   useJobContainers,
   useJobContainersFill,
 } from '../../hooks/useJobs';
+import type { UpdateJobContainerDto } from '../../types/job.types';
 import {
   assignCargoToContainerFormSchema,
   createJobContainerSchema,
@@ -129,6 +131,28 @@ export function JobContainersPanel({
   const [splitPortions, setSplitPortions] = useState<
     { consignee_id: string; packages: string; gross_weight: string }[]
   >([{ consignee_id: '', packages: '', gross_weight: '' }]);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState<{
+    container_number: string;
+    seal_number: string;
+    status: string;
+    tare_weight: string;
+    max_payload: string;
+    cubic_capacity: string;
+    gross_weight: string;
+    vgm_weight: string;
+    cbm: string;
+  }>({
+    container_number: '',
+    seal_number: '',
+    status: 'EMPTY',
+    tare_weight: '',
+    max_payload: '',
+    cubic_capacity: '',
+    gross_weight: '',
+    vgm_weight: '',
+    cbm: '',
+  });
 
   const fillByContainerId = useMemo(() => {
     const map = new Map<string, ContainerFillInfo>();
@@ -177,7 +201,6 @@ export function JobContainersPanel({
         container_number: number || undefined,
         seal_number: sealNumber.trim() || undefined,
         status,
-        status_code: status,
         cubic_capacity:
           cubic != null && Number.isFinite(cubic) ? cubic : undefined,
         max_payload:
@@ -242,25 +265,44 @@ export function JobContainersPanel({
     if (!ok) setError(null);
   };
 
-  const touchContainer = (c: JobContainer) =>
+  const startEditContainer = (c: JobContainer) => {
+    setEditId(containerRouteKey(c));
+    setEditDraft({
+      container_number: c.container_number ?? '',
+      seal_number: c.seal_number ?? '',
+      status: String(c.status_code || c.status || 'EMPTY'),
+      tare_weight: c.tare_weight != null ? String(c.tare_weight) : '',
+      max_payload: c.max_payload != null ? String(c.max_payload) : '',
+      cubic_capacity: c.cubic_capacity != null ? String(c.cubic_capacity) : '',
+      gross_weight: c.gross_weight != null ? String(c.gross_weight) : '',
+      vgm_weight: c.vgm_weight != null ? String(c.vgm_weight) : '',
+      cbm: c.cbm != null ? String(c.cbm) : '',
+    });
+  };
+
+  const saveEditContainer = (containerId: string) =>
     run(async () => {
-      const statusCode = c.status_code || c.status || 'EMPTY';
-      const dto: {
-        container_number?: string;
-        seal_number?: string;
-        status?: string;
-        status_code?: string;
-      } = {};
-      if (c.container_number) dto.container_number = c.container_number;
-      if (c.seal_number) dto.seal_number = c.seal_number;
-      // Always include status so PATCH is never empty when number/seal are missing.
-      dto.status = statusCode;
-      dto.status_code = statusCode;
-      await mutations.updateContainer.mutateAsync({
-        containerId: containerRouteKey(c),
-        dto,
-      });
-    }, 'Container touched (updated).');
+      const toNum = (raw: string): number | undefined => {
+        const t = raw.trim();
+        if (!t) return undefined;
+        const n = Number(t);
+        return Number.isFinite(n) ? n : undefined;
+      };
+      // BE UpdateJobContainerDto rejects unknown props like status_code.
+      const dto: UpdateJobContainerDto = {
+        container_number: editDraft.container_number.trim() || undefined,
+        seal_number: editDraft.seal_number.trim() || undefined,
+        status: editDraft.status.trim() || 'EMPTY',
+        tare_weight: toNum(editDraft.tare_weight),
+        max_payload: toNum(editDraft.max_payload),
+        cubic_capacity: toNum(editDraft.cubic_capacity),
+        gross_weight: toNum(editDraft.gross_weight),
+        vgm_weight: toNum(editDraft.vgm_weight),
+        cbm: toNum(editDraft.cbm),
+      };
+      await mutations.updateContainer.mutateAsync({ containerId, dto });
+      setEditId(null);
+    }, 'Container updated.');
 
   const openFillEditor = async (c: JobContainer) => {
     const key = containerRouteKey(c);
@@ -460,11 +502,13 @@ export function JobContainersPanel({
               const title =
                 c.container_number?.trim() ||
                 (typeName !== '—' ? typeName : 'Container');
+              const isEditing = editId === routeKey;
               return (
                 <div
                   key={routeKey || c.id}
-                  className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--color-neutral-100)] py-2"
+                  className="space-y-2 border-b border-[var(--color-neutral-100)] py-2"
                 >
+                  <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <p className="font-medium">{title}</p>
                     <p className="text-xs text-[var(--color-neutral-400)]">
@@ -494,9 +538,11 @@ export function JobContainersPanel({
                       type="button"
                       size="sm"
                       variant="secondary"
-                      onClick={() => void touchContainer(c)}
+                      onClick={() =>
+                        isEditing ? setEditId(null) : startEditContainer(c)
+                      }
                     >
-                      Touch update
+                      {isEditing ? 'Cancel edit' : 'Edit'}
                     </Button>
                     <Button
                       type="button"
@@ -529,6 +575,128 @@ export function JobContainersPanel({
                       Remove
                     </Button>
                   </div>
+                  </div>
+                  {isEditing ? (
+                    <div className="grid gap-2 rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] p-3 sm:grid-cols-2 lg:grid-cols-3">
+                      <Input
+                        label="Container number"
+                        value={editDraft.container_number}
+                        onChange={(e) =>
+                          setEditDraft((prev) => ({
+                            ...prev,
+                            container_number: e.target.value,
+                          }))
+                        }
+                      />
+                      <Input
+                        label="Seal number"
+                        value={editDraft.seal_number}
+                        onChange={(e) =>
+                          setEditDraft((prev) => ({
+                            ...prev,
+                            seal_number: e.target.value,
+                          }))
+                        }
+                      />
+                      <label className="block space-y-1 text-xs font-medium text-[var(--color-neutral-600)]">
+                        Status
+                        <select
+                          className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
+                          value={editDraft.status}
+                          onChange={(e) =>
+                            setEditDraft((prev) => ({
+                              ...prev,
+                              status: e.target.value,
+                            }))
+                          }
+                        >
+                          {statusOptions.map((s) => (
+                            <option key={s.code} value={s.code}>
+                              {s.label}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                      <Input
+                        label="Tare weight"
+                        type="number"
+                        value={editDraft.tare_weight}
+                        onChange={(e) =>
+                          setEditDraft((prev) => ({
+                            ...prev,
+                            tare_weight: e.target.value,
+                          }))
+                        }
+                      />
+                      <Input
+                        label="Max payload"
+                        type="number"
+                        value={editDraft.max_payload}
+                        onChange={(e) =>
+                          setEditDraft((prev) => ({
+                            ...prev,
+                            max_payload: e.target.value,
+                          }))
+                        }
+                      />
+                      <Input
+                        label="Cubic capacity"
+                        type="number"
+                        value={editDraft.cubic_capacity}
+                        onChange={(e) =>
+                          setEditDraft((prev) => ({
+                            ...prev,
+                            cubic_capacity: e.target.value,
+                          }))
+                        }
+                      />
+                      <Input
+                        label="Gross weight"
+                        type="number"
+                        value={editDraft.gross_weight}
+                        onChange={(e) =>
+                          setEditDraft((prev) => ({
+                            ...prev,
+                            gross_weight: e.target.value,
+                          }))
+                        }
+                      />
+                      <Input
+                        label="VGM weight"
+                        type="number"
+                        value={editDraft.vgm_weight}
+                        onChange={(e) =>
+                          setEditDraft((prev) => ({
+                            ...prev,
+                            vgm_weight: e.target.value,
+                          }))
+                        }
+                      />
+                      <Input
+                        label="CBM"
+                        type="number"
+                        value={editDraft.cbm}
+                        onChange={(e) =>
+                          setEditDraft((prev) => ({
+                            ...prev,
+                            cbm: e.target.value,
+                          }))
+                        }
+                      />
+                      <div className="sm:col-span-2 lg:col-span-3">
+                        <Button
+                          type="button"
+                          size="sm"
+                          disabled={mutations.updateContainer.isPending}
+                          onClick={() => void saveEditContainer(routeKey)}
+                        >
+                          {mutations.updateContainer.isPending
+                            ? 'Saving…'
+                            : 'Save container'}
+                        </Button>
+                      </div>
+                    </div>
+                  ) : null}
                 </div>
               );
             })
@@ -722,10 +890,12 @@ export function JobContainersPanel({
               </label>
               <button
                 type="button"
-                className="text-[11px] font-medium text-[var(--color-primary-700)] underline"
+                title="Add custom status"
+                aria-label="Add custom status"
+                className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white shadow-sm hover:bg-[var(--color-primary-700)]"
                 onClick={() => setAddStatusOpen(true)}
               >
-                Add custom
+                <Plus className="h-4 w-4" strokeWidth={2.5} />
               </button>
             </div>
             <select

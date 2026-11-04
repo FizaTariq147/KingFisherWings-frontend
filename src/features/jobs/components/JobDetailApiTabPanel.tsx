@@ -925,12 +925,8 @@ function InteractiveTabBody({
       if (key === 'planned_container') {
         return <JobAirMawbPanel jobId={job.id} />;
       }
-      return (
-        <p className="text-[12px] text-[#64748b]">
-          Air import/export uses MAWB / HAWB and air pallets on the planned tab — not
-          actual containers.
-        </p>
-      );
+      // Actual containers hidden for air — cargo lives under Actions.
+      return null;
     }
     return (
       <div className="space-y-3">
