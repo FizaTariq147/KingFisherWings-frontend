@@ -1,7 +1,12 @@
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { JobStatus } from '@/features/jobs/constants/job.constants';
+import type { JobListParams } from '@/features/jobs/types/job.types';
+import { effectiveVisibleJobTypes } from '@/features/jobs/utils/deptAccessFromStaffGrants';
+import { normalizeVisibleJobTypeScope } from '@/features/jobs/utils/visibleJobTypeScope';
 import { PENDING_QUOTATION_STATUSES } from '@/features/quotations/constants/quotation.constants';
 import { quotationService } from '@/features/quotations/services/quotation.service';
 import { uiPeriodToApi } from '@/lib/apiPeriod';
@@ -18,9 +23,29 @@ const COUNT_STATUSES: JobStatus[] = [
   'ON_HOLD',
 ];
 
-async function legacyJobCounts() {
+const EMPTY_JOB_COUNTS = {
+  byStatus: Object.fromEntries(COUNT_STATUSES.map((s) => [s, 0])) as Record<JobStatus, number>,
+  bars: COUNT_STATUSES.map(() => 0),
+  active: 0,
+  inTransit: 0,
+  atOrigin: 0,
+  newJobs: 0,
+  customsHold: 0,
+  docsPending: 0,
+  onHold: 0,
+  delayed: 0,
+  delivered: 0,
+  cancelled: 0,
+  completed: 0,
+  inProgress: 0,
+  open: 0,
+};
+
+async function legacyJobCounts(scopeParams: Pick<JobListParams, 'job_types'>) {
   const pages = await Promise.all(
-    COUNT_STATUSES.map((status) => jobService.list({ page: 1, limit: 1, status })),
+    COUNT_STATUSES.map((status) =>
+      jobService.list({ page: 1, limit: 1, status, ...scopeParams }),
+    ),
   );
   const byStatus = Object.fromEntries(
     COUNT_STATUSES.map((status, i) => [status, pages[i]?.meta.total ?? 0]),
@@ -62,14 +87,32 @@ async function legacyJobCounts() {
 
 export function useDashboardJobCounts(period: DashboardPeriod = 'month') {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const { user } = useAuth();
   const apiPeriod = uiPeriodToApi(period);
+  const jobScope = useMemo(() => {
+    if (user?.unrestrictedOps) return { kind: 'unrestricted' as const };
+    const effective = effectiveVisibleJobTypes(
+      user?.visibleJobTypes,
+      user?.permissions ?? [],
+    );
+    return normalizeVisibleJobTypeScope(effective);
+  }, [user?.unrestrictedOps, user?.visibleJobTypes, user?.permissions]);
+
+  const scopeParams = useMemo((): Pick<JobListParams, 'job_types'> => {
+    if (jobScope.kind === 'locked') return { job_types: [] };
+    if (jobScope.kind === 'scoped') return { job_types: jobScope.types };
+    return {};
+  }, [jobScope]);
+
   return useQuery({
-    queryKey: ['tenant', 'dashboard', 'job-counts', apiPeriod],
+    queryKey: ['tenant', 'dashboard', 'job-counts', apiPeriod, jobScope],
     queryFn: async () => {
+      if (jobScope.kind === 'locked') return EMPTY_JOB_COUNTS;
       try {
+        // BE auto-scopes to visible_job_types when matrix is set.
         return await jobService.dashboardCounts(apiPeriod);
       } catch {
-        return legacyJobCounts();
+        return legacyJobCounts(scopeParams);
       }
     },
     enabled: Boolean(accessToken),

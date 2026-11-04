@@ -35,8 +35,10 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeCode128Value } from '../utils/scannableBarcode';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { jobDetailTabLabel, toApiDetailTabKey } from '../utils/jobDetailTabs';
+import { listRecentCreatedJobIds, rememberCreatedJob } from '../utils/recentCreatedJobs';
 import { resolveJobDocumentFileUrl } from '../utils/resolveJobDocumentFileUrl';
 import { sanitizeModeBookingFormPut } from '../utils/sanitizeModeBookingFormPut';
+import { useAuthStore } from '@/store/authStore';
 
 function jobDetailTabLabelSafe(key: string): string {
   try {
@@ -706,6 +708,52 @@ async function fetchJobsFilteredByTypes(
   };
 }
 
+/**
+ * Interim hydrate when list ACL still hides jobs the staff just created.
+ * Only merges types in the current list scope (visible_job_types / section types).
+ * Permanent fix: BE scopes findAll/getOne/dashboard by visible_job_types only
+ * (converted-customer gate is for quotes, not jobs).
+ */
+async function mergeRecentCreatedJobs(
+  jobs: Job[],
+  opts?: { jobTypes?: Array<NonNullable<JobListParams['job_type']>> | null },
+): Promise<Job[]> {
+  // Explicit empty allow-list → locked scope; do not leak recent creates.
+  if (opts && Array.isArray(opts.jobTypes) && opts.jobTypes.length === 0) {
+    return jobs;
+  }
+
+  const recentIds = listRecentCreatedJobIds({
+    jobTypes: opts?.jobTypes?.map(String) ?? null,
+  });
+  if (!recentIds.length) return jobs;
+
+  const byId = new Map(jobs.map((j) => [j.id, j]));
+  const missing = recentIds.filter((id) => !byId.has(id)).slice(0, 15);
+  if (!missing.length) return jobs;
+
+  const allowed = opts?.jobTypes?.length
+    ? new Set(opts.jobTypes.map((t) => canonicalizeJobType(String(t))))
+    : null;
+
+  await Promise.all(
+    missing.map(async (id) => {
+      try {
+        const job = await findJobByRef(id);
+        if (!job?.id) return;
+        if (allowed && !allowed.has(canonicalizeJobType(String(job.job_type ?? '')))) {
+          return;
+        }
+        byId.set(job.id, job);
+      } catch {
+        /* detail may also be gated — ignore */
+      }
+    }),
+  );
+
+  return [...byId.values()];
+}
+
 export const jobService = {
   /**
    * GET /jobs — API accepts a single `job_type` query.
@@ -715,6 +763,15 @@ export const jobService = {
    */
   async list(params: JobListParams = {}): Promise<JobListResult> {
     try {
+      // Explicit empty scope (visible_job_types: []) — no ops jobs.
+      if (
+        Array.isArray(params.job_types) &&
+        params.job_types.length === 0 &&
+        !params.job_type
+      ) {
+        return emptyJobListResult(clampApiListLimit(params.limit, 20));
+      }
+
       // Never send job_type=ROAD_FREIGHT — backend ACL returns 403 for many roles.
       // Recover ROAD jobs via unfiltered list + quotation hydrate instead.
       const requestedType = params.job_type
@@ -821,9 +878,13 @@ export const jobService = {
           hydrateTypes(multiTypes),
         );
         const allowed = new Set(hydrateTypes(multiTypes).map(String));
-        return paginate(
-          hydrated.filter((j) => allowed.has(canonicalizeJobType(String(j.job_type ?? '')))),
+        const typed = hydrated.filter((j) =>
+          allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
         );
+        const withRecent = await mergeRecentCreatedJobs(typed, {
+          jobTypes: hydrateTypes(multiTypes),
+        });
+        return paginate(withRecent);
       }
 
       if (multiTypes && multiTypes.length > 1) {
@@ -881,6 +942,9 @@ export const jobService = {
         merged = merged.filter((j) =>
           allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
         );
+        merged = await mergeRecentCreatedJobs(merged, {
+          jobTypes: hydrateTypes(multiTypes),
+        });
 
         return paginate(merged);
       }
@@ -889,10 +953,13 @@ export const jobService = {
       if (wantsRoadFreight || !safeParams.job_type) {
         const hydrated = await hydrateJobsFromConvertedQuotes(base.jobs, ['ROAD_FREIGHT']);
         if (requestedType === 'ROAD_FREIGHT') {
+          const roadOnly = hydrated.filter(
+            (j) => canonicalizeJobType(String(j.job_type ?? '')) === 'ROAD_FREIGHT',
+          );
           return paginate(
-            hydrated.filter(
-              (j) => canonicalizeJobType(String(j.job_type ?? '')) === 'ROAD_FREIGHT',
-            ),
+            await mergeRecentCreatedJobs(roadOnly, {
+              jobTypes: ['ROAD_FREIGHT', 'LAND', 'COURIER'],
+            }),
           );
         }
         if (!safeParams.job_type && hydrated.length !== base.jobs.length) {
@@ -900,11 +967,18 @@ export const jobService = {
           for (const j of hydrated) {
             if (!byId.has(j.id)) byId.set(j.id, j);
           }
-          return paginate([...byId.values()]);
+          return paginate(await mergeRecentCreatedJobs([...byId.values()]));
         }
       }
 
-      return base;
+      return {
+        ...base,
+        jobs: await mergeRecentCreatedJobs(base.jobs),
+        meta: {
+          ...base.meta,
+          total: Math.max(base.meta.total, base.jobs.length),
+        },
+      };
     } catch (error) {
       if (isJobTypeAccessError(error)) {
         // Last resort: never surface ROAD_FREIGHT ACL as a hard list failure.
@@ -1431,18 +1505,23 @@ export const jobService = {
       typeof dto.company_id === 'string' ? dto.company_id : undefined,
     );
     const branchId = await ensureJobBranchReady(companyId || undefined);
+    const sessionUserId = useAuthStore.getState().user?.id?.trim() || '';
 
     const dtoWithContext: CreateJobDto = {
       ...(companyId && !dto.company_id ? { ...dto, company_id: companyId } : dto),
       branch_id: branchId,
+      // So dashboard "My jobs" and ops assignment match the creator when blank.
+      ...(sessionUserId && !dto.ops_user_id ? { ops_user_id: sessionUserId } : {}),
     };
 
     const body = prepareJobPayload(dtoWithContext);
 
-    return request(
+    const created = await request(
       () => axiosInstance.post(JOB_API.list, body, JOB_POST_AXIOS_CONFIG),
       normalizeJob,
     );
+    if (created?.id) rememberCreatedJob(created);
+    return created;
   },
 
   async update(id: string, dto: UpdateJobDto): Promise<Job> {
