@@ -26,9 +26,9 @@ export function jobDetailTabLabel(key: string): string {
     case 'dimensions':
       return 'Dimensions';
     case 'planned_container':
-      return 'Planned containers';
+      return 'Containers';
     case 'actual_container':
-      return 'Actual containers';
+      return 'Containers';
     case 'mawb':
       return 'MAWB';
     case 'costing':
@@ -359,8 +359,8 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
     if (!key || seen.has(key) || isJobActionPanelKey(key) || isOpsContinuumMetaTab(key)) {
       continue;
     }
-    // Air: no actual-container tab — use Actions → Cargo instead.
-    if (isAirwayBillJobType(job.job_type) && key === 'actual_container') {
+    // One containers tab only — planned mirrors actual; MAWB for air lives on actual.
+    if (key === 'planned_container') {
       continue;
     }
     seen.add(key);
@@ -374,8 +374,10 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
       lower !== 'organisation'
         ? apiLabel
         : jobDetailTabLabel(key);
-    if (key === 'planned_container' && isAirwayBillJobType(job.job_type)) {
+    if (key === 'actual_container' && isAirwayBillJobType(job.job_type)) {
       label = 'MAWB';
+    } else if (key === 'actual_container') {
+      label = 'Containers';
     }
     out.push({ key, label });
   }

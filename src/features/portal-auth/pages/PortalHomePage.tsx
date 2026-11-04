@@ -316,6 +316,7 @@ export default function PortalHomePage() {
         items={shipmentItems}
         loading={recentShipments.isLoading}
         error={recentShipments.isError}
+        activeTotal={shipmentActive}
       />
 
       <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2">

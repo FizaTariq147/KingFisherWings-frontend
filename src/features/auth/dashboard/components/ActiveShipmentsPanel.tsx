@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react';
+import { useQueries } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Briefcase,
@@ -17,9 +18,14 @@ import {
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import { DashCard, DashEmpty, DashSkeleton } from './DashCard';
+import { jobKeys } from '@/features/jobs/hooks/useJobs';
+import { jobService } from '@/features/jobs/services/job.service';
 import type { Job } from '@/features/jobs/types/job.types';
+import { isAirwayBillJobType } from '@/features/jobs/utils/jobDetailTabs';
 import { jobDetailPath, jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { pickJobContainerDisplay } from '@/features/jobs/utils/normalizeJobContainers';
+import { isUuid } from '@/lib/isUuid';
+import { useAuthStore } from '@/store/authStore';
 import {
   deptBadgeClass,
   deptForStatus,
@@ -30,6 +36,7 @@ import {
   isDocsPending,
   jobClient,
   jobInitials,
+  jobMawbHawb,
   jobMetaHints,
   jobMode,
   jobModeDetail,
@@ -159,12 +166,15 @@ export function ActiveShipmentsPanel({
       if (!matchesView(job, view, userId)) return false;
       if (!matchesChip(job, chip)) return false;
       if (!q) return true;
+      const awb = jobMawbHawb(job);
       const hay = [
         jobDisplayNumber(job),
         jobClient(job),
         jobPortCode(job.origin_port_code),
         jobPortCode(job.dest_port_code),
         job.status,
+        awb.mawb,
+        awb.hawb,
       ]
         .filter(Boolean)
         .join(' ')
@@ -174,6 +184,42 @@ export function ActiveShipmentsPanel({
   }, [active, view, chip, query, userId]);
 
   const visibleRows = filtered.slice(0, 8);
+  const accessToken = useAuthStore((s) => s.accessToken);
+  /** Air jobs missing AWB on list — hydrate from GET /jobs/:id/detail. */
+  const airJobsNeedingDetail = useMemo(
+    () =>
+      visibleRows.filter((job) => {
+        if (!isAirwayBillJobType(job.job_type) || !isUuid(job.id)) return false;
+        const awb = jobMawbHawb(job);
+        return !awb.mawb && !awb.hawb;
+      }),
+    [visibleRows],
+  );
+  const airDetailQueries = useQueries({
+    queries: airJobsNeedingDetail.map((job) => ({
+      queryKey: [...jobKeys.detail(job.id), 'dashboard-awb'] as const,
+      queryFn: () => jobService.getDetail(job.id),
+      enabled: Boolean(accessToken) && isUuid(job.id),
+      staleTime: 60_000,
+    })),
+  });
+  const airDetailById = useMemo(() => {
+    const map = new Map<string, Job>();
+    airJobsNeedingDetail.forEach((job, i) => {
+      const detail = airDetailQueries[i]?.data;
+      if (detail) map.set(job.id, detail);
+    });
+    return map;
+  }, [airJobsNeedingDetail, airDetailQueries]);
+  const airDetailLoadingIds = useMemo(() => {
+    const set = new Set<string>();
+    airJobsNeedingDetail.forEach((job, i) => {
+      if (airDetailQueries[i]?.isLoading || airDetailQueries[i]?.isFetching) {
+        set.add(job.id);
+      }
+    });
+    return set;
+  }, [airJobsNeedingDetail, airDetailQueries]);
   const loadingRowCount = Math.min(8, Math.max(1, active.length || 3));
 
   const inTransitCount = chipCounts.in_transit + chipCounts.customs;
@@ -292,7 +338,15 @@ export function ActiveShipmentsPanel({
             );
           })}
           <span className="ml-auto text-[11px] text-[var(--color-neutral-400)]">
-            {filtered.length} shipment{filtered.length === 1 ? '' : 's'}
+            {view === 'all' && chip === 'all' && typeof activeTotal === 'number'
+              ? activeTotal
+              : filtered.length}{' '}
+            shipment
+            {(view === 'all' && chip === 'all' && typeof activeTotal === 'number'
+              ? activeTotal
+              : filtered.length) === 1
+              ? ''
+              : 's'}
           </span>
         </div>
       </div>
@@ -313,13 +367,14 @@ export function ActiveShipmentsPanel({
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1180px] text-left">
+          <table className="w-full min-w-[1280px] text-left">
             <thead className="bg-[var(--color-neutral-50)]">
               <tr className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-neutral-400)]">
                 <th className="w-10 px-4 py-2.5" />
                 <th className="px-3 py-2.5 font-semibold">Job</th>
                 <th className="px-3 py-2.5 font-semibold">Route</th>
                 <th className="px-3 py-2.5 font-semibold">Mode</th>
+                <th className="px-3 py-2.5 font-semibold">MAWB / HAWB</th>
                 <th className="px-3 py-2.5 font-semibold">Container</th>
                 <th className="px-3 py-2.5 font-semibold">Container status</th>
                 <th className="px-3 py-2.5 font-semibold">With dept</th>
@@ -347,6 +402,13 @@ export function ActiveShipmentsPanel({
                 const containerNumber = container?.number || '';
                 const containerStatus = container?.status || '';
                 const containerKind = container?.kind;
+                const hydrated = airDetailById.get(job.id);
+                const awb = jobMawbHawb(hydrated ?? job);
+                const awbPending =
+                  isAirwayBillJobType(job.job_type) &&
+                  !awb.mawb &&
+                  !awb.hawb &&
+                  airDetailLoadingIds.has(job.id);
 
                 return (
                   <tr
@@ -426,6 +488,26 @@ export function ActiveShipmentsPanel({
                         )}
                         {modeLabel}
                       </div>
+                    </td>
+                    <td className="px-3 py-3 align-top">
+                      {awb.mawb || awb.hawb ? (
+                        <div className="min-w-[110px] space-y-0.5">
+                          {awb.mawb ? (
+                            <p className="text-[11px] font-semibold text-[var(--color-neutral-800)]">
+                              MAWB {awb.mawb}
+                            </p>
+                          ) : null}
+                          {awb.hawb ? (
+                            <p className="text-[10px] text-[var(--color-neutral-500)]">
+                              HAWB {awb.hawb}
+                            </p>
+                          ) : null}
+                        </div>
+                      ) : awbPending ? (
+                        <span className="text-[11px] text-[var(--color-neutral-400)]">…</span>
+                      ) : (
+                        <span className="text-[11px] text-[var(--color-neutral-400)]">—</span>
+                      )}
                     </td>
                     <td className="px-3 py-3 align-top">
                       {containerNumber ? (

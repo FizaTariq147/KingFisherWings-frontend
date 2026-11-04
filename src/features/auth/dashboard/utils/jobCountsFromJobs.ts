@@ -1,17 +1,8 @@
 import type { Job } from '@/features/jobs/types/job.types';
 import type { JobStatus } from '@/features/jobs/constants/job.constants';
-import { isActiveJob } from './dashboardFormat';
+import { isActiveJob, OPEN_JOB_STATUSES } from './dashboardFormat';
 
-const COUNT_STATUSES: JobStatus[] = [
-  'ENQUIRY',
-  'QUOTATION',
-  'BOOKING_CONFIRMED',
-  'IN_PROGRESS',
-  'DOCS_PENDING',
-  'CUSTOMS_CLEARANCE',
-  'DELIVERED',
-  'ON_HOLD',
-];
+const COUNT_STATUSES: JobStatus[] = [...OPEN_JOB_STATUSES];
 
 export type DerivedJobCounts = {
   byStatus: Record<JobStatus, number>;

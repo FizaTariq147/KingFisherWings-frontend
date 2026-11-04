@@ -947,26 +947,42 @@ export function normalizeJob(raw: unknown): Job | null {
       ) ?? undefined,
     created_at: pickString(r, 'created_at', 'createdAt') || undefined,
     updated_at: pickString(r, 'updated_at', 'updatedAt') || undefined,
-    air_details: air
-      ? {
-          airline_id: pickString(air, 'airline_id', 'airlineId') || undefined,
-          origin_airport_id: pickString(air, 'origin_airport_id', 'originAirportId') || undefined,
-          dest_airport_id: pickString(air, 'dest_airport_id', 'destAirportId') || undefined,
-          hawb_number: pickString(air, 'hawb_number', 'hawbNumber') || undefined,
-          mawb_number: pickString(air, 'mawb_number', 'mawbNumber') || undefined,
-          flight_number: pickString(air, 'flight_number', 'flightNumber') || undefined,
-          flight_status: pickString(air, 'flight_status', 'flightStatus') || undefined,
-          flight_date: pickString(air, 'flight_date', 'flightDate') || undefined,
-          pallet_count: num(air.pallet_count ?? air.palletCount),
-          dimensions: num(air.dimensions ?? air.volume_cbm ?? air.volumeCbm),
-          weight: num(air.weight ?? air.gross_weight_kg ?? air.grossWeightKg),
-          screened: bool(air.screened),
-          screening_ref: pickString(air, 'screening_ref', 'screeningRef') || undefined,
-          awb_type: pickString(air, 'awb_type', 'awbType') || undefined,
-          freight_type: pickString(air, 'freight_type', 'freightType') || undefined,
-          conversion_factor: num(air.conversion_factor ?? air.conversionFactor),
-        }
-      : undefined,
+    air_details:
+      air ||
+      pickString(r, 'mawb_number', 'mawbNumber', 'hawb_number', 'hawbNumber')
+        ? {
+            airline_id:
+              pickString(air ?? {}, 'airline_id', 'airlineId') || undefined,
+            origin_airport_id:
+              pickString(air ?? {}, 'origin_airport_id', 'originAirportId') || undefined,
+            dest_airport_id:
+              pickString(air ?? {}, 'dest_airport_id', 'destAirportId') || undefined,
+            hawb_number:
+              pickString(air ?? {}, 'hawb_number', 'hawbNumber') ||
+              pickString(r, 'hawb_number', 'hawbNumber') ||
+              undefined,
+            mawb_number:
+              pickString(air ?? {}, 'mawb_number', 'mawbNumber') ||
+              pickString(r, 'mawb_number', 'mawbNumber') ||
+              undefined,
+            flight_number:
+              pickString(air ?? {}, 'flight_number', 'flightNumber') ||
+              pickString(r, 'flight_number', 'flightNumber') ||
+              undefined,
+            flight_status:
+              pickString(air ?? {}, 'flight_status', 'flightStatus') || undefined,
+            flight_date: pickString(air ?? {}, 'flight_date', 'flightDate') || undefined,
+            pallet_count: num(air?.pallet_count ?? air?.palletCount),
+            dimensions: num(air?.dimensions ?? air?.volume_cbm ?? air?.volumeCbm),
+            weight: num(air?.weight ?? air?.gross_weight_kg ?? air?.grossWeightKg),
+            screened: air ? bool(air.screened) : undefined,
+            screening_ref:
+              pickString(air ?? {}, 'screening_ref', 'screeningRef') || undefined,
+            awb_type: pickString(air ?? {}, 'awb_type', 'awbType') || undefined,
+            freight_type: pickString(air ?? {}, 'freight_type', 'freightType') || undefined,
+            conversion_factor: num(air?.conversion_factor ?? air?.conversionFactor),
+          }
+        : undefined,
     sea_fcl_details: sea
       ? {
           shipping_line_id: pickString(sea, 'shipping_line_id', 'shippingLineId') || undefined,

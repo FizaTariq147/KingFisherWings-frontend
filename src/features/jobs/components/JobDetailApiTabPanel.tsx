@@ -921,22 +921,15 @@ function InteractiveTabBody({
     return <JobDimensionsPanel job={job} onChanged={onChanged} />;
   }
   if (key === 'planned_container' || key === 'actual_container') {
+    // Planned tab is hidden — one Containers/MAWB surface on actual_container.
+    if (key === 'planned_container') return null;
     if (isAirwayBillJobType(job.job_type)) {
-      if (key === 'planned_container') {
-        return <JobAirMawbPanel jobId={job.id} />;
-      }
-      // Actual containers hidden for air — cargo lives under Actions.
-      return null;
+      return <JobAirMawbPanel jobId={job.id} />;
     }
     return (
       <div className="space-y-3">
-        <p className="text-[12px] text-[#64748b]">
-          {key === 'planned_container' ? 'Planned containers' : 'Actual containers'}
-        </p>
-        <JobContainersPanel
-          jobId={job.id}
-          containerKind={key === 'actual_container' ? 'ACTUAL' : 'PLANNED'}
-        />
+        <p className="text-[12px] text-[#64748b]">Containers</p>
+        <JobContainersPanel jobId={job.id} containerKind="ACTUAL" />
       </div>
     );
   }

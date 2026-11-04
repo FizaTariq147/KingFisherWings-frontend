@@ -1,23 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
 import { jobService } from '@/features/jobs/services/job.service';
-import type { JobStatus, JobType } from '@/features/jobs/constants/job.constants';
+import type { JobStatus } from '@/features/jobs/constants/job.constants';
 import type { JobListParams } from '@/features/jobs/types/job.types';
 import { PENDING_QUOTATION_STATUSES } from '@/features/quotations/constants/quotation.constants';
 import { quotationService } from '@/features/quotations/services/quotation.service';
 import { uiPeriodToApi } from '@/lib/apiPeriod';
-import type { DashboardPeriod } from '../utils/dashboardFormat';
-
-const COUNT_STATUSES: JobStatus[] = [
-  'ENQUIRY',
-  'QUOTATION',
-  'BOOKING_CONFIRMED',
-  'IN_PROGRESS',
-  'DOCS_PENDING',
-  'CUSTOMS_CLEARANCE',
-  'DELIVERED',
-  'ON_HOLD',
-];
+import { OPEN_JOB_STATUSES, type DashboardPeriod } from '../utils/dashboardFormat';
 
 type JobCountsShape = {
   byStatus: Record<JobStatus, number>;
@@ -38,8 +27,11 @@ type JobCountsShape = {
 };
 
 const EMPTY_COUNTS: JobCountsShape = {
-  byStatus: Object.fromEntries(COUNT_STATUSES.map((s) => [s, 0])) as Record<JobStatus, number>,
-  bars: COUNT_STATUSES.map(() => 0),
+  byStatus: Object.fromEntries(OPEN_JOB_STATUSES.map((s) => [s, 0])) as Record<
+    JobStatus,
+    number
+  >,
+  bars: OPEN_JOB_STATUSES.map(() => 0),
   active: 0,
   inTransit: 0,
   atOrigin: 0,
@@ -58,6 +50,7 @@ const EMPTY_COUNTS: JobCountsShape = {
 /**
  * Open-ops snapshot from GET /jobs (no period, no client hydrate).
  * Admin: omit job_types. Staff: pass visible allowed types so totals match sections.
+ * Active = sum of every non-closed status (matches isActiveJob / Active shipments).
  */
 async function legacyJobCounts(
   scopeParams: Pick<JobListParams, 'job_types'> = {},
@@ -66,7 +59,7 @@ async function legacyJobCounts(
     return EMPTY_COUNTS;
   }
   const pages = await Promise.all(
-    COUNT_STATUSES.map((status) =>
+    OPEN_JOB_STATUSES.map((status) =>
       jobService.list({
         page: 1,
         limit: 1,
@@ -77,27 +70,21 @@ async function legacyJobCounts(
     ),
   );
   const byStatus = Object.fromEntries(
-    COUNT_STATUSES.map((status, i) => [status, pages[i]?.meta.total ?? 0]),
+    OPEN_JOB_STATUSES.map((status, i) => [status, pages[i]?.meta.total ?? 0]),
   ) as Record<JobStatus, number>;
   const inTransit = (byStatus.IN_PROGRESS ?? 0) + (byStatus.CUSTOMS_CLEARANCE ?? 0);
   const atOrigin =
     (byStatus.BOOKING_CONFIRMED ?? 0) +
     (byStatus.DOCS_PENDING ?? 0) +
-    (byStatus.ENQUIRY ?? 0);
-  const newJobs = (byStatus.ENQUIRY ?? 0) + (byStatus.QUOTATION ?? 0);
-  const active =
     (byStatus.ENQUIRY ?? 0) +
-    (byStatus.QUOTATION ?? 0) +
-    (byStatus.BOOKING_CONFIRMED ?? 0) +
-    (byStatus.IN_PROGRESS ?? 0) +
-    (byStatus.DOCS_PENDING ?? 0) +
-    (byStatus.CUSTOMS_CLEARANCE ?? 0) +
-    (byStatus.DELIVERED ?? 0) +
-    (byStatus.ON_HOLD ?? 0);
+    (byStatus.APPROVED ?? 0) +
+    (byStatus.OPEN ?? 0);
+  const newJobs = (byStatus.ENQUIRY ?? 0) + (byStatus.QUOTATION ?? 0);
+  const active = OPEN_JOB_STATUSES.reduce((sum, s) => sum + (byStatus[s] ?? 0), 0);
   const onHold = byStatus.ON_HOLD ?? 0;
   return {
     byStatus,
-    bars: COUNT_STATUSES.map((status) => byStatus[status] ?? 0),
+    bars: OPEN_JOB_STATUSES.map((status) => byStatus[status] ?? 0),
     active,
     inTransit,
     atOrigin,
@@ -116,12 +103,13 @@ async function legacyJobCounts(
 
 export type DashboardJobCountScope = {
   kind: 'unrestricted' | 'locked' | 'scoped';
-  jobTypes?: JobType[];
+  jobTypes?: import('@/features/jobs/constants/job.constants').JobType[];
 };
 
 /**
  * Dashboard job KPIs — same allow-list as job sections.
  * Admin/unrestricted: all types. Staff: only visible_job_types (all creators).
+ * `active` always comes from open-status list meta totals (not period dashboard total).
  */
 export function useDashboardJobCounts(
   period: DashboardPeriod = 'month',
@@ -142,8 +130,8 @@ export function useDashboardJobCounts(
     queryFn: async () => {
       if (scope.kind === 'locked') return EMPTY_COUNTS;
       const listCounts = await legacyJobCounts(scopeParams);
-      // Prefer list totals (match sections). Merge period extras when unrestricted.
-      if (scope.kind !== 'unrestricted') return listCounts;
+      // List open-status totals are the source of truth for Active jobs / grid.
+      // Dashboard-counts only supplements period-ish extras (never overwrite active).
       try {
         const apiCounts = await jobService.dashboardCounts(apiPeriod);
         return {
@@ -151,8 +139,6 @@ export function useDashboardJobCounts(
           delayed: Math.max(listCounts.delayed, apiCounts.delayed ?? 0),
           cancelled: Math.max(listCounts.cancelled, apiCounts.cancelled ?? 0),
           completed: Math.max(listCounts.completed, apiCounts.completed ?? 0),
-          // Admin total includes every job type from the open-ops list path.
-          active: Math.max(listCounts.active, apiCounts.active ?? 0),
         };
       } catch {
         return listCounts;

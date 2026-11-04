@@ -280,8 +280,13 @@ export const createJobContainerSchema = z
     gross_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
     vgm_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
     cbm: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
-    /** Any active tenant catalog code (system seeds + custom). Sent as `status` only. */
-    status: z.string().trim().max(40).default('EMPTY'),
+    /**
+     * JobContainer.status Prisma enum (OpenAPI CreateJobContainerDto).
+     * Custom catalog codes belong on show-all primary_container_status, not here.
+     */
+    status: z
+      .enum(['EMPTY', 'STUFFED', 'GATED_IN', 'LOADED', 'IN_TRANSIT', 'DISCHARGED', 'RETURNED'])
+      .default('EMPTY'),
     gate_in_at: optionalTextUndef({ max: 32 }),
     is_soc: z.boolean().optional(),
   })
