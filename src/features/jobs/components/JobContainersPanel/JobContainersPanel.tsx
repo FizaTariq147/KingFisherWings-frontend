@@ -11,16 +11,15 @@ import {
   resolveContainerTypeName,
 } from '@/features/masters/utils/containerTypeLabel';
 import { useParties } from '@/features/parties/hooks/useParties';
+import { AddStatusCatalogModal } from '@/features/shared/status-catalog';
 import { isUuid } from '@/lib/isUuid';
 import { useInlineValidation } from '@/lib/validation';
-import {
-  CONTAINER_STATUSES,
-  type ContainerStatus,
-} from '../../constants/job.constants';
+import { CONTAINER_STATUSES } from '../../constants/job.constants';
 import { jobService } from '../../services/job.service';
 import { useJobActions } from '../../hooks/useJobActions';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import {
+  useContainerStatusCatalog,
   useJobCargo,
   useJobContainers,
   useJobContainersFill,
@@ -71,6 +70,23 @@ export function JobContainersPanel({
   });
   const mutations = useJobSubresourceMutations(jobId);
   const actions = useJobActions(jobId);
+  const {
+    data: statusCatalog = [],
+    refetch: refetchStatusCatalog,
+  } = useContainerStatusCatalog();
+  const [addStatusOpen, setAddStatusOpen] = useState(false);
+  const statusOptions = useMemo(() => {
+    if (statusCatalog.length) {
+      return statusCatalog.map((row) => ({
+        code: row.code,
+        label: row.label || row.code.replaceAll('_', ' '),
+      }));
+    }
+    return CONTAINER_STATUSES.map((s) => ({
+      code: s,
+      label: s.replaceAll('_', ' '),
+    }));
+  }, [statusCatalog]);
   const containerTypeOptions = useMemo(
     () => containerTypeSelectOptions(containerTypes),
     [containerTypes],
@@ -104,7 +120,7 @@ export function JobContainersPanel({
   const [containerTypeId, setContainerTypeId] = useState('');
   const [containerNumber, setContainerNumber] = useState('');
   const [sealNumber, setSealNumber] = useState('');
-  const [status, setStatus] = useState<ContainerStatus>('EMPTY');
+  const [status, setStatus] = useState('EMPTY');
   const [addCubicCapacity, setAddCubicCapacity] = useState('');
   const [addMaxPayload, setAddMaxPayload] = useState('');
   const [assignCargoId, setAssignCargoId] = useState('');
@@ -161,6 +177,7 @@ export function JobContainersPanel({
         container_number: number || undefined,
         seal_number: sealNumber.trim() || undefined,
         status,
+        status_code: status,
         cubic_capacity:
           cubic != null && Number.isFinite(cubic) ? cubic : undefined,
         max_payload:
@@ -227,15 +244,18 @@ export function JobContainersPanel({
 
   const touchContainer = (c: JobContainer) =>
     run(async () => {
+      const statusCode = c.status_code || c.status || 'EMPTY';
       const dto: {
         container_number?: string;
         seal_number?: string;
-        status?: ContainerStatus;
+        status?: string;
+        status_code?: string;
       } = {};
       if (c.container_number) dto.container_number = c.container_number;
       if (c.seal_number) dto.seal_number = c.seal_number;
       // Always include status so PATCH is never empty when number/seal are missing.
-      dto.status = c.status ?? 'EMPTY';
+      dto.status = statusCode;
+      dto.status_code = statusCode;
       await mutations.updateContainer.mutateAsync({
         containerId: containerRouteKey(c),
         dto,
@@ -696,17 +716,26 @@ export function JobContainersPanel({
             />
           </div>
           <div className="space-y-1">
-            <label className="text-xs font-medium text-[var(--color-neutral-600)]">
-              Status
-            </label>
+            <div className="flex items-center justify-between gap-2">
+              <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+                Status
+              </label>
+              <button
+                type="button"
+                className="text-[11px] font-medium text-[var(--color-primary-700)] underline"
+                onClick={() => setAddStatusOpen(true)}
+              >
+                Add custom
+              </button>
+            </div>
             <select
               className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
               value={status}
-              onChange={(e) => setStatus(e.target.value as ContainerStatus)}
+              onChange={(e) => setStatus(e.target.value)}
             >
-              {CONTAINER_STATUSES.map((s) => (
-                <option key={s} value={s}>
-                  {s.replace(/_/g, ' ')}
+              {statusOptions.map((s) => (
+                <option key={s.code} value={s.code}>
+                  {s.label}
                 </option>
               ))}
             </select>
@@ -982,6 +1011,16 @@ export function JobContainersPanel({
           </Button>
         </div>
       </Card>
+      <AddStatusCatalogModal
+        open={addStatusOpen}
+        onClose={() => setAddStatusOpen(false)}
+        entity="container-statuses"
+        nested={false}
+        onCreated={(code) => {
+          setStatus(code);
+          void refetchStatusCatalog();
+        }}
+      />
     </div>
   );
 }

@@ -2,8 +2,11 @@ import { Ban, CheckCircle2, Eye, Pencil, Trash2, XCircle } from 'lucide-react';
 import { KebabMenu, MenuItem } from '@/components/ui/KebabMenu';
 import { useAuth } from '@/hooks/useAuth';
 import type { Job } from '../../types/job.types';
-import { canDeleteJob } from '../../utils/canDeleteJob';
-import { jobEditable } from '../../utils/jobRoute';
+import {
+  canCancelJob,
+  canDeleteJob,
+  canEditJob,
+} from '../../utils/canDeleteJob';
 
 interface JobActionMenuProps {
   job: Job;
@@ -25,15 +28,13 @@ export function JobActionMenu({
   onDelete,
 }: JobActionMenuProps) {
   const { user } = useAuth();
-  const editable =
-    job.actions?.can_edit === false ? false : jobEditable(job.status);
+  const editable = canEditJob(job, user);
   const canDelete = canDeleteJob(job, user);
   const canClose =
     job.actions?.can_close === false
       ? false
       : editable && job.status !== 'ENQUIRY';
-  const canCancel =
-    job.actions?.can_cancel === false ? false : editable;
+  const canCancel = canCancelJob(job, user);
 
   return (
     <KebabMenu disabled={disabled} aria-label="Job actions">

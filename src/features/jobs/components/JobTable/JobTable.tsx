@@ -8,8 +8,10 @@ import { erpTable, listShell } from '@/lib/erpTypography';
 import { useMemo } from 'react';
 import { JOB_TYPE_LABELS } from '../../constants/job.constants';
 import type { Job, PaginationMeta } from '../../types/job.types';
-import { jobDisplayNumber, jobEditable } from '../../utils/jobRoute';
+import { jobDisplayNumber } from '../../utils/jobRoute';
 import { jobPartyLabel, jobRouteLabel, jobScheduleLabel } from '../../utils/jobDisplay';
+import { useAuth } from '@/hooks/useAuth';
+import { canEditJob } from '../../utils/canDeleteJob';
 import { JobActionMenu } from '../JobActionMenu';
 import { JobStatusBadge } from '../JobStatusBadge';
 
@@ -40,6 +42,7 @@ export function JobTable({
   onClose,
   onDelete,
 }: JobTableProps) {
+  const { user } = useAuth();
   const { data: partiesResult } = useParties({
     page: 1,
     limit: 100,
@@ -83,7 +86,7 @@ export function JobTable({
               </tr>
             ) : (
               jobs.map((j) => {
-                const canEdit = jobEditable(j.status);
+                const canEdit = canEditJob(j, user);
                 return (
                   <tr
                     key={j.id}

@@ -109,7 +109,19 @@ export function normalizeJobContainer(raw: unknown): JobContainer | null {
     ),
     seal_number: pickString(r.seal_number, r.sealNumber, r.seal),
     status: normalizeStatus(
-      r.status ?? r.container_status ?? r.containerStatus ?? r.state,
+      r.status_code ??
+        r.statusCode ??
+        r.status ??
+        r.container_status ??
+        r.containerStatus ??
+        r.state,
+    ),
+    status_code: pickString(
+      r.status_code,
+      r.statusCode,
+      r.status,
+      r.container_status,
+      r.containerStatus,
     ),
     tare_weight: pickNumber(r.tare_weight, r.tareWeight),
     max_payload: pickNumber(r.max_payload, r.maxPayload),

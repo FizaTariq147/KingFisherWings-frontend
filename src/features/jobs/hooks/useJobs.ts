@@ -34,6 +34,8 @@ export const jobKeys = {
   cargo: (id: string) => [...jobKeys.all, 'cargo', id] as const,
   cutoffs: (id: string) => [...jobKeys.all, 'cutoffs', id] as const,
   billsOfLading: (id: string) => [...jobKeys.all, 'bills-of-lading', id] as const,
+  airWaybills: (id: string) => [...jobKeys.all, 'air-waybills', id] as const,
+  containerStatuses: [...(['tenant', 'jobs'] as const), 'container-statuses'] as const,
   stuffing: (id: string) => [...jobKeys.all, 'stuffing', id] as const,
   deposits: (id: string) => [...jobKeys.all, 'deposits', id] as const,
   freeDays: (id: string) => [...jobKeys.all, 'free-days', id] as const,
@@ -58,8 +60,6 @@ export const jobKeys = {
   jobReferences: (id: string) => [...jobKeys.all, 'job-references', id] as const,
   jobEmailRecipientsSuggest: (id: string) =>
     [...jobKeys.all, 'job-email-recipients-suggest', id] as const,
-  chargeAttachments: (id: string, chargeId: string) =>
-    [...jobKeys.all, 'charge-attachments', id, chargeId] as const,
   profitShareCalculator: (id: string) =>
     [...jobKeys.all, 'profit-share-calculator', id] as const,
   profitShareAccounts: (id: string, search: string) =>
@@ -573,6 +573,26 @@ export function useJobBillsOfLading(id: string, enabled = true) {
     queryKey: jobKeys.billsOfLading(id),
     queryFn: () => jobService.listBillsOfLading(id),
     enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useJobAirWaybills(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.airWaybills(id),
+    queryFn: () => jobService.listAirWaybills(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+/** GET /jobs/container-statuses — active system + custom codes for dropdowns. */
+export function useContainerStatusCatalog(enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.containerStatuses,
+    queryFn: () => jobService.listContainerStatuses(),
+    enabled: Boolean(accessToken) && enabled,
+    staleTime: 60_000,
   });
 }
 

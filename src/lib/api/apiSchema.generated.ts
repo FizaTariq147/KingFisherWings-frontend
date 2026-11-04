@@ -520,6 +520,9 @@ export const API_MAX_LENGTH = {
   "UpsertAirBookingFormDto": {
     "commodity": 500,
     "flight_number": 20,
+    "flight_status": 40,
+    "mawb_number": 50,
+    "hawb_number": 50,
     "origin_airport_code": 10,
     "dest_airport_code": 10,
     "arrival_flight_number": 20,

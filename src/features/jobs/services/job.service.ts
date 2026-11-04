@@ -13,6 +13,9 @@ import {
   normalizeJobCharges,
   normalizeJobPnl,
   normalizeJobs,
+  normalizeAirWaybill,
+  normalizeContainerStatusCatalog,
+  normalizeContainerStatusCatalogRow,
   normalizeJobStatusOptions,
   normalizePaginationMeta,
   unwrapEntity,
@@ -1375,6 +1378,61 @@ export const jobService = {
     assertId(id);
     try {
       await withGatewayRetry(() => axiosInstance.delete(JOB_API.statusCatalogById(id)));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /jobs/container-statuses — system + custom (active preferred). */
+  async listContainerStatuses(): Promise<
+    import('../types/job.types').ContainerStatusCatalogOption[]
+  > {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.containerStatuses),
+      );
+      return normalizeContainerStatusCatalog(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async createContainerStatus(
+    dto: import('../types/job.types').CreateContainerStatusCatalogDto,
+  ): Promise<import('../types/job.types').ContainerStatusCatalogOption> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.containerStatuses, dto),
+      );
+      const row = normalizeContainerStatusCatalogRow(unwrapEntity(res.data));
+      if (!row) throw new Error('Container status create returned no row.');
+      return row;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async updateContainerStatus(
+    id: string,
+    dto: import('../types/job.types').UpdateContainerStatusCatalogDto,
+  ): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(JOB_API.containerStatusById(id), dto),
+      );
+      return unwrapEntity(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  async deactivateContainerStatus(id: string): Promise<void> {
+    assertId(id);
+    try {
+      await withGatewayRetry(() =>
+        axiosInstance.delete(JOB_API.containerStatusById(id)),
+      );
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -3829,6 +3887,45 @@ export const jobService = {
     return requestVoid(() => axiosInstance.delete(JOB_API.billOfLading(id, blId)));
   },
 
+  async listAirWaybills(id: string): Promise<import('../types/job.types').JobAirWaybill[]> {
+    assertId(id);
+    const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.airWaybills(id)));
+    return unwrapList(res.data).items.map((row) => normalizeAirWaybill(row)).filter(
+      (r): r is import('../types/job.types').JobAirWaybill => Boolean(r),
+    );
+  },
+
+  async createAirWaybill(
+    id: string,
+    dto: import('../types/job.types').UpsertAirWaybillDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.post(JOB_API.airWaybills(id), dto));
+  },
+
+  async updateAirWaybill(
+    id: string,
+    awbId: string,
+    dto: import('../types/job.types').UpdateAirWaybillDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.patch(JOB_API.airWaybill(id, awbId), dto));
+  },
+
+  async deleteAirWaybill(id: string, awbId: string): Promise<void> {
+    assertId(id);
+    return requestVoid(() => axiosInstance.delete(JOB_API.airWaybill(id, awbId)));
+  },
+
+  /** PUT /jobs/:id/detail/mawb — air planned-container MAWB fields. */
+  async updateAirMawb(
+    id: string,
+    dto: import('../types/job.types').UpdateAirMawbDto,
+  ): Promise<unknown> {
+    assertId(id);
+    return request(() => axiosInstance.put(JOB_API.detailMawb(id), dto));
+  },
+
   async createCharge(id: string, dto: CreateJobChargeDto): Promise<unknown> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.charges(id), dto));
@@ -4084,7 +4181,7 @@ export const jobService = {
 
   async listMilestones(id: string): Promise<import('../types/job.types').JobMilestone[]> {
     assertId(id);
-    const { normalizeMilestone, normalizeMilestones, unwrapEntity } = await import(
+    const { isMilestoneListRow, normalizeMilestone, unwrapEntity } = await import(
       '../utils/normalizeJob'
     );
     const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.milestones(id)));
@@ -4096,32 +4193,44 @@ export const jobService = {
           ? (res.data as Record<string, unknown>)
           : null;
 
-    // Unified track payloads can include both `milestones` (taxonomy) and
-    // `items`/`custom_milestones` (history + staff customs). Merge so Add custom
-    // never disappears after a successful POST.
+    // Actions list = `milestones` (+ explicit custom arrays). Never fold Track &
+    // Trace history into this list — those events look completed and hide Mark complete.
     const buckets: unknown[][] = [];
-    if (Array.isArray(entity)) buckets.push(entity);
-    if (record) {
-      for (const key of [
-        'milestones',
-        'custom_milestones',
-        'customMilestones',
-        'items',
-        'history',
-        'timeline',
-        'events',
-      ] as const) {
+    const pushBucket = (arr: unknown) => {
+      if (Array.isArray(arr) && arr.length) buckets.push(arr);
+    };
+
+    if (Array.isArray(entity)) {
+      pushBucket(entity);
+    } else if (record) {
+      pushBucket(record.milestones);
+      pushBucket(record.custom_milestones);
+      pushBucket(record.customMilestones);
+      // Customs sometimes only appear in unified track items with is_custom / milestone fields.
+      for (const key of ['items', 'history', 'timeline', 'events'] as const) {
         const arr = record[key];
-        if (Array.isArray(arr) && arr.length) buckets.push(arr);
+        if (!Array.isArray(arr)) continue;
+        const customs = arr.filter((row) => {
+          if (!isMilestoneListRow(row)) return false;
+          const r = row as Record<string, unknown>;
+          return (
+            r.is_custom === true ||
+            r.isCustom === true ||
+            typeof r.milestone === 'string' ||
+            Boolean(r.milestone_key || r.milestoneKey || r.milestone_code || r.milestoneCode)
+          );
+        });
+        pushBucket(customs);
       }
     }
     if (!buckets.length) {
-      buckets.push(unwrapList(res.data).items);
+      pushBucket(unwrapList(res.data).items.filter(isMilestoneListRow));
     }
 
     const byKey = new Map<string, import('../types/job.types').JobMilestone>();
     for (const bucket of buckets) {
       for (const raw of bucket) {
+        if (!isMilestoneListRow(raw)) continue;
         const m = normalizeMilestone(raw);
         if (!m) continue;
         const key = String(m.milestone_key || m.milestone || m.id || '')
@@ -4129,26 +4238,33 @@ export const jobService = {
           .toUpperCase();
         if (!key) continue;
         const prev = byKey.get(key);
-        // Prefer richer rows (description / actual dates) when merging.
         if (!prev) {
           byKey.set(key, m);
           continue;
         }
+        const actual_date = m.actual_date || prev.actual_date;
+        const completed_at = m.completed_at || prev.completed_at;
+        // Explicit false from either side keeps the row open for Mark complete.
+        const explicitOpen = m.is_completed === false || prev.is_completed === false;
         byKey.set(key, {
-          ...prev,
-          ...m,
+          id: prev.id || m.id,
+          milestone: m.milestone || prev.milestone,
+          milestone_key: m.milestone_key || prev.milestone_key,
           description: m.description || prev.description,
           notes: m.notes || prev.notes,
-          actual_date: m.actual_date || prev.actual_date,
-          completed_at: m.completed_at || prev.completed_at,
           planned_date: m.planned_date || prev.planned_date,
-          is_completed: Boolean(m.is_completed || prev.is_completed),
+          actual_date,
+          completed_at,
+          is_completed: explicitOpen
+            ? Boolean(actual_date || completed_at)
+            : Boolean(actual_date || completed_at) ||
+              m.is_completed === true ||
+              prev.is_completed === true,
         });
       }
     }
 
-    const merged = [...byKey.values()];
-    return merged.length ? merged : normalizeMilestones([]);
+    return [...byKey.values()];
   },
 
   async createMilestone(

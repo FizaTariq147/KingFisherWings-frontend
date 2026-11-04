@@ -11,6 +11,7 @@ export type OpsSectionKey =
   | 'payment_requests'
   | 'sub_jobs'
   | 'bills_of_lading'
+  | 'air_waybills'
   | 'stuffing_records'
   | 'acknowledgement';
 
@@ -28,6 +29,7 @@ export const OPS_SECTION_KEYS: OpsSectionKey[] = [
   'payment_requests',
   'sub_jobs',
   'bills_of_lading',
+  'air_waybills',
   'stuffing_records',
   'acknowledgement',
 ];
@@ -44,6 +46,7 @@ export const OPS_SECTION_LABELS: Record<OpsSectionKey, string> = {
   payment_requests: 'Payment requests',
   sub_jobs: 'Sub-jobs',
   bills_of_lading: 'Bills of lading',
+  air_waybills: 'Airway bills',
   stuffing_records: 'Stuffing records',
   acknowledgement: 'Acknowledgement',
 };

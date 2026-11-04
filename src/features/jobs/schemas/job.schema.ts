@@ -280,9 +280,9 @@ export const createJobContainerSchema = z
     gross_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
     vgm_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
     cbm: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
-    status: z
-      .enum(['EMPTY', 'STUFFED', 'GATED_IN', 'LOADED', 'IN_TRANSIT', 'DISCHARGED', 'RETURNED'])
-      .default('EMPTY'),
+    /** Any active tenant catalog code (system seeds + custom). */
+    status: z.string().trim().max(40).default('EMPTY'),
+    status_code: optionalTextUndef({ max: 40 }),
     gate_in_at: optionalTextUndef({ max: 32 }),
     is_soc: z.boolean().optional(),
   })

@@ -11,7 +11,11 @@ import { shipmentService } from '@/features/shipments/services/shipment.service'
 import { shipmentKeys } from '@/features/shipments/hooks/useShipments';
 import { getServerErrorMessage } from '@/lib/validation/mapApiErrors';
 
-export type StatusCatalogEntity = 'jobs' | 'shipments' | 'quotations';
+export type StatusCatalogEntity =
+  | 'jobs'
+  | 'shipments'
+  | 'quotations'
+  | 'container-statuses';
 
 export type AddStatusCatalogModalProps = {
   open: boolean;
@@ -42,6 +46,14 @@ async function createCatalog(
 ): Promise<unknown> {
   if (entity === 'jobs') return jobService.createStatusCatalog(dto);
   if (entity === 'shipments') return shipmentService.createStatusCatalog(dto);
+  if (entity === 'container-statuses') {
+    return jobService.createContainerStatus({
+      code: dto.code,
+      label: dto.label,
+      is_active: dto.is_active,
+      sort_order: dto.sort_order,
+    });
+  }
   return quotationService.createStatusCatalog(dto);
 }
 
@@ -86,6 +98,8 @@ export function AddStatusCatalogModal({
         await qc.invalidateQueries({ queryKey: [...jobKeys.all, 'status-options'] });
       } else if (entity === 'shipments') {
         await qc.invalidateQueries({ queryKey: shipmentKeys.statusOptions });
+      } else if (entity === 'container-statuses') {
+        await qc.invalidateQueries({ queryKey: jobKeys.containerStatuses });
       } else {
         await qc.invalidateQueries({ queryKey: quotationKeys.statusOptions });
       }
@@ -114,7 +128,13 @@ export function AddStatusCatalogModal({
   };
 
   const entityLabel =
-    entity === 'jobs' ? 'job' : entity === 'shipments' ? 'shipment' : 'quotation';
+    entity === 'jobs'
+      ? 'job'
+      : entity === 'shipments'
+        ? 'shipment'
+        : entity === 'container-statuses'
+          ? 'container'
+          : 'quotation';
 
   return (
     <Modal

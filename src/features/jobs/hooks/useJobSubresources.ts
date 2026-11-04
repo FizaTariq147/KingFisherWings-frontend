@@ -25,6 +25,7 @@ import type {
   SubmitSiDto,
   SubmitVgmDto,
   UpdateAirJobDetailDto,
+  UpdateAirWaybillDto,
   UpdateBillOfLadingDto,
   UpdateCustomsStatusDto,
   UpdateJobCargoDto,
@@ -33,7 +34,9 @@ import type {
   UpdateJobDocumentDto,
   UpdateSeaFclJobDetailDto,
   UpdateStuffingRecordDto,
+  UpsertAirWaybillDto,
   UpsertContainerFreeDaysDto,
+  UpdateAirMawbDto,
 } from '../types/job.types';
 import { useInvalidateJobs } from './useJobs';
 
@@ -132,6 +135,28 @@ export function useJobSubresourceMutations(jobId: string) {
     }),
     deleteBl: useMutation({
       mutationFn: (blId: string) => jobService.deleteBillOfLading(jobId, blId),
+      onSuccess: refresh,
+    }),
+    createAirWaybill: useMutation({
+      mutationFn: (dto: UpsertAirWaybillDto) => jobService.createAirWaybill(jobId, dto),
+      onSuccess: refresh,
+    }),
+    updateAirWaybill: useMutation({
+      mutationFn: ({
+        awbId,
+        dto,
+      }: {
+        awbId: string;
+        dto: UpdateAirWaybillDto;
+      }) => jobService.updateAirWaybill(jobId, awbId, dto),
+      onSuccess: refresh,
+    }),
+    deleteAirWaybill: useMutation({
+      mutationFn: (awbId: string) => jobService.deleteAirWaybill(jobId, awbId),
+      onSuccess: refresh,
+    }),
+    updateAirMawb: useMutation({
+      mutationFn: (dto: UpdateAirMawbDto) => jobService.updateAirMawb(jobId, dto),
       onSuccess: refresh,
     }),
     createStuffing: useMutation({
