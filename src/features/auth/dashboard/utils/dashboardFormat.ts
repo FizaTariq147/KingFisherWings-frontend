@@ -10,8 +10,9 @@ export type DashboardPeriod = 'today' | 'week' | 'month';
 export const CLOSED_JOB_STATUSES: JobStatus[] = ['COMPLETED', 'CANCELLED'];
 
 /**
- * Statuses counted as “active” on the dashboard KPI and Active shipments grid.
- * Must stay aligned with `isActiveJob` (everything except COMPLETED / CANCELLED).
+ * BE `open` bucket for Active shipments grid rows.
+ * Matches dashboard-counts `open`: enquiry → on hold (not delivered / completed / cancelled).
+ * Headline “total jobs” uses job_count, not this list.
  */
 export const OPEN_JOB_STATUSES: JobStatus[] = [
   'ENQUIRY',
@@ -22,7 +23,6 @@ export const OPEN_JOB_STATUSES: JobStatus[] = [
   'IN_PROGRESS',
   'DOCS_PENDING',
   'CUSTOMS_CLEARANCE',
-  'DELIVERED',
   'ON_HOLD',
 ];
 
@@ -344,8 +344,9 @@ export function jobClient(job: Pick<Job, 'shipper_name' | 'consignee_name'>): st
   return job.shipper_name?.trim() || job.consignee_name?.trim() || '—';
 }
 
+/** Open-bucket job (matches BE `open` / OPEN_JOB_STATUSES). Delivered is not open. */
 export function isActiveJob(status: JobStatus): boolean {
-  return !CLOSED_JOB_STATUSES.includes(status);
+  return (OPEN_JOB_STATUSES as readonly JobStatus[]).includes(status);
 }
 
 export function isCustomsHold(job: Pick<Job, 'status'>): boolean {

@@ -62,7 +62,9 @@ export default function JobListPage() {
     setPage(1);
   }, [segment, applied]);
 
-  // Admin/branch manager: all segment types. Staff: permission-scoped (never all types).
+  // Filter dropdown options: admin = full segment; staff = grants (writable ∪ visible).
+  // List API always uses the department segment job_types — BE applies JWT ACL
+  // (any creator). Do not add created_by / department_id on the default view.
   const allowedSegmentTypes = useMemo((): JobType[] => {
     if (isOpsUnrestrictedUser(user)) return [...segmentConfig.jobTypes];
     const allowed = filterJobTypesByStaffAccess({
@@ -75,15 +77,18 @@ export default function JobListPage() {
       candidates: segmentConfig.jobTypes,
       mode: 'list',
     });
-    // Write implies see within this department segment.
-    if (!user?.writableJobTypes?.length) return allowed;
+    if (!user?.writableJobTypes?.length) {
+      // Fall back to full segment so BE role-default job types are not FE-blocked.
+      return allowed.length ? allowed : [...segmentConfig.jobTypes];
+    }
     const writable = new Set(
       user.writableJobTypes.map((t) => canonicalizeJobType(t)),
     );
     const extra = segmentConfig.jobTypes.filter(
       (t) => writable.has(t) && !allowed.includes(t),
     );
-    return extra.length ? [...allowed, ...extra] : allowed;
+    const merged = extra.length ? [...allowed, ...extra] : allowed;
+    return merged.length ? merged : [...segmentConfig.jobTypes];
   }, [
     segmentConfig.jobTypes,
     user,
@@ -95,24 +100,21 @@ export default function JobListPage() {
     hasEnabledModule,
   ]);
 
-  const sectionAllowed = allowedSegmentTypes.length > 0;
-
   const listParams = useMemo(
     () =>
       jobMisFilterDraftToListParams(applied, page, {
-        segmentJobTypes: allowedSegmentTypes,
+        // Section filter only (e.g. Air Export types). BE cuts by grants.
+        segmentJobTypes: [...segmentConfig.jobTypes],
       }),
-    [applied, page, allowedSegmentTypes],
+    [applied, page, segmentConfig.jobTypes],
   );
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams, {
-    enabled: sectionAllowed,
-  });
+  const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams);
   const lifecycle = useJobLifecycleMutations();
   const prefix = jobRoutePrefix(segment as JobSegmentKey);
 
-  const jobs = sectionAllowed ? (data?.jobs ?? []) : [];
-  const meta = sectionAllowed ? data?.meta : undefined;
+  const jobs = data?.jobs ?? [];
+  const meta = data?.meta;
 
   const run = async (job: Job, fn: () => Promise<unknown>, successMsg: string) => {
     setActionError(null);
@@ -190,12 +192,7 @@ export default function JobListPage() {
           </div>
         ) : null}
 
-        {!sectionAllowed ? (
-          <EmptyState
-            title="No access to this department."
-            description="Your ops permissions do not include this job type. Ask an admin to grant it on your permission matrix, then sign in again."
-          />
-        ) : isError ? (
+        {isError ? (
           <div className="px-3 py-3">
             <ErrorState
               message={getErrorMessage(error) || 'Failed to load jobs.'}
@@ -211,7 +208,7 @@ export default function JobListPage() {
         ) : jobs.length === 0 ? (
           <EmptyState
             title="No jobs found."
-            description="Adjust filters and click Submit, or create a new job."
+            description="Adjust filters and click Submit, or create a new job. If you expect jobs here, confirm your job-type grants and sign in again."
           />
         ) : (
           <JobTable

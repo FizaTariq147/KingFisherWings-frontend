@@ -1,37 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
 import { jobService } from '@/features/jobs/services/job.service';
-import type { JobStatus } from '@/features/jobs/constants/job.constants';
+import type { JobDashboardCounts } from '@/features/jobs/types/jobDashboard.types';
 import type { JobListParams } from '@/features/jobs/types/job.types';
 import { PENDING_QUOTATION_STATUSES } from '@/features/quotations/constants/quotation.constants';
 import { quotationService } from '@/features/quotations/services/quotation.service';
 import { uiPeriodToApi } from '@/lib/apiPeriod';
-import { OPEN_JOB_STATUSES, type DashboardPeriod } from '../utils/dashboardFormat';
+import { type DashboardPeriod } from '../utils/dashboardFormat';
 
-type JobCountsShape = {
-  byStatus: Record<JobStatus, number>;
-  bars: number[];
-  active: number;
-  inTransit: number;
-  atOrigin: number;
-  newJobs: number;
-  customsHold: number;
-  docsPending: number;
-  onHold: number;
-  delayed: number;
-  delivered: number;
-  cancelled: number;
-  completed: number;
-  inProgress: number;
-  open: number;
-};
-
-const EMPTY_COUNTS: JobCountsShape = {
-  byStatus: Object.fromEntries(OPEN_JOB_STATUSES.map((s) => [s, 0])) as Record<
-    JobStatus,
-    number
-  >,
-  bars: OPEN_JOB_STATUSES.map(() => 0),
+const EMPTY_COUNTS: JobDashboardCounts = {
+  byStatus: {},
+  bars: [],
+  jobCount: 0,
   active: 0,
   inTransit: 0,
   atOrigin: 0,
@@ -47,69 +27,19 @@ const EMPTY_COUNTS: JobCountsShape = {
   open: 0,
 };
 
-/**
- * Open-ops snapshot from GET /jobs (no period, no client hydrate).
- * Admin: omit job_types. Staff: pass visible allowed types so totals match sections.
- * Active = sum of every non-closed status (matches isActiveJob / Active shipments).
- */
-async function legacyJobCounts(
-  scopeParams: Pick<JobListParams, 'job_types'> = {},
-): Promise<JobCountsShape> {
-  if (Array.isArray(scopeParams.job_types) && scopeParams.job_types.length === 0) {
-    return EMPTY_COUNTS;
-  }
-  const pages = await Promise.all(
-    OPEN_JOB_STATUSES.map((status) =>
-      jobService.list({
-        page: 1,
-        limit: 1,
-        status,
-        skip_client_hydrate: true,
-        ...scopeParams,
-      }),
-    ),
-  );
-  const byStatus = Object.fromEntries(
-    OPEN_JOB_STATUSES.map((status, i) => [status, pages[i]?.meta.total ?? 0]),
-  ) as Record<JobStatus, number>;
-  const inTransit = (byStatus.IN_PROGRESS ?? 0) + (byStatus.CUSTOMS_CLEARANCE ?? 0);
-  const atOrigin =
-    (byStatus.BOOKING_CONFIRMED ?? 0) +
-    (byStatus.DOCS_PENDING ?? 0) +
-    (byStatus.ENQUIRY ?? 0) +
-    (byStatus.APPROVED ?? 0) +
-    (byStatus.OPEN ?? 0);
-  const newJobs = (byStatus.ENQUIRY ?? 0) + (byStatus.QUOTATION ?? 0);
-  const active = OPEN_JOB_STATUSES.reduce((sum, s) => sum + (byStatus[s] ?? 0), 0);
-  const onHold = byStatus.ON_HOLD ?? 0;
-  return {
-    byStatus,
-    bars: OPEN_JOB_STATUSES.map((status) => byStatus[status] ?? 0),
-    active,
-    inTransit,
-    atOrigin,
-    newJobs,
-    customsHold: (byStatus.CUSTOMS_CLEARANCE ?? 0) + onHold,
-    docsPending: byStatus.DOCS_PENDING ?? 0,
-    onHold,
-    delayed: 0,
-    delivered: byStatus.DELIVERED ?? 0,
-    cancelled: 0,
-    completed: 0,
-    inProgress: byStatus.IN_PROGRESS ?? 0,
-    open: active,
-  };
-}
-
 export type DashboardJobCountScope = {
   kind: 'unrestricted' | 'locked' | 'scoped';
+  /** Optional section filter — same job_type sent on list + dashboard-counts. */
+  jobType?: string;
   jobTypes?: import('@/features/jobs/constants/job.constants').JobType[];
+  branchId?: string;
 };
 
 /**
- * Dashboard job KPIs — same allow-list as job sections.
- * Admin/unrestricted: all types. Staff: only visible_job_types (all creators).
- * `active` always comes from open-status list meta totals (not period dashboard total).
+ * Dashboard job KPIs from GET /jobs/dashboard-counts.
+ * Bind total-jobs UI to `jobCount` (same as `total`). Never use `open` for that.
+ * Do not send created_by / department_id / user id — BE scopes by JWT job types.
+ * Optional `job_type` / `branch_id` must match the list filters when used.
  */
 export function useDashboardJobCounts(
   period: DashboardPeriod = 'month',
@@ -118,30 +48,40 @@ export function useDashboardJobCounts(
   const accessToken = useAuthStore((s) => s.accessToken);
   const apiPeriod = uiPeriodToApi(period);
   const scope = options?.scope ?? { kind: 'unrestricted' as const };
-  const scopeParams: Pick<JobListParams, 'job_types'> =
-    scope.kind === 'locked'
-      ? { job_types: [] }
-      : scope.kind === 'scoped'
-        ? { job_types: scope.jobTypes }
-        : {};
+
+  const jobType =
+    scope.kind === 'scoped'
+      ? (scope.jobType?.trim() ||
+          (scope.jobTypes?.length === 1 ? String(scope.jobTypes[0]) : undefined))
+      : undefined;
+  const branchId = scope.kind === 'scoped' ? scope.branchId?.trim() : undefined;
 
   return useQuery({
-    queryKey: ['tenant', 'dashboard', 'job-counts', 'open-ops', apiPeriod, scope],
-    queryFn: async () => {
+    queryKey: ['tenant', 'dashboard', 'job-counts', apiPeriod, scope.kind, jobType, branchId],
+    queryFn: async (): Promise<JobDashboardCounts> => {
       if (scope.kind === 'locked') return EMPTY_COUNTS;
-      const listCounts = await legacyJobCounts(scopeParams);
-      // List open-status totals are the source of truth for Active jobs / grid.
-      // Dashboard-counts only supplements period-ish extras (never overwrite active).
       try {
-        const apiCounts = await jobService.dashboardCounts(apiPeriod);
-        return {
-          ...listCounts,
-          delayed: Math.max(listCounts.delayed, apiCounts.delayed ?? 0),
-          cancelled: Math.max(listCounts.cancelled, apiCounts.cancelled ?? 0),
-          completed: Math.max(listCounts.completed, apiCounts.completed ?? 0),
-        };
+        return await jobService.dashboardCounts({
+          ...apiPeriod,
+          ...(jobType ? { job_type: jobType } : {}),
+          ...(branchId ? { branch_id: branchId } : {}),
+        });
       } catch {
-        return listCounts;
+        // Fallback: unfiltered list meta.total ≡ job_count (same ACL).
+        const page = await jobService.list({
+          page: 1,
+          limit: 1,
+          skip_client_hydrate: true,
+          ...(jobType ? { job_type: jobType as JobListParams['job_type'] } : {}),
+          ...(branchId ? { branch_id: branchId } : {}),
+        });
+        const total = page.meta?.total ?? 0;
+        return {
+          ...EMPTY_COUNTS,
+          jobCount: total,
+          active: 0,
+          open: 0,
+        };
       }
     },
     enabled: Boolean(accessToken) && options?.enabled !== false,

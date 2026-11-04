@@ -127,11 +127,11 @@ export function DashboardAlertPills({
     {
       key: 'open',
       label: 'Open',
-      // Backend has no `open` category — open bucket = all active jobs.
+      // Open-status bucket only — not job_count / total jobs.
       to: '/management/all-jobs-mis',
       icon: CircleDot,
       tone: 'bg-[#E8EEF4] text-[#2C557A]',
-      count: n('active'),
+      count: n('open'),
     },
     {
       key: 'completed',
