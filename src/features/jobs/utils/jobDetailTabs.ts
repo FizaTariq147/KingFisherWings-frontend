@@ -290,9 +290,9 @@ function heuristicJobActionPanels(
   ) {
     out.push('cargo', 'bl');
   }
-  // Air jobs use /air-waybills CRUD, labeled Airway Bill in the Actions toolbar.
+  // Air jobs: cargo in Actions + /air-waybills CRUD (labeled Airway Bill).
   if (isAirwayBillJobType(jobType)) {
-    out.push('bl');
+    out.push('cargo', 'bl');
   }
   if (jobType === 'SEA_FCL_EXPORT' || jobType === 'SEA_FCL_IMPORT') {
     out.push('stuffing');
@@ -359,6 +359,10 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
     if (!key || seen.has(key) || isJobActionPanelKey(key) || isOpsContinuumMetaTab(key)) {
       continue;
     }
+    // Air: no actual-container tab — use Actions → Cargo instead.
+    if (isAirwayBillJobType(job.job_type) && key === 'actual_container') {
+      continue;
+    }
     seen.add(key);
     const apiLabel = t.label?.trim();
     const lower = apiLabel?.toLowerCase() ?? '';
@@ -370,12 +374,8 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
       lower !== 'organisation'
         ? apiLabel
         : jobDetailTabLabel(key);
-    // Air import/export planned tab is MAWB payload, not sea containers.
     if (key === 'planned_container' && isAirwayBillJobType(job.job_type)) {
       label = 'MAWB';
-    }
-    if (key === 'actual_container' && isAirwayBillJobType(job.job_type)) {
-      label = 'Air cargo';
     }
     out.push({ key, label });
   }
