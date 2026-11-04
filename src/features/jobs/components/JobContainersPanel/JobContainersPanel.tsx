@@ -77,18 +77,36 @@ export function JobContainersPanel({
     refetch: refetchStatusCatalog,
   } = useContainerStatusCatalog();
   const [addStatusOpen, setAddStatusOpen] = useState(false);
+  /**
+   * JobContainer create/update `status` is still a Prisma enum
+   * (EMPTY|STUFFED|GATED_IN|LOADED|IN_TRANSIT|DISCHARGED|RETURNED).
+   * Catalog may include PICKED / customs for show-all — those are not valid here.
+   */
+  const allowedContainerStatuses = useMemo(
+    () => new Set<string>(CONTAINER_STATUSES),
+    [],
+  );
   const statusOptions = useMemo(() => {
-    if (statusCatalog.length) {
-      return statusCatalog.map((row) => ({
-        code: row.code,
+    const fromCatalog = statusCatalog
+      .filter((row) => allowedContainerStatuses.has(row.code.toUpperCase()))
+      .map((row) => ({
+        code: row.code.toUpperCase(),
         label: row.label || row.code.replaceAll('_', ' '),
       }));
+    if (fromCatalog.length) {
+      const seen = new Set(fromCatalog.map((r) => r.code));
+      for (const s of CONTAINER_STATUSES) {
+        if (!seen.has(s)) {
+          fromCatalog.push({ code: s, label: s.replaceAll('_', ' ') });
+        }
+      }
+      return fromCatalog;
     }
     return CONTAINER_STATUSES.map((s) => ({
       code: s,
       label: s.replaceAll('_', ' '),
     }));
-  }, [statusCatalog]);
+  }, [statusCatalog, allowedContainerStatuses]);
   const containerTypeOptions = useMemo(
     () => containerTypeSelectOptions(containerTypes),
     [containerTypes],
@@ -266,11 +284,13 @@ export function JobContainersPanel({
   };
 
   const startEditContainer = (c: JobContainer) => {
+    const raw = String(c.status_code || c.status || 'EMPTY').toUpperCase();
+    const status = allowedContainerStatuses.has(raw) ? raw : 'EMPTY';
     setEditId(containerRouteKey(c));
     setEditDraft({
       container_number: c.container_number ?? '',
       seal_number: c.seal_number ?? '',
-      status: String(c.status_code || c.status || 'EMPTY'),
+      status,
       tare_weight: c.tare_weight != null ? String(c.tare_weight) : '',
       max_payload: c.max_payload != null ? String(c.max_payload) : '',
       cubic_capacity: c.cubic_capacity != null ? String(c.cubic_capacity) : '',
@@ -288,11 +308,17 @@ export function JobContainersPanel({
         const n = Number(t);
         return Number.isFinite(n) ? n : undefined;
       };
+      const statusRaw = editDraft.status.trim().toUpperCase() || 'EMPTY';
+      if (!allowedContainerStatuses.has(statusRaw)) {
+        throw new Error(
+          'Container status must be EMPTY, STUFFED, GATED_IN, LOADED, IN_TRANSIT, DISCHARGED, or RETURNED.',
+        );
+      }
       // BE UpdateJobContainerDto rejects unknown props like status_code.
       const dto: UpdateJobContainerDto = {
         container_number: editDraft.container_number.trim() || undefined,
         seal_number: editDraft.seal_number.trim() || undefined,
-        status: editDraft.status.trim() || 'EMPTY',
+        status: statusRaw,
         tare_weight: toNum(editDraft.tare_weight),
         max_payload: toNum(editDraft.max_payload),
         cubic_capacity: toNum(editDraft.cubic_capacity),
@@ -598,25 +624,38 @@ export function JobContainersPanel({
                           }))
                         }
                       />
-                      <label className="block space-y-1 text-xs font-medium text-[var(--color-neutral-600)]">
-                        Status
-                        <select
-                          className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
-                          value={editDraft.status}
-                          onChange={(e) =>
-                            setEditDraft((prev) => ({
-                              ...prev,
-                              status: e.target.value,
-                            }))
-                          }
-                        >
-                          {statusOptions.map((s) => (
-                            <option key={s.code} value={s.code}>
-                              {s.label}
-                            </option>
-                          ))}
-                        </select>
-                      </label>
+                      <div className="space-y-1">
+                        <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+                          Status
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <select
+                            className="h-9 min-w-0 flex-1 rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
+                            value={editDraft.status}
+                            onChange={(e) =>
+                              setEditDraft((prev) => ({
+                                ...prev,
+                                status: e.target.value,
+                              }))
+                            }
+                          >
+                            {statusOptions.map((s) => (
+                              <option key={s.code} value={s.code}>
+                                {s.label}
+                              </option>
+                            ))}
+                          </select>
+                          <button
+                            type="button"
+                            title="Add custom status"
+                            aria-label="Add custom status"
+                            className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white shadow-sm hover:bg-[var(--color-primary-700)]"
+                            onClick={() => setAddStatusOpen(true)}
+                          >
+                            <Plus className="h-4 w-4" strokeWidth={2.5} />
+                          </button>
+                        </div>
+                      </div>
                       <Input
                         label="Tare weight"
                         type="number"
@@ -884,31 +923,31 @@ export function JobContainersPanel({
             />
           </div>
           <div className="space-y-1">
-            <div className="flex items-center justify-between gap-2">
-              <label className="text-xs font-medium text-[var(--color-neutral-600)]">
-                Status
-              </label>
+            <label className="text-xs font-medium text-[var(--color-neutral-600)]">
+              Status
+            </label>
+            <div className="flex items-center gap-2">
+              <select
+                className="h-9 min-w-0 flex-1 rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
+                value={status}
+                onChange={(e) => setStatus(e.target.value)}
+              >
+                {statusOptions.map((s) => (
+                  <option key={s.code} value={s.code}>
+                    {s.label}
+                  </option>
+                ))}
+              </select>
               <button
                 type="button"
                 title="Add custom status"
                 aria-label="Add custom status"
-                className="inline-flex h-7 w-7 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white shadow-sm hover:bg-[var(--color-primary-700)]"
+                className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-[var(--color-primary-600)] text-white shadow-sm hover:bg-[var(--color-primary-700)]"
                 onClick={() => setAddStatusOpen(true)}
               >
                 <Plus className="h-4 w-4" strokeWidth={2.5} />
               </button>
             </div>
-            <select
-              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] px-3 text-sm"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-            >
-              {statusOptions.map((s) => (
-                <option key={s.code} value={s.code}>
-                  {s.label}
-                </option>
-              ))}
-            </select>
           </div>
           <Input
             label="Container number"

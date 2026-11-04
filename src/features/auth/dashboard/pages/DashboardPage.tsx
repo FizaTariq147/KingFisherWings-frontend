@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useJobs } from '@/features/jobs/hooks/useJobs';
 import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
 import { useInvoices, useOverdueInvoices } from '@/features/invoices/hooks/useInvoices';
 import { useArAging } from '@/features/arApAging/hooks/useArApAging';
@@ -17,6 +16,7 @@ import { FavouritesPanel } from '../components/FavouritesPanel';
 import { LiveActivityPanel, ReportsHubPanel, TeamWorkloadPanel } from '../components/LowerPanels';
 import { useDashboardPeriod } from '../hooks/useDashboardPeriod';
 import { useCrmReportQuery } from '../hooks/useCrmReportQuery';
+import { useDashboardActiveJobs } from '../hooks/useDashboardActiveJobs';
 import {
   useDashboardJobCounts,
   useDashboardPendingQuoteStats,
@@ -43,32 +43,30 @@ export function DashboardPage() {
 
   // Admin/branch manager: all types. Staff: visible_job_types only (all creators).
   const jobScope = useVisibleJobListScope();
-  const jobsListParams = useMemo(
-    () => ({
-      page: 1,
-      limit: 50,
-      order: 'desc' as const,
-      skip_client_hydrate: true as const,
-      ...jobScope.listScopeParams,
-    }),
-    [jobScope.listScopeParams],
-  );
-  const jobsQuery = useJobs(jobsListParams, {
+  const countScope =
+    jobScope.kind === 'scoped'
+      ? ({ kind: 'scoped' as const, jobTypes: jobScope.jobTypes })
+      : jobScope.kind === 'locked'
+        ? ({ kind: 'locked' as const })
+        : ({ kind: 'unrestricted' as const });
+
+  // Same open-status list totals for Active jobs KPI + Active shipments grid.
+  const activeJobsQuery = useDashboardActiveJobs({
     enabled: jobScope.kind !== 'locked',
+    scope: countScope,
+    rowLimit: 40,
   });
-  const shipmentJobs = jobsQuery.data?.jobs ?? [];
+  const shipmentJobs = activeJobsQuery.data?.jobs ?? [];
 
   const jobCounts = useDashboardJobCounts(period, {
     enabled: jobScope.kind !== 'locked',
-    scope:
-      jobScope.kind === 'scoped'
-        ? { kind: 'scoped', jobTypes: jobScope.jobTypes }
-        : jobScope.kind === 'locked'
-          ? { kind: 'locked' }
-          : { kind: 'unrestricted' },
+    scope: countScope,
   });
   const jobCountsData = jobScope.kind === 'locked' ? null : jobCounts.data;
-  const jobCountsLoading = jobScope.kind === 'locked' ? false : jobCounts.isLoading;
+  const jobCountsLoading =
+    jobScope.kind === 'locked'
+      ? false
+      : jobCounts.isLoading || activeJobsQuery.isLoading;
   const quoteStats = useDashboardPendingQuoteStats(period);
   const invoicesQuery = useInvoices({ page: 1, limit: 8 });
   const overdueQuery = useOverdueInvoices();
@@ -141,8 +139,9 @@ export function DashboardPage() {
   const jobBars = jobCountsData?.bars ?? [];
   const quoteBars = quoteStats.data?.bars ?? [];
 
-  // Same scope as job sections (admin = all types, staff = allowed types).
-  const activeJobsCount = jobCountsData?.active ?? 0;
+  // Prefer exact open-status list total (same query family as the grid).
+  const activeJobsCount =
+    activeJobsQuery.data?.total ?? jobCountsData?.active ?? 0;
 
   const agingQuoteStats = useMemo(() => {
     const quotations = quoteStats.data?.quotations ?? [];
@@ -223,11 +222,14 @@ export function DashboardPage() {
 
         <ActiveShipmentsPanel
           jobs={shipmentJobs}
-          isLoading={jobsQuery.isLoading}
-          isError={jobsQuery.isError}
-          isFetching={jobsQuery.isFetching}
-          lastUpdated={jobsQuery.dataUpdatedAt}
-          onRefresh={() => void jobsQuery.refetch()}
+          isLoading={activeJobsQuery.isLoading}
+          isError={activeJobsQuery.isError}
+          isFetching={activeJobsQuery.isFetching}
+          lastUpdated={activeJobsQuery.dataUpdatedAt}
+          onRefresh={() => {
+            void activeJobsQuery.refetch();
+            void jobCounts.refetch();
+          }}
           userId={user?.id}
           defaultView="all"
           activeTotal={activeJobsCount}

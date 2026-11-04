@@ -9,6 +9,23 @@ export type DashboardPeriod = 'today' | 'week' | 'month';
 
 export const CLOSED_JOB_STATUSES: JobStatus[] = ['COMPLETED', 'CANCELLED'];
 
+/**
+ * Statuses counted as “active” on the dashboard KPI and Active shipments grid.
+ * Must stay aligned with `isActiveJob` (everything except COMPLETED / CANCELLED).
+ */
+export const OPEN_JOB_STATUSES: JobStatus[] = [
+  'ENQUIRY',
+  'QUOTATION',
+  'BOOKING_CONFIRMED',
+  'APPROVED',
+  'OPEN',
+  'IN_PROGRESS',
+  'DOCS_PENDING',
+  'CUSTOMS_CLEARANCE',
+  'DELIVERED',
+  'ON_HOLD',
+];
+
 export function firstName(fullName?: string): string {
   const part = fullName?.trim().split(/\s+/)[0];
   return part || 'there';
@@ -252,6 +269,23 @@ export function routeProgressInfo(job: Job): {
   }
 
   return { origin, dest, pct, barColor, caption };
+}
+
+/** MAWB / HAWB from job air details (list or hydrated detail). */
+export function jobMawbHawb(job: Job): { mawb?: string; hawb?: string } {
+  const air = job.air_details;
+  const mawb =
+    air?.mawb_number?.trim() ||
+    String((job as { mawb_number?: string }).mawb_number ?? '').trim() ||
+    undefined;
+  const hawb =
+    air?.hawb_number?.trim() ||
+    String((job as { hawb_number?: string }).hawb_number ?? '').trim() ||
+    undefined;
+  return {
+    mawb: mawb || undefined,
+    hawb: hawb || undefined,
+  };
 }
 
 export function jobMetaHints(job: Job): Array<{ text: string; tone: 'success' | 'warning' }> {

@@ -59,10 +59,13 @@ export function PortalActiveShipmentsPanel({
   items,
   loading,
   error,
+  activeTotal,
 }: {
   items: PortalShipmentListItem[];
   loading: boolean;
   error: boolean;
+  /** Exact active count from summary (not page length). */
+  activeTotal?: number;
 }) {
   const [filter, setFilter] = useState<FilterKey>('all');
 
@@ -73,6 +76,10 @@ export function PortalActiveShipmentsPanel({
   );
   const visibleRows = filtered.slice(0, 8);
   const loadingRowCount = Math.min(8, Math.max(1, active.length || 3));
+  const displayCount =
+    filter === 'all' && typeof activeTotal === 'number' && Number.isFinite(activeTotal)
+      ? activeTotal
+      : filtered.length;
 
   return (
     <section className="h-auto w-full self-start rounded-[20px] bg-white p-5 shadow-[0_10px_30px_rgba(10,41,66,0.05)]">
@@ -82,6 +89,9 @@ export function PortalActiveShipmentsPanel({
             <Ship className="h-4 w-4" aria-hidden="true" />
           </span>
           <h2 className={dashType.panel.title}>Active shipments</h2>
+          <span className="rounded-full bg-[var(--color-neutral-100)] px-2 py-0.5 text-[11px] font-semibold tabular-nums text-[var(--color-neutral-600)]">
+            {displayCount}
+          </span>
         </div>
         <div className="flex flex-wrap items-center gap-1.5">
           {FILTERS.map((item) => (

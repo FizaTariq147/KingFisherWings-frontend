@@ -26,6 +26,8 @@ const ACTIVE_STATUSES: JobStatus[] = [
   'ENQUIRY',
   'QUOTATION',
   'BOOKING_CONFIRMED',
+  'APPROVED',
+  'OPEN',
   'IN_PROGRESS',
   'DOCS_PENDING',
   'CUSTOMS_CLEARANCE',
@@ -48,12 +50,12 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
   const bars = ACTIVE_STATUSES.map((status) => byStatus[status] ?? 0);
   const inTransit = get('in_transit', 'inTransit', 'IN_PROGRESS') + (byStatus.CUSTOMS_CLEARANCE ?? 0);
   const atOrigin =
-    (byStatus.BOOKING_CONFIRMED ?? 0) + (byStatus.DOCS_PENDING ?? 0) + (byStatus.ENQUIRY ?? 0);
+    (byStatus.BOOKING_CONFIRMED ?? 0) +
+    (byStatus.DOCS_PENDING ?? 0) +
+    (byStatus.ENQUIRY ?? 0) +
+    (byStatus.APPROVED ?? 0) +
+    (byStatus.OPEN ?? 0);
   const newJobs = (byStatus.ENQUIRY ?? 0) + (byStatus.QUOTATION ?? 0);
-  const active =
-    pickNumber(inner, ['active', 'active_jobs', 'activeJobs', 'total_active']) ??
-    ACTIVE_STATUSES.reduce((sum, s) => sum + (byStatus[s] ?? 0), 0);
-
   const onHold =
     pickNumber(inner, ['on_hold', 'onHold', 'hold']) ?? byStatus.ON_HOLD ?? 0;
   const delayed = pickNumber(inner, ['delayed', 'delayed_count', 'delayedCount']) ?? 0;
@@ -67,9 +69,25 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
     pickNumber(inner, ['completed', 'completed_count']) ?? byStatus.COMPLETED ?? 0;
   const inProgress =
     pickNumber(inner, ['in_progress', 'inProgress']) ?? byStatus.IN_PROGRESS ?? 0;
+
+  // BE `total` = all non-deleted visible jobs (includes completed). Active = open only.
+  const headlineTotal = pickNumber(inner, ['total', 'total_jobs', 'totalJobs']);
+  const activeFromStatuses = ACTIVE_STATUSES.reduce(
+    (sum, s) => sum + (byStatus[s] ?? 0),
+    0,
+  );
+  const hasOpenStatusBreakdown = ACTIVE_STATUSES.some((s) => byStatus[s] != null);
+  const activeFromTotal =
+    headlineTotal != null
+      ? Math.max(0, headlineTotal - completed - cancelled)
+      : undefined;
+  const active = hasOpenStatusBreakdown
+    ? activeFromStatuses
+    : (pickNumber(inner, ['active', 'active_jobs', 'activeJobs', 'total_active']) ??
+      activeFromTotal ??
+      0);
   const open =
-    pickNumber(inner, ['open', 'open_count', 'openCount']) ??
-    active - completed - cancelled;
+    pickNumber(inner, ['open', 'open_count', 'openCount']) ?? active;
 
   return {
     byStatus,
