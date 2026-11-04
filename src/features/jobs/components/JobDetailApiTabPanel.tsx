@@ -22,6 +22,7 @@ import type { Job, PatchShowAllDto } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { JobBarcodePanel } from './JobBarcodePanel';
 import { JobChargesPanel } from './JobChargesPanel';
+import { JobAirMawbPanel } from './JobAirMawbPanel';
 import { JobContainersPanel } from './JobContainersPanel';
 import { JobLedgerPanel } from './JobLedgerPanel';
 import { JobCustomsRefsPanel } from './JobCustomsRefsPanel/JobCustomsRefsPanel';
@@ -35,6 +36,7 @@ import { JobPartyPanel } from './JobPartyPanel/JobPartyPanel';
 import { JobRoutingLegsPanel } from './JobRoutingLegsPanel/JobRoutingLegsPanel';
 import type { JobDetailTabKey } from '../api/job.api';
 import {
+  isAirwayBillJobType,
   isJobShowAllTab,
   jobDetailTabLabel,
   normalizeJobDetailTabKey,
@@ -919,6 +921,17 @@ function InteractiveTabBody({
     return <JobDimensionsPanel job={job} onChanged={onChanged} />;
   }
   if (key === 'planned_container' || key === 'actual_container') {
+    if (isAirwayBillJobType(job.job_type)) {
+      if (key === 'planned_container') {
+        return <JobAirMawbPanel jobId={job.id} />;
+      }
+      return (
+        <p className="text-[12px] text-[#64748b]">
+          Air import/export uses MAWB / HAWB and air pallets on the planned tab — not
+          actual containers.
+        </p>
+      );
+    }
     return (
       <div className="space-y-3">
         <p className="text-[12px] text-[#64748b]">

@@ -62,6 +62,9 @@ type AirFormUi = {
   volume_cbm: string;
   pallet_count: string;
   flight_number: string;
+  flight_status: string;
+  mawb_number: string;
+  hawb_number: string;
   flight_date: string;
   origin_airport_code: string;
   dest_airport_code: string;
@@ -94,6 +97,9 @@ function emptyAirForm(): AirFormUi {
     volume_cbm: '',
     pallet_count: '',
     flight_number: '',
+    flight_status: '',
+    mawb_number: '',
+    hawb_number: '',
     flight_date: '',
     origin_airport_code: '',
     dest_airport_code: '',
@@ -347,6 +353,18 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
         0,
         AIR_BOOKING_FORM_LIMITS.flight_number,
       ),
+      flight_status: String(form.flight_status ?? '').slice(
+        0,
+        AIR_BOOKING_FORM_LIMITS.flight_status,
+      ),
+      mawb_number: String(form.mawb_number ?? '').slice(
+        0,
+        AIR_BOOKING_FORM_LIMITS.mawb_number,
+      ),
+      hawb_number: String(form.hawb_number ?? '').slice(
+        0,
+        AIR_BOOKING_FORM_LIMITS.hawb_number,
+      ),
       flight_date: String(form.flight_date ?? '').slice(0, 10),
       origin_airport_code:
         normalizeAirportCode(String(form.origin_airport_code ?? '')) ||
@@ -590,6 +608,18 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
         flight_number: clipAirField(
           bookingForm.flight_number,
           AIR_BOOKING_FORM_LIMITS.flight_number,
+        ),
+        flight_status: clipAirField(
+          bookingForm.flight_status,
+          AIR_BOOKING_FORM_LIMITS.flight_status,
+        ),
+        mawb_number: clipAirField(
+          bookingForm.mawb_number,
+          AIR_BOOKING_FORM_LIMITS.mawb_number,
+        ),
+        hawb_number: clipAirField(
+          bookingForm.hawb_number,
+          AIR_BOOKING_FORM_LIMITS.hawb_number,
         ),
         flight_date: bookingForm.flight_date.trim() || undefined,
         origin_airport_code: origin || undefined,
@@ -877,6 +907,24 @@ export function AirJobWorkflowPanel({ jobId, jobType }: AirJobWorkflowPanelProps
                       'flight_number',
                       'Flight number',
                       AIR_BOOKING_FORM_LIMITS.flight_number,
+                      'text',
+                    ],
+                    [
+                      'flight_status',
+                      'Flight status',
+                      AIR_BOOKING_FORM_LIMITS.flight_status,
+                      'text',
+                    ],
+                    [
+                      'mawb_number',
+                      'MAWB number',
+                      AIR_BOOKING_FORM_LIMITS.mawb_number,
+                      'text',
+                    ],
+                    [
+                      'hawb_number',
+                      'HAWB number',
+                      AIR_BOOKING_FORM_LIMITS.hawb_number,
                       'text',
                     ],
                     ['flight_date', 'Flight date', undefined, 'date'],

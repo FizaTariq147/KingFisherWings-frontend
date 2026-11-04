@@ -213,6 +213,7 @@ export function JobOverviewPanel({ job }: { job: Job }) {
           <Row label="HAWB" value={air?.hawb_number} />
           <Row label="MAWB" value={air?.mawb_number} />
           <Row label="Flight number" value={air?.flight_number} />
+          <Row label="Flight status" value={air?.flight_status} />
           <Row label="Flight date" value={formatDate(air?.flight_date) || air?.flight_date} />
           <Row label="Origin airport" value={labels.originAirportLabel} />
           <Row label="Dest airport" value={labels.destAirportLabel} />

@@ -72,7 +72,6 @@ import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
   jobDetailPath,
   jobDisplayNumber,
-  jobEditable,
   jobRoutePrefix,
   segmentForJobType,
   segmentFromPath,
@@ -83,7 +82,11 @@ import {
 } from '@/features/reports/utils/moduleCatalogFamily';
 import { useAuth } from '@/hooks/useAuth';
 import { isUuid } from '@/lib/isUuid';
-import { canDeleteJob } from '../utils/canDeleteJob';
+import {
+  canCancelJob,
+  canDeleteJob,
+  canEditJob,
+} from '../utils/canDeleteJob';
 
 function statusTone(status: string): 'emerald' | 'amber' | 'rose' | 'slate' {
   if (status === 'COMPLETED' || status === 'DELIVERED') return 'emerald';
@@ -532,8 +535,7 @@ export default function JobDetailPage() {
     );
   }
 
-  const editable =
-    job.actions?.can_edit === false ? false : jobEditable(job.status);
+  const editable = canEditJob(job, user);
   const canDelete = canDeleteJob(job, user);
   const fclActions = job.actions;
   const canChangeStatus = fclActions?.can_change_status !== false;
@@ -560,7 +562,7 @@ export default function JobDetailPage() {
     (fclActions?.can_edit_closed_delivery === true ||
       fclActions?.can_edit_closed_delivery !== false);
   const canClose = fclActions?.can_close !== false && editable;
-  const canCancel = fclActions?.can_cancel !== false && editable;
+  const canCancel = canCancelJob(job, user);
   const canCopy = fclActions?.can_copy !== false;
   const actionPanels = resolveJobActionPanels(job, {
     houseJobsCount: houseJobs.length,

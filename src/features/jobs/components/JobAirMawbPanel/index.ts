@@ -1,0 +1,1 @@
+export { JobAirMawbPanel } from './JobAirMawbPanel';

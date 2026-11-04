@@ -84,12 +84,17 @@ export interface JobAirDetail {
   hawb_number?: string;
   mawb_number?: string;
   flight_number?: string;
+  flight_status?: string;
   flight_date?: string;
   screened?: boolean;
   screening_ref?: string;
   awb_type?: 'Direct' | 'Back-to-Back' | 'Consol' | string;
   freight_type?: 'Prepaid' | 'Collect' | string;
   conversion_factor?: number;
+  pallet_count?: number;
+  air_pallet?: AirPalletLineDto[];
+  dimensions?: number;
+  weight?: number;
 }
 
 /** GET/PUT /jobs/:id/air-booking-form — UpsertAirBookingFormDto */
@@ -129,6 +134,12 @@ export type AirBookingForm = Record<string, unknown> & {
   notes?: string;
   is_dg?: boolean;
   flight_number?: string;
+  /** maxLength 40 */
+  flight_status?: string;
+  /** maxLength 50 */
+  mawb_number?: string;
+  /** maxLength 50 */
+  hawb_number?: string;
   flight_date?: string;
   origin_airport_code?: string;
   dest_airport_code?: string;
@@ -159,6 +170,12 @@ export type UpdateAirBookingFormDto = {
   is_dg?: boolean;
   /** maxLength 20 */
   flight_number?: string;
+  /** maxLength 40 */
+  flight_status?: string;
+  /** maxLength 50 */
+  mawb_number?: string;
+  /** maxLength 50 */
+  hawb_number?: string;
   flight_date?: string;
   /** maxLength 10 — IATA/ICAO code */
   origin_airport_code?: string;
@@ -175,6 +192,72 @@ export type UpdateAirBookingFormDto = {
   parties?: AirBookingFormParty[];
   mark_complete?: boolean;
 };
+
+/** PUT /jobs/:id/detail/mawb — UpdateAirMawbDto */
+export interface UpdateAirMawbDto {
+  flight_no?: string;
+  flight_status?: string;
+  mawb_no?: string;
+  hawb_no?: string;
+  pallet_count?: number;
+  air_pallet?: AirPalletLineDto[];
+  /** Volume CBM / dimensions */
+  dimensions?: number;
+  /** Gross weight kg */
+  weight?: number;
+}
+
+/** Air planned-container / show-all MAWB payload (AIR_EXPORT / AIR_IMPORT). */
+export interface AirMawbPayload {
+  flight_no?: string;
+  flight_number?: string;
+  flight_status?: string;
+  mawb_no?: string;
+  mawb_number?: string;
+  hawb_no?: string;
+  hawb_number?: string;
+  pallet_count?: number;
+  air_pallet?: AirPalletLineDto[];
+  pallets?: AirPalletLineDto[];
+  dimensions?: number;
+  volume_cbm?: number;
+  weight?: number;
+  gross_weight_kg?: number;
+}
+
+export type AirWaybillType = 'MAWB' | 'HAWB';
+
+export interface JobAirWaybill {
+  id: string;
+  awb_type: AirWaybillType | string;
+  awb_number?: string;
+  flight_number?: string;
+  flight_status?: string;
+  shipper_id?: string;
+  consignee_id?: string;
+  pieces?: number;
+  gross_weight?: number;
+  dimensions?: string;
+  is_draft?: boolean;
+  is_original?: boolean;
+}
+
+/** POST /jobs/:id/air-waybills — UpsertAirWaybillDto */
+export interface UpsertAirWaybillDto {
+  awb_type: AirWaybillType;
+  awb_number?: string;
+  flight_number?: string;
+  flight_status?: string;
+  shipper_id?: string;
+  consignee_id?: string;
+  pieces?: number;
+  gross_weight?: number;
+  dimensions?: string;
+  is_draft?: boolean;
+  is_original?: boolean;
+}
+
+export type UpdateAirWaybillDto = Partial<UpsertAirWaybillDto>;
 
 /**
  * Staff GET/PUT /jobs/:id/air/compliance-form
@@ -657,7 +740,10 @@ export interface JobContainer {
   container_kind?: JobContainerKind;
   container_number?: string;
   seal_number?: string;
-  status?: ContainerStatus;
+  /** Legacy enum column when code matches system value. */
+  status?: ContainerStatus | string;
+  /** Tenant catalog code (system seed or custom). */
+  status_code?: string;
   tare_weight?: number;
   max_payload?: number;
   cubic_capacity?: number;
@@ -669,6 +755,31 @@ export interface JobContainer {
   created_at?: string;
   updated_at?: string;
 }
+
+/** GET /jobs/container-statuses — system + custom catalog rows. */
+export interface ContainerStatusCatalogOption {
+  id?: string;
+  code: string;
+  label: string;
+  is_system?: boolean;
+  is_custom?: boolean;
+  is_active?: boolean;
+  sort_order?: number;
+}
+
+/** POST /jobs/container-statuses — CreateStatusCatalogDto (label required). */
+export interface CreateContainerStatusCatalogDto {
+  label: string;
+  code?: string;
+  is_active?: boolean;
+  sort_order?: number;
+}
+
+export type UpdateContainerStatusCatalogDto = Partial<{
+  label: string;
+  is_active: boolean;
+  sort_order: number;
+}>;
 
 export interface JobCargo {
   id: string;
@@ -1153,6 +1264,8 @@ export interface Job {
   rotation_number?: string;
   primary_container_number?: string;
   primary_container_status?: string;
+  /** Tenant catalog code mirrored alongside enum when known. */
+  primary_container_status_code?: string;
   edi_company_code?: string;
   vessel_name?: string;
   vessel_number?: string;
@@ -1597,6 +1710,7 @@ export interface CreateJobContainerDto {
   container_type_id?: string;
   container_type_code?: string;
   iso_size?: string;
+  container_kind?: JobContainerKind;
   container_number?: string;
   seal_number?: string;
   tare_weight?: number;
@@ -1605,7 +1719,9 @@ export interface CreateJobContainerDto {
   gross_weight?: number;
   vgm_weight?: number;
   cbm?: number;
-  status?: ContainerStatus;
+  /** Catalog / enum code — any active catalog value. */
+  status?: ContainerStatus | string;
+  status_code?: string;
   gate_in_at?: string;
   is_soc?: boolean;
 }

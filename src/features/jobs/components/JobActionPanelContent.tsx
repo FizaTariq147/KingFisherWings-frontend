@@ -1,4 +1,5 @@
 import type { CSSProperties } from 'react';
+import { JobAirWaybillsPanel } from './JobAirWaybillsPanel';
 import { JobBillsOfLadingPanel } from './JobBillsOfLadingPanel';
 import { JobCargoPanel } from './JobCargoPanel';
 import { JobDocumentsPanel } from './JobDocumentsPanel';
@@ -21,7 +22,10 @@ import { CcFinancePanel } from '@/features/customs-clearance/components/CcFinanc
 import { CcLinesPanel } from '@/features/customs-clearance/components/CcLinesPanel';
 import { CcQueriesPanel } from '@/features/customs-clearance/components/CcQueriesPanel';
 import type { Job } from '../types/job.types';
-import type { JobActionPanelKey } from '../utils/jobDetailTabs';
+import {
+  isAirwayBillJobType,
+  type JobActionPanelKey,
+} from '../utils/jobDetailTabs';
 import { jobDisplayNumber } from '../utils/jobRoute';
 
 /** Distinct solid colors for every Actions toolbar button (no sky/blue fills). */
@@ -116,7 +120,11 @@ export function JobActionPanelContent({
     case 'cargo':
       return <JobCargoPanel jobId={jobId} />;
     case 'bl':
-      return <JobBillsOfLadingPanel jobId={jobId} />;
+      return isAirwayBillJobType(job.job_type) ? (
+        <JobAirWaybillsPanel jobId={jobId} />
+      ) : (
+        <JobBillsOfLadingPanel jobId={jobId} />
+      );
     case 'stuffing':
       return <JobStuffingPanel jobId={jobId} />;
     case 'sea-scans':

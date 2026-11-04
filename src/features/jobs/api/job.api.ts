@@ -8,6 +8,10 @@ export const JOB_API = {
   /** Tenant-admin catalog mutations (soft-deactivate via DELETE). */
   statusCatalog: '/jobs/status-catalog',
   statusCatalogById: (id: string) => `/jobs/status-catalog/${encodeURIComponent(id)}`,
+  /** Container status catalog (system enum seeds + custom rows). */
+  containerStatuses: '/jobs/container-statuses',
+  containerStatusById: (id: string) =>
+    `/jobs/container-statuses/${encodeURIComponent(id)}`,
   /** Delivery acknowledgement (extends ProofOfDelivery). */
   acknowledgement: (id: string) => `/jobs/${id}/detail/acknowledgement`,
   acknowledgementSend: (id: string) => `/jobs/${id}/acknowledgement/send`,
@@ -294,6 +298,12 @@ export const JOB_API = {
 
   billsOfLading: (id: string) => `/jobs/${id}/bills-of-lading`,
   billOfLading: (id: string, blId: string) => `/jobs/${id}/bills-of-lading/${blId}`,
+  /** Air MAWB / HAWB records (AIR_EXPORT / AIR_IMPORT only). */
+  airWaybills: (id: string) => `/jobs/${id}/air-waybills`,
+  airWaybill: (id: string, awbId: string) =>
+    `/jobs/${id}/air-waybills/${encodeURIComponent(awbId)}`,
+  /** Air planned-container MAWB payload upsert. */
+  detailMawb: (id: string) => `/jobs/${id}/detail/mawb`,
 
   charges: (id: string) => `/jobs/${id}/charges`,
   charge: (id: string, chargeId: string) => `/jobs/${id}/charges/${chargeId}`,

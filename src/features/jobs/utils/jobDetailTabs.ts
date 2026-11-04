@@ -29,6 +29,8 @@ export function jobDetailTabLabel(key: string): string {
       return 'Planned containers';
     case 'actual_container':
       return 'Actual containers';
+    case 'mawb':
+      return 'MAWB';
     case 'costing':
       return 'Costing';
     case 'history':
@@ -288,7 +290,7 @@ function heuristicJobActionPanels(
   ) {
     out.push('cargo', 'bl');
   }
-  // Air jobs use the same BL panel API, labeled Airway Bill in the Actions toolbar.
+  // Air jobs use /air-waybills CRUD, labeled Airway Bill in the Actions toolbar.
   if (isAirwayBillJobType(jobType)) {
     out.push('bl');
   }
@@ -361,13 +363,20 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
     const apiLabel = t.label?.trim();
     const lower = apiLabel?.toLowerCase() ?? '';
     // Prefer mapped labels; never show raw snake_case keys (underscores) in the strip.
-    const label =
+    let label =
       apiLabel &&
       !/[_-]/.test(apiLabel) &&
       lower !== 'organization' &&
       lower !== 'organisation'
         ? apiLabel
         : jobDetailTabLabel(key);
+    // Air import/export planned tab is MAWB payload, not sea containers.
+    if (key === 'planned_container' && isAirwayBillJobType(job.job_type)) {
+      label = 'MAWB';
+    }
+    if (key === 'actual_container' && isAirwayBillJobType(job.job_type)) {
+      label = 'Air cargo';
+    }
     out.push({ key, label });
   }
 

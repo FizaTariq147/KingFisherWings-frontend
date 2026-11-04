@@ -8,6 +8,8 @@ import type {
   JobNote,
   JobPnl,
   JobStatusOption,
+  ContainerStatusCatalogOption,
+  JobAirWaybill,
   AirUldRequest,
   DeliveryAcknowledgement,
 } from '../types/job.types';
@@ -458,6 +460,9 @@ export function formatMilestoneHeading(raw: string): string {
     .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
+const UUID_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
 /**
  * Business key for PATCH /jobs/:id/milestones/:milestoneKey.
  * Prefer code/name from GET list — never UUID, never the literal "undefined".
@@ -472,12 +477,48 @@ export function milestoneRouteKey(m: {
     const key = String(raw ?? '').trim();
     if (!key || key === 'undefined' || key === 'null' || key === '[object Object]') continue;
     // Backend rejects UUID path keys — skip id-shaped values when a code exists above.
-    if (/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(key)) {
-      continue;
-    }
+    if (UUID_RE.test(key)) continue;
     return key;
   }
   return '';
+}
+
+/** True when a GET row is a real milestone (not a Track & Trace history event). */
+export function isMilestoneListRow(raw: unknown): boolean {
+  const r = asRecord(raw);
+  if (!r) return false;
+  if (r.is_custom === true || r.isCustom === true) return true;
+  if (typeof r.milestone === 'string' && r.milestone.trim()) return true;
+  if (pickString(r, 'milestone_key', 'milestoneKey', 'milestone_code', 'milestoneCode')) {
+    return true;
+  }
+  // Nested milestone definition object
+  if (asRecord(r.milestone) || asRecord(r.milestone_def) || asRecord(r.milestoneDef)) {
+    return true;
+  }
+  // Pure track events use event/type without milestone fields — exclude from Actions list.
+  if (pickString(r, 'event', 'event_code', 'eventCode') && !pickString(r, 'code', 'key')) {
+    return false;
+  }
+  return Boolean(
+    pickString(r, 'code', 'key', 'name', 'label', 'title') &&
+      (r.planned_date != null ||
+        r.plannedDate != null ||
+        r.actual_date != null ||
+        r.actualDate != null ||
+        typeof r.is_completed === 'boolean' ||
+        typeof r.isCompleted === 'boolean'),
+  );
+}
+
+function milestoneIsCompleted(r: Record<string, unknown>): boolean {
+  if (r.is_completed === true || r.isCompleted === true || r.completed === true) return true;
+  if (r.is_completed === false || r.isCompleted === false || r.completed === false) {
+    return false;
+  }
+  const actual =
+    pickString(r, 'actual_date', 'actualDate', 'completed_at', 'completedAt') || '';
+  return Boolean(actual.trim());
 }
 
 export function normalizeMilestone(raw: unknown): JobMilestone | null {
@@ -489,10 +530,11 @@ export function normalizeMilestone(raw: unknown): JobMilestone | null {
     asRecord(r.milestone_def) ||
     asRecord(r.milestoneDef) ||
     asRecord(r.milestone_type) ||
-    asRecord(r.milestoneType) ||
-    asRecord(r.type);
+    asRecord(r.milestoneType);
 
   // Prefer explicit code fields (path key), then human name/label.
+  // Do NOT treat track `event` / `type` as milestone codes — that hid customs
+  // and marked history rows as completed in the Actions list.
   const code =
     pickString(
       r,
@@ -502,10 +544,6 @@ export function normalizeMilestone(raw: unknown): JobMilestone | null {
       'milestoneCode',
       'code',
       'key',
-      'type',
-      'event',
-      'event_code',
-      'eventCode',
     ) ||
     (nested
       ? pickString(
@@ -516,7 +554,6 @@ export function normalizeMilestone(raw: unknown): JobMilestone | null {
           'milestoneCode',
           'code',
           'key',
-          'type',
           'name',
         )
       : '');
@@ -545,24 +582,20 @@ export function normalizeMilestone(raw: unknown): JobMilestone | null {
   if (!milestone && !milestone_key) return null;
 
   const id = str(r.id) || milestone_key || milestone;
+  const actual_date =
+    pickString(r, 'actual_date', 'actualDate') || undefined;
+  const completed_at =
+    pickString(r, 'completed_at', 'completedAt') || undefined;
   return {
     id,
     milestone: milestone || milestone_key,
     milestone_key: milestone_key || milestone || undefined,
     planned_date: pickString(r, 'planned_date', 'plannedDate') || undefined,
-    actual_date: pickString(r, 'actual_date', 'actualDate') || undefined,
-    completed_at: pickString(r, 'completed_at', 'completedAt') || undefined,
+    actual_date,
+    completed_at,
     description:
       pickString(r, 'description', 'milestone_description', 'milestoneDescription') || undefined,
-    is_completed: Boolean(
-      r.actual_date ??
-        r.actualDate ??
-        r.completed_at ??
-        r.completedAt ??
-        r.is_completed ??
-        r.isCompleted ??
-        r.completed,
-    ),
+    is_completed: milestoneIsCompleted(r),
     notes: pickString(r, 'notes') || undefined,
   };
 }
@@ -853,6 +886,14 @@ export function normalizeJob(raw: unknown): Job | null {
         'container_status',
         'containerStatus',
       ) || undefined,
+    primary_container_status_code:
+      pickString(
+        r,
+        'primary_container_status_code',
+        'primaryContainerStatusCode',
+        'container_status_code',
+        'containerStatusCode',
+      ) || undefined,
     edi_company_code:
       pickString(r, 'edi_company_code', 'ediCompanyCode', 'company_code', 'companyCode') ||
       undefined,
@@ -914,7 +955,11 @@ export function normalizeJob(raw: unknown): Job | null {
           hawb_number: pickString(air, 'hawb_number', 'hawbNumber') || undefined,
           mawb_number: pickString(air, 'mawb_number', 'mawbNumber') || undefined,
           flight_number: pickString(air, 'flight_number', 'flightNumber') || undefined,
+          flight_status: pickString(air, 'flight_status', 'flightStatus') || undefined,
           flight_date: pickString(air, 'flight_date', 'flightDate') || undefined,
+          pallet_count: num(air.pallet_count ?? air.palletCount),
+          dimensions: num(air.dimensions ?? air.volume_cbm ?? air.volumeCbm),
+          weight: num(air.weight ?? air.gross_weight_kg ?? air.grossWeightKg),
           screened: bool(air.screened),
           screening_ref: pickString(air, 'screening_ref', 'screeningRef') || undefined,
           awb_type: pickString(air, 'awb_type', 'awbType') || undefined,
@@ -1311,6 +1356,115 @@ export function normalizeJobStatusOptions(raw: unknown): JobStatusOption[] {
     });
   }
   return out;
+}
+
+export function normalizeContainerStatusCatalogRow(
+  raw: unknown,
+): ContainerStatusCatalogOption | null {
+  if (typeof raw === 'string' && raw.trim()) {
+    const code = raw.trim().toUpperCase();
+    return { code, label: code.replaceAll('_', ' '), is_active: true };
+  }
+  const rec = asRecord(raw);
+  if (!rec) return null;
+  const code = pickString(rec, 'code', 'value', 'status', 'status_code', 'id').toUpperCase();
+  if (!code) return null;
+  const sortRaw = rec.sort_order ?? rec.sortOrder;
+  const sort_order =
+    typeof sortRaw === 'number' && Number.isFinite(sortRaw) ? sortRaw : undefined;
+  return {
+    id: pickString(rec, 'id', 'catalog_id', 'catalogId') || undefined,
+    code,
+    label: pickString(rec, 'label', 'name', 'title') || code.replaceAll('_', ' '),
+    is_system:
+      typeof rec.is_system === 'boolean'
+        ? rec.is_system
+        : typeof rec.isSystem === 'boolean'
+          ? rec.isSystem
+          : undefined,
+    is_custom:
+      typeof rec.is_custom === 'boolean'
+        ? rec.is_custom
+        : typeof rec.isCustom === 'boolean'
+          ? rec.isCustom
+          : undefined,
+    is_active:
+      typeof rec.is_active === 'boolean'
+        ? rec.is_active
+        : typeof rec.isActive === 'boolean'
+          ? rec.isActive
+          : true,
+    sort_order,
+  };
+}
+
+/** Normalize GET /jobs/container-statuses (system + custom). */
+export function normalizeContainerStatusCatalog(
+  raw: unknown,
+): ContainerStatusCatalogOption[] {
+  const envelope = asRecord(unwrapEntity(raw)) ?? asRecord(raw);
+  const candidates: unknown[] = [];
+  if (Array.isArray(raw)) candidates.push(...raw);
+  if (envelope) {
+    for (const key of [
+      'options',
+      'items',
+      'statuses',
+      'container_statuses',
+      'data',
+      'results',
+    ]) {
+      if (Array.isArray(envelope[key])) candidates.push(...(envelope[key] as unknown[]));
+    }
+  }
+  const seen = new Set<string>();
+  const out: ContainerStatusCatalogOption[] = [];
+  for (const item of candidates) {
+    const row = normalizeContainerStatusCatalogRow(item);
+    if (!row || seen.has(row.code)) continue;
+    if (row.is_active === false) continue;
+    seen.add(row.code);
+    out.push(row);
+  }
+  out.sort((a, b) => (a.sort_order ?? 999) - (b.sort_order ?? 999));
+  return out;
+}
+
+export function normalizeAirWaybill(raw: unknown): JobAirWaybill | null {
+  const r = asRecord(raw);
+  if (!r) return null;
+  const id = pickString(r, 'id', 'awb_id', 'awbId');
+  if (!id) return null;
+  const awb_type =
+    pickString(r, 'awb_type', 'awbType', 'type').toUpperCase() || 'HAWB';
+  return {
+    id,
+    awb_type,
+    awb_number:
+      pickString(r, 'awb_number', 'awbNumber', 'number', 'mawb_number', 'hawb_number') ||
+      undefined,
+    flight_number: pickString(r, 'flight_number', 'flightNumber', 'flight_no') || undefined,
+    flight_status: pickString(r, 'flight_status', 'flightStatus') || undefined,
+    shipper_id: pickString(r, 'shipper_id', 'shipperId') || undefined,
+    consignee_id: pickString(r, 'consignee_id', 'consigneeId') || undefined,
+    pieces: num(r.pieces ?? r.piece_count),
+    gross_weight: num(r.gross_weight ?? r.grossWeight ?? r.weight),
+    dimensions:
+      pickString(r, 'dimensions') ||
+      (num(r.dimensions) != null ? String(num(r.dimensions)) : undefined),
+    is_draft:
+      typeof r.is_draft === 'boolean'
+        ? r.is_draft
+        : typeof r.isDraft === 'boolean'
+          ? r.isDraft
+          : undefined,
+    is_original:
+      typeof r.is_original === 'boolean'
+        ? r.is_original
+        : typeof r.isOriginal === 'boolean'
+          ? r.isOriginal
+          : undefined,
+  };
 }
 
 export function normalizeJobs(items: unknown[]): Job[] {

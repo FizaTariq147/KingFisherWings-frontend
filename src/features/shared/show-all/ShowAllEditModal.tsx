@@ -3,6 +3,7 @@ import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { useContainerStatusCatalog } from '@/features/jobs/hooks/useJobs';
 import type { PatchShowAllDto } from '@/features/jobs/types/job.types';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { parseServerValidationError } from '@/lib/validation/mapApiErrors';
@@ -127,10 +128,18 @@ export function ShowAllEditModal({
     () => extractPatchShowAllDefaults(sources),
     [sources],
   );
-  const containerStatusMeta = useMemo(
-    () => extractContainerStatusMeta(sources),
-    [sources],
-  );
+  const { data: catalogStatuses = [] } = useContainerStatusCatalog(open);
+  const containerStatusMeta = useMemo(() => {
+    const fromPayload = extractContainerStatusMeta(sources);
+    if (fromPayload.options.length) return fromPayload;
+    const fromCatalog = catalogStatuses
+      .map((row) => row.code.trim().toUpperCase())
+      .filter(Boolean);
+    return {
+      options: [...new Set(fromCatalog)],
+      canEdit: fromPayload.canEdit,
+    };
+  }, [sources, catalogStatuses]);
   const [draft, setDraft] = useState<PatchShowAllDto>({});
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);

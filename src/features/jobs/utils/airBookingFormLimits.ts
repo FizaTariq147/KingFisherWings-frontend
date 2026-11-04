@@ -10,6 +10,9 @@ const PARTY = API_MAX_LENGTH.AirBookingFormPartyDto;
 export const AIR_BOOKING_FORM_LIMITS = {
   commodity: FORM.commodity,
   flight_number: FORM.flight_number,
+  flight_status: 40,
+  mawb_number: 50,
+  hawb_number: 50,
   origin_airport_code: FORM.origin_airport_code,
   dest_airport_code: FORM.dest_airport_code,
   arrival_flight_number: FORM.arrival_flight_number,

@@ -1,0 +1,1 @@
+export { JobAirWaybillsPanel } from './JobAirWaybillsPanel';

@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { useInlineValidation } from '@/lib/validation';
 import { useJobMilestoneMutations } from '../../hooks/useJobActions';
-import { useJobMilestones } from '../../hooks/useJobs';
+import { jobKeys, useJobMilestones } from '../../hooks/useJobs';
 import { createJobMilestoneSchema } from '../../schemas/job.schema';
 import type { JobMilestone } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -14,7 +15,23 @@ interface JobMilestonesPanelProps {
   jobId: string;
 }
 
+function milestoneIsDone(m: JobMilestone): boolean {
+  if (m.is_completed === true) return true;
+  if (String(m.actual_date || '').trim()) return true;
+  if (String(m.completed_at || '').trim()) return true;
+  return false;
+}
+
+/** PATCH path key — prefer non-UUID code/name. */
+function milestoneActionKey(m: JobMilestone): string {
+  return (
+    milestoneRouteKey(m) ||
+    String(m.milestone_key || m.milestone || '').trim()
+  );
+}
+
 export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
+  const queryClient = useQueryClient();
   const { data: milestones = [], refetch, isFetching } = useJobMilestones(jobId);
   const mutations = useJobMilestoneMutations(jobId);
   const validation = useInlineValidation();
@@ -27,6 +44,10 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
   const updateDescription = async (milestoneKey: string, nextDescription: string) => {
     setError(null);
     setSuccess(null);
+    if (!milestoneKey) {
+      setError('Milestone code/name is missing — cannot save description.');
+      return;
+    }
     try {
       await mutations.update.mutateAsync({
         milestoneKey,
@@ -46,7 +67,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
 
     if (!key || key === 'undefined' || key === 'null') {
       setError(
-        'Milestone code/name is missing. Refresh the list or use the code from GET /jobs/:id/milestones.',
+        'Milestone code/name is missing. Refresh the list or re-add the custom milestone.',
       );
       return;
     }
@@ -56,6 +77,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
         milestoneKey: key,
         dto: {
           actual_date: new Date().toISOString(),
+          completed_at: new Date().toISOString(),
           description: nextDescription.trim() || undefined,
         },
       });
@@ -76,15 +98,49 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
         ...(description.trim() ? { description: description.trim() } : {}),
       },
       async (dto) => {
-        await mutations.create.mutateAsync(dto);
+        const created = await mutations.create.mutateAsync(dto);
         setName('');
         setDescription('');
+        // Keep the created row even if GET temporarily omits it.
+        queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) => {
+          const list = Array.isArray(prev) ? [...prev] : [];
+          const key = String(created.milestone_key || created.milestone || created.id)
+            .trim()
+            .toUpperCase();
+          if (
+            key &&
+            list.some(
+              (m) =>
+                String(m.milestone_key || m.milestone || m.id)
+                  .trim()
+                  .toUpperCase() === key,
+            )
+          ) {
+            return list;
+          }
+          return [created, ...list];
+        });
       },
     );
     if (ok) {
       setSuccess('Custom milestone added.');
-      // Cache already seeded in mutation onSuccess; refresh to pick up BE fields.
-      void refetch();
+      // Soft refresh — seeded cache already shows the new row.
+      void refetch().then((result) => {
+        const list = result.data;
+        if (!Array.isArray(list)) return;
+        queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) => {
+          const seeded = Array.isArray(prev) ? prev : [];
+          const byKey = new Map<string, JobMilestone>();
+          for (const m of [...list, ...seeded]) {
+            const key = String(m.milestone_key || m.milestone || m.id)
+              .trim()
+              .toUpperCase();
+            if (!key || byKey.has(key)) continue;
+            byKey.set(key, m);
+          }
+          return [...byKey.values()];
+        });
+      });
     }
   };
 
@@ -117,11 +173,11 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
             <p className="text-sm text-[var(--color-neutral-400)]">No milestones.</p>
           ) : (
             milestones.map((m: JobMilestone) => {
-              const key = milestoneRouteKey(m);
+              const key = milestoneActionKey(m);
               const heading = formatMilestoneHeading(
                 m.milestone || m.milestone_key || key || 'Milestone',
               );
-              const done = Boolean(m.actual_date || m.completed_at || m.is_completed);
+              const done = milestoneIsDone(m);
               const rowDescription =
                 descriptionDrafts[m.id] ?? m.description ?? m.notes ?? '';
 
@@ -139,9 +195,10 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                           : ''}
                         Planned: {m.planned_date || '—'} · Actual:{' '}
                         {m.completed_at || m.actual_date || '—'}
+                        {done ? ' · Completed' : ''}
                       </p>
                     </div>
-                    {!done && (
+                    {!done ? (
                       <Button
                         type="button"
                         size="sm"
@@ -150,7 +207,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                       >
                         Mark complete
                       </Button>
-                    )}
+                    ) : null}
                   </div>
 
                   <label className="block text-xs font-medium text-[var(--color-neutral-600)]">
@@ -230,10 +287,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
             />
           </div>
           <div className="flex justify-end">
-            <Button
-              type="submit"
-              disabled={mutations.create.isPending || !name.trim()}
-            >
+            <Button type="submit" disabled={mutations.create.isPending || !name.trim()}>
               {mutations.create.isPending ? 'Adding…' : 'Add custom milestone'}
             </Button>
           </div>
