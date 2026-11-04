@@ -1,7 +1,6 @@
 import { useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useJobs } from '@/features/jobs/hooks/useJobs';
-import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
 import { useInvoices, useOverdueInvoices } from '@/features/invoices/hooks/useInvoices';
 import { useArAging } from '@/features/arApAging/hooks/useArApAging';
 import { useCrmFollowUps, usePatchCrmFollowUp } from '@/features/crm/hooks/useCrmFollowUps';
@@ -21,7 +20,7 @@ import {
   useDashboardJobCounts,
   useDashboardPendingQuoteStats,
 } from '../hooks/useDashboardJobCounts';
-import { isActiveJob, isoDate } from '../utils/dashboardFormat';
+import { isoDate } from '../utils/dashboardFormat';
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -41,20 +40,18 @@ export function DashboardPage() {
     return { from: isoDate(start), to: isoDate(end) };
   }, []);
 
-  // Same ops matrix rule as job sections: scoped to visible_job_types (BE + FE).
-  const jobScope = useVisibleJobListScope();
+  // Dashboard Active shipments: same unscoped list as KPI counts (no client hydrate),
+  // so staff cards/header match admin. Department sections still use visible scope.
   const jobsListParams = useMemo(
     () => ({
       page: 1,
       limit: 50,
       order: 'desc' as const,
-      ...jobScope.listScopeParams,
+      skip_client_hydrate: true as const,
     }),
-    [jobScope.listScopeParams],
+    [],
   );
-  const jobsQuery = useJobs(jobsListParams, {
-    enabled: jobScope.kind !== 'locked',
-  });
+  const jobsQuery = useJobs(jobsListParams);
   const jobCounts = useDashboardJobCounts(period);
   const quoteStats = useDashboardPendingQuoteStats(period);
   const invoicesQuery = useInvoices({ page: 1, limit: 8 });
@@ -128,12 +125,8 @@ export function DashboardPage() {
   const jobBars = jobCounts.data?.bars ?? [];
   const quoteBars = quoteStats.data?.bars ?? [];
 
-  // Keep Active jobs KPI in sync with Active shipments → All jobs (same list + isActiveJob).
-  const listActiveJobs = useMemo(
-    () => (jobsQuery.data?.jobs ?? []).filter((j) => isActiveJob(j.status)).length,
-    [jobsQuery.data?.jobs],
-  );
-  const activeJobsCount = Math.max(jobCounts.data?.active ?? 0, listActiveJobs);
+  // KPI + header use shared open-ops totals (same for admin and staff).
+  const activeJobsCount = jobCounts.data?.active ?? 0;
 
   const agingQuoteStats = useMemo(() => {
     const quotations = quoteStats.data?.quotations ?? [];
@@ -220,6 +213,7 @@ export function DashboardPage() {
           lastUpdated={jobsQuery.dataUpdatedAt}
           onRefresh={() => void jobsQuery.refetch()}
           userId={user?.id}
+          activeTotal={activeJobsCount}
         />
 
         <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-4">

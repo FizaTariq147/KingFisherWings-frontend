@@ -1,12 +1,7 @@
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { JobStatus } from '@/features/jobs/constants/job.constants';
-import type { JobListParams } from '@/features/jobs/types/job.types';
-import { effectiveListJobTypes } from '@/features/jobs/utils/deptAccessFromStaffGrants';
-import { normalizeVisibleJobTypeScope } from '@/features/jobs/utils/visibleJobTypeScope';
 import { PENDING_QUOTATION_STATUSES } from '@/features/quotations/constants/quotation.constants';
 import { quotationService } from '@/features/quotations/services/quotation.service';
 import { uiPeriodToApi } from '@/lib/apiPeriod';
@@ -23,33 +18,37 @@ const COUNT_STATUSES: JobStatus[] = [
   'ON_HOLD',
 ];
 
-const EMPTY_JOB_COUNTS = {
-  byStatus: Object.fromEntries(COUNT_STATUSES.map((s) => [s, 0])) as Record<JobStatus, number>,
-  bars: COUNT_STATUSES.map(() => 0),
-  active: 0,
-  inTransit: 0,
-  atOrigin: 0,
-  newJobs: 0,
-  customsHold: 0,
-  docsPending: 0,
-  onHold: 0,
-  delayed: 0,
-  delivered: 0,
-  cancelled: 0,
-  completed: 0,
-  inProgress: 0,
-  open: 0,
-};
-
-type JobCountsShape = typeof EMPTY_JOB_COUNTS & {
+type JobCountsShape = {
   byStatus: Record<JobStatus, number>;
+  bars: number[];
+  active: number;
+  inTransit: number;
+  atOrigin: number;
+  newJobs: number;
+  customsHold: number;
+  docsPending: number;
+  onHold: number;
+  delayed: number;
+  delivered: number;
+  cancelled: number;
+  completed: number;
+  inProgress: number;
+  open: number;
 };
 
-async function legacyJobCounts(scopeParams: Pick<JobListParams, 'job_types'>): Promise<JobCountsShape> {
-  // No period filter — Active jobs / All jobs are an open-ops snapshot, not MTD creates.
+/**
+ * Open-ops snapshot from GET /jobs (no period, no client hydrate).
+ * Same path for admin and staff so KPI/header cards stay aligned.
+ */
+async function legacyJobCounts(): Promise<JobCountsShape> {
   const pages = await Promise.all(
     COUNT_STATUSES.map((status) =>
-      jobService.list({ page: 1, limit: 1, status, ...scopeParams }),
+      jobService.list({
+        page: 1,
+        limit: 1,
+        status,
+        skip_client_hydrate: true,
+      }),
     ),
   );
   const byStatus = Object.fromEntries(
@@ -90,72 +89,28 @@ async function legacyJobCounts(scopeParams: Pick<JobListParams, 'job_types'>): P
   };
 }
 
-/** Prefer list totals when dashboard-counts under-counts (e.g. period / ops-only ACL). */
-function reconcileJobCounts(
-  api: JobCountsShape,
-  list: JobCountsShape,
-): JobCountsShape {
-  const maxNum = (a: number, b: number) => Math.max(a || 0, b || 0);
-  const byStatus = { ...api.byStatus };
-  for (const status of COUNT_STATUSES) {
-    byStatus[status] = maxNum(api.byStatus[status] ?? 0, list.byStatus[status] ?? 0);
-  }
-  const active = maxNum(api.active, list.active);
-  return {
-    ...api,
-    byStatus,
-    bars: COUNT_STATUSES.map((status) => byStatus[status] ?? 0),
-    active,
-    inTransit: maxNum(api.inTransit, list.inTransit),
-    atOrigin: maxNum(api.atOrigin, list.atOrigin),
-    newJobs: maxNum(api.newJobs, list.newJobs),
-    customsHold: maxNum(api.customsHold, list.customsHold),
-    docsPending: maxNum(api.docsPending, list.docsPending),
-    onHold: maxNum(api.onHold, list.onHold),
-    delayed: maxNum(api.delayed, list.delayed),
-    delivered: maxNum(api.delivered, list.delivered),
-    cancelled: maxNum(api.cancelled, list.cancelled),
-    completed: maxNum(api.completed, list.completed),
-    inProgress: maxNum(api.inProgress, list.inProgress),
-    open: maxNum(maxNum(api.open, list.open), active),
-  };
-}
-
+/**
+ * Prefer list open-ops totals over period-scoped dashboard-counts.
+ * Admin and staff use the same unscoped list totals (no FE inflate).
+ */
 export function useDashboardJobCounts(period: DashboardPeriod = 'month') {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const { user } = useAuth();
   const apiPeriod = uiPeriodToApi(period);
-  const jobScope = useMemo(() => {
-    if (user?.unrestrictedOps) return { kind: 'unrestricted' as const };
-    const effective = effectiveListJobTypes(
-      user?.visibleJobTypes,
-      user?.writableJobTypes,
-      user?.permissions ?? [],
-    );
-    return normalizeVisibleJobTypeScope(effective);
-  }, [
-    user?.unrestrictedOps,
-    user?.visibleJobTypes,
-    user?.writableJobTypes,
-    user?.permissions,
-  ]);
-
-  const scopeParams = useMemo((): Pick<JobListParams, 'job_types'> => {
-    if (jobScope.kind === 'locked') return { job_types: [] };
-    if (jobScope.kind === 'scoped') return { job_types: jobScope.types };
-    return {};
-  }, [jobScope]);
-
   return useQuery({
-    queryKey: ['tenant', 'dashboard', 'job-counts', apiPeriod, jobScope],
+    queryKey: ['tenant', 'dashboard', 'job-counts', 'open-ops', apiPeriod],
     queryFn: async () => {
-      if (jobScope.kind === 'locked') return EMPTY_JOB_COUNTS;
-      // List totals match Active shipments / All jobs (no period). Reconcile so
-      // period-scoped or ops-only dashboard-counts cannot under-count staff jobs for admin.
-      const listCounts = await legacyJobCounts(scopeParams);
+      // Primary: same GET /jobs meta.total path for every role (skip client hydrate).
+      const listCounts = await legacyJobCounts();
       try {
+        // Keep period API for delayed/completed extras when it returns them, but
+        // never let a lower period/ops-scoped active overwrite the open-ops total.
         const apiCounts = await jobService.dashboardCounts(apiPeriod);
-        return reconcileJobCounts(apiCounts as JobCountsShape, listCounts);
+        return {
+          ...listCounts,
+          delayed: Math.max(listCounts.delayed, apiCounts.delayed ?? 0),
+          cancelled: Math.max(listCounts.cancelled, apiCounts.cancelled ?? 0),
+          completed: Math.max(listCounts.completed, apiCounts.completed ?? 0),
+        };
       } catch {
         return listCounts;
       }
@@ -200,7 +155,6 @@ export function useDashboardPendingQuoteStats(period: DashboardPeriod = 'month')
           from_date: apiPeriod.from_date,
           to_date: apiPeriod.to_date,
         });
-        // Pending cards are DRAFT-only — never replace with a broader API "open/pending" total.
         const draftFromApi =
           stats.byStatus.DRAFT ?? stats.byStatus.Draft ?? stats.byStatus.draft;
         return {
