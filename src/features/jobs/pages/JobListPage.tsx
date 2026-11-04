@@ -27,6 +27,7 @@ import type { Job } from '../types/job.types';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { effectiveListJobTypes } from '../utils/deptAccessFromStaffGrants';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 import { normalizeVisibleJobTypeScope } from '../utils/visibleJobTypeScope';
 
@@ -62,9 +63,9 @@ export default function JobListPage() {
     setPage(1);
   }, [segment, applied]);
 
-  // Section list: visible ∪ writable (write implies see for own creates).
+  // Admin/branch manager: all segment types. Staff: visible ∪ writable only.
   const allowedSegmentTypes = useMemo((): JobType[] => {
-    if (user?.unrestrictedOps) return [...segmentConfig.jobTypes];
+    if (isOpsUnrestrictedUser(user)) return [...segmentConfig.jobTypes];
     const scope = normalizeVisibleJobTypeScope(
       effectiveListJobTypes(
         user?.visibleJobTypes,
@@ -79,7 +80,9 @@ export default function JobListPage() {
     );
   }, [
     segmentConfig.jobTypes,
+    user,
     user?.unrestrictedOps,
+    user?.role,
     user?.visibleJobTypes,
     user?.writableJobTypes,
     user?.permissions,
