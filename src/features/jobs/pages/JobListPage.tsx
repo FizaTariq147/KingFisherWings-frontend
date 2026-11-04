@@ -5,6 +5,7 @@ import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
+import { useAuth } from '@/hooks/useAuth';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
   JobMisFilters,
@@ -17,17 +18,22 @@ import {
   DEFAULT_JOB_PAGE_SIZE,
   JOB_SEGMENTS,
   type JobSegmentKey,
+  type JobType,
 } from '../constants/job.constants';
 import { useJobLifecycleMutations } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import type { Job } from '../types/job.types';
+import { canonicalizeJobType } from '../utils/canonicalizeJobType';
+import { effectiveVisibleJobTypes } from '../utils/deptAccessFromStaffGrants';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
+import { normalizeVisibleJobTypeScope } from '../utils/visibleJobTypeScope';
 
 export default function JobListPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const { pathname } = location;
   const segment = segmentFromPath(pathname) ?? 'air-export';
   const segmentConfig = JOB_SEGMENTS[segment as JobSegmentKey];
@@ -56,20 +62,42 @@ export default function JobListPage() {
     setPage(1);
   }, [segment, applied]);
 
+  // Section list: only types in visible_job_types (empty matrix scope → empty section).
+  const allowedSegmentTypes = useMemo((): JobType[] => {
+    if (user?.unrestrictedOps) return [...segmentConfig.jobTypes];
+    const scope = normalizeVisibleJobTypeScope(
+      effectiveVisibleJobTypes(user?.visibleJobTypes, user?.permissions ?? []),
+    );
+    if (scope.kind === 'unrestricted') return [...segmentConfig.jobTypes];
+    if (scope.kind === 'locked') return [];
+    return segmentConfig.jobTypes.filter((t) =>
+      scope.types.includes(canonicalizeJobType(t)),
+    );
+  }, [
+    segmentConfig.jobTypes,
+    user?.unrestrictedOps,
+    user?.visibleJobTypes,
+    user?.permissions,
+  ]);
+
+  const sectionAllowed = allowedSegmentTypes.length > 0;
+
   const listParams = useMemo(
     () =>
       jobMisFilterDraftToListParams(applied, page, {
-        segmentJobTypes: segmentConfig.jobTypes,
+        segmentJobTypes: allowedSegmentTypes,
       }),
-    [applied, page, segmentConfig.jobTypes],
+    [applied, page, allowedSegmentTypes],
   );
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams);
+  const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams, {
+    enabled: sectionAllowed,
+  });
   const lifecycle = useJobLifecycleMutations();
   const prefix = jobRoutePrefix(segment as JobSegmentKey);
 
-  const jobs = data?.jobs ?? [];
-  const meta = data?.meta;
+  const jobs = sectionAllowed ? (data?.jobs ?? []) : [];
+  const meta = sectionAllowed ? data?.meta : undefined;
 
   const run = async (job: Job, fn: () => Promise<unknown>, successMsg: string) => {
     setActionError(null);
@@ -126,7 +154,7 @@ export default function JobListPage() {
             submit();
           }}
           isSubmitting={isFetching}
-          jobTypeOptions={segmentConfig.jobTypes}
+          jobTypeOptions={allowedSegmentTypes}
           jobTypeAllLabel={`All ${segmentConfig.label} types`}
         />
 
@@ -147,7 +175,12 @@ export default function JobListPage() {
           </div>
         ) : null}
 
-        {isError ? (
+        {!sectionAllowed ? (
+          <EmptyState
+            title="No access to this department."
+            description="Your ops permissions do not include this job type. Ask an admin to grant it on your permission matrix, then sign in again."
+          />
+        ) : isError ? (
           <div className="px-3 py-3">
             <ErrorState
               message={getErrorMessage(error) || 'Failed to load jobs.'}

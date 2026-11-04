@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useJobs } from '@/features/jobs/hooks/useJobs';
+import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
 import { useInvoices, useOverdueInvoices } from '@/features/invoices/hooks/useInvoices';
 import { useArAging } from '@/features/arApAging/hooks/useArApAging';
 import { useCrmFollowUps, usePatchCrmFollowUp } from '@/features/crm/hooks/useCrmFollowUps';
@@ -40,7 +41,20 @@ export function DashboardPage() {
     return { from: isoDate(start), to: isoDate(end) };
   }, []);
 
-  const jobsQuery = useJobs({ page: 1, limit: 50, order: 'desc' });
+  // Same ops matrix rule as job sections: scoped to visible_job_types (BE + FE).
+  const jobScope = useVisibleJobListScope();
+  const jobsListParams = useMemo(
+    () => ({
+      page: 1,
+      limit: 50,
+      order: 'desc' as const,
+      ...jobScope.listScopeParams,
+    }),
+    [jobScope.listScopeParams],
+  );
+  const jobsQuery = useJobs(jobsListParams, {
+    enabled: jobScope.kind !== 'locked',
+  });
   const jobCounts = useDashboardJobCounts(period);
   const quoteStats = useDashboardPendingQuoteStats(period);
   const invoicesQuery = useInvoices({ page: 1, limit: 8 });
