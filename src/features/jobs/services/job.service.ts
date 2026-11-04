@@ -36,6 +36,7 @@ import { ensureJobBranchReady } from '../utils/ensureJobBranchReady';
 import { prepareJobPayload } from '../utils/prepareJobPayload';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeCode128Value } from '../utils/scannableBarcode';
+import type { JobType } from '../constants/job.constants';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { jobDetailTabLabel, toApiDetailTabKey } from '../utils/jobDetailTabs';
 import {
@@ -683,38 +684,133 @@ async function hydrateJobsFromConvertedQuotes(
 }
 
 /**
- * BE quirk: staff default GET /jobs (and job_type=) often omits admin-created jobs,
- * but the same jobs appear when `search` is set (typing the job number).
- * Pull with a broad job-number token, then keep only the requested types.
+ * Job-number mid codes used by this tenant (e.g. JOB/FI/11/26/00004).
+ * Staff list ACL often hides admin-created rows unless `search` matches these.
+ */
+function searchTokensForJobTypes(
+  types: Array<NonNullable<JobListParams['job_type']>>,
+): string[] {
+  const tokens = new Set<string>(['JOB/', 'JOB']);
+  for (const raw of types) {
+    const t = canonicalizeJobType(String(raw));
+    switch (t) {
+      case 'SEA_FCL_IMPORT':
+        tokens.add('JOB/FI');
+        tokens.add('/FI/');
+        break;
+      case 'SEA_FCL_EXPORT':
+        tokens.add('JOB/FE');
+        tokens.add('/FE/');
+        break;
+      case 'SEA_LCL_IMPORT':
+        tokens.add('JOB/LI');
+        tokens.add('/LI/');
+        break;
+      case 'SEA_LCL_EXPORT':
+        tokens.add('JOB/LE');
+        tokens.add('/LE/');
+        break;
+      case 'AIR_EXPORT':
+        tokens.add('JOB/AE');
+        tokens.add('/AE/');
+        break;
+      case 'AIR_IMPORT':
+        tokens.add('JOB/AI');
+        tokens.add('/AI/');
+        break;
+      case 'ROAD_FREIGHT':
+      case 'LAND':
+        tokens.add('JOB/RF');
+        tokens.add('/RF/');
+        break;
+      case 'CUSTOMS_CLEARANCE':
+        tokens.add('JOB/CC');
+        tokens.add('/CC/');
+        break;
+      case 'NVOCC_EXPORT':
+      case 'NVOCC_IMPORT':
+        tokens.add('JOB/NV');
+        tokens.add('/NV/');
+        break;
+      case 'COURIER':
+        tokens.add('JOB/CR');
+        break;
+      default:
+        break;
+    }
+  }
+  return [...tokens];
+}
+
+/** Infer job_type from numbers like JOB/FI/11/26/00004 when list payload omits type. */
+function inferJobTypeFromJobNumber(jobNumber?: string): JobType | undefined {
+  const n = String(jobNumber ?? '')
+    .trim()
+    .toUpperCase();
+  if (!n) return undefined;
+  if (n.includes('/FI/') || n.includes('-FI-')) return 'SEA_FCL_IMPORT';
+  if (n.includes('/FE/') || n.includes('-FE-')) return 'SEA_FCL_EXPORT';
+  if (n.includes('/LI/') || n.includes('-LI-')) return 'SEA_LCL_IMPORT';
+  if (n.includes('/LE/') || n.includes('-LE-')) return 'SEA_LCL_EXPORT';
+  if (n.includes('/AE/') || n.includes('-AE-')) return 'AIR_EXPORT';
+  if (n.includes('/AI/') || n.includes('-AI-')) return 'AIR_IMPORT';
+  if (n.includes('/RF/') || n.includes('-RF-')) return 'ROAD_FREIGHT';
+  if (n.includes('/CC/') || n.includes('-CC-')) return 'CUSTOMS_CLEARANCE';
+  if (n.includes('/NV/') || n.includes('-NV-')) return 'NVOCC_EXPORT';
+  return undefined;
+}
+
+function effectiveListJobType(job: Job): JobType {
+  const fromNumber = inferJobTypeFromJobNumber(job.job_number);
+  const fromField = canonicalizeJobType(String(job.job_type ?? ''));
+  // Prefer number mid-code when normalize defaulted to AIR_EXPORT incorrectly.
+  if (fromNumber && (fromField === 'AIR_EXPORT' || !job.job_type)) return fromNumber;
+  if (fromNumber && fromField !== fromNumber) return fromNumber;
+  return fromField;
+}
+
+/**
+ * BE quirk: staff default GET /jobs omits admin-created jobs, but the same jobs
+ * appear when search matches the job number (e.g. JOB/FI/…). Recover with
+ * department number prefixes, then keep only the requested types.
  */
 async function fetchJobsVisibleViaSearchRecovery(
   params: JobListParams,
   types: Array<NonNullable<JobListParams['job_type']>>,
 ): Promise<Job[]> {
   const allowed = new Set(types.map((t) => canonicalizeJobType(String(t))));
-  const searchToken = params.search?.trim() || 'JOB';
-  try {
-    const page = await fetchJobListPage(
-      {
-        ...params,
-        search: searchToken,
-        job_type: undefined,
-        job_types: undefined,
-        created_by: undefined,
-        salesperson_id: undefined,
-        department_id: undefined,
-        page: 1,
-        limit: API_LIST_LIMIT_MAX,
-        order: params.order ?? 'desc',
-      },
-      { skipErrorToast: true },
-    );
-    return (page.jobs ?? []).filter((j) =>
-      allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
-    );
-  } catch {
-    return [];
-  }
+  const tokens = params.search?.trim()
+    ? [params.search.trim()]
+    : searchTokensForJobTypes(types);
+  const byId = new Map<string, Job>();
+
+  await Promise.all(
+    tokens.map(async (searchToken) => {
+      try {
+        const page = await fetchJobListPage(
+          {
+            page: 1,
+            limit: API_LIST_LIMIT_MAX,
+            order: params.order ?? 'desc',
+            search: searchToken,
+            status: params.status,
+            // Critical: no job_type / created_by — same path as typing a job number.
+          },
+          { skipErrorToast: true },
+        );
+        for (const job of page.jobs ?? []) {
+          if (!job?.id) continue;
+          const type = effectiveListJobType(job);
+          if (!allowed.has(type)) continue;
+          byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
+        }
+      } catch {
+        /* try next token */
+      }
+    }),
+  );
+
+  return [...byId.values()];
 }
 
 /**
@@ -756,21 +852,15 @@ async function fetchJobsFilteredByTypes(
     }
     for (const job of unfiltered.jobs ?? []) {
       if (!job?.id) continue;
-      if (allowed.has(canonicalizeJobType(String(job.job_type ?? '')))) {
-        byId.set(job.id, job);
+      const type = effectiveListJobType(job);
+      if (allowed.has(type)) {
+        byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
       }
     }
     const got = unfiltered.jobs?.length ?? 0;
     if (got === 0) break;
     if (pageNum * pageSize >= apiTotal) break;
     pageNum += 1;
-  }
-
-  // Recover admin-created rows that only appear under search (same as typing job no).
-  if (!params.search?.trim()) {
-    for (const job of await fetchJobsVisibleViaSearchRecovery(params, types)) {
-      if (job?.id) byId.set(job.id, job);
-    }
   }
 
   const merged = [...byId.values()].sort((a, b) => {
@@ -1033,15 +1123,27 @@ export const jobService = {
 
         const byId = new Map<string, Job>();
         let unfilteredTotal = 0;
+
+        // 1) Search-prefix recovery FIRST (matches staff typing JOB/FI/… — includes admin creates).
+        if (!String(deptListBase.search ?? '').trim()) {
+          for (const job of await fetchJobsVisibleViaSearchRecovery(deptListBase, types)) {
+            if (job?.id) byId.set(job.id, job);
+          }
+          unfilteredTotal = Math.max(unfilteredTotal, byId.size);
+        }
+
+        // 2) Unfiltered JWT list + client type filter.
         try {
           const unfiltered = await fetchJobsFilteredByTypes(deptListBase, types);
-          unfilteredTotal = unfiltered.meta.total ?? 0;
+          unfilteredTotal = Math.max(unfilteredTotal, unfiltered.meta.total ?? 0);
           for (const job of unfiltered.jobs ?? []) {
             if (job?.id) byId.set(job.id, job);
           }
         } catch {
           /* typed fan-out below */
         }
+
+        // 3) Typed job_type= fan-out.
         try {
           for (const pageResult of await fetchTypedPages()) {
             unfilteredTotal = Math.max(unfilteredTotal, pageResult.meta.total ?? 0);
@@ -1050,17 +1152,11 @@ export const jobService = {
             }
           }
         } catch {
-          /* keep unfiltered rows */
-        }
-        // Same recovery as typing a job number — admin creates that list ACL hides.
-        if (!deptListBase.search?.trim()) {
-          for (const job of await fetchJobsVisibleViaSearchRecovery(deptListBase, types)) {
-            if (job?.id) byId.set(job.id, job);
-          }
+          /* keep recovered rows */
         }
 
         const seeded = [...byId.values()].filter((j) =>
-          allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
+          allowed.has(effectiveListJobType(j)),
         );
         const hydrated = await hydrateJobsFromConvertedQuotes(seeded, types);
         const typed = hydrated.filter((j) =>

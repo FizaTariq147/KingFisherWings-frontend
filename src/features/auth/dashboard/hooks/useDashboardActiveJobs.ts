@@ -41,6 +41,19 @@ export function useDashboardActiveJobs(options?: {
     ]) {
       types.add(canonicalizeJobType(raw));
     }
+    // Always pass at least common ops types so search-prefix recovery runs for staff.
+    if (!types.size) {
+      (
+        [
+          'AIR_EXPORT',
+          'AIR_IMPORT',
+          'SEA_FCL_EXPORT',
+          'SEA_FCL_IMPORT',
+          'SEA_LCL_EXPORT',
+          'SEA_LCL_IMPORT',
+        ] as JobType[]
+      ).forEach((t) => types.add(t));
+    }
     return [...types];
   }, [user]);
 
