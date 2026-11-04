@@ -21,7 +21,7 @@ import {
   useDashboardJobCounts,
   useDashboardPendingQuoteStats,
 } from '../hooks/useDashboardJobCounts';
-import { isoDate } from '../utils/dashboardFormat';
+import { isActiveJob, isoDate } from '../utils/dashboardFormat';
 
 export function DashboardPage() {
   const { user } = useAuth();
@@ -128,6 +128,13 @@ export function DashboardPage() {
   const jobBars = jobCounts.data?.bars ?? [];
   const quoteBars = quoteStats.data?.bars ?? [];
 
+  // Keep Active jobs KPI in sync with Active shipments → All jobs (same list + isActiveJob).
+  const listActiveJobs = useMemo(
+    () => (jobsQuery.data?.jobs ?? []).filter((j) => isActiveJob(j.status)).length,
+    [jobsQuery.data?.jobs],
+  );
+  const activeJobsCount = Math.max(jobCounts.data?.active ?? 0, listActiveJobs);
+
   const agingQuoteStats = useMemo(() => {
     const quotations = quoteStats.data?.quotations ?? [];
     const ages = quotations.map((item) => {
@@ -180,7 +187,7 @@ export function DashboardPage() {
         />
 
         <DashboardKpiRow
-          activeJobs={jobCounts.data?.active ?? 0}
+          activeJobs={activeJobsCount}
           inTransit={jobCounts.data?.inTransit ?? 0}
           atOrigin={jobCounts.data?.atOrigin ?? 0}
           newJobs={jobCounts.data?.newJobs ?? 0}

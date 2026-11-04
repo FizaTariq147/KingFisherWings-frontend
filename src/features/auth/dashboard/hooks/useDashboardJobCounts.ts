@@ -5,7 +5,7 @@ import { useAuthStore } from '@/store/authStore';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { JobStatus } from '@/features/jobs/constants/job.constants';
 import type { JobListParams } from '@/features/jobs/types/job.types';
-import { effectiveVisibleJobTypes } from '@/features/jobs/utils/deptAccessFromStaffGrants';
+import { effectiveListJobTypes } from '@/features/jobs/utils/deptAccessFromStaffGrants';
 import { normalizeVisibleJobTypeScope } from '@/features/jobs/utils/visibleJobTypeScope';
 import { PENDING_QUOTATION_STATUSES } from '@/features/quotations/constants/quotation.constants';
 import { quotationService } from '@/features/quotations/services/quotation.service';
@@ -41,7 +41,12 @@ const EMPTY_JOB_COUNTS = {
   open: 0,
 };
 
-async function legacyJobCounts(scopeParams: Pick<JobListParams, 'job_types'>) {
+type JobCountsShape = typeof EMPTY_JOB_COUNTS & {
+  byStatus: Record<JobStatus, number>;
+};
+
+async function legacyJobCounts(scopeParams: Pick<JobListParams, 'job_types'>): Promise<JobCountsShape> {
+  // No period filter — Active jobs / All jobs are an open-ops snapshot, not MTD creates.
   const pages = await Promise.all(
     COUNT_STATUSES.map((status) =>
       jobService.list({ page: 1, limit: 1, status, ...scopeParams }),
@@ -85,18 +90,55 @@ async function legacyJobCounts(scopeParams: Pick<JobListParams, 'job_types'>) {
   };
 }
 
+/** Prefer list totals when dashboard-counts under-counts (e.g. period / ops-only ACL). */
+function reconcileJobCounts(
+  api: JobCountsShape,
+  list: JobCountsShape,
+): JobCountsShape {
+  const maxNum = (a: number, b: number) => Math.max(a || 0, b || 0);
+  const byStatus = { ...api.byStatus };
+  for (const status of COUNT_STATUSES) {
+    byStatus[status] = maxNum(api.byStatus[status] ?? 0, list.byStatus[status] ?? 0);
+  }
+  const active = maxNum(api.active, list.active);
+  return {
+    ...api,
+    byStatus,
+    bars: COUNT_STATUSES.map((status) => byStatus[status] ?? 0),
+    active,
+    inTransit: maxNum(api.inTransit, list.inTransit),
+    atOrigin: maxNum(api.atOrigin, list.atOrigin),
+    newJobs: maxNum(api.newJobs, list.newJobs),
+    customsHold: maxNum(api.customsHold, list.customsHold),
+    docsPending: maxNum(api.docsPending, list.docsPending),
+    onHold: maxNum(api.onHold, list.onHold),
+    delayed: maxNum(api.delayed, list.delayed),
+    delivered: maxNum(api.delivered, list.delivered),
+    cancelled: maxNum(api.cancelled, list.cancelled),
+    completed: maxNum(api.completed, list.completed),
+    inProgress: maxNum(api.inProgress, list.inProgress),
+    open: maxNum(maxNum(api.open, list.open), active),
+  };
+}
+
 export function useDashboardJobCounts(period: DashboardPeriod = 'month') {
   const accessToken = useAuthStore((s) => s.accessToken);
   const { user } = useAuth();
   const apiPeriod = uiPeriodToApi(period);
   const jobScope = useMemo(() => {
     if (user?.unrestrictedOps) return { kind: 'unrestricted' as const };
-    const effective = effectiveVisibleJobTypes(
+    const effective = effectiveListJobTypes(
       user?.visibleJobTypes,
+      user?.writableJobTypes,
       user?.permissions ?? [],
     );
     return normalizeVisibleJobTypeScope(effective);
-  }, [user?.unrestrictedOps, user?.visibleJobTypes, user?.permissions]);
+  }, [
+    user?.unrestrictedOps,
+    user?.visibleJobTypes,
+    user?.writableJobTypes,
+    user?.permissions,
+  ]);
 
   const scopeParams = useMemo((): Pick<JobListParams, 'job_types'> => {
     if (jobScope.kind === 'locked') return { job_types: [] };
@@ -108,11 +150,14 @@ export function useDashboardJobCounts(period: DashboardPeriod = 'month') {
     queryKey: ['tenant', 'dashboard', 'job-counts', apiPeriod, jobScope],
     queryFn: async () => {
       if (jobScope.kind === 'locked') return EMPTY_JOB_COUNTS;
+      // List totals match Active shipments / All jobs (no period). Reconcile so
+      // period-scoped or ops-only dashboard-counts cannot under-count staff jobs for admin.
+      const listCounts = await legacyJobCounts(scopeParams);
       try {
-        // BE auto-scopes to visible_job_types when matrix is set.
-        return await jobService.dashboardCounts(apiPeriod);
+        const apiCounts = await jobService.dashboardCounts(apiPeriod);
+        return reconcileJobCounts(apiCounts as JobCountsShape, listCounts);
       } catch {
-        return legacyJobCounts(scopeParams);
+        return listCounts;
       }
     },
     enabled: Boolean(accessToken),

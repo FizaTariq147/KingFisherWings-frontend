@@ -152,3 +152,20 @@ export function effectiveVisibleJobTypes(
   if (visibleJobTypes.length === 0) return [];
   return visibleJobTypes;
 }
+
+/**
+ * List/dashboard scope: write implies see.
+ * If matrix left visible empty/mismatched but writable has modes (e.g. Air Export create),
+ * staff still list those types so their creates appear in sections + dashboard.
+ */
+export function effectiveListJobTypes(
+  visibleJobTypes: string[] | null | undefined,
+  writableJobTypes: string[] | null | undefined,
+  permissions: readonly string[],
+): string[] | null {
+  const visible = effectiveVisibleJobTypes(visibleJobTypes, permissions);
+  if (visible === null) return null; // unrestricted
+  if (writableJobTypes === null || writableJobTypes === undefined) return visible;
+  if (!writableJobTypes.length) return visible;
+  return [...new Set([...visible, ...writableJobTypes])];
+}
