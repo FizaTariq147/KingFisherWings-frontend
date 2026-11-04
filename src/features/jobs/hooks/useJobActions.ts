@@ -694,6 +694,28 @@ export function useJobNoteMutations(jobId: string) {
   };
 }
 
+function milestoneCacheKey(m: Pick<JobMilestone, 'id' | 'milestone' | 'milestone_key'>): string {
+  return String(m.milestone_key || m.milestone || m.id)
+    .trim()
+    .toUpperCase();
+}
+
+/** Merge GET rows with locally seeded customs so a lagging list does not drop new rows. */
+function mergeMilestoneCache(
+  ...lists: Array<JobMilestone[] | undefined | null>
+): JobMilestone[] {
+  const byKey = new Map<string, JobMilestone>();
+  for (const list of lists) {
+    if (!Array.isArray(list)) continue;
+    for (const m of list) {
+      const key = milestoneCacheKey(m);
+      if (!key || byKey.has(key)) continue;
+      byKey.set(key, m);
+    }
+  }
+  return [...byKey.values()];
+}
+
 export function useJobMilestoneMutations(jobId: string) {
   const queryClient = useQueryClient();
   const invalidate = useInvalidateJobs();
@@ -701,28 +723,23 @@ export function useJobMilestoneMutations(jobId: string) {
     create: useMutation({
       mutationFn: (dto: CreateCustomMilestoneDto) => jobService.createMilestone(jobId, dto),
       onSuccess: (created) => {
-        // Seed list cache immediately so Add custom does not look like a no-op
-        // while GET still returns a stale unified track payload.
-        queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) => {
-          const list = Array.isArray(prev) ? prev : [];
-          const key = String(created.milestone_key || created.milestone || created.id)
-            .trim()
-            .toUpperCase();
-          if (
-            key &&
-            list.some(
-              (m) =>
-                String(m.milestone_key || m.milestone || m.id)
-                  .trim()
-                  .toUpperCase() === key,
-            )
-          ) {
-            return list;
-          }
-          return [created, ...list];
-        });
-        invalidate(jobId);
-        void queryClient.invalidateQueries({ queryKey: jobKeys.milestones(jobId) });
+        // Seed immediately — custom rows often lag or are omitted on the next GET.
+        queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) =>
+          mergeMilestoneCache([created], prev),
+        );
+        // Do NOT invalidate jobKeys.all / milestones here: that refetch replaces the
+        // cache and makes the custom milestone flash then vanish.
+        void queryClient.invalidateQueries({ queryKey: jobKeys.detail(jobId) });
+        void jobService.listMilestones(jobId).then(
+          (list) => {
+            queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) =>
+              mergeMilestoneCache(list, prev, [created]),
+            );
+          },
+          () => {
+            /* keep seeded row */
+          },
+        );
       },
     }),
     update: useMutation({

@@ -11,10 +11,13 @@ function jobSortTime(job: Job): number {
 }
 
 /**
- * Open-bucket rows for the Active shipments grid.
- * Trust BE JWT scoping — do not send created_by, department_id, or FE job_types.
- * Optional section `job_type` / `branch_id` only when the screen is filtered the same way.
- * Do not use `total` here for the “total jobs” KPI — bind that to dashboard job_count.
+ * Active shipments grid rows for the current user.
+ *
+ * - No created_by / salesperson_id / department_id / user id — any creator
+ *   (admin or staff) with an allowed job_type appears.
+ * - BE JWT scopes job types; FE only optionally passes section job_type / branch_id.
+ * - Prefer an unfiltered list (same ACL as job_count) then keep open-bucket rows;
+ *   also merge per-status pages so newer open jobs are not lost behind completed ones.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -34,35 +37,55 @@ export function useDashboardActiveJobs(options?: {
   };
 
   return useQuery({
-    queryKey: ['tenant', 'dashboard', 'active-jobs', jobType, branchId, rowLimit],
+    queryKey: ['tenant', 'dashboard', 'active-jobs', 'any-creator', jobType, branchId, rowLimit],
     queryFn: async () => {
-      const pages = await Promise.all(
-        OPEN_JOB_STATUSES.map((status) =>
+      const pageLimit = Math.min(100, Math.max(rowLimit, 40));
+
+      const [allPage, ...statusPages] = await Promise.all([
+        jobService.list({
+          page: 1,
+          limit: pageLimit,
+          order: 'desc',
+          skip_client_hydrate: true,
+          ...filterParams,
+        }),
+        ...OPEN_JOB_STATUSES.map((status) =>
           jobService.list({
             page: 1,
-            limit: Math.min(20, rowLimit),
+            limit: pageLimit,
             status,
             order: 'desc',
             skip_client_hydrate: true,
             ...filterParams,
           }),
         ),
-      );
+      ]);
 
       const byId = new Map<string, Job>();
+      for (const job of allPage.jobs ?? []) {
+        if (job?.id) byId.set(job.id, job);
+      }
       let openTotal = 0;
-      for (const page of pages) {
+      for (const page of statusPages) {
         openTotal += page.meta?.total ?? 0;
-        for (const job of page.jobs) {
+        for (const job of page.jobs ?? []) {
           if (job?.id) byId.set(job.id, job);
         }
       }
 
-      const jobs = [...byId.values()].sort((a, b) => jobSortTime(b) - jobSortTime(a));
+      const openSet = new Set<string>(OPEN_JOB_STATUSES);
+      const openJobs = [...byId.values()]
+        .filter((j) => openSet.has(String(j.status)))
+        .sort((a, b) => jobSortTime(b) - jobSortTime(a));
+
+      // If status meta was empty (soft ACL), fall back to client open filter of merged list.
+      if (!openTotal) {
+        openTotal = openJobs.length;
+      }
 
       return {
-        jobs: jobs.slice(0, rowLimit),
-        /** Open-status bucket only — not job_count. */
+        jobs: openJobs.slice(0, rowLimit),
+        /** Open-status bucket estimate — not job_count. */
         openTotal,
       };
     },

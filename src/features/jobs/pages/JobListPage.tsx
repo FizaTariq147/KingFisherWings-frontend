@@ -100,14 +100,18 @@ export default function JobListPage() {
     hasEnabledModule,
   ]);
 
-  const listParams = useMemo(
-    () =>
-      jobMisFilterDraftToListParams(applied, page, {
-        // Section filter only (e.g. Air Export types). BE cuts by grants.
-        segmentJobTypes: [...segmentConfig.jobTypes],
-      }),
-    [applied, page, segmentConfig.jobTypes],
-  );
+  const listParams = useMemo(() => {
+    const params = jobMisFilterDraftToListParams(applied, page, {
+      // Section filter only (e.g. Air Export types). BE cuts by grants.
+      segmentJobTypes: [...segmentConfig.jobTypes],
+    });
+    // Department default view: every creator (admin + staff). Only keep creator
+    // filters when the user explicitly typed them in MIS filters.
+    if (!applied.createdBy?.trim()) delete params.created_by;
+    if (!applied.salespersonId?.trim()) delete params.salesperson_id;
+    if (!applied.departmentId?.trim()) delete params.department_id;
+    return params;
+  }, [applied, page, segmentConfig.jobTypes]);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams);
   const lifecycle = useJobLifecycleMutations();

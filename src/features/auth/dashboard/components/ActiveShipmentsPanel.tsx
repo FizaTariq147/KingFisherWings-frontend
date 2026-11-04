@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQueries } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 import {
@@ -52,7 +52,7 @@ import { cn } from '@/lib/utils';
 
 type ViewKey = 'all' | 'mine' | 'customs' | 'docs' | 'air';
 
-/** "All jobs" = every in-scope job (any creator). "My jobs" = assigned to current user only. */
+/** "All jobs" = every in-scope open job (admin or staff creator). "My jobs" = assigned to me. */
 const SAVED_VIEWS: { id: ViewKey; label: string; icon: LucideIcon }[] = [
   { id: 'all', label: 'All jobs', icon: Briefcase },
   { id: 'mine', label: 'My jobs', icon: User },
@@ -110,7 +110,7 @@ export function ActiveShipmentsPanel({
   isFetching,
   /** Shared open-ops total (KPI / header) — keeps All jobs badge aligned across roles. */
   activeTotal,
-  /** Staff portal defaults to My jobs. */
+  /** Tenant dashboard always defaults to All jobs (any creator). */
   defaultView = 'all',
 }: {
   jobs: Job[];
@@ -128,6 +128,11 @@ export function ActiveShipmentsPanel({
   const [chip, setChip] = useState<ShipmentStatusChip>('all');
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
+
+  // Keep staff on All jobs when the dashboard mounts with that default (not My jobs).
+  useEffect(() => {
+    setView(defaultView);
+  }, [defaultView]);
 
   const active = useMemo(() => jobs.filter((job) => isActiveJob(job.status)), [jobs]);
 
