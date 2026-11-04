@@ -41,7 +41,7 @@ export function DashboardPage() {
     return { from: isoDate(start), to: isoDate(end) };
   }, []);
 
-  // Admin/branch manager: all types. Staff: visible_job_types only (all creators).
+  // Admin: all types + all creators. Staff: allowed departments only (still all creators).
   const jobScope = useVisibleJobListScope();
   const countScope =
     jobScope.kind === 'scoped'

@@ -14,7 +14,8 @@ function jobSortTime(job: Job): number {
 
 /**
  * Active (non-closed) jobs for dashboard KPI + Active shipments grid.
- * Same scope as sections: admin = all types; staff = visible_job_types.
+ * Same scope as sections: admin = all types; staff = allowed departments.
+ * Jobs from any creator (admin or staff) count when the job_type is in scope.
  * Total = sum of list meta.totals per open status (exact), not a single page length.
  */
 export function useDashboardActiveJobs(options?: {

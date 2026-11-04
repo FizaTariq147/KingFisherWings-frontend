@@ -1,12 +1,19 @@
 import type { AuthUser } from '@/types/auth.types';
 import type { Job } from '../types/job.types';
 import { canonicalizeJobType } from './canonicalizeJobType';
+import { effectiveListJobTypes } from './deptAccessFromStaffGrants';
+import { filterJobTypesByStaffAccess } from './filterJobTypesByStaffAccess';
 import { isOpsUnrestrictedUser } from './isOpsUnrestrictedUser';
 import { jobEditable } from './jobRoute';
 
 type AccessActor = Pick<
   AuthUser,
-  'id' | 'role' | 'unrestrictedOps' | 'writableJobTypes' | 'visibleJobTypes'
+  | 'id'
+  | 'role'
+  | 'unrestrictedOps'
+  | 'writableJobTypes'
+  | 'visibleJobTypes'
+  | 'permissions'
 >;
 
 function jobOwnedByUser(job: Job, userId: string | undefined): boolean {
@@ -19,10 +26,9 @@ function jobOwnedByUser(job: Job, userId: string | undefined): boolean {
 }
 
 /**
- * Staff visible set for list / detail / milestones.
- * Admin (tenant admin + branch manager + unrestrictedOps) always true.
- * null/undefined visible = unrestricted (legacy / admin-style).
- * empty visible = locked (sees nothing).
+ * Staff may see a job when its job_type is in their allowed department scope.
+ * Creator (admin vs staff) does not matter — only department / job_type access.
+ * Admin / branch manager / unrestrictedOps → always true.
  */
 export function jobTypeIsVisible(
   job: Pick<Job, 'job_type'>,
@@ -30,12 +36,31 @@ export function jobTypeIsVisible(
 ): boolean {
   if (!user) return false;
   if (isOpsUnrestrictedUser(user)) return true;
-  if (user.visibleJobTypes === null || user.visibleJobTypes === undefined) {
-    return true;
-  }
-  if (!user.visibleJobTypes.length) return false;
+
   const type = canonicalizeJobType(job.job_type);
-  return user.visibleJobTypes.some((t) => canonicalizeJobType(t) === type);
+  const effective = effectiveListJobTypes(
+    user.visibleJobTypes,
+    user.writableJobTypes,
+    user.permissions ?? [],
+  );
+
+  if (effective !== null) {
+    if (!effective.length) return false;
+    return effective.some((t) => canonicalizeJobType(t) === type);
+  }
+
+  // Legacy null visible claim: still gate by matrix/menu department grants.
+  return (
+    filterJobTypesByStaffAccess({
+      permissions: user.permissions ?? [],
+      visibleJobTypes: user.visibleJobTypes,
+      writableJobTypes: user.writableJobTypes,
+      unrestrictedOps: false,
+      isTenantAdmin: false,
+      candidates: [type],
+      mode: 'list',
+    }).length > 0
+  );
 }
 
 /**
@@ -56,7 +81,7 @@ export function jobTypeIsWritable(
   return user.writableJobTypes.some((t) => canonicalizeJobType(t) === type);
 }
 
-/** Detail / milestones: admin always; staff when job type is visible. */
+/** Detail / milestones: admin always; staff when job type is in allowed departments. */
 export function canSeeJob(
   job: Pick<Job, 'job_type'>,
   user?: AccessActor | null,

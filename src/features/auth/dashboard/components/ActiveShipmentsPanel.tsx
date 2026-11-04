@@ -52,6 +52,7 @@ import { cn } from '@/lib/utils';
 
 type ViewKey = 'all' | 'mine' | 'customs' | 'docs' | 'air';
 
+/** "All jobs" = every in-scope job (any creator). "My jobs" = assigned to current user only. */
 const SAVED_VIEWS: { id: ViewKey; label: string; icon: LucideIcon }[] = [
   { id: 'all', label: 'All jobs', icon: Briefcase },
   { id: 'mine', label: 'My jobs', icon: User },

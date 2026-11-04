@@ -14,6 +14,7 @@ import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
  * List/dashboard query params scoped by permissions + visible ∪ writable job types.
  * Admin / branch manager / unrestricted_ops → no job_types filter (all creators, all types).
  * Staff → never unrestricted: only job types allowed by matrix/menu (+ /me allow-lists).
+ * Creator is irrelevant: admin-created jobs in a staff-allowed department appear for both.
  * Create UIs should use writable_job_types only (useCreateWritableJobTypes).
  */
 export function useVisibleJobListScope(): {
