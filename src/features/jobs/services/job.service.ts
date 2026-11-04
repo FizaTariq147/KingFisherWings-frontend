@@ -43,6 +43,10 @@ import {
   listRecentCreatedJobSnapshots,
   rememberCreatedJob,
 } from '../utils/recentCreatedJobs';
+import {
+  isOpsUnrestrictedRole,
+  resolveAuthRoleSlug,
+} from '@/features/users/constants/userPermissions';
 import { resolveJobDocumentFileUrl } from '../utils/resolveJobDocumentFileUrl';
 import { sanitizeModeBookingFormPut } from '../utils/sanitizeModeBookingFormPut';
 import { useAuthStore } from '@/store/authStore';
@@ -1599,13 +1603,21 @@ export const jobService = {
       typeof dto.company_id === 'string' ? dto.company_id : undefined,
     );
     const branchId = await ensureJobBranchReady(companyId || undefined);
-    const sessionUserId = useAuthStore.getState().user?.id?.trim() || '';
+    const sessionUser = useAuthStore.getState().user;
+    const sessionUserId = sessionUser?.id?.trim() || '';
+    // Admin/branch manager creates must not auto-own the job — staff with the same
+    // job_type grant should see it on list / Active shipments (any creator).
+    const adminCreator = isOpsUnrestrictedRole(
+      resolveAuthRoleSlug(sessionUser?.role),
+    );
 
     const dtoWithContext: CreateJobDto = {
       ...(companyId && !dto.company_id ? { ...dto, company_id: companyId } : dto),
       branch_id: branchId,
-      // So dashboard "My jobs" and ops assignment match the creator when blank.
-      ...(sessionUserId && !dto.ops_user_id ? { ops_user_id: sessionUserId } : {}),
+      // Staff creates: default ops assignment to self for "My jobs". Admin: leave blank.
+      ...(sessionUserId && !dto.ops_user_id && !adminCreator
+        ? { ops_user_id: sessionUserId }
+        : {}),
     };
 
     const body = prepareJobPayload(dtoWithContext);
@@ -4208,6 +4220,18 @@ export const jobService = {
       pushBucket(record.milestones);
       pushBucket(record.custom_milestones);
       pushBucket(record.customMilestones);
+      pushBucket(record.customs);
+      pushBucket(record.actions);
+      const nestedData =
+        record.data && typeof record.data === 'object' && !Array.isArray(record.data)
+          ? (record.data as Record<string, unknown>)
+          : null;
+      if (nestedData) {
+        pushBucket(nestedData.milestones);
+        pushBucket(nestedData.custom_milestones);
+        pushBucket(nestedData.customMilestones);
+        pushBucket(nestedData.customs);
+      }
       // Customs sometimes only appear in unified track items with is_custom / milestone fields.
       for (const key of ['items', 'history', 'timeline', 'events'] as const) {
         const arr = record[key];

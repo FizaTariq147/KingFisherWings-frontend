@@ -1,11 +1,10 @@
 import { useState } from 'react';
-import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { useInlineValidation } from '@/lib/validation';
 import { useJobMilestoneMutations } from '../../hooks/useJobActions';
-import { jobKeys, useJobMilestones } from '../../hooks/useJobs';
+import { useJobMilestones } from '../../hooks/useJobs';
 import { createJobMilestoneSchema } from '../../schemas/job.schema';
 import type { JobMilestone } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -31,7 +30,6 @@ function milestoneActionKey(m: JobMilestone): string {
 }
 
 export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
-  const queryClient = useQueryClient();
   const { data: milestones = [], refetch, isFetching } = useJobMilestones(jobId);
   const mutations = useJobMilestoneMutations(jobId);
   const validation = useInlineValidation();
@@ -98,49 +96,14 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
         ...(description.trim() ? { description: description.trim() } : {}),
       },
       async (dto) => {
-        const created = await mutations.create.mutateAsync(dto);
+        // Mutation seeds + soft-merges GET so the row stays even when list lags.
+        await mutations.create.mutateAsync(dto);
         setName('');
         setDescription('');
-        // Keep the created row even if GET temporarily omits it.
-        queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) => {
-          const list = Array.isArray(prev) ? [...prev] : [];
-          const key = String(created.milestone_key || created.milestone || created.id)
-            .trim()
-            .toUpperCase();
-          if (
-            key &&
-            list.some(
-              (m) =>
-                String(m.milestone_key || m.milestone || m.id)
-                  .trim()
-                  .toUpperCase() === key,
-            )
-          ) {
-            return list;
-          }
-          return [created, ...list];
-        });
       },
     );
     if (ok) {
       setSuccess('Custom milestone added.');
-      // Soft refresh — seeded cache already shows the new row.
-      void refetch().then((result) => {
-        const list = result.data;
-        if (!Array.isArray(list)) return;
-        queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) => {
-          const seeded = Array.isArray(prev) ? prev : [];
-          const byKey = new Map<string, JobMilestone>();
-          for (const m of [...list, ...seeded]) {
-            const key = String(m.milestone_key || m.milestone || m.id)
-              .trim()
-              .toUpperCase();
-            if (!key || byKey.has(key)) continue;
-            byKey.set(key, m);
-          }
-          return [...byKey.values()];
-        });
-      });
     }
   };
 
