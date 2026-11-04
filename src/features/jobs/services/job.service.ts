@@ -683,6 +683,41 @@ async function hydrateJobsFromConvertedQuotes(
 }
 
 /**
+ * BE quirk: staff default GET /jobs (and job_type=) often omits admin-created jobs,
+ * but the same jobs appear when `search` is set (typing the job number).
+ * Pull with a broad job-number token, then keep only the requested types.
+ */
+async function fetchJobsVisibleViaSearchRecovery(
+  params: JobListParams,
+  types: Array<NonNullable<JobListParams['job_type']>>,
+): Promise<Job[]> {
+  const allowed = new Set(types.map((t) => canonicalizeJobType(String(t))));
+  const searchToken = params.search?.trim() || 'JOB';
+  try {
+    const page = await fetchJobListPage(
+      {
+        ...params,
+        search: searchToken,
+        job_type: undefined,
+        job_types: undefined,
+        created_by: undefined,
+        salesperson_id: undefined,
+        department_id: undefined,
+        page: 1,
+        limit: API_LIST_LIMIT_MAX,
+        order: params.order ?? 'desc',
+      },
+      { skipErrorToast: true },
+    );
+    return (page.jobs ?? []).filter((j) =>
+      allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
+    );
+  } catch {
+    return [];
+  }
+}
+
+/**
  * GET /jobs with no job_type (BE JWT scopes visibility / any creator), then keep
  * only the requested department types. Pages through the unfiltered list so
  * section jobs are not lost behind newer jobs of other types (staff Sea Import, etc.).
@@ -731,6 +766,13 @@ async function fetchJobsFilteredByTypes(
     pageNum += 1;
   }
 
+  // Recover admin-created rows that only appear under search (same as typing job no).
+  if (!params.search?.trim()) {
+    for (const job of await fetchJobsVisibleViaSearchRecovery(params, types)) {
+      if (job?.id) byId.set(job.id, job);
+    }
+  }
+
   const merged = [...byId.values()].sort((a, b) => {
     const diff = jobSortTime(a) - jobSortTime(b);
     return order === 'asc' ? diff : -diff;
@@ -739,7 +781,10 @@ async function fetchJobsFilteredByTypes(
   const slice = merged.slice(start, start + limit);
   // Prefer exact matched count once we scanned enough; otherwise lower-bound.
   const scannedAll = Number.isFinite(apiTotal) && pageNum * pageSize >= apiTotal;
-  const total = scannedAll ? merged.length : Math.max(merged.length, slice.length);
+  const total = Math.max(
+    scannedAll ? merged.length : Math.max(merged.length, slice.length),
+    merged.length,
+  );
   return {
     jobs: slice,
     meta: {
@@ -924,7 +969,7 @@ export const jobService = {
           Promise.all(
             typedOnly.map(async (job_type) => {
               try {
-                return await fetchJobListPage(
+                const pageResult = await fetchJobListPage(
                   {
                     ...deptListBase,
                     job_type,
@@ -933,6 +978,19 @@ export const jobService = {
                   },
                   { skipErrorToast: true },
                 );
+                // Stamp requested type when list rows omit job_type (normalize defaults to AIR_EXPORT).
+                const stamped = (pageResult.jobs ?? []).map((j) => {
+                  const current = canonicalizeJobType(String(j.job_type ?? ''));
+                  const expected = canonicalizeJobType(String(job_type));
+                  if (
+                    !j.job_type ||
+                    (current === 'AIR_EXPORT' && expected !== 'AIR_EXPORT')
+                  ) {
+                    return { ...j, job_type: expected };
+                  }
+                  return j;
+                });
+                return { ...pageResult, jobs: stamped };
               } catch (err) {
                 if (isJobTypeAccessError(err)) return emptyJobListResult(perTypeLimit);
                 throw err;
@@ -976,7 +1034,7 @@ export const jobService = {
         const byId = new Map<string, Job>();
         let unfilteredTotal = 0;
         try {
-          const unfiltered = await fetchJobsFilteredByTypes(safeParams, types);
+          const unfiltered = await fetchJobsFilteredByTypes(deptListBase, types);
           unfilteredTotal = unfiltered.meta.total ?? 0;
           for (const job of unfiltered.jobs ?? []) {
             if (job?.id) byId.set(job.id, job);
@@ -993,6 +1051,12 @@ export const jobService = {
           }
         } catch {
           /* keep unfiltered rows */
+        }
+        // Same recovery as typing a job number — admin creates that list ACL hides.
+        if (!deptListBase.search?.trim()) {
+          for (const job of await fetchJobsVisibleViaSearchRecovery(deptListBase, types)) {
+            if (job?.id) byId.set(job.id, job);
+          }
         }
 
         const seeded = [...byId.values()].filter((j) =>
