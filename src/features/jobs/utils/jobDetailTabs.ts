@@ -159,7 +159,16 @@ export function normalizeJobDetailTabKey(value: string): string {
   return toApiDetailTabKey(value);
 }
 
-export function jobActionPanelLabel(key: JobActionPanelKey): string {
+/** True for Air Export / Air Import — BL action is labeled Airway Bill. */
+export function isAirwayBillJobType(jobType?: string | null): boolean {
+  const t = (jobType || '').toUpperCase();
+  return t === 'AIR_EXPORT' || t === 'AIR_IMPORT';
+}
+
+export function jobActionPanelLabel(
+  key: JobActionPanelKey,
+  jobType?: string | null,
+): string {
   switch (key) {
     case 'documents':
       return 'Documents';
@@ -184,7 +193,7 @@ export function jobActionPanelLabel(key: JobActionPanelKey): string {
     case 'cargo':
       return 'Cargo';
     case 'bl':
-      return 'Bills of lading';
+      return isAirwayBillJobType(jobType) ? 'Airway Bill' : 'Bills of lading';
     case 'stuffing':
       return 'Stuffing';
     case 'sea-scans':
@@ -278,6 +287,10 @@ function heuristicJobActionPanels(
     jobType.includes('NVOCC')
   ) {
     out.push('cargo', 'bl');
+  }
+  // Air jobs use the same BL panel API, labeled Airway Bill in the Actions toolbar.
+  if (isAirwayBillJobType(jobType)) {
+    out.push('bl');
   }
   if (jobType === 'SEA_FCL_EXPORT' || jobType === 'SEA_FCL_IMPORT') {
     out.push('stuffing');

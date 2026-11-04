@@ -445,7 +445,14 @@ export function JobOverviewPanel({ job }: { job: Job }) {
         <Row label="Containers" value={job.containers?.length ?? 0} />
         <Row label="Cargo lines" value={job.cargo?.length ?? 0} />
         <Row label="Documents" value={job.documents?.length ?? 0} />
-        <Row label="Bills of lading" value={job.bills_of_lading?.length ?? 0} />
+        <Row
+          label={
+            job.job_type === 'AIR_EXPORT' || job.job_type === 'AIR_IMPORT'
+              ? 'Airway Bill'
+              : 'Bills of lading'
+          }
+          value={job.bills_of_lading?.length ?? 0}
+        />
         <Row label="Pinned / job notes" value={job.notes_list?.length ?? 0} />
       </Section>
     </div>

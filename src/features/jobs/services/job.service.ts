@@ -4084,30 +4084,110 @@ export const jobService = {
 
   async listMilestones(id: string): Promise<import('../types/job.types').JobMilestone[]> {
     assertId(id);
-    const { normalizeMilestones, unwrapEntity } = await import('../utils/normalizeJob');
+    const { normalizeMilestone, normalizeMilestones, unwrapEntity } = await import(
+      '../utils/normalizeJob'
+    );
     const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.milestones(id)));
-    let items = unwrapList(res.data).items;
-    if (!items.length) {
-      const entity = unwrapEntity(res.data);
-      const record =
-        entity && typeof entity === 'object' && !Array.isArray(entity)
-          ? (entity as Record<string, unknown>)
-          : res.data && typeof res.data === 'object' && !Array.isArray(res.data)
-            ? (res.data as Record<string, unknown>)
-            : null;
-      const alt =
-        (Array.isArray(record?.milestones) && record.milestones) ||
-        (Array.isArray(record?.items) && record.items) ||
-        (Array.isArray(entity) && entity) ||
-        [];
-      items = alt as unknown[];
+    const entity = unwrapEntity(res.data);
+    const record =
+      entity && typeof entity === 'object' && !Array.isArray(entity)
+        ? (entity as Record<string, unknown>)
+        : res.data && typeof res.data === 'object' && !Array.isArray(res.data)
+          ? (res.data as Record<string, unknown>)
+          : null;
+
+    // Unified track payloads can include both `milestones` (taxonomy) and
+    // `items`/`custom_milestones` (history + staff customs). Merge so Add custom
+    // never disappears after a successful POST.
+    const buckets: unknown[][] = [];
+    if (Array.isArray(entity)) buckets.push(entity);
+    if (record) {
+      for (const key of [
+        'milestones',
+        'custom_milestones',
+        'customMilestones',
+        'items',
+        'history',
+        'timeline',
+        'events',
+      ] as const) {
+        const arr = record[key];
+        if (Array.isArray(arr) && arr.length) buckets.push(arr);
+      }
     }
-    return normalizeMilestones(items);
+    if (!buckets.length) {
+      buckets.push(unwrapList(res.data).items);
+    }
+
+    const byKey = new Map<string, import('../types/job.types').JobMilestone>();
+    for (const bucket of buckets) {
+      for (const raw of bucket) {
+        const m = normalizeMilestone(raw);
+        if (!m) continue;
+        const key = String(m.milestone_key || m.milestone || m.id || '')
+          .trim()
+          .toUpperCase();
+        if (!key) continue;
+        const prev = byKey.get(key);
+        // Prefer richer rows (description / actual dates) when merging.
+        if (!prev) {
+          byKey.set(key, m);
+          continue;
+        }
+        byKey.set(key, {
+          ...prev,
+          ...m,
+          description: m.description || prev.description,
+          notes: m.notes || prev.notes,
+          actual_date: m.actual_date || prev.actual_date,
+          completed_at: m.completed_at || prev.completed_at,
+          planned_date: m.planned_date || prev.planned_date,
+          is_completed: Boolean(m.is_completed || prev.is_completed),
+        });
+      }
+    }
+
+    const merged = [...byKey.values()];
+    return merged.length ? merged : normalizeMilestones([]);
   },
 
-  async createMilestone(id: string, dto: CreateCustomMilestoneDto): Promise<unknown> {
+  async createMilestone(
+    id: string,
+    dto: CreateCustomMilestoneDto,
+  ): Promise<import('../types/job.types').JobMilestone> {
     assertId(id);
-    return request(() => axiosInstance.post(JOB_API.milestones(id), dto));
+    const { normalizeMilestone, unwrapEntity } = await import('../utils/normalizeJob');
+    const name = String(dto.milestone ?? '').trim();
+    if (!name) throw new Error('Milestone name is required.');
+
+    const body: CreateCustomMilestoneDto = {
+      milestone: name,
+      ...(dto.planned_date?.trim() ? { planned_date: dto.planned_date.trim() } : {}),
+      ...(dto.actual_date?.trim() ? { actual_date: dto.actual_date.trim() } : {}),
+      ...(dto.description?.trim() ? { description: dto.description.trim() } : {}),
+      ...(dto.notes?.trim() ? { notes: dto.notes.trim() } : {}),
+    };
+
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.milestones(id), body, { skipErrorToast: true }),
+      );
+      const raw = unwrapEntity(res.data) ?? res.data;
+      const normalized = normalizeMilestone(raw);
+      if (normalized) return normalized;
+      // 201 with empty body — still treat as success using the submitted name.
+      return {
+        id: name,
+        milestone: name,
+        milestone_key: name,
+        planned_date: body.planned_date,
+        actual_date: body.actual_date,
+        description: body.description,
+        notes: body.notes,
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
   async updateMilestone(
