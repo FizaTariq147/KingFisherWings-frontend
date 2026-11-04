@@ -797,6 +797,10 @@ export function normalizeJob(raw: unknown): Job | null {
       pickString(r, 'ops_user_name', 'opsUserName') ||
       pickRelationName(r.ops_user ?? r.opsUser) ||
       undefined,
+    created_by:
+      pickString(r, 'created_by', 'createdBy') ||
+      pickString(asRecord(r.created_by_user ?? r.createdByUser) ?? {}, 'id') ||
+      undefined,
     origin_port_id: pickString(r, 'origin_port_id', 'originPortId') || undefined,
     dest_port_id: pickString(r, 'dest_port_id', 'destPortId') || undefined,
     origin_port_code:

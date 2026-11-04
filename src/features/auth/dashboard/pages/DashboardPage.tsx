@@ -42,7 +42,7 @@ export function DashboardPage() {
 
   // Open-bucket rows for Active shipments only (not the total-jobs KPI).
   // Default calls omit job_type / created_by / department_id — BE scopes by JWT.
-  const activeJobsQuery = useDashboardActiveJobs({ rowLimit: 40 });
+  const activeJobsQuery = useDashboardActiveJobs({ rowLimit: 100 });
   const shipmentJobs = activeJobsQuery.data?.jobs ?? [];
 
   // job_count === GET /jobs meta.total for this user (includes delivered/completed).
@@ -123,8 +123,9 @@ export function DashboardPage() {
 
   // Headline total jobs — bind to job_count, never open / created_in_period.
   const totalJobsCount = jobCountsData?.jobCount ?? 0;
+  // Active shipments badge = unique open rows loaded for this user (not dashboard open KPI).
   const openJobsCount =
-    jobCountsData?.open ?? activeJobsQuery.data?.openTotal ?? 0;
+    activeJobsQuery.data?.openTotal ?? shipmentJobs.length;
 
   const agingQuoteStats = useMemo(() => {
     const quotations = quoteStats.data?.quotations ?? [];

@@ -72,10 +72,20 @@ const STATUS_CHIPS: { id: ShipmentStatusChip; label: string }[] = [
 
 const AVATAR_COLORS = ['#E8EEF4', '#FCE8EA', '#EDE8F4', '#E8F4F8', '#FDECDC', '#E7F6EC'];
 
+function isOwnJob(job: Job, userId?: string): boolean {
+  if (!userId) return false;
+  return (
+    job.ops_user_id === userId ||
+    job.salesperson_id === userId ||
+    job.created_by === userId
+  );
+}
+
 function matchesView(job: Job, view: ViewKey, userId?: string): boolean {
   switch (view) {
     case 'mine':
-      return Boolean(userId && (job.salesperson_id === userId || job.ops_user_id === userId));
+      // Staff/admin: only jobs they created or are assigned to.
+      return isOwnJob(job, userId);
     case 'customs':
       return isCustomsHold(job);
     case 'docs':
@@ -83,6 +93,7 @@ function matchesView(job: Job, view: ViewKey, userId?: string): boolean {
     case 'air':
       return jobMode(job.job_type) === 'Air';
     default:
+      // All jobs: every in-scope department job (any creator).
       return true;
   }
 }
@@ -138,10 +149,13 @@ export function ActiveShipmentsPanel({
 
   const viewCounts = useMemo(
     () => ({
+      // Prefer exact loaded rows so badge matches the grid (not a separate open KPI).
       all:
-        typeof activeTotal === 'number' && Number.isFinite(activeTotal)
-          ? activeTotal
-          : active.length,
+        active.length > 0
+          ? active.length
+          : typeof activeTotal === 'number' && Number.isFinite(activeTotal)
+            ? activeTotal
+            : 0,
       mine: active.filter((job) => matchesView(job, 'mine', userId)).length,
       customs: active.filter((job) => matchesView(job, 'customs')).length,
       docs: active.filter((job) => matchesView(job, 'docs')).length,
