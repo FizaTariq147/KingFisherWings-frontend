@@ -102,6 +102,8 @@ export function ActiveShipmentsPanel({
   isFetching,
   /** Shared open-ops total (KPI / header) — keeps All jobs badge aligned across roles. */
   activeTotal,
+  /** Staff portal defaults to My jobs. */
+  defaultView = 'all',
 }: {
   jobs: Job[];
   isLoading: boolean;
@@ -111,9 +113,10 @@ export function ActiveShipmentsPanel({
   lastUpdated?: number;
   isFetching?: boolean;
   activeTotal?: number;
+  defaultView?: ViewKey;
 }) {
   const navigate = useNavigate();
-  const [view, setView] = useState<ViewKey>('all');
+  const [view, setView] = useState<ViewKey>(defaultView);
   const [chip, setChip] = useState<ShipmentStatusChip>('all');
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());

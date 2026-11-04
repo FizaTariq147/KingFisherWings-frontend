@@ -1,11 +1,16 @@
 import { useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useJobs } from '@/features/jobs/hooks/useJobs';
+import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
 import { useInvoices, useOverdueInvoices } from '@/features/invoices/hooks/useInvoices';
 import { useArAging } from '@/features/arApAging/hooks/useArApAging';
 import { useCrmFollowUps, usePatchCrmFollowUp } from '@/features/crm/hooks/useCrmFollowUps';
 import { useNotifications } from '@/features/notifications/hooks/useNotifications';
 import { computeAgingTotals, resolveAgingBucketValues } from '@/features/arApAging/utils/normalizeArApAging';
+import {
+  isTenantUserManagerRole,
+  resolveAuthRoleSlug,
+} from '@/features/users/constants/userPermissions';
 import { DashboardHeader, DashboardAlertPills } from '../components/DashboardHeader';
 import { DashboardKpiRow } from '../components/DashboardKpiRow';
 import { ActiveShipmentsPanel } from '../components/ActiveShipmentsPanel';
@@ -20,12 +25,19 @@ import {
   useDashboardJobCounts,
   useDashboardPendingQuoteStats,
 } from '../hooks/useDashboardJobCounts';
-import { isoDate } from '../utils/dashboardFormat';
+import { isActiveJob, isoDate } from '../utils/dashboardFormat';
 
 export function DashboardPage() {
   const { user } = useAuth();
   const { period, setPeriod, range } = useDashboardPeriod();
   const today = isoDate(new Date());
+
+  /** Staff ops portal — Active shipments shows only this user's jobs. */
+  const isStaffOpsPortal = useMemo(() => {
+    if (user?.unrestrictedOps) return false;
+    if (isTenantUserManagerRole(resolveAuthRoleSlug(user?.role))) return false;
+    return true;
+  }, [user?.unrestrictedOps, user?.role]);
 
   const revenueRange = useMemo(() => {
     const end = new Date();
@@ -40,18 +52,42 @@ export function DashboardPage() {
     return { from: isoDate(start), to: isoDate(end) };
   }, []);
 
-  // Dashboard Active shipments: same unscoped list as KPI counts (no client hydrate),
-  // so staff cards/header match admin. Department sections still use visible scope.
-  const jobsListParams = useMemo(
-    () => ({
+  // Admin: tenant-wide list (no hydrate). Staff: matrix scope + own-job filter below.
+  const jobScope = useVisibleJobListScope();
+  const jobsListParams = useMemo(() => {
+    if (!isStaffOpsPortal) {
+      return {
+        page: 1,
+        limit: 50,
+        order: 'desc' as const,
+        skip_client_hydrate: true as const,
+      };
+    }
+    return {
       page: 1,
       limit: 50,
       order: 'desc' as const,
-      skip_client_hydrate: true as const,
-    }),
-    [],
+      ...jobScope.listScopeParams,
+      // Allow recent-create hydrate so staff still see jobs they just created.
+      skip_client_hydrate: false as const,
+    };
+  }, [isStaffOpsPortal, jobScope.listScopeParams]);
+  const jobsQuery = useJobs(jobsListParams, {
+    enabled: !isStaffOpsPortal || jobScope.kind !== 'locked',
+  });
+
+  const shipmentJobs = useMemo(() => {
+    const jobs = jobsQuery.data?.jobs ?? [];
+    if (!isStaffOpsPortal || !user?.id) return jobs;
+    return jobs.filter(
+      (j) => j.ops_user_id === user.id || j.salesperson_id === user.id,
+    );
+  }, [jobsQuery.data?.jobs, isStaffOpsPortal, user?.id]);
+
+  const staffActiveShipmentsTotal = useMemo(
+    () => shipmentJobs.filter((j) => isActiveJob(j.status)).length,
+    [shipmentJobs],
   );
-  const jobsQuery = useJobs(jobsListParams);
   const jobCounts = useDashboardJobCounts(period);
   const quoteStats = useDashboardPendingQuoteStats(period);
   const invoicesQuery = useInvoices({ page: 1, limit: 8 });
@@ -206,14 +242,15 @@ export function DashboardPage() {
         />
 
         <ActiveShipmentsPanel
-          jobs={jobsQuery.data?.jobs ?? []}
+          jobs={shipmentJobs}
           isLoading={jobsQuery.isLoading}
           isError={jobsQuery.isError}
           isFetching={jobsQuery.isFetching}
           lastUpdated={jobsQuery.dataUpdatedAt}
           onRefresh={() => void jobsQuery.refetch()}
           userId={user?.id}
-          activeTotal={activeJobsCount}
+          defaultView={isStaffOpsPortal ? 'mine' : 'all'}
+          activeTotal={isStaffOpsPortal ? staffActiveShipmentsTotal : activeJobsCount}
         />
 
         <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-4">
