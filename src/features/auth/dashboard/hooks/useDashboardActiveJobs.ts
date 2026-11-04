@@ -1,7 +1,12 @@
+import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
+import type { JobType } from '@/features/jobs/constants/job.constants';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { Job, JobListParams } from '@/features/jobs/types/job.types';
+import { canonicalizeJobType } from '@/features/jobs/utils/canonicalizeJobType';
+import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
 import { OPEN_JOB_STATUSES } from '../utils/dashboardFormat';
 
 function jobSortTime(job: Job): number {
@@ -11,13 +16,8 @@ function jobSortTime(job: Job): number {
 }
 
 /**
- * Active shipments grid rows for the current user.
- *
- * - No created_by / salesperson_id / department_id / user id — any creator
- *   (admin or staff) with an allowed job_type appears.
- * - BE JWT scopes job types; FE only optionally passes section job_type / branch_id.
- * - Prefer an unfiltered list (same ACL as job_count) then keep open-bucket rows;
- *   also merge per-status pages so newer open jobs are not lost behind completed ones.
+ * Active shipments grid — same department jobs admin would see for this staff's
+ * Ops visible ∪ writable types (any creator). Do not send created_by.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -27,26 +27,51 @@ export function useDashboardActiveJobs(options?: {
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const { user } = useAuth();
   const rowLimit = options?.rowLimit ?? 40;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
 
-  const filterParams: Pick<JobListParams, 'job_type' | 'branch_id'> = {
+  const staffJobTypes = useMemo((): JobType[] => {
+    if (isOpsUnrestrictedUser(user)) return [];
+    const types = new Set<JobType>();
+    for (const raw of [
+      ...(Array.isArray(user?.visibleJobTypes) ? user.visibleJobTypes : []),
+      ...(Array.isArray(user?.writableJobTypes) ? user.writableJobTypes : []),
+    ]) {
+      types.add(canonicalizeJobType(raw));
+    }
+    return [...types];
+  }, [user]);
+
+  const filterParams: Pick<JobListParams, 'job_type' | 'branch_id' | 'job_types'> = {
     ...(jobType ? { job_type: jobType as JobListParams['job_type'] } : {}),
     ...(branchId ? { branch_id: branchId } : {}),
+    // Staff: pass department types so list merges typed + JWT scope (any creator).
+    ...(!jobType && staffJobTypes.length ? { job_types: staffJobTypes } : {}),
   };
 
   return useQuery({
-    queryKey: ['tenant', 'dashboard', 'active-jobs', 'any-creator', jobType, branchId, rowLimit],
+    queryKey: [
+      'tenant',
+      'dashboard',
+      'active-jobs',
+      'dept-any-creator',
+      jobType,
+      branchId,
+      staffJobTypes,
+      rowLimit,
+    ],
     queryFn: async () => {
       const pageLimit = Math.min(100, Math.max(rowLimit, 40));
 
+      // No skip_client_hydrate — staff department lists need typed+unfiltered merge.
+      // No created_by — admin-created jobs in granted types must appear.
       const [allPage, ...statusPages] = await Promise.all([
         jobService.list({
           page: 1,
           limit: pageLimit,
           order: 'desc',
-          skip_client_hydrate: true,
           ...filterParams,
         }),
         ...OPEN_JOB_STATUSES.map((status) =>
@@ -55,7 +80,6 @@ export function useDashboardActiveJobs(options?: {
             limit: pageLimit,
             status,
             order: 'desc',
-            skip_client_hydrate: true,
             ...filterParams,
           }),
         ),
@@ -78,14 +102,12 @@ export function useDashboardActiveJobs(options?: {
         .filter((j) => openSet.has(String(j.status)))
         .sort((a, b) => jobSortTime(b) - jobSortTime(a));
 
-      // If status meta was empty (soft ACL), fall back to client open filter of merged list.
       if (!openTotal) {
         openTotal = openJobs.length;
       }
 
       return {
         jobs: openJobs.slice(0, rowLimit),
-        /** Open-status bucket estimate — not job_count. */
         openTotal,
       };
     },
