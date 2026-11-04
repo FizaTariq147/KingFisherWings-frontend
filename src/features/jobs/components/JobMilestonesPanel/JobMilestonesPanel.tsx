@@ -1,4 +1,3 @@
-
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -16,28 +15,33 @@ interface JobMilestonesPanelProps {
 }
 
 export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
-  const { data: milestones = [], refetch } = useJobMilestones(jobId);
+  const { data: milestones = [], refetch, isFetching } = useJobMilestones(jobId);
   const mutations = useJobMilestoneMutations(jobId);
   const validation = useInlineValidation();
   const [name, setName] = useState('');
+  const [description, setDescription] = useState('');
   const [descriptionDrafts, setDescriptionDrafts] = useState<Record<string, string>>({});
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  const updateDescription = async (milestoneKey: string, description: string) => {
+  const updateDescription = async (milestoneKey: string, nextDescription: string) => {
     setError(null);
+    setSuccess(null);
     try {
       await mutations.update.mutateAsync({
         milestoneKey,
-        dto: { description },
+        dto: { description: nextDescription },
       });
       await refetch();
+      setSuccess('Description saved.');
     } catch (err) {
       setError(getErrorMessage(err));
     }
   };
 
-  const complete = async (milestoneKey: string, description: string) => {
+  const complete = async (milestoneKey: string, nextDescription: string) => {
     setError(null);
+    setSuccess(null);
     const key = String(milestoneKey ?? '').trim();
 
     if (!key || key === 'undefined' || key === 'null') {
@@ -52,39 +56,61 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
         milestoneKey: key,
         dto: {
           actual_date: new Date().toISOString(),
-          description: description.trim() || undefined,
+          description: nextDescription.trim() || undefined,
         },
       });
       await refetch();
+      setSuccess('Milestone marked complete.');
     } catch (err) {
       setError(getErrorMessage(err));
     }
   };
 
   const add = async () => {
+    setError(null);
+    setSuccess(null);
     const ok = await validation.runValidated(
       createJobMilestoneSchema,
-      { milestone: name.trim() },
+      {
+        milestone: name.trim(),
+        ...(description.trim() ? { description: description.trim() } : {}),
+      },
       async (dto) => {
         await mutations.create.mutateAsync(dto);
         setName('');
-        await refetch();
+        setDescription('');
       },
     );
-    if (!ok) setError(null);
+    if (ok) {
+      setSuccess('Custom milestone added.');
+      // Cache already seeded in mutation onSuccess; refresh to pick up BE fields.
+      void refetch();
+    }
   };
 
   return (
     <div className="space-y-4">
       {(error || validation.formError) && (
-        <p className="text-sm text-[var(--color-danger-600)]">
+        <p role="alert" className="text-sm text-[var(--color-danger-600)]">
           {error || validation.formError}
         </p>
       )}
+      {success ? (
+        <p role="status" className="text-sm text-[var(--color-success-700,#15803d)]">
+          {success}
+        </p>
+      ) : null}
 
       <Card>
         <CardHeader>
-          <CardTitle>Milestones</CardTitle>
+          <CardTitle>
+            Milestones
+            {isFetching ? (
+              <span className="ml-2 text-xs font-normal text-[var(--color-neutral-400)]">
+                Refreshing…
+              </span>
+            ) : null}
+          </CardTitle>
         </CardHeader>
         <div className="space-y-3 px-4 pb-4">
           {milestones.length === 0 ? (
@@ -96,7 +122,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                 m.milestone || m.milestone_key || key || 'Milestone',
               );
               const done = Boolean(m.actual_date || m.completed_at || m.is_completed);
-              const description =
+              const rowDescription =
                 descriptionDrafts[m.id] ?? m.description ?? m.notes ?? '';
 
               return (
@@ -120,7 +146,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                         type="button"
                         size="sm"
                         disabled={!key || mutations.update.isPending}
-                        onClick={() => void complete(key, description)}
+                        onClick={() => void complete(key, rowDescription)}
                       >
                         Mark complete
                       </Button>
@@ -131,7 +157,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                     Milestone description
                   </label>
                   <textarea
-                    value={description}
+                    value={rowDescription}
                     onChange={(event) =>
                       setDescriptionDrafts((current) => ({
                         ...current,
@@ -149,7 +175,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                       size="sm"
                       variant="secondary"
                       disabled={!key || mutations.update.isPending}
-                      onClick={() => void updateDescription(key, description)}
+                      onClick={() => void updateDescription(key, rowDescription)}
                     >
                       Save description
                     </Button>
@@ -165,24 +191,53 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
         <CardHeader>
           <CardTitle>Add custom milestone</CardTitle>
         </CardHeader>
-        <div className="flex items-start gap-2 px-4 pb-4">
-          <Input
-            value={name}
-            error={validation.fieldError('milestone')}
-            onChange={(event) => {
-              setName(event.target.value);
-              validation.clearField('milestone');
-            }}
-            placeholder="Milestone code / name (e.g. SI_SUBMITTED)"
-          />
-          <Button
-            type="button"
-            disabled={mutations.create.isPending}
-            onClick={() => void add()}
-          >
-            Add
-          </Button>
-        </div>
+        <form
+          className="space-y-3 px-4 pb-4"
+          onSubmit={(event) => {
+            event.preventDefault();
+            event.stopPropagation();
+            void add();
+          }}
+        >
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+              Milestone name / code
+            </label>
+            <Input
+              value={name}
+              error={validation.fieldError('milestone')}
+              onChange={(event) => {
+                setName(event.target.value);
+                validation.clearField('milestone');
+                setSuccess(null);
+              }}
+              placeholder="e.g. CUSTOMS_QUERY_RAISED or Customs query raised"
+              disabled={mutations.create.isPending}
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+              Description (optional)
+            </label>
+            <textarea
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              maxLength={2000}
+              rows={2}
+              placeholder="Customer-visible note for this milestone"
+              disabled={mutations.create.isPending}
+              className="w-full rounded-md border border-[var(--color-neutral-200)] bg-transparent px-3 py-2 text-sm"
+            />
+          </div>
+          <div className="flex justify-end">
+            <Button
+              type="submit"
+              disabled={mutations.create.isPending || !name.trim()}
+            >
+              {mutations.create.isPending ? 'Adding…' : 'Add custom milestone'}
+            </Button>
+          </div>
+        </form>
       </Card>
     </div>
   );

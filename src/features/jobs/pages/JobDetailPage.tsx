@@ -872,7 +872,8 @@ export default function JobDetailPage() {
                   {job.draft_bl_customer_comment.trim()}
                 </p>
                 <p className="mt-1 text-[11px] text-[#78716C]">
-                  From portal Request draft BL — also under Actions → Bills of lading.
+                  From portal Request draft BL — also under Actions →{' '}
+                  {jobActionPanelLabel('bl', job.job_type)}.
                 </p>
               </div>
             ) : null}
@@ -1215,7 +1216,7 @@ export default function JobDetailPage() {
               >
                 {key === 'house'
                   ? `House jobs (${houseJobs.length})`
-                  : jobActionPanelLabel(key)}
+                  : jobActionPanelLabel(key, job.job_type)}
               </Button>
             ))}
           </>
@@ -1229,7 +1230,7 @@ export default function JobDetailPage() {
           title={
             actionPanel === 'house'
               ? `House jobs (${houseJobs.length})`
-              : jobActionPanelLabel(actionPanel)
+              : jobActionPanelLabel(actionPanel, job.job_type)
           }
           onClose={() => setActionPanel(null)}
           footer={

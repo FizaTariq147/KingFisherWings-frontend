@@ -10,6 +10,7 @@ import type {
   JobInvoiceFormSaveDto,
   CreateJobNoteDto,
   CreateCustomMilestoneDto,
+  JobMilestone,
   CalculateStorageChargesDto,
   ConfirmStorageChargesDto,
   CopyJobChargesDto,
@@ -694,11 +695,35 @@ export function useJobNoteMutations(jobId: string) {
 }
 
 export function useJobMilestoneMutations(jobId: string) {
+  const queryClient = useQueryClient();
   const invalidate = useInvalidateJobs();
   return {
     create: useMutation({
       mutationFn: (dto: CreateCustomMilestoneDto) => jobService.createMilestone(jobId, dto),
-      onSuccess: () => invalidate(jobId),
+      onSuccess: (created) => {
+        // Seed list cache immediately so Add custom does not look like a no-op
+        // while GET still returns a stale unified track payload.
+        queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) => {
+          const list = Array.isArray(prev) ? prev : [];
+          const key = String(created.milestone_key || created.milestone || created.id)
+            .trim()
+            .toUpperCase();
+          if (
+            key &&
+            list.some(
+              (m) =>
+                String(m.milestone_key || m.milestone || m.id)
+                  .trim()
+                  .toUpperCase() === key,
+            )
+          ) {
+            return list;
+          }
+          return [created, ...list];
+        });
+        invalidate(jobId);
+        void queryClient.invalidateQueries({ queryKey: jobKeys.milestones(jobId) });
+      },
     }),
     update: useMutation({
       mutationFn: ({
@@ -709,7 +734,10 @@ export function useJobMilestoneMutations(jobId: string) {
         milestoneKey: string;
         dto: UpdateJobMilestoneDto;
       }) => jobService.updateMilestone(jobId, milestoneKey, dto),
-      onSuccess: () => invalidate(jobId),
+      onSuccess: () => {
+        invalidate(jobId);
+        void queryClient.invalidateQueries({ queryKey: jobKeys.milestones(jobId) });
+      },
     }),
   };
 }

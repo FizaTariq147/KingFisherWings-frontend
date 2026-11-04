@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -6,6 +6,7 @@ import { BlDraftFromBookingPanel } from '@/features/shared/bl-draft/BlDraftFromB
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { useJobSubresourceMutations } from '../../hooks/useJobSubresources';
 import { useJob, useJobBillsOfLading } from '../../hooks/useJobs';
+import { isAirwayBillJobType } from '../../utils/jobDetailTabs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
 interface JobBillsOfLadingPanelProps {
@@ -17,9 +18,16 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
   const { data: bills = [], refetch } = useJobBillsOfLading(jobId);
   const mutations = useJobSubresourceMutations(jobId);
   const [error, setError] = useState<string | null>(null);
-  const [blType, setBlType] = useState('HBL');
+  const isAir = isAirwayBillJobType(job?.job_type);
+  const panelTitle = isAir ? 'Airway Bill' : 'Bills of lading';
+  const [blType, setBlType] = useState('');
   const [blNumber, setBlNumber] = useState('');
   const draftBlComment = job?.draft_bl_customer_comment?.trim();
+
+  useEffect(() => {
+    if (!job?.job_type || blType) return;
+    setBlType(isAirwayBillJobType(job.job_type) ? 'HAWB' : 'HBL');
+  }, [job?.job_type, blType]);
 
   const run = async (fn: () => Promise<unknown>) => {
     setError(null);
@@ -62,11 +70,13 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
       />
       <Card>
         <CardHeader>
-          <CardTitle>Bills of lading</CardTitle>
+          <CardTitle>{panelTitle}</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 space-y-2 text-sm">
           {bills.length === 0 ? (
-            <p className="text-[var(--color-neutral-400)]">No BLs.</p>
+            <p className="text-[var(--color-neutral-400)]">
+              {isAir ? 'No airway bills.' : 'No BLs.'}
+            </p>
           ) : (
             bills.map((raw) => {
               const b = raw as {
@@ -81,7 +91,8 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
                   <div className="flex flex-wrap items-center justify-between gap-2">
                     <div>
                       <p className="font-medium">
-                        {b.bl_type || 'BL'} {b.bl_number || b.id.slice(0, 8)}
+                        {b.bl_type || (isAir ? 'AWB' : 'BL')}{' '}
+                        {b.bl_number || b.id.slice(0, 8)}
                       </p>
                       <p className="text-xs text-[var(--color-neutral-400)]">
                         Original: {b.is_original ? 'Yes' : 'No'} · Surrendered:{' '}
@@ -119,7 +130,7 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
                     entityId={jobId}
                     section="bills_of_lading"
                     recordId={b.id}
-                    title="BL files"
+                    title={isAir ? 'AWB files' : 'BL files'}
                     compact
                   />
                 </div>
@@ -136,14 +147,18 @@ export function JobBillsOfLadingPanel({ jobId }: JobBillsOfLadingPanelProps) {
       </Card>
       <Card>
         <CardHeader>
-          <CardTitle>Create BL</CardTitle>
+          <CardTitle>{isAir ? 'Create Airway Bill' : 'Create BL'}</CardTitle>
         </CardHeader>
         <div className="px-4 pb-4 grid gap-2 sm:grid-cols-2">
-          <Input value={blType} onChange={(e) => setBlType(e.target.value)} placeholder="BL type" />
+          <Input
+            value={blType}
+            onChange={(e) => setBlType(e.target.value)}
+            placeholder={isAir ? 'AWB type' : 'BL type'}
+          />
           <Input
             value={blNumber}
             onChange={(e) => setBlNumber(e.target.value)}
-            placeholder="BL number"
+            placeholder={isAir ? 'AWB number' : 'BL number'}
           />
           <Button
             type="button"
