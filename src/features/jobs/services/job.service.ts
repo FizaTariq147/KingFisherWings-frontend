@@ -683,6 +683,63 @@ async function hydrateJobsFromConvertedQuotes(
   return [...byId.values()];
 }
 
+/** Mid-code → job_type for search-prefix recovery (JOB/FI/… etc.). */
+function jobTypeForMidCode(mid: string): JobType | undefined {
+  switch (mid.toUpperCase()) {
+    case 'FI':
+      return 'SEA_FCL_IMPORT';
+    case 'FE':
+      return 'SEA_FCL_EXPORT';
+    case 'LI':
+      return 'SEA_LCL_IMPORT';
+    case 'LE':
+      return 'SEA_LCL_EXPORT';
+    case 'AE':
+      return 'AIR_EXPORT';
+    case 'AI':
+      return 'AIR_IMPORT';
+    case 'RF':
+      return 'ROAD_FREIGHT';
+    case 'CC':
+      return 'CUSTOMS_CLEARANCE';
+    case 'NV':
+      return 'NVOCC_EXPORT';
+    case 'CR':
+      return 'COURIER';
+    default:
+      return undefined;
+  }
+}
+
+function midCodeForJobType(jobType: string): string | undefined {
+  switch (canonicalizeJobType(String(jobType))) {
+    case 'SEA_FCL_IMPORT':
+      return 'FI';
+    case 'SEA_FCL_EXPORT':
+      return 'FE';
+    case 'SEA_LCL_IMPORT':
+      return 'LI';
+    case 'SEA_LCL_EXPORT':
+      return 'LE';
+    case 'AIR_EXPORT':
+      return 'AE';
+    case 'AIR_IMPORT':
+      return 'AI';
+    case 'ROAD_FREIGHT':
+    case 'LAND':
+      return 'RF';
+    case 'CUSTOMS_CLEARANCE':
+      return 'CC';
+    case 'NVOCC_EXPORT':
+    case 'NVOCC_IMPORT':
+      return 'NV';
+    case 'COURIER':
+      return 'CR';
+    default:
+      return undefined;
+  }
+}
+
 /**
  * Job-number mid codes used by this tenant (e.g. JOB/FI/11/26/00004).
  * Staff list ACL often hides admin-created rows unless `search` matches these.
@@ -692,54 +749,24 @@ function searchTokensForJobTypes(
 ): string[] {
   const tokens = new Set<string>(['JOB/', 'JOB']);
   for (const raw of types) {
-    const t = canonicalizeJobType(String(raw));
-    switch (t) {
-      case 'SEA_FCL_IMPORT':
-        tokens.add('JOB/FI');
-        tokens.add('/FI/');
-        break;
-      case 'SEA_FCL_EXPORT':
-        tokens.add('JOB/FE');
-        tokens.add('/FE/');
-        break;
-      case 'SEA_LCL_IMPORT':
-        tokens.add('JOB/LI');
-        tokens.add('/LI/');
-        break;
-      case 'SEA_LCL_EXPORT':
-        tokens.add('JOB/LE');
-        tokens.add('/LE/');
-        break;
-      case 'AIR_EXPORT':
-        tokens.add('JOB/AE');
-        tokens.add('/AE/');
-        break;
-      case 'AIR_IMPORT':
-        tokens.add('JOB/AI');
-        tokens.add('/AI/');
-        break;
-      case 'ROAD_FREIGHT':
-      case 'LAND':
-        tokens.add('JOB/RF');
-        tokens.add('/RF/');
-        break;
-      case 'CUSTOMS_CLEARANCE':
-        tokens.add('JOB/CC');
-        tokens.add('/CC/');
-        break;
-      case 'NVOCC_EXPORT':
-      case 'NVOCC_IMPORT':
-        tokens.add('JOB/NV');
-        tokens.add('/NV/');
-        break;
-      case 'COURIER':
-        tokens.add('JOB/CR');
-        break;
-      default:
-        break;
-    }
+    const mid = midCodeForJobType(String(raw));
+    if (!mid) continue;
+    // Prefer the same shapes staff type into the filter box (full prefix first).
+    tokens.add(`JOB/${mid}`);
+    tokens.add(`JOB/${mid}/`);
+    tokens.add(`/${mid}/`);
+    tokens.add(mid);
   }
   return [...tokens];
+}
+
+/** Infer job_type from a recovery search token when list rows omit/mis-label type. */
+function jobTypeForSearchToken(searchToken: string): JobType | undefined {
+  const t = searchToken.trim().toUpperCase();
+  const fromNumber = inferJobTypeFromJobNumber(t.includes('/') ? t : `JOB/${t}/`);
+  if (fromNumber) return fromNumber;
+  const mid = t.replace(/^JOB\//, '').replace(/^\//, '').replace(/\/$/, '').split('/')[0];
+  return mid ? jobTypeForMidCode(mid) : undefined;
 }
 
 /** Infer job_type from numbers like JOB/FI/11/26/00004 when list payload omits type. */
@@ -773,6 +800,7 @@ function effectiveListJobType(job: Job): JobType {
  * BE quirk: staff default GET /jobs omits admin-created jobs, but the same jobs
  * appear when search matches the job number (e.g. JOB/FI/…). Recover with
  * department number prefixes, then keep only the requested types.
+ * Pages search results — admin creates can sit beyond the first page.
  */
 async function fetchJobsVisibleViaSearchRecovery(
   params: JobListParams,
@@ -783,29 +811,46 @@ async function fetchJobsVisibleViaSearchRecovery(
     ? [params.search.trim()]
     : searchTokensForJobTypes(types);
   const byId = new Map<string, Job>();
+  const maxSearchPages = 5;
 
   await Promise.all(
     tokens.map(async (searchToken) => {
-      try {
-        const page = await fetchJobListPage(
-          {
-            page: 1,
-            limit: API_LIST_LIMIT_MAX,
-            order: params.order ?? 'desc',
-            search: searchToken,
-            status: params.status,
-            // Critical: no job_type / created_by — same path as typing a job number.
-          },
-          { skipErrorToast: true },
-        );
-        for (const job of page.jobs ?? []) {
-          if (!job?.id) continue;
-          const type = effectiveListJobType(job);
-          if (!allowed.has(type)) continue;
-          byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
+      const tokenType = jobTypeForSearchToken(searchToken);
+      let pageNum = 1;
+      let apiTotal = Number.POSITIVE_INFINITY;
+      while (pageNum <= maxSearchPages) {
+        try {
+          const page = await fetchJobListPage(
+            {
+              page: pageNum,
+              limit: API_LIST_LIMIT_MAX,
+              order: params.order ?? 'desc',
+              search: searchToken,
+              status: params.status,
+              // Critical: no job_type / created_by — same path as typing a job number.
+            },
+            { skipErrorToast: true },
+          );
+          if (typeof page.meta?.total === 'number') {
+            apiTotal = page.meta.total;
+          }
+          const rows = page.jobs ?? [];
+          for (const job of rows) {
+            if (!job?.id) continue;
+            let type = effectiveListJobType(job);
+            // Type-specific prefix search: stamp mid-code type when list omits/mis-labels it.
+            if (tokenType && allowed.has(tokenType) && (!type || !allowed.has(type))) {
+              type = tokenType;
+            }
+            if (!allowed.has(type)) continue;
+            byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
+          }
+          if (rows.length === 0) break;
+          if (pageNum * API_LIST_LIMIT_MAX >= apiTotal) break;
+          pageNum += 1;
+        } catch {
+          break;
         }
-      } catch {
-        /* try next token */
       }
     }),
   );
@@ -814,16 +859,14 @@ async function fetchJobsVisibleViaSearchRecovery(
 }
 
 /**
- * GET /jobs with no job_type (BE JWT scopes visibility / any creator), then keep
- * only the requested department types. Pages through the unfiltered list so
- * section jobs are not lost behind newer jobs of other types (staff Sea Import, etc.).
+ * Scan JWT-scoped GET /jobs (any creator) and keep only the requested types.
+ * Returns every match (no page slice) so department/dashboard merges do not
+ * drop admin-created rows that sit past the caller's page limit.
  */
-async function fetchJobsFilteredByTypes(
+async function fetchAllJobsMatchingTypes(
   params: JobListParams,
   types: Array<NonNullable<JobListParams['job_type']>>,
-): Promise<JobListResult> {
-  const page = params.page ?? 1;
-  const limit = clampApiListLimit(params.limit, 20);
+): Promise<{ jobs: Job[]; apiTotal: number }> {
   const order = params.order ?? 'desc';
   const allowed = new Set(types.map((t) => canonicalizeJobType(String(t))));
   const byId = new Map<string, Job>();
@@ -832,8 +875,6 @@ async function fetchJobsFilteredByTypes(
   let pageNum = 1;
   const maxPages = 20;
 
-  // Always scan the JWT-scoped list (any creator). Do not stop early when
-  // matches are sparse — Sea Import rows can sit behind other types.
   while (pageNum <= maxPages) {
     const unfiltered = await fetchJobListPage({
       ...params,
@@ -863,18 +904,32 @@ async function fetchJobsFilteredByTypes(
     pageNum += 1;
   }
 
-  const merged = [...byId.values()].sort((a, b) => {
+  const jobs = [...byId.values()].sort((a, b) => {
     const diff = jobSortTime(a) - jobSortTime(b);
     return order === 'asc' ? diff : -diff;
   });
+  const scannedAll = Number.isFinite(apiTotal) && pageNum * pageSize >= apiTotal;
+  return {
+    jobs,
+    apiTotal: scannedAll ? jobs.length : Math.max(jobs.length, Number.isFinite(apiTotal) ? apiTotal : 0),
+  };
+}
+
+/**
+ * GET /jobs with no job_type (BE JWT scopes visibility / any creator), then keep
+ * only the requested department types. Pages through the unfiltered list so
+ * section jobs are not lost behind newer jobs of other types (staff Sea Import, etc.).
+ */
+async function fetchJobsFilteredByTypes(
+  params: JobListParams,
+  types: Array<NonNullable<JobListParams['job_type']>>,
+): Promise<JobListResult> {
+  const page = params.page ?? 1;
+  const limit = clampApiListLimit(params.limit, 20);
+  const { jobs: merged, apiTotal } = await fetchAllJobsMatchingTypes(params, types);
   const start = (page - 1) * limit;
   const slice = merged.slice(start, start + limit);
-  // Prefer exact matched count once we scanned enough; otherwise lower-bound.
-  const scannedAll = Number.isFinite(apiTotal) && pageNum * pageSize >= apiTotal;
-  const total = Math.max(
-    scannedAll ? merged.length : Math.max(merged.length, slice.length),
-    merged.length,
-  );
+  const total = Math.max(apiTotal, merged.length);
   return {
     jobs: slice,
     meta: {
@@ -1132,11 +1187,11 @@ export const jobService = {
           unfilteredTotal = Math.max(unfilteredTotal, byId.size);
         }
 
-        // 2) Unfiltered JWT list + client type filter.
+        // 2) Full JWT list scan + client type filter (all matches, not one page slice).
         try {
-          const unfiltered = await fetchJobsFilteredByTypes(deptListBase, types);
-          unfilteredTotal = Math.max(unfilteredTotal, unfiltered.meta.total ?? 0);
-          for (const job of unfiltered.jobs ?? []) {
+          const unfiltered = await fetchAllJobsMatchingTypes(deptListBase, types);
+          unfilteredTotal = Math.max(unfilteredTotal, unfiltered.apiTotal, unfiltered.jobs.length);
+          for (const job of unfiltered.jobs) {
             if (job?.id) byId.set(job.id, job);
           }
         } catch {
@@ -1160,13 +1215,11 @@ export const jobService = {
         );
         const hydrated = await hydrateJobsFromConvertedQuotes(seeded, types);
         const typed = hydrated.filter((j) =>
-          allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
+          allowed.has(effectiveListJobType(j)),
         );
         const withRecent = await mergeRecentCreatedJobs(typed, { jobTypes: types });
-        return paginate(
-          withRecent,
-          Math.max(unfilteredTotal, withRecent.length),
-        );
+        // Total = exact unique in-scope rows so department/shipment counts match the grid.
+        return paginate(withRecent, Math.max(unfilteredTotal, withRecent.length));
       }
 
       const base = await fetchJobListPage(safeParams, { skipErrorToast: wantsRoadFreight });

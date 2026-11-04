@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
 import { documentationJobsService } from '@/features/documentation/services/documentation.service';
+import { useAuth } from '@/hooks/useAuth';
 import { appType, listShell } from '@/lib/erpTypography';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
@@ -25,7 +26,9 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
+import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { normalizeJob } from '../utils/normalizeJob';
 import { jobDetailPath } from '../utils/jobRoute';
 import { useAuthStore } from '@/store/authStore';
@@ -75,6 +78,7 @@ export interface HubAllJobsPageProps {
 export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
   const config = variantConfig(variant);
 
@@ -88,6 +92,21 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     DEFAULT_JOB_PAGE_SIZE,
     () => jobMisDraftFromSearch(location.search, DEFAULT_JOB_PAGE_SIZE),
   );
+
+  // Staff: pass granted types so list() runs admin-create search recovery.
+  // Admin / NVOCC variant: keep configured filter (undefined = JWT all for management).
+  const scopeJobTypes = useMemo((): JobType[] | undefined => {
+    if (config.filterJobTypes?.length) return config.filterJobTypes;
+    if (isOpsUnrestrictedUser(user)) return undefined;
+    const types = new Set<JobType>();
+    for (const raw of [
+      ...(Array.isArray(user?.visibleJobTypes) ? user.visibleJobTypes : []),
+      ...(Array.isArray(user?.writableJobTypes) ? user.writableJobTypes : []),
+    ]) {
+      types.add(canonicalizeJobType(raw));
+    }
+    return types.size ? [...types] : [...JOB_TYPES];
+  }, [config.filterJobTypes, user]);
 
   // Keep filters in sync when dashboard pills change ?status= / ?category=
   useEffect(() => {
@@ -103,13 +122,16 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     setPage(1);
   }, [variant, applied]);
 
-  const listParams = useMemo(
-    () =>
-      jobMisFilterDraftToListParams(applied, page, {
-        segmentJobTypes: config.filterJobTypes,
-      }),
-    [applied, page, config.filterJobTypes],
-  );
+  const listParams = useMemo(() => {
+    const params = jobMisFilterDraftToListParams(applied, page, {
+      segmentJobTypes: scopeJobTypes,
+    });
+    // Default hub view: every creator in scope (admin + staff).
+    if (!applied.createdBy?.trim()) delete params.created_by;
+    if (!applied.salespersonId?.trim()) delete params.salesperson_id;
+    if (!applied.departmentId?.trim()) delete params.department_id;
+    return params;
+  }, [applied, page, scopeJobTypes]);
 
   const categoryFilter = applied.category.trim();
   const useCategoryList = Boolean(categoryFilter) && variant !== 'documentation';
