@@ -1,14 +1,17 @@
+import type { PermissionAccessLevel } from '../types/userPermissionMatrix.types';
 import type { PermissionMatrixGrant } from '../types/userPermissionMatrix.types';
 import { accessFromFlags } from './permissionAccess';
 
 /**
- * Map ops permission-matrix grants → `visible_job_types` for BE list/search ACL.
- * Matrix-only assignment often left `visible_job_types` as `[]`, so staff could create
- * jobs but GET /jobs (and quotes/shipments) returned nothing.
+ * Map ops permission-matrix grants → job-type scope for BE list/create ACL.
  *
  * - `null` — unrestricted (module-level operations grant)
  * - `string[]` — canonical job_type enums for granted submodules
- * - `undefined` — no ops grants; omit from PUT (do not wipe scope)
+ * - `undefined` — no ops grants; omit from payload (do not wipe scope)
+ *
+ * `minAccess`:
+ * - `read` → visible_job_types (see/read/write)
+ * - `write` → writable_job_types (write only)
  */
 function isOpsOrNvoccModule(module: string): boolean {
   const mod = module
@@ -18,21 +21,29 @@ function isOpsOrNvoccModule(module: string): boolean {
   return mod.startsWith('operations') || mod === 'nvocc' || mod.startsWith('nvocc');
 }
 
-export function visibleJobTypesFromMatrixGrants(
+function accessRank(access: PermissionAccessLevel): number {
+  if (access === 'write') return 2;
+  if (access === 'read') return 1;
+  return 0;
+}
+
+function grantAccess(g: PermissionMatrixGrant): PermissionAccessLevel {
+  return g.access ?? accessFromFlags(Boolean(g.see), Boolean(g.read), Boolean(g.write));
+}
+
+function jobTypesFromMatrixGrants(
   grants: readonly PermissionMatrixGrant[],
+  minAccess: 'read' | 'write',
 ): string[] | null | undefined {
+  const minRank = minAccess === 'write' ? 2 : 1;
   const opsRows = grants.filter((g) => isOpsOrNvoccModule(String(g.module ?? '')));
-  // No ops/nvocc rows in payload → leave BE scope untouched.
   if (!opsRows.length) return undefined;
 
-  const active = opsRows.filter((g) => {
-    const access =
-      g.access ?? accessFromFlags(Boolean(g.see), Boolean(g.read), Boolean(g.write));
-    return access !== 'none';
-  });
-
-  // Explicit ops grid with everything None → empty scope (not unrestricted).
-  if (!active.length) return [];
+  const active = opsRows.filter((g) => accessRank(grantAccess(g)) >= minRank);
+  if (!active.length) {
+    // Ops rows present but none meet minAccess → empty scoped list.
+    return [];
+  }
 
   const types = new Set<string>();
   let unrestrictedOps = false;
@@ -53,7 +64,6 @@ export function visibleJobTypesFromMatrixGrants(
       continue;
     }
 
-    // Module-level operations → unrestricted list scope (null on BE).
     if (
       (mod === 'operations' || mod === 'operations_module') &&
       (sub === 'module' || sub === '' || sub === 'operations')
@@ -68,7 +78,10 @@ export function visibleJobTypesFromMatrixGrants(
       types.add('AIR_EXPORT');
     } else if (key.includes('air_import') || key === 'airimport') {
       types.add('AIR_IMPORT');
-    } else if (key === 'air' || (key.startsWith('air_') && !key.includes('export') && !key.includes('import'))) {
+    } else if (
+      key === 'air' ||
+      (key.startsWith('air_') && !key.includes('export') && !key.includes('import'))
+    ) {
       types.add('AIR_EXPORT');
       types.add('AIR_IMPORT');
     }
@@ -105,4 +118,34 @@ export function visibleJobTypesFromMatrixGrants(
   if (unrestrictedOps) return null;
   if (!types.size) return undefined;
   return [...types];
+}
+
+/** Visible / list scope (read+). */
+export function visibleJobTypesFromMatrixGrants(
+  grants: readonly PermissionMatrixGrant[],
+): string[] | null | undefined {
+  return jobTypesFromMatrixGrants(grants, 'read');
+}
+
+/** Create / write scope. */
+export function writableJobTypesFromMatrixGrants(
+  grants: readonly PermissionMatrixGrant[],
+): string[] | null | undefined {
+  return jobTypesFromMatrixGrants(grants, 'write');
+}
+
+/** Nest forbidNonWhitelisted for scope fields. */
+export function isVisibleJobTypesNotAllowedError(error: unknown): boolean {
+  const axiosErr = error as {
+    response?: { status?: number; data?: { message?: string | string[] } };
+    message?: string;
+  };
+  const status = axiosErr.response?.status;
+  if (status !== 400 && status !== 422) return false;
+  const raw = axiosErr.response?.data?.message ?? axiosErr.message ?? '';
+  const msg = Array.isArray(raw) ? raw.map(String).join('; ') : String(raw);
+  return (
+    /visible_job_types|writable_job_types/i.test(msg) &&
+    /should not exist|whitelist|forbid/i.test(msg)
+  );
 }

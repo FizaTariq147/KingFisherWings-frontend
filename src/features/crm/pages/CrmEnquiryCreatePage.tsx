@@ -9,7 +9,7 @@ import { MasterPlaceSelect } from '@/features/masters/components/MasterPlaceSele
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import type { JobType as OpsJobType } from '@/features/jobs/constants/job.constants';
-import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
+import { useCreateWritableJobTypes } from '@/features/jobs/hooks/useCreateWritableJobTypes';
 import { isUuid } from '@/lib/isUuid';
 import { appType } from '@/lib/erpTypography';
 import { useAppForm } from '@/lib/validation';
@@ -66,7 +66,7 @@ export default function CrmEnquiryCreatePage() {
   const [stepIndex, setStepIndex] = useState(0);
   const [finishConfirmOpen, setFinishConfirmOpen] = useState(false);
   const step = ENQUIRY_WIZARD_STEPS[stepIndex]?.key ?? 'ports';
-  const allowedJobTypes = useStaffAllowedJobTypes(ENQUIRY_SERVICE_CANDIDATES);
+  const allowedJobTypes = useCreateWritableJobTypes('enquiries', ENQUIRY_SERVICE_CANDIDATES);
   const allowedServiceTypes = allowedJobTypes as readonly ServiceType[];
   const defaultServiceType = useMemo(
     () =>

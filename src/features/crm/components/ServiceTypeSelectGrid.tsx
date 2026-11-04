@@ -20,7 +20,7 @@ export function ServiceTypeSelectGrid({
   heading = 'Select the required Department',
   serviceTypeOptions,
 }: ServiceTypeSelectGridProps) {
-  const options = serviceTypeOptions?.length ? serviceTypeOptions : SERVICE_TYPES;
+  const options = serviceTypeOptions !== undefined ? serviceTypeOptions : SERVICE_TYPES;
 
   return (
     <div className="space-y-4">

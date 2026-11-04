@@ -10,7 +10,7 @@ import {
   type JobSegmentKey,
   type JobType,
 } from '../constants/job.constants';
-import { useStaffAllowedJobTypes } from '../hooks/useStaffAllowedJobTypes';
+import { useCreateWritableJobTypes } from '../hooks/useCreateWritableJobTypes';
 import { jobKeys, useCreateJob } from '../hooks/useJobs';
 import type { CreateJobFormValues } from '../types/job.types';
 import type { JobWizardCostingPayload } from '../types/jobWizardCosting.types';
@@ -38,7 +38,7 @@ export default function JobCreatePage() {
   const isGenericCreate = pathname === '/jobs/new' || !segment;
   const create = useCreateJob();
   const [persistingCosting, setPersistingCosting] = useState(false);
-  const allowedJobTypes = useStaffAllowedJobTypes();
+  const allowedJobTypes = useCreateWritableJobTypes('auth');
 
   const queryType = parseJobTypeParam(searchParams.get('job_type'));
   const preferredType =

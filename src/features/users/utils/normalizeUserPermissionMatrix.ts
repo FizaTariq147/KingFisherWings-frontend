@@ -159,19 +159,33 @@ export function normalizePermissionMatrix(raw: unknown, available = true): Permi
   return { available, modules };
 }
 
+function pickStringList(
+  record: Record<string, unknown>,
+  snake: string,
+  camel: string,
+): string[] | null | undefined {
+  const raw = record[snake] ?? record[camel];
+  if (raw === null) return null;
+  if (!Array.isArray(raw)) return undefined;
+  return raw.map((v) => (typeof v === 'string' ? v.trim() : '')).filter(Boolean);
+}
+
 function pickOpsScope(record: Record<string, unknown> | null): {
   visible_job_types?: string[] | null;
+  writable_job_types?: string[] | null;
   unrestricted_ops?: boolean;
 } {
   if (!record) return {};
-  const rawTypes = record.visible_job_types ?? record.visibleJobTypes;
-  let visible_job_types: string[] | null | undefined;
-  if (rawTypes === null) visible_job_types = null;
-  else if (Array.isArray(rawTypes)) {
-    visible_job_types = rawTypes
-      .map((v) => (typeof v === 'string' ? v.trim() : ''))
-      .filter(Boolean);
-  }
+  const visible_job_types = pickStringList(
+    record,
+    'visible_job_types',
+    'visibleJobTypes',
+  );
+  const writable_job_types = pickStringList(
+    record,
+    'writable_job_types',
+    'writableJobTypes',
+  );
   const unrestricted_ops =
     typeof record.unrestricted_ops === 'boolean'
       ? record.unrestricted_ops
@@ -180,6 +194,7 @@ function pickOpsScope(record: Record<string, unknown> | null): {
         : undefined;
   return {
     ...(visible_job_types !== undefined ? { visible_job_types } : {}),
+    ...(writable_job_types !== undefined ? { writable_job_types } : {}),
     ...(unrestricted_ops !== undefined ? { unrestricted_ops } : {}),
   };
 }

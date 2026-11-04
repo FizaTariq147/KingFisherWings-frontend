@@ -20,7 +20,7 @@ export function JobTypeSelectGrid({
   heading = 'What type of Quotation would you like to create?',
   jobTypeOptions,
 }: JobTypeSelectGridProps) {
-  const options = jobTypeOptions?.length ? jobTypeOptions : JOB_TYPES;
+  const options = jobTypeOptions !== undefined ? jobTypeOptions : JOB_TYPES;
 
   return (
     <div className="space-y-4">

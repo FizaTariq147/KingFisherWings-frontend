@@ -13,6 +13,7 @@ import {
 import { normalizeUser, normalizeUsers } from '../utils/normalizeUser';
 import { prepareUserPayload } from '../utils/prepareUserPayload';
 import { pickTemporaryPassword } from '../utils/pickTemporaryPassword';
+import { isVisibleJobTypesNotAllowedError } from '../utils/visibleJobTypesFromMatrixGrants';
 import type {
   AdminResetPasswordResult,
   CreateUserDto,
@@ -219,12 +220,34 @@ export const userService = {
       status: 'ACTIVE',
       send_email: sendEmail,
       ...(tenantId ? { tenant_id: tenantId } : { tenant_id: undefined }),
-    });
+    }) as Record<string, unknown>;
     // Never send undocumented password fields (API ignores / may reject them).
-    delete (body as Record<string, unknown>).password;
+    delete body.password;
+
+    const postCreate = (payload: Record<string, unknown>) =>
+      axiosInstance.post<unknown>(USER_API.list, payload);
 
     try {
-      const res = await axiosInstance.post<unknown>(USER_API.list, body);
+      let res;
+      try {
+        res = await postCreate(body);
+      } catch (firstErr) {
+        // BE CreateUserDto may not whitelist scope fields yet.
+        if (
+          (body.visible_job_types !== undefined ||
+            body.writable_job_types !== undefined) &&
+          isVisibleJobTypesNotAllowedError(firstErr)
+        ) {
+          const {
+            visible_job_types: _v,
+            writable_job_types: _w,
+            ...withoutScope
+          } = body;
+          res = await postCreate(withoutScope);
+        } else {
+          throw firstErr;
+        }
+      }
       const userPayload = extractUserPayload(res.data);
       const user = normalizeUser(userPayload);
 
@@ -281,13 +304,34 @@ export const userService = {
     assertSameTenant(tenantId, sessionTenantId);
     assertUserId(id);
 
+    const body = prepareUserPayload(dto as unknown as Record<string, unknown>, {
+      keepEmptyAllowlists:
+        Array.isArray(dto.allowed_ips) || Array.isArray(dto.allowed_mac_addresses),
+    }) as Record<string, unknown>;
+
+    const patchUser = (payload: Record<string, unknown>) =>
+      axiosInstance.patch<ApiEnvelope<User>>(USER_API.byId(id), payload);
+
     try {
-      const res = await axiosInstance.patch<ApiEnvelope<User>>(
-        USER_API.byId(id),
-        prepareUserPayload(dto as unknown as Record<string, unknown>, {
-          keepEmptyAllowlists: Array.isArray(dto.allowed_ips) || Array.isArray(dto.allowed_mac_addresses),
-        }),
-      );
+      let res;
+      try {
+        res = await patchUser(body);
+      } catch (firstErr) {
+        if (
+          (body.visible_job_types !== undefined ||
+            body.writable_job_types !== undefined) &&
+          isVisibleJobTypesNotAllowedError(firstErr)
+        ) {
+          const {
+            visible_job_types: _v,
+            writable_job_types: _w,
+            ...withoutScope
+          } = body;
+          res = await patchUser(withoutScope);
+        } else {
+          throw firstErr;
+        }
+      }
       return normalizeUser(extractUserPayload(res.data));
     } catch (error) {
       throw formatAxiosError(error);

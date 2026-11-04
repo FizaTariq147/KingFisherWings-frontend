@@ -46,16 +46,19 @@ export interface UserPermissionAssignment {
   grants: PermissionMatrixGrant[];
   /** Job types visible from ops matrix; null = unrestricted. */
   visible_job_types?: string[] | null;
+  /** Job types writable (create); null = unrestricted. */
+  writable_job_types?: string[] | null;
   unrestricted_ops?: boolean;
 }
 
 export interface UpdatePermissionMatrixDto {
   grants: PermissionMatrixGrant[];
   /**
-   * Ops job-type scope for GET /jobs (and quotes/shipments/search).
-   * Derived from grants when omitted by callers. `null` = unrestricted.
+   * Ops job-type scope for GET /jobs (quotes/shipments/search).
+   * Sent when derived from grants. If BE rejects scope fields, FE retries grants-only.
    */
   visible_job_types?: string[] | null;
+  writable_job_types?: string[] | null;
 }
 
 /** @deprecated Legacy flat permission ids/keys — kept for optional role PUT. */

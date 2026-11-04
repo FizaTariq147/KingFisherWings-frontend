@@ -17,7 +17,11 @@ import {
   normalizeUserPermissionAssignment,
 } from '../utils/normalizeUserPermissionMatrix';
 import { toMatrixUpdateGrants } from '../utils/permissionAccess';
-import { visibleJobTypesFromMatrixGrants } from '../utils/visibleJobTypesFromMatrixGrants';
+import {
+  isVisibleJobTypesNotAllowedError,
+  visibleJobTypesFromMatrixGrants,
+  writableJobTypesFromMatrixGrants,
+} from '../utils/visibleJobTypesFromMatrixGrants';
 
 function formatAxiosError(error: unknown): Error {
   if (error instanceof Error && !(error as { response?: unknown }).response) {
@@ -90,18 +94,58 @@ export const userPermissionMatrixService = {
     const grants = toMatrixUpdateGrants(rawGrants);
     const explicitVisible =
       'visible_job_types' in dto ? dto.visible_job_types : undefined;
-    const derivedVisible = visibleJobTypesFromMatrixGrants(grants);
+    const explicitWritable =
+      'writable_job_types' in dto ? dto.writable_job_types : undefined;
     const visible_job_types =
-      explicitVisible !== undefined ? explicitVisible : derivedVisible;
-    const body: UpdatePermissionMatrixDto = {
+      explicitVisible !== undefined
+        ? explicitVisible
+        : visibleJobTypesFromMatrixGrants(grants);
+    const writable_job_types =
+      explicitWritable !== undefined
+        ? explicitWritable
+        : writableJobTypesFromMatrixGrants(grants);
+
+    const grantsOnly: UpdatePermissionMatrixDto = { grants };
+    const withScope: UpdatePermissionMatrixDto = {
       grants,
       ...(visible_job_types !== undefined ? { visible_job_types } : {}),
+      ...(writable_job_types !== undefined ? { writable_job_types } : {}),
     };
+    const hasScope =
+      visible_job_types !== undefined || writable_job_types !== undefined;
+
+    const putMatrix = (body: UpdatePermissionMatrixDto) =>
+      axiosInstance.put(USER_API.userPermissionMatrix(userId), body);
 
     try {
-      const res = await axiosInstance.put(USER_API.userPermissionMatrix(userId), body);
-      return normalizeUserPermissionAssignment(res.data ?? body, true);
+      // Prefer sending derived scope so staff job/quote lists match matrix grants.
+      const res = await putMatrix(hasScope ? withScope : grantsOnly);
+      return normalizeUserPermissionAssignment(res.data ?? withScope, true);
     } catch (error) {
+      // Backend DTO whitelist may omit scope fields — save grants anyway.
+      if (hasScope && isVisibleJobTypesNotAllowedError(error)) {
+        try {
+          const res = await putMatrix(grantsOnly);
+          const normalized = normalizeUserPermissionAssignment(
+            res.data ?? grantsOnly,
+            true,
+          );
+          // Keep derived scope in client cache so UI banner stays useful until BE syncs.
+          return {
+            ...normalized,
+            visible_job_types:
+              normalized.visible_job_types !== undefined
+                ? normalized.visible_job_types
+                : visible_job_types,
+            writable_job_types:
+              normalized.writable_job_types !== undefined
+                ? normalized.writable_job_types
+                : writable_job_types,
+          };
+        } catch (retryErr) {
+          throw formatAxiosError(retryErr);
+        }
+      }
       // Legacy flat permissions fallback (older backends).
       if (isApiUnavailable(error) && 'permission_keys' in dto) {
         const res = await axiosInstance.put(USER_API.permissions(userId), {

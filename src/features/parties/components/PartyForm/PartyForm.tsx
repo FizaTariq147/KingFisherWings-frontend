@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { CountrySelect } from '@/components/ui/CountrySelect';
 import { Input } from '@/components/ui/Input';
 import { PhoneInput } from '@/components/ui/PhoneInput';
+import { useAuth } from '@/hooks/useAuth';
 import { isUuid } from '@/lib/isUuid';
 import {
   applyLocaleFromCountry,
@@ -16,6 +17,10 @@ import {
 import { axiosInstance } from '@/lib/axios';
 import { useAppForm } from '@/lib/validation';
 import { QuotationWizardNav } from '@/features/quotations/components/quotation-wizard';
+import {
+  isTenantUserManagerRole,
+  resolveAuthRoleSlug,
+} from '@/features/users/constants/userPermissions';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import type { PartyType } from '../../constants/party.constants';
 import { usePartyTypes } from '../../hooks/useParties';
@@ -85,6 +90,14 @@ export function PartyForm({
   const isWizard = layout === 'wizard' && mode === 'create';
   const [step, setStep] = useState(0);
   const schema = mode === 'create' ? createPartySchema : updatePartySchema;
+  const { user } = useAuth();
+  const canGrantPortalAccess = useMemo(() => {
+    if (typeof user?.canGrantPortalAccess === 'boolean') {
+      return user.canGrantPortalAccess;
+    }
+    // Fallback until /auth/me always sends the flag (TENANT_ADMIN only).
+    return isTenantUserManagerRole(resolveAuthRoleSlug(user?.role));
+  }, [user?.canGrantPortalAccess, user?.role]);
   const { data: companies = [] } = useTenantCompanies(true);
   const typesQuery = usePartyTypes(true);
   const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
@@ -178,8 +191,17 @@ export function PartyForm({
     return err?.message ? String(err.message) : undefined;
   };
 
+  const sanitizeForSubmit = (
+    values: CreatePartyFormValues | UpdatePartyFormValues,
+  ): CreatePartyFormValues | UpdatePartyFormValues => {
+    if (canGrantPortalAccess) return values;
+    // Non-admins must not send portal_access (BE ForbiddenException on update).
+    const { portal_access: _omit, ...rest } = values as CreatePartyFormValues;
+    return rest;
+  };
+
   const submitForm = handleValidatedSubmit(async (values) => {
-    await onSubmit(values);
+    await onSubmit(sanitizeForSubmit(values));
   });
 
   const goNext = async () => {
@@ -320,9 +342,11 @@ export function PartyForm({
       <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
         <input type="checkbox" {...register('is_active')} /> Active
       </label>
-      <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
-        <input type="checkbox" {...register('portal_access')} /> Portal access
-      </label>
+      {canGrantPortalAccess ? (
+        <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
+          <input type="checkbox" {...register('portal_access')} /> Portal access
+        </label>
+      ) : null}
       <label className="flex items-center gap-2 text-sm text-[var(--color-neutral-700)]">
         <input type="checkbox" {...register('marketing_subscription')} /> Marketing subscription
       </label>
@@ -436,7 +460,7 @@ export function PartyForm({
     <form
       className="space-y-4"
       onSubmit={handleValidatedSubmit(async (values) => {
-        await onSubmit(values);
+        await onSubmit(sanitizeForSubmit(values));
       })}
     >
       <Card>

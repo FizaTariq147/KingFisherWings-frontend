@@ -12,6 +12,7 @@ import type {
   NotificationListResult,
   NotificationOpenResult,
 } from '../types/notifications.types';
+import { pickNotificationTargeting } from './notificationAudience';
 
 export function normalizeNotification(raw: unknown): AppNotification | null {
   const r = asRecord(raw);
@@ -22,6 +23,7 @@ export function normalizeNotification(raw: unknown): AppNotification | null {
   const linkPath =
     pickString(r.link_path, r.linkPath, r.href, r.link, r.url, r.action_url, r.actionUrl, r.path) ||
     null;
+  const targeting = pickNotificationTargeting(r);
   return {
     id,
     title: pickString(r.title, r.subject, r.message) || 'Notification',
@@ -42,6 +44,7 @@ export function normalizeNotification(raw: unknown): AppNotification | null {
     quotationId: pickString(r.quotation_id, r.quotationId) || undefined,
     enquiryId: pickString(r.enquiry_id, r.enquiryId) || undefined,
     invoiceId: pickString(r.invoice_id, r.invoiceId) || undefined,
+    ...(Object.keys(targeting).length ? { targeting } : {}),
     raw: r,
   };
 }

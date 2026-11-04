@@ -132,7 +132,7 @@ export default function CrmEnquiryDetailPage() {
   const location = useLocation();
   const formRef = useRef<HTMLFormElement>(null);
   const query = useCrmEnquiry(id);
-  const allowedJobTypes = useStaffAllowedJobTypes(ENQUIRY_SERVICE_CANDIDATES);
+  const allowedJobTypes = useStaffAllowedJobTypes(ENQUIRY_SERVICE_CANDIDATES, 'create');
   const serviceTypeOptions = useMemo(() => {
     const allowed = allowedJobTypes as readonly ServiceType[];
     const current = query.data?.service_type as ServiceType | undefined;

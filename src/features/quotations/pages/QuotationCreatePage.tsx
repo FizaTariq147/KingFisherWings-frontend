@@ -2,7 +2,7 @@ import { useCallback, useMemo, useState } from 'react';
 import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
-import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
+import { useCreateWritableJobTypes } from '@/features/jobs/hooks/useCreateWritableJobTypes';
 import type { JobType as OpsJobType } from '@/features/jobs/constants/job.constants';
 import { QuotationForm } from '../components/QuotationForm';
 import { JOB_TYPES, QUOTATION_CREATE_DRAFT_KEY } from '../constants/quotation.constants';
@@ -47,7 +47,7 @@ export default function QuotationCreatePage() {
   const create = useCreateQuotation();
   const [error, setError] = useState<string | null>(null);
   const [persistingCosting, setPersistingCosting] = useState(false);
-  const allowedJobTypes = useStaffAllowedJobTypes(QUOTE_JOB_TYPE_CANDIDATES);
+  const allowedJobTypes = useCreateWritableJobTypes('quotations', QUOTE_JOB_TYPE_CANDIDATES);
   const draft = useMemo(() => loadDraft(), []);
 
   const defaultValues = useMemo(() => {

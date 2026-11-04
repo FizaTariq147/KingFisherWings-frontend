@@ -130,7 +130,7 @@ export function LiveActivityPanel({
     <DashCard>
       <DashCardHeader
         title="Live activity"
-        subtitle="Staff notifications"
+        subtitle="Alerts for your access"
         action={
           <Link
             to="/notifications"

@@ -40,10 +40,12 @@ import type { AuthUser, PermissionKey, Role } from '@/types/auth.types'
 type MeMatrixGrant = NonNullable<AuthUser['permissionMatrix']>[number]
 
 /** null = unrestricted; [] = none; string[] = scoped; undefined = omitted from /me. */
-function pickVisibleJobTypesFromRecord(
+function pickJobTypeScopeFromRecord(
   record: Record<string, unknown>,
+  snake: string,
+  camel: string,
 ): string[] | null | undefined {
-  const raw = record.visible_job_types ?? record.visibleJobTypes
+  const raw = record[snake] ?? record[camel]
   if (raw === null) return null
   if (raw === undefined) return undefined
   if (!Array.isArray(raw)) return undefined
@@ -52,11 +54,35 @@ function pickVisibleJobTypesFromRecord(
     .filter(Boolean)
 }
 
+function pickVisibleJobTypesFromRecord(
+  record: Record<string, unknown>,
+): string[] | null | undefined {
+  return pickJobTypeScopeFromRecord(record, 'visible_job_types', 'visibleJobTypes')
+}
+
+function pickWritableJobTypesFromRecord(
+  record: Record<string, unknown>,
+): string[] | null | undefined {
+  return pickJobTypeScopeFromRecord(record, 'writable_job_types', 'writableJobTypes')
+}
+
 function pickUnrestrictedOpsFromRecord(
   record: Record<string, unknown>,
 ): boolean | undefined {
   if (typeof record.unrestricted_ops === 'boolean') return record.unrestricted_ops
   if (typeof record.unrestrictedOps === 'boolean') return record.unrestrictedOps
+  return undefined
+}
+
+function pickCanGrantPortalAccessFromRecord(
+  record: Record<string, unknown>,
+): boolean | undefined {
+  if (typeof record.can_grant_portal_access === 'boolean') {
+    return record.can_grant_portal_access
+  }
+  if (typeof record.canGrantPortalAccess === 'boolean') {
+    return record.canGrantPortalAccess
+  }
   return undefined
 }
 
@@ -397,7 +423,9 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
   const enabledModules =
     pickEnabledModulesFromRecord(record) ?? enabledModulesFromAccessToken(accessToken)
   const visibleJobTypes = pickVisibleJobTypesFromRecord(record)
+  const writableJobTypes = pickWritableJobTypesFromRecord(record)
   const unrestrictedOps = pickUnrestrictedOpsFromRecord(record)
+  const canGrantPortalAccess = pickCanGrantPortalAccessFromRecord(record)
 
   return {
     id: id || email,
@@ -413,7 +441,9 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     ...(matrixFromMe.summary.length ? { permissionMatrix: matrixFromMe.summary } : {}),
     ...(enabledModules ? { enabledModules } : {}),
     ...(visibleJobTypes !== undefined ? { visibleJobTypes } : {}),
+    ...(writableJobTypes !== undefined ? { writableJobTypes } : {}),
     ...(unrestrictedOps !== undefined ? { unrestrictedOps } : {}),
+    ...(canGrantPortalAccess !== undefined ? { canGrantPortalAccess } : {}),
   }
 }
 
