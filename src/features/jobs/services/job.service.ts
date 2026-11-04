@@ -1,5 +1,5 @@
 import { axiosInstance } from '@/lib/axios';
-import { clampApiListLimit } from '@/lib/apiListLimit';
+import { API_LIST_LIMIT_MAX, clampApiListLimit } from '@/lib/apiListLimit';
 import { isUuid } from '@/lib/isUuid';
 import { resolveSessionCompanyIdAsync } from '@/lib/resolveSessionCompanyId';
 import { withGatewayRetry } from '@/lib/wakeApi';
@@ -682,7 +682,11 @@ async function hydrateJobsFromConvertedQuotes(
   return [...byId.values()];
 }
 
-/** Unfiltered GET /jobs then keep only the requested types (canonicalized). */
+/**
+ * GET /jobs with no job_type (BE JWT scopes visibility / any creator), then keep
+ * only the requested department types. Pages through the unfiltered list so
+ * section jobs are not lost behind newer jobs of other types (staff Sea Import, etc.).
+ */
 async function fetchJobsFilteredByTypes(
   params: JobListParams,
   types: Array<NonNullable<JobListParams['job_type']>>,
@@ -690,31 +694,57 @@ async function fetchJobsFilteredByTypes(
   const page = params.page ?? 1;
   const limit = clampApiListLimit(params.limit, 20);
   const order = params.order ?? 'desc';
-  const pull = clampApiListLimit(Math.max(limit * page * Math.max(types.length, 1), limit), 100);
-  const unfiltered = await fetchJobListPage({
-    ...params,
-    job_type: undefined,
-    job_types: undefined,
-    page: 1,
-    limit: pull,
-  });
   const allowed = new Set(types.map((t) => canonicalizeJobType(String(t))));
-  const filtered = unfiltered.jobs.filter((j) =>
-    allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
-  );
-  const merged = [...filtered].sort((a, b) => {
+  const need = page * limit;
+  const byId = new Map<string, Job>();
+  const pageSize = API_LIST_LIMIT_MAX;
+  let apiTotal = Number.POSITIVE_INFINITY;
+  let pageNum = 1;
+  const maxPages = 20;
+
+  while (pageNum <= maxPages && byId.size < need) {
+    const unfiltered = await fetchJobListPage({
+      ...params,
+      job_type: undefined,
+      job_types: undefined,
+      created_by: undefined,
+      salesperson_id: undefined,
+      department_id: undefined,
+      page: pageNum,
+      limit: pageSize,
+      order,
+    });
+    if (typeof unfiltered.meta?.total === 'number') {
+      apiTotal = unfiltered.meta.total;
+    }
+    for (const job of unfiltered.jobs ?? []) {
+      if (!job?.id) continue;
+      if (allowed.has(canonicalizeJobType(String(job.job_type ?? '')))) {
+        byId.set(job.id, job);
+      }
+    }
+    const got = unfiltered.jobs?.length ?? 0;
+    if (got === 0) break;
+    if (pageNum * pageSize >= apiTotal) break;
+    pageNum += 1;
+  }
+
+  const merged = [...byId.values()].sort((a, b) => {
     const diff = jobSortTime(a) - jobSortTime(b);
     return order === 'asc' ? diff : -diff;
   });
   const start = (page - 1) * limit;
   const slice = merged.slice(start, start + limit);
+  // Prefer exact matched count once we scanned enough; otherwise lower-bound.
+  const scannedAll = Number.isFinite(apiTotal) && pageNum * pageSize >= apiTotal;
+  const total = scannedAll ? merged.length : Math.max(merged.length, slice.length);
   return {
     jobs: slice,
     meta: {
       page,
       limit,
-      total: merged.length,
-      totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
+      total,
+      totalPages: Math.max(1, Math.ceil(total / limit) || 1),
     },
   };
 }
@@ -865,126 +895,75 @@ export const jobService = {
         return paginate(hydrated, result.meta.total);
       }
 
-      if (multiTypes && multiTypes.length === 1) {
-        let result: JobListResult;
-        try {
-          result = await fetchJobListPage(
-            {
-              ...safeParams,
-              job_type: multiTypes[0],
-              job_types: undefined,
-            },
-            { skipErrorToast: true },
-          );
-        } catch (err) {
-          if (isJobTypeAccessError(err)) {
-            if (skipHydrate) {
-              return emptyJobListResult(clampApiListLimit(paramsNoHydrateFlag.limit, 20));
-            }
-            try {
-              result = await fetchJobsFilteredByTypes(safeParams, hydrateTypes(multiTypes));
-            } catch {
-              result = emptyJobListResult(clampApiListLimit(paramsNoHydrateFlag.limit, 20));
-            }
-          } else {
-            throw err;
-          }
-        }
+      // Department / multi-type sections: prefer unfiltered GET (BE JWT ACL, any creator)
+      // then client-filter by segment types. Typed job_type= fan-out often returns [] for
+      // staff even when they can see those jobs on the unfiltered list.
+      if (multiTypes && multiTypes.length >= 1) {
+        const types = hydrateTypes(multiTypes);
         if (skipHydrate) {
-          return result;
-        }
-        // Silent ACL: typed list returns 200 [] while create/detail still work.
-        // Recover via unfiltered GET + client type filter (same as ROAD soft-fail).
-        if (result.jobs.length === 0) {
-          try {
-            const recovered = await fetchJobsFilteredByTypes(
-              safeParams,
-              hydrateTypes(multiTypes),
-            );
-            if (recovered.jobs.length) result = recovered;
-          } catch {
-            /* keep typed empty */
+          // Dashboard open-status probes: keep typed fan-out (no client hydrate).
+          if (multiTypes.length === 1) {
+            try {
+              return await fetchJobListPage(
+                {
+                  ...safeParams,
+                  job_type: multiTypes[0],
+                  job_types: undefined,
+                },
+                { skipErrorToast: true },
+              );
+            } catch (err) {
+              if (isJobTypeAccessError(err)) {
+                return emptyJobListResult(clampApiListLimit(paramsNoHydrateFlag.limit, 20));
+              }
+              throw err;
+            }
           }
+          const page = paramsNoHydrateFlag.page ?? 1;
+          const limit = clampApiListLimit(paramsNoHydrateFlag.limit, 20);
+          const perTypeLimit = clampApiListLimit(Math.max(limit * page, limit), 100);
+          const pages = await Promise.all(
+            multiTypes.map(async (job_type) => {
+              try {
+                return await fetchJobListPage(
+                  {
+                    ...safeParams,
+                    job_type,
+                    job_types: undefined,
+                    page: 1,
+                    limit: perTypeLimit,
+                  },
+                  { skipErrorToast: true },
+                );
+              } catch (err) {
+                if (isJobTypeAccessError(err)) return emptyJobListResult(perTypeLimit);
+                throw err;
+              }
+            }),
+          );
+          const byId = new Map<string, Job>();
+          let apiTotal = 0;
+          for (const pageResult of pages) {
+            apiTotal += pageResult.meta.total ?? 0;
+            for (const job of pageResult.jobs) {
+              if (job?.id) byId.set(job.id, job);
+            }
+          }
+          const allowed = new Set(types.map(String));
+          const merged = [...byId.values()].filter((j) =>
+            allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
+          );
+          return paginate(merged, apiTotal);
         }
-        const hydrated = await hydrateJobsFromConvertedQuotes(
-          result.jobs,
-          hydrateTypes(multiTypes),
-        );
-        const allowed = new Set(hydrateTypes(multiTypes).map(String));
+
+        let result = await fetchJobsFilteredByTypes(safeParams, types);
+        const hydrated = await hydrateJobsFromConvertedQuotes(result.jobs, types);
+        const allowed = new Set(types.map(String));
         const typed = hydrated.filter((j) =>
           allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
         );
-        const withRecent = await mergeRecentCreatedJobs(typed, {
-          jobTypes: hydrateTypes(multiTypes),
-        });
-        return paginate(withRecent, result.meta.total);
-      }
-
-      if (multiTypes && multiTypes.length > 1) {
-        const page = paramsNoHydrateFlag.page ?? 1;
-        const limit = clampApiListLimit(paramsNoHydrateFlag.limit, 20);
-        const perTypeLimit = clampApiListLimit(Math.max(limit * page, limit), 100);
-
-        const fetchTypePage = async (
-          job_type: NonNullable<JobListParams['job_type']>,
-        ): Promise<JobListResult> => {
-          try {
-            return await fetchJobListPage(
-              {
-                ...safeParams,
-                job_type,
-                job_types: undefined,
-                page: 1,
-                limit: perTypeLimit,
-              },
-              { skipErrorToast: true },
-            );
-          } catch (err) {
-            if (isJobTypeAccessError(err)) {
-              return emptyJobListResult(perTypeLimit);
-            }
-            throw err;
-          }
-        };
-
-        const pages = await Promise.all(multiTypes.map((job_type) => fetchTypePage(job_type)));
-        const apiTotal = pages.reduce((sum, p) => sum + (p.meta.total ?? 0), 0);
-
-        if (!skipHydrate) {
-          try {
-            const recovered = await fetchJobsFilteredByTypes(
-              safeParams,
-              hydrateTypes(multiTypes),
-            );
-            pages.push(recovered);
-          } catch {
-            /* keep typed pages */
-          }
-        }
-
-        const byId = new Map<string, Job>();
-        for (const pageResult of pages) {
-          for (const job of pageResult.jobs) {
-            if (!byId.has(job.id)) byId.set(job.id, job);
-          }
-        }
-
-        const allowed = new Set(hydrateTypes(multiTypes).map((t) => String(t)));
-        let merged = [...byId.values()].filter((j) =>
-          allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
-        );
-
-        if (!skipHydrate) {
-          merged = await hydrateJobsFromConvertedQuotes(merged, hydrateTypes(multiTypes));
-          merged = merged.filter((j) =>
-            allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
-          );
-          merged = await mergeRecentCreatedJobs(merged, {
-            jobTypes: hydrateTypes(multiTypes),
-          });
-        }
-
-        return paginate(merged, skipHydrate ? apiTotal : undefined);
+        const withRecent = await mergeRecentCreatedJobs(typed, { jobTypes: types });
+        return paginate(withRecent, Math.max(result.meta.total, withRecent.length));
       }
 
       const base = await fetchJobListPage(safeParams, { skipErrorToast: wantsRoadFreight });
