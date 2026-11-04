@@ -66,6 +66,11 @@ export interface JobListParams {
   container_type_id?: string;
   /** Client-side: filter list to segment job types (not sent if single job_type set). */
   job_types?: JobType[];
+  /**
+   * Client-only: skip soft-retry / quote hydrate / recent-create merge.
+   * Use for dashboard counts & panels so staff totals match admin (no inflate).
+   */
+  skip_client_hydrate?: boolean;
   vehicle_number?: string;
   trucker_id?: string;
   tracking_number?: string;

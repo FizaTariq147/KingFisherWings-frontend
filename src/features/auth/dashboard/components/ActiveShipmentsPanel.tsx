@@ -100,6 +100,8 @@ export function ActiveShipmentsPanel({
   userId,
   lastUpdated,
   isFetching,
+  /** Shared open-ops total (KPI / header) — keeps All jobs badge aligned across roles. */
+  activeTotal,
 }: {
   jobs: Job[];
   isLoading: boolean;
@@ -108,6 +110,7 @@ export function ActiveShipmentsPanel({
   userId?: string;
   lastUpdated?: number;
   isFetching?: boolean;
+  activeTotal?: number;
 }) {
   const navigate = useNavigate();
   const [view, setView] = useState<ViewKey>('all');
@@ -119,13 +122,16 @@ export function ActiveShipmentsPanel({
 
   const viewCounts = useMemo(
     () => ({
-      all: active.length,
+      all:
+        typeof activeTotal === 'number' && Number.isFinite(activeTotal)
+          ? activeTotal
+          : active.length,
       mine: active.filter((job) => matchesView(job, 'mine', userId)).length,
       customs: active.filter((job) => matchesView(job, 'customs')).length,
       docs: active.filter((job) => matchesView(job, 'docs')).length,
       air: active.filter((job) => matchesView(job, 'air')).length,
     }),
-    [active, userId],
+    [active, activeTotal, userId],
   );
 
   const chipCounts = useMemo(() => {

@@ -770,24 +770,29 @@ export const jobService = {
    */
   async list(params: JobListParams = {}): Promise<JobListResult> {
     try {
+      const skipHydrate = Boolean(params.skip_client_hydrate);
+      // Client-only flag — never send to API.
+      const { skip_client_hydrate: _skipHydrateFlag, ...paramsNoHydrateFlag } = params;
+      void _skipHydrateFlag;
+
       // Explicit empty scope (visible_job_types: []) — no ops jobs.
       if (
-        Array.isArray(params.job_types) &&
-        params.job_types.length === 0 &&
-        !params.job_type
+        Array.isArray(paramsNoHydrateFlag.job_types) &&
+        paramsNoHydrateFlag.job_types.length === 0 &&
+        !paramsNoHydrateFlag.job_type
       ) {
-        return emptyJobListResult(clampApiListLimit(params.limit, 20));
+        return emptyJobListResult(clampApiListLimit(paramsNoHydrateFlag.limit, 20));
       }
 
       // Never send job_type=ROAD_FREIGHT — backend ACL returns 403 for many roles.
       // Recover ROAD jobs via unfiltered list + quotation hydrate instead.
-      const requestedType = params.job_type
-        ? canonicalizeJobType(String(params.job_type))
+      const requestedType = paramsNoHydrateFlag.job_type
+        ? canonicalizeJobType(String(paramsNoHydrateFlag.job_type))
         : undefined;
       const safeParams: JobListParams =
         requestedType === 'ROAD_FREIGHT'
-          ? { ...params, job_type: undefined }
-          : params;
+          ? { ...paramsNoHydrateFlag, job_type: undefined }
+          : paramsNoHydrateFlag;
 
       const multiTypesRaw =
         !safeParams.job_type && safeParams.job_types?.length
@@ -804,23 +809,28 @@ export const jobService = {
           params.job_types?.some((t) => canonicalizeJobType(String(t)) === 'ROAD_FREIGHT'),
         );
 
-      const paginate = (jobs: Job[]): JobListResult => {
-        const page = params.page ?? 1;
-        const limit = clampApiListLimit(params.limit, 20);
-        const order = params.order ?? 'desc';
+      const paginate = (jobs: Job[], apiTotal?: number): JobListResult => {
+        const page = paramsNoHydrateFlag.page ?? 1;
+        const limit = clampApiListLimit(paramsNoHydrateFlag.limit, 20);
+        const order = paramsNoHydrateFlag.order ?? 'desc';
         const merged = [...jobs].sort((a, b) => {
           const diff = jobSortTime(a) - jobSortTime(b);
           return order === 'asc' ? diff : -diff;
         });
         const start = (page - 1) * limit;
         const slice = merged.slice(start, start + limit);
+        // Prefer BE total when present so soft-retry / recent merge cannot inflate counts.
+        const total =
+          typeof apiTotal === 'number' && Number.isFinite(apiTotal)
+            ? Math.max(0, apiTotal)
+            : merged.length;
         return {
           jobs: slice,
           meta: {
             page,
             limit,
-            total: merged.length,
-            totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
+            total,
+            totalPages: Math.max(1, Math.ceil(total / limit) || 1),
           },
         };
       };
@@ -835,14 +845,17 @@ export const jobService = {
 
       if (multiTypes && multiTypes.length === 0 && wantsRoadFreight) {
         // Only ROAD_FREIGHT requested — never call typed ROAD endpoint.
-        let result = emptyJobListResult(clampApiListLimit(params.limit, 20));
+        if (skipHydrate) {
+          return emptyJobListResult(clampApiListLimit(paramsNoHydrateFlag.limit, 20));
+        }
+        let result = emptyJobListResult(clampApiListLimit(paramsNoHydrateFlag.limit, 20));
         try {
           result = await fetchJobsFilteredByTypes(safeParams, ['ROAD_FREIGHT']);
         } catch {
           /* empty */
         }
         const hydrated = await hydrateJobsFromConvertedQuotes(result.jobs, ['ROAD_FREIGHT']);
-        return paginate(hydrated);
+        return paginate(hydrated, result.meta.total);
       }
 
       if (multiTypes && multiTypes.length === 1) {
@@ -858,14 +871,20 @@ export const jobService = {
           );
         } catch (err) {
           if (isJobTypeAccessError(err)) {
+            if (skipHydrate) {
+              return emptyJobListResult(clampApiListLimit(paramsNoHydrateFlag.limit, 20));
+            }
             try {
               result = await fetchJobsFilteredByTypes(safeParams, hydrateTypes(multiTypes));
             } catch {
-              result = emptyJobListResult(clampApiListLimit(params.limit, 20));
+              result = emptyJobListResult(clampApiListLimit(paramsNoHydrateFlag.limit, 20));
             }
           } else {
             throw err;
           }
+        }
+        if (skipHydrate) {
+          return result;
         }
         // Silent ACL: typed list returns 200 [] while create/detail still work.
         // Recover via unfiltered GET + client type filter (same as ROAD soft-fail).
@@ -891,12 +910,12 @@ export const jobService = {
         const withRecent = await mergeRecentCreatedJobs(typed, {
           jobTypes: hydrateTypes(multiTypes),
         });
-        return paginate(withRecent);
+        return paginate(withRecent, result.meta.total);
       }
 
       if (multiTypes && multiTypes.length > 1) {
-        const page = params.page ?? 1;
-        const limit = clampApiListLimit(params.limit, 20);
+        const page = paramsNoHydrateFlag.page ?? 1;
+        const limit = clampApiListLimit(paramsNoHydrateFlag.limit, 20);
         const perTypeLimit = clampApiListLimit(Math.max(limit * page, limit), 100);
 
         const fetchTypePage = async (
@@ -922,15 +941,18 @@ export const jobService = {
         };
 
         const pages = await Promise.all(multiTypes.map((job_type) => fetchTypePage(job_type)));
+        const apiTotal = pages.reduce((sum, p) => sum + (p.meta.total ?? 0), 0);
 
-        try {
-          const recovered = await fetchJobsFilteredByTypes(
-            safeParams,
-            hydrateTypes(multiTypes),
-          );
-          pages.push(recovered);
-        } catch {
-          /* keep typed pages */
+        if (!skipHydrate) {
+          try {
+            const recovered = await fetchJobsFilteredByTypes(
+              safeParams,
+              hydrateTypes(multiTypes),
+            );
+            pages.push(recovered);
+          } catch {
+            /* keep typed pages */
+          }
         }
 
         const byId = new Map<string, Job>();
@@ -945,18 +967,23 @@ export const jobService = {
           allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
         );
 
-        merged = await hydrateJobsFromConvertedQuotes(merged, hydrateTypes(multiTypes));
-        merged = merged.filter((j) =>
-          allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
-        );
-        merged = await mergeRecentCreatedJobs(merged, {
-          jobTypes: hydrateTypes(multiTypes),
-        });
+        if (!skipHydrate) {
+          merged = await hydrateJobsFromConvertedQuotes(merged, hydrateTypes(multiTypes));
+          merged = merged.filter((j) =>
+            allowed.has(canonicalizeJobType(String(j.job_type ?? ''))),
+          );
+          merged = await mergeRecentCreatedJobs(merged, {
+            jobTypes: hydrateTypes(multiTypes),
+          });
+        }
 
-        return paginate(merged);
+        return paginate(merged, skipHydrate ? apiTotal : undefined);
       }
 
       const base = await fetchJobListPage(safeParams, { skipErrorToast: wantsRoadFreight });
+      if (skipHydrate) {
+        return base;
+      }
       if (wantsRoadFreight || !safeParams.job_type) {
         const hydrated = await hydrateJobsFromConvertedQuotes(base.jobs, ['ROAD_FREIGHT']);
         if (requestedType === 'ROAD_FREIGHT') {
@@ -967,6 +994,7 @@ export const jobService = {
             await mergeRecentCreatedJobs(roadOnly, {
               jobTypes: ['ROAD_FREIGHT', 'LAND', 'COURIER'],
             }),
+            base.meta.total,
           );
         }
         if (!safeParams.job_type && hydrated.length !== base.jobs.length) {
@@ -974,7 +1002,7 @@ export const jobService = {
           for (const j of hydrated) {
             if (!byId.has(j.id)) byId.set(j.id, j);
           }
-          return paginate(await mergeRecentCreatedJobs([...byId.values()]));
+          return paginate(await mergeRecentCreatedJobs([...byId.values()]), base.meta.total);
         }
       }
 
@@ -983,7 +1011,8 @@ export const jobService = {
         jobs: await mergeRecentCreatedJobs(base.jobs),
         meta: {
           ...base.meta,
-          total: Math.max(base.meta.total, base.jobs.length),
+          // Do not inflate total above BE — recent merge is display-only for missing rows.
+          total: base.meta.total,
         },
       };
     } catch (error) {
