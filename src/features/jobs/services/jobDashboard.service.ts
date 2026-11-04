@@ -11,8 +11,8 @@ import { jobService } from './job.service';
 const CLOSED_STATUSES: JobStatus[] = ['COMPLETED', 'CANCELLED'];
 
 const AIR_EXPORT_TYPES: JobType[] = ['AIR_EXPORT'];
-const SEA_EXPORT_TYPES: JobType[] = ['SEA_FCL_EXPORT', 'SEA_LCL_EXPORT', 'NVOCC_EXPORT'];
-const SEA_IMPORT_TYPES: JobType[] = ['SEA_FCL_IMPORT', 'SEA_LCL_IMPORT', 'NVOCC_IMPORT'];
+const SEA_EXPORT_TYPES: JobType[] = ['SEA_FCL_EXPORT', 'SEA_LCL_EXPORT'];
+const SEA_IMPORT_TYPES: JobType[] = ['SEA_FCL_IMPORT', 'SEA_LCL_IMPORT'];
 
 const DASHBOARD_SAMPLE_LIMIT = 120;
 

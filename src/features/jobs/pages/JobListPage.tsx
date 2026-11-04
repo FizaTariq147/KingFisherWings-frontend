@@ -62,11 +62,26 @@ export default function JobListPage() {
     setPage(1);
   }, [segment, applied]);
 
-  // Filter dropdown options: admin = full segment; staff = grants (writable ∪ visible).
-  // List API always uses the department segment job_types — BE applies JWT ACL
-  // (any creator). Do not add created_by / department_id on the default view.
+  // Admin = full segment.
+  // Staff = /me visible ∪ writable ∩ this department (e.g. Sea Import →
+  // SEA_FCL_IMPORT + SEA_LCL_IMPORT when those are in Ops visible). Matrix/menu
+  // filter is a fallback only — never drop types the admin already granted on /me.
   const allowedSegmentTypes = useMemo((): JobType[] => {
     if (isOpsUnrestrictedUser(user)) return [...segmentConfig.jobTypes];
+
+    const segmentSet = new Set(
+      segmentConfig.jobTypes.map((t) => canonicalizeJobType(t)),
+    );
+    const fromMe = new Set<JobType>();
+    for (const raw of [
+      ...(Array.isArray(user?.visibleJobTypes) ? user.visibleJobTypes : []),
+      ...(Array.isArray(user?.writableJobTypes) ? user.writableJobTypes : []),
+    ]) {
+      const t = canonicalizeJobType(raw);
+      if (segmentSet.has(t)) fromMe.add(t);
+    }
+    if (fromMe.size > 0) return [...fromMe];
+
     const allowed = filterJobTypesByStaffAccess({
       permissions: user?.permissions ?? [],
       visibleJobTypes: user?.visibleJobTypes,
@@ -77,18 +92,7 @@ export default function JobListPage() {
       candidates: segmentConfig.jobTypes,
       mode: 'list',
     });
-    if (!user?.writableJobTypes?.length) {
-      // Fall back to full segment so BE role-default job types are not FE-blocked.
-      return allowed.length ? allowed : [...segmentConfig.jobTypes];
-    }
-    const writable = new Set(
-      user.writableJobTypes.map((t) => canonicalizeJobType(t)),
-    );
-    const extra = segmentConfig.jobTypes.filter(
-      (t) => writable.has(t) && !allowed.includes(t),
-    );
-    const merged = extra.length ? [...allowed, ...extra] : allowed;
-    return merged.length ? merged : [...segmentConfig.jobTypes];
+    return allowed.length ? allowed : [...segmentConfig.jobTypes];
   }, [
     segmentConfig.jobTypes,
     user,
@@ -102,8 +106,9 @@ export default function JobListPage() {
 
   const listParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, page, {
-      // Section filter only (e.g. Air Export types). BE cuts by grants.
-      segmentJobTypes: [...segmentConfig.jobTypes],
+      // Staff: only granted types in this department (never NVOCC on sea-* without nvocc grant).
+      // Admin: full segment. List merge still uses unfiltered + typed fan-out in job.service.
+      segmentJobTypes: [...allowedSegmentTypes],
     });
     // Department default view: every creator (admin + staff). Only keep creator
     // filters when the user explicitly typed them in MIS filters.
@@ -111,7 +116,7 @@ export default function JobListPage() {
     if (!applied.salespersonId?.trim()) delete params.salesperson_id;
     if (!applied.departmentId?.trim()) delete params.department_id;
     return params;
-  }, [applied, page, segmentConfig.jobTypes]);
+  }, [applied, page, allowedSegmentTypes]);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams);
   const lifecycle = useJobLifecycleMutations();

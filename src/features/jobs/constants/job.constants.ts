@@ -182,14 +182,16 @@ export const JOB_SEGMENTS: Record<
     label: 'Sea Export',
     routePrefix: '/jobs/sea-export',
     permission: 'menu_jobs_sea_export',
-    jobTypes: ['SEA_FCL_EXPORT', 'SEA_LCL_EXPORT', 'NVOCC_EXPORT'],
+    // NVOCC lives under /nvocc — keep in sync with DEPARTMENT_NAV / filterJobTypesByStaffAccess.
+    jobTypes: ['SEA_FCL_EXPORT', 'SEA_LCL_EXPORT'],
     defaultCreateType: 'SEA_FCL_EXPORT',
   },
   'sea-import': {
     label: 'Sea Import',
     routePrefix: '/jobs/sea-import',
     permission: 'menu_jobs_sea_import',
-    jobTypes: ['SEA_FCL_IMPORT', 'SEA_LCL_IMPORT', 'NVOCC_IMPORT'],
+    // NVOCC_IMPORT is not a Sea Import grant (staff SEA_* scope must not depend on it).
+    jobTypes: ['SEA_FCL_IMPORT', 'SEA_LCL_IMPORT'],
     defaultCreateType: 'SEA_FCL_IMPORT',
   },
   'customs-clearance': {
