@@ -118,8 +118,15 @@ export interface AuthUser {
    * null = unrestricted; [] = none; string[] = allowed job types.
    */
   visibleJobTypes?: string[] | null
+  /**
+   * Job types the user may create (write). Prefer over visibleJobTypes for create wizards.
+   * null = unrestricted; [] = none; string[] = writable types.
+   */
+  writableJobTypes?: string[] | null
   /** When true, ops departments are not filtered by visible_job_types. */
   unrestrictedOps?: boolean
+  /** Only TENANT_ADMIN may set party portal_access (from GET /auth/me). */
+  canGrantPortalAccess?: boolean
 }
 
 // Decoded JWT payload shape from NestJS backend

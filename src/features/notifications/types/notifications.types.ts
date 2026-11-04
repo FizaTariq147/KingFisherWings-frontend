@@ -4,7 +4,24 @@ export interface NotificationListParams {
   page?: number;
   limit?: number;
   unread_only?: string | boolean;
+  /**
+   * Forward-compatible BE filters (ignored by older APIs).
+   * Prefer server-side scoping when the backend supports these.
+   */
+  audience?: string;
+  for_user_id?: string;
+  role?: string;
+  module?: string;
 }
+
+/** Optional BE targeting — preferred over client inference when present. */
+export type NotificationTargeting = {
+  audience?: string;
+  recipientUserIds?: string[];
+  roles?: string[];
+  permissions?: string[];
+  modules?: string[];
+};
 
 export interface AppNotification {
   id: string;
@@ -26,6 +43,8 @@ export interface AppNotification {
   quotationId?: string;
   enquiryId?: string;
   invoiceId?: string;
+  /** BE targeting when present (audience / roles / permissions / modules / users). */
+  targeting?: NotificationTargeting;
   raw?: Record<string, unknown>;
 }
 

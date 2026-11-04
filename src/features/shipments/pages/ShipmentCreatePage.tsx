@@ -3,7 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { appType } from '@/lib/erpTypography';
 import { isUuid } from '@/lib/isUuid';
 import type { JobType as OpsJobType } from '@/features/jobs/constants/job.constants';
-import { useStaffAllowedJobTypes } from '@/features/jobs/hooks/useStaffAllowedJobTypes';
+import { useCreateWritableJobTypes } from '@/features/jobs/hooks/useCreateWritableJobTypes';
 import { JOB_TYPES, type JobType } from '@/features/quotations/constants/quotation.constants';
 import {
   SHIPMENT_FORM_DEFAULTS,
@@ -51,7 +51,7 @@ export default function ShipmentCreatePage() {
   const create = useCreateShipment();
   const { canWriteCreate } = useShipmentsPermissions();
   const [error, setError] = useState<string | null>(null);
-  const allowedJobTypes = useStaffAllowedJobTypes(SHIPMENT_JOB_TYPE_CANDIDATES);
+  const allowedJobTypes = useCreateWritableJobTypes('shipments', SHIPMENT_JOB_TYPE_CANDIDATES);
 
   const defaults = useMemo(() => {
     const draft = loadDraft();

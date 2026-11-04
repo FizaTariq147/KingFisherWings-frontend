@@ -14,7 +14,10 @@ import type { UpdateUserFormValues } from '../types/user.types';
 import { userToFormValues } from '../utils/userToFormValues';
 import { formatUserLabel } from '../utils/userToFormValues';
 import { toAccessGrants } from '../utils/permissionAccess';
-import { visibleJobTypesFromMatrixGrants } from '../utils/visibleJobTypesFromMatrixGrants';
+import {
+  visibleJobTypesFromMatrixGrants,
+  writableJobTypesFromMatrixGrants,
+} from '../utils/visibleJobTypesFromMatrixGrants';
 
 export default function UserEditPage() {
   const { id = '' } = useParams();
@@ -104,6 +107,15 @@ export default function UserEditPage() {
             const accessGrants = toAccessGrants(meta?.permissionGrants ?? []);
             const grants = meta?.permissionGrants ?? [];
             const visibleJobTypes = visibleJobTypesFromMatrixGrants(grants);
+            const writableJobTypes = writableJobTypesFromMatrixGrants(grants);
+            const scopePayload = {
+              ...(visibleJobTypes !== undefined
+                ? { visible_job_types: visibleJobTypes }
+                : {}),
+              ...(writableJobTypes !== undefined
+                ? { writable_job_types: writableJobTypes }
+                : {}),
+            };
 
             await updateUser.mutateAsync({
               ...(values as UpdateUserFormValues),
@@ -111,18 +123,14 @@ export default function UserEditPage() {
                 ? {
                     permission_grants: accessGrants,
                     permission_grants_mode: 'replace' as const,
-                    ...(visibleJobTypes !== undefined
-                      ? { visible_job_types: visibleJobTypes }
-                      : {}),
+                    ...scopePayload,
                   }
                 : {}),
             });
             if (grants.length > 0) {
               await updatePermissions.mutateAsync({
                 grants,
-                ...(visibleJobTypes !== undefined
-                  ? { visible_job_types: visibleJobTypes }
-                  : {}),
+                ...scopePayload,
               });
             }
             goBack();

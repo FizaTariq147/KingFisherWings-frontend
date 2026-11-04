@@ -20,7 +20,7 @@ export default function QuotationEditPage() {
   const { data: quotation, isLoading, isError, error } = useQuotation(id);
   const update = useUpdateQuotation(id);
   const [formError, setFormError] = useState<string | null>(null);
-  const allowedJobTypes = useStaffAllowedJobTypes(QUOTE_JOB_TYPE_CANDIDATES);
+  const allowedJobTypes = useStaffAllowedJobTypes(QUOTE_JOB_TYPE_CANDIDATES, 'create');
 
   const jobTypeOptions = useMemo(() => {
     const current = quotation?.job_type as JobType | undefined;

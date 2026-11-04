@@ -61,7 +61,7 @@ export default function NotificationsPage() {
         <div>
           <h2 className="text-xl font-semibold text-[var(--color-neutral-900)]">Notifications</h2>
           <p className="text-sm text-[var(--color-neutral-500)]">
-            In-app notifications for your staff account. Open an item to jump to the related screen.
+            Alerts for your role and module access. Open an item to jump to the related screen.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

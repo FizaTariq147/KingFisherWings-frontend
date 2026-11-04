@@ -16,7 +16,10 @@ import { userPermissionMatrixService } from '../services/userPermissionMatrix.se
 import type { CreateUserDto } from '../types/user.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { toAccessGrants } from '../utils/permissionAccess';
-import { visibleJobTypesFromMatrixGrants } from '../utils/visibleJobTypesFromMatrixGrants';
+import {
+  visibleJobTypesFromMatrixGrants,
+  writableJobTypesFromMatrixGrants,
+} from '../utils/visibleJobTypesFromMatrixGrants';
 
 function CopyValue({ value, label }: { value: string; label: string }) {
   const [copied, setCopied] = useState(false);
@@ -218,6 +221,15 @@ export default function UserCreatePage() {
                 Boolean(meta?.matrixTouched) || hasExplicitAccess;
               const matrixGrants = meta?.permissionGrants ?? [];
               const visibleJobTypes = visibleJobTypesFromMatrixGrants(matrixGrants);
+              const writableJobTypes = writableJobTypesFromMatrixGrants(matrixGrants);
+              const scopePayload = {
+                ...(visibleJobTypes !== undefined
+                  ? { visible_job_types: visibleJobTypes }
+                  : {}),
+                ...(writableJobTypes !== undefined
+                  ? { writable_job_types: writableJobTypes }
+                  : {}),
+              };
 
               const sendEmail = (values as CreateUserDto).send_email !== false;
               const dto: CreateUserDto = {
@@ -229,9 +241,7 @@ export default function UserCreatePage() {
                   ? {
                       permission_grants: accessGrants,
                       permission_grants_mode: 'replace' as const,
-                      ...(visibleJobTypes !== undefined
-                        ? { visible_job_types: visibleJobTypes }
-                        : {}),
+                      ...scopePayload,
                     }
                   : {}),
               };
@@ -245,9 +255,7 @@ export default function UserCreatePage() {
                 try {
                   await userPermissionMatrixService.updateUserPermissions(result.user.id, {
                     grants: matrixGrants,
-                    ...(visibleJobTypes !== undefined
-                      ? { visible_job_types: visibleJobTypes }
-                      : {}),
+                    ...scopePayload,
                   });
                 } catch (permErr) {
                   setApiError(

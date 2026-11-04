@@ -126,7 +126,8 @@ export function QuotationForm({
   isSubmitting,
   onValuesChange,
 }: QuotationFormProps) {
-  const typeOptions = jobTypeOptions?.length ? jobTypeOptions : JOB_TYPES;
+  // Explicit prop (even []) means staff-scoped — never fall back to full enum.
+  const typeOptions = jobTypeOptions !== undefined ? jobTypeOptions : JOB_TYPES;
   const isWizard = layout === 'wizard' && mode === 'create';
   const [step, setStep] = useState(0);
   const [draftLines, setDraftLines] = useState<QuotationDraftChargeLine[]>([]);

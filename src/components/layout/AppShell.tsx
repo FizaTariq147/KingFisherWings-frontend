@@ -12,7 +12,9 @@ import { AppMotionStyles, AppPageTransition } from '@/components/motion';
 import { NotificationToastWatcher } from '@/components/toast';
 import { AppNavigateBridge } from '@/components/routing/AppNavigateBridge';
 import { useNotificationUnreadCount } from '@/features/notifications/hooks/useNotifications';
+import { useNotificationViewer } from '@/features/notifications/hooks/useNotificationViewer';
 import { notificationsService } from '@/features/notifications/services/notifications.service';
+import { filterNotificationsForViewer } from '@/features/notifications/utils/notificationAudience';
 import { notificationHref } from '@/features/notifications/utils/notificationLink';
 
 export function AppShell({ title }: { title: string }) {
@@ -22,6 +24,7 @@ export function AppShell({ title }: { title: string }) {
   const mobileSidebarOpen = useUIStore((s) => s.mobileSidebarOpen);
   const closeMobileSidebar = useUIStore((s) => s.closeMobileSidebar);
   const location = useLocation();
+  const notificationViewer = useNotificationViewer();
   const isSuperAdminArea =
     location.pathname.startsWith('/superadmin') && !location.pathname.includes('/login');
   // ERP staff notifications — never poll on Super Admin (no ERP token after clearSession).
@@ -29,17 +32,24 @@ export function AppShell({ title }: { title: string }) {
 
   const fetchLatestNotification = useCallback(async () => {
     const list = await notificationsService.list(
-      { page: 1, limit: 1, unread_only: true },
+      {
+        page: 1,
+        limit: 20,
+        unread_only: true,
+        for_user_id: notificationViewer.userId || undefined,
+        role: notificationViewer.roleSlug || undefined,
+        audience: notificationViewer.isTenantManager ? 'tenant_manager' : 'staff',
+      },
       { skipErrorToast: true },
     );
-    const item = list.items[0];
+    const item = filterNotificationsForViewer(list.items, notificationViewer)[0];
     if (!item) return null;
     return {
-      title: item.title || 'Admin notification',
+      title: item.title || 'Notification',
       message: item.body || item.title || undefined,
       href: notificationHref(item) || item.linkPath || undefined,
     };
-  }, []);
+  }, [notificationViewer]);
 
   const footerUserLabel = isSuperAdminArea
     ? isSuperAdminAuthenticated
@@ -71,8 +81,8 @@ export function AppShell({ title }: { title: string }) {
       {!isSuperAdminArea ? (
         <NotificationToastWatcher
           unreadCount={unread.isFetched ? (unread.data ?? 0) : undefined}
-          title="Admin notification"
-          storageKey="admin"
+          title="Notification"
+          storageKey={notificationViewer.isTenantManager ? 'tenant-manager' : 'staff'}
           fetchLatest={fetchLatestNotification}
         />
       ) : null}

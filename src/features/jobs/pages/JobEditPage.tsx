@@ -41,10 +41,12 @@ export default function JobEditPage() {
     const filtered = filterJobTypesByStaffAccess({
       permissions: user?.permissions ?? [],
       visibleJobTypes: user?.visibleJobTypes,
+      writableJobTypes: user?.writableJobTypes,
       unrestrictedOps: user?.unrestrictedOps,
       isTenantAdmin,
       isModuleEnabled: hasEnabledModule,
       candidates: JOB_TYPE_WIZARD_OPTIONS,
+      mode: 'create',
     });
     const current = job?.job_type as JobType | undefined;
     if (current && !filtered.includes(current)) {
@@ -54,6 +56,7 @@ export default function JobEditPage() {
   }, [
     user?.permissions,
     user?.visibleJobTypes,
+    user?.writableJobTypes,
     user?.unrestrictedOps,
     isTenantAdmin,
     hasEnabledModule,

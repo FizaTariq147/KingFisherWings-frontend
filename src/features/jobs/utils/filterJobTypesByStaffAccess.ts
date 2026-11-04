@@ -3,9 +3,11 @@ import {
   hasAnyOpsMatrixGrant,
   hasMatrixModuleAccess,
   hasMatrixSubmoduleAccess,
+  type MatrixAccessLevel,
 } from '@/features/users/utils/matrixPermissionAccess';
 import { DEPARTMENT_NAV, type DepartmentNavKey } from '../config/departmentNav';
 import { JOB_TYPE_WIZARD_OPTIONS, type JobType } from '../constants/job.constants';
+import { canonicalizeJobType } from './canonicalizeJobType';
 import {
   deptAllowedByVisibleJobTypes,
   effectiveVisibleJobTypes,
@@ -107,21 +109,25 @@ function staffCanAccessDept(
   rule: DeptAccessRule,
   opts: {
     permissions: readonly string[];
-    visibleJobTypes?: string[] | null;
+    /** Scope tokens: visible for list/nav, writable for create. */
+    scopeJobTypes?: string[] | null;
     unrestrictedOps?: boolean;
     isModuleEnabled?: (moduleKey: string) => boolean;
+    /** Create wizards require write; list/sidebar use see. */
+    matrixLevel?: MatrixAccessLevel;
   },
 ): boolean {
   if (!deptModuleEnabled(rule.deptKey, opts.isModuleEnabled)) return false;
 
   const perms = opts.permissions;
-  const effectiveVisible = effectiveVisibleJobTypes(opts.visibleJobTypes, perms);
+  const level: MatrixAccessLevel = opts.matrixLevel ?? 'see';
+  const effectiveScope = effectiveVisibleJobTypes(opts.scopeJobTypes, perms);
 
   // NVOCC uses module-level matrix (Sidebar: hasMatrixModule('nvocc') / menu_nvocc).
   if (rule.deptKey === 'nvocc') {
     return (
-      hasMatrixModuleAccess(perms, 'nvocc', 'see') ||
-      hasMatrixSubmoduleAccess(perms, 'nvocc', 'module', 'see') ||
+      hasMatrixModuleAccess(perms, 'nvocc', level) ||
+      hasMatrixSubmoduleAccess(perms, 'nvocc', 'module', level) ||
       hasPermission(perms, 'menu_nvocc')
     );
   }
@@ -130,16 +136,16 @@ function staffCanAccessDept(
     perms,
     rule.matrixModule,
     rule.matrixSubmodule,
-    'see',
+    level,
   );
   if (matrixOk) {
     if (opts.unrestrictedOps) return true;
-    return deptAllowedByVisibleJobTypes(rule.deptKey, effectiveVisible);
+    return deptAllowedByVisibleJobTypes(rule.deptKey, effectiveScope);
   }
 
   // Legacy staff (no ops matrix keys) — coarse menu_* only (same as Sidebar).
   if (!hasAnyOpsMatrixGrant(perms)) {
-    if (!opts.unrestrictedOps && !deptAllowedByVisibleJobTypes(rule.deptKey, effectiveVisible)) {
+    if (!opts.unrestrictedOps && !deptAllowedByVisibleJobTypes(rule.deptKey, effectiveScope)) {
       return false;
     }
     if (rule.permissionAny?.length) {
@@ -167,6 +173,13 @@ function collectTypesForRule(
 export type FilterJobTypesByStaffAccessOpts = {
   permissions?: readonly string[] | null;
   visibleJobTypes?: string[] | null;
+  /** Create wizards: prefer /auth/me.writable_job_types when present. */
+  writableJobTypes?: string[] | null;
+  /**
+   * `list` — sidebar / list filters (see + visible).
+   * `create` — create pickers (write + writable, falls back to visible).
+   */
+  mode?: 'list' | 'create';
   /**
    * When true, skip visible_job_types department scoping only.
    * Does NOT grant every job type — matrix / menu permissions still apply (same as Sidebar).
@@ -179,10 +192,22 @@ export type FilterJobTypesByStaffAccessOpts = {
   candidates?: readonly JobType[];
 };
 
+function intersectWithWritableAllowList(
+  types: JobType[],
+  writableJobTypes: string[] | null | undefined,
+): JobType[] {
+  if (writableJobTypes === null || writableJobTypes === undefined) return types;
+  if (!writableJobTypes.length) return [];
+  const allow = new Set(
+    writableJobTypes.map((t) => canonicalizeJobType(t)).filter(Boolean),
+  );
+  return types.filter((t) => allow.has(t));
+}
+
 /**
- * Filter create-job type radios to departments the staff can see in the sidebar.
+ * Filter job-type radios by department grants.
+ * Create mode uses write + writable_job_types; list/sidebar uses see + visible.
  * Example: only `operations_air_export` + `operations_air_import` → AIR_EXPORT + AIR_IMPORT.
- * NVOCC appears only when the NVOCC nav item would (matrix / menu_nvocc + enabled module).
  */
 export function filterJobTypesByStaffAccess(
   opts: FilterJobTypesByStaffAccessOpts = {},
@@ -192,6 +217,14 @@ export function filterJobTypesByStaffAccess(
     : [...JOB_TYPE_WIZARD_OPTIONS];
   const candidateSet = new Set(candidates);
   const allowed = new Set<JobType>();
+  const isCreate = opts.mode === 'create';
+  const matrixLevel: MatrixAccessLevel = isCreate ? 'write' : 'see';
+  // Create: prefer writable scope from /auth/me; fall back to visible when omitted.
+  const scopeJobTypes = isCreate
+    ? opts.writableJobTypes !== undefined
+      ? opts.writableJobTypes
+      : opts.visibleJobTypes
+    : opts.visibleJobTypes;
 
   // Tenant admins: all enabled departments (Sidebar shows every enabled dept).
   if (opts.isTenantAdmin) {
@@ -205,7 +238,10 @@ export function filterJobTypesByStaffAccess(
         if (candidateSet.has(t)) allowed.add(t);
       }
     }
-    return candidates.filter((t) => allowed.has(t));
+    const adminTypes = candidates.filter((t) => allowed.has(t));
+    return isCreate
+      ? intersectWithWritableAllowList(adminTypes, opts.writableJobTypes)
+      : adminTypes;
   }
 
   // Staff: never unlock all types via unrestrictedOps — match Sidebar permission checks.
@@ -214,9 +250,10 @@ export function filterJobTypesByStaffAccess(
     if (
       !staffCanAccessDept(rule, {
         permissions: perms,
-        visibleJobTypes: opts.visibleJobTypes,
+        scopeJobTypes,
         unrestrictedOps: opts.unrestrictedOps,
         isModuleEnabled: opts.isModuleEnabled,
+        matrixLevel,
       })
     ) {
       continue;
@@ -233,7 +270,10 @@ export function filterJobTypesByStaffAccess(
     if (allowed.has(t)) allowed.delete(t);
   }
 
-  return candidates.filter((t) => allowed.has(t));
+  const filtered = candidates.filter((t) => allowed.has(t));
+  return isCreate
+    ? intersectWithWritableAllowList(filtered, opts.writableJobTypes)
+    : filtered;
 }
 
 /** Pick a safe default create type from the filtered list. */

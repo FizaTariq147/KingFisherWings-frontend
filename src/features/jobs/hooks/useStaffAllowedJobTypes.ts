@@ -8,11 +8,15 @@ import {
 import { JOB_TYPE_WIZARD_OPTIONS, type JobType } from '../constants/job.constants';
 import { filterJobTypesByStaffAccess } from '../utils/filterJobTypesByStaffAccess';
 
+export type StaffJobTypeAccessMode = 'list' | 'create';
+
 /**
- * Job types the current user may see/create — same matrix + enabled-module rules as the sidebar.
+ * Job types the current user may see (list) or create — matrix + /auth/me scopes.
+ * Create mode prefers `writable_job_types` and requires write-level matrix grants.
  */
 export function useStaffAllowedJobTypes(
   candidates: readonly JobType[] = JOB_TYPE_WIZARD_OPTIONS,
+  mode: StaffJobTypeAccessMode = 'list',
 ): JobType[] {
   const { user, hasRole, hasEnabledModule } = useAuth();
   const roleSlug = resolveAuthRoleSlug(user?.role);
@@ -25,18 +29,22 @@ export function useStaffAllowedJobTypes(
       filterJobTypesByStaffAccess({
         permissions: user?.permissions ?? [],
         visibleJobTypes: user?.visibleJobTypes,
+        writableJobTypes: user?.writableJobTypes,
         unrestrictedOps: user?.unrestrictedOps,
         isTenantAdmin,
         isModuleEnabled: hasEnabledModule,
         candidates,
+        mode,
       }),
     [
       user?.permissions,
       user?.visibleJobTypes,
+      user?.writableJobTypes,
       user?.unrestrictedOps,
       isTenantAdmin,
       hasEnabledModule,
       candidates,
+      mode,
     ],
   );
 }

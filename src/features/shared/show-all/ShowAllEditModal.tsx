@@ -6,13 +6,52 @@ import { Modal } from '@/components/ui/Modal';
 import type { PatchShowAllDto } from '@/features/jobs/types/job.types';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { parseServerValidationError } from '@/lib/validation/mapApiErrors';
+import { asRecord } from '@/features/portal-shared/normalize';
 import {
   extractPatchShowAllDefaults,
   isPatchShowAllFieldEmpty,
   toPatchShowAllPayload,
 } from './extractPatchShowAllDefaults';
 
-type FieldKind = 'text' | 'number' | 'date';
+type FieldKind = 'text' | 'number' | 'date' | 'select';
+
+function extractContainerStatusMeta(sources: unknown[]): {
+  options: string[];
+  canEdit: boolean;
+} {
+  const options: string[] = [];
+  let canEdit = true;
+  for (const src of sources) {
+    const rec = asRecord(src);
+    if (!rec) continue;
+    if (typeof rec.can_edit_container_status === 'boolean') {
+      canEdit = rec.can_edit_container_status;
+    }
+    if (typeof rec.canEditContainerStatus === 'boolean') {
+      canEdit = rec.canEditContainerStatus;
+    }
+    const raw =
+      rec.container_status_options ??
+      rec.containerStatusOptions ??
+      rec.container_statuses;
+    if (Array.isArray(raw)) {
+      for (const row of raw) {
+        if (typeof row === 'string' && row.trim()) {
+          options.push(row.trim().toUpperCase());
+          continue;
+        }
+        const item = asRecord(row);
+        const code = String(
+          item?.value ?? item?.code ?? item?.status ?? item?.id ?? '',
+        )
+          .trim()
+          .toUpperCase();
+        if (code) options.push(code);
+      }
+    }
+  }
+  return { options: [...new Set(options)], canEdit };
+}
 
 const FIELD_DEFS: Array<{
   key: keyof PatchShowAllDto;
@@ -32,7 +71,7 @@ const FIELD_DEFS: Array<{
   { key: 'bl_number', label: 'BL number', kind: 'text', group: 'References' },
   { key: 'rotation_number', label: 'Rotation number', kind: 'text', group: 'Ops / EDI' },
   { key: 'container_number', label: 'Container number', kind: 'text', group: 'Ops / EDI' },
-  { key: 'container_status', label: 'Container status', kind: 'text', group: 'Ops / EDI' },
+  { key: 'container_status', label: 'Container status', kind: 'select', group: 'Ops / EDI' },
   { key: 'vessel_name', label: 'Vessel name', kind: 'text', group: 'Ops / EDI' },
   { key: 'vessel_number', label: 'Vessel number', kind: 'text', group: 'Ops / EDI' },
   { key: 'voyage_number', label: 'Voyage number', kind: 'text', group: 'Ops / EDI' },
@@ -86,6 +125,10 @@ export function ShowAllEditModal({
 }) {
   const defaults = useMemo(
     () => extractPatchShowAllDefaults(sources),
+    [sources],
+  );
+  const containerStatusMeta = useMemo(
+    () => extractContainerStatusMeta(sources),
     [sources],
   );
   const [draft, setDraft] = useState<PatchShowAllDto>({});
@@ -207,6 +250,10 @@ export function ShowAllEditModal({
                       ? ''
                       : String(value)
                     : strVal(value);
+                const isContainerStatus = field.key === 'container_status';
+                const statusOptions = containerStatusMeta.options;
+                const statusLocked =
+                  isContainerStatus && containerStatusMeta.canEdit === false;
                 return (
                   <div
                     key={field.key}
@@ -216,17 +263,52 @@ export function ShowAllEditModal({
                         : undefined
                     }
                   >
-                    <Input
-                      label={
-                        incomplete ? `${field.label} (incomplete)` : field.label
-                      }
-                      type={field.kind === 'number' ? 'number' : field.kind}
-                      value={display}
-                      error={fieldErrors[field.key]}
-                      onChange={(e) =>
-                        setField(field.key, e.target.value, field.kind)
-                      }
-                    />
+                    {field.kind === 'select' ||
+                    (isContainerStatus && statusOptions.length > 0) ? (
+                      <label className="block space-y-1 text-xs font-medium text-[var(--color-neutral-500)]">
+                        <span>
+                          {incomplete ? `${field.label} (incomplete)` : field.label}
+                        </span>
+                        <select
+                          className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm text-[var(--color-neutral-800)] focus:outline-none focus:border-[var(--color-primary-500)] disabled:opacity-60"
+                          value={display}
+                          disabled={pending || statusLocked}
+                          onChange={(e) =>
+                            setField(field.key, e.target.value, 'text')
+                          }
+                        >
+                          <option value="">—</option>
+                          {(statusOptions.length
+                            ? statusOptions
+                            : display
+                              ? [display]
+                              : []
+                          ).map((opt) => (
+                            <option key={opt} value={opt}>
+                              {opt.replaceAll('_', ' ')}
+                            </option>
+                          ))}
+                        </select>
+                        {fieldErrors[field.key] ? (
+                          <span className="text-[var(--color-danger-600)]">
+                            {fieldErrors[field.key]}
+                          </span>
+                        ) : null}
+                      </label>
+                    ) : (
+                      <Input
+                        label={
+                          incomplete ? `${field.label} (incomplete)` : field.label
+                        }
+                        type={field.kind === 'number' ? 'number' : field.kind === 'date' ? 'date' : 'text'}
+                        value={display}
+                        error={fieldErrors[field.key]}
+                        disabled={pending || statusLocked}
+                        onChange={(e) =>
+                          setField(field.key, e.target.value, field.kind === 'select' ? 'text' : field.kind)
+                        }
+                      />
+                    )}
                   </div>
                 );
               })}

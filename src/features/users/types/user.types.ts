@@ -84,14 +84,16 @@ export type CreateUserDto = CreateUserFormValues & {
   permission_grants?: PermissionAccessGrant[];
   /** Default merge_with_preset — listed grants override role preset; unspecified follow preset. */
   permission_grants_mode?: 'merge_with_preset' | 'replace';
-  /** Synced from ops matrix so GET /jobs lists are not empty for staff. */
+  /** Derived from ops matrix; omitted on retry if BE whitelist rejects it. */
   visible_job_types?: string[] | null;
+  writable_job_types?: string[] | null;
 };
 
 export type UpdateUserDto = UpdateUserFormValues & {
   permission_grants?: PermissionAccessGrant[];
   permission_grants_mode?: 'merge_with_preset' | 'replace';
   visible_job_types?: string[] | null;
+  writable_job_types?: string[] | null;
 };
 
 export interface UpdateUserStatusDto {

@@ -232,7 +232,7 @@ export function ShipmentForm({
   onCancel,
   isSubmitting,
 }: ShipmentFormProps) {
-  const typeOptions = jobTypeOptions?.length ? jobTypeOptions : undefined;
+  const typeOptions = jobTypeOptions !== undefined ? jobTypeOptions : undefined;
   const [step, setStep] = useState(0);
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<keyof ShipmentFormValues, string>>>(
     {},
