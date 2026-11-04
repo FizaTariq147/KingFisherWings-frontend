@@ -242,6 +242,28 @@ export function isTenantUserManagerRole(roleSlug?: string | null): boolean {
   );
 }
 
+/** Branch manager — same ops unrestricted access as tenant admin (lists/detail/dashboard). */
+export function isBranchManagerRole(roleSlug?: string | null): boolean {
+  if (!roleSlug) return false;
+  const normalized = roleSlug
+    .toLowerCase()
+    .trim()
+    .replace(/[\s-]+/g, '_');
+  return (
+    normalized === 'branch_manager' ||
+    normalized === 'branchmanager' ||
+    roleSlug === 'BRANCH_MANAGER'
+  );
+}
+
+/**
+ * Tenant admin + branch manager (and /auth/me.unrestricted_ops) are not limited
+ * by the operations matrix — all job types in lists, detail, and dashboard.
+ */
+export function isOpsUnrestrictedRole(roleSlug?: string | null): boolean {
+  return isTenantUserManagerRole(roleSlug) || isBranchManagerRole(roleSlug);
+}
+
 /** Normalize role from login store (string) or AuthContext (`{ slug }`). */
 export function resolveAuthRoleSlug(role: unknown): string {
   if (!role) return '';

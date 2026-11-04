@@ -7,10 +7,6 @@ import { useArAging } from '@/features/arApAging/hooks/useArApAging';
 import { useCrmFollowUps, usePatchCrmFollowUp } from '@/features/crm/hooks/useCrmFollowUps';
 import { useNotifications } from '@/features/notifications/hooks/useNotifications';
 import { computeAgingTotals, resolveAgingBucketValues } from '@/features/arApAging/utils/normalizeArApAging';
-import {
-  isTenantUserManagerRole,
-  resolveAuthRoleSlug,
-} from '@/features/users/constants/userPermissions';
 import { DashboardHeader, DashboardAlertPills } from '../components/DashboardHeader';
 import { DashboardKpiRow } from '../components/DashboardKpiRow';
 import { ActiveShipmentsPanel } from '../components/ActiveShipmentsPanel';
@@ -25,19 +21,12 @@ import {
   useDashboardJobCounts,
   useDashboardPendingQuoteStats,
 } from '../hooks/useDashboardJobCounts';
-import { isActiveJob, isoDate } from '../utils/dashboardFormat';
+import { isoDate } from '../utils/dashboardFormat';
 
 export function DashboardPage() {
   const { user } = useAuth();
   const { period, setPeriod, range } = useDashboardPeriod();
   const today = isoDate(new Date());
-
-  /** Staff ops portal — Active shipments shows only this user's jobs. */
-  const isStaffOpsPortal = useMemo(() => {
-    if (user?.unrestrictedOps) return false;
-    if (isTenantUserManagerRole(resolveAuthRoleSlug(user?.role))) return false;
-    return true;
-  }, [user?.unrestrictedOps, user?.role]);
 
   const revenueRange = useMemo(() => {
     const end = new Date();
@@ -52,43 +41,34 @@ export function DashboardPage() {
     return { from: isoDate(start), to: isoDate(end) };
   }, []);
 
-  // Admin: tenant-wide list (no hydrate). Staff: matrix scope + own-job filter below.
+  // Admin/branch manager: all types. Staff: visible_job_types only (all creators).
   const jobScope = useVisibleJobListScope();
-  const jobsListParams = useMemo(() => {
-    if (!isStaffOpsPortal) {
-      return {
-        page: 1,
-        limit: 50,
-        order: 'desc' as const,
-        skip_client_hydrate: true as const,
-      };
-    }
-    return {
+  const jobsListParams = useMemo(
+    () => ({
       page: 1,
       limit: 50,
       order: 'desc' as const,
+      skip_client_hydrate: true as const,
       ...jobScope.listScopeParams,
-      // Allow recent-create hydrate so staff still see jobs they just created.
-      skip_client_hydrate: false as const,
-    };
-  }, [isStaffOpsPortal, jobScope.listScopeParams]);
-  const jobsQuery = useJobs(jobsListParams, {
-    enabled: !isStaffOpsPortal || jobScope.kind !== 'locked',
-  });
-
-  const shipmentJobs = useMemo(() => {
-    const jobs = jobsQuery.data?.jobs ?? [];
-    if (!isStaffOpsPortal || !user?.id) return jobs;
-    return jobs.filter(
-      (j) => j.ops_user_id === user.id || j.salesperson_id === user.id,
-    );
-  }, [jobsQuery.data?.jobs, isStaffOpsPortal, user?.id]);
-
-  const staffActiveShipmentsTotal = useMemo(
-    () => shipmentJobs.filter((j) => isActiveJob(j.status)).length,
-    [shipmentJobs],
+    }),
+    [jobScope.listScopeParams],
   );
-  const jobCounts = useDashboardJobCounts(period);
+  const jobsQuery = useJobs(jobsListParams, {
+    enabled: jobScope.kind !== 'locked',
+  });
+  const shipmentJobs = jobsQuery.data?.jobs ?? [];
+
+  const jobCounts = useDashboardJobCounts(period, {
+    enabled: jobScope.kind !== 'locked',
+    scope:
+      jobScope.kind === 'scoped'
+        ? { kind: 'scoped', jobTypes: jobScope.jobTypes }
+        : jobScope.kind === 'locked'
+          ? { kind: 'locked' }
+          : { kind: 'unrestricted' },
+  });
+  const jobCountsData = jobScope.kind === 'locked' ? null : jobCounts.data;
+  const jobCountsLoading = jobScope.kind === 'locked' ? false : jobCounts.isLoading;
   const quoteStats = useDashboardPendingQuoteStats(period);
   const invoicesQuery = useInvoices({ page: 1, limit: 8 });
   const overdueQuery = useOverdueInvoices();
@@ -158,11 +138,11 @@ export function DashboardPage() {
   const receivables = agingTotals.total || 0;
   const agingBars = resolveAgingBucketValues(agingTotals);
 
-  const jobBars = jobCounts.data?.bars ?? [];
+  const jobBars = jobCountsData?.bars ?? [];
   const quoteBars = quoteStats.data?.bars ?? [];
 
-  // KPI + header use shared open-ops totals (same for admin and staff).
-  const activeJobsCount = jobCounts.data?.active ?? 0;
+  // Same scope as job sections (admin = all types, staff = allowed types).
+  const activeJobsCount = jobCountsData?.active ?? 0;
 
   const agingQuoteStats = useMemo(() => {
     const quotations = quoteStats.data?.quotations ?? [];
@@ -177,14 +157,14 @@ export function DashboardPage() {
     };
   }, [quoteStats.data]);
 
-  const deliveredJobs = jobCounts.data?.delivered ?? 0;
-  const completedJobs = jobCounts.data?.completed ?? 0;
+  const deliveredJobs = jobCountsData?.delivered ?? 0;
+  const completedJobs = jobCountsData?.completed ?? 0;
   const deliveredBars = useMemo(() => {
     const delivered = deliveredJobs;
     const completed = completedJobs;
-    const inProgress = jobCounts.data?.inProgress ?? 0;
+    const inProgress = jobCountsData?.inProgress ?? 0;
     return [delivered, completed, inProgress].filter((v) => v > 0);
-  }, [deliveredJobs, completedJobs, jobCounts.data?.inProgress]);
+  }, [deliveredJobs, completedJobs, jobCountsData?.inProgress]);
 
   const agingReport = agingQuery.data
     ? { ...agingQuery.data, totals: agingTotals }
@@ -204,22 +184,22 @@ export function DashboardPage() {
         <DashboardHeader
           userName={user?.name}
           pendingQuotes={quoteStats.data?.totalPending ?? 0}
-          customsHolds={jobCounts.data?.customsHold ?? 0}
+          customsHolds={jobCountsData?.customsHold ?? 0}
           period={period}
           onPeriodChange={setPeriod}
         />
 
         <DashboardAlertPills
-          counts={jobCounts.data}
+          counts={jobCountsData}
           invoicesOverdue={overdueQuery.data?.length ?? 0}
-          loading={jobCounts.isLoading}
+          loading={jobCountsLoading}
         />
 
         <DashboardKpiRow
           activeJobs={activeJobsCount}
-          inTransit={jobCounts.data?.inTransit ?? 0}
-          atOrigin={jobCounts.data?.atOrigin ?? 0}
-          newJobs={jobCounts.data?.newJobs ?? 0}
+          inTransit={jobCountsData?.inTransit ?? 0}
+          atOrigin={jobCountsData?.atOrigin ?? 0}
+          newJobs={jobCountsData?.newJobs ?? 0}
           jobBars={jobBars}
           pendingQuotes={quoteStats.data?.totalPending ?? 0}
           agingQuotes={agingQuoteStats.count}
@@ -235,10 +215,10 @@ export function DashboardPage() {
           deliveredJobs={deliveredJobs}
           completedJobs={completedJobs}
           deliveredBars={deliveredBars}
-          loadingJobs={jobCounts.isLoading}
+          loadingJobs={jobCountsLoading}
           loadingQuotes={quoteStats.isLoading}
           loadingReceivables={agingQuery.isLoading}
-          loadingDelivered={jobCounts.isLoading}
+          loadingDelivered={jobCountsLoading}
         />
 
         <ActiveShipmentsPanel
@@ -249,8 +229,8 @@ export function DashboardPage() {
           lastUpdated={jobsQuery.dataUpdatedAt}
           onRefresh={() => void jobsQuery.refetch()}
           userId={user?.id}
-          defaultView={isStaffOpsPortal ? 'mine' : 'all'}
-          activeTotal={isStaffOpsPortal ? staffActiveShipmentsTotal : activeJobsCount}
+          defaultView="all"
+          activeTotal={activeJobsCount}
         />
 
         <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-4">

@@ -81,7 +81,9 @@ import {
   buildCatalogHref,
   catalogFamiliesForJobType,
 } from '@/features/reports/utils/moduleCatalogFamily';
+import { useAuth } from '@/hooks/useAuth';
 import { isUuid } from '@/lib/isUuid';
+import { canDeleteJob } from '../utils/canDeleteJob';
 
 function statusTone(status: string): 'emerald' | 'amber' | 'rose' | 'slate' {
   if (status === 'COMPLETED' || status === 'DELIVERED') return 'emerald';
@@ -155,6 +157,7 @@ function OptionalFresaField({
 }
 
 export default function JobDetailPage() {
+  const { user } = useAuth();
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -531,10 +534,7 @@ export default function JobDetailPage() {
 
   const editable =
     job.actions?.can_edit === false ? false : jobEditable(job.status);
-  const canDelete =
-    job.actions?.can_delete === true ||
-    (job.actions?.can_delete !== false &&
-      (job.status === 'COMPLETED' || job.status === 'CANCELLED'));
+  const canDelete = canDeleteJob(job, user);
   const fclActions = job.actions;
   const canChangeStatus = fclActions?.can_change_status !== false;
   const canStop =

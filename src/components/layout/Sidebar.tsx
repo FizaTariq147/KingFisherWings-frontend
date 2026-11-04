@@ -39,6 +39,7 @@ import { AuthContext } from '@/context/AuthContext';
 import { cn } from '@/lib/utils';
 import { useAppAutoAnimate } from '@/components/motion';
 import {
+  isOpsUnrestrictedRole,
   isTenantUserManagerRole,
   resolveAuthRoleSlug,
   TENANT_USER_MANAGER_ROLE_SLUGS,
@@ -710,6 +711,11 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
   const isTenantAdmin =
     isTenantUserManagerRole(roleSlug) ||
     (authCtx ? TENANT_USER_MANAGER_ROLE_SLUGS.some((s) => authCtx.hasRole(s)) : false);
+  /** Tenant admin + branch manager — not limited by ops matrix (matches BE). */
+  const isOpsUnrestricted =
+    Boolean(authCtx?.user?.unrestrictedOps) ||
+    isOpsUnrestrictedRole(roleSlug) ||
+    isTenantAdmin;
 
   const visibleGroups = useMemo(() => {
     if (isSuperAdminArea) return [];
@@ -738,6 +744,13 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
         // Matrix grant unlocks the dept; visible_job_types further scopes when set
         // (empty [] with matrix grants derives tokens from those grants).
         if (item.matrixModule && item.matrixSubmodule) {
+          // Tenant admin / branch manager / unrestricted_ops: every ops department.
+          if (
+            isOpsUnrestricted &&
+            (item.matrixModule === 'operations' || item.matrixModule === 'nvocc')
+          ) {
+            return true;
+          }
           const perms = authCtx?.user?.permissions ?? [];
           const matrixOk = hasMatrixSubmoduleAccess(
             perms,
@@ -756,7 +769,7 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
           // Legacy staff (no ops matrix keys) — fall back to coarse menu_* only.
           if (!hasAnyOpsMatrixGrant(perms)) {
             if (
-              !authCtx?.user?.unrestrictedOps &&
+              !isOpsUnrestricted &&
               !deptAllowedByVisibleJobTypes(
                 item.deptKey,
                 effectiveVisibleJobTypes(authCtx?.user?.visibleJobTypes, perms),

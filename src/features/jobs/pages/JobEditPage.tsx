@@ -4,6 +4,7 @@ import { FormPageHeader } from '@/components/ui/FormPageHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
 import {
+  isOpsUnrestrictedRole,
   isTenantUserManagerRole,
   resolveAuthRoleSlug,
   TENANT_USER_MANAGER_ROLE_SLUGS,
@@ -36,14 +37,18 @@ export default function JobEditPage() {
   const isTenantAdmin =
     isTenantUserManagerRole(roleSlug) ||
     TENANT_USER_MANAGER_ROLE_SLUGS.some((s) => hasRole(s));
+  const opsUnrestricted =
+    Boolean(user?.unrestrictedOps) ||
+    isOpsUnrestrictedRole(roleSlug) ||
+    isTenantAdmin;
 
   const allowedJobTypes = useMemo(() => {
     const filtered = filterJobTypesByStaffAccess({
       permissions: user?.permissions ?? [],
       visibleJobTypes: user?.visibleJobTypes,
       writableJobTypes: user?.writableJobTypes,
-      unrestrictedOps: user?.unrestrictedOps,
-      isTenantAdmin,
+      unrestrictedOps: opsUnrestricted,
+      isTenantAdmin: isTenantAdmin || isOpsUnrestrictedRole(roleSlug),
       isModuleEnabled: hasEnabledModule,
       candidates: JOB_TYPE_WIZARD_OPTIONS,
       mode: 'create',
@@ -57,8 +62,9 @@ export default function JobEditPage() {
     user?.permissions,
     user?.visibleJobTypes,
     user?.writableJobTypes,
-    user?.unrestrictedOps,
+    opsUnrestricted,
     isTenantAdmin,
+    roleSlug,
     hasEnabledModule,
     job?.job_type,
   ]);

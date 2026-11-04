@@ -1,7 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
 import { jobService } from '@/features/jobs/services/job.service';
-import type { JobStatus } from '@/features/jobs/constants/job.constants';
+import type { JobStatus, JobType } from '@/features/jobs/constants/job.constants';
+import type { JobListParams } from '@/features/jobs/types/job.types';
 import { PENDING_QUOTATION_STATUSES } from '@/features/quotations/constants/quotation.constants';
 import { quotationService } from '@/features/quotations/services/quotation.service';
 import { uiPeriodToApi } from '@/lib/apiPeriod';
@@ -36,11 +37,34 @@ type JobCountsShape = {
   open: number;
 };
 
+const EMPTY_COUNTS: JobCountsShape = {
+  byStatus: Object.fromEntries(COUNT_STATUSES.map((s) => [s, 0])) as Record<JobStatus, number>,
+  bars: COUNT_STATUSES.map(() => 0),
+  active: 0,
+  inTransit: 0,
+  atOrigin: 0,
+  newJobs: 0,
+  customsHold: 0,
+  docsPending: 0,
+  onHold: 0,
+  delayed: 0,
+  delivered: 0,
+  cancelled: 0,
+  completed: 0,
+  inProgress: 0,
+  open: 0,
+};
+
 /**
  * Open-ops snapshot from GET /jobs (no period, no client hydrate).
- * Same path for admin and staff so KPI/header cards stay aligned.
+ * Admin: omit job_types. Staff: pass visible allowed types so totals match sections.
  */
-async function legacyJobCounts(): Promise<JobCountsShape> {
+async function legacyJobCounts(
+  scopeParams: Pick<JobListParams, 'job_types'> = {},
+): Promise<JobCountsShape> {
+  if (Array.isArray(scopeParams.job_types) && scopeParams.job_types.length === 0) {
+    return EMPTY_COUNTS;
+  }
   const pages = await Promise.all(
     COUNT_STATUSES.map((status) =>
       jobService.list({
@@ -48,6 +72,7 @@ async function legacyJobCounts(): Promise<JobCountsShape> {
         limit: 1,
         status,
         skip_client_hydrate: true,
+        ...scopeParams,
       }),
     ),
   );
@@ -89,33 +114,51 @@ async function legacyJobCounts(): Promise<JobCountsShape> {
   };
 }
 
+export type DashboardJobCountScope = {
+  kind: 'unrestricted' | 'locked' | 'scoped';
+  jobTypes?: JobType[];
+};
+
 /**
- * Prefer list open-ops totals over period-scoped dashboard-counts.
- * Admin and staff use the same unscoped list totals (no FE inflate).
+ * Dashboard job KPIs — same allow-list as job sections.
+ * Admin/unrestricted: all types. Staff: only visible_job_types (all creators).
  */
-export function useDashboardJobCounts(period: DashboardPeriod = 'month') {
+export function useDashboardJobCounts(
+  period: DashboardPeriod = 'month',
+  options?: { enabled?: boolean; scope?: DashboardJobCountScope },
+) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const apiPeriod = uiPeriodToApi(period);
+  const scope = options?.scope ?? { kind: 'unrestricted' as const };
+  const scopeParams: Pick<JobListParams, 'job_types'> =
+    scope.kind === 'locked'
+      ? { job_types: [] }
+      : scope.kind === 'scoped'
+        ? { job_types: scope.jobTypes }
+        : {};
+
   return useQuery({
-    queryKey: ['tenant', 'dashboard', 'job-counts', 'open-ops', apiPeriod],
+    queryKey: ['tenant', 'dashboard', 'job-counts', 'open-ops', apiPeriod, scope],
     queryFn: async () => {
-      // Primary: same GET /jobs meta.total path for every role (skip client hydrate).
-      const listCounts = await legacyJobCounts();
+      if (scope.kind === 'locked') return EMPTY_COUNTS;
+      const listCounts = await legacyJobCounts(scopeParams);
+      // Prefer list totals (match sections). Merge period extras when unrestricted.
+      if (scope.kind !== 'unrestricted') return listCounts;
       try {
-        // Keep period API for delayed/completed extras when it returns them, but
-        // never let a lower period/ops-scoped active overwrite the open-ops total.
         const apiCounts = await jobService.dashboardCounts(apiPeriod);
         return {
           ...listCounts,
           delayed: Math.max(listCounts.delayed, apiCounts.delayed ?? 0),
           cancelled: Math.max(listCounts.cancelled, apiCounts.cancelled ?? 0),
           completed: Math.max(listCounts.completed, apiCounts.completed ?? 0),
+          // Admin total includes every job type from the open-ops list path.
+          active: Math.max(listCounts.active, apiCounts.active ?? 0),
         };
       } catch {
         return listCounts;
       }
     },
-    enabled: Boolean(accessToken),
+    enabled: Boolean(accessToken) && options?.enabled !== false,
     staleTime: 60_000,
   });
 }
