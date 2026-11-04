@@ -339,6 +339,31 @@ export function useJobGpum(id: string, enabled = true) {
   });
 }
 
+function seedJobIntoListCaches(
+  queryClient: ReturnType<typeof useQueryClient>,
+  job: Job,
+) {
+  queryClient.setQueriesData<{ jobs?: Job[]; meta?: unknown }>(
+    { queryKey: jobKeys.all },
+    (prev) => {
+      if (!prev || !Array.isArray(prev.jobs)) return prev;
+      if (prev.jobs.some((j) => j.id === job.id)) return prev;
+      return {
+        ...prev,
+        jobs: [job, ...prev.jobs],
+        meta:
+          prev.meta && typeof prev.meta === 'object'
+            ? {
+                ...(prev.meta as Record<string, unknown>),
+                total:
+                  Number((prev.meta as { total?: number }).total ?? prev.jobs.length) + 1,
+              }
+            : prev.meta,
+      };
+    },
+  );
+}
+
 export function useCreateJob() {
   const queryClient = useQueryClient();
   const invalidate = useInvalidateJobs();
@@ -347,30 +372,18 @@ export function useCreateJob() {
     onSuccess: (job) => {
       if (job?.id) {
         queryClient.setQueryData(jobKeys.detail(job.id), job);
-        // Seed list caches so dashboard / department sections show the new job
-        // even when GET /jobs ACL still omits it (converted-customer gate).
-        queryClient.setQueriesData<{ jobs?: Job[]; meta?: unknown }>(
-          { queryKey: jobKeys.all },
-          (prev) => {
-            if (!prev || !Array.isArray(prev.jobs)) return prev;
-            if (prev.jobs.some((j) => j.id === job.id)) return prev;
-            return {
-              ...prev,
-              jobs: [job, ...prev.jobs],
-              meta:
-                prev.meta && typeof prev.meta === 'object'
-                  ? {
-                      ...(prev.meta as Record<string, unknown>),
-                      total:
-                        Number((prev.meta as { total?: number }).total ?? prev.jobs.length) + 1,
-                    }
-                  : prev.meta,
-            };
-          },
-        );
+        // Seed before invalidate; list() also merges session snapshot after refetch.
+        seedJobIntoListCaches(queryClient, job);
       }
       invalidate(job.id);
       void queryClient.invalidateQueries({ queryKey: ['tenant', 'dashboard'] });
+      // Refetch often returns [] under staff list ACL — re-seed after queries settle.
+      if (job?.id) {
+        void queryClient.refetchQueries({ queryKey: jobKeys.all }).then(() => {
+          seedJobIntoListCaches(queryClient, job);
+          queryClient.setQueryData(jobKeys.detail(job.id), (prev: Job | undefined) => prev ?? job);
+        });
+      }
     },
   });
 }

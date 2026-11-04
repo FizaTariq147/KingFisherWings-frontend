@@ -25,7 +25,7 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import type { Job } from '../types/job.types';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
-import { effectiveVisibleJobTypes } from '../utils/deptAccessFromStaffGrants';
+import { effectiveListJobTypes } from '../utils/deptAccessFromStaffGrants';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 import { normalizeVisibleJobTypeScope } from '../utils/visibleJobTypeScope';
@@ -62,11 +62,15 @@ export default function JobListPage() {
     setPage(1);
   }, [segment, applied]);
 
-  // Section list: only types in visible_job_types (empty matrix scope → empty section).
+  // Section list: visible ∪ writable (write implies see for own creates).
   const allowedSegmentTypes = useMemo((): JobType[] => {
     if (user?.unrestrictedOps) return [...segmentConfig.jobTypes];
     const scope = normalizeVisibleJobTypeScope(
-      effectiveVisibleJobTypes(user?.visibleJobTypes, user?.permissions ?? []),
+      effectiveListJobTypes(
+        user?.visibleJobTypes,
+        user?.writableJobTypes,
+        user?.permissions ?? [],
+      ),
     );
     if (scope.kind === 'unrestricted') return [...segmentConfig.jobTypes];
     if (scope.kind === 'locked') return [];
@@ -77,6 +81,7 @@ export default function JobListPage() {
     segmentConfig.jobTypes,
     user?.unrestrictedOps,
     user?.visibleJobTypes,
+    user?.writableJobTypes,
     user?.permissions,
   ]);
 

@@ -35,7 +35,11 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeCode128Value } from '../utils/scannableBarcode';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { jobDetailTabLabel, toApiDetailTabKey } from '../utils/jobDetailTabs';
-import { listRecentCreatedJobIds, rememberCreatedJob } from '../utils/recentCreatedJobs';
+import {
+  listRecentCreatedJobIds,
+  listRecentCreatedJobSnapshots,
+  rememberCreatedJob,
+} from '../utils/recentCreatedJobs';
 import { resolveJobDocumentFileUrl } from '../utils/resolveJobDocumentFileUrl';
 import { sanitizeModeBookingFormPut } from '../utils/sanitizeModeBookingFormPut';
 import { useAuthStore } from '@/store/authStore';
@@ -710,7 +714,8 @@ async function fetchJobsFilteredByTypes(
 
 /**
  * Interim hydrate when list ACL still hides jobs the staff just created.
- * Only merges types in the current list scope (visible_job_types / section types).
+ * Prefer session snapshots (create response) so list/dashboard work even when
+ * GET /jobs and GET /jobs/:id are gated for staff. Only merges types in scope.
  * Permanent fix: BE scopes findAll/getOne/dashboard by visible_job_types only
  * (converted-customer gate is for quotes, not jobs).
  */
@@ -723,14 +728,16 @@ async function mergeRecentCreatedJobs(
     return jobs;
   }
 
-  const recentIds = listRecentCreatedJobIds({
-    jobTypes: opts?.jobTypes?.map(String) ?? null,
-  });
-  if (!recentIds.length) return jobs;
-
+  const typeFilter = opts?.jobTypes?.map(String) ?? null;
   const byId = new Map(jobs.map((j) => [j.id, j]));
+
+  for (const snap of listRecentCreatedJobSnapshots({ jobTypes: typeFilter })) {
+    if (!byId.has(snap.id)) byId.set(snap.id, snap);
+  }
+
+  const recentIds = listRecentCreatedJobIds({ jobTypes: typeFilter });
   const missing = recentIds.filter((id) => !byId.has(id)).slice(0, 15);
-  if (!missing.length) return jobs;
+  if (!missing.length) return [...byId.values()];
 
   const allowed = opts?.jobTypes?.length
     ? new Set(opts.jobTypes.map((t) => canonicalizeJobType(String(t))))
@@ -746,7 +753,7 @@ async function mergeRecentCreatedJobs(
         }
         byId.set(job.id, job);
       } catch {
-        /* detail may also be gated — ignore */
+        /* detail may also be gated — snapshot above is enough */
       }
     }),
   );
