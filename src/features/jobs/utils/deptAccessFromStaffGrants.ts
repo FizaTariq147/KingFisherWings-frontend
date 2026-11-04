@@ -135,22 +135,23 @@ export function deriveVisibleTokensFromOpsPermissions(
 
 /**
  * Effective visible_job_types for UI gating (matches BE ops matrix contract).
- * - `null` → unrestricted (no ops matrix / legacy)
- * - `undefined` (omitted from /me) → derive from matrix grants when present, else unrestricted
- * - `[]` → intentionally locked (no ops jobs)
  * - non-empty → scoped to those types
+ * - `null` / `undefined` / `[]` → derive from ops matrix grants when present
+ * - no derived tokens + null/undefined → unrestricted (legacy menu_* staff only;
+ *   list/dashboard must still gate via isOpsUnrestrictedUser / filterJobTypesByStaffAccess)
+ * - no derived tokens + `[]` → locked
  */
 export function effectiveVisibleJobTypes(
   visibleJobTypes: string[] | null | undefined,
   permissions: readonly string[],
 ): string[] | null {
-  if (visibleJobTypes === null) return null;
-  if (visibleJobTypes === undefined) {
-    const derived = deriveVisibleTokensFromOpsPermissions(permissions);
-    return derived.length ? derived : null;
+  if (Array.isArray(visibleJobTypes) && visibleJobTypes.length > 0) {
+    return visibleJobTypes;
   }
-  if (visibleJobTypes.length === 0) return [];
-  return visibleJobTypes;
+  const derived = deriveVisibleTokensFromOpsPermissions(permissions);
+  if (derived.length) return derived;
+  if (visibleJobTypes === null || visibleJobTypes === undefined) return null;
+  return [];
 }
 
 /**
