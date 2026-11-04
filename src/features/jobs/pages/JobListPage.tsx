@@ -25,16 +25,15 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import type { Job } from '../types/job.types';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
-import { effectiveListJobTypes } from '../utils/deptAccessFromStaffGrants';
+import { filterJobTypesByStaffAccess } from '../utils/filterJobTypesByStaffAccess';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
-import { normalizeVisibleJobTypeScope } from '../utils/visibleJobTypeScope';
 
 export default function JobListPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
+  const { user, hasEnabledModule } = useAuth();
   const { pathname } = location;
   const segment = segmentFromPath(pathname) ?? 'air-export';
   const segmentConfig = JOB_SEGMENTS[segment as JobSegmentKey];
@@ -63,21 +62,28 @@ export default function JobListPage() {
     setPage(1);
   }, [segment, applied]);
 
-  // Admin/branch manager: all segment types. Staff: visible ∪ writable only.
+  // Admin/branch manager: all segment types. Staff: permission-scoped (never all types).
   const allowedSegmentTypes = useMemo((): JobType[] => {
     if (isOpsUnrestrictedUser(user)) return [...segmentConfig.jobTypes];
-    const scope = normalizeVisibleJobTypeScope(
-      effectiveListJobTypes(
-        user?.visibleJobTypes,
-        user?.writableJobTypes,
-        user?.permissions ?? [],
-      ),
+    const allowed = filterJobTypesByStaffAccess({
+      permissions: user?.permissions ?? [],
+      visibleJobTypes: user?.visibleJobTypes,
+      writableJobTypes: user?.writableJobTypes,
+      unrestrictedOps: false,
+      isTenantAdmin: false,
+      isModuleEnabled: hasEnabledModule,
+      candidates: segmentConfig.jobTypes,
+      mode: 'list',
+    });
+    // Write implies see within this department segment.
+    if (!user?.writableJobTypes?.length) return allowed;
+    const writable = new Set(
+      user.writableJobTypes.map((t) => canonicalizeJobType(t)),
     );
-    if (scope.kind === 'unrestricted') return [...segmentConfig.jobTypes];
-    if (scope.kind === 'locked') return [];
-    return segmentConfig.jobTypes.filter((t) =>
-      scope.types.includes(canonicalizeJobType(t)),
+    const extra = segmentConfig.jobTypes.filter(
+      (t) => writable.has(t) && !allowed.includes(t),
     );
+    return extra.length ? [...allowed, ...extra] : allowed;
   }, [
     segmentConfig.jobTypes,
     user,
@@ -86,6 +92,7 @@ export default function JobListPage() {
     user?.visibleJobTypes,
     user?.writableJobTypes,
     user?.permissions,
+    hasEnabledModule,
   ]);
 
   const sectionAllowed = allowedSegmentTypes.length > 0;

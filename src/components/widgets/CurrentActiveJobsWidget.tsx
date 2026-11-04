@@ -11,6 +11,7 @@ import {
 import { JobStatusBadge } from '@/features/jobs/components/JobStatusBadge';
 import type { JobStatus } from '@/features/jobs/constants/job.constants';
 import { useJobs } from '@/features/jobs/hooks/useJobs';
+import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
 import {
   jobDetailPath,
   jobDisplayNumber,
@@ -31,16 +32,20 @@ function formatEtd(value?: string): string {
 
 /**
  * Dashboard card: latest open jobs from GET /jobs.
- * Auth / tenant isolation via existing JWT + Axios (same pattern as PendingQuotationsWidget).
- * Menu permission keys are not required here — Sidebar also shows Jobs without those flags.
+ * Admin: all types. Staff: permission-scoped job_types only.
  */
 export function CurrentActiveJobsWidget() {
   const navigate = useNavigate();
-  const { data, isLoading, isError } = useJobs({
-    page: 1,
-    limit: FETCH_LIMIT,
-    order: 'desc',
-  });
+  const jobScope = useVisibleJobListScope();
+  const { data, isLoading, isError } = useJobs(
+    {
+      page: 1,
+      limit: FETCH_LIMIT,
+      order: 'desc',
+      ...jobScope.listScopeParams,
+    },
+    { enabled: jobScope.kind !== 'locked' },
+  );
 
   const activeJobs = (data?.jobs ?? [])
     .filter((job) => !CLOSED_STATUSES.includes(job.status))
