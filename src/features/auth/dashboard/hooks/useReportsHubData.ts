@@ -107,7 +107,7 @@ export function useReportsHubData() {
       operatorCount,
       customsHolds:
         (jobCountsQuery.data?.customsHold ?? 0) + (jobCountsQuery.data?.docsPending ?? 0),
-      jobCount: jobCountsQuery.data?.active ?? 0,
+      jobCount: jobCountsQuery.data?.jobCount ?? 0,
     };
   }, [
     agingQuery.data,

@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
 import { useInvoices, useOverdueInvoices } from '@/features/invoices/hooks/useInvoices';
 import { useArAging } from '@/features/arApAging/hooks/useArApAging';
 import { useCrmFollowUps, usePatchCrmFollowUp } from '@/features/crm/hooks/useCrmFollowUps';
@@ -41,32 +40,15 @@ export function DashboardPage() {
     return { from: isoDate(start), to: isoDate(end) };
   }, []);
 
-  // Admin: all types + all creators. Staff: allowed departments only (still all creators).
-  const jobScope = useVisibleJobListScope();
-  const countScope =
-    jobScope.kind === 'scoped'
-      ? ({ kind: 'scoped' as const, jobTypes: jobScope.jobTypes })
-      : jobScope.kind === 'locked'
-        ? ({ kind: 'locked' as const })
-        : ({ kind: 'unrestricted' as const });
-
-  // Same open-status list totals for Active jobs KPI + Active shipments grid.
-  const activeJobsQuery = useDashboardActiveJobs({
-    enabled: jobScope.kind !== 'locked',
-    scope: countScope,
-    rowLimit: 40,
-  });
+  // Open-bucket rows for Active shipments only (not the total-jobs KPI).
+  // Default calls omit job_type / created_by / department_id — BE scopes by JWT.
+  const activeJobsQuery = useDashboardActiveJobs({ rowLimit: 40 });
   const shipmentJobs = activeJobsQuery.data?.jobs ?? [];
 
-  const jobCounts = useDashboardJobCounts(period, {
-    enabled: jobScope.kind !== 'locked',
-    scope: countScope,
-  });
-  const jobCountsData = jobScope.kind === 'locked' ? null : jobCounts.data;
-  const jobCountsLoading =
-    jobScope.kind === 'locked'
-      ? false
-      : jobCounts.isLoading || activeJobsQuery.isLoading;
+  // job_count === GET /jobs meta.total for this user (includes delivered/completed).
+  const jobCounts = useDashboardJobCounts(period);
+  const jobCountsData = jobCounts.data;
+  const jobCountsLoading = jobCounts.isLoading || activeJobsQuery.isLoading;
   const quoteStats = useDashboardPendingQuoteStats(period);
   const invoicesQuery = useInvoices({ page: 1, limit: 8 });
   const overdueQuery = useOverdueInvoices();
@@ -139,9 +121,10 @@ export function DashboardPage() {
   const jobBars = jobCountsData?.bars ?? [];
   const quoteBars = quoteStats.data?.bars ?? [];
 
-  // Prefer exact open-status list total (same query family as the grid).
-  const activeJobsCount =
-    activeJobsQuery.data?.total ?? jobCountsData?.active ?? 0;
+  // Headline total jobs — bind to job_count, never open / created_in_period.
+  const totalJobsCount = jobCountsData?.jobCount ?? 0;
+  const openJobsCount =
+    jobCountsData?.open ?? activeJobsQuery.data?.openTotal ?? 0;
 
   const agingQuoteStats = useMemo(() => {
     const quotations = quoteStats.data?.quotations ?? [];
@@ -195,10 +178,11 @@ export function DashboardPage() {
         />
 
         <DashboardKpiRow
-          activeJobs={activeJobsCount}
+          activeJobs={totalJobsCount}
           inTransit={jobCountsData?.inTransit ?? 0}
           atOrigin={jobCountsData?.atOrigin ?? 0}
           newJobs={jobCountsData?.newJobs ?? 0}
+          openJobs={openJobsCount}
           jobBars={jobBars}
           pendingQuotes={quoteStats.data?.totalPending ?? 0}
           agingQuotes={agingQuoteStats.count}
@@ -232,7 +216,7 @@ export function DashboardPage() {
           }}
           userId={user?.id}
           defaultView="all"
-          activeTotal={activeJobsCount}
+          activeTotal={openJobsCount}
         />
 
         <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-4">

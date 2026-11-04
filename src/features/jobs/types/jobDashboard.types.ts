@@ -5,6 +5,13 @@ import type { JobStatus } from '../constants/job.constants';
 export interface JobDashboardCounts {
   byStatus: Partial<Record<JobStatus | string, number>>;
   bars: number[];
+  /**
+   * Headline total — same as GET /jobs meta.total for this user.
+   * Prefer `job_count` from GET /jobs/dashboard-counts (alias of `total`).
+   * Do not confuse with `open` (open-status bucket only).
+   */
+  jobCount: number;
+  /** @deprecated Prefer jobCount — kept as alias for older callers. */
   active: number;
   inTransit: number;
   atOrigin: number;
@@ -18,7 +25,13 @@ export interface JobDashboardCounts {
   cancelled: number;
   completed: number;
   inProgress: number;
+  /**
+   * Open-status bucket only (enquiry…on hold). Can be much smaller than jobCount.
+   * Never bind the “total jobs” card / badge to this.
+   */
   open: number;
+  createdInPeriod?: number;
+  byJobType?: Record<string, number>;
   raw?: Record<string, unknown>;
 }
 

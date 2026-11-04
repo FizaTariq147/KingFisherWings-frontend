@@ -22,7 +22,8 @@ function statusMap(raw: unknown): Partial<Record<string, number>> {
   return out;
 }
 
-const ACTIVE_STATUSES: JobStatus[] = [
+/** Matches BE `open` bucket (excludes delivered / completed / cancelled). */
+const OPEN_BUCKET_STATUSES: JobStatus[] = [
   'ENQUIRY',
   'QUOTATION',
   'BOOKING_CONFIRMED',
@@ -31,9 +32,19 @@ const ACTIVE_STATUSES: JobStatus[] = [
   'IN_PROGRESS',
   'DOCS_PENDING',
   'CUSTOMS_CLEARANCE',
-  'DELIVERED',
   'ON_HOLD',
 ];
+
+function jobTypeMap(raw: unknown): Record<string, number> | undefined {
+  const data = asRecord(raw);
+  if (!data) return undefined;
+  const out: Record<string, number> = {};
+  for (const [key, value] of Object.entries(data)) {
+    const n = typeof value === 'number' ? value : Number(value);
+    if (Number.isFinite(n)) out[key] = n;
+  }
+  return Object.keys(out).length ? out : undefined;
+}
 
 export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
   const data = unwrapPayload(raw);
@@ -47,7 +58,7 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
     return 0;
   };
 
-  const bars = ACTIVE_STATUSES.map((status) => byStatus[status] ?? 0);
+  const bars = OPEN_BUCKET_STATUSES.map((status) => byStatus[status] ?? 0);
   const inTransit = get('in_transit', 'inTransit', 'IN_PROGRESS') + (byStatus.CUSTOMS_CLEARANCE ?? 0);
   const atOrigin =
     (byStatus.BOOKING_CONFIRMED ?? 0) +
@@ -70,29 +81,32 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
   const inProgress =
     pickNumber(inner, ['in_progress', 'inProgress']) ?? byStatus.IN_PROGRESS ?? 0;
 
-  // BE `total` = all non-deleted visible jobs (includes completed). Active = open only.
-  const headlineTotal = pickNumber(inner, ['total', 'total_jobs', 'totalJobs']);
-  const activeFromStatuses = ACTIVE_STATUSES.reduce(
+  // BE contract: job_count === total === GET /jobs meta.total (same ACL).
+  const jobCount =
+    pickNumber(inner, ['job_count', 'jobCount', 'total', 'total_jobs', 'totalJobs']) ?? 0;
+
+  const openFromBucket = OPEN_BUCKET_STATUSES.reduce(
     (sum, s) => sum + (byStatus[s] ?? 0),
     0,
   );
-  const hasOpenStatusBreakdown = ACTIVE_STATUSES.some((s) => byStatus[s] != null);
-  const activeFromTotal =
-    headlineTotal != null
-      ? Math.max(0, headlineTotal - completed - cancelled)
-      : undefined;
-  const active = hasOpenStatusBreakdown
-    ? activeFromStatuses
-    : (pickNumber(inner, ['active', 'active_jobs', 'activeJobs', 'total_active']) ??
-      activeFromTotal ??
-      0);
   const open =
-    pickNumber(inner, ['open', 'open_count', 'openCount']) ?? active;
+    pickNumber(inner, ['open', 'open_count', 'openCount', 'open_bucket', 'openBucket']) ??
+    (OPEN_BUCKET_STATUSES.some((s) => byStatus[s] != null) ? openFromBucket : 0);
+
+  const createdInPeriod = pickNumber(inner, [
+    'created_in_period',
+    'createdInPeriod',
+    'created_in_period_count',
+  ]);
+
+  const byJobType = jobTypeMap(inner.by_job_type ?? inner.byJobType);
 
   return {
     byStatus,
     bars,
-    active,
+    jobCount: Math.max(0, jobCount),
+    // Legacy alias — do not use for “total jobs” UI (was often confused with open).
+    active: Math.max(0, open),
     inTransit: pickNumber(inner, ['in_transit', 'inTransit']) ?? inTransit,
     atOrigin: pickNumber(inner, ['at_origin', 'atOrigin']) ?? atOrigin,
     newJobs: pickNumber(inner, ['new_jobs', 'newJobs']) ?? newJobs,
@@ -106,7 +120,9 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
     cancelled,
     completed,
     inProgress,
-    open: Number.isFinite(open) ? Math.max(0, open) : active,
+    open: Math.max(0, open),
+    ...(createdInPeriod != null ? { createdInPeriod } : {}),
+    ...(byJobType ? { byJobType } : {}),
     raw: inner,
   };
 }

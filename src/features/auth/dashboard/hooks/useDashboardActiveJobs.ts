@@ -1,10 +1,8 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/store/authStore';
-import type { JobType } from '@/features/jobs/constants/job.constants';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { Job, JobListParams } from '@/features/jobs/types/job.types';
 import { OPEN_JOB_STATUSES } from '../utils/dashboardFormat';
-import type { DashboardJobCountScope } from './useDashboardJobCounts';
 
 function jobSortTime(job: Job): number {
   const raw = job.updated_at || job.created_at || '';
@@ -13,37 +11,31 @@ function jobSortTime(job: Job): number {
 }
 
 /**
- * Active (non-closed) jobs for dashboard KPI + Active shipments grid.
- * Same scope as sections: admin = all types; staff = allowed departments.
- * Jobs from any creator (admin or staff) count when the job_type is in scope.
- * Total = sum of list meta.totals per open status (exact), not a single page length.
+ * Open-bucket rows for the Active shipments grid.
+ * Trust BE JWT scoping — do not send created_by, department_id, or FE job_types.
+ * Optional section `job_type` / `branch_id` only when the screen is filtered the same way.
+ * Do not use `total` here for the “total jobs” KPI — bind that to dashboard job_count.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
-  scope?: DashboardJobCountScope;
+  jobType?: string;
+  branchId?: string;
   /** Max rows to keep for the grid after merge (newest first). */
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const scope = options?.scope ?? { kind: 'unrestricted' as const };
   const rowLimit = options?.rowLimit ?? 40;
-  const scopeParams: Pick<JobListParams, 'job_types'> =
-    scope.kind === 'locked'
-      ? { job_types: [] }
-      : scope.kind === 'scoped'
-        ? { job_types: scope.jobTypes as JobType[] | undefined }
-        : {};
+  const jobType = options?.jobType?.trim() || undefined;
+  const branchId = options?.branchId?.trim() || undefined;
+
+  const filterParams: Pick<JobListParams, 'job_type' | 'branch_id'> = {
+    ...(jobType ? { job_type: jobType as JobListParams['job_type'] } : {}),
+    ...(branchId ? { branch_id: branchId } : {}),
+  };
 
   return useQuery({
-    queryKey: ['tenant', 'dashboard', 'active-jobs', scope, rowLimit],
+    queryKey: ['tenant', 'dashboard', 'active-jobs', jobType, branchId, rowLimit],
     queryFn: async () => {
-      if (scope.kind === 'locked') {
-        return { jobs: [] as Job[], total: 0 };
-      }
-      if (Array.isArray(scopeParams.job_types) && scopeParams.job_types.length === 0) {
-        return { jobs: [] as Job[], total: 0 };
-      }
-
       const pages = await Promise.all(
         OPEN_JOB_STATUSES.map((status) =>
           jobService.list({
@@ -52,15 +44,15 @@ export function useDashboardActiveJobs(options?: {
             status,
             order: 'desc',
             skip_client_hydrate: true,
-            ...scopeParams,
+            ...filterParams,
           }),
         ),
       );
 
       const byId = new Map<string, Job>();
-      let total = 0;
+      let openTotal = 0;
       for (const page of pages) {
-        total += page.meta?.total ?? 0;
+        openTotal += page.meta?.total ?? 0;
         for (const job of page.jobs) {
           if (job?.id) byId.set(job.id, job);
         }
@@ -70,7 +62,8 @@ export function useDashboardActiveJobs(options?: {
 
       return {
         jobs: jobs.slice(0, rowLimit),
-        total,
+        /** Open-status bucket only — not job_count. */
+        openTotal,
       };
     },
     enabled: Boolean(accessToken) && options?.enabled !== false,

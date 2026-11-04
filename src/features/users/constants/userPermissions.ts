@@ -256,12 +256,26 @@ export function isBranchManagerRole(roleSlug?: string | null): boolean {
   );
 }
 
+/** Platform SUPER_ADMIN — same unrestricted job list/detail/count as tenant admin. */
+export function isSuperAdminRole(roleSlug?: string | null): boolean {
+  if (!roleSlug) return false;
+  const normalized = roleSlug
+    .toLowerCase()
+    .trim()
+    .replace(/[\s-]+/g, '_');
+  return normalized === 'super_admin' || normalized === 'superadmin' || roleSlug === 'SUPER_ADMIN';
+}
+
 /**
- * Tenant admin + branch manager (and /auth/me.unrestricted_ops) are not limited
- * by the operations matrix — all job types in lists, detail, and dashboard.
+ * Tenant admin + branch manager + super admin (and /auth/me.unrestricted_ops)
+ * are not limited by the operations matrix — all non-deleted jobs.
  */
 export function isOpsUnrestrictedRole(roleSlug?: string | null): boolean {
-  return isTenantUserManagerRole(roleSlug) || isBranchManagerRole(roleSlug);
+  return (
+    isTenantUserManagerRole(roleSlug) ||
+    isBranchManagerRole(roleSlug) ||
+    isSuperAdminRole(roleSlug)
+  );
 }
 
 /** Normalize role from login store (string) or AuthContext (`{ slug }`). */

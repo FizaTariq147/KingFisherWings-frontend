@@ -37,6 +37,7 @@ export function DashboardKpiRow({
   inTransit,
   atOrigin,
   newJobs,
+  openJobs,
   jobBars,
   pendingQuotes,
   agingQuotes,
@@ -53,10 +54,13 @@ export function DashboardKpiRow({
   loadingReceivables,
   loadingDelivered,
 }: {
+  /** data.job_count from GET /jobs/dashboard-counts (same as list meta.total). */
   activeJobs: number;
   inTransit: number;
   atOrigin: number;
   newJobs: number;
+  /** data.open — open-status bucket only; shown in caption, not the headline. */
+  openJobs?: number;
   jobBars: number[];
   pendingQuotes: number;
   agingQuotes: number;
@@ -75,15 +79,19 @@ export function DashboardKpiRow({
 }) {
   const overdueShare =
     receivables > 0 ? Math.round((overdue30 / receivables) * 100) : 0;
+  const openLabel =
+    typeof openJobs === 'number' && Number.isFinite(openJobs)
+      ? `${openJobs} open`
+      : `${inTransit} in transit, ${atOrigin} at origin`;
 
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <KpiCard
         to="/management/all-jobs-mis"
-        label="Active jobs"
+        label="Total jobs"
         value={loadingJobs ? null : String(activeJobs)}
-        unit="open"
-        caption={`${inTransit} in transit, ${atOrigin} at origin`}
+        unit="jobs"
+        caption={openLabel}
         badge={newJobs > 0 ? `+${newJobs}` : null}
         bars={jobBars}
         theme={KPI_THEMES.jobs}

@@ -11,7 +11,7 @@ import {
 import { JobStatusBadge } from '@/features/jobs/components/JobStatusBadge';
 import type { JobStatus } from '@/features/jobs/constants/job.constants';
 import { useJobs } from '@/features/jobs/hooks/useJobs';
-import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
+import { useDashboardJobCounts } from '@/features/auth/dashboard/hooks/useDashboardJobCounts';
 import {
   jobDetailPath,
   jobDisplayNumber,
@@ -20,7 +20,7 @@ import {
 const WIDGET_LIMIT = 8;
 const FETCH_LIMIT = 40;
 
-/** Statuses treated as closed — excluded from "active" jobs. */
+/** Statuses treated as closed — excluded from widget rows. */
 const CLOSED_STATUSES: JobStatus[] = ['COMPLETED', 'CANCELLED'];
 
 function formatEtd(value?: string): string {
@@ -31,74 +31,60 @@ function formatEtd(value?: string): string {
 }
 
 /**
- * Dashboard card: latest open jobs from GET /jobs.
- * Admin: all types. Staff: permission-scoped job_types only.
+ * Dashboard card: latest jobs from GET /jobs (BE scopes by JWT).
+ * Badge / title count uses dashboard job_count — not open / created_in_period.
  */
 export function CurrentActiveJobsWidget() {
   const navigate = useNavigate();
-  const jobScope = useVisibleJobListScope();
-  const { data, isLoading, isError } = useJobs(
-    {
-      page: 1,
-      limit: FETCH_LIMIT,
-      order: 'desc',
-      ...jobScope.listScopeParams,
-    },
-    { enabled: jobScope.kind !== 'locked' },
-  );
+  const jobCounts = useDashboardJobCounts('month');
+  const { data, isLoading, isError } = useJobs({
+    page: 1,
+    limit: FETCH_LIMIT,
+    order: 'desc',
+  });
 
   const activeJobs = (data?.jobs ?? [])
     .filter((job) => !CLOSED_STATUSES.includes(job.status))
     .slice(0, WIDGET_LIMIT);
 
+  const totalJobs =
+    jobCounts.data?.jobCount ?? data?.meta?.total ?? activeJobs.length;
+
   return (
     <DashboardCard
-      title="Current Active Jobs"
-      accent="secondary"
-      isLoading={isLoading}
+      title="Total jobs"
+      count={totalJobs}
+      isLoading={isLoading || jobCounts.isLoading}
       isEmpty={!isLoading && (isError || activeJobs.length === 0)}
-      emptyMessage={
-        isError ? 'Unable to load active jobs.' : 'No active jobs right now.'
-      }
+      emptyMessage={isError ? 'Could not load jobs.' : 'No jobs yet.'}
       onExpand={() => navigate('/management/all-jobs-mis')}
-      onAdd={() => navigate('/jobs/new')}
     >
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Job No.</TableHead>
-            <TableHead>Client</TableHead>
-            <TableHead>POL</TableHead>
-            <TableHead>POD</TableHead>
-            <TableHead>ETD</TableHead>
+            <TableHead>Job</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>ETD</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {activeJobs.map((job) => {
-            const client =
-              job.shipper_name?.trim() ||
-              job.consignee_name?.trim() ||
-              '—';
             const path = jobDetailPath(job);
             return (
               <TableRow key={job.id}>
-                <TableCell className="text-[var(--color-primary)]">
+                <TableCell>
                   <Link
                     to={path}
-                    className="hover:underline focus:outline-none focus:underline"
+                    className="font-medium text-[var(--color-primary-700)] hover:underline"
                   >
                     {jobDisplayNumber(job)}
                   </Link>
                 </TableCell>
-                <TableCell className="max-w-[220px] truncate">
-                  <div title={client}>{client}</div>
-                </TableCell>
-                <TableCell>{job.origin_port_code || '—'}</TableCell>
-                <TableCell>{job.dest_port_code || '—'}</TableCell>
-                <TableCell>{formatEtd(job.etd)}</TableCell>
                 <TableCell>
-                  <JobStatusBadge job={job} />
+                  <JobStatusBadge status={job.status} />
+                </TableCell>
+                <TableCell className="text-[var(--color-neutral-600)]">
+                  {formatEtd(job.etd)}
                 </TableCell>
               </TableRow>
             );
