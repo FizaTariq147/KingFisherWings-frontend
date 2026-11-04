@@ -910,15 +910,24 @@ export const jobService = {
           (t) => canonicalizeJobType(String(t)) !== 'ROAD_FREIGHT',
         );
 
+        // Never scope department lists by creator — admin/other-staff creates must
+        // appear for every viewer allowed that job_type (Air/Sea import/export, …).
+        const deptListBase = {
+          ...safeParams,
+          job_types: undefined as JobListParams['job_types'],
+          created_by: undefined,
+          salesperson_id: undefined,
+          department_id: undefined,
+        };
+
         const fetchTypedPages = async (): Promise<JobListResult[]> =>
           Promise.all(
             typedOnly.map(async (job_type) => {
               try {
                 return await fetchJobListPage(
                   {
-                    ...safeParams,
+                    ...deptListBase,
                     job_type,
-                    job_types: undefined,
                     page: 1,
                     limit: perTypeLimit,
                   },
@@ -937,9 +946,8 @@ export const jobService = {
             try {
               return await fetchJobListPage(
                 {
-                  ...safeParams,
+                  ...deptListBase,
                   job_type: typedOnly[0],
-                  job_types: undefined,
                 },
                 { skipErrorToast: true },
               );

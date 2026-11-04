@@ -119,6 +119,10 @@ export default function JobListPage() {
   }, [applied, page, allowedSegmentTypes]);
 
   const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams);
+  // Fresh list when opening a department so jobs created by admin/other staff appear.
+  useEffect(() => {
+    void refetch();
+  }, [segment, refetch]);
   const lifecycle = useJobLifecycleMutations();
   const prefix = jobRoutePrefix(segment as JobSegmentKey);
 
