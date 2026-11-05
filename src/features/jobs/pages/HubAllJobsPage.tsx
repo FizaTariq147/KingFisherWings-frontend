@@ -26,10 +26,10 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
-import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { normalizeJob } from '../utils/normalizeJob';
+import { resolveStaffListJobTypes } from '../utils/resolveStaffListJobTypes';
 import { jobDetailPath } from '../utils/jobRoute';
 import { useAuthStore } from '@/store/authStore';
 
@@ -93,19 +93,17 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     () => jobMisDraftFromSearch(location.search, DEFAULT_JOB_PAGE_SIZE),
   );
 
-  // Staff: pass granted types so list() runs admin-create search recovery.
+  // Staff: pass granted department types so list() runs admin-create recovery.
   // Admin / NVOCC variant: keep configured filter (undefined = JWT all for management).
   const scopeJobTypes = useMemo((): JobType[] | undefined => {
     if (config.filterJobTypes?.length) return config.filterJobTypes;
     if (isOpsUnrestrictedUser(user)) return undefined;
-    const types = new Set<JobType>();
-    for (const raw of [
-      ...(Array.isArray(user?.visibleJobTypes) ? user.visibleJobTypes : []),
-      ...(Array.isArray(user?.writableJobTypes) ? user.writableJobTypes : []),
-    ]) {
-      types.add(canonicalizeJobType(raw));
-    }
-    return types.size ? [...types] : [...JOB_TYPES];
+    return resolveStaffListJobTypes({
+      permissions: user?.permissions ?? [],
+      visibleJobTypes: user?.visibleJobTypes,
+      writableJobTypes: user?.writableJobTypes,
+      candidates: [...JOB_TYPES],
+    });
   }, [config.filterJobTypes, user]);
 
   // Keep filters in sync when dashboard pills change ?status= / ?category=
