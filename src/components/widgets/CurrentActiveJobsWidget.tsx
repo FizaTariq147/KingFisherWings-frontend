@@ -1,4 +1,6 @@
+import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useQuery } from '@tanstack/react-query';
 import { DashboardCard } from '@/components/dashboard/DashboardCard';
 import {
   Table,
@@ -9,13 +11,18 @@ import {
   TableRow,
 } from '@/components/ui/Table';
 import { JobStatusBadge } from '@/features/jobs/components/JobStatusBadge';
-import type { JobStatus } from '@/features/jobs/constants/job.constants';
-import { useJobs } from '@/features/jobs/hooks/useJobs';
+import type { JobStatus, JobType } from '@/features/jobs/constants/job.constants';
+import { JOB_TYPES } from '@/features/jobs/constants/job.constants';
 import { useDashboardJobCounts } from '@/features/auth/dashboard/hooks/useDashboardJobCounts';
+import { useAuth } from '@/hooks/useAuth';
+import { jobService } from '@/features/jobs/services/job.service';
+import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
+import { resolveStaffListJobTypes } from '@/features/jobs/utils/resolveStaffListJobTypes';
 import {
   jobDetailPath,
   jobDisplayNumber,
 } from '@/features/jobs/utils/jobRoute';
+import { useAuthStore } from '@/store/authStore';
 
 const WIDGET_LIMIT = 8;
 const FETCH_LIMIT = 40;
@@ -31,17 +38,35 @@ function formatEtd(value?: string): string {
 }
 
 /**
- * Dashboard card: latest jobs from plain GET /jobs (BE scopes by DB-resolved types).
- * Do not send job_types — typed fan-out empties staff grids when a type is
- * missing from the token while dashboard job_count still shows totals.
+ * Dashboard card: latest jobs via listVisibleJobs (plain + granted-type recovery).
+ * Badge count still uses dashboard job_count so it stays aligned with KPI.
  */
 export function CurrentActiveJobsWidget() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const accessToken = useAuthStore((s) => s.accessToken);
   const jobCounts = useDashboardJobCounts('month');
-  const { data, isLoading, isError } = useJobs({
-    page: 1,
-    limit: FETCH_LIMIT,
-    order: 'desc',
+
+  const scopeTypes = useMemo((): JobType[] | null => {
+    if (isOpsUnrestrictedUser(user)) return null;
+    const types = resolveStaffListJobTypes({
+      permissions: user?.permissions ?? [],
+      visibleJobTypes: user?.visibleJobTypes,
+      writableJobTypes: user?.writableJobTypes,
+      candidates: [...JOB_TYPES],
+    });
+    return types.length ? types : [...JOB_TYPES];
+  }, [user]);
+
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ['tenant', 'widgets', 'active-jobs-visible', scopeTypes],
+    queryFn: () =>
+      jobService.listVisibleJobs(
+        { page: 1, limit: FETCH_LIMIT, order: 'desc' },
+        { scopeTypes },
+      ),
+    enabled: Boolean(accessToken),
+    staleTime: 15_000,
   });
 
   const activeJobs = (data?.jobs ?? [])
@@ -53,8 +78,7 @@ export function CurrentActiveJobsWidget() {
 
   return (
     <DashboardCard
-      title="Total jobs"
-      count={totalJobs}
+      title={`Total jobs (${totalJobs})`}
       isLoading={isLoading || jobCounts.isLoading}
       isEmpty={!isLoading && (isError || activeJobs.length === 0)}
       emptyMessage={isError ? 'Could not load jobs.' : 'No jobs yet.'}
@@ -82,7 +106,7 @@ export function CurrentActiveJobsWidget() {
                   </Link>
                 </TableCell>
                 <TableCell>
-                  <JobStatusBadge status={job.status} />
+                  <JobStatusBadge job={job} />
                 </TableCell>
                 <TableCell className="text-[var(--color-neutral-600)]">
                   {formatEtd(job.etd)}

@@ -102,18 +102,25 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     return null;
   }, [config.filterJobTypes]);
 
-  // Dropdown options: NVOCC fixed set, else staff resolved types, else all.
-  const jobTypeOptions = useMemo((): JobType[] => {
+  // Staff recovery scope for listVisibleJobs (null = admin unrestricted).
+  const scopeTypes = useMemo((): JobType[] | null => {
     if (config.filterJobTypes?.length) return config.filterJobTypes;
-    if (isOpsUnrestrictedUser(user)) return config.jobTypes;
+    if (isOpsUnrestrictedUser(user)) return null;
     const scoped = resolveStaffListJobTypes({
       permissions: user?.permissions ?? [],
       visibleJobTypes: user?.visibleJobTypes,
       writableJobTypes: user?.writableJobTypes,
       candidates: [...JOB_TYPES],
     });
-    return scoped.length ? scoped : config.jobTypes;
-  }, [config.filterJobTypes, config.jobTypes, user]);
+    return scoped.length ? scoped : [...JOB_TYPES];
+  }, [config.filterJobTypes, user]);
+
+  // Dropdown options: NVOCC fixed set, else staff resolved types, else all.
+  const jobTypeOptions = useMemo((): JobType[] => {
+    if (config.filterJobTypes?.length) return config.filterJobTypes;
+    if (scopeTypes === null) return config.jobTypes;
+    return scopeTypes.length ? scopeTypes : config.jobTypes;
+  }, [config.filterJobTypes, config.jobTypes, scopeTypes]);
 
   // Keep filters in sync when dashboard pills change ?status= / ?category=
   useEffect(() => {
@@ -147,16 +154,19 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
   const useCategoryList = Boolean(categoryFilter) && variant !== 'documentation';
 
   const jobsQuery = useQuery({
-    queryKey: ['tenant', 'jobs', 'hub-plain', variant, filterParams],
+    queryKey: ['tenant', 'jobs', 'hub-visible', variant, filterParams, scopeTypes],
     queryFn: async () => {
       const byId = new Map<string, Job>();
       for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
-        const result = await jobService.list({
-          ...filterParams,
-          page: pageNum,
-          limit: 100,
-          order: filterParams.order ?? 'desc',
-        });
+        const result = await jobService.listVisibleJobs(
+          {
+            ...filterParams,
+            page: pageNum,
+            limit: 100,
+            order: filterParams.order ?? 'desc',
+          },
+          { scopeTypes },
+        );
         for (const job of result.jobs ?? []) {
           if (job?.id) byId.set(job.id, job);
         }
