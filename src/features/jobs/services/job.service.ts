@@ -1062,9 +1062,12 @@ export const jobService = {
   /**
    * Load jobs for Active shipments / department / hub.
    * BE owns JWT / operations_scope visibility. FE responsibility:
-   * - Admin: plain GET /jobs
-   * - Staff: merge plain list + typed probes + search recovery so the grid
-   *   shows every job the staff total count already includes (any creator)
+   * - Admin (`scopeTypes: null`): plain GET /jobs
+   * - Staff (`scopeTypes: JobType[]`): merge plain list + typed probes + search
+   *   recovery for **granted types only** (never the full role pack / JOB_TYPES)
+   * - Locked empty (`scopeTypes: []`): no rows
+   * Prefer BE meta.visible_job_types when present (null = admin).
+   * Never invent created_by / ops_user / salesperson filters.
    */
   async listVisibleJobs(
     params: JobListParams = {},
@@ -1073,8 +1076,24 @@ export const jobService = {
     const page = params.page ?? 1;
     const limit = clampApiListLimit(params.limit, 20);
     const order = params.order ?? 'desc';
-    const scopeTypes = opts?.scopeTypes;
-    const isStaffScoped = Array.isArray(scopeTypes) && scopeTypes.length > 0;
+
+    // Explicit empty allow-list — do not probe every department.
+    if (Array.isArray(opts?.scopeTypes) && opts.scopeTypes.length === 0) {
+      return {
+        ...emptyJobListResult(limit),
+        meta: {
+          page,
+          limit,
+          total: 0,
+          totalPages: 1,
+          visible_job_types: [],
+        },
+      };
+    }
+
+    let effectiveScope: JobType[] | null =
+      opts?.scopeTypes === undefined ? null : opts.scopeTypes;
+    let metaVisible: string[] | null | undefined;
 
     const baseParams: JobListParams = {
       ...params,
@@ -1091,10 +1110,11 @@ export const jobService = {
 
     const byId = new Map<string, Job>();
 
-    const ingest = (jobs: Job[] | undefined) => {
+    const ingest = (jobs: Job[] | undefined, allow?: Set<JobType> | null) => {
       for (const job of jobs ?? []) {
         if (!job?.id) continue;
         const type = effectiveListJobType(job);
+        if (allow && !allow.has(type)) continue;
         byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
       }
     };
@@ -1114,7 +1134,38 @@ export const jobService = {
           },
           { skipErrorToast: true },
         );
-        ingest(result.jobs);
+        if (
+          metaVisible === undefined &&
+          result.meta &&
+          Object.prototype.hasOwnProperty.call(result.meta, 'visible_job_types')
+        ) {
+          metaVisible = result.meta.visible_job_types;
+          // Authoritative BE scope for this request.
+          if (metaVisible === null) {
+            effectiveScope = null;
+          } else if (Array.isArray(metaVisible)) {
+            if (!metaVisible.length) {
+              return {
+                ...emptyJobListResult(limit),
+                meta: {
+                  page,
+                  limit,
+                  total: 0,
+                  totalPages: 1,
+                  visible_job_types: [],
+                },
+              };
+            }
+            effectiveScope = [
+              ...new Set(metaVisible.map((t) => canonicalizeJobType(String(t)))),
+            ] as JobType[];
+          }
+        }
+        const allow =
+          Array.isArray(effectiveScope) && effectiveScope.length
+            ? new Set(effectiveScope.map((t) => canonicalizeJobType(String(t))))
+            : null;
+        ingest(result.jobs, allow);
         if (typeof result.meta?.total === 'number') reported = result.meta.total;
         const got = result.jobs?.length ?? 0;
         if (got === 0) break;
@@ -1125,18 +1176,20 @@ export const jobService = {
       /* typed merge below */
     }
 
-    // 2) Staff: always merge typed fan-out for granted types (not only when empty).
-    // Partial plain lists (1 own job) must not block the rest of the department.
-    if (isStaffScoped) {
+    const isStaffScoped =
+      Array.isArray(effectiveScope) && effectiveScope.length > 0;
+
+    // 2) Staff: merge typed fan-out for granted types only (not JOB_TYPES / role pack).
+    if (isStaffScoped && effectiveScope) {
       try {
-        ingest(await fetchJobsViaGrantedTypeFanOut(baseParams, scopeTypes));
+        ingest(await fetchJobsViaGrantedTypeFanOut(baseParams, effectiveScope));
       } catch {
         /* keep plain rows */
       }
 
       // 3) Search-prefix recovery — merge, do not require empty first.
       try {
-        ingest(await fetchJobsVisibleViaSearchRecovery(baseParams, scopeTypes));
+        ingest(await fetchJobsVisibleViaSearchRecovery(baseParams, effectiveScope));
       } catch {
         /* keep what we have */
       }
@@ -1155,6 +1208,13 @@ export const jobService = {
         limit,
         total: merged.length,
         totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
+        ...(metaVisible !== undefined
+          ? { visible_job_types: metaVisible }
+          : Array.isArray(effectiveScope)
+            ? { visible_job_types: effectiveScope }
+            : effectiveScope === null && opts?.scopeTypes === null
+              ? { visible_job_types: null }
+              : {}),
       },
     };
   },

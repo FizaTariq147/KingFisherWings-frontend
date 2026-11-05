@@ -6,7 +6,6 @@ import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
-import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
@@ -19,29 +18,27 @@ import { JobTable } from '../components/JobTable';
 import {
   DEFAULT_JOB_PAGE_SIZE,
   JOB_SEGMENTS,
-  JOB_TYPES,
   type JobSegmentKey,
   type JobType,
 } from '../constants/job.constants';
 import { useJobLifecycleMutations } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
+import { useVisibleJobListScope } from '../hooks/useVisibleJobListParams';
 import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
 import { effectiveJobListType } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 /**
  * Department job list.
- * BE owns staff visibility. FE loads the full staff-visible job set, then
- * client-filters to this department (any creator). No job_type on the default
- * request that would collapse the list under operations_scope.
+ * Staff scope = direct grants / role preset for this segment only (never full
+ * JOB_TYPES fan-out). Plain GET /jobs — no job_type query that collapses under
+ * operations_scope. Client-filters to this department; any creator in scope.
  */
 export default function JobListPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
   const { pathname } = location;
   const segment = segmentFromPath(pathname) ?? 'air-export';
@@ -76,11 +73,10 @@ export default function JobListPage() {
     [allowedSegmentTypes],
   );
 
-  // Admin: plain list. Staff: probe all types — BE enforces grants; FE only segments in UI.
-  const scopeTypes = useMemo((): JobType[] | null => {
-    if (isOpsUnrestrictedUser(user)) return null;
-    return [...JOB_TYPES];
-  }, [user]);
+  // Admin: null. Staff: only types granted for this department segment.
+  const { scopeTypes, kind } = useVisibleJobListScope({
+    candidates: allowedSegmentTypes,
+  });
 
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
@@ -95,7 +91,15 @@ export default function JobListPage() {
   }, [applied]);
 
   const listQuery = useQuery({
-    queryKey: ['tenant', 'jobs', 'department-all-v3', segment, filterParams, scopeTypes === null ? 'admin' : 'staff'],
+    queryKey: [
+      'tenant',
+      'jobs',
+      'department-all-v4',
+      segment,
+      filterParams,
+      kind,
+      scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
+    ],
     queryFn: async () => {
       const byId = new Map<string, Job>();
       const first = await jobService.listVisibleJobs(
@@ -129,7 +133,10 @@ export default function JobListPage() {
         if ((more.jobs?.length ?? 0) === 0) break;
       }
 
-      return { jobs: [...byId.values()] };
+      return {
+        jobs: [...byId.values()],
+        visibleJobTypes: first.meta?.visible_job_types,
+      };
     },
     enabled: Boolean(accessToken),
     staleTime: 15_000,
@@ -141,17 +148,12 @@ export default function JobListPage() {
   const filteredJobs = useMemo(() => {
     const rows = listQuery.data?.jobs ?? [];
     const selectedType = applied.jobType?.trim() as JobType | undefined;
-    const inSegment = rows.filter((job) => {
+    return rows.filter((job) => {
       const type = effectiveJobListType(job);
       if (selectedType) return type === selectedType;
+      // Staff lists are already candidate-scoped; still segment-filter for admin.
       return segmentTypeSet.has(type);
     });
-    // If type labels are wrong but BE already scoped the staff list, still show
-    // rows when this department would otherwise look empty while jobs exist.
-    if (inSegment.length === 0 && rows.length > 0 && !selectedType) {
-      return rows;
-    }
-    return inSegment;
   }, [listQuery.data?.jobs, applied.jobType, segmentTypeSet]);
 
   const pageSize = applied.rows || DEFAULT_JOB_PAGE_SIZE;
