@@ -42,6 +42,8 @@ export const JOB_TYPE_WIZARD_OPTIONS: JobType[] = [
   'SEA_LCL_EXPORT',
   'SEA_LCL_IMPORT',
   'ROAD_FREIGHT',
+  'LAND',
+  'COURIER',
   'NVOCC_EXPORT',
   'NVOCC_IMPORT',
   'SERVICE_JOB',

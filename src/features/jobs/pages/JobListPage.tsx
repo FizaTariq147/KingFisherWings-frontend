@@ -26,11 +26,13 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useVisibleJobListScope } from '../hooks/useVisibleJobListParams';
 import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
+import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
   effectiveJobListType,
   inferJobTypeFromJobNumber,
 } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { resolveListProbesFromCounts } from '../utils/resolveListProbesFromCounts';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 /** Stamp job_type from job-number mid-code when it maps into this department. */
@@ -120,19 +122,22 @@ export default function JobListPage() {
     queryKey: [
       'tenant',
       'jobs',
-      'department-segment-v9',
+      'department-segment-v11',
       segment,
       filterParams,
       fullScope.kind,
       segmentScope.probeTypes.slice().sort().join(','),
+      fullScope.probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
       let expectedTotal = 0;
+      let countVisible: string[] | null | undefined;
       try {
         const counts = await jobService.dashboardCounts(
           filterParams.branch_id ? { branch_id: filterParams.branch_id } : {},
         );
         expectedTotal = Number(counts.jobCount ?? 0) || 0;
+        countVisible = counts.visibleJobTypes;
       } catch {
         expectedTotal = 0;
       }
@@ -147,63 +152,91 @@ export default function JobListPage() {
       };
 
       const selectedType = applied.jobType?.trim() as JobType | undefined;
+      const staffProbes =
+        fullScope.probeTypes.length > 0
+          ? fullScope.probeTypes
+          : segmentScope.probeTypes.length > 0
+            ? segmentScope.probeTypes
+            : [...allowedSegmentTypes];
 
-      // 1) Plain GET /jobs — same ACL as dashboard-counts (no org department_id).
-      //    Client-keep this Operation department (job types), never ACL via org dept.
-      const plainBase = {
-        order: filterParams.order ?? ('desc' as const),
-        search: filterParams.search,
-        status: filterParams.status,
-        branch_id: filterParams.branch_id,
-        shipper_id: filterParams.shipper_id,
-        consignee_id: filterParams.consignee_id,
-        origin_port_id: filterParams.origin_port_id,
-        dest_port_id: filterParams.dest_port_id,
-        date_field: filterParams.date_field,
-        from_date: filterParams.from_date,
-        to_date: filterParams.to_date,
-        created_by: filterParams.created_by,
-        salesperson_id: filterParams.salesperson_id,
-        department_id: undefined,
-        job_type: selectedType || undefined,
-        job_types: undefined,
-        skip_client_hydrate: true as const,
-      };
-
-      let apiTotal = expectedTotal;
-      for (let pageNum = 1; pageNum <= 20; pageNum += 1) {
-        const pageResult = await jobService.list({
-          ...plainBase,
-          page: pageNum,
-          limit: 100,
+      const { scopeTypes: listScope, probeTypes: listProbes } =
+        resolveListProbesFromCounts({
+          staffScopeTypes: fullScope.scopeTypes,
+          staffProbeTypes: staffProbes,
+          countVisible,
         });
-        takeSegment(pageResult.jobs);
-        if (typeof pageResult.meta?.total === 'number') {
-          apiTotal = pageResult.meta.total;
-        }
-        const got = pageResult.jobs?.length ?? 0;
-        if (got === 0) break;
-        if (pageNum * 100 >= Math.max(apiTotal, 1)) break;
-      }
 
-      // 2) If segment still empty but count says jobs exist, typed fan-out for
-      //    this department’s job types only (still no org department_id).
-      if (byId.size === 0 && expectedTotal > 0 && !selectedType) {
-        const typed = await jobService.list({
-          ...plainBase,
+      // 1) Full visible list (no org department_id) — then keep this segment.
+      const visible = await jobService.listVisibleJobs(
+        {
           page: 1,
           limit: 100,
-          job_type: undefined,
-          job_types: [...allowedSegmentTypes],
-          skip_client_hydrate: false,
+          order: filterParams.order ?? 'desc',
+          status: filterParams.status,
+          search: filterParams.search,
+          branch_id: filterParams.branch_id,
+          shipper_id: filterParams.shipper_id,
+          consignee_id: filterParams.consignee_id,
+          from_date: filterParams.from_date,
+          to_date: filterParams.to_date,
+          date_field: filterParams.date_field,
+          department_id: undefined,
+          created_by: filterParams.created_by,
+          salesperson_id: filterParams.salesperson_id,
+        },
+        {
+          scopeTypes: listScope,
+          scopeConfident: false,
+          probeTypes: listProbes,
+          expectedTotal,
+        },
+      );
+      takeSegment(visible.jobs);
+
+      const visTotal = Math.max(visible.meta?.total ?? 0, expectedTotal);
+      if (visTotal > 100) {
+        const pages = Math.min(10, Math.ceil(visTotal / 100));
+        for (let pageNum = 2; pageNum <= pages; pageNum += 1) {
+          const more = await jobService.listVisibleJobs(
+            {
+              page: pageNum,
+              limit: 100,
+              order: filterParams.order ?? 'desc',
+              status: filterParams.status,
+              search: filterParams.search,
+              branch_id: filterParams.branch_id,
+              department_id: undefined,
+            },
+            {
+              scopeTypes: listScope,
+              scopeConfident: false,
+              probeTypes: listProbes,
+              expectedTotal,
+            },
+          );
+          takeSegment(more.jobs);
+          if ((more.jobs?.length ?? 0) === 0) break;
+        }
+      }
+
+      // 2) Segment typed list if this department is still empty.
+      if (byId.size === 0) {
+        const typed = await jobService.list({
+          ...filterParams,
+          page: 1,
+          limit: 100,
+          order: filterParams.order ?? 'desc',
+          department_id: undefined,
+          job_types: selectedType ? undefined : [...allowedSegmentTypes],
+          job_type: selectedType || undefined,
         });
         takeSegment(typed.jobs);
       }
 
       return {
         jobs: [...byId.values()],
+        visibleJobTypes: visible.meta?.visible_job_types ?? countVisible,
         expectedTotal,
-        apiTotal,
       };
     },
     enabled: Boolean(accessToken),
