@@ -6,10 +6,6 @@ import type { Job } from '@/features/jobs/types/job.types';
 import { canonicalizeJobType } from '@/features/jobs/utils/canonicalizeJobType';
 import { effectiveJobListType } from '@/features/jobs/utils/effectiveJobListType';
 import { resolveListProbesFromCounts } from '@/features/jobs/utils/resolveListProbesFromCounts';
-import {
-  CLOSED_JOB_STATUSES,
-  isOpenBucketJob,
-} from '../utils/dashboardFormat';
 
 function jobSortTime(job: Job): number {
   const raw = job.updated_at || job.created_at || '';
@@ -24,12 +20,9 @@ function normalizeStatus(status: unknown): string {
     .replace(/\s+/g, '_');
 }
 
-const CLOSED = new Set(CLOSED_JOB_STATUSES.map(String));
-
 /**
- * Active shipments grid — every non-completed/cancelled job in staff grants
- * (any creator). Loads with the same visibility as job_count, then drops closed.
- * Compare row count to open/non-closed, not always to job_count (which includes closed).
+ * Active shipments grid — every job in staff grants (any creator, any status).
+ * Must match dashboard-counts job_count; do not drop completed/cancelled.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -48,7 +41,7 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'staff-visible-v17',
+      'staff-all-statuses-v18',
       jobType,
       branchId,
       rowLimit,
@@ -74,7 +67,6 @@ export function useDashboardActiveJobs(options?: {
         for (const job of jobs ?? []) {
           if (!job?.id) continue;
           const status = normalizeStatus(job.status);
-          if (CLOSED.has(status)) continue;
           const resolvedType = effectiveJobListType(job);
           if (jobType && resolvedType !== canonicalizeJobType(jobType)) continue;
           byId.set(
@@ -130,14 +122,34 @@ export function useDashboardActiveJobs(options?: {
         if (byId.size >= rowLimit) break;
       }
 
+      // Still short of job_count — one more recovery pass with staff probes.
+      if (expectedTotal > byId.size && listProbes.length > 0) {
+        const catchUp = await jobService.listVisibleJobs(
+          {
+            page: 1,
+            limit: Math.min(rowLimit, 100),
+            order: 'desc',
+            ...(branchId ? { branch_id: branchId } : {}),
+            department_id: undefined,
+          },
+          {
+            scopeTypes: listProbes,
+            scopeConfident: false,
+            probeTypes: listProbes,
+            expectedTotal,
+          },
+        );
+        take(catchUp.jobs);
+      }
+
       const rows = [...byId.values()].sort(
         (a, b) => jobSortTime(b) - jobSortTime(a),
       );
-      const openBucket = rows.filter((j) => isOpenBucketJob(j.status));
 
       return {
         jobs: rows.slice(0, rowLimit),
-        openTotal: openBucket.length,
+        /** Same scope as job_count — all statuses. */
+        openTotal: Math.max(rows.length, expectedTotal),
         expectedTotal,
         visibleJobTypes: collected.meta?.visible_job_types ?? countVisible,
       };

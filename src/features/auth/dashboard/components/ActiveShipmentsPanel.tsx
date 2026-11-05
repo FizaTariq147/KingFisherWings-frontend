@@ -31,7 +31,6 @@ import {
   deptForStatus,
   durationInDept,
   formatShortDate,
-  isActiveJob,
   isCustomsHold,
   isDocsPending,
   jobClient,
@@ -150,39 +149,40 @@ export function ActiveShipmentsPanel({
     setView(defaultView);
   }, [defaultView]);
 
-  const active = useMemo(() => jobs.filter((job) => isActiveJob(job.status)), [jobs]);
+  // Same set as Total jobs / job_count — include completed & cancelled (do not drop).
+  const catalog = jobs;
 
   const viewCounts = useMemo(
     () => ({
-      // Badge = rows in the grid (full department set for All jobs).
-      all: active.length,
-      mine: active.filter((job) => matchesView(job, 'mine', userId)).length,
-      customs: active.filter((job) => matchesView(job, 'customs')).length,
-      docs: active.filter((job) => matchesView(job, 'docs')).length,
-      air: active.filter((job) => matchesView(job, 'air')).length,
+      // Badge = rows in the grid (full grant set for All jobs).
+      all: catalog.length,
+      mine: catalog.filter((job) => matchesView(job, 'mine', userId)).length,
+      customs: catalog.filter((job) => matchesView(job, 'customs')).length,
+      docs: catalog.filter((job) => matchesView(job, 'docs')).length,
+      air: catalog.filter((job) => matchesView(job, 'air')).length,
     }),
-    [active, userId],
+    [catalog, userId],
   );
 
   const chipCounts = useMemo(() => {
     const counts: Record<ShipmentStatusChip, number> = {
-      all: active.length,
+      all: catalog.length,
       in_transit: 0,
       customs: 0,
       docs_due: 0,
       booked: 0,
       delivered: 0,
     };
-    for (const job of active) {
+    for (const job of catalog) {
       const key = shipmentStatusChip(job);
       if (key !== 'all') counts[key] += 1;
     }
     return counts;
-  }, [active]);
+  }, [catalog]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return active.filter((job) => {
+    return catalog.filter((job) => {
       if (!matchesView(job, view, userId)) return false;
       if (!matchesChip(job, chip)) return false;
       if (!q) return true;
@@ -201,7 +201,7 @@ export function ActiveShipmentsPanel({
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [active, view, chip, query, userId]);
+  }, [catalog, view, chip, query, userId]);
 
   // Show every in-scope row (All jobs = full department set; My jobs = own only).
   const visibleRows = filtered;
