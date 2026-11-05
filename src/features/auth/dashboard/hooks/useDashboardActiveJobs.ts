@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
 import type { JobType } from '@/features/jobs/constants/job.constants';
-import { JOB_TYPE_WIZARD_OPTIONS } from '@/features/jobs/constants/job.constants';
+import { JOB_TYPES } from '@/features/jobs/constants/job.constants';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { Job, JobListParams } from '@/features/jobs/types/job.types';
 import { canonicalizeJobType } from '@/features/jobs/utils/canonicalizeJobType';
@@ -39,13 +39,13 @@ export function useDashboardActiveJobs(options?: {
 
   const staffJobTypes = useMemo((): JobType[] => {
     if (unrestricted) return [];
-    // Full department families for every granted dept (Sea Import → FCL+LCL, …).
+    // Trust /me Ops visible∪writable (full families) so no granted type is dropped.
     return resolveStaffListJobTypes({
       permissions: user?.permissions ?? [],
       visibleJobTypes: user?.visibleJobTypes,
       writableJobTypes: user?.writableJobTypes,
       isModuleEnabled: hasEnabledModule,
-      candidates: [...JOB_TYPE_WIZARD_OPTIONS],
+      candidates: [...JOB_TYPES],
     });
   }, [user, unrestricted, hasEnabledModule]);
 
