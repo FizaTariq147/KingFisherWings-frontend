@@ -50,11 +50,12 @@ function stampJobForSegment(
 }
 
 /**
- * Department job list.
- * Staff: sidebar-aligned segment probes (never full JOB_TYPES). Plain GET /jobs
- * first — no hard-empty on uncertain JWT scope; no job_type that collapses under
- * operations_scope. Client-filters to this department; any creator in scope.
- * When segment filter would blank a non-empty list, keep mid-code matches (FE/LE/…).
+ * Department job list (staff + admin).
+ * Staff never uses All Jobs MIS — only this page per Operation department.
+ * Load strategy:
+ * 1) jobService.list with this segment's job_types (typed + untyped merge inside list)
+ * 2) listVisibleJobs (same path as Active shipments) then client-keep this segment
+ * Never invent created_by; show every creator in the department.
  */
 export default function JobListPage() {
   const navigate = useNavigate();
@@ -93,36 +94,35 @@ export default function JobListPage() {
     [allowedSegmentTypes],
   );
 
-  // Full staff scope for GET /jobs (same set as Total Jobs). Segment filter is client-side.
   const fullScope = useVisibleJobListScope();
-  // Segment probes only for recovery fan-out if plain list under-delivers.
   const segmentScope = useVisibleJobListScope({
     candidates: allowedSegmentTypes,
   });
 
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
-      segmentJobTypes: undefined,
+      segmentJobTypes: allowedSegmentTypes,
     });
-    delete params.job_types;
-    delete params.job_type;
+    // Department pages always scope to this segment's types (not a single job_type
+    // query that can empty the list under a broken JWT filter).
+    if (!applied.jobType?.trim()) {
+      params.job_type = undefined;
+      params.job_types = [...allowedSegmentTypes];
+    }
     if (!applied.createdBy?.trim()) delete params.created_by;
     if (!applied.salespersonId?.trim()) delete params.salesperson_id;
     if (!applied.departmentId?.trim()) delete params.department_id;
     return params;
-  }, [applied]);
+  }, [applied, allowedSegmentTypes]);
 
   const listQuery = useQuery({
     queryKey: [
       'tenant',
       'jobs',
-      'department-all-v7',
+      'department-segment-v8',
       segment,
       filterParams,
       fullScope.kind,
-      fullScope.scopeTypes === null
-        ? 'admin'
-        : fullScope.scopeTypes.slice().sort().join(','),
       segmentScope.probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
@@ -134,81 +134,99 @@ export default function JobListPage() {
         expectedTotal = 0;
       }
 
-      // Trust BE plain list (all staff-visible jobs); recover with segment types if needed.
-      const probes =
-        fullScope.scopeTypes === null
-          ? ([] as JobType[])
-          : fullScope.probeTypes.length
-            ? fullScope.probeTypes
-            : segmentScope.probeTypes;
-
-      const listOpts = {
-        scopeTypes: fullScope.scopeTypes,
-        scopeConfident: false,
-        probeTypes: probes,
-        expectedTotal,
+      const byId = new Map<string, Job>();
+      const takeSegment = (jobs: Job[] | undefined) => {
+        for (const job of jobs ?? []) {
+          if (!job?.id) continue;
+          const stamped = stampJobForSegment(job, segmentTypeSet);
+          if (stamped) byId.set(stamped.id, stamped);
+        }
       };
 
-      const byId = new Map<string, Job>();
-      const first = await jobService.listVisibleJobs(
-        {
+      // 1) Primary: typed department list (merge strategies inside jobService.list).
+      const typedFirst = await jobService.list({
+        ...filterParams,
+        page: 1,
+        limit: 100,
+        order: filterParams.order ?? 'desc',
+        job_types: applied.jobType?.trim()
+          ? undefined
+          : [...allowedSegmentTypes],
+        job_type: applied.jobType?.trim()
+          ? (applied.jobType.trim() as JobType)
+          : undefined,
+      });
+      takeSegment(typedFirst.jobs);
+
+      const typedTotal = typedFirst.meta?.total ?? byId.size;
+      const typedPages = Math.min(10, Math.ceil(Math.max(typedTotal, 1) / 100));
+      for (let pageNum = 2; pageNum <= typedPages; pageNum += 1) {
+        const more = await jobService.list({
           ...filterParams,
-          page: 1,
+          page: pageNum,
           limit: 100,
           order: filterParams.order ?? 'desc',
-        },
-        listOpts,
-      );
-      for (const job of first.jobs ?? []) {
-        if (job?.id) byId.set(job.id, job);
-      }
-
-      const total = Math.max(first.meta?.total ?? 0, expectedTotal, byId.size);
-      const maxPages = Math.min(10, Math.ceil(Math.max(total, 1) / 100));
-      for (let pageNum = 2; pageNum <= maxPages; pageNum += 1) {
-        const more = await jobService.listVisibleJobs(
-          {
-            ...filterParams,
-            page: pageNum,
-            limit: 100,
-            order: filterParams.order ?? 'desc',
-          },
-          listOpts,
-        );
-        for (const job of more.jobs ?? []) {
-          if (job?.id) byId.set(job.id, job);
-        }
+          job_types: applied.jobType?.trim()
+            ? undefined
+            : [...allowedSegmentTypes],
+          job_type: applied.jobType?.trim()
+            ? (applied.jobType.trim() as JobType)
+            : undefined,
+        });
+        takeSegment(more.jobs);
         if ((more.jobs?.length ?? 0) === 0) break;
       }
 
-      // Still short: segment-typed recovery (Sea Export → SEA_FCL_EXPORT / LCL only).
-      if (
-        expectedTotal > byId.size &&
-        fullScope.scopeTypes !== null &&
+      // 2) Same visible-list path as Active shipments — keep only this department.
+      const probes =
         segmentScope.probeTypes.length > 0
-      ) {
-        const catchUp = await jobService.listVisibleJobs(
-          {
-            ...filterParams,
-            page: 1,
-            limit: 100,
-            order: filterParams.order ?? 'desc',
-          },
-          {
-            scopeTypes: segmentScope.probeTypes,
-            scopeConfident: false,
-            probeTypes: segmentScope.probeTypes,
-            expectedTotal,
-          },
-        );
-        for (const job of catchUp.jobs ?? []) {
-          if (job?.id) byId.set(job.id, job);
+          ? segmentScope.probeTypes
+          : fullScope.probeTypes;
+      const visible = await jobService.listVisibleJobs(
+        {
+          page: 1,
+          limit: 100,
+          order: filterParams.order ?? 'desc',
+          status: filterParams.status,
+          search: filterParams.search,
+          branch_id: filterParams.branch_id,
+        },
+        {
+          scopeTypes: fullScope.scopeTypes,
+          scopeConfident: false,
+          probeTypes: probes.length ? probes : [...allowedSegmentTypes],
+          expectedTotal,
+        },
+      );
+      takeSegment(visible.jobs);
+
+      if ((visible.meta?.total ?? 0) > 100) {
+        const visPages = Math.min(5, Math.ceil((visible.meta?.total ?? 0) / 100));
+        for (let pageNum = 2; pageNum <= visPages; pageNum += 1) {
+          const more = await jobService.listVisibleJobs(
+            {
+              page: pageNum,
+              limit: 100,
+              order: filterParams.order ?? 'desc',
+              status: filterParams.status,
+              search: filterParams.search,
+              branch_id: filterParams.branch_id,
+            },
+            {
+              scopeTypes: fullScope.scopeTypes,
+              scopeConfident: false,
+              probeTypes: probes.length ? probes : [...allowedSegmentTypes],
+              expectedTotal,
+            },
+          );
+          takeSegment(more.jobs);
+          if ((more.jobs?.length ?? 0) === 0) break;
         }
       }
 
       return {
         jobs: [...byId.values()],
-        visibleJobTypes: first.meta?.visible_job_types,
+        visibleJobTypes: visible.meta?.visible_job_types,
       };
     },
     enabled: Boolean(accessToken),
