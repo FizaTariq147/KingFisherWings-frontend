@@ -6,7 +6,7 @@ import type { JobType } from '@/features/jobs/constants/job.constants';
 import { JOB_TYPES } from '@/features/jobs/constants/job.constants';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { Job, JobListParams } from '@/features/jobs/types/job.types';
-import { canonicalizeJobType } from '@/features/jobs/utils/canonicalizeJobType';
+import { effectiveJobListType } from '@/features/jobs/utils/effectiveJobListType';
 import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
 import { resolveStaffListJobTypes } from '@/features/jobs/utils/resolveStaffListJobTypes';
 import { OPEN_JOB_STATUSES } from '../utils/dashboardFormat';
@@ -18,20 +18,17 @@ function jobSortTime(job: Job): number {
 }
 
 const PAGE_SIZE = 100;
-/** Safety cap so a bad meta.total cannot loop forever. */
 const MAX_ACTIVE_PAGES = 10;
 
 /**
- * Active shipments grid rows.
- * After BE scopes staff GET /jobs by visible_job_types (any creator), this grid
- * must show every open job in the staff's granted departments — same relevance
- * rule as admin, without created_by / assignee filters.
+ * Active shipments — trust BE JWT visible_job_types (any creator).
+ * Staff uses the same plain GET /jobs path as admin (no client job_types merge),
+ * then keeps open rows; soft-filters to /me grants when present.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
   jobType?: string;
   branchId?: string;
-  /** Max rows to keep for the grid after merge (newest first). */
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
@@ -54,7 +51,7 @@ export function useDashboardActiveJobs(options?: {
 
   const allowedTypeSet = useMemo(() => {
     if (unrestricted || !staffJobTypes.length) return null;
-    return new Set(staffJobTypes.map((t) => canonicalizeJobType(String(t))));
+    return new Set(staffJobTypes);
   }, [unrestricted, staffJobTypes]);
 
   return useQuery({
@@ -62,7 +59,7 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'dept-any-creator-v2',
+      'be-visible-types-v3',
       jobType,
       branchId,
       staffJobTypes,
@@ -77,27 +74,26 @@ export function useDashboardActiveJobs(options?: {
         for (const job of jobs ?? []) {
           if (!job?.id) continue;
           if (!openSet.has(String(job.status))) continue;
-          if (allowedTypeSet) {
-            const t = canonicalizeJobType(String(job.job_type ?? ''));
-            if (!allowedTypeSet.has(t)) continue;
-          }
-          byId.set(job.id, job);
+          const resolvedType = effectiveJobListType(job);
+          if (allowedTypeSet && !allowedTypeSet.has(resolvedType)) continue;
+          byId.set(
+            job.id,
+            job.job_type === resolvedType ? job : { ...job, job_type: resolvedType },
+          );
         }
       };
 
+      // Plain JWT list — same as admin. BE scopes staff by visible_job_types.
+      // Do NOT pass job_types (avoids heavy multi-merge that can drop rows).
       const baseParams: JobListParams = {
         order: 'desc',
-        // Never scope Active shipments by creator — BE + FE: any creator in grant.
         created_by: undefined,
         salesperson_id: undefined,
         department_id: undefined,
         ...(jobType ? { job_type: jobType as JobListParams['job_type'] } : {}),
         ...(branchId ? { branch_id: branchId } : {}),
-        // Staff: granted dept types (drives typed + search recovery until BE is fixed).
-        ...(!jobType && staffJobTypes.length ? { job_types: staffJobTypes } : {}),
       };
 
-      // Page through so we do not stop at the first 100 when BE returns more.
       for (let page = 1; page <= MAX_ACTIVE_PAGES; page += 1) {
         const result = await jobService.list({
           ...baseParams,
@@ -112,44 +108,16 @@ export function useDashboardActiveJobs(options?: {
         if (byId.size >= rowLimit) break;
       }
 
-      // Extra pass: plain JWT list (no job_types) — merge any in-scope open rows
-      // BE only exposes on the unfiltered path.
-      if (!unrestricted && staffJobTypes.length && !jobType) {
-        try {
-          for (let page = 1; page <= MAX_ACTIVE_PAGES; page += 1) {
-            const jwtPage = await jobService.list({
-              page,
-              limit: PAGE_SIZE,
-              order: 'desc',
-              skip_client_hydrate: true,
-              created_by: undefined,
-              salesperson_id: undefined,
-              department_id: undefined,
-              ...(branchId ? { branch_id: branchId } : {}),
-            });
-            takeOpen(jwtPage.jobs);
-            const total = jwtPage.meta?.total ?? jwtPage.jobs?.length ?? 0;
-            const got = jwtPage.jobs?.length ?? 0;
-            if (got === 0) break;
-            if (page * PAGE_SIZE >= total) break;
-            if (byId.size >= rowLimit) break;
-          }
-        } catch {
-          /* keep primary rows */
-        }
-      }
-
       const openJobs = [...byId.values()].sort(
         (a, b) => jobSortTime(b) - jobSortTime(a),
       );
 
       return {
         jobs: openJobs.slice(0, rowLimit),
-        /** Badge = unique open rows shown (all in-scope creators). */
         openTotal: openJobs.length,
       };
     },
     enabled: Boolean(accessToken) && options?.enabled !== false,
-    staleTime: 60_000,
+    staleTime: 30_000,
   });
 }

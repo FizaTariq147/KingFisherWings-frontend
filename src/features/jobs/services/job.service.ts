@@ -38,6 +38,10 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeCode128Value } from '../utils/scannableBarcode';
 import type { JobType } from '../constants/job.constants';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
+import {
+  effectiveJobListType,
+  inferJobTypeFromJobNumber,
+} from '../utils/effectiveJobListType';
 import { jobDetailTabLabel, toApiDetailTabKey } from '../utils/jobDetailTabs';
 import {
   listRecentCreatedJobIds,
@@ -769,31 +773,8 @@ function jobTypeForSearchToken(searchToken: string): JobType | undefined {
   return mid ? jobTypeForMidCode(mid) : undefined;
 }
 
-/** Infer job_type from numbers like JOB/FI/11/26/00004 when list payload omits type. */
-function inferJobTypeFromJobNumber(jobNumber?: string): JobType | undefined {
-  const n = String(jobNumber ?? '')
-    .trim()
-    .toUpperCase();
-  if (!n) return undefined;
-  if (n.includes('/FI/') || n.includes('-FI-')) return 'SEA_FCL_IMPORT';
-  if (n.includes('/FE/') || n.includes('-FE-')) return 'SEA_FCL_EXPORT';
-  if (n.includes('/LI/') || n.includes('-LI-')) return 'SEA_LCL_IMPORT';
-  if (n.includes('/LE/') || n.includes('-LE-')) return 'SEA_LCL_EXPORT';
-  if (n.includes('/AE/') || n.includes('-AE-')) return 'AIR_EXPORT';
-  if (n.includes('/AI/') || n.includes('-AI-')) return 'AIR_IMPORT';
-  if (n.includes('/RF/') || n.includes('-RF-')) return 'ROAD_FREIGHT';
-  if (n.includes('/CC/') || n.includes('-CC-')) return 'CUSTOMS_CLEARANCE';
-  if (n.includes('/NV/') || n.includes('-NV-')) return 'NVOCC_EXPORT';
-  return undefined;
-}
-
 function effectiveListJobType(job: Job): JobType {
-  const fromNumber = inferJobTypeFromJobNumber(job.job_number);
-  const fromField = canonicalizeJobType(String(job.job_type ?? ''));
-  // Prefer number mid-code when normalize defaulted to AIR_EXPORT incorrectly.
-  if (fromNumber && (fromField === 'AIR_EXPORT' || !job.job_type)) return fromNumber;
-  if (fromNumber && fromField !== fromNumber) return fromNumber;
-  return fromField;
+  return effectiveJobListType(job);
 }
 
 /**
@@ -1179,46 +1160,58 @@ export const jobService = {
         const byId = new Map<string, Job>();
         let unfilteredTotal = 0;
 
-        // 1) Search-prefix recovery FIRST (matches staff typing JOB/FI/… — includes admin creates).
-        if (!String(deptListBase.search ?? '').trim()) {
-          for (const job of await fetchJobsVisibleViaSearchRecovery(deptListBase, types)) {
-            if (job?.id) byId.set(job.id, job);
+        const addJobs = (jobs: Job[] | undefined) => {
+          for (const job of jobs ?? []) {
+            if (!job?.id) continue;
+            const type = effectiveListJobType(job);
+            if (!allowed.has(type)) continue;
+            byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
           }
-          unfilteredTotal = Math.max(unfilteredTotal, byId.size);
-        }
+        };
 
-        // 2) Full JWT list scan + client type filter (all matches, not one page slice).
+        // 1) JWT unfiltered scan FIRST — BE now scopes staff by visible_job_types
+        // (any creator). This is the primary path for department lists.
         try {
           const unfiltered = await fetchAllJobsMatchingTypes(deptListBase, types);
-          unfilteredTotal = Math.max(unfilteredTotal, unfiltered.apiTotal, unfiltered.jobs.length);
-          for (const job of unfiltered.jobs) {
-            if (job?.id) byId.set(job.id, job);
-          }
+          unfilteredTotal = Math.max(
+            unfilteredTotal,
+            unfiltered.apiTotal,
+            unfiltered.jobs.length,
+          );
+          addJobs(unfiltered.jobs);
         } catch {
-          /* typed fan-out below */
+          /* typed / search below */
         }
 
-        // 3) Typed job_type= fan-out.
+        // 2) Typed job_type= fan-out (some BE builds only return rows on this path).
         try {
           for (const pageResult of await fetchTypedPages()) {
             unfilteredTotal = Math.max(unfilteredTotal, pageResult.meta.total ?? 0);
-            for (const job of pageResult.jobs ?? []) {
-              if (job?.id) byId.set(job.id, job);
-            }
+            addJobs(pageResult.jobs);
           }
         } catch {
-          /* keep recovered rows */
+          /* keep JWT rows */
         }
 
-        const seeded = [...byId.values()].filter((j) =>
-          allowed.has(effectiveListJobType(j)),
-        );
+        // 3) Search-prefix recovery (legacy fallback if JWT/typed still omit rows).
+        if (!String(deptListBase.search ?? '').trim()) {
+          try {
+            addJobs(await fetchJobsVisibleViaSearchRecovery(deptListBase, types));
+            unfilteredTotal = Math.max(unfilteredTotal, byId.size);
+          } catch {
+            /* keep what we have */
+          }
+        }
+
+        const seeded = [...byId.values()];
         const hydrated = await hydrateJobsFromConvertedQuotes(seeded, types);
-        const typed = hydrated.filter((j) =>
-          allowed.has(effectiveListJobType(j)),
-        );
+        const typed = hydrated
+          .map((j) => {
+            const type = effectiveListJobType(j);
+            return j.job_type === type ? j : { ...j, job_type: type };
+          })
+          .filter((j) => allowed.has(effectiveListJobType(j)));
         const withRecent = await mergeRecentCreatedJobs(typed, { jobTypes: types });
-        // Total = exact unique in-scope rows so department/shipment counts match the grid.
         return paginate(withRecent, Math.max(unfilteredTotal, withRecent.length));
       }
 
