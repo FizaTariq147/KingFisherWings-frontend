@@ -52,12 +52,11 @@ function stampJobForSegment(
 }
 
 /**
- * Department job list (staff + admin).
- * Staff never uses All Jobs MIS — only this page per Operation department.
- * Load strategy:
- * 1) jobService.list with this segment's job_types (typed + untyped merge inside list)
- * 2) listVisibleJobs (same path as Active shipments) then client-keep this segment
- * Never invent created_by; show every creator in the department.
+ * Operation department job list (staff + admin) — same rules for both:
+ * - ACL = job type grants for this department (not org department_id, not creator)
+ * - Show every job of those types created by admin or staff
+ * - Staff with any grant in the segment sees the full department type set
+ *   (e.g. Sea Export = FCL+LCL), matching admin department pages
  */
 export default function JobListPage() {
   const navigate = useNavigate();
@@ -99,6 +98,7 @@ export default function JobListPage() {
   const fullScope = useVisibleJobListScope();
   const segmentScope = useVisibleJobListScope({
     candidates: allowedSegmentTypes,
+    fullSegmentIfAnyAccess: true,
   });
 
   const filterParams = useMemo(() => {
@@ -122,7 +122,7 @@ export default function JobListPage() {
     queryKey: [
       'tenant',
       'jobs',
-      'department-segment-v11',
+      'department-segment-v12',
       segment,
       filterParams,
       fullScope.kind,
@@ -152,12 +152,14 @@ export default function JobListPage() {
       };
 
       const selectedType = applied.jobType?.trim() as JobType | undefined;
+      // Same department type set admin uses when staff has any grant in this segment.
+      const segmentTypes =
+        segmentScope.probeTypes.length > 0
+          ? segmentScope.probeTypes
+          : [...allowedSegmentTypes];
+
       const staffProbes =
-        fullScope.probeTypes.length > 0
-          ? fullScope.probeTypes
-          : segmentScope.probeTypes.length > 0
-            ? segmentScope.probeTypes
-            : [...allowedSegmentTypes];
+        fullScope.probeTypes.length > 0 ? fullScope.probeTypes : segmentTypes;
 
       const { scopeTypes: listScope, probeTypes: listProbes } =
         resolveListProbesFromCounts({
@@ -166,7 +168,38 @@ export default function JobListPage() {
           countVisible,
         });
 
-      // 1) Full visible list (no org department_id) — then keep this segment.
+      // 1) Department list like admin: this segment’s job types, any creator.
+      //    No org department_id / invented created_by.
+      const typedFirst = await jobService.list({
+        ...filterParams,
+        page: 1,
+        limit: 100,
+        order: filterParams.order ?? 'desc',
+        department_id: undefined,
+        created_by: filterParams.created_by,
+        salesperson_id: filterParams.salesperson_id,
+        job_types: selectedType ? undefined : [...segmentTypes],
+        job_type: selectedType || undefined,
+      });
+      takeSegment(typedFirst.jobs);
+
+      const typedTotal = Math.max(typedFirst.meta?.total ?? 0, byId.size);
+      const typedPages = Math.min(10, Math.ceil(Math.max(typedTotal, 1) / 100));
+      for (let pageNum = 2; pageNum <= typedPages; pageNum += 1) {
+        const more = await jobService.list({
+          ...filterParams,
+          page: pageNum,
+          limit: 100,
+          order: filterParams.order ?? 'desc',
+          department_id: undefined,
+          job_types: selectedType ? undefined : [...segmentTypes],
+          job_type: selectedType || undefined,
+        });
+        takeSegment(more.jobs);
+        if ((more.jobs?.length ?? 0) === 0) break;
+      }
+
+      // 2) Merge full visible list (admin+staff creates) then keep this segment.
       const visible = await jobService.listVisibleJobs(
         {
           page: 1,
@@ -217,20 +250,6 @@ export default function JobListPage() {
           takeSegment(more.jobs);
           if ((more.jobs?.length ?? 0) === 0) break;
         }
-      }
-
-      // 2) Segment typed list if this department is still empty.
-      if (byId.size === 0) {
-        const typed = await jobService.list({
-          ...filterParams,
-          page: 1,
-          limit: 100,
-          order: filterParams.order ?? 'desc',
-          department_id: undefined,
-          job_types: selectedType ? undefined : [...allowedSegmentTypes],
-          job_type: selectedType || undefined,
-        });
-        takeSegment(typed.jobs);
       }
 
       return {
@@ -368,6 +387,7 @@ export default function JobListPage() {
           jobTypeOptions={allowedSegmentTypes}
           jobTypeAllLabel={`All ${segmentConfig.label} types`}
           showOrgDepartmentFilter={false}
+          showUserFilters={false}
         />
 
         {actionError ? (

@@ -474,6 +474,7 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
           jobTypeOptions={jobTypeOptions}
           jobTypeAllLabel={config.jobTypeFilterLabel}
           showOrgDepartmentFilter={!isStaffScoped}
+          showUserFilters={!isStaffScoped}
         />
 
         {actionError ? (

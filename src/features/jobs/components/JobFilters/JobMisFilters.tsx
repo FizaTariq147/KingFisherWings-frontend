@@ -175,6 +175,11 @@ interface JobMisFiltersProps {
    * Staff visibility is job type — not org department_id (omit for /jobs/all).
    */
   showOrgDepartmentFilter?: boolean;
+  /**
+   * Sales Person / Created User dropdowns need GET /users (admin).
+   * Staff OPERATIONS_MANAGER gets 403 — hide and skip the request.
+   */
+  showUserFilters?: boolean;
 }
 
 /**
@@ -189,6 +194,7 @@ export function JobMisFilters({
   jobTypeOptions = [...JOB_TYPES],
   jobTypeAllLabel = 'All',
   showOrgDepartmentFilter = true,
+  showUserFilters = true,
 }: JobMisFiltersProps) {
   const patch = (partial: Partial<JobMisFilterDraft>) =>
     onDraftChange({ ...draft, ...partial });
@@ -219,12 +225,15 @@ export function JobMisFilters({
     limit: 100,
     order: 'asc',
   });
-  const { data: usersResult } = useUsers({
-    tenantId: '',
-    page: 1,
-    limit: 100,
-    order: 'asc',
-  });
+  const { data: usersResult } = useUsers(
+    {
+      tenantId: '',
+      page: 1,
+      limit: 100,
+      order: 'asc',
+    },
+    { enabled: showUserFilters },
+  );
 
   const allOpt = { value: '', label: 'All' };
 
@@ -368,13 +377,15 @@ export function JobMisFilters({
           />
         </EnquirySheetFilterField>
 
-        <EnquirySheetFilterField label="Sales Person">
-          <EnquirySheetSelect
-            options={userOptions}
-            value={draft.salespersonId}
-            onChange={(e) => patch({ salespersonId: e.target.value })}
-          />
-        </EnquirySheetFilterField>
+        {showUserFilters ? (
+          <EnquirySheetFilterField label="Sales Person">
+            <EnquirySheetSelect
+              options={userOptions}
+              value={draft.salespersonId}
+              onChange={(e) => patch({ salespersonId: e.target.value })}
+            />
+          </EnquirySheetFilterField>
+        ) : null}
 
         {showOrgDepartmentFilter ? (
           <EnquirySheetFilterField label="Department">
@@ -409,13 +420,15 @@ export function JobMisFilters({
           />
         </EnquirySheetFilterField>
 
-        <EnquirySheetFilterField label="Created User">
-          <EnquirySheetSelect
-            options={userOptions}
-            value={draft.createdBy}
-            onChange={(e) => patch({ createdBy: e.target.value })}
-          />
-        </EnquirySheetFilterField>
+        {showUserFilters ? (
+          <EnquirySheetFilterField label="Created User">
+            <EnquirySheetSelect
+              options={userOptions}
+              value={draft.createdBy}
+              onChange={(e) => patch({ createdBy: e.target.value })}
+            />
+          </EnquirySheetFilterField>
+        ) : null}
 
         <EnquirySheetFilterField label="Job Status">
           <EnquirySheetSelect

@@ -18,7 +18,10 @@ export const userKeys = {
   detail: (tenantId: string, id: string) => [...userKeys.all, 'detail', tenantId, id] as const,
 };
 
-export function useUsers(params: UserListParams) {
+export function useUsers(
+  params: UserListParams,
+  options?: { enabled?: boolean },
+) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const storeUser = useAuthStore((s) => s.user);
   const resolvedTenantId =
@@ -35,7 +38,10 @@ export function useUsers(params: UserListParams) {
     queryKey: userKeys.list(queryParams),
     queryFn: () => userService.list(queryParams),
     // List is JWT-scoped; allow when authenticated even if tenant UUID is not in claims.
-    enabled: Boolean(accessToken) || (!!resolvedTenantId && isUuid(resolvedTenantId)),
+    // Staff job filters should pass enabled:false — OPERATIONS_MANAGER gets 403 on GET /users.
+    enabled:
+      (options?.enabled ?? true) &&
+      (Boolean(accessToken) || (!!resolvedTenantId && isUuid(resolvedTenantId))),
     placeholderData: keepPreviousData,
     // Deleted list is local-registry backed — always refetch after delete/restore.
     staleTime: queryParams.lifecycle === 'deleted' ? 0 : 30_000,
