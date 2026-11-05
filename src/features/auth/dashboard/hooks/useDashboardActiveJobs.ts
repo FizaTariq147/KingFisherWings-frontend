@@ -31,9 +31,9 @@ const CLOSED = new Set(CLOSED_JOB_STATUSES.map(String));
 /**
  * Active shipments for admin + staff.
  *
- * Uses listVisibleJobs: plain GET /jobs first; if BE returns 0 under
- * operations_scope (job_type:{in:[]} while job_count is still 14), fans out
- * GET /jobs?job_type= for /me granted types only. No creator filter.
+ * Uses listVisibleJobs: merges plain GET /jobs with typed fan-out for /me
+ * grants (partial plain lists of 1 own job must not hide the other 13).
+ * No creator filter on the All-jobs view.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -64,7 +64,7 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'visible-v8',
+      'visible-v9',
       jobType,
       branchId,
       rowLimit,

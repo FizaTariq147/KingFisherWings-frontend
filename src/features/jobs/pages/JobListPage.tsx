@@ -104,7 +104,7 @@ export default function JobListPage() {
   }, [applied]);
 
   const listQuery = useQuery({
-    queryKey: ['tenant', 'jobs', 'department-visible', segment, filterParams, scopeTypes],
+    queryKey: ['tenant', 'jobs', 'department-visible-v2', segment, filterParams, scopeTypes],
     queryFn: async () => {
       // Fetch a large window; listVisibleJobs recovers via typed fan-out when plain is empty.
       const result = await jobService.listVisibleJobs(
