@@ -1,7 +1,14 @@
 import { useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import type { JobType } from '../constants/job.constants';
+import {
+  isOpsUnrestrictedRole,
+  isTenantUserManagerRole,
+  resolveAuthRoleSlug,
+  TENANT_USER_MANAGER_ROLE_SLUGS,
+} from '@/features/users/constants/userPermissions';
+import { JOB_TYPE_WIZARD_OPTIONS, type JobType } from '../constants/job.constants';
 import type { JobListParams } from '../types/job.types';
+import { filterJobTypesByStaffAccess } from '../utils/filterJobTypesByStaffAccess';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { resolveClientVisibleJobTypes } from '../utils/resolveClientVisibleJobTypes';
 import { resolveStaffListJobTypes } from '../utils/resolveStaffListJobTypes';
@@ -11,10 +18,16 @@ export type VisibleJobListScope = {
   /**
    * For `jobService.listVisibleJobs`:
    * - `null` → admin / unrestricted (plain GET /jobs, no typed fan-out)
-   * - `[]` → locked empty allow-list
-   * - `JobType[]` → staff granted departments only (never the full role pack)
+   * - `JobType[]` → staff filter / probe set (may be empty when uncertain — do NOT hard-empty)
    */
   scopeTypes: JobType[] | null;
+  /**
+   * When true, listVisibleJobs may client-filter plain rows to scopeTypes.
+   * False when JWT only has operations_scope / empty /me tokens.
+   */
+  scopeConfident: boolean;
+  /** Typed fan-out + search recovery targets (sidebar-aligned; never full JOB_TYPES). */
+  probeTypes: JobType[];
   /** Resolved staff allow-list for client filters / UI; undefined for admin. */
   jobTypes?: JobType[];
   /**
@@ -24,13 +37,21 @@ export type VisibleJobListScope = {
   listScopeParams: Pick<JobListParams, 'job_types' | 'job_type'>;
 };
 
+function intersectCandidates(
+  types: readonly JobType[],
+  candidates?: readonly JobType[],
+): JobType[] {
+  if (!candidates?.length) return [...types];
+  const allow = new Set(candidates);
+  return types.filter((t) => allow.has(t));
+}
+
 /**
  * Default list/dashboard API scope.
- * Admin (and admin write perms): omit job_type — BE returns every non-deleted job.
- * Staff: also omit job_type / created_by / department_id on the default “all jobs” view;
- * resolve from /me + direct operations_{type}.* (operations_scope skips role-pack inflate).
- * Never send job_type unless canSendJobTypeQuery would allow it — typed queries
- * that miss the allow-list return empty rows while untyped counts still show data.
+ * Admin: omit job_type.
+ * Staff: prefer /me visible∪writable + direct operations_{type}.*; if those are empty,
+ * fall back to the same sidebar dept access matrix (not the full JOB_TYPES catalog).
+ * Never send job_type on the default request.
  */
 export function useVisibleJobListScope(
   opts?: {
@@ -38,47 +59,86 @@ export function useVisibleJobListScope(
     candidates?: readonly JobType[];
   },
 ): VisibleJobListScope {
-  const { user } = useAuth();
+  const { user, hasRole, hasEnabledModule } = useAuth();
   const candidates = opts?.candidates;
+  const roleSlug = resolveAuthRoleSlug(user?.role);
+  const isTenantAdmin =
+    isTenantUserManagerRole(roleSlug) ||
+    TENANT_USER_MANAGER_ROLE_SLUGS.some((s) => hasRole(s));
 
   return useMemo(() => {
     if (isOpsUnrestrictedUser(user)) {
       return {
         kind: 'unrestricted' as const,
         scopeTypes: null,
+        scopeConfident: true,
+        probeTypes: [],
         listScopeParams: {},
       };
     }
 
+    const perms = user?.permissions ?? [];
+    const visible = user?.visibleJobTypes;
+    const writable = user?.writableJobTypes;
+
     const client = resolveClientVisibleJobTypes({
       isUnrestricted: false,
-      permissions: user?.permissions ?? [],
-      visibleJobTypes: user?.visibleJobTypes,
-      writableJobTypes: user?.writableJobTypes,
+      permissions: perms,
+      visibleJobTypes: visible,
+      writableJobTypes: writable,
     });
 
-    const jobTypes = resolveStaffListJobTypes({
-      permissions: user?.permissions ?? [],
-      visibleJobTypes: user?.visibleJobTypes,
-      writableJobTypes: user?.writableJobTypes,
+    // Prefer resolver that mirrors BE: scope → direct only; else role/matrix preset.
+    const fromResolver = resolveStaffListJobTypes({
+      permissions: perms,
+      visibleJobTypes: visible,
+      writableJobTypes: writable,
+      isModuleEnabled: hasEnabledModule,
       ...(candidates?.length ? { candidates } : {}),
     });
 
-    const scoped = client.lockedEmpty ? [] : jobTypes;
+    // Same source as Sidebar when /me tokens are empty under operations_scope.
+    const fromSidebar = filterJobTypesByStaffAccess({
+      permissions: perms,
+      visibleJobTypes: visible,
+      writableJobTypes: writable,
+      unrestrictedOps: false,
+      isTenantAdmin: isTenantAdmin || isOpsUnrestrictedRole(roleSlug),
+      isModuleEnabled: hasEnabledModule,
+      candidates: candidates?.length ? candidates : JOB_TYPE_WIZARD_OPTIONS,
+      mode: 'list',
+    });
+
+    const probeTypes = intersectCandidates(
+      fromResolver.length ? fromResolver : fromSidebar,
+      candidates,
+    );
+
+    const meHasTokens =
+      (Array.isArray(visible) && visible.length > 0) ||
+      (Array.isArray(writable) && writable.length > 0);
+    const hasDirectOpsTypes =
+      client.hasOperationsScope && (client.types?.length ?? 0) > 0;
+    const scopeConfident = meHasTokens || hasDirectOpsTypes;
 
     return {
       kind: 'staff' as const,
-      jobTypes: scoped,
-      scopeTypes: scoped,
-      // Never attach job_type(s) to the default request — BE DB resolver scopes staff.
+      jobTypes: probeTypes,
+      scopeTypes: probeTypes,
+      scopeConfident,
+      probeTypes,
       listScopeParams: {},
     };
   }, [
+    user,
     user?.unrestrictedOps,
     user?.role,
     user?.permissions,
     user?.visibleJobTypes,
     user?.writableJobTypes,
     candidates,
+    hasEnabledModule,
+    isTenantAdmin,
+    roleSlug,
   ]);
 }

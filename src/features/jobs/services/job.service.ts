@@ -1063,36 +1063,42 @@ export const jobService = {
    * Load jobs for Active shipments / department / hub.
    * BE owns JWT / operations_scope visibility. FE responsibility:
    * - Admin (`scopeTypes: null`): plain GET /jobs
-   * - Staff (`scopeTypes: JobType[]`): merge plain list + typed probes + search
-   *   recovery for **granted types only** (never the full role pack / JOB_TYPES)
-   * - Locked empty (`scopeTypes: []`): no rows
-   * Prefer BE meta.visible_job_types when present (null = admin).
+   * - Staff: always try plain GET /jobs first — never hard-empty on uncertain FE scope
+   * - Typed fan-out + search recovery use `probeTypes` (or scopeTypes) — granted /
+   *   sidebar depts only, never the full JOB_TYPES catalog
+   * - Client-filter plain rows only when `scopeConfident` (or BE meta.visible_job_types)
+   * - Hard empty only when BE returns meta.visible_job_types: []
    * Never invent created_by / ops_user / salesperson filters.
    */
   async listVisibleJobs(
     params: JobListParams = {},
-    opts?: { scopeTypes?: JobType[] | null },
+    opts?: {
+      scopeTypes?: JobType[] | null;
+      /**
+       * When true, drop plain-list rows outside scopeTypes.
+       * When false (operations_scope / empty /me), keep plain rows and rely on probes.
+       */
+      scopeConfident?: boolean;
+      /** Typed fan-out + search recovery targets (defaults to scopeTypes). */
+      probeTypes?: JobType[] | null;
+    },
   ): Promise<JobListResult> {
     const page = params.page ?? 1;
     const limit = clampApiListLimit(params.limit, 20);
     const order = params.order ?? 'desc';
 
-    // Explicit empty allow-list — do not probe every department.
-    if (Array.isArray(opts?.scopeTypes) && opts.scopeTypes.length === 0) {
-      return {
-        ...emptyJobListResult(limit),
-        meta: {
-          page,
-          limit,
-          total: 0,
-          totalPages: 1,
-          visible_job_types: [],
-        },
-      };
-    }
-
-    let effectiveScope: JobType[] | null =
-      opts?.scopeTypes === undefined ? null : opts.scopeTypes;
+    const isAdmin = opts?.scopeTypes === null || opts?.scopeTypes === undefined;
+    let effectiveScope: JobType[] | null = isAdmin
+      ? null
+      : Array.isArray(opts?.scopeTypes)
+        ? opts.scopeTypes
+        : null;
+    let scopeConfident = Boolean(opts?.scopeConfident) && !isAdmin;
+    let probeTypes: JobType[] = Array.isArray(opts?.probeTypes)
+      ? opts.probeTypes
+      : Array.isArray(effectiveScope)
+        ? effectiveScope
+        : [];
     let metaVisible: string[] | null | undefined;
 
     const baseParams: JobListParams = {
@@ -1119,7 +1125,7 @@ export const jobService = {
       }
     };
 
-    // 1) Plain JWT / DB-scoped pages (may be partial for staff).
+    // 1) Plain JWT / DB-scoped pages — always attempt (never skip for empty FE scope).
     try {
       let pageNum = 1;
       let reported = Number.POSITIVE_INFINITY;
@@ -1143,8 +1149,11 @@ export const jobService = {
           // Authoritative BE scope for this request.
           if (metaVisible === null) {
             effectiveScope = null;
+            scopeConfident = false;
+            probeTypes = [];
           } else if (Array.isArray(metaVisible)) {
             if (!metaVisible.length) {
+              // Only authoritative empty allow-list may hard-empty.
               return {
                 ...emptyJobListResult(limit),
                 meta: {
@@ -1159,10 +1168,15 @@ export const jobService = {
             effectiveScope = [
               ...new Set(metaVisible.map((t) => canonicalizeJobType(String(t)))),
             ] as JobType[];
+            probeTypes = effectiveScope;
+            scopeConfident = true;
           }
         }
+        // Filter plain rows only when scope is confident (or BE meta said so).
         const allow =
-          Array.isArray(effectiveScope) && effectiveScope.length
+          scopeConfident &&
+          Array.isArray(effectiveScope) &&
+          effectiveScope.length > 0
             ? new Set(effectiveScope.map((t) => canonicalizeJobType(String(t))))
             : null;
         ingest(result.jobs, allow);
@@ -1176,20 +1190,23 @@ export const jobService = {
       /* typed merge below */
     }
 
-    const isStaffScoped =
-      Array.isArray(effectiveScope) && effectiveScope.length > 0;
-
-    // 2) Staff: merge typed fan-out for granted types only (not JOB_TYPES / role pack).
-    if (isStaffScoped && effectiveScope) {
+    // 2) Staff recovery: fan-out granted / sidebar probe types (never full JOB_TYPES).
+    if (probeTypes.length > 0) {
+      const allowProbe = new Set(
+        probeTypes.map((t) => canonicalizeJobType(String(t))),
+      );
       try {
-        ingest(await fetchJobsViaGrantedTypeFanOut(baseParams, effectiveScope));
+        ingest(await fetchJobsViaGrantedTypeFanOut(baseParams, probeTypes), allowProbe);
       } catch {
         /* keep plain rows */
       }
 
       // 3) Search-prefix recovery — merge, do not require empty first.
       try {
-        ingest(await fetchJobsVisibleViaSearchRecovery(baseParams, effectiveScope));
+        ingest(
+          await fetchJobsVisibleViaSearchRecovery(baseParams, probeTypes),
+          allowProbe,
+        );
       } catch {
         /* keep what we have */
       }
@@ -1210,9 +1227,9 @@ export const jobService = {
         totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
         ...(metaVisible !== undefined
           ? { visible_job_types: metaVisible }
-          : Array.isArray(effectiveScope)
+          : Array.isArray(effectiveScope) && scopeConfident
             ? { visible_job_types: effectiveScope }
-            : effectiveScope === null && opts?.scopeTypes === null
+            : effectiveScope === null && isAdmin
               ? { visible_job_types: null }
               : {}),
       },

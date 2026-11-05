@@ -37,20 +37,26 @@ export function CurrentActiveJobsWidget() {
   const navigate = useNavigate();
   const accessToken = useAuthStore((s) => s.accessToken);
   const jobCounts = useDashboardJobCounts('month');
-  const { scopeTypes, kind } = useVisibleJobListScope();
+  const { scopeTypes, scopeConfident, probeTypes, kind } = useVisibleJobListScope();
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [
       'tenant',
       'widgets',
-      'active-jobs-v4',
+      'active-jobs-v5',
       kind,
+      scopeConfident ? 'confident' : 'uncertain',
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
+      probeTypes.slice().sort().join(','),
     ],
     queryFn: () =>
       jobService.listVisibleJobs(
         { page: 1, limit: FETCH_LIMIT, order: 'desc' },
-        { scopeTypes },
+        {
+          scopeTypes,
+          scopeConfident,
+          probeTypes: scopeTypes === null ? [] : probeTypes,
+        },
       ),
     enabled: Boolean(accessToken),
     staleTime: 15_000,
