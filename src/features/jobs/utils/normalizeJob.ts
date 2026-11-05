@@ -100,6 +100,38 @@ function firstArrayField(obj: Record<string, unknown> | null | undefined): unkno
   return undefined;
 }
 
+function looksLikeJobRow(value: unknown): boolean {
+  const r = asRecord(value);
+  if (!r) return false;
+  return Boolean(
+    r.id ||
+      r.job_id ||
+      r.jobId ||
+      r.job_number ||
+      r.jobNumber ||
+      r.job_type ||
+      r.jobType,
+  );
+}
+
+/** Deep-scan payload for the largest array of job-like objects. */
+function deepFindJobArray(raw: unknown, depth = 0): unknown[] | undefined {
+  if (depth > 8 || raw == null) return undefined;
+  if (Array.isArray(raw)) {
+    if (raw.length > 0 && raw.every(looksLikeJobRow)) return raw;
+    // Some APIs nest one level: [ { job: {...} } ]
+    return undefined;
+  }
+  const obj = asRecord(raw);
+  if (!obj) return undefined;
+  let best: unknown[] | undefined;
+  for (const value of Object.values(obj)) {
+    const found = deepFindJobArray(value, depth + 1);
+    if (found && (!best || found.length > best.length)) best = found;
+  }
+  return best;
+}
+
 /**
  * Extract list rows from varied BE envelopes.
  * Important: do not return [] just because `data` is an object without a known
@@ -144,9 +176,14 @@ export function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
   consider(asRecord(envelope.result));
   consider(asRecord(envelope.payload));
 
-  // Prefer a non-empty array; otherwise first candidate (may be []).
-  const items =
+  let items =
     arrayCandidates.find((arr) => arr.length > 0) ?? arrayCandidates[0] ?? [];
+
+  // Final fallback: walk the whole payload for job-like rows (staff list shapes).
+  if (!items.length) {
+    const deep = deepFindJobArray(raw);
+    if (deep?.length) items = deep;
+  }
 
   return {
     items,
