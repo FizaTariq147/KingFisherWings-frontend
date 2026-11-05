@@ -36,7 +36,7 @@ export function useDashboardActiveJobs(options?: {
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const { scopeTypes, probeTypes, kind } = useVisibleJobListScope();
+  const { scopeTypes, kind } = useVisibleJobListScope();
   const rowLimit = options?.rowLimit ?? 500;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
@@ -46,33 +46,25 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'staff-dept-v14',
+      'staff-plain-v15',
       jobType,
       branchId,
       rowLimit,
       kind,
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
-      probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
       let expectedTotal = 0;
+      let visibleJobTypes: string[] | null | undefined;
       try {
         const counts = await jobService.dashboardCounts(
           branchId ? { branch_id: branchId } : {},
         );
         expectedTotal = Number(counts.jobCount ?? 0) || 0;
+        visibleJobTypes = counts.visibleJobTypes;
       } catch {
         expectedTotal = 0;
       }
-
-      const staffProbes = scopeTypes === null ? [] : probeTypes;
-      // Trust BE plain list (same rule as job_count); do not FE-filter types away.
-      const listOpts = {
-        scopeTypes,
-        scopeConfident: false,
-        probeTypes: staffProbes,
-        expectedTotal,
-      };
 
       const byId = new Map<string, Job>();
       const take = (jobs: Job[] | undefined) => {
@@ -91,73 +83,34 @@ export function useDashboardActiveJobs(options?: {
         }
       };
 
-      const collected = await jobService.listVisibleJobs(
-        {
-          page: 1,
+      // Plain GET /jobs — same ACL as job_count (no department_id / job_type / creator).
+      let apiTotal = expectedTotal;
+      let listVisible: string[] | null | undefined = visibleJobTypes;
+      for (let page = 1; page <= 20; page += 1) {
+        const result = await jobService.list({
+          page,
           limit: 100,
           order: 'desc',
           ...(branchId ? { branch_id: branchId } : {}),
-        },
-        listOpts,
-      );
-      take(collected.jobs);
-
-      const reported = Math.max(collected.meta?.total ?? 0, expectedTotal, byId.size);
-      const pageSize = 100;
-      const maxPages = Math.min(10, Math.ceil(Math.max(reported, 1) / pageSize));
-      for (let page = 2; page <= maxPages; page += 1) {
-        const more = await jobService.listVisibleJobs(
-          {
-            page,
-            limit: pageSize,
-            order: 'desc',
-            ...(branchId ? { branch_id: branchId } : {}),
-          },
-          listOpts,
-        );
-        take(more.jobs);
-        if ((more.jobs?.length ?? 0) === 0) break;
-        if (byId.size >= rowLimit) break;
-      }
-
-      // Count OK / grid short: force recovery with uncertain scope + probes.
-      // job_count includes closed; compare against raw meta when open filter shrinks.
-      const openShort = expectedTotal > byId.size && byId.size < rowLimit;
-      if (openShort && staffProbes.length > 0) {
-        const catchUp = await jobService.listVisibleJobs(
-          {
-            page: 1,
-            limit: Math.min(rowLimit, 100),
-            order: 'desc',
-            ...(branchId ? { branch_id: branchId } : {}),
-          },
-          {
-            scopeTypes: staffProbes,
-            scopeConfident: false,
-            probeTypes: staffProbes,
-            expectedTotal,
-          },
-        );
-        take(catchUp.jobs);
-
-        // Second page of catch-up when still short of count.
-        if (expectedTotal > byId.size && (catchUp.meta?.total ?? 0) > catchUp.jobs.length) {
-          const moreCatch = await jobService.listVisibleJobs(
-            {
-              page: 2,
-              limit: Math.min(rowLimit, 100),
-              order: 'desc',
-              ...(branchId ? { branch_id: branchId } : {}),
-            },
-            {
-              scopeTypes: staffProbes,
-              scopeConfident: false,
-              probeTypes: staffProbes,
-              expectedTotal,
-            },
-          );
-          take(moreCatch.jobs);
+          department_id: undefined,
+          created_by: undefined,
+          salesperson_id: undefined,
+          job_type: undefined,
+          job_types: undefined,
+          skip_client_hydrate: true,
+        });
+        take(result.jobs);
+        if (typeof result.meta?.total === 'number') apiTotal = result.meta.total;
+        if (
+          listVisible === undefined &&
+          result.meta &&
+          Object.prototype.hasOwnProperty.call(result.meta, 'visible_job_types')
+        ) {
+          listVisible = result.meta.visible_job_types;
         }
+        if ((result.jobs?.length ?? 0) === 0) break;
+        if (page * 100 >= Math.max(apiTotal, 1)) break;
+        if (byId.size >= rowLimit) break;
       }
 
       const rows = [...byId.values()].sort(
@@ -168,8 +121,8 @@ export function useDashboardActiveJobs(options?: {
       return {
         jobs: rows.slice(0, rowLimit),
         openTotal: openBucket.length,
-        expectedTotal,
-        visibleJobTypes: collected.meta?.visible_job_types,
+        expectedTotal: Math.max(expectedTotal, apiTotal),
+        visibleJobTypes: listVisible,
       };
     },
     enabled: Boolean(accessToken) && options?.enabled !== false,

@@ -174,70 +174,73 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
     queryKey: [
       'tenant',
       'jobs',
-      'hub-visible-v7',
+      'hub-plain-v8',
       variant,
       filterParams,
-      scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
-      probeTypes.slice().sort().join(','),
+      isStaffScoped ? 'staff' : 'admin',
     ],
     queryFn: async () => {
-      // Same ACL as Total jobs: branch_id only (no department_id / job_type).
+      // BE contract: same visibility as Total jobs when branch_id matches and
+      // no job_type / department_id / creator filters are sent.
+      const branchId = filterParams.branch_id?.trim() || undefined;
       let expectedTotal = 0;
-      let countVisible: string[] | null | undefined;
       try {
         const counts = await jobService.dashboardCounts(
-          filterParams.branch_id ? { branch_id: filterParams.branch_id } : {},
+          branchId ? { branch_id: branchId } : {},
         );
         expectedTotal = Number(counts.jobCount ?? 0) || 0;
-        countVisible = counts.visibleJobTypes;
       } catch {
         expectedTotal = 0;
       }
 
-      // Prefer BE-reported scope from counts when present.
-      let listScope = scopeTypes;
-      let listProbes: JobType[] =
-        scopeTypes === null ? [] : probeTypes;
-      if (countVisible === null) {
-        listScope = null;
-        listProbes = [];
-      } else if (Array.isArray(countVisible) && countVisible.length > 0) {
-        listProbes = [
-          ...new Set(countVisible.map((t) => canonicalizeJobType(String(t)))),
-        ] as JobType[];
-        listScope = listProbes;
-      }
-
-      const listOpts = {
-        scopeTypes: listScope,
-        scopeConfident: true,
-        probeTypes: listProbes,
-        expectedTotal,
+      const listBase = {
+        order: filterParams.order ?? ('desc' as const),
+        search: filterParams.search,
+        status: filterParams.status,
+        shipper_id: filterParams.shipper_id,
+        consignee_id: filterParams.consignee_id,
+        branch_id: branchId,
+        origin_port_id: filterParams.origin_port_id,
+        dest_port_id: filterParams.dest_port_id,
+        date_field: filterParams.date_field,
+        from_date: filterParams.from_date,
+        to_date: filterParams.to_date,
+        masters_only: filterParams.masters_only,
+        // Only when the user explicitly filtered (never invent).
+        created_by: filterParams.created_by,
+        salesperson_id: filterParams.salesperson_id,
+        // Org department_id: admin MIS only — staff ACL is job type.
+        department_id: isStaffScoped ? undefined : filterParams.department_id,
+        // No job_type / job_types — BE resolveVisibleJobTypes owns scope.
+        job_type: undefined,
+        job_types: undefined,
+        skip_client_hydrate: true as const,
       };
 
       const byId = new Map<string, Job>();
-      for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
-        const result = await jobService.listVisibleJobs(
-          {
-            ...filterParams,
-            page: pageNum,
-            limit: 100,
-            order: filterParams.order ?? 'desc',
-            // Never send org department on staff hub list (matches counts).
-            department_id: listScope === null ? filterParams.department_id : undefined,
-          },
-          listOpts,
-        );
+      let apiTotal = expectedTotal;
+      for (let pageNum = 1; pageNum <= 20; pageNum += 1) {
+        const result = await jobService.list({
+          ...listBase,
+          page: pageNum,
+          limit: 100,
+        });
         for (const job of result.jobs ?? []) {
           if (job?.id) byId.set(job.id, job);
         }
+        if (typeof result.meta?.total === 'number') {
+          apiTotal = result.meta.total;
+        }
         const got = result.jobs?.length ?? 0;
         if (got === 0) break;
-        if (pageNum * 100 >= Math.max(result.meta?.total ?? got, expectedTotal)) break;
-        if (expectedTotal > 0 && byId.size >= expectedTotal) break;
+        if (pageNum * 100 >= Math.max(apiTotal, byId.size)) break;
       }
 
-      return { jobs: [...byId.values()], expectedTotal };
+      return {
+        jobs: [...byId.values()],
+        expectedTotal: Math.max(expectedTotal, apiTotal, byId.size),
+        apiTotal,
+      };
     },
     enabled: Boolean(accessToken) && variant !== 'documentation' && !useCategoryList,
     staleTime: 15_000,
