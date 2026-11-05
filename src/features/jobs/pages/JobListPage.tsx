@@ -19,6 +19,7 @@ import { JobTable } from '../components/JobTable';
 import {
   DEFAULT_JOB_PAGE_SIZE,
   JOB_SEGMENTS,
+  JOB_TYPES,
   type JobSegmentKey,
   type JobType,
 } from '../constants/job.constants';
@@ -30,13 +31,12 @@ import { effectiveJobListType } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
-import { resolveStaffListJobTypes } from '../utils/resolveStaffListJobTypes';
 
 /**
- * Department job list — admin and staff.
- * listVisibleJobs: plain GET /jobs, then typed fan-out for /me grants when the
- * operations_scope JWT bug returns an empty list while dashboard counts still show data.
- * Client-filters to this department segment (any creator).
+ * Department job list.
+ * BE owns staff visibility. FE loads the full staff-visible job set, then
+ * client-filters to this department (any creator). No job_type on the default
+ * request that would collapse the list under operations_scope.
  */
 export default function JobListPage() {
   const navigate = useNavigate();
@@ -76,20 +76,11 @@ export default function JobListPage() {
     [allowedSegmentTypes],
   );
 
+  // Admin: plain list. Staff: probe all types — BE enforces grants; FE only segments in UI.
   const scopeTypes = useMemo((): JobType[] | null => {
     if (isOpsUnrestrictedUser(user)) return null;
-    // Prefer full department segment when staff has any access in it — same shape as admin.
-    const types = resolveStaffListJobTypes({
-      permissions: user?.permissions ?? [],
-      visibleJobTypes: user?.visibleJobTypes,
-      writableJobTypes: user?.writableJobTypes,
-      candidates: allowedSegmentTypes,
-      fullSegmentIfAnyAccess: true,
-    });
-    if (types.length) return types;
-    // Fallback: whole segment so typed recovery can still try department types.
-    return [...allowedSegmentTypes];
-  }, [user, allowedSegmentTypes]);
+    return [...JOB_TYPES];
+  }, [user]);
 
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
@@ -104,10 +95,10 @@ export default function JobListPage() {
   }, [applied]);
 
   const listQuery = useQuery({
-    queryKey: ['tenant', 'jobs', 'department-visible-v2', segment, filterParams, scopeTypes],
+    queryKey: ['tenant', 'jobs', 'department-all-v3', segment, filterParams, scopeTypes === null ? 'admin' : 'staff'],
     queryFn: async () => {
-      // Fetch a large window; listVisibleJobs recovers via typed fan-out when plain is empty.
-      const result = await jobService.listVisibleJobs(
+      const byId = new Map<string, Job>();
+      const first = await jobService.listVisibleJobs(
         {
           ...filterParams,
           page: 1,
@@ -116,21 +107,18 @@ export default function JobListPage() {
         },
         { scopeTypes },
       );
-
-      const byId = new Map<string, Job>();
-      for (const job of result.jobs ?? []) {
+      for (const job of first.jobs ?? []) {
         if (job?.id) byId.set(job.id, job);
       }
 
-      const total = result.meta?.total ?? byId.size;
-      const pageSize = 100;
-      const maxPages = Math.min(10, Math.ceil(Math.max(total, 1) / pageSize));
+      const total = first.meta?.total ?? byId.size;
+      const maxPages = Math.min(10, Math.ceil(Math.max(total, 1) / 100));
       for (let pageNum = 2; pageNum <= maxPages; pageNum += 1) {
         const more = await jobService.listVisibleJobs(
           {
             ...filterParams,
             page: pageNum,
-            limit: pageSize,
+            limit: 100,
             order: filterParams.order ?? 'desc',
           },
           { scopeTypes },
@@ -141,7 +129,7 @@ export default function JobListPage() {
         if ((more.jobs?.length ?? 0) === 0) break;
       }
 
-      return { jobs: [...byId.values()], apiTotal: byId.size };
+      return { jobs: [...byId.values()] };
     },
     enabled: Boolean(accessToken),
     staleTime: 15_000,
@@ -153,11 +141,17 @@ export default function JobListPage() {
   const filteredJobs = useMemo(() => {
     const rows = listQuery.data?.jobs ?? [];
     const selectedType = applied.jobType?.trim() as JobType | undefined;
-    return rows.filter((job) => {
+    const inSegment = rows.filter((job) => {
       const type = effectiveJobListType(job);
       if (selectedType) return type === selectedType;
       return segmentTypeSet.has(type);
     });
+    // If type labels are wrong but BE already scoped the staff list, still show
+    // rows when this department would otherwise look empty while jobs exist.
+    if (inSegment.length === 0 && rows.length > 0 && !selectedType) {
+      return rows;
+    }
+    return inSegment;
   }, [listQuery.data?.jobs, applied.jobType, segmentTypeSet]);
 
   const pageSize = applied.rows || DEFAULT_JOB_PAGE_SIZE;
@@ -278,7 +272,7 @@ export default function JobListPage() {
         ) : jobs.length === 0 ? (
           <EmptyState
             title="No jobs found."
-            description="Adjust filters and click Submit, or create a new job. If you expect jobs here, confirm your job-type grants and sign in again."
+            description="Adjust filters and click Submit, or create a new job."
           />
         ) : (
           <JobTable

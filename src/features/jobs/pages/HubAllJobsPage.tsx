@@ -30,7 +30,6 @@ import { effectiveJobListType } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { normalizeJob } from '../utils/normalizeJob';
-import { resolveStaffListJobTypes } from '../utils/resolveStaffListJobTypes';
 import { jobDetailPath } from '../utils/jobRoute';
 import { useAuthStore } from '@/store/authStore';
 
@@ -102,25 +101,17 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     return null;
   }, [config.filterJobTypes]);
 
-  // Staff recovery scope for listVisibleJobs (null = admin unrestricted).
+  // Admin: plain list. Staff: probe all types — BE enforces grants.
   const scopeTypes = useMemo((): JobType[] | null => {
     if (config.filterJobTypes?.length) return config.filterJobTypes;
     if (isOpsUnrestrictedUser(user)) return null;
-    const scoped = resolveStaffListJobTypes({
-      permissions: user?.permissions ?? [],
-      visibleJobTypes: user?.visibleJobTypes,
-      writableJobTypes: user?.writableJobTypes,
-      candidates: [...JOB_TYPES],
-    });
-    return scoped.length ? scoped : [...JOB_TYPES];
+    return [...JOB_TYPES];
   }, [config.filterJobTypes, user]);
 
-  // Dropdown options: NVOCC fixed set, else staff resolved types, else all.
   const jobTypeOptions = useMemo((): JobType[] => {
     if (config.filterJobTypes?.length) return config.filterJobTypes;
-    if (scopeTypes === null) return config.jobTypes;
-    return scopeTypes.length ? scopeTypes : config.jobTypes;
-  }, [config.filterJobTypes, config.jobTypes, scopeTypes]);
+    return config.jobTypes;
+  }, [config.filterJobTypes, config.jobTypes]);
 
   // Keep filters in sync when dashboard pills change ?status= / ?category=
   useEffect(() => {

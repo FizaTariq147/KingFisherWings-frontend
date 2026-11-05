@@ -4,10 +4,9 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
 import { JOB_TYPES, type JobType } from '@/features/jobs/constants/job.constants';
 import { jobService } from '@/features/jobs/services/job.service';
-import type { Job, JobListParams } from '@/features/jobs/types/job.types';
+import type { Job } from '@/features/jobs/types/job.types';
 import { effectiveJobListType } from '@/features/jobs/utils/effectiveJobListType';
 import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
-import { resolveStaffListJobTypes } from '@/features/jobs/utils/resolveStaffListJobTypes';
 import {
   CLOSED_JOB_STATUSES,
   isOpenBucketJob,
@@ -29,15 +28,14 @@ function normalizeStatus(status: unknown): string {
 const CLOSED = new Set(CLOSED_JOB_STATUSES.map(String));
 
 /**
- * Active shipments for admin + staff.
- *
- * Uses listVisibleJobs: merges plain GET /jobs with typed fan-out for /me
- * grants (partial plain lists of 1 own job must not hide the other 13).
- * No creator filter on the All-jobs view.
+ * Active shipments grid — show every non-closed job BE allows this user to see.
+ * BE owns JWT / operations_scope visibility. FE only:
+ * - loads the full staff-visible set (plain + type probes + search recovery)
+ * - drops completed/cancelled
+ * - never filters by creator
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
-  /** Optional client-side type filter only — never the sole API strategy. */
   jobType?: string;
   branchId?: string;
   rowLimit?: number;
@@ -48,15 +46,10 @@ export function useDashboardActiveJobs(options?: {
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
 
+  // null = admin (plain list). Staff: probe every job type; BE rejects ones outside grants.
   const scopeTypes = useMemo((): JobType[] | null => {
     if (isOpsUnrestrictedUser(user)) return null;
-    const types = resolveStaffListJobTypes({
-      permissions: user?.permissions ?? [],
-      visibleJobTypes: user?.visibleJobTypes,
-      writableJobTypes: user?.writableJobTypes,
-      candidates: [...JOB_TYPES],
-    });
-    return types.length ? types : [...JOB_TYPES];
+    return [...JOB_TYPES];
   }, [user]);
 
   return useQuery({
@@ -64,69 +57,70 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'visible-v9',
+      'staff-all-v10',
       jobType,
       branchId,
       rowLimit,
-      scopeTypes,
+      scopeTypes === null ? 'admin' : 'staff',
     ],
     queryFn: async () => {
-      const baseParams: JobListParams = {
-        page: 1,
-        limit: Math.min(rowLimit, 100),
-        order: 'desc',
-        ...(branchId ? { branch_id: branchId } : {}),
-      };
-
-      const result = await jobService.listVisibleJobs(baseParams, {
-        scopeTypes,
-      });
-
-      const byId = new Map<string, Job>();
-      for (const job of result.jobs ?? []) {
-        if (!job?.id) continue;
-        const status = normalizeStatus(job.status);
-        if (CLOSED.has(status)) continue;
-        const resolvedType = effectiveJobListType(job);
-        if (jobType && resolvedType !== jobType) continue;
-        byId.set(
-          job.id,
-          job.job_type === resolvedType && status === job.status
-            ? job
-            : { ...job, job_type: resolvedType, status: status as Job['status'] },
+      // Pull the same total the KPI uses so we know when the grid is incomplete.
+      let expectedTotal = 0;
+      try {
+        const counts = await jobService.dashboardCounts(
+          branchId ? { branch_id: branchId } : {},
         );
+        expectedTotal = Number(counts.jobCount ?? 0) || 0;
+      } catch {
+        expectedTotal = 0;
       }
 
-      // listVisibleJobs already pages internally; if total > page slice, fetch more.
-      const total = result.meta?.total ?? byId.size;
-      if (total > (result.jobs?.length ?? 0) && scopeTypes !== undefined) {
-        const pageSize = 100;
-        const maxPages = Math.min(10, Math.ceil(Math.min(total, rowLimit) / pageSize));
-        for (let page = 2; page <= maxPages; page += 1) {
-          const more = await jobService.listVisibleJobs(
-            { ...baseParams, page, limit: pageSize },
-            { scopeTypes },
+      const collected = await jobService.listVisibleJobs(
+        {
+          page: 1,
+          limit: 100,
+          order: 'desc',
+          ...(branchId ? { branch_id: branchId } : {}),
+        },
+        { scopeTypes },
+      );
+
+      const byId = new Map<string, Job>();
+      const take = (jobs: Job[] | undefined) => {
+        for (const job of jobs ?? []) {
+          if (!job?.id) continue;
+          const status = normalizeStatus(job.status);
+          if (CLOSED.has(status)) continue;
+          const resolvedType = effectiveJobListType(job);
+          if (jobType && resolvedType !== jobType) continue;
+          byId.set(
+            job.id,
+            job.job_type === resolvedType && status === job.status
+              ? job
+              : { ...job, job_type: resolvedType, status: status as Job['status'] },
           );
-          for (const job of more.jobs ?? []) {
-            if (!job?.id) continue;
-            const status = normalizeStatus(job.status);
-            if (CLOSED.has(status)) continue;
-            const resolvedType = effectiveJobListType(job);
-            if (jobType && resolvedType !== jobType) continue;
-            byId.set(
-              job.id,
-              job.job_type === resolvedType && status === job.status
-                ? job
-                : {
-                    ...job,
-                    job_type: resolvedType,
-                    status: status as Job['status'],
-                  },
-            );
-          }
-          if ((more.jobs?.length ?? 0) === 0) break;
-          if (byId.size >= rowLimit) break;
         }
+      };
+
+      take(collected.jobs);
+
+      // listVisibleJobs pages internally then slices — pull remaining pages if needed.
+      const reported = collected.meta?.total ?? byId.size;
+      const pageSize = 100;
+      const maxPages = Math.min(10, Math.ceil(Math.max(reported, expectedTotal, 1) / pageSize));
+      for (let page = 2; page <= maxPages; page += 1) {
+        const more = await jobService.listVisibleJobs(
+          {
+            page,
+            limit: pageSize,
+            order: 'desc',
+            ...(branchId ? { branch_id: branchId } : {}),
+          },
+          { scopeTypes },
+        );
+        take(more.jobs);
+        if ((more.jobs?.length ?? 0) === 0) break;
+        if (byId.size >= rowLimit) break;
       }
 
       const rows = [...byId.values()].sort(
@@ -137,6 +131,8 @@ export function useDashboardActiveJobs(options?: {
       return {
         jobs: rows.slice(0, rowLimit),
         openTotal: openBucket.length,
+        /** KPI total from dashboard-counts (may include closed). */
+        expectedTotal,
       };
     },
     enabled: Boolean(accessToken) && options?.enabled !== false,

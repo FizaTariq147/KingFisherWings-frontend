@@ -17,7 +17,6 @@ import { useDashboardJobCounts } from '@/features/auth/dashboard/hooks/useDashbo
 import { useAuth } from '@/hooks/useAuth';
 import { jobService } from '@/features/jobs/services/job.service';
 import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
-import { resolveStaffListJobTypes } from '@/features/jobs/utils/resolveStaffListJobTypes';
 import {
   jobDetailPath,
   jobDisplayNumber,
@@ -27,7 +26,6 @@ import { useAuthStore } from '@/store/authStore';
 const WIDGET_LIMIT = 8;
 const FETCH_LIMIT = 40;
 
-/** Statuses treated as closed — excluded from widget rows. */
 const CLOSED_STATUSES: JobStatus[] = ['COMPLETED', 'CANCELLED'];
 
 function formatEtd(value?: string): string {
@@ -37,10 +35,7 @@ function formatEtd(value?: string): string {
   return raw;
 }
 
-/**
- * Dashboard card: latest jobs via listVisibleJobs (plain + granted-type recovery).
- * Badge count still uses dashboard job_count so it stays aligned with KPI.
- */
+/** Latest jobs for staff/admin — same visibility path as Active shipments. */
 export function CurrentActiveJobsWidget() {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -49,17 +44,11 @@ export function CurrentActiveJobsWidget() {
 
   const scopeTypes = useMemo((): JobType[] | null => {
     if (isOpsUnrestrictedUser(user)) return null;
-    const types = resolveStaffListJobTypes({
-      permissions: user?.permissions ?? [],
-      visibleJobTypes: user?.visibleJobTypes,
-      writableJobTypes: user?.writableJobTypes,
-      candidates: [...JOB_TYPES],
-    });
-    return types.length ? types : [...JOB_TYPES];
+    return [...JOB_TYPES];
   }, [user]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['tenant', 'widgets', 'active-jobs-visible-v2', scopeTypes],
+    queryKey: ['tenant', 'widgets', 'active-jobs-v3', scopeTypes === null ? 'admin' : 'staff'],
     queryFn: () =>
       jobService.listVisibleJobs(
         { page: 1, limit: FETCH_LIMIT, order: 'desc' },
