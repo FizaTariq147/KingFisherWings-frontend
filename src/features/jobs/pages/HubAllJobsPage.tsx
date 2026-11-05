@@ -23,9 +23,10 @@ import {
 } from '../constants/job.constants';
 import { useJobLifecycleMutations } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
-import { useJobs } from '../hooks/useJobs';
 import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
+import { canonicalizeJobType } from '../utils/canonicalizeJobType';
+import { effectiveJobListType } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { normalizeJob } from '../utils/normalizeJob';
@@ -93,18 +94,26 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     () => jobMisDraftFromSearch(location.search, DEFAULT_JOB_PAGE_SIZE),
   );
 
-  // Staff: pass granted department types so list() runs admin-create recovery.
-  // Admin / NVOCC variant: keep configured filter (undefined = JWT all for management).
-  const scopeJobTypes = useMemo((): JobType[] | undefined => {
+  // Hard client filter only for hub variants with a fixed type set (NVOCC).
+  // Staff management trusts BE DB-resolved GET /jobs — do not re-filter by JWT
+  // role pack (that caused empty grids under operations_scope).
+  const hardClientTypes = useMemo((): JobType[] | null => {
     if (config.filterJobTypes?.length) return config.filterJobTypes;
-    if (isOpsUnrestrictedUser(user)) return undefined;
-    return resolveStaffListJobTypes({
+    return null;
+  }, [config.filterJobTypes]);
+
+  // Dropdown options: NVOCC fixed set, else staff resolved types, else all.
+  const jobTypeOptions = useMemo((): JobType[] => {
+    if (config.filterJobTypes?.length) return config.filterJobTypes;
+    if (isOpsUnrestrictedUser(user)) return config.jobTypes;
+    const scoped = resolveStaffListJobTypes({
       permissions: user?.permissions ?? [],
       visibleJobTypes: user?.visibleJobTypes,
       writableJobTypes: user?.writableJobTypes,
       candidates: [...JOB_TYPES],
     });
-  }, [config.filterJobTypes, user]);
+    return scoped.length ? scoped : config.jobTypes;
+  }, [config.filterJobTypes, config.jobTypes, user]);
 
   // Keep filters in sync when dashboard pills change ?status= / ?category=
   useEffect(() => {
@@ -120,22 +129,45 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     setPage(1);
   }, [variant, applied]);
 
-  const listParams = useMemo(() => {
-    const params = jobMisFilterDraftToListParams(applied, page, {
-      segmentJobTypes: scopeJobTypes,
+  const filterParams = useMemo(() => {
+    const params = jobMisFilterDraftToListParams(applied, 1, {
+      segmentJobTypes: undefined,
     });
+    // Plain GET /jobs — BE DB-resolves staff scope. Filter job_type client-side.
+    delete params.job_types;
+    delete params.job_type;
     // Default hub view: every creator in scope (admin + staff).
     if (!applied.createdBy?.trim()) delete params.created_by;
     if (!applied.salespersonId?.trim()) delete params.salesperson_id;
     if (!applied.departmentId?.trim()) delete params.department_id;
     return params;
-  }, [applied, page, scopeJobTypes]);
+  }, [applied]);
 
   const categoryFilter = applied.category.trim();
   const useCategoryList = Boolean(categoryFilter) && variant !== 'documentation';
 
-  const jobsQuery = useJobs(listParams, {
-    enabled: variant !== 'documentation' && !useCategoryList,
+  const jobsQuery = useQuery({
+    queryKey: ['tenant', 'jobs', 'hub-plain', variant, filterParams],
+    queryFn: async () => {
+      const byId = new Map<string, Job>();
+      for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
+        const result = await jobService.list({
+          ...filterParams,
+          page: pageNum,
+          limit: 100,
+          order: filterParams.order ?? 'desc',
+        });
+        for (const job of result.jobs ?? []) {
+          if (job?.id) byId.set(job.id, job);
+        }
+        const got = result.jobs?.length ?? 0;
+        if (got === 0) break;
+        if (pageNum * 100 >= (result.meta?.total ?? got)) break;
+      }
+      return { jobs: [...byId.values()] };
+    },
+    enabled: Boolean(accessToken) && variant !== 'documentation' && !useCategoryList,
+    staleTime: 15_000,
   });
   const categoryQuery = useQuery({
     queryKey: ['tenant', 'jobs', 'by-category', categoryFilter, page, applied.rows, applied.order],
@@ -149,32 +181,83 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     enabled: Boolean(accessToken) && useCategoryList,
   });
   const documentationQuery = useQuery({
-    queryKey: ['documentation', 'jobs', listParams],
+    queryKey: ['documentation', 'jobs', filterParams],
     queryFn: () =>
       documentationJobsService.list({
-        page: listParams.page,
-        limit: listParams.limit,
-        search: listParams.search,
-        status: listParams.status,
-        order: listParams.order,
-        from_date: listParams.from_date,
-        to_date: listParams.to_date,
-        branch_id: listParams.branch_id,
-        department_id: listParams.department_id,
+        page: 1,
+        limit: 100,
+        search: filterParams.search,
+        status: filterParams.status,
+        order: filterParams.order,
+        from_date: filterParams.from_date,
+        to_date: filterParams.to_date,
+        branch_id: filterParams.branch_id,
+        department_id: filterParams.department_id,
       }),
     enabled: variant === 'documentation',
   });
-  const data =
-    variant === 'documentation'
-      ? {
-          jobs: (documentationQuery.data?.items ?? [])
-            .map((row) => normalizeJob(row))
-            .filter((j): j is Job => Boolean(j)),
-          meta: documentationQuery.data?.meta,
-        }
-      : useCategoryList
-        ? categoryQuery.data
-        : jobsQuery.data;
+
+  const rawJobs = useMemo(() => {
+    if (variant === 'documentation') {
+      return (documentationQuery.data?.items ?? [])
+        .map((row) => normalizeJob(row))
+        .filter((j): j is Job => Boolean(j));
+    }
+    if (useCategoryList) return categoryQuery.data?.jobs ?? [];
+    return jobsQuery.data?.jobs ?? [];
+  }, [
+    variant,
+    useCategoryList,
+    documentationQuery.data?.items,
+    categoryQuery.data?.jobs,
+    jobsQuery.data?.jobs,
+  ]);
+
+  const filteredJobs = useMemo(() => {
+    const selectedType = applied.jobType?.trim();
+    const scopeSet = hardClientTypes
+      ? new Set(hardClientTypes.map((t) => canonicalizeJobType(String(t))))
+      : null;
+    return rawJobs.filter((job) => {
+      const type = effectiveJobListType(job);
+      if (selectedType) return type === canonicalizeJobType(selectedType);
+      if (scopeSet) return scopeSet.has(type);
+      return true;
+    });
+  }, [rawJobs, applied.jobType, hardClientTypes]);
+
+  const pageSize = applied.rows || DEFAULT_JOB_PAGE_SIZE;
+  const jobs = useMemo(() => {
+    if (useCategoryList) return filteredJobs;
+    const start = (page - 1) * pageSize;
+    return filteredJobs.slice(start, start + pageSize);
+  }, [filteredJobs, page, pageSize, useCategoryList]);
+
+  const meta = useMemo(() => {
+    if (useCategoryList) return categoryQuery.data?.meta;
+    if (variant === 'documentation') {
+      return {
+        page,
+        limit: pageSize,
+        total: filteredJobs.length,
+        totalPages: Math.max(1, Math.ceil(filteredJobs.length / pageSize) || 1),
+      };
+    }
+    return {
+      page,
+      limit: pageSize,
+      total: filteredJobs.length,
+      totalPages: Math.max(1, Math.ceil(filteredJobs.length / pageSize) || 1),
+    };
+  }, [
+    useCategoryList,
+    categoryQuery.data?.meta,
+    variant,
+    filteredJobs.length,
+    page,
+    pageSize,
+  ]);
+
   const isLoading =
     variant === 'documentation'
       ? documentationQuery.isLoading
@@ -206,8 +289,6 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
         ? categoryQuery.refetch
         : jobsQuery.refetch;
   const lifecycle = useJobLifecycleMutations();
-  const jobs = data?.jobs ?? [];
-  const meta = data?.meta;
 
   const run = async (job: Job, fn: () => Promise<unknown>, successMsg: string) => {
     setActionError(null);
@@ -303,7 +384,7 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
             submit();
           }}
           isSubmitting={isFetching}
-          jobTypeOptions={config.jobTypes}
+          jobTypeOptions={jobTypeOptions}
           jobTypeAllLabel={config.jobTypeFilterLabel}
         />
 

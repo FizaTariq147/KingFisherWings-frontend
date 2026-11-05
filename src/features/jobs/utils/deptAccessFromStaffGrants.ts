@@ -102,20 +102,42 @@ export function deptAllowedByVisibleJobTypes(
 /**
  * Derive department-scope tokens from operations_* matrix keys when
  * visible_job_types is an empty array (common after matrix-only assignment).
+ *
+ * When `operations_scope` is present, only keep codes that look like direct
+ * job-type grants (see|read|write on a concrete type). Skip bare role-pack
+ * filler that would re-open every department.
  */
 export function deriveVisibleTokensFromOpsPermissions(
   permissions: readonly string[],
 ): string[] {
+  const hasScope = permissions.some((raw) => {
+    if (typeof raw !== 'string') return false;
+    const key = normalizeJobTypeToken(raw);
+    return key === 'operations_scope' || key.startsWith('operations_scope.');
+  });
+
   const out = new Set<string>();
   for (const raw of permissions) {
     if (typeof raw !== 'string' || !raw.trim()) continue;
     const key = normalizeJobTypeToken(raw);
-    const dot = key.lastIndexOf('.');
-    if (dot <= 0) continue;
-    const prefix = key.slice(0, dot);
-    if (!prefix.startsWith('operations_') || prefix === 'operations_module') continue;
-    const sub = prefix.slice('operations_'.length);
-    if (!sub || sub === 'module') continue;
+    if (key === 'operations_scope' || key.startsWith('operations_scope.')) continue;
+
+    const dotted = key.match(/^operations_([a-z0-9_]+)\.(see|read|write)$/);
+    if (!dotted) {
+      // Without a scope marker, also accept bare operations_* prefixes.
+      if (hasScope) continue;
+      const dot = key.lastIndexOf('.');
+      if (dot <= 0) continue;
+      const prefix = key.slice(0, dot);
+      if (!prefix.startsWith('operations_') || prefix === 'operations_module') continue;
+      const sub = prefix.slice('operations_'.length);
+      if (!sub || sub === 'module' || sub === 'scope') continue;
+      out.add(sub);
+      continue;
+    }
+
+    const sub = dotted[1];
+    if (!sub || sub === 'module' || sub === 'scope') continue;
     out.add(sub);
     if (sub.includes('air_export')) out.add('air_export');
     if (sub.includes('air_import')) out.add('air_import');

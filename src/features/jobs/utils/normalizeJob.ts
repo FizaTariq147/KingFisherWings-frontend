@@ -220,7 +220,13 @@ export function normalizePaginationMeta(
   raw: unknown,
   fallbackTotal: number,
   params: JobListParams,
-): { page: number; limit: number; total: number; totalPages: number } {
+): {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  visible_job_types?: string[] | null;
+} {
   const record = asRecord(raw);
   const page = Number(record?.page ?? params.page ?? 1) || 1;
   const limit = Number(record?.limit ?? params.limit ?? 20) || 20;
@@ -228,7 +234,31 @@ export function normalizePaginationMeta(
   const totalPages =
     Number(record?.totalPages ?? record?.total_pages) ||
     Math.max(1, Math.ceil(total / Math.max(limit, 1)));
-  return { page, limit, total, totalPages };
+
+  const meta: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    visible_job_types?: string[] | null;
+  } = { page, limit, total, totalPages };
+
+  // Present when BE returns the DB-resolved staff scope (null = admin).
+  if (
+    record &&
+    Object.prototype.hasOwnProperty.call(record, 'visible_job_types')
+  ) {
+    const rawVisible = record.visible_job_types;
+    if (rawVisible === null) {
+      meta.visible_job_types = null;
+    } else if (Array.isArray(rawVisible)) {
+      meta.visible_job_types = rawVisible
+        .map((v) => String(v ?? '').trim())
+        .filter(Boolean);
+    }
+  }
+
+  return meta;
 }
 
 function normalizeChargeSide(

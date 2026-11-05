@@ -27,12 +27,14 @@ const CLOSED = new Set(CLOSED_JOB_STATUSES.map(String));
 
 /**
  * Active shipments for admin + staff.
- * Trust BE GET /jobs (staff scoped by visible_job_types, any creator).
- * Do not client-filter by job_type — that was wiping staff grids when type
- * labels disagreed with /me grants. Exclude only completed / cancelled.
+ * Always plain GET /jobs (no job_type) — BE DB-resolves staff departments.
+ * Sending job_type when it is missing from the token yields job_type:{in:[]}
+ * while dashboard-counts (no job_type) still show totals.
+ * Exclude only completed / cancelled. No creator filter.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
+  /** Optional client-side type filter only — never sent as GET ?job_type=. */
   jobType?: string;
   branchId?: string;
   rowLimit?: number;
@@ -47,7 +49,7 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'jwt-list-v6',
+      'jwt-list-v7',
       jobType,
       branchId,
       rowLimit,
@@ -60,6 +62,7 @@ export function useDashboardActiveJobs(options?: {
         const status = normalizeStatus(job.status);
         if (CLOSED.has(status)) return;
         const resolvedType = effectiveJobListType(job);
+        if (jobType && resolvedType !== jobType) return;
         byId.set(
           job.id,
           job.job_type === resolvedType && status === job.status
@@ -73,7 +76,8 @@ export function useDashboardActiveJobs(options?: {
         created_by: undefined,
         salesperson_id: undefined,
         department_id: undefined,
-        ...(jobType ? { job_type: jobType as JobListParams['job_type'] } : {}),
+        job_type: undefined,
+        job_types: undefined,
         ...(branchId ? { branch_id: branchId } : {}),
       };
 

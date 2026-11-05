@@ -31,8 +31,9 @@ import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 /**
  * Department job list — admin and staff use the same plain GET /jobs.
- * Do not pass job_types (that triggered a merge path that emptied staff grids).
- * BE scopes staff by JWT visible_job_types; FE only filters to this department.
+ * Never send job_type / job_types (typed queries become {in:[]} when the type
+ * is missing from the token while dashboard-counts still show totals).
+ * BE DB-resolves staff departments; FE only filters to this department segment.
  */
 export default function JobListPage() {
   const navigate = useNavigate();
@@ -71,13 +72,15 @@ export default function JobListPage() {
     [allowedSegmentTypes],
   );
 
-  // Shared filters with admin/staff — never send job_types / created_by by default.
+  // Shared filters with admin/staff — never send job_type / job_types.
+  // Typed queries become job_type:{in:[]} when the type is missing from the token
+  // while dashboard-counts (no job_type) still show totals. Filter client-side.
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
       segmentJobTypes: undefined,
     });
     delete params.job_types;
-    if (!applied.jobType?.trim()) delete params.job_type;
+    delete params.job_type;
     if (!applied.createdBy?.trim()) delete params.created_by;
     if (!applied.salespersonId?.trim()) delete params.salesperson_id;
     if (!applied.departmentId?.trim()) delete params.department_id;

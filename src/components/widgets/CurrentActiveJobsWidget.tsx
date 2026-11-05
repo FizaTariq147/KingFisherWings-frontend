@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { DashboardCard } from '@/components/dashboard/DashboardCard';
 import {
@@ -10,13 +9,9 @@ import {
   TableRow,
 } from '@/components/ui/Table';
 import { JobStatusBadge } from '@/features/jobs/components/JobStatusBadge';
-import type { JobStatus, JobType } from '@/features/jobs/constants/job.constants';
-import { JOB_TYPES } from '@/features/jobs/constants/job.constants';
+import type { JobStatus } from '@/features/jobs/constants/job.constants';
 import { useJobs } from '@/features/jobs/hooks/useJobs';
 import { useDashboardJobCounts } from '@/features/auth/dashboard/hooks/useDashboardJobCounts';
-import { useAuth } from '@/hooks/useAuth';
-import { canonicalizeJobType } from '@/features/jobs/utils/canonicalizeJobType';
-import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
 import {
   jobDetailPath,
   jobDisplayNumber,
@@ -36,29 +31,17 @@ function formatEtd(value?: string): string {
 }
 
 /**
- * Dashboard card: latest jobs from GET /jobs (BE scopes by JWT).
- * Badge / title count uses dashboard job_count — not open / created_in_period.
+ * Dashboard card: latest jobs from plain GET /jobs (BE scopes by DB-resolved types).
+ * Do not send job_types — typed fan-out empties staff grids when a type is
+ * missing from the token while dashboard job_count still shows totals.
  */
 export function CurrentActiveJobsWidget() {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const jobCounts = useDashboardJobCounts('month');
-  const staffJobTypes = useMemo((): JobType[] | undefined => {
-    if (isOpsUnrestrictedUser(user)) return undefined;
-    const types = new Set<JobType>();
-    for (const raw of [
-      ...(Array.isArray(user?.visibleJobTypes) ? user.visibleJobTypes : []),
-      ...(Array.isArray(user?.writableJobTypes) ? user.writableJobTypes : []),
-    ]) {
-      types.add(canonicalizeJobType(raw));
-    }
-    return types.size ? [...types] : [...JOB_TYPES];
-  }, [user]);
   const { data, isLoading, isError } = useJobs({
     page: 1,
     limit: FETCH_LIMIT,
     order: 'desc',
-    ...(staffJobTypes?.length ? { job_types: staffJobTypes } : {}),
   });
 
   const activeJobs = (data?.jobs ?? [])
