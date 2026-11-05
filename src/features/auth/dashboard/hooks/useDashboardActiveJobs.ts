@@ -47,7 +47,7 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'jwt-list-v4',
+      'jwt-list-v5',
       jobType,
       branchId,
       rowLimit,
