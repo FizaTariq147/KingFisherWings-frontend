@@ -170,6 +170,11 @@ interface JobMisFiltersProps {
   /** Restrict job-type dropdown (e.g. NVOCC hub); default = OpenAPI job_type enum. */
   jobTypeOptions?: JobType[];
   jobTypeAllLabel?: string;
+  /**
+   * Org master department filter (admin MIS only).
+   * Staff visibility is job type — not org department_id (omit for /jobs/all).
+   */
+  showOrgDepartmentFilter?: boolean;
 }
 
 /**
@@ -183,6 +188,7 @@ export function JobMisFilters({
   isSubmitting,
   jobTypeOptions = [...JOB_TYPES],
   jobTypeAllLabel = 'All',
+  showOrgDepartmentFilter = true,
 }: JobMisFiltersProps) {
   const patch = (partial: Partial<JobMisFilterDraft>) =>
     onDraftChange({ ...draft, ...partial });
@@ -205,7 +211,7 @@ export function JobMisFilters({
   const { data: departments = [] } = useMasterOptions(
     'departments',
     MASTER_PATHS.departments,
-    true,
+    showOrgDepartmentFilter,
   );
   const { data: ports = [] } = useMasterOptions('ports', MASTER_PATHS.ports, true);
   const { data: partiesResult } = useParties({
@@ -370,13 +376,15 @@ export function JobMisFilters({
           />
         </EnquirySheetFilterField>
 
-        <EnquirySheetFilterField label="Department">
-          <EnquirySheetSelect
-            options={departmentOptions}
-            value={draft.departmentId}
-            onChange={(e) => patch({ departmentId: e.target.value })}
-          />
-        </EnquirySheetFilterField>
+        {showOrgDepartmentFilter ? (
+          <EnquirySheetFilterField label="Department">
+            <EnquirySheetSelect
+              options={departmentOptions}
+              value={draft.departmentId}
+              onChange={(e) => patch({ departmentId: e.target.value })}
+            />
+          </EnquirySheetFilterField>
+        ) : null}
 
         <EnquirySheetFilterField label="Origin">
           <EnquirySheetSelect

@@ -38,8 +38,10 @@ export type DashboardJobCountScope = {
 /**
  * Dashboard job KPIs from GET /jobs/dashboard-counts.
  * Bind total-jobs UI to `jobCount` (same as `total`). Never use `open` for that.
- * Do not send created_by / department_id / user id — BE scopes by JWT job types.
- * Optional `job_type` / `branch_id` must match the list filters when used.
+ * Do not send created_by / department_id / user id — BE scopes by resolveVisibleJobTypes
+ * (job type grants). Org department_id is not staff ACL (most jobs have department_id null).
+ * Optional `job_type` / `branch_id` must match the list filters when used;
+ * then job_count === GET /jobs meta.total.
  */
 export function useDashboardJobCounts(
   period: DashboardPeriod = 'month',

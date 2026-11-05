@@ -53,22 +53,16 @@ function intersectCandidates(
  * fall back to the same sidebar dept access matrix (not the full JOB_TYPES catalog).
  * Never send job_type on the default request.
  *
- * --- Staff “Total Jobs OK / grids empty” ---
- * Counts use GET /jobs/dashboard-counts; grids use GET /jobs. When JWT has
- * operations_scope without concrete operations_{type}.see|read|write (or frozen
- * grants disagree with DB), list can return empty while job_count is correct.
+ * --- Staff visibility (aligned with BE) ---
+ * GET /jobs and GET /jobs/dashboard-counts share resolveVisibleJobTypes.
+ * Staff “department” = job type grants — never org department_id (most jobs
+ * have department_id null; sending the user’s org dept collapses the list).
+ * For the same branch_id and no job_type/status/search/dates:
+ * meta.total === job_count; meta/data.visible_job_types is the exact scope
+ * (null = admin).
  *
- * Admin must grant for each department staff should see, then staff re-login:
- * 1. Matrix: operations_{dept} / operations_sea_fcl_export (etc.) see|read|write
- * 2. Persist visible_job_types (+ writable_job_types if they create) — not only
- *    a role pack + bare operations_scope
- * 3. Avoid a role pack that includes every operations_* type (shows all depts)
- * 4. Confirm /auth/me shows those codes after re-login
- *
- * Permanent BE fix (not in this repo): resolveVisibleJobTypes(tx, tenantId,
- * userId, role) on each request for findAll, dashboard-counts, search,
- * documentation, shipments — return meta.visible_job_types (null = admin) and
- * keep meta.total === job_count for the same job_type + branch_id.
+ * Do not send created_by / ops_user_id / salesperson_id / department_id unless
+ * the user explicitly filters (admin MIS may use org department_id).
  */
 export function useVisibleJobListScope(
   opts?: {

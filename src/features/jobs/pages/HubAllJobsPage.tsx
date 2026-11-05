@@ -71,10 +71,12 @@ export interface HubAllJobsPageProps {
   variant: HubAllJobsVariant;
   backTo: string;
   title: string;
+  /** Overrides variant default subtitle (e.g. staff /jobs/all). */
+  subtitle?: string;
 }
 
 /** Hub All Jobs list — reuses Jobs API/table; chrome matches Management/NVOCC/Documentation shells. */
-export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPageProps) {
+export default function HubAllJobsPage({ variant, backTo, title, subtitle }: HubAllJobsPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const accessToken = useAuthStore((s) => s.accessToken);
@@ -145,6 +147,8 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     setPage(1);
   }, [variant, applied]);
 
+  const isStaffScoped = scopeTypes !== null;
+
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
       segmentJobTypes: undefined,
@@ -155,9 +159,13 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     // Default hub view: every creator in scope (admin + staff).
     if (!applied.createdBy?.trim()) delete params.created_by;
     if (!applied.salespersonId?.trim()) delete params.salesperson_id;
-    if (!applied.departmentId?.trim()) delete params.department_id;
+    // Staff ACL is job type, not org department_id (null on most jobs → 14→1).
+    // Admin MIS may still filter by org department.
+    if (isStaffScoped || !applied.departmentId?.trim()) {
+      delete params.department_id;
+    }
     return params;
-  }, [applied]);
+  }, [applied, isStaffScoped]);
 
   const categoryFilter = applied.category.trim();
   const useCategoryList = Boolean(categoryFilter) && variant !== 'documentation';
@@ -166,38 +174,48 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     queryKey: [
       'tenant',
       'jobs',
-      'hub-visible-v5',
+      'hub-visible-v7',
       variant,
       filterParams,
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
       probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
-      // Same number as dashboard Total jobs — drives recovery when GET /jobs under-delivers.
+      // Same ACL as Total jobs: branch_id only (no department_id / job_type).
       let expectedTotal = 0;
+      let countVisible: string[] | null | undefined;
       try {
         const counts = await jobService.dashboardCounts(
           filterParams.branch_id ? { branch_id: filterParams.branch_id } : {},
         );
         expectedTotal = Number(counts.jobCount ?? 0) || 0;
+        countVisible = counts.visibleJobTypes;
       } catch {
         expectedTotal = 0;
       }
 
+      // Prefer BE-reported scope from counts when present.
+      let listScope = scopeTypes;
+      let listProbes: JobType[] =
+        scopeTypes === null ? [] : probeTypes;
+      if (countVisible === null) {
+        listScope = null;
+        listProbes = [];
+      } else if (Array.isArray(countVisible) && countVisible.length > 0) {
+        listProbes = [
+          ...new Set(countVisible.map((t) => canonicalizeJobType(String(t)))),
+        ] as JobType[];
+        listScope = listProbes;
+      }
+
       const listOpts = {
-        scopeTypes,
-        scopeConfident: false,
-        probeTypes: scopeTypes === null ? ([] as JobType[]) : probeTypes,
+        scopeTypes: listScope,
+        scopeConfident: true,
+        probeTypes: listProbes,
         expectedTotal,
       };
 
       const byId = new Map<string, Job>();
-      const take = (jobs: Job[] | undefined) => {
-        for (const job of jobs ?? []) {
-          if (job?.id) byId.set(job.id, job);
-        }
-      };
-
       for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
         const result = await jobService.listVisibleJobs(
           {
@@ -205,49 +223,18 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
             page: pageNum,
             limit: 100,
             order: filterParams.order ?? 'desc',
+            // Never send org department on staff hub list (matches counts).
+            department_id: listScope === null ? filterParams.department_id : undefined,
           },
           listOpts,
         );
-        take(result.jobs);
+        for (const job of result.jobs ?? []) {
+          if (job?.id) byId.set(job.id, job);
+        }
         const got = result.jobs?.length ?? 0;
         if (got === 0) break;
         if (pageNum * 100 >= Math.max(result.meta?.total ?? got, expectedTotal)) break;
-        if (byId.size >= Math.max(expectedTotal, 1) && expectedTotal > 0) break;
-      }
-
-      // Count says N but list only returned a few — force typed list merge for staff probes.
-      if (
-        expectedTotal > byId.size &&
-        scopeTypes !== null &&
-        probeTypes.length > 0
-      ) {
-        const typed = await jobService.list({
-          ...filterParams,
-          page: 1,
-          limit: 100,
-          job_type: undefined,
-          job_types: [...probeTypes],
-          created_by: undefined,
-          salesperson_id: undefined,
-          department_id: undefined,
-        });
-        take(typed.jobs);
-
-        const catchUp = await jobService.listVisibleJobs(
-          {
-            ...filterParams,
-            page: 1,
-            limit: 100,
-            order: filterParams.order ?? 'desc',
-          },
-          {
-            scopeTypes: probeTypes,
-            scopeConfident: false,
-            probeTypes,
-            expectedTotal,
-          },
-        );
-        take(catchUp.jobs);
+        if (expectedTotal > 0 && byId.size >= expectedTotal) break;
       }
 
       return { jobs: [...byId.values()], expectedTotal };
@@ -278,7 +265,8 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
         from_date: filterParams.from_date,
         to_date: filterParams.to_date,
         branch_id: filterParams.branch_id,
-        department_id: filterParams.department_id,
+        // Staff: omit org department_id (same ACL as jobs list / counts).
+        ...(isStaffScoped ? {} : { department_id: filterParams.department_id }),
       }),
     enabled: variant === 'documentation',
   });
@@ -406,7 +394,7 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
         <div className={listShell.header}>
           <div className="min-w-0">
             <h2 className={appType.pageTitle}>{title}</h2>
-            <p className={appType.pageSubtitle}>{config.subtitle}</p>
+            <p className={appType.pageSubtitle}>{subtitle ?? config.subtitle}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2 shrink-0">
             <Button
@@ -472,6 +460,7 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
           isSubmitting={isFetching}
           jobTypeOptions={jobTypeOptions}
           jobTypeAllLabel={config.jobTypeFilterLabel}
+          showOrgDepartmentFilter={!isStaffScoped}
         />
 
         {actionError ? (
