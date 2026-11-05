@@ -32,8 +32,8 @@ import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 /**
  * Department job list.
- * Staff scope = direct grants / role preset for this segment only (never full
- * JOB_TYPES fan-out). Plain GET /jobs — no job_type query that collapses under
+ * Staff: sidebar-aligned segment probes (never full JOB_TYPES). Plain GET /jobs
+ * first — no hard-empty on uncertain JWT scope; no job_type that collapses under
  * operations_scope. Client-filters to this department; any creator in scope.
  */
 export default function JobListPage() {
@@ -73,10 +73,19 @@ export default function JobListPage() {
     [allowedSegmentTypes],
   );
 
-  // Admin: null. Staff: only types granted for this department segment.
-  const { scopeTypes, kind } = useVisibleJobListScope({
+  // Admin: null. Staff: segment ∩ (/me ∪ direct ops ∪ sidebar dept access).
+  const { scopeTypes, scopeConfident, probeTypes, kind } = useVisibleJobListScope({
     candidates: allowedSegmentTypes,
   });
+
+  const listOpts = useMemo(
+    () => ({
+      scopeTypes,
+      scopeConfident,
+      probeTypes: scopeTypes === null ? ([] as JobType[]) : probeTypes,
+    }),
+    [scopeTypes, scopeConfident, probeTypes],
+  );
 
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
@@ -94,11 +103,13 @@ export default function JobListPage() {
     queryKey: [
       'tenant',
       'jobs',
-      'department-all-v4',
+      'department-all-v5',
       segment,
       filterParams,
       kind,
+      scopeConfident ? 'confident' : 'uncertain',
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
+      probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
       const byId = new Map<string, Job>();
@@ -109,7 +120,7 @@ export default function JobListPage() {
           limit: 100,
           order: filterParams.order ?? 'desc',
         },
-        { scopeTypes },
+        listOpts,
       );
       for (const job of first.jobs ?? []) {
         if (job?.id) byId.set(job.id, job);
@@ -125,7 +136,7 @@ export default function JobListPage() {
             limit: 100,
             order: filterParams.order ?? 'desc',
           },
-          { scopeTypes },
+          listOpts,
         );
         for (const job of more.jobs ?? []) {
           if (job?.id) byId.set(job.id, job);

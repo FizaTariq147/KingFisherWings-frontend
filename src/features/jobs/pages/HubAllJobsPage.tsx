@@ -108,11 +108,33 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
       return hardClientTypes;
     }
     if (hardClientTypes?.length) {
-      const allowed = new Set(staffScope.scopeTypes);
+      const allowed = new Set(
+        staffScope.probeTypes.length
+          ? staffScope.probeTypes
+          : staffScope.scopeTypes,
+      );
       return hardClientTypes.filter((t) => allowed.has(t));
     }
     return staffScope.scopeTypes;
-  }, [hardClientTypes, staffScope.scopeTypes]);
+  }, [hardClientTypes, staffScope.scopeTypes, staffScope.probeTypes]);
+
+  const probeTypes = useMemo((): JobType[] => {
+    if (scopeTypes === null) return [];
+    if (Array.isArray(scopeTypes) && scopeTypes.length) return scopeTypes;
+    return staffScope.probeTypes;
+  }, [scopeTypes, staffScope.probeTypes]);
+
+  const scopeConfident =
+    scopeTypes === null ? true : staffScope.scopeConfident;
+
+  const listOpts = useMemo(
+    () => ({
+      scopeTypes,
+      scopeConfident,
+      probeTypes,
+    }),
+    [scopeTypes, scopeConfident, probeTypes],
+  );
 
   const jobTypeOptions = useMemo((): JobType[] => {
     if (Array.isArray(scopeTypes) && scopeTypes.length) return scopeTypes;
@@ -156,10 +178,12 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     queryKey: [
       'tenant',
       'jobs',
-      'hub-visible-v3',
+      'hub-visible-v4',
       variant,
       filterParams,
+      scopeConfident ? 'confident' : 'uncertain',
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
+      probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
       const byId = new Map<string, Job>();
@@ -171,7 +195,7 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
             limit: 100,
             order: filterParams.order ?? 'desc',
           },
-          { scopeTypes },
+          listOpts,
         );
         for (const job of result.jobs ?? []) {
           if (job?.id) byId.set(job.id, job);

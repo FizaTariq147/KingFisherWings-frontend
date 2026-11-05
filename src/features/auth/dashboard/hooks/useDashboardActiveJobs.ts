@@ -25,9 +25,9 @@ function normalizeStatus(status: unknown): string {
 const CLOSED = new Set(CLOSED_JOB_STATUSES.map(String));
 
 /**
- * Active shipments grid — show every non-closed job in the staff department
- * allow-list (any creator). FE never probes the full role pack / every JOB_TYPE.
- * Prefer BE meta.visible_job_types when list returns it.
+ * Active shipments grid — every non-closed job in staff department grants
+ * (any creator). Uses sidebar-aligned probes when /me tokens are empty; never
+ * hard-empties on uncertain FE scope. Prefer BE meta.visible_job_types when present.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -36,7 +36,7 @@ export function useDashboardActiveJobs(options?: {
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const { scopeTypes, kind } = useVisibleJobListScope();
+  const { scopeTypes, scopeConfident, probeTypes, kind } = useVisibleJobListScope();
   const rowLimit = options?.rowLimit ?? 500;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
@@ -46,15 +46,17 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'staff-dept-v11',
+      'staff-dept-v12',
       jobType,
       branchId,
       rowLimit,
       kind,
+      scopeConfident ? 'confident' : 'uncertain',
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
+      probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
-      // Pull the same total the KPI uses so we know when the grid is incomplete.
+      // KPI total — same ACL path as the grid should cover.
       let expectedTotal = 0;
       try {
         const counts = await jobService.dashboardCounts(
@@ -65,6 +67,12 @@ export function useDashboardActiveJobs(options?: {
         expectedTotal = 0;
       }
 
+      const listOpts = {
+        scopeTypes,
+        scopeConfident,
+        probeTypes: scopeTypes === null ? [] : probeTypes,
+      };
+
       const collected = await jobService.listVisibleJobs(
         {
           page: 1,
@@ -72,7 +80,7 @@ export function useDashboardActiveJobs(options?: {
           order: 'desc',
           ...(branchId ? { branch_id: branchId } : {}),
         },
-        { scopeTypes },
+        listOpts,
       );
 
       const byId = new Map<string, Job>();
@@ -97,7 +105,10 @@ export function useDashboardActiveJobs(options?: {
       // listVisibleJobs pages internally then slices — pull remaining pages if needed.
       const reported = collected.meta?.total ?? byId.size;
       const pageSize = 100;
-      const maxPages = Math.min(10, Math.ceil(Math.max(reported, expectedTotal, 1) / pageSize));
+      const maxPages = Math.min(
+        10,
+        Math.ceil(Math.max(reported, expectedTotal, 1) / pageSize),
+      );
       for (let page = 2; page <= maxPages; page += 1) {
         const more = await jobService.listVisibleJobs(
           {
@@ -106,11 +117,34 @@ export function useDashboardActiveJobs(options?: {
             order: 'desc',
             ...(branchId ? { branch_id: branchId } : {}),
           },
-          { scopeTypes },
+          listOpts,
         );
         take(more.jobs);
         if ((more.jobs?.length ?? 0) === 0) break;
         if (byId.size >= rowLimit) break;
+      }
+
+      // Count > grid: re-run recovery with probe types when untyped list under-delivered.
+      if (
+        expectedTotal > byId.size &&
+        scopeTypes !== null &&
+        probeTypes.length > 0 &&
+        byId.size < rowLimit
+      ) {
+        const catchUp = await jobService.listVisibleJobs(
+          {
+            page: 1,
+            limit: Math.min(rowLimit, 100),
+            order: 'desc',
+            ...(branchId ? { branch_id: branchId } : {}),
+          },
+          {
+            scopeTypes: probeTypes,
+            scopeConfident: false,
+            probeTypes,
+          },
+        );
+        take(catchUp.jobs);
       }
 
       const rows = [...byId.values()].sort(
