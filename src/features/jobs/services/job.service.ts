@@ -1069,23 +1069,18 @@ async function mergeRecentCreatedJobs(
 export const jobService = {
   /**
    * Load jobs for Active shipments / department / hub.
-   * BE owns JWT / operations_scope visibility. FE responsibility:
-   * - Admin (`scopeTypes: null`): plain GET /jobs
-   * - Staff: always try plain GET /jobs first — never hard-empty on uncertain FE scope
-   * - Typed fan-out + search recovery use `probeTypes` (or scopeTypes) — granted /
-   *   sidebar depts only, never the full JOB_TYPES catalog
-   * - Client-filter plain rows only when `scopeConfident` (or BE meta.visible_job_types)
-   * - Hard empty only when BE returns meta.visible_job_types: []
-   * Never invent created_by / ops_user / salesperson filters.
+   * BE owns visibility (same rule as dashboard-counts after deploy).
+   * FE:
+   * - Always plain GET /jobs first — **trust BE rows** (no client job_type drop on plain list;
+   *   that was blanking Sea/etc. when labels/mid-codes disagreed with FE allow-list)
+   * - If under-delivered vs expectedTotal, recover via typed + search for probeTypes only
+   * - Never invent created_by / ops_user / salesperson filters
    */
   async listVisibleJobs(
     params: JobListParams = {},
     opts?: {
       scopeTypes?: JobType[] | null;
-      /**
-       * When true, drop plain-list rows outside scopeTypes.
-       * When false (operations_scope / empty /me), keep plain rows and rely on probes.
-       */
+      /** Kept for callers; plain list is no longer client-filtered by this. */
       scopeConfident?: boolean;
       /** Typed fan-out + search recovery targets (defaults to scopeTypes). */
       probeTypes?: JobType[] | null;
@@ -1102,18 +1097,13 @@ export const jobService = {
     const expectedTotal = Math.max(0, Number(opts?.expectedTotal ?? 0) || 0);
 
     const isAdmin = opts?.scopeTypes === null || opts?.scopeTypes === undefined;
-    let effectiveScope: JobType[] | null = isAdmin
-      ? null
-      : Array.isArray(opts?.scopeTypes)
-        ? opts.scopeTypes
-        : null;
-    let scopeConfident = Boolean(opts?.scopeConfident) && !isAdmin;
     let probeTypes: JobType[] = Array.isArray(opts?.probeTypes)
       ? opts.probeTypes
-      : Array.isArray(effectiveScope)
-        ? effectiveScope
+      : Array.isArray(opts?.scopeTypes)
+        ? opts.scopeTypes
         : [];
     let metaVisible: string[] | null | undefined;
+    let plainApiTotal = 0;
 
     const baseParams: JobListParams = {
       ...params,
@@ -1143,7 +1133,7 @@ export const jobService = {
       }
     };
 
-    // 1) Plain JWT / DB-scoped pages — always attempt (never skip for empty FE scope).
+    // 1) Plain GET /jobs — trust BE-scoped rows (same visibility as job_count).
     try {
       let pageNum = 1;
       let reported = Number.POSITIVE_INFINITY;
@@ -1164,41 +1154,22 @@ export const jobService = {
           Object.prototype.hasOwnProperty.call(result.meta, 'visible_job_types')
         ) {
           metaVisible = result.meta.visible_job_types;
-          // Authoritative BE scope for this request.
           if (metaVisible === null) {
-            effectiveScope = null;
-            scopeConfident = false;
+            // Admin / unrestricted — no staff probes needed once plain list is complete.
             probeTypes = [];
-          } else if (Array.isArray(metaVisible)) {
-            if (!metaVisible.length) {
-              // Only authoritative empty allow-list may hard-empty.
-              return {
-                ...emptyJobListResult(limit),
-                meta: {
-                  page,
-                  limit,
-                  total: 0,
-                  totalPages: 1,
-                  visible_job_types: [],
-                },
-              };
-            }
-            effectiveScope = [
+          } else if (Array.isArray(metaVisible) && metaVisible.length > 0) {
+            probeTypes = [
               ...new Set(metaVisible.map((t) => canonicalizeJobType(String(t)))),
             ] as JobType[];
-            probeTypes = effectiveScope;
-            scopeConfident = true;
           }
+          // Empty visible_job_types + expectedTotal > 0: do NOT hard-empty — recover below.
         }
-        // Filter plain rows only when scope is confident (or BE meta said so).
-        const allow =
-          scopeConfident &&
-          Array.isArray(effectiveScope) &&
-          effectiveScope.length > 0
-            ? new Set(effectiveScope.map((t) => canonicalizeJobType(String(t))))
-            : null;
-        ingest(result.jobs, allow);
-        if (typeof result.meta?.total === 'number') reported = result.meta.total;
+        // Critical: do not client-filter plain BE rows by FE allow-list.
+        ingest(result.jobs, null);
+        if (typeof result.meta?.total === 'number') {
+          reported = result.meta.total;
+          plainApiTotal = Math.max(plainApiTotal, result.meta.total);
+        }
         const got = result.jobs?.length ?? 0;
         if (got === 0) break;
         if (pageNum * pageSize >= reported) break;
@@ -1208,8 +1179,15 @@ export const jobService = {
       /* typed merge below */
     }
 
-    // 2) Staff recovery: fan-out granted / sidebar probe types (never full JOB_TYPES).
-    if (probeTypes.length > 0) {
+    const needRecovery =
+      !isAdmin &&
+      probeTypes.length > 0 &&
+      (byId.size === 0 ||
+        (expectedTotal > 0 && byId.size < expectedTotal) ||
+        (plainApiTotal > 0 && byId.size < plainApiTotal));
+
+    // 2) Staff recovery only when plain list under-delivers vs count / API total.
+    if (needRecovery) {
       const allowProbe = new Set(
         probeTypes.map((t) => canonicalizeJobType(String(t))),
       );
@@ -1219,12 +1197,10 @@ export const jobService = {
         /* keep plain rows */
       }
 
-      // 3) Search-prefix recovery — merge, do not require empty first.
-      const needDeepSearch =
-        expectedTotal > byId.size || byId.size === 0;
-      const searchPages = needDeepSearch
-        ? Math.min(20, Math.max(8, Math.ceil(Math.max(expectedTotal, 1) / API_LIST_LIMIT_MAX) + 2))
-        : 5;
+      const searchPages = Math.min(
+        20,
+        Math.max(8, Math.ceil(Math.max(expectedTotal, plainApiTotal, 1) / API_LIST_LIMIT_MAX) + 2),
+      );
       try {
         ingest(
           await fetchJobsVisibleViaSearchRecovery(baseParams, probeTypes, {
@@ -1236,8 +1212,7 @@ export const jobService = {
         /* keep what we have */
       }
 
-      // 4) Count OK / rows empty: one more deep search pass (dashboard-counts path).
-      if (expectedTotal > byId.size && byId.size < expectedTotal) {
+      if (expectedTotal > byId.size) {
         try {
           ingest(
             await fetchJobsVisibleViaSearchRecovery(baseParams, probeTypes, {
@@ -1256,20 +1231,27 @@ export const jobService = {
       return order === 'asc' ? diff : -diff;
     });
 
+    // Prefer BE plain total when it matches/exceeds merged (counts aligned with list).
+    const total = Math.max(
+      merged.length,
+      plainApiTotal > 0 && plainApiTotal >= merged.length ? plainApiTotal : 0,
+      expectedTotal > 0 && expectedTotal === plainApiTotal ? expectedTotal : 0,
+    );
+
     const start = (page - 1) * limit;
     return {
       jobs: merged.slice(start, start + limit),
       meta: {
         page,
         limit,
-        total: merged.length,
-        totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
+        total: total || merged.length,
+        totalPages: Math.max(1, Math.ceil((total || merged.length) / limit) || 1),
         ...(metaVisible !== undefined
           ? { visible_job_types: metaVisible }
-          : Array.isArray(effectiveScope) && scopeConfident
-            ? { visible_job_types: effectiveScope }
-            : effectiveScope === null && isAdmin
-              ? { visible_job_types: null }
+          : isAdmin
+            ? { visible_job_types: null }
+            : Array.isArray(probeTypes) && probeTypes.length
+              ? { visible_job_types: probeTypes }
               : {}),
       },
     };

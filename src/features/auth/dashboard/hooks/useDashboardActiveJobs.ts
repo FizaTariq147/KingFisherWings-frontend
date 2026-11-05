@@ -36,7 +36,7 @@ export function useDashboardActiveJobs(options?: {
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const { scopeTypes, scopeConfident, probeTypes, kind } = useVisibleJobListScope();
+  const { scopeTypes, probeTypes, kind } = useVisibleJobListScope();
   const rowLimit = options?.rowLimit ?? 500;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
@@ -46,12 +46,11 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'staff-dept-v13',
+      'staff-dept-v14',
       jobType,
       branchId,
       rowLimit,
       kind,
-      scopeConfident ? 'confident' : 'uncertain',
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
       probeTypes.slice().sort().join(','),
     ],
@@ -67,9 +66,10 @@ export function useDashboardActiveJobs(options?: {
       }
 
       const staffProbes = scopeTypes === null ? [] : probeTypes;
+      // Trust BE plain list (same rule as job_count); do not FE-filter types away.
       const listOpts = {
         scopeTypes,
-        scopeConfident,
+        scopeConfident: false,
         probeTypes: staffProbes,
         expectedTotal,
       };
