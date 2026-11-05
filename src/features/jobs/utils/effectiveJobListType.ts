@@ -15,8 +15,14 @@ export function inferJobTypeFromJobNumber(jobNumber?: string): JobType | undefin
   if (n.includes('/AE/') || n.includes('-AE-')) return 'AIR_EXPORT';
   if (n.includes('/AI/') || n.includes('-AI-')) return 'AIR_IMPORT';
   if (n.includes('/RF/') || n.includes('-RF-')) return 'ROAD_FREIGHT';
+  if (n.includes('/LD/') || n.includes('-LD-') || n.includes('/LN/') || n.includes('-LN-')) {
+    return 'LAND';
+  }
   if (n.includes('/CC/') || n.includes('-CC-')) return 'CUSTOMS_CLEARANCE';
-  if (n.includes('/NV/') || n.includes('-NV-')) return 'NVOCC_EXPORT';
+  if (n.includes('/NI/') || n.includes('-NI-')) return 'NVOCC_IMPORT';
+  if (n.includes('/NE/') || n.includes('-NE-') || n.includes('/NV/') || n.includes('-NV-')) {
+    return 'NVOCC_EXPORT';
+  }
   if (n.includes('/CR/') || n.includes('-CR-')) return 'COURIER';
   return undefined;
 }

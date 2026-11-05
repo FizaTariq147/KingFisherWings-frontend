@@ -908,17 +908,20 @@ async function fetchJobsVisibleViaSearchRecovery(
           const rows = page.jobs ?? [];
           for (const job of rows) {
             if (!job?.id) continue;
+            const fromNum = inferJobTypeFromJobNumber(job.job_number);
+            const rawField = job.job_type
+              ? canonicalizeJobType(String(job.job_type))
+              : undefined;
             let type = effectiveListJobType(job);
-            // Type-specific prefix search: stamp mid-code type when list omits/mis-labels it.
-            if (tokenType && allowed.has(tokenType) && (!type || !allowed.has(type))) {
-              type = tokenType;
+            // Prefer mid-code / search-token stamps over AIR_EXPORT fallback.
+            if (fromNum && allowed.has(fromNum)) type = fromNum;
+            else if (tokenType && allowed.has(tokenType)) type = tokenType;
+            else if (rawField && allowed.has(rawField)) type = rawField;
+            else if (!allowed.has(type)) {
+              // Missing type defaulted to AIR_EXPORT — keep via granted search token.
+              if (tokenType && allowed.has(tokenType) && !job.job_type) type = tokenType;
+              else continue;
             }
-            // Untyped JOB/ search: still stamp from job_number mid-code into allow-list.
-            if (!allowed.has(type)) {
-              const fromNum = inferJobTypeFromJobNumber(job.job_number);
-              if (fromNum && allowed.has(fromNum)) type = fromNum;
-            }
-            if (!allowed.has(type)) continue;
             byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
           }
           if (rows.length === 0) break;
@@ -1182,20 +1185,19 @@ export const jobService = {
       /* typed merge below */
     }
 
-    const needRecovery =
-      !isAdmin &&
-      probeTypes.length > 0 &&
-      (byId.size === 0 ||
-        (expectedTotal > 0 && byId.size < expectedTotal) ||
-        (plainApiTotal > 0 && byId.size < plainApiTotal));
+    const underDelivered =
+      byId.size === 0 ||
+      (expectedTotal > 0 && byId.size < expectedTotal) ||
+      (plainApiTotal > 0 && byId.size < plainApiTotal);
 
-    // 2) Staff recovery only when plain list under-delivers vs count / API total.
+    const needRecovery =
+      !isAdmin && underDelivered && probeTypes.length > 0;
+
+    // 2) Staff recovery when plain list under-delivers vs count / API total.
+    // Trust BE typed/search rows (no client allow-list drop — that caused 14→0).
     if (needRecovery) {
-      const allowProbe = new Set(
-        probeTypes.map((t) => canonicalizeJobType(String(t))),
-      );
       try {
-        ingest(await fetchJobsViaGrantedTypeFanOut(baseParams, probeTypes), allowProbe);
+        ingest(await fetchJobsViaGrantedTypeFanOut(baseParams, probeTypes), null);
       } catch {
         /* keep plain rows */
       }
@@ -1209,7 +1211,7 @@ export const jobService = {
           await fetchJobsVisibleViaSearchRecovery(baseParams, probeTypes, {
             maxPages: searchPages,
           }),
-          allowProbe,
+          null,
         );
       } catch {
         /* keep what we have */
@@ -1221,7 +1223,7 @@ export const jobService = {
             await fetchJobsVisibleViaSearchRecovery(baseParams, probeTypes, {
               maxPages: 20,
             }),
-            allowProbe,
+            null,
           );
         } catch {
           /* keep what we have */
@@ -1234,11 +1236,12 @@ export const jobService = {
       return order === 'asc' ? diff : -diff;
     });
 
-    // Prefer BE plain total when it matches/exceeds merged (counts aligned with list).
+    // Prefer the larger of merged rows, plain meta.total, and dashboard job_count
+    // so callers keep paging/recovering when list under-delivers vs counts.
     const total = Math.max(
       merged.length,
-      plainApiTotal > 0 && plainApiTotal >= merged.length ? plainApiTotal : 0,
-      expectedTotal > 0 && expectedTotal === plainApiTotal ? expectedTotal : 0,
+      plainApiTotal > 0 ? plainApiTotal : 0,
+      expectedTotal > 0 ? expectedTotal : 0,
     );
 
     const start = (page - 1) * limit;

@@ -6,7 +6,7 @@ import {
   resolveAuthRoleSlug,
   TENANT_USER_MANAGER_ROLE_SLUGS,
 } from '@/features/users/constants/userPermissions';
-import { JOB_TYPE_WIZARD_OPTIONS, type JobType } from '../constants/job.constants';
+import { JOB_TYPES, type JobType } from '../constants/job.constants';
 import type { JobListParams } from '../types/job.types';
 import { filterJobTypesByStaffAccess } from '../utils/filterJobTypesByStaffAccess';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
@@ -116,7 +116,8 @@ export function useVisibleJobListScope(
       unrestrictedOps: false,
       isTenantAdmin: isTenantAdmin || isOpsUnrestrictedRole(roleSlug),
       isModuleEnabled: hasEnabledModule,
-      candidates: candidates?.length ? candidates : JOB_TYPE_WIZARD_OPTIONS,
+      // Full JOB_TYPES (includes LAND/COURIER) — wizard options alone omitted road siblings.
+      candidates: candidates?.length ? candidates : JOB_TYPES,
       mode: 'list',
     });
 
