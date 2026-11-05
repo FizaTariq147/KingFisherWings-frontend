@@ -122,14 +122,27 @@ function staffCanAccessDept(
   const perms = opts.permissions;
   const level: MatrixAccessLevel = opts.matrixLevel ?? 'see';
   const effectiveScope = effectiveVisibleJobTypes(opts.scopeJobTypes, perms);
+  const hasExplicitJobTypes =
+    Array.isArray(effectiveScope) && effectiveScope.length > 0;
 
   // NVOCC uses module-level matrix (Sidebar: hasMatrixModule('nvocc') / menu_nvocc).
   if (rule.deptKey === 'nvocc') {
-    return (
+    const nvoccModule =
       hasMatrixModuleAccess(perms, 'nvocc', level) ||
       hasMatrixSubmoduleAccess(perms, 'nvocc', 'module', level) ||
-      hasPermission(perms, 'menu_nvocc')
-    );
+      hasPermission(perms, 'menu_nvocc');
+    // Explicit NVOCC_* on /me still requires nvocc module/menu (same as Sidebar).
+    return nvoccModule;
+  }
+
+  // Tenant Admin Ops visible/writable is authoritative for list/see.
+  // Do not hide a department when /me lists its job types but matrix only
+  // granted a different operations_* submodule (common staff mis-config).
+  if (
+    hasExplicitJobTypes &&
+    deptAllowedByVisibleJobTypes(rule.deptKey, effectiveScope)
+  ) {
+    return true;
   }
 
   const matrixOk = hasMatrixSubmoduleAccess(
@@ -140,6 +153,8 @@ function staffCanAccessDept(
   );
   if (matrixOk) {
     if (opts.unrestrictedOps) return true;
+    // No explicit scope (null) → matrix alone is enough; [] stays locked above.
+    if (effectiveScope === null) return true;
     return deptAllowedByVisibleJobTypes(rule.deptKey, effectiveScope);
   }
 

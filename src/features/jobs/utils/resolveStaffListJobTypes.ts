@@ -1,5 +1,5 @@
 import type { JobType } from '../constants/job.constants';
-import { JOB_TYPE_WIZARD_OPTIONS } from '../constants/job.constants';
+import { JOB_TYPES, JOB_TYPE_WIZARD_OPTIONS } from '../constants/job.constants';
 import { canonicalizeJobType } from './canonicalizeJobType';
 import { effectiveListJobTypes, normalizeJobTypeToken } from './deptAccessFromStaffGrants';
 import { filterJobTypesByStaffAccess } from './filterJobTypesByStaffAccess';
@@ -43,7 +43,7 @@ export function expandDepartmentJobTypeFamilies(
 }
 
 /**
- * Map coarse /me tokens (SEA_IMPORT, sea_export, …) onto department JobType sets.
+ * Map /me Ops visible∪writable tokens onto canonical JobType enums.
  */
 function jobTypesFromScopeTokens(tokens: readonly string[]): JobType[] {
   const out = new Set<JobType>();
@@ -54,11 +54,7 @@ function jobTypesFromScopeTokens(tokens: readonly string[]): JobType[] {
     if (
       n === 'sea_export' ||
       n === 'seaexport' ||
-      n.includes('sea_export') ||
-      n === 'fcl_export' ||
-      n === 'lcl_export' ||
-      n === 'sea_fcl_export' ||
-      n === 'sea_lcl_export'
+      (n.includes('sea_export') && !n.includes('import'))
     ) {
       out.add('SEA_FCL_EXPORT');
       out.add('SEA_LCL_EXPORT');
@@ -67,13 +63,25 @@ function jobTypesFromScopeTokens(tokens: readonly string[]): JobType[] {
     if (
       n === 'sea_import' ||
       n === 'seaimport' ||
-      n.includes('sea_import') ||
-      n === 'fcl_import' ||
-      n === 'lcl_import' ||
-      n === 'sea_fcl_import' ||
-      n === 'sea_lcl_import'
+      (n.includes('sea_import') && !n.includes('export'))
     ) {
       out.add('SEA_FCL_IMPORT');
+      out.add('SEA_LCL_IMPORT');
+      continue;
+    }
+    if (n === 'sea_fcl_export' || n === 'fcl_export') {
+      out.add('SEA_FCL_EXPORT');
+      continue;
+    }
+    if (n === 'sea_lcl_export' || n === 'lcl_export') {
+      out.add('SEA_LCL_EXPORT');
+      continue;
+    }
+    if (n === 'sea_fcl_import' || n === 'fcl_import') {
+      out.add('SEA_FCL_IMPORT');
+      continue;
+    }
+    if (n === 'sea_lcl_import' || n === 'lcl_import') {
       out.add('SEA_LCL_IMPORT');
       continue;
     }
@@ -85,15 +93,15 @@ function jobTypesFromScopeTokens(tokens: readonly string[]): JobType[] {
       out.add('AIR_IMPORT');
       continue;
     }
-    if (
-      n === 'road_freight' ||
-      n === 'road' ||
-      n === 'land' ||
-      n === 'courier' ||
-      n.includes('road')
-    ) {
+    if (n === 'road_freight' || n === 'road' || n.includes('road_freight')) {
       out.add('ROAD_FREIGHT');
+      continue;
+    }
+    if (n === 'land' || n === 'land_freight') {
       out.add('LAND');
+      continue;
+    }
+    if (n === 'courier') {
       out.add('COURIER');
       continue;
     }
@@ -101,7 +109,15 @@ function jobTypesFromScopeTokens(tokens: readonly string[]): JobType[] {
       out.add('CUSTOMS_CLEARANCE');
       continue;
     }
-    if (n.includes('nvocc')) {
+    if (n === 'nvocc_export' || n === 'nvocc_exp') {
+      out.add('NVOCC_EXPORT');
+      continue;
+    }
+    if (n === 'nvocc_import' || n === 'nvocc_imp') {
+      out.add('NVOCC_IMPORT');
+      continue;
+    }
+    if (n === 'nvocc' || n.includes('nvocc')) {
       out.add('NVOCC_EXPORT');
       out.add('NVOCC_IMPORT');
       continue;
@@ -114,16 +130,19 @@ function jobTypesFromScopeTokens(tokens: readonly string[]): JobType[] {
 
 /**
  * Job types staff may list for Active shipments / department grids.
- * Same per-department shape as admin: Sea Export = FCL+LCL export,
- * Sea Import = FCL+LCL import, etc.
+ *
+ * Ops visible ∪ writable from /auth/me are authoritative (Tenant Admin grants).
+ * Matrix submodule gaps must not hide types that /me already lists.
  */
 export function resolveStaffListJobTypes(
   opts: ResolveStaffListJobTypesOpts,
 ): JobType[] {
   const candidates = opts.candidates?.length
     ? [...opts.candidates]
-    : [...JOB_TYPE_WIZARD_OPTIONS];
-  const candidateSet = new Set(candidates.map((t) => canonicalizeJobType(String(t))));
+    : [...JOB_TYPES];
+  const candidateSet = new Set(
+    candidates.map((t) => canonicalizeJobType(String(t))),
+  );
   const perms = opts.permissions ?? [];
   const listScope = effectiveListJobTypes(
     opts.visibleJobTypes,
@@ -131,6 +150,15 @@ export function resolveStaffListJobTypes(
     perms,
   );
 
+  // 1) Explicit /me Ops visible∪writable — primary list scope.
+  let fromMe: JobType[] = [];
+  if (listScope && listScope.length > 0) {
+    fromMe = jobTypesFromScopeTokens(listScope).filter((t) =>
+      candidateSet.has(t),
+    );
+  }
+
+  // 2) Matrix / menu fallback (and union) when /me is empty or partial.
   const fromMatrix = filterJobTypesByStaffAccess({
     permissions: perms,
     visibleJobTypes: listScope,
@@ -142,19 +170,33 @@ export function resolveStaffListJobTypes(
     mode: 'list',
   });
 
-  const fromTokens = listScope?.length
-    ? jobTypesFromScopeTokens(listScope).filter((t) => candidateSet.has(t))
-    : [];
-
   const merged = expandDepartmentJobTypeFamilies([
+    ...fromMe,
     ...fromMatrix,
-    ...fromTokens,
   ]).filter((t) => candidateSet.has(t));
 
-  // Department page: any access → full segment types (identical to admin).
+  // Department page: any granted type in segment → full segment (same as admin).
   if (opts.fullSegmentIfAnyAccess && opts.candidates?.length && merged.length > 0) {
     return [...opts.candidates];
   }
 
-  return merged;
+  // Dashboard: prefer explicit /me union; never return empty when /me listed types.
+  if (merged.length) return merged;
+  if (fromMe.length) return fromMe;
+
+  // Last resort: wizard defaults only when both /me and matrix yielded nothing.
+  if (!listScope?.length) {
+    return filterJobTypesByStaffAccess({
+      permissions: perms,
+      visibleJobTypes: listScope,
+      writableJobTypes: opts.writableJobTypes,
+      unrestrictedOps: false,
+      isTenantAdmin: false,
+      isModuleEnabled: opts.isModuleEnabled,
+      candidates: [...JOB_TYPE_WIZARD_OPTIONS],
+      mode: 'list',
+    });
+  }
+
+  return [];
 }
