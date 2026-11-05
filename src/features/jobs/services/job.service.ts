@@ -492,6 +492,93 @@ function emptyJobListResult(limit: number): JobListResult {
 }
 
 /**
+ * Staff list recovery when untyped GET /jobs is empty under operations_scope
+ * (BE job_type:{in:[]} ) while dashboard-counts still reports job_count.
+ * Fan out ONLY the caller's granted types — never the full role pack.
+ */
+async function fetchJobsViaGrantedTypeFanOut(
+  params: JobListParams,
+  scopeTypes: Array<NonNullable<JobListParams['job_type']>>,
+): Promise<Job[]> {
+  const allowed = new Set(scopeTypes.map((t) => canonicalizeJobType(String(t))));
+  const typedOnly = scopeTypes.filter(
+    (t) => canonicalizeJobType(String(t)) !== 'ROAD_FREIGHT',
+  );
+  const byId = new Map<string, Job>();
+  const pageSize = API_LIST_LIMIT_MAX;
+  const base = {
+    ...params,
+    job_types: undefined as JobListParams['job_types'],
+    created_by: undefined,
+    salesperson_id: undefined,
+    department_id: undefined,
+  };
+
+  await Promise.all(
+    typedOnly.map(async (job_type) => {
+      try {
+        let pageNum = 1;
+        let apiTotal = Number.POSITIVE_INFINITY;
+        while (pageNum <= 20) {
+          const page = await fetchJobListPage(
+            {
+              ...base,
+              job_type,
+              page: pageNum,
+              limit: pageSize,
+              order: base.order ?? 'desc',
+            },
+            { skipErrorToast: true },
+          );
+          if (typeof page.meta?.total === 'number') apiTotal = page.meta.total;
+          for (const job of page.jobs ?? []) {
+            if (!job?.id) continue;
+            const expected = canonicalizeJobType(String(job_type));
+            let type = effectiveListJobType(job);
+            if (!type || (type === 'AIR_EXPORT' && expected !== 'AIR_EXPORT')) {
+              type = expected;
+            }
+            if (!allowed.has(type) && !allowed.has(expected)) continue;
+            const stamped =
+              job.job_type === expected ? job : { ...job, job_type: expected };
+            byId.set(stamped.id, stamped);
+          }
+          const got = page.jobs?.length ?? 0;
+          if (got === 0) break;
+          if (pageNum * pageSize >= apiTotal) break;
+          pageNum += 1;
+        }
+      } catch {
+        /* type missing from token → empty; try next granted type */
+      }
+    }),
+  );
+
+  // ROAD_FREIGHT is often ACL-blocked on typed queries — recover via untyped scan
+  // filtered client-side when the grant list includes road/land/courier.
+  if (
+    scopeTypes.some((t) =>
+      ['ROAD_FREIGHT', 'LAND', 'COURIER'].includes(canonicalizeJobType(String(t))),
+    )
+  ) {
+    try {
+      const roadish = await fetchAllJobsMatchingTypes(base, [
+        'ROAD_FREIGHT',
+        'LAND',
+        'COURIER',
+      ]);
+      for (const job of roadish.jobs) {
+        if (job?.id) byId.set(job.id, job);
+      }
+    } catch {
+      /* keep typed rows */
+    }
+  }
+
+  return [...byId.values()];
+}
+
+/**
  * Backend job-type ACL often blocks GET /jobs?job_type=ROAD_FREIGHT (and may strip
  * ROAD_FREIGHT from unfiltered lists). Converted quotes still expose job_id and/or
  * job_number (portal shows JOB-RF-*) — resolve those into Job rows for admin lists.
@@ -972,6 +1059,110 @@ async function mergeRecentCreatedJobs(
 }
 
 export const jobService = {
+  /**
+   * Active shipments / department / hub lists for admin + staff.
+   *
+   * Admin (`scopeTypes: null`): plain GET /jobs.
+   * Staff: try plain GET /jobs first (works when BE DB-resolves visibility).
+   * If that returns 0 rows (classic operations_scope → job_type:{in:[]} bug while
+   * dashboard-counts still shows job_count), fan out GET /jobs?job_type= for each
+   * granted type only, then search-prefix recovery. Never invent the role pack.
+   */
+  async listVisibleJobs(
+    params: JobListParams = {},
+    opts?: { scopeTypes?: JobType[] | null },
+  ): Promise<JobListResult> {
+    const page = params.page ?? 1;
+    const limit = clampApiListLimit(params.limit, 20);
+    const order = params.order ?? 'desc';
+    const scopeTypes = opts?.scopeTypes;
+
+    const baseParams: JobListParams = {
+      ...params,
+      job_type: undefined,
+      job_types: undefined,
+      created_by: params.created_by,
+      salesperson_id: params.salesperson_id,
+      department_id: params.department_id,
+    };
+    // Default views: any creator in scope.
+    if (!String(params.created_by ?? '').trim()) baseParams.created_by = undefined;
+    if (!String(params.salesperson_id ?? '').trim()) baseParams.salesperson_id = undefined;
+    if (!String(params.department_id ?? '').trim()) baseParams.department_id = undefined;
+
+    const byId = new Map<string, Job>();
+    let apiTotal = 0;
+
+    const ingest = (jobs: Job[] | undefined) => {
+      for (const job of jobs ?? []) {
+        if (!job?.id) continue;
+        const type = effectiveListJobType(job);
+        byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
+      }
+    };
+
+    // 1) Plain JWT / DB-scoped pages.
+    try {
+      let pageNum = 1;
+      let reported = Number.POSITIVE_INFINITY;
+      const pageSize = API_LIST_LIMIT_MAX;
+      while (pageNum <= 20) {
+        const result = await fetchJobListPage(
+          {
+            ...baseParams,
+            page: pageNum,
+            limit: pageSize,
+            order,
+          },
+          { skipErrorToast: true },
+        );
+        ingest(result.jobs);
+        if (typeof result.meta?.total === 'number') reported = result.meta.total;
+        apiTotal = Math.max(apiTotal, byId.size, Number.isFinite(reported) ? reported : 0);
+        const got = result.jobs?.length ?? 0;
+        if (got === 0) break;
+        if (pageNum * pageSize >= reported) break;
+        pageNum += 1;
+      }
+    } catch {
+      /* typed recovery below */
+    }
+
+    // 2) Staff recovery: typed fan-out for granted types only.
+    // Plain list is empty under operations_scope → job_type:{in:[]} while counts still work.
+    if (byId.size === 0 && Array.isArray(scopeTypes) && scopeTypes.length > 0) {
+      ingest(await fetchJobsViaGrantedTypeFanOut(baseParams, scopeTypes));
+    }
+
+    // 3) Search-prefix recovery when still empty.
+    if (byId.size === 0 && Array.isArray(scopeTypes) && scopeTypes.length > 0) {
+      try {
+        ingest(await fetchJobsVisibleViaSearchRecovery(baseParams, scopeTypes));
+      } catch {
+        /* keep empty */
+      }
+    }
+
+    // Trust BE / recovered rows — department UIs apply their own segment filter.
+    // Do not re-filter by scopeTypes here (that hid valid rows when /me tokens lagged).
+    const merged = [...byId.values()].sort((a, b) => {
+      const diff = jobSortTime(a) - jobSortTime(b);
+      return order === 'asc' ? diff : -diff;
+    });
+
+    void apiTotal;
+    const start = (page - 1) * limit;
+    return {
+      jobs: merged.slice(start, start + limit),
+      meta: {
+        page,
+        limit,
+        total: merged.length,
+        totalPages: Math.max(1, Math.ceil(merged.length / limit) || 1),
+      },
+    };
+  },
+
   /**
    * GET /jobs — API accepts a single `job_type` query.
    * Segment lists pass `job_types` (e.g. ROAD_FREIGHT + LAND); we fan out per type

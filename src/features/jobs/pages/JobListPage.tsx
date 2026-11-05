@@ -6,6 +6,7 @@ import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
+import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
@@ -27,17 +28,20 @@ import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
 import { effectiveJobListType } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
+import { resolveStaffListJobTypes } from '../utils/resolveStaffListJobTypes';
 
 /**
- * Department job list — admin and staff use the same plain GET /jobs.
- * Never send job_type / job_types (typed queries become {in:[]} when the type
- * is missing from the token while dashboard-counts still show totals).
- * BE DB-resolves staff departments; FE only filters to this department segment.
+ * Department job list — admin and staff.
+ * listVisibleJobs: plain GET /jobs, then typed fan-out for /me grants when the
+ * operations_scope JWT bug returns an empty list while dashboard counts still show data.
+ * Client-filters to this department segment (any creator).
  */
 export default function JobListPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
   const { pathname } = location;
   const segment = segmentFromPath(pathname) ?? 'air-export';
@@ -72,9 +76,21 @@ export default function JobListPage() {
     [allowedSegmentTypes],
   );
 
-  // Shared filters with admin/staff — never send job_type / job_types.
-  // Typed queries become job_type:{in:[]} when the type is missing from the token
-  // while dashboard-counts (no job_type) still show totals. Filter client-side.
+  const scopeTypes = useMemo((): JobType[] | null => {
+    if (isOpsUnrestrictedUser(user)) return null;
+    // Prefer full department segment when staff has any access in it — same shape as admin.
+    const types = resolveStaffListJobTypes({
+      permissions: user?.permissions ?? [],
+      visibleJobTypes: user?.visibleJobTypes,
+      writableJobTypes: user?.writableJobTypes,
+      candidates: allowedSegmentTypes,
+      fullSegmentIfAnyAccess: true,
+    });
+    if (types.length) return types;
+    // Fallback: whole segment so typed recovery can still try department types.
+    return [...allowedSegmentTypes];
+  }, [user, allowedSegmentTypes]);
+
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
       segmentJobTypes: undefined,
@@ -88,26 +104,44 @@ export default function JobListPage() {
   }, [applied]);
 
   const listQuery = useQuery({
-    queryKey: ['tenant', 'jobs', 'department-plain', segment, filterParams],
+    queryKey: ['tenant', 'jobs', 'department-visible', segment, filterParams, scopeTypes],
     queryFn: async () => {
-      const byId = new Map<string, Job>();
-      let apiTotal = 0;
-      for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
-        const result = await jobService.list({
+      // Fetch a large window; listVisibleJobs recovers via typed fan-out when plain is empty.
+      const result = await jobService.listVisibleJobs(
+        {
           ...filterParams,
-          page: pageNum,
+          page: 1,
           limit: 100,
           order: filterParams.order ?? 'desc',
-        });
-        for (const job of result.jobs ?? []) {
+        },
+        { scopeTypes },
+      );
+
+      const byId = new Map<string, Job>();
+      for (const job of result.jobs ?? []) {
+        if (job?.id) byId.set(job.id, job);
+      }
+
+      const total = result.meta?.total ?? byId.size;
+      const pageSize = 100;
+      const maxPages = Math.min(10, Math.ceil(Math.max(total, 1) / pageSize));
+      for (let pageNum = 2; pageNum <= maxPages; pageNum += 1) {
+        const more = await jobService.listVisibleJobs(
+          {
+            ...filterParams,
+            page: pageNum,
+            limit: pageSize,
+            order: filterParams.order ?? 'desc',
+          },
+          { scopeTypes },
+        );
+        for (const job of more.jobs ?? []) {
           if (job?.id) byId.set(job.id, job);
         }
-        apiTotal = Math.max(apiTotal, result.meta?.total ?? 0, byId.size);
-        const got = result.jobs?.length ?? 0;
-        if (got === 0) break;
-        if (pageNum * 100 >= (result.meta?.total ?? got)) break;
+        if ((more.jobs?.length ?? 0) === 0) break;
       }
-      return { jobs: [...byId.values()], apiTotal };
+
+      return { jobs: [...byId.values()], apiTotal: byId.size };
     },
     enabled: Boolean(accessToken),
     staleTime: 15_000,
