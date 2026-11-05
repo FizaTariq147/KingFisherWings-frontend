@@ -93,8 +93,10 @@ export default function JobListPage() {
     [allowedSegmentTypes],
   );
 
-  // Admin: null. Staff: segment ∩ (/me ∪ direct ops ∪ sidebar dept access).
-  const { scopeTypes, scopeConfident, probeTypes, kind } = useVisibleJobListScope({
+  // Full staff scope for GET /jobs (same set as Total Jobs). Segment filter is client-side.
+  const fullScope = useVisibleJobListScope();
+  // Segment probes only for recovery fan-out if plain list under-delivers.
+  const segmentScope = useVisibleJobListScope({
     candidates: allowedSegmentTypes,
   });
 
@@ -114,16 +116,16 @@ export default function JobListPage() {
     queryKey: [
       'tenant',
       'jobs',
-      'department-all-v6',
+      'department-all-v7',
       segment,
       filterParams,
-      kind,
-      scopeConfident ? 'confident' : 'uncertain',
-      scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
-      probeTypes.slice().sort().join(','),
+      fullScope.kind,
+      fullScope.scopeTypes === null
+        ? 'admin'
+        : fullScope.scopeTypes.slice().sort().join(','),
+      segmentScope.probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
-      // Align recovery depth with Total Jobs when list ACL under-delivers.
       let expectedTotal = 0;
       try {
         const counts = await jobService.dashboardCounts({});
@@ -132,10 +134,18 @@ export default function JobListPage() {
         expectedTotal = 0;
       }
 
+      // Trust BE plain list (all staff-visible jobs); recover with segment types if needed.
+      const probes =
+        fullScope.scopeTypes === null
+          ? ([] as JobType[])
+          : fullScope.probeTypes.length
+            ? fullScope.probeTypes
+            : segmentScope.probeTypes;
+
       const listOpts = {
-        scopeTypes,
-        scopeConfident,
-        probeTypes: scopeTypes === null ? ([] as JobType[]) : probeTypes,
+        scopeTypes: fullScope.scopeTypes,
+        scopeConfident: false,
+        probeTypes: probes,
         expectedTotal,
       };
 
@@ -171,11 +181,11 @@ export default function JobListPage() {
         if ((more.jobs?.length ?? 0) === 0) break;
       }
 
-      // Count OK / dept rows short: force uncertain recovery for this segment.
+      // Still short: segment-typed recovery (Sea Export → SEA_FCL_EXPORT / LCL only).
       if (
         expectedTotal > byId.size &&
-        scopeTypes !== null &&
-        probeTypes.length > 0
+        fullScope.scopeTypes !== null &&
+        segmentScope.probeTypes.length > 0
       ) {
         const catchUp = await jobService.listVisibleJobs(
           {
@@ -185,9 +195,9 @@ export default function JobListPage() {
             order: filterParams.order ?? 'desc',
           },
           {
-            scopeTypes: probeTypes,
+            scopeTypes: segmentScope.probeTypes,
             scopeConfident: false,
-            probeTypes,
+            probeTypes: segmentScope.probeTypes,
             expectedTotal,
           },
         );
