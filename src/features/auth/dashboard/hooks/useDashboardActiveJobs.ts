@@ -1,15 +1,12 @@
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
-import type { JobType } from '@/features/jobs/constants/job.constants';
-import { JOB_TYPES } from '@/features/jobs/constants/job.constants';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { Job, JobListParams } from '@/features/jobs/types/job.types';
 import { effectiveJobListType } from '@/features/jobs/utils/effectiveJobListType';
-import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
-import { resolveStaffListJobTypes } from '@/features/jobs/utils/resolveStaffListJobTypes';
-import { OPEN_JOB_STATUSES } from '../utils/dashboardFormat';
+import {
+  CLOSED_JOB_STATUSES,
+  isOpenBucketJob,
+} from '../utils/dashboardFormat';
 
 function jobSortTime(job: Job): number {
   const raw = job.updated_at || job.created_at || '';
@@ -17,13 +14,22 @@ function jobSortTime(job: Job): number {
   return Number.isFinite(t) ? t : 0;
 }
 
+function normalizeStatus(status: unknown): string {
+  return String(status ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, '_');
+}
+
 const PAGE_SIZE = 100;
 const MAX_ACTIVE_PAGES = 10;
+const CLOSED = new Set(CLOSED_JOB_STATUSES.map(String));
 
 /**
- * Active shipments — trust BE JWT visible_job_types (any creator).
- * Staff uses the same plain GET /jobs path as admin (no client job_types merge),
- * then keeps open rows; soft-filters to /me grants when present.
+ * Active shipments for admin + staff.
+ * Trust BE GET /jobs (staff scoped by visible_job_types, any creator).
+ * Do not client-filter by job_type — that was wiping staff grids when type
+ * labels disagreed with /me grants. Exclude only completed / cancelled.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -32,59 +38,36 @@ export function useDashboardActiveJobs(options?: {
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const { user, hasEnabledModule } = useAuth();
   const rowLimit = options?.rowLimit ?? 500;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
-  const unrestricted = isOpsUnrestrictedUser(user);
-
-  const staffJobTypes = useMemo((): JobType[] => {
-    if (unrestricted) return [];
-    return resolveStaffListJobTypes({
-      permissions: user?.permissions ?? [],
-      visibleJobTypes: user?.visibleJobTypes,
-      writableJobTypes: user?.writableJobTypes,
-      isModuleEnabled: hasEnabledModule,
-      candidates: [...JOB_TYPES],
-    });
-  }, [user, unrestricted, hasEnabledModule]);
-
-  const allowedTypeSet = useMemo(() => {
-    if (unrestricted || !staffJobTypes.length) return null;
-    return new Set(staffJobTypes);
-  }, [unrestricted, staffJobTypes]);
 
   return useQuery({
     queryKey: [
       'tenant',
       'dashboard',
       'active-jobs',
-      'be-visible-types-v3',
+      'jwt-list-v4',
       jobType,
       branchId,
-      staffJobTypes,
       rowLimit,
-      unrestricted,
     ],
     queryFn: async () => {
-      const openSet = new Set<string>(OPEN_JOB_STATUSES);
       const byId = new Map<string, Job>();
 
-      const takeOpen = (jobs: Job[] | undefined) => {
-        for (const job of jobs ?? []) {
-          if (!job?.id) continue;
-          if (!openSet.has(String(job.status))) continue;
-          const resolvedType = effectiveJobListType(job);
-          if (allowedTypeSet && !allowedTypeSet.has(resolvedType)) continue;
-          byId.set(
-            job.id,
-            job.job_type === resolvedType ? job : { ...job, job_type: resolvedType },
-          );
-        }
+      const takeRow = (job: Job | undefined) => {
+        if (!job?.id) return;
+        const status = normalizeStatus(job.status);
+        if (CLOSED.has(status)) return;
+        const resolvedType = effectiveJobListType(job);
+        byId.set(
+          job.id,
+          job.job_type === resolvedType && status === job.status
+            ? job
+            : { ...job, job_type: resolvedType, status: status as Job['status'] },
+        );
       };
 
-      // Plain JWT list — same as admin. BE scopes staff by visible_job_types.
-      // Do NOT pass job_types (avoids heavy multi-merge that can drop rows).
       const baseParams: JobListParams = {
         order: 'desc',
         created_by: undefined,
@@ -100,7 +83,7 @@ export function useDashboardActiveJobs(options?: {
           page,
           limit: PAGE_SIZE,
         });
-        takeOpen(result.jobs);
+        for (const job of result.jobs ?? []) takeRow(job);
         const total = result.meta?.total ?? result.jobs?.length ?? 0;
         const got = result.jobs?.length ?? 0;
         if (got === 0) break;
@@ -108,16 +91,19 @@ export function useDashboardActiveJobs(options?: {
         if (byId.size >= rowLimit) break;
       }
 
-      const openJobs = [...byId.values()].sort(
+      const rows = [...byId.values()].sort(
         (a, b) => jobSortTime(b) - jobSortTime(a),
       );
+      const openBucket = rows.filter((j) => isOpenBucketJob(j.status));
 
       return {
-        jobs: openJobs.slice(0, rowLimit),
-        openTotal: openJobs.length,
+        /** Grid rows: every non-closed job BE returns for this user. */
+        jobs: rows.slice(0, rowLimit),
+        /** “X open” KPI — open bucket only (excludes delivered). */
+        openTotal: openBucket.length,
       };
     },
     enabled: Boolean(accessToken) && options?.enabled !== false,
-    staleTime: 30_000,
+    staleTime: 15_000,
   });
 }
