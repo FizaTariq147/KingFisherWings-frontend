@@ -98,6 +98,7 @@ export function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
   const topList =
     (Array.isArray(envelope.items) && envelope.items) ||
     (Array.isArray(envelope.results) && envelope.results) ||
+    (Array.isArray(envelope.jobs) && envelope.jobs) ||
     (Array.isArray(envelope.milestones) && envelope.milestones) ||
     (Array.isArray(envelope.shipments) && envelope.shipments) ||
     (Array.isArray(envelope.linked_shipments) && envelope.linked_shipments) ||
@@ -723,7 +724,16 @@ export function normalizeJob(raw: unknown): Job | null {
     id: str(r.id),
     job_number: jobNumber,
     job_type: jobType,
-    status: (pickString(r, 'status') || 'ENQUIRY') as JobStatus,
+    status: (() => {
+      const rawStatus = (pickString(r, 'status') || 'ENQUIRY').trim().toUpperCase().replace(/\s+/g, '_');
+      // Common aliases from BE / imports
+      if (rawStatus === 'BOOKED' || rawStatus === 'BOOKING') return 'BOOKING_CONFIRMED' as JobStatus;
+      if (rawStatus === 'INTRANSIT' || rawStatus === 'IN-TRANSIT') return 'IN_PROGRESS' as JobStatus;
+      if (rawStatus === 'DOCS' || rawStatus === 'DOCUMENTATION') return 'DOCS_PENDING' as JobStatus;
+      if (rawStatus === 'CUSTOMS' || rawStatus === 'CUSTOMS_HOLD') return 'CUSTOMS_CLEARANCE' as JobStatus;
+      if (rawStatus === 'HOLD') return 'ON_HOLD' as JobStatus;
+      return rawStatus as JobStatus;
+    })(),
     status_code: pickString(r, 'status_code', 'statusCode') || undefined,
     company_id: pickString(r, 'company_id', 'companyId') || undefined,
     branch_id: pickString(r, 'branch_id', 'branchId') || undefined,

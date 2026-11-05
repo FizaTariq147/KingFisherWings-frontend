@@ -344,9 +344,26 @@ export function jobClient(job: Pick<Job, 'shipper_name' | 'consignee_name'>): st
   return job.shipper_name?.trim() || job.consignee_name?.trim() || '—';
 }
 
-/** Open-bucket job (matches BE `open` / OPEN_JOB_STATUSES). Delivered is not open. */
+/**
+ * Rows eligible for Active shipments grid.
+ * Includes delivered (for the Delivered chip). Excludes completed / cancelled only.
+ * KPI “open” still uses OPEN_JOB_STATUSES (no delivered).
+ */
 export function isActiveJob(status: JobStatus): boolean {
-  return (OPEN_JOB_STATUSES as readonly JobStatus[]).includes(status);
+  const s = String(status ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, '_') as JobStatus;
+  return !(CLOSED_JOB_STATUSES as readonly JobStatus[]).includes(s);
+}
+
+/** True when status is in the BE open bucket (not delivered / completed / cancelled). */
+export function isOpenBucketJob(status: JobStatus): boolean {
+  const s = String(status ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/\s+/g, '_');
+  return (OPEN_JOB_STATUSES as readonly string[]).includes(s);
 }
 
 export function isCustomsHold(job: Pick<Job, 'status'>): boolean {
