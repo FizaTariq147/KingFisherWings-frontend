@@ -1100,8 +1100,8 @@ export const jobService = {
           (t) => canonicalizeJobType(String(t)) !== 'ROAD_FREIGHT',
         );
 
-        // Never scope department lists by creator — admin/other-staff creates must
-        // appear for every viewer allowed that job_type (Air/Sea import/export, …).
+        // Department lists: any creator. BE contract for staff = visible_job_types
+        // only (not created_by / ops_user). FE strips creator filters on default view.
         const deptListBase = {
           ...safeParams,
           job_types: undefined as JobListParams['job_types'],

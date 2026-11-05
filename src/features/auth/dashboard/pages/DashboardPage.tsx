@@ -40,9 +40,9 @@ export function DashboardPage() {
     return { from: isoDate(start), to: isoDate(end) };
   }, []);
 
-  // Open-bucket rows for Active shipments only (not the total-jobs KPI).
-  // Default calls omit job_type / created_by / department_id — BE scopes by JWT.
-  const activeJobsQuery = useDashboardActiveJobs({ rowLimit: 100 });
+  // Open-bucket rows for Active shipments (any creator in staff dept grants).
+  // BE must scope GET /jobs by visible_job_types only — FE never filters by creator.
+  const activeJobsQuery = useDashboardActiveJobs({ rowLimit: 500 });
   const shipmentJobs = activeJobsQuery.data?.jobs ?? [];
 
   // job_count === GET /jobs meta.total for this user (includes delivered/completed).
