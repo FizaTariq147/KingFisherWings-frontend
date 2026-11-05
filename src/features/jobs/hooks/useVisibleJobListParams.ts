@@ -53,25 +53,28 @@ function intersectCandidates(
  * fall back to the same sidebar dept access matrix (not the full JOB_TYPES catalog).
  * Never send job_type on the default request.
  *
- * --- Staff visibility (aligned with BE) ---
- * GET /jobs and GET /jobs/dashboard-counts share resolveVisibleJobTypes.
- * Staff “department” = job type grants — never org department_id (most jobs
- * have department_id null; sending the user’s org dept collapses the list).
- * For the same branch_id and no job_type/status/search/dates:
- * meta.total === job_count; meta/data.visible_job_types is the exact scope
- * (null = admin).
- *
- * Do not send created_by / ops_user_id / salesperson_id / department_id unless
- * the user explicitly filters (admin MIS may use org department_id).
+ * --- Staff visibility (product + BE) ---
+ * If staff has permission for a job type, show every job of that type whether
+ * created by admin or staff. Operation department pages use the same segment
+ * type sets as admin (fullSegmentIfAnyAccess). ACL is job type grants — never
+ * org department_id / invented created_by.
+ * GET /jobs and dashboard-counts share resolveVisibleJobTypes; same branch_id
+ * and no extra filters ⇒ meta.total === job_count.
  */
 export function useVisibleJobListScope(
   opts?: {
     /** Limit resolve to a department segment (Sea Export, Air Import, …). */
     candidates?: readonly JobType[];
+    /**
+     * Department pages: if staff has any grant in the segment, use the full
+     * segment type list (same shape as admin for that Operation department).
+     */
+    fullSegmentIfAnyAccess?: boolean;
   },
 ): VisibleJobListScope {
   const { user, hasRole, hasEnabledModule } = useAuth();
   const candidates = opts?.candidates;
+  const fullSegmentIfAnyAccess = Boolean(opts?.fullSegmentIfAnyAccess);
   const roleSlug = resolveAuthRoleSlug(user?.role);
   const isTenantAdmin =
     isTenantUserManagerRole(roleSlug) ||
@@ -106,6 +109,7 @@ export function useVisibleJobListScope(
       writableJobTypes: writable,
       isModuleEnabled: hasEnabledModule,
       ...(candidates?.length ? { candidates } : {}),
+      fullSegmentIfAnyAccess,
     });
 
     // Same source as Sidebar when /me tokens are empty under operations_scope.
@@ -149,6 +153,7 @@ export function useVisibleJobListScope(
     user?.visibleJobTypes,
     user?.writableJobTypes,
     candidates,
+    fullSegmentIfAnyAccess,
     hasEnabledModule,
     isTenantAdmin,
     roleSlug,

@@ -1,9 +1,8 @@
 import HubAllJobsPage from './HubAllJobsPage';
 
 /**
- * Staff-facing “all my visible jobs” list.
- * Must match GET /jobs/dashboard-counts `job_count` (Total jobs).
- * Same ACL as list: resolveVisibleJobTypes (job types). Never org department_id.
+ * Staff “all visible jobs” — every job (admin- or staff-created) whose job_type
+ * the user can see. Matches Total jobs / job_count. Never org department_id.
  */
 export default function StaffAllJobsPage() {
   return (
@@ -11,7 +10,7 @@ export default function StaffAllJobsPage() {
       variant="management"
       backTo="/dashboard"
       title="My department jobs"
-      subtitle="Same jobs as Total jobs — every job in your visible job-type departments."
+      subtitle="All jobs for your granted job types (any creator) — same total as Total jobs."
     />
   );
 }
