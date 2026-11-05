@@ -5,6 +5,7 @@ import { useArAging } from '@/features/arApAging/hooks/useArApAging';
 import { useCrmFollowUps, usePatchCrmFollowUp } from '@/features/crm/hooks/useCrmFollowUps';
 import { useNotifications } from '@/features/notifications/hooks/useNotifications';
 import { computeAgingTotals, resolveAgingBucketValues } from '@/features/arApAging/utils/normalizeArApAging';
+import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
 import { DashboardHeader, DashboardAlertPills } from '../components/DashboardHeader';
 import { DashboardKpiRow } from '../components/DashboardKpiRow';
 import { ActiveShipmentsPanel } from '../components/ActiveShipmentsPanel';
@@ -26,6 +27,12 @@ export function DashboardPage() {
   const { user } = useAuth();
   const { period, setPeriod, range } = useDashboardPeriod();
   const today = isoDate(new Date());
+  const isAdminOps = isOpsUnrestrictedUser(user);
+  // Staff: department-scoped list matching Total jobs count. Admin: All Jobs-MIS.
+  const totalJobsTo = isAdminOps ? '/management/all-jobs-mis' : '/jobs/all';
+  const deliveredJobsTo = isAdminOps
+    ? '/management/all-jobs-mis?category=delivered'
+    : '/jobs/all?category=delivered';
 
   const revenueRange = useMemo(() => {
     const end = new Date();
@@ -203,6 +210,8 @@ export function DashboardPage() {
           loadingQuotes={quoteStats.isLoading}
           loadingReceivables={agingQuery.isLoading}
           loadingDelivered={jobCountsLoading}
+          totalJobsTo={totalJobsTo}
+          deliveredJobsTo={deliveredJobsTo}
         />
 
         <ActiveShipmentsPanel
@@ -218,6 +227,7 @@ export function DashboardPage() {
           userId={user?.id}
           defaultView="all"
           activeTotal={openJobsCount}
+          viewAllTo={totalJobsTo}
         />
 
         <div className="grid grid-cols-1 items-start gap-4 md:grid-cols-2 xl:grid-cols-4">

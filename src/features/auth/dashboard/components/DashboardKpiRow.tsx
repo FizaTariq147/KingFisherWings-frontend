@@ -53,6 +53,9 @@ export function DashboardKpiRow({
   loadingQuotes,
   loadingReceivables,
   loadingDelivered,
+  /** Admin → All Jobs-MIS; staff → /jobs/all (their visible departments). */
+  totalJobsTo = '/jobs/all',
+  deliveredJobsTo = '/jobs/all?category=delivered',
 }: {
   /** data.job_count from GET /jobs/dashboard-counts (same as list meta.total). */
   activeJobs: number;
@@ -76,6 +79,8 @@ export function DashboardKpiRow({
   loadingQuotes: boolean;
   loadingReceivables: boolean;
   loadingDelivered: boolean;
+  totalJobsTo?: string;
+  deliveredJobsTo?: string;
 }) {
   const overdueShare =
     receivables > 0 ? Math.round((overdue30 / receivables) * 100) : 0;
@@ -87,7 +92,7 @@ export function DashboardKpiRow({
   return (
     <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-4">
       <KpiCard
-        to="/management/all-jobs-mis"
+        to={totalJobsTo}
         label="Total jobs"
         value={loadingJobs ? null : String(activeJobs)}
         unit="jobs"
@@ -125,7 +130,7 @@ export function DashboardKpiRow({
         loading={loadingReceivables}
       />
       <KpiCard
-        to="/management/all-jobs-mis?category=delivered"
+        to={deliveredJobsTo}
         label="Delivered jobs"
         value={loadingDelivered ? null : String(deliveredJobs)}
         unit="delivered"
