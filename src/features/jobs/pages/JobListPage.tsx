@@ -26,15 +26,35 @@ import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useVisibleJobListScope } from '../hooks/useVisibleJobListParams';
 import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
-import { effectiveJobListType } from '../utils/effectiveJobListType';
+import {
+  effectiveJobListType,
+  inferJobTypeFromJobNumber,
+} from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
+
+/** Stamp job_type from job-number mid-code when it maps into this department. */
+function stampJobForSegment(
+  job: Job,
+  segmentTypes: ReadonlySet<JobType>,
+): Job | null {
+  const resolved = effectiveJobListType(job);
+  if (segmentTypes.has(resolved)) {
+    return job.job_type === resolved ? job : { ...job, job_type: resolved };
+  }
+  const fromNum = inferJobTypeFromJobNumber(job.job_number);
+  if (fromNum && segmentTypes.has(fromNum)) {
+    return { ...job, job_type: fromNum };
+  }
+  return null;
+}
 
 /**
  * Department job list.
  * Staff: sidebar-aligned segment probes (never full JOB_TYPES). Plain GET /jobs
  * first — no hard-empty on uncertain JWT scope; no job_type that collapses under
  * operations_scope. Client-filters to this department; any creator in scope.
+ * When segment filter would blank a non-empty list, keep mid-code matches (FE/LE/…).
  */
 export default function JobListPage() {
   const navigate = useNavigate();
@@ -78,15 +98,6 @@ export default function JobListPage() {
     candidates: allowedSegmentTypes,
   });
 
-  const listOpts = useMemo(
-    () => ({
-      scopeTypes,
-      scopeConfident,
-      probeTypes: scopeTypes === null ? ([] as JobType[]) : probeTypes,
-    }),
-    [scopeTypes, scopeConfident, probeTypes],
-  );
-
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
       segmentJobTypes: undefined,
@@ -103,7 +114,7 @@ export default function JobListPage() {
     queryKey: [
       'tenant',
       'jobs',
-      'department-all-v5',
+      'department-all-v6',
       segment,
       filterParams,
       kind,
@@ -112,6 +123,22 @@ export default function JobListPage() {
       probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
+      // Align recovery depth with Total Jobs when list ACL under-delivers.
+      let expectedTotal = 0;
+      try {
+        const counts = await jobService.dashboardCounts({});
+        expectedTotal = Number(counts.jobCount ?? 0) || 0;
+      } catch {
+        expectedTotal = 0;
+      }
+
+      const listOpts = {
+        scopeTypes,
+        scopeConfident,
+        probeTypes: scopeTypes === null ? ([] as JobType[]) : probeTypes,
+        expectedTotal,
+      };
+
       const byId = new Map<string, Job>();
       const first = await jobService.listVisibleJobs(
         {
@@ -126,7 +153,7 @@ export default function JobListPage() {
         if (job?.id) byId.set(job.id, job);
       }
 
-      const total = first.meta?.total ?? byId.size;
+      const total = Math.max(first.meta?.total ?? 0, expectedTotal, byId.size);
       const maxPages = Math.min(10, Math.ceil(Math.max(total, 1) / 100));
       for (let pageNum = 2; pageNum <= maxPages; pageNum += 1) {
         const more = await jobService.listVisibleJobs(
@@ -144,6 +171,31 @@ export default function JobListPage() {
         if ((more.jobs?.length ?? 0) === 0) break;
       }
 
+      // Count OK / dept rows short: force uncertain recovery for this segment.
+      if (
+        expectedTotal > byId.size &&
+        scopeTypes !== null &&
+        probeTypes.length > 0
+      ) {
+        const catchUp = await jobService.listVisibleJobs(
+          {
+            ...filterParams,
+            page: 1,
+            limit: 100,
+            order: filterParams.order ?? 'desc',
+          },
+          {
+            scopeTypes: probeTypes,
+            scopeConfident: false,
+            probeTypes,
+            expectedTotal,
+          },
+        );
+        for (const job of catchUp.jobs ?? []) {
+          if (job?.id) byId.set(job.id, job);
+        }
+      }
+
       return {
         jobs: [...byId.values()],
         visibleJobTypes: first.meta?.visible_job_types,
@@ -159,12 +211,39 @@ export default function JobListPage() {
   const filteredJobs = useMemo(() => {
     const rows = listQuery.data?.jobs ?? [];
     const selectedType = applied.jobType?.trim() as JobType | undefined;
-    return rows.filter((job) => {
-      const type = effectiveJobListType(job);
-      if (selectedType) return type === selectedType;
-      // Staff lists are already candidate-scoped; still segment-filter for admin.
-      return segmentTypeSet.has(type);
-    });
+
+    const stamped: Job[] = [];
+    for (const job of rows) {
+      if (selectedType) {
+        const type = effectiveJobListType(job);
+        const fromNum = inferJobTypeFromJobNumber(job.job_number);
+        if (type === selectedType || fromNum === selectedType) {
+          stamped.push(
+            job.job_type === (fromNum === selectedType ? fromNum : type)
+              ? job
+              : {
+                  ...job,
+                  job_type: fromNum === selectedType ? fromNum : type,
+                },
+          );
+        }
+        continue;
+      }
+      const kept = stampJobForSegment(job, segmentTypeSet);
+      if (kept) stamped.push(kept);
+    }
+
+    // Segment filter blanked a non-empty list — keep mid-code matches only (never other depts).
+    if (stamped.length === 0 && rows.length > 0 && !selectedType) {
+      for (const job of rows) {
+        const fromNum = inferJobTypeFromJobNumber(job.job_number);
+        if (fromNum && segmentTypeSet.has(fromNum)) {
+          stamped.push({ ...job, job_type: fromNum });
+        }
+      }
+    }
+
+    return stamped;
   }, [listQuery.data?.jobs, applied.jobType, segmentTypeSet]);
 
   const pageSize = applied.rows || DEFAULT_JOB_PAGE_SIZE;

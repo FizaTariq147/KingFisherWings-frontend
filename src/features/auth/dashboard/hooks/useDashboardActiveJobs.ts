@@ -26,8 +26,8 @@ const CLOSED = new Set(CLOSED_JOB_STATUSES.map(String));
 
 /**
  * Active shipments grid — every non-closed job in staff department grants
- * (any creator). Uses sidebar-aligned probes when /me tokens are empty; never
- * hard-empties on uncertain FE scope. Prefer BE meta.visible_job_types when present.
+ * (any creator). When dashboard-counts.job_count > merged rows, deepen
+ * mid-code search recovery for sidebar-aligned probeTypes only.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -46,7 +46,7 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'staff-dept-v12',
+      'staff-dept-v13',
       jobType,
       branchId,
       rowLimit,
@@ -56,7 +56,6 @@ export function useDashboardActiveJobs(options?: {
       probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
-      // KPI total — same ACL path as the grid should cover.
       let expectedTotal = 0;
       try {
         const counts = await jobService.dashboardCounts(
@@ -67,21 +66,13 @@ export function useDashboardActiveJobs(options?: {
         expectedTotal = 0;
       }
 
+      const staffProbes = scopeTypes === null ? [] : probeTypes;
       const listOpts = {
         scopeTypes,
         scopeConfident,
-        probeTypes: scopeTypes === null ? [] : probeTypes,
+        probeTypes: staffProbes,
+        expectedTotal,
       };
-
-      const collected = await jobService.listVisibleJobs(
-        {
-          page: 1,
-          limit: 100,
-          order: 'desc',
-          ...(branchId ? { branch_id: branchId } : {}),
-        },
-        listOpts,
-      );
 
       const byId = new Map<string, Job>();
       const take = (jobs: Job[] | undefined) => {
@@ -100,15 +91,20 @@ export function useDashboardActiveJobs(options?: {
         }
       };
 
+      const collected = await jobService.listVisibleJobs(
+        {
+          page: 1,
+          limit: 100,
+          order: 'desc',
+          ...(branchId ? { branch_id: branchId } : {}),
+        },
+        listOpts,
+      );
       take(collected.jobs);
 
-      // listVisibleJobs pages internally then slices — pull remaining pages if needed.
-      const reported = collected.meta?.total ?? byId.size;
+      const reported = Math.max(collected.meta?.total ?? 0, expectedTotal, byId.size);
       const pageSize = 100;
-      const maxPages = Math.min(
-        10,
-        Math.ceil(Math.max(reported, expectedTotal, 1) / pageSize),
-      );
+      const maxPages = Math.min(10, Math.ceil(Math.max(reported, 1) / pageSize));
       for (let page = 2; page <= maxPages; page += 1) {
         const more = await jobService.listVisibleJobs(
           {
@@ -124,13 +120,10 @@ export function useDashboardActiveJobs(options?: {
         if (byId.size >= rowLimit) break;
       }
 
-      // Count > grid: re-run recovery with probe types when untyped list under-delivered.
-      if (
-        expectedTotal > byId.size &&
-        scopeTypes !== null &&
-        probeTypes.length > 0 &&
-        byId.size < rowLimit
-      ) {
+      // Count OK / grid short: force recovery with uncertain scope + probes.
+      // job_count includes closed; compare against raw meta when open filter shrinks.
+      const openShort = expectedTotal > byId.size && byId.size < rowLimit;
+      if (openShort && staffProbes.length > 0) {
         const catchUp = await jobService.listVisibleJobs(
           {
             page: 1,
@@ -139,12 +132,32 @@ export function useDashboardActiveJobs(options?: {
             ...(branchId ? { branch_id: branchId } : {}),
           },
           {
-            scopeTypes: probeTypes,
+            scopeTypes: staffProbes,
             scopeConfident: false,
-            probeTypes,
+            probeTypes: staffProbes,
+            expectedTotal,
           },
         );
         take(catchUp.jobs);
+
+        // Second page of catch-up when still short of count.
+        if (expectedTotal > byId.size && (catchUp.meta?.total ?? 0) > catchUp.jobs.length) {
+          const moreCatch = await jobService.listVisibleJobs(
+            {
+              page: 2,
+              limit: Math.min(rowLimit, 100),
+              order: 'desc',
+              ...(branchId ? { branch_id: branchId } : {}),
+            },
+            {
+              scopeTypes: staffProbes,
+              scopeConfident: false,
+              probeTypes: staffProbes,
+              expectedTotal,
+            },
+          );
+          take(moreCatch.jobs);
+        }
       }
 
       const rows = [...byId.values()].sort(
@@ -155,7 +168,6 @@ export function useDashboardActiveJobs(options?: {
       return {
         jobs: rows.slice(0, rowLimit),
         openTotal: openBucket.length,
-        /** KPI total from dashboard-counts (may include closed). */
         expectedTotal,
         visibleJobTypes: collected.meta?.visible_job_types,
       };

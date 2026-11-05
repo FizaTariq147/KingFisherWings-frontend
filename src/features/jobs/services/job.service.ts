@@ -869,17 +869,19 @@ function effectiveListJobType(job: Job): JobType {
  * appear when search matches the job number (e.g. JOB/FI/…). Recover with
  * department number prefixes, then keep only the requested types.
  * Pages search results — admin creates can sit beyond the first page.
+ * When dashboard-counts > list rows, deepen paging so mid-code search can catch up.
  */
 async function fetchJobsVisibleViaSearchRecovery(
   params: JobListParams,
   types: Array<NonNullable<JobListParams['job_type']>>,
+  opts?: { maxPages?: number },
 ): Promise<Job[]> {
   const allowed = new Set(types.map((t) => canonicalizeJobType(String(t))));
   const tokens = params.search?.trim()
     ? [params.search.trim()]
     : searchTokensForJobTypes(types);
   const byId = new Map<string, Job>();
-  const maxSearchPages = 5;
+  const maxSearchPages = Math.min(20, Math.max(5, opts?.maxPages ?? 5));
 
   await Promise.all(
     tokens.map(async (searchToken) => {
@@ -895,6 +897,7 @@ async function fetchJobsVisibleViaSearchRecovery(
               order: params.order ?? 'desc',
               search: searchToken,
               status: params.status,
+              branch_id: params.branch_id,
               // Critical: no job_type / created_by — same path as typing a job number.
             },
             { skipErrorToast: true },
@@ -909,6 +912,11 @@ async function fetchJobsVisibleViaSearchRecovery(
             // Type-specific prefix search: stamp mid-code type when list omits/mis-labels it.
             if (tokenType && allowed.has(tokenType) && (!type || !allowed.has(type))) {
               type = tokenType;
+            }
+            // Untyped JOB/ search: still stamp from job_number mid-code into allow-list.
+            if (!allowed.has(type)) {
+              const fromNum = inferJobTypeFromJobNumber(job.job_number);
+              if (fromNum && allowed.has(fromNum)) type = fromNum;
             }
             if (!allowed.has(type)) continue;
             byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
@@ -1081,11 +1089,17 @@ export const jobService = {
       scopeConfident?: boolean;
       /** Typed fan-out + search recovery targets (defaults to scopeTypes). */
       probeTypes?: JobType[] | null;
+      /**
+       * From GET /jobs/dashboard-counts job_count. When list under-delivers,
+       * deepen mid-code search recovery for probeTypes only (never full JOB_TYPES).
+       */
+      expectedTotal?: number;
     },
   ): Promise<JobListResult> {
     const page = params.page ?? 1;
     const limit = clampApiListLimit(params.limit, 20);
     const order = params.order ?? 'desc';
+    const expectedTotal = Math.max(0, Number(opts?.expectedTotal ?? 0) || 0);
 
     const isAdmin = opts?.scopeTypes === null || opts?.scopeTypes === undefined;
     let effectiveScope: JobType[] | null = isAdmin
@@ -1119,8 +1133,12 @@ export const jobService = {
     const ingest = (jobs: Job[] | undefined, allow?: Set<JobType> | null) => {
       for (const job of jobs ?? []) {
         if (!job?.id) continue;
-        const type = effectiveListJobType(job);
-        if (allow && !allow.has(type)) continue;
+        let type = effectiveListJobType(job);
+        if (allow && !allow.has(type)) {
+          const fromNum = inferJobTypeFromJobNumber(job.job_number);
+          if (fromNum && allow.has(fromNum)) type = fromNum;
+          else continue;
+        }
         byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
       }
     };
@@ -1202,13 +1220,34 @@ export const jobService = {
       }
 
       // 3) Search-prefix recovery — merge, do not require empty first.
+      const needDeepSearch =
+        expectedTotal > byId.size || byId.size === 0;
+      const searchPages = needDeepSearch
+        ? Math.min(20, Math.max(8, Math.ceil(Math.max(expectedTotal, 1) / API_LIST_LIMIT_MAX) + 2))
+        : 5;
       try {
         ingest(
-          await fetchJobsVisibleViaSearchRecovery(baseParams, probeTypes),
+          await fetchJobsVisibleViaSearchRecovery(baseParams, probeTypes, {
+            maxPages: searchPages,
+          }),
           allowProbe,
         );
       } catch {
         /* keep what we have */
+      }
+
+      // 4) Count OK / rows empty: one more deep search pass (dashboard-counts path).
+      if (expectedTotal > byId.size && byId.size < expectedTotal) {
+        try {
+          ingest(
+            await fetchJobsVisibleViaSearchRecovery(baseParams, probeTypes, {
+              maxPages: 20,
+            }),
+            allowProbe,
+          );
+        } catch {
+          /* keep what we have */
+        }
       }
     }
 
