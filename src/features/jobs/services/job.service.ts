@@ -1060,13 +1060,11 @@ async function mergeRecentCreatedJobs(
 
 export const jobService = {
   /**
-   * Active shipments / department / hub lists for admin + staff.
-   *
-   * Admin (`scopeTypes: null`): plain GET /jobs only.
-   * Staff: ALWAYS merge plain GET /jobs with typed fan-out for granted types.
-   * Plain alone often returns only 1 creator-owned row while dashboard-counts
-   * still reports the full in-scope total (e.g. 14). Fan-out must not wait for
-   * an empty list. Search-prefix recovery fills remaining gaps.
+   * Load jobs for Active shipments / department / hub.
+   * BE owns JWT / operations_scope visibility. FE responsibility:
+   * - Admin: plain GET /jobs
+   * - Staff: merge plain list + typed probes + search recovery so the grid
+   *   shows every job the staff total count already includes (any creator)
    */
   async listVisibleJobs(
     params: JobListParams = {},
