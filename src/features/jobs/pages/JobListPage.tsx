@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { appType, listShell } from '@/lib/erpTypography';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
+import { useAuthStore } from '@/store/authStore';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
   JobMisFilters,
@@ -17,17 +19,25 @@ import {
   DEFAULT_JOB_PAGE_SIZE,
   JOB_SEGMENTS,
   type JobSegmentKey,
+  type JobType,
 } from '../constants/job.constants';
 import { useJobLifecycleMutations } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
-import { useJobs } from '../hooks/useJobs';
+import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
+import { effectiveJobListType } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
+/**
+ * Department job list — admin and staff use the same plain GET /jobs.
+ * Do not pass job_types (that triggered a merge path that emptied staff grids).
+ * BE scopes staff by JWT visible_job_types; FE only filters to this department.
+ */
 export default function JobListPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const accessToken = useAuthStore((s) => s.accessToken);
   const { pathname } = location;
   const segment = segmentFromPath(pathname) ?? 'air-export';
   const segmentConfig = JOB_SEGMENTS[segment as JobSegmentKey];
@@ -42,7 +52,6 @@ export default function JobListPage() {
     () => jobMisDraftFromSearch(location.search, DEFAULT_JOB_PAGE_SIZE),
   );
 
-  // Keep filters in sync when dashboard pills change ?status= / ?category=
   useEffect(() => {
     const seeded = jobMisDraftFromSearch(location.search, applied.rows || DEFAULT_JOB_PAGE_SIZE);
     if (!seeded.status && !seeded.category) return;
@@ -56,35 +65,89 @@ export default function JobListPage() {
     setPage(1);
   }, [segment, applied]);
 
-  // Admin + staff: always full segment types for this department page
-  // (Sea Export = FCL+LCL, Sea Import = FCL+LCL). BE scopes by JWT
-  // visible_job_types (any creator); FE must not return an empty type list
-  // that skips the department merge / shows nothing.
-  // Always full department segment (admin and staff). Empty type lists hid all jobs.
   const allowedSegmentTypes = segmentConfig.jobTypes;
+  const segmentTypeSet = useMemo(
+    () => new Set<JobType>(allowedSegmentTypes),
+    [allowedSegmentTypes],
+  );
 
-  const listParams = useMemo(() => {
-    const params = jobMisFilterDraftToListParams(applied, page, {
-      segmentJobTypes: [...allowedSegmentTypes],
+  // Shared filters with admin/staff — never send job_types / created_by by default.
+  const filterParams = useMemo(() => {
+    const params = jobMisFilterDraftToListParams(applied, 1, {
+      segmentJobTypes: undefined,
     });
-    // Department default: every creator in this dept (admin + staff).
-    // Only keep creator filters when the user typed them in MIS filters.
+    delete params.job_types;
+    if (!applied.jobType?.trim()) delete params.job_type;
     if (!applied.createdBy?.trim()) delete params.created_by;
     if (!applied.salespersonId?.trim()) delete params.salesperson_id;
     if (!applied.departmentId?.trim()) delete params.department_id;
     return params;
-  }, [applied, page, allowedSegmentTypes]);
+  }, [applied]);
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useJobs(listParams);
-  // Fresh list when opening a department so jobs created by admin/other staff appear.
-  useEffect(() => {
-    void refetch();
-  }, [segment, refetch]);
+  const listQuery = useQuery({
+    queryKey: ['tenant', 'jobs', 'department-plain', segment, filterParams],
+    queryFn: async () => {
+      const byId = new Map<string, Job>();
+      let apiTotal = 0;
+      for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
+        const result = await jobService.list({
+          ...filterParams,
+          page: pageNum,
+          limit: 100,
+          order: filterParams.order ?? 'desc',
+        });
+        for (const job of result.jobs ?? []) {
+          if (job?.id) byId.set(job.id, job);
+        }
+        apiTotal = Math.max(apiTotal, result.meta?.total ?? 0, byId.size);
+        const got = result.jobs?.length ?? 0;
+        if (got === 0) break;
+        if (pageNum * 100 >= (result.meta?.total ?? got)) break;
+      }
+      return { jobs: [...byId.values()], apiTotal };
+    },
+    enabled: Boolean(accessToken),
+    staleTime: 15_000,
+  });
+
   const lifecycle = useJobLifecycleMutations();
   const prefix = jobRoutePrefix(segment as JobSegmentKey);
 
-  const jobs = data?.jobs ?? [];
-  const meta = data?.meta;
+  const filteredJobs = useMemo(() => {
+    const rows = listQuery.data?.jobs ?? [];
+    const selectedType = applied.jobType?.trim() as JobType | undefined;
+    return rows.filter((job) => {
+      const type = effectiveJobListType(job);
+      if (selectedType) return type === selectedType;
+      return segmentTypeSet.has(type);
+    });
+  }, [listQuery.data?.jobs, applied.jobType, segmentTypeSet]);
+
+  const pageSize = applied.rows || DEFAULT_JOB_PAGE_SIZE;
+  const jobs = useMemo(() => {
+    const start = (page - 1) * pageSize;
+    return filteredJobs.slice(start, start + pageSize);
+  }, [filteredJobs, page, pageSize]);
+
+  const meta = useMemo(
+    () => ({
+      page,
+      limit: pageSize,
+      total: filteredJobs.length,
+      totalPages: Math.max(1, Math.ceil(filteredJobs.length / pageSize) || 1),
+    }),
+    [filteredJobs.length, page, pageSize],
+  );
+
+  const isLoading = listQuery.isLoading;
+  const isFetching = listQuery.isFetching;
+  const isError = listQuery.isError;
+  const error = listQuery.error;
+  const refetch = () => void listQuery.refetch();
+
+  useEffect(() => {
+    void listQuery.refetch();
+  }, [segment]); // eslint-disable-line react-hooks/exhaustive-deps -- refresh on department change
 
   const run = async (job: Job, fn: () => Promise<unknown>, successMsg: string) => {
     setActionError(null);
