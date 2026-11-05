@@ -681,7 +681,35 @@ export function normalizeJob(raw: unknown): Job | null {
   const road = asRecord(r.road_freight_details ?? r.roadFreightDetails);
   const schedule = pickJobScheduleDates(r, air, sea, seaLcl);
 
+  const jobNumber =
+    pickString(r, 'job_number', 'jobNumber', 'job_no', 'jobNo') || undefined;
   let jobType = canonicalizeJobType(pickString(r, 'job_type', 'jobType'), 'AIR_EXPORT');
+  // Prefer mid-code from job number when type is missing / wrongly defaulted to AIR_EXPORT.
+  // Otherwise staff Active shipments / dept filters drop Sea Export (FE) rows as "air".
+  {
+    const fromNumber = (() => {
+      const n = String(jobNumber ?? '')
+        .trim()
+        .toUpperCase();
+      if (!n) return undefined;
+      if (n.includes('/FI/') || n.includes('-FI-')) return 'SEA_FCL_IMPORT' as const;
+      if (n.includes('/FE/') || n.includes('-FE-')) return 'SEA_FCL_EXPORT' as const;
+      if (n.includes('/LI/') || n.includes('-LI-')) return 'SEA_LCL_IMPORT' as const;
+      if (n.includes('/LE/') || n.includes('-LE-')) return 'SEA_LCL_EXPORT' as const;
+      if (n.includes('/AE/') || n.includes('-AE-')) return 'AIR_EXPORT' as const;
+      if (n.includes('/AI/') || n.includes('-AI-')) return 'AIR_IMPORT' as const;
+      if (n.includes('/RF/') || n.includes('-RF-')) return 'ROAD_FREIGHT' as const;
+      if (n.includes('/CC/') || n.includes('-CC-')) return 'CUSTOMS_CLEARANCE' as const;
+      if (n.includes('/NV/') || n.includes('-NV-')) return 'NVOCC_EXPORT' as const;
+      if (n.includes('/CR/') || n.includes('-CR-')) return 'COURIER' as const;
+      return undefined;
+    })();
+    if (fromNumber && (jobType === 'AIR_EXPORT' || !pickString(r, 'job_type', 'jobType'))) {
+      jobType = fromNumber;
+    } else if (fromNumber && fromNumber !== jobType) {
+      jobType = fromNumber;
+    }
+  }
   // Some convert paths store ROAD under land-ish labels but still attach road_freight_details.
   if (
     road &&
@@ -693,7 +721,7 @@ export function normalizeJob(raw: unknown): Job | null {
 
   return {
     id: str(r.id),
-    job_number: pickString(r, 'job_number', 'jobNumber', 'job_no', 'jobNo') || undefined,
+    job_number: jobNumber,
     job_type: jobType,
     status: (pickString(r, 'status') || 'ENQUIRY') as JobStatus,
     status_code: pickString(r, 'status_code', 'statusCode') || undefined,
