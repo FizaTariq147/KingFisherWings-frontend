@@ -1069,12 +1069,12 @@ async function mergeRecentCreatedJobs(
 export const jobService = {
   /**
    * Load jobs for Active shipments / department / hub.
-   * BE owns visibility (same rule as dashboard-counts after deploy).
+   * BE owns visibility via resolveVisibleJobTypes (same as dashboard-counts).
    * FE:
-   * - Always plain GET /jobs first — **trust BE rows** (no client job_type drop on plain list;
-   *   that was blanking Sea/etc. when labels/mid-codes disagreed with FE allow-list)
+   * - Always plain GET /jobs first — **trust BE rows** (no client job_type drop on plain list)
    * - If under-delivered vs expectedTotal, recover via typed + search for probeTypes only
    * - Never invent created_by / ops_user / salesperson filters
+   * - Staff: never send org department_id (ACL is job type, not org dept; most jobs have null)
    */
   async listVisibleJobs(
     params: JobListParams = {},
@@ -1111,12 +1111,15 @@ export const jobService = {
       job_types: undefined,
       created_by: params.created_by,
       salesperson_id: params.salesperson_id,
-      department_id: params.department_id,
+      // Admin MIS may filter by org department_id; staff must not (ACL is job type).
+      department_id:
+        isAdmin && String(params.department_id ?? '').trim()
+          ? params.department_id
+          : undefined,
     };
     // Default views: any creator in scope.
     if (!String(params.created_by ?? '').trim()) baseParams.created_by = undefined;
     if (!String(params.salesperson_id ?? '').trim()) baseParams.salesperson_id = undefined;
-    if (!String(params.department_id ?? '').trim()) baseParams.department_id = undefined;
 
     const byId = new Map<string, Job>();
 

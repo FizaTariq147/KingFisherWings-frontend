@@ -101,6 +101,20 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
 
   const byJobType = jobTypeMap(inner.by_job_type ?? inner.byJobType);
 
+  // Same field as GET /jobs meta.visible_job_types (null = admin).
+  let visibleJobTypes: string[] | null | undefined;
+  if (
+    Object.prototype.hasOwnProperty.call(inner, 'visible_job_types') ||
+    Object.prototype.hasOwnProperty.call(inner, 'visibleJobTypes')
+  ) {
+    const rawVisible = inner.visible_job_types ?? inner.visibleJobTypes;
+    if (rawVisible === null) {
+      visibleJobTypes = null;
+    } else if (Array.isArray(rawVisible)) {
+      visibleJobTypes = rawVisible.map((t) => String(t));
+    }
+  }
+
   return {
     byStatus,
     bars,
@@ -123,6 +137,7 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
     open: Math.max(0, open),
     ...(createdInPeriod != null ? { createdInPeriod } : {}),
     ...(byJobType ? { byJobType } : {}),
+    ...(visibleJobTypes !== undefined ? { visibleJobTypes } : {}),
     raw: inner,
   };
 }

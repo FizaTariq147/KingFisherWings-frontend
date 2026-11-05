@@ -111,7 +111,8 @@ export default function JobListPage() {
     }
     if (!applied.createdBy?.trim()) delete params.created_by;
     if (!applied.salespersonId?.trim()) delete params.salesperson_id;
-    if (!applied.departmentId?.trim()) delete params.department_id;
+    // Job-type department pages: never send org department_id (not staff ACL).
+    delete params.department_id;
     return params;
   }, [applied, allowedSegmentTypes]);
 
@@ -357,6 +358,7 @@ export default function JobListPage() {
           isSubmitting={isFetching}
           jobTypeOptions={allowedSegmentTypes}
           jobTypeAllLabel={`All ${segmentConfig.label} types`}
+          showOrgDepartmentFilter={false}
         />
 
         {actionError ? (

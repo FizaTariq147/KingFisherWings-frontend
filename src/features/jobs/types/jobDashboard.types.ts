@@ -32,6 +32,11 @@ export interface JobDashboardCounts {
   open: number;
   createdInPeriod?: number;
   byJobType?: Record<string, number>;
+  /**
+   * Exact scope used by dashboard-counts (same as GET /jobs meta.visible_job_types).
+   * `null` = admin / unrestricted; array = staff job-type ACL.
+   */
+  visibleJobTypes?: string[] | null;
   raw?: Record<string, unknown>;
 }
 
