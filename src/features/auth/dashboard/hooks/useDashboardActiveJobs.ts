@@ -1,12 +1,9 @@
-import { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
-import { JOB_TYPES, type JobType } from '@/features/jobs/constants/job.constants';
+import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { Job } from '@/features/jobs/types/job.types';
 import { effectiveJobListType } from '@/features/jobs/utils/effectiveJobListType';
-import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
 import {
   CLOSED_JOB_STATUSES,
   isOpenBucketJob,
@@ -28,11 +25,9 @@ function normalizeStatus(status: unknown): string {
 const CLOSED = new Set(CLOSED_JOB_STATUSES.map(String));
 
 /**
- * Active shipments grid — show every non-closed job BE allows this user to see.
- * BE owns JWT / operations_scope visibility. FE only:
- * - loads the full staff-visible set (plain + type probes + search recovery)
- * - drops completed/cancelled
- * - never filters by creator
+ * Active shipments grid — show every non-closed job in the staff department
+ * allow-list (any creator). FE never probes the full role pack / every JOB_TYPE.
+ * Prefer BE meta.visible_job_types when list returns it.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -41,27 +36,22 @@ export function useDashboardActiveJobs(options?: {
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const { user } = useAuth();
+  const { scopeTypes, kind } = useVisibleJobListScope();
   const rowLimit = options?.rowLimit ?? 500;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
-
-  // null = admin (plain list). Staff: probe every job type; BE rejects ones outside grants.
-  const scopeTypes = useMemo((): JobType[] | null => {
-    if (isOpsUnrestrictedUser(user)) return null;
-    return [...JOB_TYPES];
-  }, [user]);
 
   return useQuery({
     queryKey: [
       'tenant',
       'dashboard',
       'active-jobs',
-      'staff-all-v10',
+      'staff-dept-v11',
       jobType,
       branchId,
       rowLimit,
-      scopeTypes === null ? 'admin' : 'staff',
+      kind,
+      scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
       // Pull the same total the KPI uses so we know when the grid is incomplete.
@@ -133,6 +123,7 @@ export function useDashboardActiveJobs(options?: {
         openTotal: openBucket.length,
         /** KPI total from dashboard-counts (may include closed). */
         expectedTotal,
+        visibleJobTypes: collected.meta?.visible_job_types,
       };
     },
     enabled: Boolean(accessToken) && options?.enabled !== false,

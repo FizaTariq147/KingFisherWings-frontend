@@ -1,4 +1,3 @@
-import { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useQuery } from '@tanstack/react-query';
 import { DashboardCard } from '@/components/dashboard/DashboardCard';
@@ -11,12 +10,10 @@ import {
   TableRow,
 } from '@/components/ui/Table';
 import { JobStatusBadge } from '@/features/jobs/components/JobStatusBadge';
-import type { JobStatus, JobType } from '@/features/jobs/constants/job.constants';
-import { JOB_TYPES } from '@/features/jobs/constants/job.constants';
+import type { JobStatus } from '@/features/jobs/constants/job.constants';
 import { useDashboardJobCounts } from '@/features/auth/dashboard/hooks/useDashboardJobCounts';
-import { useAuth } from '@/hooks/useAuth';
+import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
 import { jobService } from '@/features/jobs/services/job.service';
-import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
 import {
   jobDetailPath,
   jobDisplayNumber,
@@ -38,17 +35,18 @@ function formatEtd(value?: string): string {
 /** Latest jobs for staff/admin — same visibility path as Active shipments. */
 export function CurrentActiveJobsWidget() {
   const navigate = useNavigate();
-  const { user } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
   const jobCounts = useDashboardJobCounts('month');
-
-  const scopeTypes = useMemo((): JobType[] | null => {
-    if (isOpsUnrestrictedUser(user)) return null;
-    return [...JOB_TYPES];
-  }, [user]);
+  const { scopeTypes, kind } = useVisibleJobListScope();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['tenant', 'widgets', 'active-jobs-v3', scopeTypes === null ? 'admin' : 'staff'],
+    queryKey: [
+      'tenant',
+      'widgets',
+      'active-jobs-v4',
+      kind,
+      scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
+    ],
     queryFn: () =>
       jobService.listVisibleJobs(
         { page: 1, limit: FETCH_LIMIT, order: 'desc' },

@@ -6,7 +6,6 @@ import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
 import { documentationJobsService } from '@/features/documentation/services/documentation.service';
-import { useAuth } from '@/hooks/useAuth';
 import { appType, listShell } from '@/lib/erpTypography';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
@@ -23,12 +22,12 @@ import {
 } from '../constants/job.constants';
 import { useJobLifecycleMutations } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
+import { useVisibleJobListScope } from '../hooks/useVisibleJobListParams';
 import { jobService } from '../services/job.service';
 import type { Job } from '../types/job.types';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import { effectiveJobListType } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { normalizeJob } from '../utils/normalizeJob';
 import { jobDetailPath } from '../utils/jobRoute';
 import { useAuthStore } from '@/store/authStore';
@@ -78,7 +77,6 @@ export interface HubAllJobsPageProps {
 export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
   const config = variantConfig(variant);
 
@@ -94,24 +92,34 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
   );
 
   // Hard client filter only for hub variants with a fixed type set (NVOCC).
-  // Staff management trusts BE DB-resolved GET /jobs — do not re-filter by JWT
-  // role pack (that caused empty grids under operations_scope).
+  // Staff management uses granted departments only — never the full role pack.
   const hardClientTypes = useMemo((): JobType[] | null => {
     if (config.filterJobTypes?.length) return config.filterJobTypes;
     return null;
   }, [config.filterJobTypes]);
 
-  // Admin: plain list. Staff: probe all types — BE enforces grants.
+  const staffScope = useVisibleJobListScope({
+    candidates: config.filterJobTypes?.length ? config.filterJobTypes : undefined,
+  });
+
+  // Admin: null (or NVOCC hard filter). Staff: granted ∩ hub candidates — never full JOB_TYPES.
   const scopeTypes = useMemo((): JobType[] | null => {
-    if (config.filterJobTypes?.length) return config.filterJobTypes;
-    if (isOpsUnrestrictedUser(user)) return null;
-    return [...JOB_TYPES];
-  }, [config.filterJobTypes, user]);
+    if (staffScope.scopeTypes === null) {
+      return hardClientTypes;
+    }
+    if (hardClientTypes?.length) {
+      const allowed = new Set(staffScope.scopeTypes);
+      return hardClientTypes.filter((t) => allowed.has(t));
+    }
+    return staffScope.scopeTypes;
+  }, [hardClientTypes, staffScope.scopeTypes]);
 
   const jobTypeOptions = useMemo((): JobType[] => {
+    if (Array.isArray(scopeTypes) && scopeTypes.length) return scopeTypes;
     if (config.filterJobTypes?.length) return config.filterJobTypes;
+    if (staffScope.jobTypes?.length) return staffScope.jobTypes;
     return config.jobTypes;
-  }, [config.filterJobTypes, config.jobTypes]);
+  }, [config.filterJobTypes, config.jobTypes, scopeTypes, staffScope.jobTypes]);
 
   // Keep filters in sync when dashboard pills change ?status= / ?category=
   useEffect(() => {
@@ -145,7 +153,14 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
   const useCategoryList = Boolean(categoryFilter) && variant !== 'documentation';
 
   const jobsQuery = useQuery({
-    queryKey: ['tenant', 'jobs', 'hub-visible-v2', variant, filterParams, scopeTypes],
+    queryKey: [
+      'tenant',
+      'jobs',
+      'hub-visible-v3',
+      variant,
+      filterParams,
+      scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
+    ],
     queryFn: async () => {
       const byId = new Map<string, Job>();
       for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
