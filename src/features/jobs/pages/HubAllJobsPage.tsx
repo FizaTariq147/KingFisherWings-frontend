@@ -124,18 +124,6 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     return staffScope.probeTypes;
   }, [scopeTypes, staffScope.probeTypes]);
 
-  const scopeConfident =
-    scopeTypes === null ? true : staffScope.scopeConfident;
-
-  const listOpts = useMemo(
-    () => ({
-      scopeTypes,
-      scopeConfident,
-      probeTypes,
-    }),
-    [scopeTypes, scopeConfident, probeTypes],
-  );
-
   const jobTypeOptions = useMemo((): JobType[] => {
     if (Array.isArray(scopeTypes) && scopeTypes.length) return scopeTypes;
     if (config.filterJobTypes?.length) return config.filterJobTypes;
@@ -178,15 +166,38 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
     queryKey: [
       'tenant',
       'jobs',
-      'hub-visible-v4',
+      'hub-visible-v5',
       variant,
       filterParams,
-      scopeConfident ? 'confident' : 'uncertain',
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
       probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
+      // Same number as dashboard Total jobs — drives recovery when GET /jobs under-delivers.
+      let expectedTotal = 0;
+      try {
+        const counts = await jobService.dashboardCounts(
+          filterParams.branch_id ? { branch_id: filterParams.branch_id } : {},
+        );
+        expectedTotal = Number(counts.jobCount ?? 0) || 0;
+      } catch {
+        expectedTotal = 0;
+      }
+
+      const listOpts = {
+        scopeTypes,
+        scopeConfident: false,
+        probeTypes: scopeTypes === null ? ([] as JobType[]) : probeTypes,
+        expectedTotal,
+      };
+
       const byId = new Map<string, Job>();
+      const take = (jobs: Job[] | undefined) => {
+        for (const job of jobs ?? []) {
+          if (job?.id) byId.set(job.id, job);
+        }
+      };
+
       for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
         const result = await jobService.listVisibleJobs(
           {
@@ -197,14 +208,49 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
           },
           listOpts,
         );
-        for (const job of result.jobs ?? []) {
-          if (job?.id) byId.set(job.id, job);
-        }
+        take(result.jobs);
         const got = result.jobs?.length ?? 0;
         if (got === 0) break;
-        if (pageNum * 100 >= (result.meta?.total ?? got)) break;
+        if (pageNum * 100 >= Math.max(result.meta?.total ?? got, expectedTotal)) break;
+        if (byId.size >= Math.max(expectedTotal, 1) && expectedTotal > 0) break;
       }
-      return { jobs: [...byId.values()] };
+
+      // Count says N but list only returned a few — force typed list merge for staff probes.
+      if (
+        expectedTotal > byId.size &&
+        scopeTypes !== null &&
+        probeTypes.length > 0
+      ) {
+        const typed = await jobService.list({
+          ...filterParams,
+          page: 1,
+          limit: 100,
+          job_type: undefined,
+          job_types: [...probeTypes],
+          created_by: undefined,
+          salesperson_id: undefined,
+          department_id: undefined,
+        });
+        take(typed.jobs);
+
+        const catchUp = await jobService.listVisibleJobs(
+          {
+            ...filterParams,
+            page: 1,
+            limit: 100,
+            order: filterParams.order ?? 'desc',
+          },
+          {
+            scopeTypes: probeTypes,
+            scopeConfident: false,
+            probeTypes,
+            expectedTotal,
+          },
+        );
+        take(catchUp.jobs);
+      }
+
+      return { jobs: [...byId.values()], expectedTotal };
     },
     enabled: Boolean(accessToken) && variant !== 'documentation' && !useCategoryList,
     staleTime: 15_000,
