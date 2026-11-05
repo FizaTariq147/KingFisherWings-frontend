@@ -3,10 +3,12 @@ import { useQuery } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
 import type { JobType } from '@/features/jobs/constants/job.constants';
+import { JOB_TYPE_WIZARD_OPTIONS } from '@/features/jobs/constants/job.constants';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { Job, JobListParams } from '@/features/jobs/types/job.types';
 import { canonicalizeJobType } from '@/features/jobs/utils/canonicalizeJobType';
 import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
+import { resolveStaffListJobTypes } from '@/features/jobs/utils/resolveStaffListJobTypes';
 import { OPEN_JOB_STATUSES } from '../utils/dashboardFormat';
 
 function jobSortTime(job: Job): number {
@@ -15,20 +17,9 @@ function jobSortTime(job: Job): number {
   return Number.isFinite(t) ? t : 0;
 }
 
-const FALLBACK_STAFF_TYPES: JobType[] = [
-  'AIR_EXPORT',
-  'AIR_IMPORT',
-  'SEA_FCL_EXPORT',
-  'SEA_FCL_IMPORT',
-  'SEA_LCL_EXPORT',
-  'SEA_LCL_IMPORT',
-  'ROAD_FREIGHT',
-  'CUSTOMS_CLEARANCE',
-];
-
 /**
  * Active shipments grid rows.
- * - Staff: all open jobs for Ops visible ∪ writable types (any creator — admin or staff).
+ * - Staff: every open job in granted departments (full FCL+LCL families, any creator).
  * - Admin: all open jobs (no job_types filter).
  * - openTotal = unique open rows loaded (All jobs badge matches the grid).
  */
@@ -40,7 +31,7 @@ export function useDashboardActiveJobs(options?: {
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const { user } = useAuth();
+  const { user, hasEnabledModule } = useAuth();
   const rowLimit = options?.rowLimit ?? 100;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
@@ -48,23 +39,20 @@ export function useDashboardActiveJobs(options?: {
 
   const staffJobTypes = useMemo((): JobType[] => {
     if (unrestricted) return [];
-    const types = new Set<JobType>();
-    for (const raw of [
-      ...(Array.isArray(user?.visibleJobTypes) ? user.visibleJobTypes : []),
-      ...(Array.isArray(user?.writableJobTypes) ? user.writableJobTypes : []),
-    ]) {
-      types.add(canonicalizeJobType(raw));
-    }
-    if (!types.size) {
-      FALLBACK_STAFF_TYPES.forEach((t) => types.add(t));
-    }
-    return [...types];
-  }, [user, unrestricted]);
+    // Full department families for every granted dept (Sea Import → FCL+LCL, …).
+    return resolveStaffListJobTypes({
+      permissions: user?.permissions ?? [],
+      visibleJobTypes: user?.visibleJobTypes,
+      writableJobTypes: user?.writableJobTypes,
+      isModuleEnabled: hasEnabledModule,
+      candidates: [...JOB_TYPE_WIZARD_OPTIONS],
+    });
+  }, [user, unrestricted, hasEnabledModule]);
 
   const filterParams: Pick<JobListParams, 'job_type' | 'branch_id' | 'job_types'> = {
     ...(jobType ? { job_type: jobType as JobListParams['job_type'] } : {}),
     ...(branchId ? { branch_id: branchId } : {}),
-    // Staff: always pass job_types so list() runs search-prefix recovery (admin creates).
+    // Staff: pass dept types so list() runs search-prefix recovery (admin creates).
     ...(!jobType && staffJobTypes.length ? { job_types: staffJobTypes } : {}),
   };
 
@@ -93,7 +81,6 @@ export function useDashboardActiveJobs(options?: {
         }
       };
 
-      // Primary: department-scoped list (search-prefix recovery inside job.service).
       const page = await jobService.list({
         page: 1,
         limit: pageLimit,
@@ -102,8 +89,7 @@ export function useDashboardActiveJobs(options?: {
       });
       takeOpen(page.jobs);
 
-      // Staff secondary: JWT default list (no job_types) — some BE builds only
-      // expose certain admin rows on this path; keep those that match staff types.
+      // Staff secondary: JWT default list — merge any in-scope open rows.
       if (!unrestricted && staffJobTypes.length && !jobType) {
         const allowed = new Set(staffJobTypes.map((t) => canonicalizeJobType(String(t))));
         try {
@@ -132,7 +118,6 @@ export function useDashboardActiveJobs(options?: {
 
       return {
         jobs: openJobs.slice(0, rowLimit),
-        /** Exact unique open rows — All jobs badge matches the grid. */
         openTotal: openJobs.length,
       };
     },

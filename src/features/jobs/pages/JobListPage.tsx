@@ -24,10 +24,9 @@ import { useJobLifecycleMutations } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import type { Job } from '../types/job.types';
-import { canonicalizeJobType } from '../utils/canonicalizeJobType';
-import { filterJobTypesByStaffAccess } from '../utils/filterJobTypesByStaffAccess';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
+import { resolveStaffListJobTypes } from '../utils/resolveStaffListJobTypes';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 export default function JobListPage() {
@@ -62,37 +61,18 @@ export default function JobListPage() {
     setPage(1);
   }, [segment, applied]);
 
-  // Admin = full segment.
-  // Staff = /me visible ∪ writable ∩ this department (e.g. Sea Import →
-  // SEA_FCL_IMPORT + SEA_LCL_IMPORT when those are in Ops visible). Matrix/menu
-  // filter is a fallback only — never drop types the admin already granted on /me.
+  // Admin = full segment (Sea Export FCL+LCL, Sea Import FCL+LCL, …).
+  // Staff with any access to this department = same full segment as admin.
   const allowedSegmentTypes = useMemo((): JobType[] => {
     if (isOpsUnrestrictedUser(user)) return [...segmentConfig.jobTypes];
-
-    const segmentSet = new Set(
-      segmentConfig.jobTypes.map((t) => canonicalizeJobType(t)),
-    );
-    const fromMe = new Set<JobType>();
-    for (const raw of [
-      ...(Array.isArray(user?.visibleJobTypes) ? user.visibleJobTypes : []),
-      ...(Array.isArray(user?.writableJobTypes) ? user.writableJobTypes : []),
-    ]) {
-      const t = canonicalizeJobType(raw);
-      if (segmentSet.has(t)) fromMe.add(t);
-    }
-    if (fromMe.size > 0) return [...fromMe];
-
-    const allowed = filterJobTypesByStaffAccess({
+    return resolveStaffListJobTypes({
       permissions: user?.permissions ?? [],
       visibleJobTypes: user?.visibleJobTypes,
       writableJobTypes: user?.writableJobTypes,
-      unrestrictedOps: false,
-      isTenantAdmin: false,
       isModuleEnabled: hasEnabledModule,
       candidates: segmentConfig.jobTypes,
-      mode: 'list',
+      fullSegmentIfAnyAccess: true,
     });
-    return allowed.length ? allowed : [...segmentConfig.jobTypes];
   }, [
     segmentConfig.jobTypes,
     user,
