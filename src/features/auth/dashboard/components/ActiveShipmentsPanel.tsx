@@ -52,7 +52,7 @@ import { cn } from '@/lib/utils';
 
 type ViewKey = 'all' | 'mine' | 'customs' | 'docs' | 'air';
 
-/** "All jobs" = every in-scope open job (admin or staff creator). "My jobs" = assigned to me. */
+/** "All jobs" = every open job in staff's granted departments (any creator). "My jobs" = own only. */
 const SAVED_VIEWS: { id: ViewKey; label: string; icon: LucideIcon }[] = [
   { id: 'all', label: 'All jobs', icon: Briefcase },
   { id: 'mine', label: 'My jobs', icon: User },

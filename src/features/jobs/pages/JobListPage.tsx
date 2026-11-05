@@ -62,10 +62,12 @@ export default function JobListPage() {
   }, [segment, applied]);
 
   // Admin = full segment (Sea Export FCL+LCL, Sea Import FCL+LCL, …).
-  // Staff with any access to this department = same full segment as admin.
+  // Staff with Ops visible/writable for this dept = same full segment as admin.
+  // After BE scopes by visible_job_types (any creator), this list shows every
+  // department job — not only staff-created / assigned rows.
   const allowedSegmentTypes = useMemo((): JobType[] => {
     if (isOpsUnrestrictedUser(user)) return [...segmentConfig.jobTypes];
-    return resolveStaffListJobTypes({
+    const resolved = resolveStaffListJobTypes({
       permissions: user?.permissions ?? [],
       visibleJobTypes: user?.visibleJobTypes,
       writableJobTypes: user?.writableJobTypes,
@@ -73,6 +75,9 @@ export default function JobListPage() {
       candidates: segmentConfig.jobTypes,
       fullSegmentIfAnyAccess: true,
     });
+    // If /me grants any type in this department, always use the full segment
+    // (identical to admin Sea Export / Sea Import lists).
+    return resolved.length ? [...segmentConfig.jobTypes] : [];
   }, [
     segmentConfig.jobTypes,
     user,
@@ -86,12 +91,10 @@ export default function JobListPage() {
 
   const listParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, page, {
-      // Staff: only granted types in this department (never NVOCC on sea-* without nvocc grant).
-      // Admin: full segment. List merge still uses unfiltered + typed fan-out in job.service.
       segmentJobTypes: [...allowedSegmentTypes],
     });
-    // Department default view: every creator (admin + staff). Only keep creator
-    // filters when the user explicitly typed them in MIS filters.
+    // Department default: every creator in this dept (admin + staff).
+    // Only keep creator filters when the user typed them in MIS filters.
     if (!applied.createdBy?.trim()) delete params.created_by;
     if (!applied.salespersonId?.trim()) delete params.salesperson_id;
     if (!applied.departmentId?.trim()) delete params.department_id;

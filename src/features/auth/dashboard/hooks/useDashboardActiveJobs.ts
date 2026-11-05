@@ -17,11 +17,15 @@ function jobSortTime(job: Job): number {
   return Number.isFinite(t) ? t : 0;
 }
 
+const PAGE_SIZE = 100;
+/** Safety cap so a bad meta.total cannot loop forever. */
+const MAX_ACTIVE_PAGES = 10;
+
 /**
  * Active shipments grid rows.
- * - Staff: every open job in granted departments (full FCL+LCL families, any creator).
- * - Admin: all open jobs (no job_types filter).
- * - openTotal = unique open rows loaded (All jobs badge matches the grid).
+ * After BE scopes staff GET /jobs by visible_job_types (any creator), this grid
+ * must show every open job in the staff's granted departments — same relevance
+ * rule as admin, without created_by / assignee filters.
  */
 export function useDashboardActiveJobs(options?: {
   enabled?: boolean;
@@ -32,14 +36,13 @@ export function useDashboardActiveJobs(options?: {
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
   const { user, hasEnabledModule } = useAuth();
-  const rowLimit = options?.rowLimit ?? 100;
+  const rowLimit = options?.rowLimit ?? 500;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
   const unrestricted = isOpsUnrestrictedUser(user);
 
   const staffJobTypes = useMemo((): JobType[] => {
     if (unrestricted) return [];
-    // Trust /me Ops visible∪writable (full families) so no granted type is dropped.
     return resolveStaffListJobTypes({
       permissions: user?.permissions ?? [],
       visibleJobTypes: user?.visibleJobTypes,
@@ -49,19 +52,17 @@ export function useDashboardActiveJobs(options?: {
     });
   }, [user, unrestricted, hasEnabledModule]);
 
-  const filterParams: Pick<JobListParams, 'job_type' | 'branch_id' | 'job_types'> = {
-    ...(jobType ? { job_type: jobType as JobListParams['job_type'] } : {}),
-    ...(branchId ? { branch_id: branchId } : {}),
-    // Staff: pass dept types so list() runs search-prefix recovery (admin creates).
-    ...(!jobType && staffJobTypes.length ? { job_types: staffJobTypes } : {}),
-  };
+  const allowedTypeSet = useMemo(() => {
+    if (unrestricted || !staffJobTypes.length) return null;
+    return new Set(staffJobTypes.map((t) => canonicalizeJobType(String(t))));
+  }, [unrestricted, staffJobTypes]);
 
   return useQuery({
     queryKey: [
       'tenant',
       'dashboard',
       'active-jobs',
-      'all-dept-any-creator',
+      'dept-any-creator-v2',
       jobType,
       branchId,
       staffJobTypes,
@@ -69,7 +70,6 @@ export function useDashboardActiveJobs(options?: {
       unrestricted,
     ],
     queryFn: async () => {
-      const pageLimit = Math.min(100, Math.max(rowLimit, 100));
       const openSet = new Set<string>(OPEN_JOB_STATUSES);
       const byId = new Map<string, Job>();
 
@@ -77,35 +77,62 @@ export function useDashboardActiveJobs(options?: {
         for (const job of jobs ?? []) {
           if (!job?.id) continue;
           if (!openSet.has(String(job.status))) continue;
+          if (allowedTypeSet) {
+            const t = canonicalizeJobType(String(job.job_type ?? ''));
+            if (!allowedTypeSet.has(t)) continue;
+          }
           byId.set(job.id, job);
         }
       };
 
-      const page = await jobService.list({
-        page: 1,
-        limit: pageLimit,
+      const baseParams: JobListParams = {
         order: 'desc',
-        ...filterParams,
-      });
-      takeOpen(page.jobs);
+        // Never scope Active shipments by creator — BE + FE: any creator in grant.
+        created_by: undefined,
+        salesperson_id: undefined,
+        department_id: undefined,
+        ...(jobType ? { job_type: jobType as JobListParams['job_type'] } : {}),
+        ...(branchId ? { branch_id: branchId } : {}),
+        // Staff: granted dept types (drives typed + search recovery until BE is fixed).
+        ...(!jobType && staffJobTypes.length ? { job_types: staffJobTypes } : {}),
+      };
 
-      // Staff secondary: JWT default list — merge any in-scope open rows.
+      // Page through so we do not stop at the first 100 when BE returns more.
+      for (let page = 1; page <= MAX_ACTIVE_PAGES; page += 1) {
+        const result = await jobService.list({
+          ...baseParams,
+          page,
+          limit: PAGE_SIZE,
+        });
+        takeOpen(result.jobs);
+        const total = result.meta?.total ?? result.jobs?.length ?? 0;
+        const got = result.jobs?.length ?? 0;
+        if (got === 0) break;
+        if (page * PAGE_SIZE >= total) break;
+        if (byId.size >= rowLimit) break;
+      }
+
+      // Extra pass: plain JWT list (no job_types) — merge any in-scope open rows
+      // BE only exposes on the unfiltered path.
       if (!unrestricted && staffJobTypes.length && !jobType) {
-        const allowed = new Set(staffJobTypes.map((t) => canonicalizeJobType(String(t))));
         try {
-          const jwtPage = await jobService.list({
-            page: 1,
-            limit: pageLimit,
-            order: 'desc',
-            skip_client_hydrate: true,
-            ...(branchId ? { branch_id: branchId } : {}),
-          });
-          for (const job of jwtPage.jobs ?? []) {
-            if (!job?.id) continue;
-            if (!openSet.has(String(job.status))) continue;
-            const t = canonicalizeJobType(String(job.job_type ?? ''));
-            if (!allowed.has(t)) continue;
-            if (!byId.has(job.id)) byId.set(job.id, job);
+          for (let page = 1; page <= MAX_ACTIVE_PAGES; page += 1) {
+            const jwtPage = await jobService.list({
+              page,
+              limit: PAGE_SIZE,
+              order: 'desc',
+              skip_client_hydrate: true,
+              created_by: undefined,
+              salesperson_id: undefined,
+              department_id: undefined,
+              ...(branchId ? { branch_id: branchId } : {}),
+            });
+            takeOpen(jwtPage.jobs);
+            const total = jwtPage.meta?.total ?? jwtPage.jobs?.length ?? 0;
+            const got = jwtPage.jobs?.length ?? 0;
+            if (got === 0) break;
+            if (page * PAGE_SIZE >= total) break;
+            if (byId.size >= rowLimit) break;
           }
         } catch {
           /* keep primary rows */
@@ -118,6 +145,7 @@ export function useDashboardActiveJobs(options?: {
 
       return {
         jobs: openJobs.slice(0, rowLimit),
+        /** Badge = unique open rows shown (all in-scope creators). */
         openTotal: openJobs.length,
       };
     },
