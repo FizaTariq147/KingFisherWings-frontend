@@ -130,9 +130,12 @@ export function DashboardPage() {
 
   // Headline total jobs — bind to job_count, never open / created_in_period.
   const totalJobsCount = jobCountsData?.jobCount ?? 0;
-  // Active shipments badge = unique open rows loaded for this user (not dashboard open KPI).
-  const openJobsCount =
-    activeJobsQuery.data?.openTotal ?? shipmentJobs.length;
+  // Active shipments must show the same set as job_count (all statuses).
+  const openJobsCount = Math.max(
+    totalJobsCount,
+    activeJobsQuery.data?.expectedTotal ?? 0,
+    shipmentJobs.length,
+  );
 
   const agingQuoteStats = useMemo(() => {
     const quotations = quoteStats.data?.quotations ?? [];
