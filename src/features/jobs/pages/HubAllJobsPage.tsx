@@ -154,7 +154,7 @@ export default function HubAllJobsPage({ variant, backTo, title }: HubAllJobsPag
   const useCategoryList = Boolean(categoryFilter) && variant !== 'documentation';
 
   const jobsQuery = useQuery({
-    queryKey: ['tenant', 'jobs', 'hub-visible', variant, filterParams, scopeTypes],
+    queryKey: ['tenant', 'jobs', 'hub-visible-v2', variant, filterParams, scopeTypes],
     queryFn: async () => {
       const byId = new Map<string, Job>();
       for (let pageNum = 1; pageNum <= 10; pageNum += 1) {

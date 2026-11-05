@@ -59,7 +59,7 @@ export function CurrentActiveJobsWidget() {
   }, [user]);
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['tenant', 'widgets', 'active-jobs-visible', scopeTypes],
+    queryKey: ['tenant', 'widgets', 'active-jobs-visible-v2', scopeTypes],
     queryFn: () =>
       jobService.listVisibleJobs(
         { page: 1, limit: FETCH_LIMIT, order: 'desc' },

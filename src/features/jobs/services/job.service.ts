@@ -1062,11 +1062,11 @@ export const jobService = {
   /**
    * Active shipments / department / hub lists for admin + staff.
    *
-   * Admin (`scopeTypes: null`): plain GET /jobs.
-   * Staff: try plain GET /jobs first (works when BE DB-resolves visibility).
-   * If that returns 0 rows (classic operations_scope → job_type:{in:[]} bug while
-   * dashboard-counts still shows job_count), fan out GET /jobs?job_type= for each
-   * granted type only, then search-prefix recovery. Never invent the role pack.
+   * Admin (`scopeTypes: null`): plain GET /jobs only.
+   * Staff: ALWAYS merge plain GET /jobs with typed fan-out for granted types.
+   * Plain alone often returns only 1 creator-owned row while dashboard-counts
+   * still reports the full in-scope total (e.g. 14). Fan-out must not wait for
+   * an empty list. Search-prefix recovery fills remaining gaps.
    */
   async listVisibleJobs(
     params: JobListParams = {},
@@ -1076,6 +1076,7 @@ export const jobService = {
     const limit = clampApiListLimit(params.limit, 20);
     const order = params.order ?? 'desc';
     const scopeTypes = opts?.scopeTypes;
+    const isStaffScoped = Array.isArray(scopeTypes) && scopeTypes.length > 0;
 
     const baseParams: JobListParams = {
       ...params,
@@ -1091,7 +1092,6 @@ export const jobService = {
     if (!String(params.department_id ?? '').trim()) baseParams.department_id = undefined;
 
     const byId = new Map<string, Job>();
-    let apiTotal = 0;
 
     const ingest = (jobs: Job[] | undefined) => {
       for (const job of jobs ?? []) {
@@ -1101,7 +1101,7 @@ export const jobService = {
       }
     };
 
-    // 1) Plain JWT / DB-scoped pages.
+    // 1) Plain JWT / DB-scoped pages (may be partial for staff).
     try {
       let pageNum = 1;
       let reported = Number.POSITIVE_INFINITY;
@@ -1118,39 +1118,37 @@ export const jobService = {
         );
         ingest(result.jobs);
         if (typeof result.meta?.total === 'number') reported = result.meta.total;
-        apiTotal = Math.max(apiTotal, byId.size, Number.isFinite(reported) ? reported : 0);
         const got = result.jobs?.length ?? 0;
         if (got === 0) break;
         if (pageNum * pageSize >= reported) break;
         pageNum += 1;
       }
     } catch {
-      /* typed recovery below */
+      /* typed merge below */
     }
 
-    // 2) Staff recovery: typed fan-out for granted types only.
-    // Plain list is empty under operations_scope → job_type:{in:[]} while counts still work.
-    if (byId.size === 0 && Array.isArray(scopeTypes) && scopeTypes.length > 0) {
-      ingest(await fetchJobsViaGrantedTypeFanOut(baseParams, scopeTypes));
-    }
+    // 2) Staff: always merge typed fan-out for granted types (not only when empty).
+    // Partial plain lists (1 own job) must not block the rest of the department.
+    if (isStaffScoped) {
+      try {
+        ingest(await fetchJobsViaGrantedTypeFanOut(baseParams, scopeTypes));
+      } catch {
+        /* keep plain rows */
+      }
 
-    // 3) Search-prefix recovery when still empty.
-    if (byId.size === 0 && Array.isArray(scopeTypes) && scopeTypes.length > 0) {
+      // 3) Search-prefix recovery — merge, do not require empty first.
       try {
         ingest(await fetchJobsVisibleViaSearchRecovery(baseParams, scopeTypes));
       } catch {
-        /* keep empty */
+        /* keep what we have */
       }
     }
 
-    // Trust BE / recovered rows — department UIs apply their own segment filter.
-    // Do not re-filter by scopeTypes here (that hid valid rows when /me tokens lagged).
     const merged = [...byId.values()].sort((a, b) => {
       const diff = jobSortTime(a) - jobSortTime(b);
       return order === 'asc' ? diff : -diff;
     });
 
-    void apiTotal;
     const start = (page - 1) * limit;
     return {
       jobs: merged.slice(start, start + limit),
