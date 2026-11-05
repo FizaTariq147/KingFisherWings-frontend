@@ -123,6 +123,8 @@ export function ActiveShipmentsPanel({
   activeTotal: _activeTotal,
   /** Tenant dashboard always defaults to All jobs (any creator). */
   defaultView = 'all',
+  /** Staff → /jobs/all; admin → All Jobs-MIS. */
+  viewAllTo = '/jobs/all',
 }: {
   jobs: Job[];
   isLoading: boolean;
@@ -134,6 +136,7 @@ export function ActiveShipmentsPanel({
   /** @deprecated Badge uses loaded row count so grid and All jobs stay aligned. */
   activeTotal?: number;
   defaultView?: ViewKey;
+  viewAllTo?: string;
 }) {
   void _activeTotal;
   const navigate = useNavigate();
@@ -279,7 +282,7 @@ export function ActiveShipmentsPanel({
             </button>
             <button
               type="button"
-              onClick={() => navigate('/management/all-jobs-mis')}
+              onClick={() => navigate(viewAllTo)}
               className="rounded-lg bg-[#FFF4ED] px-3 py-1.5 text-[11px] font-semibold text-[#FF751F] hover:bg-[#FFEBDD]"
             >
               View all

@@ -125,6 +125,7 @@ import JobDetailPage from '../features/jobs/pages/JobDetailPage'
 import JobEditPage from '../features/jobs/pages/JobEditPage'
 import JobBarcodeScanPage from '../features/jobs/pages/JobBarcodeScanPage'
 import JobsOnHoldPage from '../features/jobs/pages/JobsOnHoldPage'
+import StaffAllJobsPage from '../features/jobs/pages/StaffAllJobsPage'
 import DepartmentHubPage from '../features/jobs/pages/DepartmentHubPage'
 import CustomsClearanceHubPage from '../features/customs-clearance/pages/CustomsClearanceHubPage'
 import HsValidatePage from '../features/customs-clearance/pages/HsValidatePage'
@@ -564,6 +565,7 @@ export const router = createBrowserRouter([
             children: [
               { path: '/departments/:deptKey', element: <DepartmentHubPage /> },
               { path: '/jobs/new', element: <JobCreatePage /> },
+              { path: '/jobs/all', element: <StaffAllJobsPage /> },
               { path: '/jobs/on-hold', element: <JobsOnHoldPage /> },
               { path: '/jobs/barcode-scan', element: <JobBarcodeScanPage /> },
               { path: '/jobs/air-export', element: <JobListPage /> },

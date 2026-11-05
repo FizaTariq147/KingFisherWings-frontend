@@ -12,12 +12,14 @@ import {
 import { JobStatusBadge } from '@/features/jobs/components/JobStatusBadge';
 import type { JobStatus } from '@/features/jobs/constants/job.constants';
 import { useDashboardJobCounts } from '@/features/auth/dashboard/hooks/useDashboardJobCounts';
+import { useAuth } from '@/hooks/useAuth';
 import { useVisibleJobListScope } from '@/features/jobs/hooks/useVisibleJobListParams';
 import { jobService } from '@/features/jobs/services/job.service';
 import {
   jobDetailPath,
   jobDisplayNumber,
 } from '@/features/jobs/utils/jobRoute';
+import { isOpsUnrestrictedUser } from '@/features/jobs/utils/isOpsUnrestrictedUser';
 import { useAuthStore } from '@/store/authStore';
 
 const WIDGET_LIMIT = 8;
@@ -35,9 +37,13 @@ function formatEtd(value?: string): string {
 /** Latest jobs for staff/admin — same visibility path as Active shipments. */
 export function CurrentActiveJobsWidget() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
   const jobCounts = useDashboardJobCounts('month');
-  const { scopeTypes, scopeConfident, probeTypes, kind } = useVisibleJobListScope();
+  const { scopeTypes, probeTypes, kind } = useVisibleJobListScope();
+  const viewAllTo = isOpsUnrestrictedUser(user)
+    ? '/management/all-jobs-mis'
+    : '/jobs/all';
 
   const { data, isLoading, isError } = useQuery({
     queryKey: [
@@ -45,7 +51,6 @@ export function CurrentActiveJobsWidget() {
       'widgets',
       'active-jobs-v5',
       kind,
-      scopeConfident ? 'confident' : 'uncertain',
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
       probeTypes.slice().sort().join(','),
     ],
@@ -54,7 +59,7 @@ export function CurrentActiveJobsWidget() {
         { page: 1, limit: FETCH_LIMIT, order: 'desc' },
         {
           scopeTypes,
-          scopeConfident,
+          scopeConfident: false,
           probeTypes: scopeTypes === null ? [] : probeTypes,
         },
       ),
@@ -75,7 +80,7 @@ export function CurrentActiveJobsWidget() {
       isLoading={isLoading || jobCounts.isLoading}
       isEmpty={!isLoading && (isError || activeJobs.length === 0)}
       emptyMessage={isError ? 'Could not load jobs.' : 'No jobs yet.'}
-      onExpand={() => navigate('/management/all-jobs-mis')}
+      onExpand={() => navigate(viewAllTo)}
     >
       <Table>
         <TableHeader>
