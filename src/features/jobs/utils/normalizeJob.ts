@@ -74,39 +74,84 @@ export function unwrapEntity(raw: unknown): unknown {
   return raw;
 }
 
+const LIST_ARRAY_KEYS = [
+  'items',
+  'results',
+  'jobs',
+  'rows',
+  'records',
+  'content',
+  'list',
+  'data',
+  'milestones',
+  'shipments',
+  'linked_shipments',
+  'uld_requests',
+  'requests',
+  'vouchers',
+] as const;
+
+function firstArrayField(obj: Record<string, unknown> | null | undefined): unknown[] | undefined {
+  if (!obj) return undefined;
+  for (const key of LIST_ARRAY_KEYS) {
+    const value = obj[key];
+    if (Array.isArray(value)) return value;
+  }
+  return undefined;
+}
+
+/**
+ * Extract list rows from varied BE envelopes.
+ * Important: do not return [] just because `data` is an object without a known
+ * list key — also check top-level / nested `jobs`, `rows`, `result`, etc.
+ * Staff Active shipments showed 0 while dashboard-counts job_count was 14 when
+ * the list payload used a shape we previously ignored.
+ */
 export function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
   if (Array.isArray(raw)) return { items: raw };
   const envelope = asRecord(raw);
   if (!envelope) return { items: [] };
+
+  const metaCandidates: unknown[] = [];
+  const arrayCandidates: unknown[][] = [];
+
+  const consider = (obj: Record<string, unknown> | null | undefined) => {
+    if (!obj) return;
+    if (obj.meta != null) metaCandidates.push(obj.meta);
+    if (obj.pagination != null) metaCandidates.push(obj.pagination);
+    const arr = firstArrayField(obj);
+    if (arr) arrayCandidates.push(arr);
+  };
+
+  consider(envelope);
+
   const data = envelope.data;
-  if (Array.isArray(data)) return { items: data, meta: envelope.meta };
-  const nested = asRecord(data);
-  if (nested) {
-    const list =
-      (Array.isArray(nested.items) && nested.items) ||
-      (Array.isArray(nested.results) && nested.results) ||
-      (Array.isArray(nested.milestones) && nested.milestones) ||
-      (Array.isArray(nested.jobs) && nested.jobs) ||
-      (Array.isArray(nested.shipments) && nested.shipments) ||
-      (Array.isArray(nested.linked_shipments) && nested.linked_shipments) ||
-      (Array.isArray(nested.uld_requests) && nested.uld_requests) ||
-      (Array.isArray(nested.requests) && nested.requests) ||
-      (Array.isArray(nested.vouchers) && nested.vouchers) ||
-      [];
-    return { items: list, meta: nested.meta ?? envelope.meta };
+  if (Array.isArray(data)) {
+    return {
+      items: data,
+      meta: envelope.meta ?? metaCandidates[0],
+    };
   }
-  const topList =
-    (Array.isArray(envelope.items) && envelope.items) ||
-    (Array.isArray(envelope.results) && envelope.results) ||
-    (Array.isArray(envelope.jobs) && envelope.jobs) ||
-    (Array.isArray(envelope.milestones) && envelope.milestones) ||
-    (Array.isArray(envelope.shipments) && envelope.shipments) ||
-    (Array.isArray(envelope.linked_shipments) && envelope.linked_shipments) ||
-    (Array.isArray(envelope.uld_requests) && envelope.uld_requests) ||
-    (Array.isArray(envelope.requests) && envelope.requests) ||
-    (Array.isArray(envelope.vouchers) && envelope.vouchers) ||
-    [];
-  return { items: topList, meta: envelope.meta };
+
+  const nested = asRecord(data);
+  consider(nested);
+  if (nested) {
+    consider(asRecord(nested.data));
+    consider(asRecord(nested.result));
+    consider(asRecord(nested.payload));
+    consider(asRecord(nested.response));
+  }
+  consider(asRecord(envelope.result));
+  consider(asRecord(envelope.payload));
+
+  // Prefer a non-empty array; otherwise first candidate (may be []).
+  const items =
+    arrayCandidates.find((arr) => arr.length > 0) ?? arrayCandidates[0] ?? [];
+
+  return {
+    items,
+    meta: metaCandidates[0] ?? envelope.meta,
+  };
 }
 
 export function normalizeAirUldRequest(raw: unknown): AirUldRequest | null {
@@ -654,7 +699,9 @@ function pickJobScheduleDates(
 
 export function normalizeJob(raw: unknown): Job | null {
   const r = asRecord(unwrapEntity(raw));
-  if (!r || !r.id) return null;
+  const jobId =
+    (r && (pickString(r, 'id', 'job_id', 'jobId') || str(r.id))) || '';
+  if (!r || !jobId) return null;
 
   const chargesRaw = r.charges ?? r.charge_lines;
   const milestonesRaw = r.milestones;
@@ -721,7 +768,7 @@ export function normalizeJob(raw: unknown): Job | null {
   }
 
   return {
-    id: str(r.id),
+    id: jobId,
     job_number: jobNumber,
     job_type: jobType,
     status: (() => {

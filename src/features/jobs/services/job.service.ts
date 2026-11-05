@@ -1158,60 +1158,94 @@ export const jobService = {
         }
 
         const byId = new Map<string, Job>();
+        const rawJwtById = new Map<string, Job>();
         let unfilteredTotal = 0;
 
-        const addJobs = (jobs: Job[] | undefined) => {
+        const stamp = (job: Job): Job => {
+          const type = effectiveListJobType(job);
+          return job.job_type === type ? job : { ...job, job_type: type };
+        };
+
+        const addIfAllowed = (jobs: Job[] | undefined) => {
           for (const job of jobs ?? []) {
             if (!job?.id) continue;
-            const type = effectiveListJobType(job);
-            if (!allowed.has(type)) continue;
-            byId.set(job.id, job.job_type === type ? job : { ...job, job_type: type });
+            const next = stamp(job);
+            rawJwtById.set(next.id, next);
+            if (allowed.has(effectiveListJobType(next))) {
+              byId.set(next.id, next);
+            }
           }
         };
 
-        // 1) JWT unfiltered scan FIRST — BE now scopes staff by visible_job_types
-        // (any creator). This is the primary path for department lists.
+        // 1) Plain JWT pages — BE scopes staff by visible_job_types (any creator).
         try {
-          const unfiltered = await fetchAllJobsMatchingTypes(deptListBase, types);
+          let pageNum = 1;
+          let apiTotal = Number.POSITIVE_INFINITY;
+          const pageSize = API_LIST_LIMIT_MAX;
+          while (pageNum <= 20) {
+            const pageResult = await fetchJobListPage(
+              {
+                ...deptListBase,
+                job_type: undefined,
+                job_types: undefined,
+                page: pageNum,
+                limit: pageSize,
+                order: deptListBase.order ?? 'desc',
+              },
+              { skipErrorToast: true },
+            );
+            if (typeof pageResult.meta?.total === 'number') {
+              apiTotal = pageResult.meta.total;
+            }
+            addIfAllowed(pageResult.jobs);
+            const got = pageResult.jobs?.length ?? 0;
+            if (got === 0) break;
+            if (pageNum * pageSize >= apiTotal) break;
+            pageNum += 1;
+          }
           unfilteredTotal = Math.max(
             unfilteredTotal,
-            unfiltered.apiTotal,
-            unfiltered.jobs.length,
+            byId.size,
+            rawJwtById.size,
+            Number.isFinite(apiTotal) ? apiTotal : 0,
           );
-          addJobs(unfiltered.jobs);
         } catch {
           /* typed / search below */
         }
 
-        // 2) Typed job_type= fan-out (some BE builds only return rows on this path).
+        // 2) Typed job_type= fan-out.
         try {
           for (const pageResult of await fetchTypedPages()) {
             unfilteredTotal = Math.max(unfilteredTotal, pageResult.meta.total ?? 0);
-            addJobs(pageResult.jobs);
+            addIfAllowed(pageResult.jobs);
           }
         } catch {
           /* keep JWT rows */
         }
 
-        // 3) Search-prefix recovery (legacy fallback if JWT/typed still omit rows).
-        if (!String(deptListBase.search ?? '').trim()) {
+        // 3) Search recovery only if still empty.
+        if (!String(deptListBase.search ?? '').trim() && byId.size === 0) {
           try {
-            addJobs(await fetchJobsVisibleViaSearchRecovery(deptListBase, types));
+            addIfAllowed(await fetchJobsVisibleViaSearchRecovery(deptListBase, types));
             unfilteredTotal = Math.max(unfilteredTotal, byId.size);
           } catch {
             /* keep what we have */
           }
         }
 
+        // 4) Last resort: JWT returned rows but none matched segment types
+        // (mis-labeled job_type). Show all JWT rows — BE already scoped staff.
+        if (byId.size === 0 && rawJwtById.size > 0) {
+          for (const job of rawJwtById.values()) byId.set(job.id, job);
+          unfilteredTotal = Math.max(unfilteredTotal, byId.size);
+        }
+
         const seeded = [...byId.values()];
         const hydrated = await hydrateJobsFromConvertedQuotes(seeded, types);
-        const typed = hydrated
-          .map((j) => {
-            const type = effectiveListJobType(j);
-            return j.job_type === type ? j : { ...j, job_type: type };
-          })
-          .filter((j) => allowed.has(effectiveListJobType(j)));
-        const withRecent = await mergeRecentCreatedJobs(typed, { jobTypes: types });
+        const withRecent = await mergeRecentCreatedJobs(
+          hydrated.map(stamp),
+          { jobTypes: types },
+        );
         return paginate(withRecent, Math.max(unfilteredTotal, withRecent.length));
       }
 

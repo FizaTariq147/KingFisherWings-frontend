@@ -5,7 +5,6 @@ import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
-import { useAuth } from '@/hooks/useAuth';
 import { JobConfirmModal } from '../components/JobConfirmModal';
 import {
   JobMisFilters,
@@ -18,21 +17,17 @@ import {
   DEFAULT_JOB_PAGE_SIZE,
   JOB_SEGMENTS,
   type JobSegmentKey,
-  type JobType,
 } from '../constants/job.constants';
 import { useJobLifecycleMutations } from '../hooks/useJobActions';
 import { useJobConfirmState } from '../hooks/useJobConfirmState';
 import { useJobs } from '../hooks/useJobs';
 import type { Job } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
-import { resolveStaffListJobTypes } from '../utils/resolveStaffListJobTypes';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 export default function JobListPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { user, hasEnabledModule } = useAuth();
   const { pathname } = location;
   const segment = segmentFromPath(pathname) ?? 'air-export';
   const segmentConfig = JOB_SEGMENTS[segment as JobSegmentKey];
@@ -61,33 +56,12 @@ export default function JobListPage() {
     setPage(1);
   }, [segment, applied]);
 
-  // Admin = full segment (Sea Export FCL+LCL, Sea Import FCL+LCL, …).
-  // Staff with Ops visible/writable for this dept = same full segment as admin.
-  // After BE scopes by visible_job_types (any creator), this list shows every
-  // department job — not only staff-created / assigned rows.
-  const allowedSegmentTypes = useMemo((): JobType[] => {
-    if (isOpsUnrestrictedUser(user)) return [...segmentConfig.jobTypes];
-    const resolved = resolveStaffListJobTypes({
-      permissions: user?.permissions ?? [],
-      visibleJobTypes: user?.visibleJobTypes,
-      writableJobTypes: user?.writableJobTypes,
-      isModuleEnabled: hasEnabledModule,
-      candidates: segmentConfig.jobTypes,
-      fullSegmentIfAnyAccess: true,
-    });
-    // If /me grants any type in this department, always use the full segment
-    // (identical to admin Sea Export / Sea Import lists).
-    return resolved.length ? [...segmentConfig.jobTypes] : [];
-  }, [
-    segmentConfig.jobTypes,
-    user,
-    user?.unrestrictedOps,
-    user?.role,
-    user?.visibleJobTypes,
-    user?.writableJobTypes,
-    user?.permissions,
-    hasEnabledModule,
-  ]);
+  // Admin + staff: always full segment types for this department page
+  // (Sea Export = FCL+LCL, Sea Import = FCL+LCL). BE scopes by JWT
+  // visible_job_types (any creator); FE must not return an empty type list
+  // that skips the department merge / shows nothing.
+  // Always full department segment (admin and staff). Empty type lists hid all jobs.
+  const allowedSegmentTypes = segmentConfig.jobTypes;
 
   const listParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, page, {
