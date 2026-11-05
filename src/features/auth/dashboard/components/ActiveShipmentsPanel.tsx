@@ -243,7 +243,7 @@ export function ActiveShipmentsPanel({
     });
     return set;
   }, [airJobsNeedingDetail, airDetailQueries]);
-  const loadingRowCount = Math.min(8, Math.max(1, active.length || 3));
+  const loadingRowCount = Math.min(8, Math.max(1, catalog.length || 3));
 
   const inTransitCount = chipCounts.in_transit + chipCounts.customs;
   const docsNeedCount = viewCounts.docs;
