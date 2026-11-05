@@ -3,6 +3,10 @@ import { JOB_TYPES, JOB_TYPE_WIZARD_OPTIONS } from '../constants/job.constants';
 import { canonicalizeJobType } from './canonicalizeJobType';
 import { effectiveListJobTypes, normalizeJobTypeToken } from './deptAccessFromStaffGrants';
 import { filterJobTypesByStaffAccess } from './filterJobTypesByStaffAccess';
+import {
+  parseOpsJobTypePermissions,
+  resolveClientVisibleJobTypes,
+} from './resolveClientVisibleJobTypes';
 
 export type ResolveStaffListJobTypesOpts = {
   permissions?: readonly string[] | null;
@@ -16,6 +20,8 @@ export type ResolveStaffListJobTypesOpts = {
    * candidate list (same shape as admin for that department page).
    */
   fullSegmentIfAnyAccess?: boolean;
+  /** Prefer BE GET /jobs meta.visible_job_types when available. */
+  metaVisibleJobTypes?: string[] | null;
 };
 
 /** Sibling sets — staff list scope matches admin per department. */
@@ -131,8 +137,13 @@ function jobTypesFromScopeTokens(tokens: readonly string[]): JobType[] {
 /**
  * Job types staff may list for Active shipments / department grids.
  *
- * Ops visible ∪ writable from /auth/me are authoritative (Tenant Admin grants).
- * Matrix submodule gaps must not hide types that /me already lists.
+ * Mirrors BE resolveVisibleJobTypes:
+ * - operations_scope → only /me visible∪writable + direct operations_{type}.*
+ *   (role pack must not re-add other departments)
+ * - no scope marker → /me first, else matrix/role preset (not blank)
+ *
+ * Callers must NOT send these as GET /jobs?job_type / job_types unless
+ * canSendJobTypeQuery says so — prefer plain list + client filter.
  */
 export function resolveStaffListJobTypes(
   opts: ResolveStaffListJobTypesOpts,
@@ -144,48 +155,90 @@ export function resolveStaffListJobTypes(
     candidates.map((t) => canonicalizeJobType(String(t))),
   );
   const perms = opts.permissions ?? [];
+
+  const clientScope = resolveClientVisibleJobTypes({
+    isUnrestricted: false,
+    permissions: perms,
+    visibleJobTypes: opts.visibleJobTypes,
+    writableJobTypes: opts.writableJobTypes,
+    metaVisibleJobTypes: opts.metaVisibleJobTypes,
+  });
+
+  if (clientScope.types === null) {
+    return [...candidates];
+  }
+
+  // Explicit meta empty allow-list from BE → locked.
+  if (
+    Array.isArray(opts.metaVisibleJobTypes) &&
+    opts.metaVisibleJobTypes.length === 0
+  ) {
+    return [];
+  }
+
+  if (clientScope.hasOperationsScope && (clientScope.types?.length ?? 0) > 0) {
+    // Scope + direct grants: only those types (role pack must not re-open air etc.).
+    const scoped = (clientScope.types ?? []).filter((t) => candidateSet.has(t));
+    if (
+      opts.fullSegmentIfAnyAccess &&
+      opts.candidates?.length &&
+      scoped.length > 0
+    ) {
+      return [...opts.candidates];
+    }
+    return scoped;
+  }
+
+  // Scope marker with no direct type grants → fall through to role preset below.
+
   const listScope = effectiveListJobTypes(
     opts.visibleJobTypes,
     opts.writableJobTypes,
     perms,
   );
 
-  // 1) Explicit /me Ops visible∪writable — primary list scope.
+  // Prefer resolver output ( /me ∪ direct codes ) over matrix role-pack fill-in.
   let fromMe: JobType[] = [];
-  if (listScope && listScope.length > 0) {
+  if (clientScope.types.length > 0) {
+    fromMe = clientScope.types.filter((t) => candidateSet.has(t));
+  } else if (listScope && listScope.length > 0) {
     fromMe = jobTypesFromScopeTokens(listScope).filter((t) =>
       candidateSet.has(t),
     );
   }
 
-  // 2) Matrix / menu fallback (and union) when /me is empty or partial.
-  const fromMatrix = filterJobTypesByStaffAccess({
-    permissions: perms,
-    visibleJobTypes: listScope,
-    writableJobTypes: opts.writableJobTypes,
-    unrestrictedOps: false,
-    isTenantAdmin: false,
-    isModuleEnabled: opts.isModuleEnabled,
-    candidates,
-    mode: 'list',
-  });
+  const { directTypes } = parseOpsJobTypePermissions(perms);
+  const fromDirect = directTypes.filter((t) => candidateSet.has(t));
+
+  // No scope marker and no direct /me codes → role preset / matrix (keep departments).
+  const fromMatrix =
+    !fromMe.length && !fromDirect.length
+      ? filterJobTypesByStaffAccess({
+          permissions: perms,
+          visibleJobTypes: listScope,
+          writableJobTypes: opts.writableJobTypes,
+          unrestrictedOps: false,
+          isTenantAdmin: false,
+          isModuleEnabled: opts.isModuleEnabled,
+          candidates,
+          mode: 'list',
+        })
+      : [];
 
   const merged = expandDepartmentJobTypeFamilies([
     ...fromMe,
+    ...fromDirect,
     ...fromMatrix,
   ]).filter((t) => candidateSet.has(t));
 
-  // Department page: any granted type in segment → full segment (same as admin).
   if (opts.fullSegmentIfAnyAccess && opts.candidates?.length && merged.length > 0) {
     return [...opts.candidates];
   }
 
-  // Dashboard: prefer explicit /me union; never return empty when /me listed types.
   if (merged.length) return merged;
   if (fromMe.length) return fromMe;
 
-  // Last resort: wizard defaults only when both /me and matrix yielded nothing.
-  if (!listScope?.length) {
+  if (!listScope?.length && !clientScope.types.length) {
     return filterJobTypesByStaffAccess({
       permissions: perms,
       visibleJobTypes: listScope,

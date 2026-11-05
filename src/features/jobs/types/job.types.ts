@@ -16,6 +16,12 @@ export interface PaginationMeta {
   limit: number;
   total: number;
   totalPages: number;
+  /**
+   * BE resolveVisibleJobTypes result used for this list.
+   * `null` = admin / unrestricted (no job_type filter).
+   * omitted on older API builds.
+   */
+  visible_job_types?: string[] | null;
 }
 
 /** Backend GET /jobs/by-category/:category allowed values. */
