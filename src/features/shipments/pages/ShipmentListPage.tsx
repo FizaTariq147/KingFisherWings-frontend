@@ -96,9 +96,6 @@ export default function ShipmentListPage() {
             <h2 className={appType.pageTitle}>
               {dept ? `${dept.label} · Shipments` : 'Shipments'}
             </h2>
-            <p className={appType.pageSubtitle}>
-              Shipment records only — jobs belong under Operations departments / Jobs.
-            </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {canWriteCreate ? (
@@ -172,12 +169,11 @@ export default function ShipmentListPage() {
                     <th className={`${erpTable.th} w-10`}>{''}</th>
                     <th className={erpTable.th}>Shipment No</th>
                     <th className={erpTable.th}>Date</th>
-                    <th className={erpTable.th}>Department</th>
+                    <th className={erpTable.th}>Type</th>
                     <th className={erpTable.th}>Customer</th>
                     <th className={erpTable.th}>Status</th>
                     <th className={erpTable.th}>BL</th>
                     <th className={erpTable.th}>POL / POD</th>
-                    <th className={erpTable.th}>Job</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -210,7 +206,7 @@ export default function ShipmentListPage() {
                           : '—'}
                       </td>
                       <td className={erpTable.td}>
-                        <OperationTypeBadge code={s.job_type || s.service_type} />
+                        <OperationTypeBadge code={s.service_type || s.job_type} />
                       </td>
                       <td className={erpTable.td}>{s.party_name || s.customer_name || '—'}</td>
                       <td className={erpTable.td}>
@@ -224,7 +220,6 @@ export default function ShipmentListPage() {
                           .filter(Boolean)
                           .join(' → ') || '—'}
                       </td>
-                      <td className={erpTable.td}>{s.job_number || '—'}</td>
                     </tr>
                   ))}
                 </tbody>

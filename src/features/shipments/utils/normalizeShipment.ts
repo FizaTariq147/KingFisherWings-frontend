@@ -258,11 +258,12 @@ export function normalizeShipment(raw: unknown): Shipment | null {
   return {
     ...r,
     id,
+    // Never invent shipment_number from job reference / job_number.
     shipment_number:
       str(r.shipment_number) ??
       str(r.shipmentNumber) ??
       str(r.shipment_no) ??
-      str(r.reference),
+      str(r.shipmentNo),
     reference: str(r.reference),
     status: str(r.status),
     bl_status: str(r.bl_status) ?? str(r.blStatus),
@@ -362,6 +363,15 @@ export function normalizeShipment(raw: unknown): Shipment | null {
   };
 }
 
+/** Job document numbers (JOB/FE/…, JOB-RF-…) — not shipment numbers. */
+function looksLikeJobDocumentNumber(value?: string | null): boolean {
+  const n = String(value ?? '')
+    .trim()
+    .toUpperCase();
+  if (!n) return false;
+  return n.startsWith('JOB/') || n.startsWith('JOB-') || n.startsWith('JOB_');
+}
+
 /**
  * True when the row is a job record (not a shipment).
  * /operations/shipments must never list jobs.
@@ -382,21 +392,34 @@ function looksLikeJobNotShipment(raw: unknown): boolean {
   if (kind === 'job' || kind === 'jobs' || kind.endsWith('_job')) return true;
   if (kind.includes('shipment')) return false;
 
-  const shipmentNo =
+  const explicitShipmentNo =
     str(r.shipment_number) ??
     str(r.shipmentNumber) ??
     str(r.shipment_no) ??
     str(r.shipmentNo);
-  if (shipmentNo) return false;
-
-  const shipmentId = str(r.shipment_id) ?? str(r.shipmentId);
-  if (shipmentId && shipmentId !== str(r.id)) return false;
-
   const jobNo = str(r.job_number) ?? str(r.jobNumber) ?? str(r.job_no) ?? str(r.jobNo);
-  if (!jobNo) return false;
+  const ref = str(r.reference);
+  const genericNo =
+    str(r.number) ?? str(r.document_number) ?? str(r.documentNumber) ?? str(r.doc_number);
 
-  // Job number present, no shipment number → job list row, not a shipment.
-  return true;
+  // Explicit shipment number that is not a JOB/… document → keep.
+  if (explicitShipmentNo && !looksLikeJobDocumentNumber(explicitShipmentNo)) return false;
+
+  // JOB/… used as the only number → job row.
+  if (looksLikeJobDocumentNumber(explicitShipmentNo)) return true;
+  if (looksLikeJobDocumentNumber(jobNo) && !explicitShipmentNo) return true;
+  if (looksLikeJobDocumentNumber(ref) && !explicitShipmentNo) return true;
+  if (looksLikeJobDocumentNumber(genericNo) && !explicitShipmentNo) return true;
+
+  // Has job_number, no real shipment_number → treat as job.
+  if (jobNo && !explicitShipmentNo) return true;
+
+  // Linked as a job entity (job_id == id) with no shipment number → job row.
+  const id = str(r.id);
+  const jobId = str(r.job_id) ?? str(r.jobId);
+  if (id && jobId && id === jobId && !explicitShipmentNo) return true;
+
+  return false;
 }
 
 export function normalizeShipments(raw: unknown): Shipment[] {
@@ -404,16 +427,23 @@ export function normalizeShipments(raw: unknown): Shipment[] {
   return raw
     .filter((row) => !looksLikeJobNotShipment(row))
     .map(normalizeShipment)
-    .filter((s): s is Shipment => Boolean(s));
+    .filter((s): s is Shipment => {
+      if (!s) return false;
+      // Final guard: never keep rows whose primary number is a job document id.
+      if (looksLikeJobDocumentNumber(s.shipment_number)) return false;
+      if (!s.shipment_number && looksLikeJobDocumentNumber(s.job_number)) return false;
+      if (!s.shipment_number && looksLikeJobDocumentNumber(s.reference)) return false;
+      return true;
+    });
 }
 
 export function shipmentDisplayNumber(
   s: Pick<Shipment, 'shipment_number' | 'reference' | 'id' | 'job_number'>,
 ): string {
-  // Never fall back to job_number — this list is shipments only.
-  if (s.shipment_number?.trim()) return s.shipment_number.trim();
+  const no = s.shipment_number?.trim();
+  if (no && !looksLikeJobDocumentNumber(no)) return no;
   const ref = s.reference?.trim();
-  if (ref && ref !== s.job_number?.trim()) return ref;
+  if (ref && !looksLikeJobDocumentNumber(ref) && ref !== s.job_number?.trim()) return ref;
   return s.id.slice(0, 8);
 }
 
