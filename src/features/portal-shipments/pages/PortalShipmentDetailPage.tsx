@@ -593,11 +593,14 @@ export default function PortalShipmentDetailPage() {
       ) : null}
 
       {showTracking ? (
-        <PortalPanel padded={false} className="overflow-hidden !p-0">
-          <div
-            id="portal-shipment-track-trace"
-            className="flex items-center justify-end border-b border-[var(--color-neutral-100)] px-4 py-2"
-          >
+        <div
+          id="portal-shipment-track-trace"
+          className="overflow-hidden rounded-sm bg-white shadow-[0_10px_30px_rgba(10,41,66,0.06)]"
+        >
+          <div className="flex items-center justify-between gap-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+              Track &amp; Trace
+            </p>
             <Button type="button" size="sm" variant="secondary" onClick={() => setShowTracking(false)}>
               Hide
             </Button>
@@ -609,7 +612,7 @@ export default function PortalShipmentDetailPage() {
               {getErrorMessage(trackingQuery.error, 'Could not load tracking.')}
             </p>
           ) : (
-            <div className="relative min-h-[560px] overflow-hidden bg-[#0B1220]">
+            <div className="relative min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220]">
               <TrackMapBackground
                 result={toTrackResult(
                   trackingQuery.data,
@@ -629,7 +632,7 @@ export default function PortalShipmentDetailPage() {
               </div>
             </div>
           )}
-        </PortalPanel>
+        </div>
       ) : null}
 
       <PortalPanel padded>
