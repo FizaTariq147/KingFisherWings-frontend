@@ -60,11 +60,11 @@ export function PartyTypeSelectGrid({
         <Button
           type="button"
           size="sm"
-          variant="secondary"
-          className="shrink-0 gap-1"
+          variant="create"
+          leftIcon={<Plus />}
+          className="shrink-0"
           onClick={() => setAddOpen(true)}
         >
-          <Plus className="h-3.5 w-3.5" aria-hidden />
           Add type
         </Button>
       </div>

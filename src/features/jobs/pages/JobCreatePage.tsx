@@ -139,12 +139,16 @@ export default function JobCreatePage() {
   const [boot, setBoot] = useState<DraftBoot | null>(null);
   const serverDraftIdRef = useRef<string | null>(null);
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  /** When false, ignore draft watches + late PUT responses (after successful create). */
+  const draftSavesEnabledRef = useRef(true);
+  const saveGenerationRef = useRef(0);
 
   const draftReady = boot !== null && boot.userId === userId;
   const restored = draftReady ? boot.restored : null;
 
   useEffect(() => {
     let cancelled = false;
+    draftSavesEnabledRef.current = true;
 
     void (async () => {
       let next: RestoredDraft | null = null;
@@ -187,15 +191,22 @@ export default function JobCreatePage() {
 
   const defaultJobType = (defaultValues.job_type as JobType | undefined) ?? fallbackJobType;
 
-  const clearDraftEverywhere = useCallback(async () => {
-    const id = serverDraftIdRef.current;
+  const stopDraftSaves = useCallback(() => {
+    draftSavesEnabledRef.current = false;
+    saveGenerationRef.current += 1;
     if (saveTimerRef.current) {
       clearTimeout(saveTimerRef.current);
       saveTimerRef.current = null;
     }
     clearPendingJobCreateDraft();
     if (userId) clearJobCreateDraftLocal(userId);
+  }, [userId]);
+
+  const clearDraftEverywhere = useCallback(async () => {
+    stopDraftSaves();
+    const id = serverDraftIdRef.current;
     serverDraftIdRef.current = null;
+    setBoot((prev) => (prev ? { ...prev, restored: null } : prev));
     try {
       if (id) {
         await jobCreateDraftService.deleteById(id);
@@ -203,9 +214,9 @@ export default function JobCreatePage() {
         await jobCreateDraftService.deleteCurrent();
       }
     } catch {
-      // best effort
+      // best effort — local already cleared
     }
-  }, [userId]);
+  }, [stopDraftSaves]);
 
   const onWizardDraftChange = useCallback(
     (draft: {
@@ -215,7 +226,7 @@ export default function JobCreatePage() {
       job_type?: string;
       branch_id?: string;
     }) => {
-      if (!userId) return;
+      if (!userId || !draftSavesEnabledRef.current) return;
 
       const payload: JobCreateDraftPayload = {
         version: 1,
@@ -244,19 +255,33 @@ export default function JobCreatePage() {
       rememberPendingJobCreateDraft(userId, dto, backup);
 
       if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      const generation = saveGenerationRef.current;
       saveTimerRef.current = setTimeout(() => {
         saveTimerRef.current = null;
+        if (!draftSavesEnabledRef.current || generation !== saveGenerationRef.current) return;
         writeJobCreateDraftLocal(userId, backup);
         void jobCreateDraftService
           .upsertCurrent(dto)
-          .then((saved) => {
+          .then(async (saved) => {
+            // Job was created while PUT was in flight — delete the resurrected draft.
+            if (!draftSavesEnabledRef.current || generation !== saveGenerationRef.current) {
+              if (saved?.id) {
+                try {
+                  await jobCreateDraftService.deleteById(saved.id);
+                } catch {
+                  /* ignore */
+                }
+              }
+              if (userId) clearJobCreateDraftLocal(userId);
+              return;
+            }
             if (saved?.id) {
               serverDraftIdRef.current = saved.id;
               writeJobCreateDraftLocal(userId, { ...backup, id: saved.id });
             }
           })
           .catch(() => {
-            // local backup already written
+            // local backup already written (only if still enabled)
           });
       }, DRAFT_SAVE_DEBOUNCE_MS);
     },
@@ -302,7 +327,18 @@ export default function JobCreatePage() {
           isSubmitting={create.isPending || persistingCosting}
           onCancel={() => navigate(backPath)}
           onSubmit={async (values, options) => {
-            const created = await create.mutateAsync(values as CreateJobFormValues);
+            // Freeze draft writes before POST so watches / in-flight PUTs cannot
+            // resurrect the wizard draft after the job exists.
+            stopDraftSaves();
+
+            let created;
+            try {
+              created = await create.mutateAsync(values as CreateJobFormValues);
+            } catch (err) {
+              // Create failed — allow draft autosave again so progress is not lost.
+              draftSavesEnabledRef.current = true;
+              throw err;
+            }
             await clearDraftEverywhere();
 
             const costing = options?.costing as JobWizardCostingPayload | undefined;

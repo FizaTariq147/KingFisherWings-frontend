@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 import { getServerErrorMessage } from '@/lib/validation/mapApiErrors';
@@ -90,6 +91,8 @@ export function AddPartyTypeModal({
           <Button
             type="button"
             size="sm"
+            variant="create"
+            leftIcon={<Plus />}
             disabled={create.isPending || !toCode(code || label)}
             onClick={() => void submit()}
           >

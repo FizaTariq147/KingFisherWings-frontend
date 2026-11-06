@@ -185,7 +185,7 @@ export function JobForm({
     onWizardDraftChangeRef.current = onWizardDraftChange;
   }, [onWizardDraftChange]);
   useEffect(() => {
-    if (!isWizard) return;
+    if (!isWizard || isSubmitting) return;
     onWizardDraftChangeRef.current?.({
       step,
       values: watched,
@@ -193,7 +193,7 @@ export function JobForm({
       job_type: watched.job_type,
       branch_id: watched.branch_id,
     });
-  }, [isWizard, step, watched, draftCharges]);
+  }, [isWizard, isSubmitting, step, watched, draftCharges]);
 
   const fieldError = (name: keyof CreateJobFormValues) =>
     errors[name]?.message as string | undefined;
