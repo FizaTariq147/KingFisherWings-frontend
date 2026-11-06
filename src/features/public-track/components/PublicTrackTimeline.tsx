@@ -116,59 +116,85 @@ function modeIcon(move?: string, eventType?: string) {
   return MapPin;
 }
 
-function DetailDataList({ data }: { data: Record<string, unknown> }) {
-  const entries = Object.entries(data);
-  if (!entries.length) return null;
-  return (
-    <dl className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
-      {entries.map(([key, value]) => (
-        <div
-          key={key}
-          className="rounded-sm px-2.5 py-2"
-          style={{ backgroundColor: C.chip, border: `1px solid ${C.border}` }}
-        >
-          <dt className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
-            {key.replaceAll('_', ' ')}
-          </dt>
-          <dd className="mt-0.5 text-[13px] font-medium" style={{ color: C.navy }}>
-            {typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
-              ? String(value)
-              : value == null
-                ? '—'
-                : JSON.stringify(value)}
-          </dd>
-        </div>
-      ))}
-    </dl>
-  );
+function formatDetailValue(value: unknown): string {
+  if (value == null || value === '') return '-';
+  if (typeof value === 'boolean') return value ? 'Y' : 'N';
+  if (typeof value === 'string' || typeof value === 'number') return String(value);
+  try {
+    return JSON.stringify(value);
+  } catch {
+    return '-';
+  }
 }
 
-function DataTable({
-  columns,
-  rows,
-  emptyLabel,
-}: {
-  columns: { key: string; label: string; render: (row: Record<string, unknown>) => string }[];
-  rows: Record<string, unknown>[];
-  emptyLabel: string;
-}) {
-  if (!rows.length) {
+function humanizeDetailKey(key: string): string {
+  return key
+    .replaceAll('_', ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+    .trim();
+}
+
+/** YQN-style dense 3-column label/value grid for Detailed Data. */
+function YqnDetailDataGrid({ data }: { data: Record<string, unknown> }) {
+  const entries = Object.entries(data).filter(([, v]) => v != null && v !== '');
+  if (!entries.length) {
     return (
-      <p className="py-4 text-sm" style={{ color: C.sub }}>
-        {emptyLabel}
-      </p>
+      <div
+        className="flex items-center justify-center border py-10 text-[13px]"
+        style={{ borderColor: C.border, color: C.sub, backgroundColor: '#FAFBFC' }}
+      >
+        No Data
+      </div>
     );
   }
   return (
-    <div className="overflow-x-auto">
-      <table className="min-w-full text-left text-[12px]">
+    <div
+      className="grid grid-cols-1 gap-x-6 gap-y-3 border p-3 sm:grid-cols-2 lg:grid-cols-3"
+      style={{ borderColor: C.border }}
+    >
+      {entries.map(([key, value]) => (
+        <div key={key} className="min-w-0 border-b border-dashed pb-2" style={{ borderColor: C.rowBorder }}>
+          <p className="text-[11px]" style={{ color: C.muted }}>
+            {humanizeDetailKey(key)}
+          </p>
+          <p className="mt-0.5 break-words text-[13px] font-medium" style={{ color: C.navy }}>
+            {formatDetailValue(value)}
+          </p>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function YqnSectionTitle({ children }: { children: string }) {
+  return (
+    <p
+      className="mb-2 border-l-[3px] pl-2 text-[13px] font-semibold"
+      style={{ borderColor: C.badge, color: C.navy }}
+    >
+      {children}
+    </p>
+  );
+}
+
+/** YQN-style bordered data table — headers always visible; empty → centered No Data. */
+function YqnDataTable({
+  columns,
+  rows,
+}: {
+  columns: { key: string; label: string; render: (row: Record<string, unknown>) => string }[];
+  rows: Record<string, unknown>[];
+}) {
+  return (
+    <div className="overflow-x-auto border" style={{ borderColor: C.border }}>
+      <table className="min-w-full border-collapse text-left text-[12px]">
         <thead>
-          <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+          <tr style={{ backgroundColor: '#F5F7FA' }}>
             {columns.map((col) => (
               <th
                 key={col.key}
-                className="whitespace-nowrap px-2 py-2 font-semibold uppercase tracking-wide"
-                style={{ color: C.muted }}
+                className="whitespace-nowrap border-b px-2.5 py-2.5 font-semibold"
+                style={{ borderColor: C.border, color: C.sub }}
               >
                 {col.label}
               </th>
@@ -176,19 +202,44 @@ function DataTable({
           </tr>
         </thead>
         <tbody>
-          {rows.map((row, i) => (
-            <tr key={String(row.id ?? i)} style={{ borderBottom: `1px solid ${C.rowBorder}` }}>
-              {columns.map((col) => (
-                <td key={col.key} className="whitespace-nowrap px-2 py-2.5" style={{ color: C.text }}>
-                  {col.render(row) || '—'}
-                </td>
-              ))}
+          {rows.length === 0 ? (
+            <tr>
+              <td
+                colSpan={columns.length}
+                className="px-2.5 py-10 text-center text-[13px]"
+                style={{ color: C.sub }}
+              >
+                No Data
+              </td>
             </tr>
-          ))}
+          ) : (
+            rows.map((row, i) => (
+              <tr
+                key={String(row.id ?? i)}
+                style={{ backgroundColor: i % 2 === 0 ? '#FFFFFF' : '#FAFBFC' }}
+              >
+                {columns.map((col) => (
+                  <td
+                    key={col.key}
+                    className="whitespace-nowrap border-b px-2.5 py-2.5"
+                    style={{ borderColor: C.rowBorder, color: C.text }}
+                  >
+                    {col.render(row) || '-'}
+                  </td>
+                ))}
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>
   );
+}
+
+function dashWhen(value?: string | null): string {
+  if (!value?.trim()) return '-';
+  const formatted = formatWhenShort(value);
+  return formatted === '—' ? '-' : formatted;
 }
 
 function buildTrackPrintHtml(result: PublicTrackResult, status: string): string {
@@ -315,13 +366,6 @@ export function PublicTrackTimeline({
   const preManifest = result.preManifest ?? [];
   const qtyGwVol = result.qtyGwVol;
 
-  const hasCargo = Boolean(
-    cargoInfo &&
-      (cargoInfo.arrivalReport.length ||
-        cargoInfo.customsStatus.length ||
-        Object.keys(cargoInfo.detailedData).length),
-  );
-  const hasPreManifest = preManifest.length > 0;
   const hasQty =
     Boolean(qtyGwVol) &&
     Boolean(
@@ -436,16 +480,20 @@ export function PublicTrackTimeline({
   }, [metrics.etd, metrics.eta, metrics.atd, route]);
 
   const tabs = useMemo(() => {
-    const list: { id: MainTab; label: string; count?: number }[] = [
-      { id: 'route', label: 'Route', count: history.length || undefined },
-      { id: 'vessel', label: 'Vessel/Flight', count: vesselRows.length || undefined },
-      { id: 'eta', label: 'ETD / ETA History', count: etaHistory.length || undefined },
+    // YQN layout: Cargo Info / Pre-manifest / QTY always present (empty → No Data).
+    return [
+      { id: 'route' as const, label: 'Route', count: history.length || undefined },
+      { id: 'vessel' as const, label: 'Vessel/Flight', count: vesselRows.length || undefined },
+      { id: 'eta' as const, label: 'ETD / ETA History', count: etaHistory.length || undefined },
+      { id: 'cargo' as const, label: 'Cargo Info' },
+      {
+        id: 'pre_manifest' as const,
+        label: 'Pre-manifest',
+        count: preManifest.length || undefined,
+      },
+      { id: 'qty' as const, label: 'QTY/G.W./VOL' },
     ];
-    if (hasCargo) list.push({ id: 'cargo', label: 'Cargo Info' });
-    if (hasPreManifest) list.push({ id: 'pre_manifest', label: 'Pre-manifest', count: preManifest.length });
-    if (hasQty) list.push({ id: 'qty', label: 'QTY / G.W. / VOL.' });
-    return list;
-  }, [history.length, vesselRows.length, etaHistory.length, hasCargo, hasPreManifest, hasQty, preManifest.length]);
+  }, [history.length, vesselRows.length, etaHistory.length, preManifest.length]);
 
   const activeTab = tabs.some((t) => t.id === tab) ? tab : 'route';
 
@@ -811,8 +859,7 @@ export function PublicTrackTimeline({
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
                   Port of call
                 </p>
-                <DataTable
-                  emptyLabel="No port of call rows."
+                <YqnDataTable
                   columns={[
                     {
                       key: 'role',
@@ -951,73 +998,92 @@ export function PublicTrackTimeline({
           </div>
         ) : null}
 
-        {/* CARGO */}
-        {activeTab === 'cargo' && hasCargo && cargoInfo ? (
-          <div className="space-y-6">
+        {/* CARGO INFO — YQN layout */}
+        {activeTab === 'cargo' ? (
+          <div className="space-y-5">
+            {result.containerNumber || result.currentStatus ? (
+              <div
+                className="inline-flex flex-wrap items-center gap-2 rounded-sm border px-3 py-1.5 text-[13px] font-medium"
+                style={{ borderColor: C.border, backgroundColor: '#F5F7FA', color: C.navy }}
+              >
+                <Container className="h-3.5 w-3.5" style={{ color: C.badge }} />
+                <span>{result.containerNumber || '—'}</span>
+                {result.currentStatus || result.status ? (
+                  <>
+                    <span style={{ color: C.muted }}>|</span>
+                    <span style={{ color: C.sub }}>
+                      {formatStatusLabel(result.currentStatus || result.status)
+                        .toLowerCase()
+                        .replace(/\b\w/g, (c) => c.toUpperCase())}
+                    </span>
+                  </>
+                ) : null}
+              </div>
+            ) : null}
+
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
-                Arrival report status
-              </p>
-              <DataTable
-                emptyLabel="No arrival report rows."
+              <YqnSectionTitle>Arrival Report Status</YqnSectionTitle>
+              <YqnDataTable
                 columns={[
                   { key: 'status', label: 'Status', render: (r) => String(r.status ?? '') },
                   {
                     key: 'sending',
-                    label: 'Sending time',
-                    render: (r) => formatWhenShort(String(r.sendingTime ?? '')),
+                    label: 'Sending Time',
+                    render: (r) => dashWhen(String(r.sendingTime ?? '')),
                   },
                   {
                     key: 'receipt',
-                    label: 'Receipt time',
-                    render: (r) => formatWhenShort(String(r.receiptTime ?? '')),
+                    label: 'Receipt Receiving Time',
+                    render: (r) => dashWhen(String(r.receiptTime ?? '')),
                   },
                   {
                     key: 'container',
-                    label: 'Container no',
+                    label: 'Container No.',
                     render: (r) => String(r.containerNo ?? ''),
                   },
                   {
                     key: 'sub',
-                    label: 'Sub container no',
+                    label: 'Sub Customs No.',
                     render: (r) => String(r.subContainerNo ?? ''),
                   },
                   {
                     key: 'vessel',
-                    label: 'Vessel',
+                    label: 'Vessel Name',
                     render: (r) => String(r.vesselName ?? ''),
                   },
                   {
                     key: 'voyage',
-                    label: 'Voyage no',
+                    label: 'Voyage No.',
                     render: (r) => String(r.voyageNo ?? ''),
                   },
                   { key: 'imo', label: 'IMO', render: (r) => String(r.imo ?? '') },
                 ]}
-                rows={cargoInfo.arrivalReport.map((r) => ({ ...r }))}
+                rows={(cargoInfo?.arrivalReport ?? []).map((r) => ({ ...r }))}
               />
             </div>
+
             <div>
-              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
-                Customs status
-              </p>
-              <DataTable
-                emptyLabel="No customs status rows."
+              <YqnSectionTitle>Customs Status</YqnSectionTitle>
+              <YqnDataTable
                 columns={[
                   {
                     key: 'carrier',
-                    label: 'Carrier operator',
+                    label: 'Carrier Operator',
                     render: (r) => String(r.carrierOperator ?? ''),
                   },
                   {
                     key: 'released',
-                    label: 'Customs released',
+                    label: 'Customs Released',
                     render: (r) =>
-                      r.customsReleased == null ? '' : r.customsReleased ? 'Yes' : 'No',
+                      r.customsReleased == null
+                        ? ''
+                        : r.customsReleased
+                          ? 'Y (Customs Declared)'
+                          : 'N',
                   },
                   {
                     key: 'sub',
-                    label: 'Sub customs no',
+                    label: 'Sub Customs No.',
                     render: (r) => String(r.subCustomsNo ?? ''),
                   },
                   {
@@ -1027,145 +1093,159 @@ export function PublicTrackTimeline({
                   },
                   {
                     key: 'weight',
-                    label: 'Weight',
+                    label: 'Weight(KG)',
                     render: (r) => (r.weight != null ? String(r.weight) : ''),
                   },
                   {
                     key: 'volume',
-                    label: 'Volume',
+                    label: 'Volume(m³)',
                     render: (r) => (r.volume != null ? String(r.volume) : ''),
                   },
                   {
                     key: 'decl',
-                    label: 'Declaration no',
+                    label: 'Customs declaration No.',
                     render: (r) => String(r.customsDeclarationNo ?? ''),
                   },
                   {
                     key: 'insp',
-                    label: 'Inspection status',
+                    label: 'Customs inspection status',
                     render: (r) => String(r.customsInspectionStatus ?? ''),
                   },
                   {
                     key: 'inspTime',
-                    label: 'Inspection time',
-                    render: (r) => formatWhenShort(String(r.customsInspectionTime ?? '')),
+                    label: 'Customs inspection time',
+                    render: (r) => dashWhen(String(r.customsInspectionTime ?? '')),
                   },
                 ]}
-                rows={cargoInfo.customsStatus.map((r) => ({ ...r }))}
+                rows={(cargoInfo?.customsStatus ?? []).map((r) => ({ ...r }))}
               />
             </div>
-            {Object.keys(cargoInfo.detailedData).length ? (
-              <div>
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
-                  Detailed data
-                </p>
-                <DetailDataList data={cargoInfo.detailedData} />
-              </div>
-            ) : null}
-          </div>
-        ) : null}
 
-        {activeTab === 'pre_manifest' && hasPreManifest ? (
-          <div>
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
-              Manifest status
-            </p>
-            <DataTable
-              emptyLabel="No pre-manifest rows."
-              columns={[
-                {
-                  key: 'sub',
-                  label: 'Sub customs no',
-                  render: (r) => String(r.subCustomsNo ?? ''),
-                },
-                { key: 'status', label: 'Status', render: (r) => String(r.status ?? '') },
-                {
-                  key: 'sending',
-                  label: 'Sending time',
-                  render: (r) => formatWhenShort(String(r.sendingTime ?? '')),
-                },
-                {
-                  key: 'receipt',
-                  label: 'Receipt / receiving',
-                  render: (r) => formatWhenShort(String(r.receiptReceivingTime ?? '')),
-                },
-                {
-                  key: 'container',
-                  label: 'Container no',
-                  render: (r) => String(r.containerNo ?? ''),
-                },
-                {
-                  key: 'vessel',
-                  label: 'Vessel',
-                  render: (r) => String(r.vesselName ?? ''),
-                },
-                {
-                  key: 'voyage',
-                  label: 'Voyage no',
-                  render: (r) => String(r.voyageNo ?? ''),
-                },
-                { key: 'imo', label: 'IMO', render: (r) => String(r.imo ?? '') },
-              ]}
-              rows={preManifest.map((r) => ({ ...r }))}
-            />
-          </div>
-        ) : null}
-
-        {activeTab === 'qty' && hasQty && qtyGwVol ? (
-          <div className="space-y-4">
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-              {[
-                { label: 'QTY', value: qtyGwVol.qty },
-                { label: 'G.W.', value: qtyGwVol.gw },
-                {
-                  label: 'N.W.',
-                  value:
-                    qtyGwVol.netWeight != null
-                      ? `${qtyGwVol.netWeight}${qtyGwVol.weightUnit ? ` ${qtyGwVol.weightUnit}` : ''}`
-                      : undefined,
-                },
-                { label: 'VOL.', value: qtyGwVol.vol },
-                {
-                  label: 'Chg. wt',
-                  value:
-                    qtyGwVol.chargeableWeight != null
-                      ? `${qtyGwVol.chargeableWeight}${qtyGwVol.weightUnit ? ` ${qtyGwVol.weightUnit}` : ''}`
-                      : undefined,
-                },
-              ].map((item) => (
-                <div
-                  key={item.label}
-                  className="rounded-xl px-3 py-3"
-                  style={{ backgroundColor: C.chip }}
-                >
-                  <p className="text-[10px] font-semibold uppercase" style={{ color: C.muted }}>
-                    {item.label}
-                  </p>
-                  <p className="mt-1 text-[18px] font-bold" style={{ color: C.navy }}>
-                    {item.value || '—'}
-                  </p>
-                </div>
-              ))}
+            <div>
+              <YqnSectionTitle>Detailed Data</YqnSectionTitle>
+              <YqnDetailDataGrid data={cargoInfo?.detailedData ?? {}} />
             </div>
-            {qtyGwVol.lines.length ? (
+          </div>
+        ) : null}
+
+        {/* PRE-MANIFEST — YQN layout */}
+        {activeTab === 'pre_manifest' ? (
+          <div className="space-y-5">
+            <div>
+              <YqnSectionTitle>Manifest Status</YqnSectionTitle>
+              <YqnDataTable
+                columns={[
+                  {
+                    key: 'sub',
+                    label: 'Sub Customs No.',
+                    render: (r) => String(r.subCustomsNo ?? ''),
+                  },
+                  { key: 'status', label: 'Status', render: (r) => String(r.status ?? '') },
+                  {
+                    key: 'sending',
+                    label: 'Sending Time',
+                    render: (r) => dashWhen(String(r.sendingTime ?? '')),
+                  },
+                  {
+                    key: 'receipt',
+                    label: 'Receipt Receiving Time',
+                    render: (r) => dashWhen(String(r.receiptReceivingTime ?? '')),
+                  },
+                  {
+                    key: 'container',
+                    label: 'Container No.',
+                    render: (r) => String(r.containerNo ?? ''),
+                  },
+                  {
+                    key: 'vessel',
+                    label: 'Vessel Name',
+                    render: (r) => String(r.vesselName ?? ''),
+                  },
+                  {
+                    key: 'voyage',
+                    label: 'Voyage No.',
+                    render: (r) => String(r.voyageNo ?? ''),
+                  },
+                  { key: 'imo', label: 'IMO', render: (r) => String(r.imo ?? '') },
+                ]}
+                rows={preManifest.map((r) => ({ ...r }))}
+              />
+            </div>
+          </div>
+        ) : null}
+
+        {/* QTY / G.W. / VOL — YQN layout */}
+        {activeTab === 'qty' ? (
+          <div className="space-y-5">
+            <div>
+              <YqnSectionTitle>QTY / G.W. / VOL</YqnSectionTitle>
+              <YqnDataTable
+                columns={[
+                  {
+                    key: 'qty',
+                    label: `Quantity${qtyGwVol?.qtyUnit ? ` (${qtyGwVol.qtyUnit})` : ''}`,
+                    render: (r) => String(r.quantity ?? ''),
+                  },
+                  {
+                    key: 'gw',
+                    label: `Gross Weight${qtyGwVol?.weightUnit ? `(${qtyGwVol.weightUnit})` : '(KG)'}`,
+                    render: (r) => String(r.grossWeight ?? ''),
+                  },
+                  {
+                    key: 'nw',
+                    label: `Net Weight${qtyGwVol?.weightUnit ? `(${qtyGwVol.weightUnit})` : '(KG)'}`,
+                    render: (r) => String(r.netWeight ?? ''),
+                  },
+                  {
+                    key: 'vol',
+                    label: `Volume${qtyGwVol?.volumeUnit ? `(${qtyGwVol.volumeUnit})` : '(m³)'}`,
+                    render: (r) => String(r.volume ?? ''),
+                  },
+                  {
+                    key: 'cw',
+                    label: `Chargeable Weight${qtyGwVol?.weightUnit ? `(${qtyGwVol.weightUnit})` : '(KG)'}`,
+                    render: (r) => String(r.chargeableWeight ?? ''),
+                  },
+                ]}
+                rows={
+                  hasQty && qtyGwVol
+                    ? [
+                        {
+                          id: 'qty-summary',
+                          quantity: qtyGwVol.quantity ?? qtyGwVol.qty ?? '',
+                          grossWeight: qtyGwVol.grossWeight ?? qtyGwVol.gw ?? '',
+                          netWeight: qtyGwVol.netWeight ?? '',
+                          volume: qtyGwVol.volume ?? qtyGwVol.vol ?? '',
+                          chargeableWeight: qtyGwVol.chargeableWeight ?? '',
+                        },
+                      ]
+                    : []
+                }
+              />
+            </div>
+            {qtyGwVol && qtyGwVol.lines.length > 0 ? (
               <div>
-                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
-                  Lines
-                </p>
-                <DetailDataList
-                  data={Object.fromEntries(
-                    qtyGwVol.lines.map((line, i) => [
-                      `line_${i + 1}`,
-                      Object.entries(line)
-                        .map(([k, v]) => `${k}: ${String(v ?? '')}`)
-                        .join(' · '),
-                    ]),
-                  )}
+                <YqnSectionTitle>Lines</YqnSectionTitle>
+                <YqnDataTable
+                  columns={Array.from(
+                    qtyGwVol.lines.reduce((keys, line) => {
+                      Object.keys(line).forEach((k) => keys.add(k));
+                      return keys;
+                    }, new Set<string>()),
+                  ).map((key) => ({
+                    key,
+                    label: humanizeDetailKey(key),
+                    render: (r) => formatDetailValue(r[key]),
+                  }))}
+                  rows={qtyGwVol.lines.map((line, i) => ({ id: `line-${i}`, ...line }))}
                 />
               </div>
             ) : null}
-            {Object.keys(qtyGwVol.extras).length ? (
-              <DetailDataList data={qtyGwVol.extras} />
+            {qtyGwVol && Object.keys(qtyGwVol.extras).length > 0 ? (
+              <div>
+                <YqnSectionTitle>Additional</YqnSectionTitle>
+                <YqnDetailDataGrid data={qtyGwVol.extras} />
+              </div>
             ) : null}
           </div>
         ) : null}
