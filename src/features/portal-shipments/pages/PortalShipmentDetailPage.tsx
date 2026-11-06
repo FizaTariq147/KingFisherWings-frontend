@@ -612,17 +612,17 @@ export default function PortalShipmentDetailPage() {
               {getErrorMessage(trackingQuery.error, 'Could not load tracking.')}
             </p>
           ) : (
-            <div className="relative min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220]">
+            <div className="relative h-[min(70vh,640px)] min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220]">
               <TrackMapBackground
                 result={toTrackResult(
                   trackingQuery.data,
                   data?.reference || data?.jobNumber || id,
                 )}
               />
-              <div className="relative z-[1] flex min-h-[560px] max-w-[520px] flex-col p-3 sm:p-4">
+              <div className="absolute inset-y-0 left-0 z-[1] flex w-full max-w-[520px] flex-col p-3 sm:p-4">
                 <PublicTrackTimeline
                   variant="overlay"
-                  className="min-h-0 flex-1 shadow-2xl"
+                  className="h-full min-h-0 shadow-2xl"
                   result={toTrackResult(
                     trackingQuery.data,
                     data?.reference || data?.jobNumber || id,

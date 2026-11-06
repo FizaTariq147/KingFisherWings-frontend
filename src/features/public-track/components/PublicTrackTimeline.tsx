@@ -609,13 +609,15 @@ export function PublicTrackTimeline({
   const destLabel = metrics.destination || 'Destination';
   const progressPct = metrics.progressPct > 0 ? metrics.progressPct : 35;
 
+  const isOverlay = variant === 'overlay';
+
   return (
     <div
       className={cn(
         'flex w-full flex-col bg-white text-[#1E293B]',
-        // Match job Track & Trace tab: left card over map, fill panel height.
-        variant === 'overlay' &&
-          'max-h-full min-h-0 overflow-hidden rounded-2xl shadow-2xl',
+        // Overlay card: one continuous top→bottom scroll (header + tabs + body).
+        isOverlay && 'h-full min-h-0 max-h-full overflow-y-auto overscroll-contain rounded-2xl shadow-2xl',
+        !isOverlay && 'overflow-hidden',
         className,
       )}
     >
@@ -794,8 +796,13 @@ export function PublicTrackTimeline({
         })}
       </div>
 
-      {/* Scrollable body */}
-      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5">
+      {/* Body — overlay scrolls on the whole card; panel keeps an inner scroll region */}
+      <div
+        className={cn(
+          'px-4 py-4 sm:px-5',
+          isOverlay ? 'shrink-0' : 'min-h-0 flex-1 overflow-y-auto',
+        )}
+      >
         {result.matches && result.matches.length > 1 ? (
           <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
             <p className="font-medium">Multiple matches</p>
