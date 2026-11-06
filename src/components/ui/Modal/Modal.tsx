@@ -14,6 +14,10 @@ interface ModalProps {
   size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
   /** Use `nested` when this dialog opens over another modal. */
   layer?: 'base' | 'nested';
+  /** Override body padding/scroll (e.g. flush map layouts). */
+  contentClassName?: string;
+  /** Override dialog panel classes (width/height). */
+  panelClassName?: string;
 }
 
 const sizeMap = {
@@ -35,6 +39,8 @@ export function Modal({
   footer,
   size = 'md',
   layer = 'base',
+  contentClassName,
+  panelClassName,
 }: ModalProps) {
   useEffect(() => {
     if (!open) return;
@@ -88,6 +94,7 @@ export function Modal({
             ? 'max-h-[min(94vh,56rem)]'
             : 'max-h-[min(88vh,40rem)]',
           sizeMap[size],
+          panelClassName,
         )}
         role="dialog"
         aria-modal="true"
@@ -101,7 +108,14 @@ export function Modal({
             <X className="h-4 w-4" />
           </Button>
         </div>
-        <div className="min-h-0 flex-1 overflow-y-auto px-6 py-4">{children}</div>
+        <div
+          className={cn(
+            'min-h-0 flex-1 overflow-y-auto px-6 py-4',
+            contentClassName,
+          )}
+        >
+          {children}
+        </div>
         {footer ? (
           <div className="flex shrink-0 flex-wrap items-center justify-end gap-2 border-t border-[var(--color-neutral-200)] px-6 py-4">
             {footer}

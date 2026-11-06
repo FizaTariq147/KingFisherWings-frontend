@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'
 import { ChevronRight, LogIn, Package, Search, Shield } from 'lucide-react'
 import loginBg from '@/assets/login-bg.mp4'
 import { BrandLogo } from '@/features/branding/components/BrandLogo'
+import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline'
+import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground'
 import { publicTrackService } from '@/features/public-track/services/publicTrack.service'
 import { resolveTenantSlugFromLocation } from '@/features/public-track/utils/publicTrackContext'
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult'
@@ -213,17 +215,37 @@ export function AuthLandingShell({
         onClose={closeModal}
         title="Track & Trace"
         size="full"
+        panelClassName="max-h-[min(94vh,52rem)] max-w-[min(96vw,72rem)]"
+        contentClassName="!flex !min-h-0 !flex-1 !flex-col !overflow-hidden !p-0"
       >
         {summary ? (
-          <PublicTrackTimeline
-            result={summary}
-            onNewSearch={() => {
-              closeModal()
-              setRawPayload(null)
-              setError(null)
-              setTrackRef('')
-            }}
-          />
+          /* Same map + left overlay shell as job Track & Trace tab */
+          <div className="relative min-h-[min(70vh,560px)] flex-1 overflow-hidden bg-[#0B1220]">
+            <TrackMapBackground result={summary} />
+            <div className="absolute right-3 top-3 z-[5]">
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                className="bg-white/95 shadow-md backdrop-blur"
+                onClick={() => {
+                  closeModal()
+                  setRawPayload(null)
+                  setError(null)
+                  setTrackRef('')
+                }}
+              >
+                New search
+              </Button>
+            </div>
+            <div className="relative z-[1] flex h-full min-h-[560px] max-w-[520px] flex-col p-3 sm:p-4">
+              <PublicTrackTimeline
+                variant="overlay"
+                className="min-h-0 flex-1 shadow-2xl"
+                result={summary}
+              />
+            </div>
+          </div>
         ) : null}
       </Modal>
 
