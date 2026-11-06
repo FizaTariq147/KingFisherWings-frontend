@@ -48,6 +48,20 @@ export function deriveTrackEta(result: PublicTrackResult): string | undefined {
   );
 }
 
+/** Planned / current ETD (prefer origin / first leg, not ATD). */
+export function deriveTrackEtd(result: PublicTrackResult): string | undefined {
+  const originPoc = result.route?.portOfCall.find((p) =>
+    /ORIGIN|POL/i.test(String(p.role ?? p.code ?? '')),
+  );
+  return (
+    originPoc?.etd ||
+    result.route?.portOfCall.find((p) => p.etd && !p.atd)?.etd ||
+    result.route?.firstLeg?.etd ||
+    result.route?.legs.find((l) => l.etd)?.etd ||
+    result.route?.atBefore
+  );
+}
+
 export function computeTrackMetrics(result: PublicTrackResult) {
   const containerCount = Math.max(
     result.containers?.length ?? 0,
@@ -91,6 +105,7 @@ export function computeTrackMetrics(result: PublicTrackResult) {
     co2: co2 ? String(co2) : undefined,
     progressPct,
     atd: deriveTrackAtd(result),
+    etd: deriveTrackEtd(result),
     eta: deriveTrackEta(result),
     origin: result.route?.originLabel || result.route?.from || result.origin,
     destination: result.route?.destLabel || result.route?.to || result.destination,

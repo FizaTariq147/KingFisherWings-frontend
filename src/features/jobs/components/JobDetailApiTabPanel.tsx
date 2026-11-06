@@ -1037,26 +1037,17 @@ export function JobDetailApiTabPanel({
   job,
   onChanged,
   siblingTabKeys = [],
-  showAllFooter,
 }: {
   tabKey: string;
   job: Job;
   onChanged?: () => void;
   /** Other tab keys from GET /jobs/:id/detail — used by Show All aggregation. */
   siblingTabKeys?: string[];
-  /** Appended at the end of Show All (Track & Trace panel). */
-  showAllFooter?: ReactNode;
 }) {
   const apiKey = normalizeJobDetailTabKey(tabKey);
 
   if (isJobShowAllTab(apiKey)) {
-    return (
-      <JobShowAllPanel
-        jobId={job.id}
-        siblingTabKeys={siblingTabKeys}
-        footer={showAllFooter}
-      />
-    );
+    return <JobShowAllPanel jobId={job.id} siblingTabKeys={siblingTabKeys} />;
   }
 
   return <SingleJobDetailTabPanel apiKey={apiKey} job={job} onChanged={onChanged} />;
