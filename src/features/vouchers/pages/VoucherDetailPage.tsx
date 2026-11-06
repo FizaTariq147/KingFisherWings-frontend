@@ -12,8 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { useInvoice } from '@/features/invoices/hooks/useInvoices';
+import { invoiceDisplayNumber } from '@/features/invoices/utils/normalizeInvoice';
 import { useJob } from '@/features/jobs/hooks/useJobs';
 import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
+import { useParty } from '@/features/parties/hooks/useParties';
 import { VOUCHER_ROUTE_PREFIX } from '../api/voucher.api';
 import { VoucherLineForm } from '../components/VoucherLineForm';
 import { VoucherStatusBadge } from '../components/VoucherStatusBadge';
@@ -49,6 +52,8 @@ export default function VoucherDetailPage() {
   const navigate = useNavigate();
   const { data: voucher, isLoading, isError, error, refetch } = useVoucher(id);
   const { data: linkedJob } = useJob(voucher?.job_id || '');
+  const { data: linkedParty } = useParty(voucher?.party_id || '');
+  const { data: linkedInvoice } = useInvoice(voucher?.invoice_id || '');
   const addLine = useAddVoucherLine(id);
   const removeLine = useRemoveVoucherLine(id);
   const post = usePostVoucher(id);
@@ -202,7 +207,14 @@ export default function VoucherDetailPage() {
                     <Field label="Currency" value={voucher.currency_code} />
                     <Field label="Exchange rate" value={voucher.exchange_rate} />
                     <Field label="Reference" value={voucher.reference_number} />
-                    <Field label="Party" value={voucher.party_name || voucher.party_id} />
+                    <Field
+                      label="Party"
+                      value={
+                        voucher.party_name ||
+                        linkedParty?.name ||
+                        (linkedParty?.code ? String(linkedParty.code) : undefined)
+                      }
+                    />
                     <Field
                       label="Job number"
                       value={
@@ -211,7 +223,13 @@ export default function VoucherDetailPage() {
                           : (voucher as { job_number?: string }).job_number
                       }
                     />
-                    <Field label="Invoice" value={voucher.invoice_id} />
+                    <Field
+                      label="Invoice"
+                      value={
+                        voucher.invoice_number ||
+                        (linkedInvoice ? invoiceDisplayNumber(linkedInvoice) : undefined)
+                      }
+                    />
                     <Field
                       label="Total debit"
                       value={`${voucher.currency_code || ''} ${(voucher.total_debit ?? 0).toLocaleString()}`.trim()}

@@ -48,6 +48,7 @@ export interface Voucher {
   party_name?: string;
   job_id?: string;
   invoice_id?: string;
+  invoice_number?: string;
   total_debit?: number;
   total_credit?: number;
   posted_at?: string;

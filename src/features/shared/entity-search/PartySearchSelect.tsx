@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
-import { useParties } from '@/features/parties/hooks/useParties';
+import { useParties, useParty } from '@/features/parties/hooks/useParties';
 import type { PartyType } from '@/features/parties/constants/party.constants';
 import { isUuid } from '@/lib/isUuid';
 
@@ -13,6 +13,15 @@ interface PartySearchSelectProps {
   required?: boolean;
   error?: string;
   placeholder?: string;
+}
+
+function partyOptionLabel(name?: string | null, code?: string | null): string {
+  const nameText = String(name ?? '').trim();
+  const codeText = String(code ?? '').trim();
+  if (nameText && codeText && !nameText.includes(codeText)) {
+    return `${nameText} (${codeText})`;
+  }
+  return nameText || codeText || 'Party';
 }
 
 /**
@@ -36,21 +45,32 @@ export function PartySearchSelect({
     party_type: partyType,
     order: 'asc',
   });
+  const { data: selectedParty } = useParty(isUuid(value) ? value : '');
 
   const options = useMemo(() => {
-    return (data?.parties ?? [])
+    const fromList = (data?.parties ?? [])
       .filter((p) => isUuid(p.id))
-      .map((p) => {
-        const nameText = String(p.name ?? '').trim();
-        const code = String(p.code ?? '').trim();
-        const labelText =
-          nameText && code && !nameText.includes(code)
-            ? `${nameText} (${code})`
-            : nameText || code || 'Party';
-        return { value: p.id, label: labelText };
-      })
+      .map((p) => ({
+        value: p.id,
+        label: partyOptionLabel(p.name, p.code),
+      }))
       .filter((o) => o.label && o.label !== 'Party');
-  }, [data?.parties]);
+
+    if (
+      selectedParty &&
+      isUuid(selectedParty.id) &&
+      !fromList.some((o) => o.value === selectedParty.id)
+    ) {
+      return [
+        {
+          value: selectedParty.id,
+          label: partyOptionLabel(selectedParty.name, selectedParty.code),
+        },
+        ...fromList,
+      ];
+    }
+    return fromList;
+  }, [data?.parties, selectedParty]);
 
   return (
     <SearchableSelect

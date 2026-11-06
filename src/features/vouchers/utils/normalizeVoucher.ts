@@ -79,6 +79,9 @@ export function normalizeVoucher(raw: unknown): Voucher | null {
     num(r.total_credit) ??
     (lines ? lines.reduce((s, l) => s + l.credit_amount, 0) : undefined);
 
+  const partyNested = asRecord(r.party) ?? asRecord(r.organization);
+  const invoiceNested = asRecord(r.invoice);
+
   return {
     id,
     voucher_number: str(r.voucher_number) ?? str(r.number),
@@ -96,10 +99,20 @@ export function normalizeVoucher(raw: unknown): Voucher | null {
     reference_number: str(r.reference_number) ?? str(r.reference),
     company_id: str(r.company_id),
     branch_id: str(r.branch_id),
-    party_id: str(r.party_id),
-    party_name: str(r.party_name),
+    party_id: str(r.party_id) ?? (partyNested ? str(partyNested.id) : undefined),
+    party_name:
+      str(r.party_name) ??
+      (partyNested ? str(partyNested.name) ?? str(partyNested.party_name) : undefined),
     job_id: str(r.job_id),
-    invoice_id: str(r.invoice_id),
+    invoice_id: str(r.invoice_id) ?? (invoiceNested ? str(invoiceNested.id) : undefined),
+    invoice_number:
+      str(r.invoice_number) ??
+      str(r.invoice_no) ??
+      (invoiceNested
+        ? str(invoiceNested.invoice_number) ??
+          str(invoiceNested.invoice_no) ??
+          str(invoiceNested.number)
+        : undefined),
     total_debit: totalDebit,
     total_credit: totalCredit,
     posted_at: str(r.posted_at),
