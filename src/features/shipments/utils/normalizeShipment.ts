@@ -362,15 +362,59 @@ export function normalizeShipment(raw: unknown): Shipment | null {
   };
 }
 
+/**
+ * True when the row is a job record (not a shipment).
+ * /operations/shipments must never list jobs.
+ */
+function looksLikeJobNotShipment(raw: unknown): boolean {
+  const root = asRecord(raw);
+  if (!root) return true;
+  const nested =
+    asRecord(root.shipment) ??
+    asRecord(asRecord(root.data)?.shipment) ??
+    asRecord(root.data);
+  const r = { ...root, ...(nested && nested !== root ? nested : {}) };
+
+  const kind = String(r.entity_type ?? r.record_type ?? r.resource_type ?? r.type ?? '')
+    .trim()
+    .toLowerCase()
+    .replace(/[\s-]+/g, '_');
+  if (kind === 'job' || kind === 'jobs' || kind.endsWith('_job')) return true;
+  if (kind.includes('shipment')) return false;
+
+  const shipmentNo =
+    str(r.shipment_number) ??
+    str(r.shipmentNumber) ??
+    str(r.shipment_no) ??
+    str(r.shipmentNo);
+  if (shipmentNo) return false;
+
+  const shipmentId = str(r.shipment_id) ?? str(r.shipmentId);
+  if (shipmentId && shipmentId !== str(r.id)) return false;
+
+  const jobNo = str(r.job_number) ?? str(r.jobNumber) ?? str(r.job_no) ?? str(r.jobNo);
+  if (!jobNo) return false;
+
+  // Job number present, no shipment number → job list row, not a shipment.
+  return true;
+}
+
 export function normalizeShipments(raw: unknown): Shipment[] {
   if (!Array.isArray(raw)) return [];
-  return raw.map(normalizeShipment).filter((s): s is Shipment => Boolean(s));
+  return raw
+    .filter((row) => !looksLikeJobNotShipment(row))
+    .map(normalizeShipment)
+    .filter((s): s is Shipment => Boolean(s));
 }
 
 export function shipmentDisplayNumber(
-  s: Pick<Shipment, 'shipment_number' | 'reference' | 'id'>,
+  s: Pick<Shipment, 'shipment_number' | 'reference' | 'id' | 'job_number'>,
 ): string {
-  return s.shipment_number || s.reference || s.id.slice(0, 8);
+  // Never fall back to job_number — this list is shipments only.
+  if (s.shipment_number?.trim()) return s.shipment_number.trim();
+  const ref = s.reference?.trim();
+  if (ref && ref !== s.job_number?.trim()) return ref;
+  return s.id.slice(0, 8);
 }
 
 /** Unwrap GET detail / action JSON envelopes to a plain object. */
