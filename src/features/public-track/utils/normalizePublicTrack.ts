@@ -28,6 +28,54 @@ function pickNumber(...values: unknown[]): number | undefined {
   return undefined;
 }
 
+/** Prefer explicit lat/lng from tracking / port payloads. */
+function pickLatLng(
+  r: Record<string, unknown> | null | undefined,
+): { lat: number; lng: number } | undefined {
+  if (!r) return undefined;
+  const nested =
+    asRecord(r.coordinates) ||
+    asRecord(r.coordinate) ||
+    asRecord(r.geo) ||
+    asRecord(r.position) ||
+    asRecord(r.location_geo) ||
+    asRecord(r.locationGeo) ||
+    asRecord(r.current_position) ||
+    asRecord(r.currentPosition);
+  const lat = pickNumber(
+    r.latitude,
+    r.lat,
+    r.geo_lat,
+    r.geoLat,
+    nested?.latitude,
+    nested?.lat,
+  );
+  const lng = pickNumber(
+    r.longitude,
+    r.lng,
+    r.lon,
+    r.long,
+    r.geo_lng,
+    r.geoLng,
+    r.geo_lon,
+    nested?.longitude,
+    nested?.lng,
+    nested?.lon,
+    nested?.long,
+  );
+  if (
+    lat == null ||
+    lng == null ||
+    lat < -90 ||
+    lat > 90 ||
+    lng < -180 ||
+    lng > 180
+  ) {
+    return undefined;
+  }
+  return { lat, lng };
+}
+
 function isAirJobType(jobType?: string | null): boolean {
   const t = String(jobType || '').toUpperCase();
   return t === 'AIR_EXPORT' || t === 'AIR_IMPORT' || t.startsWith('AIR');
@@ -244,6 +292,7 @@ function normalizeProgressLegRows(raw: unknown[]): PublicTrackProgressLeg[] {
     const code =
       pickString(r.code, r.leg_type, r.legType, r.role, r.kind, r.type)?.toUpperCase() ||
       (index === 0 ? 'POL' : index === raw.length - 1 ? 'POD' : 'PTS');
+    const coords = pickLatLng(r);
     out.push({
       id: pickString(r.id, r.un_locode, r.unLocode) || String(index),
       code,
@@ -254,6 +303,8 @@ function normalizeProgressLegRows(raw: unknown[]): PublicTrackProgressLeg[] {
         r.completed === true ||
         r.is_completed === true ||
         Boolean(pickString(r.completed_at, r.actual_date)),
+      lat: coords?.lat,
+      lng: coords?.lng,
     });
   }
   return out;
@@ -407,6 +458,7 @@ function normalizePortOfCall(
       r.arrival_flight,
       r.arrivalFlight,
     ) || undefined;
+  const coords = pickLatLng(r);
   return {
     id: pickString(r.id, r.un_locode, r.unLocode, r.iata) || String(index),
     role,
@@ -429,6 +481,8 @@ function normalizePortOfCall(
       pickString(r.mawb_number, r.mawbNumber, r.mawb_no, r.mawbNo) || undefined,
     hawbNumber:
       pickString(r.hawb_number, r.hawbNumber, r.hawb_no, r.hawbNo) || undefined,
+    lat: coords?.lat,
+    lng: coords?.lng,
     raw: r,
   };
 }
@@ -1152,6 +1206,13 @@ export function normalizePublicTrack(
       summary?.eta,
     ) || undefined;
 
+  const livePosition =
+    pickLatLng(asRecord(body.current_position) ?? asRecord(body.currentPosition)) ||
+    pickLatLng(asRecord(body.vessel_position) ?? asRecord(body.vesselPosition)) ||
+    pickLatLng(asRecord(body.last_known_position) ?? asRecord(body.lastKnownPosition)) ||
+    pickLatLng(asRecord(body.live_position) ?? asRecord(body.livePosition)) ||
+    pickLatLng(asRecord(summary?.current_position) ?? asRecord(summary?.currentPosition));
+
   return {
     reference: ref,
     status: pickString(body.status, root.status) || undefined,
@@ -1167,6 +1228,8 @@ export function normalizePublicTrack(
     expectedDelivery,
     origin,
     destination,
+    currentLat: livePosition?.lat,
+    currentLng: livePosition?.lng,
     jobType,
     partyName: pickString(body.party_name, summary?.party_name) || undefined,
     blNumber: route?.blNumber || pickString(body.bl_number, body.blNumber) || undefined,

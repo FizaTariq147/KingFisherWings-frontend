@@ -467,6 +467,9 @@ export function useJobTracking(
       });
     },
     enabled: Boolean(accessToken) && isUuid(opts.jobId) && enabled,
+    // Keep map + timeline fresh while the Track & Trace tab is open.
+    refetchInterval: enabled ? 60_000 : false,
+    refetchOnWindowFocus: true,
   });
 }
 
