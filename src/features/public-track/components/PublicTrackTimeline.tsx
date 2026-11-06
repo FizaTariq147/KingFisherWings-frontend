@@ -389,6 +389,9 @@ export function PublicTrackTimeline({
 
   const etaHistory = useMemo(() => {
     const rows: Array<{ id: string; label: string; when?: string; note?: string }> = [];
+    if (metrics.etd) {
+      rows.push({ id: 'etd-current', label: 'Current ETD', when: metrics.etd });
+    }
     if (metrics.eta) {
       rows.push({ id: 'eta-current', label: 'Current ETA', when: metrics.eta });
     }
@@ -396,14 +399,6 @@ export function PublicTrackTimeline({
       rows.push({ id: 'atd', label: 'ATD', when: metrics.atd });
     }
     for (const port of route?.portOfCall ?? []) {
-      if (port.eta) {
-        rows.push({
-          id: `poc-eta-${port.id}`,
-          label: `ETA · ${port.name || port.code || 'Port'}`,
-          when: port.eta,
-          note: port.ata ? `ATA ${formatTrackDateShort(port.ata)}` : undefined,
-        });
-      }
       if (port.etd) {
         rows.push({
           id: `poc-etd-${port.id}`,
@@ -412,8 +407,23 @@ export function PublicTrackTimeline({
           note: port.atd ? `ATD ${formatTrackDateShort(port.atd)}` : undefined,
         });
       }
+      if (port.eta) {
+        rows.push({
+          id: `poc-eta-${port.id}`,
+          label: `ETA · ${port.name || port.code || 'Port'}`,
+          when: port.eta,
+          note: port.ata ? `ATA ${formatTrackDateShort(port.ata)}` : undefined,
+        });
+      }
     }
     for (const leg of route?.legs ?? []) {
+      if (leg.etd) {
+        rows.push({
+          id: `leg-etd-${leg.id}`,
+          label: `ETD · ${leg.label || leg.from || 'Leg'}`,
+          when: leg.etd,
+        });
+      }
       if (leg.eta) {
         rows.push({
           id: `leg-eta-${leg.id}`,
@@ -423,13 +433,13 @@ export function PublicTrackTimeline({
       }
     }
     return rows;
-  }, [metrics.eta, metrics.atd, route]);
+  }, [metrics.etd, metrics.eta, metrics.atd, route]);
 
   const tabs = useMemo(() => {
     const list: { id: MainTab; label: string; count?: number }[] = [
       { id: 'route', label: 'Route', count: history.length || undefined },
-      { id: 'vessel', label: 'Vessel', count: vesselRows.length || undefined },
-      { id: 'eta', label: 'ETA History', count: etaHistory.length || undefined },
+      { id: 'vessel', label: 'Vessel/Flight', count: vesselRows.length || undefined },
+      { id: 'eta', label: 'ETD / ETA History', count: etaHistory.length || undefined },
     ];
     if (hasCargo) list.push({ id: 'cargo', label: 'Cargo Info' });
     if (hasPreManifest) list.push({ id: 'pre_manifest', label: 'Pre-manifest', count: preManifest.length });
@@ -567,7 +577,11 @@ export function PublicTrackTimeline({
           </div>
           <div className="mt-2 flex justify-between text-[11px]" style={{ color: C.sub }}>
             <span>
-              {metrics.atd ? `ATD ${formatTrackDateShort(metrics.atd)}` : 'ATD —'}
+              {metrics.atd
+                ? `ATD ${formatTrackDateShort(metrics.atd)}`
+                : metrics.etd
+                  ? `ETD ${formatTrackDateShort(metrics.etd)}`
+                  : 'ETD —'}
             </span>
             <span>
               {metrics.eta ? `ETA ${formatTrackDateShort(metrics.eta)}` : 'ETA —'}
@@ -849,12 +863,12 @@ export function PublicTrackTimeline({
           </div>
         ) : null}
 
-        {/* VESSEL */}
+        {/* VESSEL / FLIGHT */}
         {activeTab === 'vessel' ? (
           <div>
             {vesselRows.length === 0 ? (
               <p className="py-8 text-sm" style={{ color: C.sub }}>
-                No vessel / voyage data in this tracking payload.
+                No vessel / flight data in this tracking payload.
               </p>
             ) : (
               <ul className="space-y-3">
@@ -868,7 +882,7 @@ export function PublicTrackTimeline({
                       <Ship className="mt-0.5 h-5 w-5 shrink-0" style={{ color: C.badge }} />
                       <div className="min-w-0">
                         <p className="text-[15px] font-bold" style={{ color: C.navy }}>
-                          {row.vessel || 'Vessel'}
+                          {row.vessel || 'Vessel / Flight'}
                         </p>
                         {row.voyage ? (
                           <p className="text-[13px] font-medium" style={{ color: C.badge }}>
@@ -902,12 +916,12 @@ export function PublicTrackTimeline({
           </div>
         ) : null}
 
-        {/* ETA HISTORY */}
+        {/* ETD / ETA HISTORY */}
         {activeTab === 'eta' ? (
           <div>
             {etaHistory.length === 0 ? (
               <p className="py-8 text-sm" style={{ color: C.sub }}>
-                No ETA / ATD history available.
+                No ETD / ETA history available.
               </p>
             ) : (
               <ul>

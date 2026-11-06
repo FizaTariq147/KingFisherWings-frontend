@@ -55,6 +55,8 @@ export function jobDetailTabLabel(key: string): string {
       return 'Job ledger';
     case 'section_files':
       return 'Section files';
+    case 'tracking':
+      return 'Track & Trace';
     default:
       return key
         .trim()
@@ -110,9 +112,22 @@ export function toApiDetailTabKey(value: string): string {
   if (norm === 'port_token' || norm === 'porttoken' || norm === 'token') {
     return 'port_token';
   }
+  if (
+    norm === 'tracking' ||
+    norm === 'track_trace' ||
+    norm === 'tracktrace' ||
+    norm === 'track_and_trace'
+  ) {
+    return 'tracking';
+  }
 
   // Pass through unknown API keys unchanged (backend is source of truth).
   return norm;
+}
+
+/** FE-owned Track & Trace tab (not GET /jobs/:id/detail/:tab). */
+export function isJobTrackingTab(key: string): boolean {
+  return toApiDetailTabKey(key) === 'tracking';
 }
 
 /** Panels that are NOT `/jobs/:id/detail/:tab` — shown from the Actions toolbar. */
@@ -357,6 +372,10 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
     if (!t?.key) continue;
     const key = toApiDetailTabKey(t.key);
     if (!key || seen.has(key) || isJobActionPanelKey(key) || isOpsContinuumMetaTab(key)) {
+      continue;
+    }
+    // FE owns Track & Trace as a dedicated tab (not Show All / detail/:tab).
+    if (key === 'tracking') {
       continue;
     }
     // One containers tab only — planned mirrors actual; MAWB for air lives on actual.

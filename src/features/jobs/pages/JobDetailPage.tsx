@@ -36,6 +36,7 @@ import {
   defaultJobDetailTabKey,
   isJobActionPanelKey,
   isJobDetailTabKey,
+  isJobTrackingTab,
   jobActionPanelLabel,
   jobDetailTabLabel,
   normalizeJobDetailTabKey,
@@ -63,12 +64,8 @@ import {
   useJobEdiTypes,
   useJobHouseJobs,
   useJobStatusOptions,
-  useJobTracking,
 } from '../hooks/useJobs';
-import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
-import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground';
-import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
-import { JobTrackingProfileEditor } from '../components/JobTrackingProfileEditor';
+import { JobTrackTracePanel } from '../components/JobTrackTracePanel';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
@@ -205,125 +202,16 @@ export default function JobDetailPage() {
   const resolvedShipmentId =
     job?.shipment_id && isUuid(job.shipment_id) ? job.shipment_id : undefined;
 
-  const [showTracking, setShowTracking] = useState(false);
-  const [showTrackingProfileEditor, setShowTrackingProfileEditor] = useState(false);
-  const trackingQuery = useJobTracking(
-    {
-      jobId: id,
-      jobNumber: job ? jobDisplayNumber(job) : undefined,
-      shipmentId: resolvedShipmentId,
-    },
-    showTracking && Boolean(id),
-  );
   const canTracking = job?.actions?.can_tracking !== false;
 
   const openTrackTrace = () => {
-    setShowTracking(true);
     const params = new URLSearchParams(location.search);
-    params.set('tab', 'show_all');
+    params.set('tab', 'tracking');
     navigate(
       { pathname: location.pathname, search: `?${params.toString()}` },
       { replace: true, state: location.state },
     );
-    window.setTimeout(() => {
-      document
-        .getElementById('job-track-trace')
-        ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 120);
   };
-
-  const trackTraceFooter = useMemo(() => {
-    if (!showTracking) return null;
-    return (
-      <div
-        id="job-track-trace"
-        className="rounded-sm bg-white"
-      >
-        <div className="flex items-center justify-between gap-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
-            Track &amp; Trace
-          </p>
-          <div className="flex flex-wrap items-center gap-2">
-            {job?.id ? (
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                onClick={() => setShowTrackingProfileEditor((v) => !v)}
-              >
-                {showTrackingProfileEditor
-                  ? 'Hide profile editor'
-                  : 'Edit tracking profile'}
-              </Button>
-            ) : null}
-            <Button
-              type="button"
-              size="sm"
-              variant="secondary"
-              onClick={() => {
-                setShowTracking(false);
-                setShowTrackingProfileEditor(false);
-              }}
-            >
-              Hide
-            </Button>
-          </div>
-        </div>
-        <div className="space-y-4">
-          {showTrackingProfileEditor && job?.id ? (
-            <div className="mx-3 mt-3 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-3 sm:mx-4 sm:px-4">
-              <JobTrackingProfileEditor
-                jobId={job.id}
-                onCancel={() => setShowTrackingProfileEditor(false)}
-                onSaved={() => {
-                  void trackingQuery.refetch();
-                }}
-              />
-            </div>
-          ) : null}
-          {trackingQuery.isLoading ? (
-            <p className="px-5 py-6 text-[13px] text-[#64748b]">Loading tracking…</p>
-          ) : trackingQuery.isError ? (
-            <p className="px-5 py-6 text-[13px] text-red-700">
-              {getErrorMessage(trackingQuery.error)}
-            </p>
-          ) : (
-            (() => {
-              const trackResult = toTrackResult(
-                trackingQuery.data?.data ?? trackingQuery.data,
-                job?.job_number || job?.id,
-              );
-              return (
-                <div className="relative min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220]">
-                  <TrackMapBackground result={trackResult} />
-                  <div className="relative z-[1] flex min-h-[560px] max-w-[520px] flex-col p-3 sm:p-4">
-                    <PublicTrackTimeline
-                      variant="overlay"
-                      className="min-h-0 flex-1 shadow-2xl"
-                      result={trackResult}
-                      pdfSource={
-                        job?.id ? { kind: 'job', jobId: job.id } : undefined
-                      }
-                    />
-                  </div>
-                </div>
-              );
-            })()
-          )}
-        </div>
-      </div>
-    );
-  }, [
-    showTracking,
-    showTrackingProfileEditor,
-    trackingQuery.isLoading,
-    trackingQuery.isError,
-    trackingQuery.error,
-    trackingQuery.data,
-    trackingQuery.refetch,
-    job?.job_number,
-    job?.id,
-  ]);
 
   const needsEnquiryLink = Boolean(
     resolvedEnquiryId && !displayValue(job?.enquiry_number) && !displayValue(linkedShipment?.enquiry_number),
@@ -475,6 +363,7 @@ export default function JobDetailPage() {
       ...available.map((t) => t.key),
       'section-files',
       'section_files',
+      ...(canTracking ? (['tracking'] as const) : []),
     ]);
     const pick = (key: string | undefined) =>
       key && availableKeys.has(key) ? key : defaultJobDetailTabKey(job);
@@ -491,6 +380,9 @@ export default function JobDetailPage() {
         charges: 'costing',
         'section-files': 'section-files',
         section_files: 'section-files',
+        tracking: 'tracking',
+        track_trace: 'tracking',
+        tracktrace: 'tracking',
       };
       const mapped = legacy[requestedTab.toLowerCase()] || requestedTab;
       // Action keys open as popup — keep Show All (or API default) underneath.
@@ -500,15 +392,18 @@ export default function JobDetailPage() {
       if (mapped === 'section-files' || mapped === 'section_files') {
         return 'section-files';
       }
+      if (isJobTrackingTab(mapped)) {
+        return canTracking ? 'tracking' : pick(defaultJobDetailTabKey(job));
+      }
       if (isJobDetailTabKey(mapped)) {
         return pick(normalizeJobDetailTabKey(mapped));
       }
     }
     // Opening a job always lands on Show All when the API returns that tab.
     return pick(defaultJobDetailTabKey(job));
-  }, [job, requestedTab]);
+  }, [job, requestedTab, canTracking]);
 
-  /** API detail tabs + frontend Section files hub (same as quotation). */
+  /** API detail tabs + FE Track & Trace + Section files hub. */
   const tabs = useMemo(() => {
     if (!job) return [];
     const overviewJob = {
@@ -532,16 +427,30 @@ export default function JobDetailPage() {
           job={overviewJob}
           onChanged={() => refetch()}
           siblingTabKeys={siblingTabKeys}
-          showAllFooter={trackTraceFooter}
         />
       ),
     }));
     return [
       ...apiTabs,
+      ...(canTracking
+        ? [
+            {
+              key: 'tracking',
+              label: jobDetailTabLabel('tracking'),
+              content: (
+                <JobTrackTracePanel
+                  jobId={job.id}
+                  jobNumber={jobDisplayNumber(job)}
+                  shipmentId={resolvedShipmentId}
+                />
+              ),
+            },
+          ]
+        : []),
       {
         key: 'section-files',
         label: 'Section files',
-              content: (
+        content: (
           <EntitySectionFilesPanel
             entity="jobs"
             entityId={job.id}
@@ -559,7 +468,7 @@ export default function JobDetailPage() {
     enquiryNumber,
     quotationNumber,
     shipmentNumber,
-    trackTraceFooter,
+    canTracking,
   ]);
 
   if (isLoading) {
@@ -1166,16 +1075,9 @@ export default function JobDetailPage() {
                 variant="report"
                 leftIcon={<MapPin />}
                 disabled={pending}
-                onClick={() => {
-                  if (showTracking) {
-                    setShowTracking(false);
-                    setShowTrackingProfileEditor(false);
-                    return;
-                  }
-                  openTrackTrace();
-                }}
+                onClick={openTrackTrace}
               >
-                {showTracking ? 'Hide Tracking' : 'Track & Trace'}
+                Track & Trace
               </Button>
             ) : null}
             {(job.path_hints?.includes('job_not_invoiced_do') ||
