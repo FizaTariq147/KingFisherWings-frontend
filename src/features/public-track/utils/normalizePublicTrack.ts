@@ -4,10 +4,12 @@ import {
   unwrapData,
 } from '@/features/portal-shared/normalize';
 import type {
+  PublicTrackArrivalReportRow,
   PublicTrackCargoInfo,
   PublicTrackContainer,
+  PublicTrackCustomsStatusRow,
   PublicTrackEmbedConfig,
-  PublicTrackInfoRow,
+  PublicTrackManifestStatusRow,
   PublicTrackMatch,
   PublicTrackMilestone,
   PublicTrackPortOfCall,
@@ -40,7 +42,19 @@ function unwrapArray(...candidates: unknown[]): unknown[] {
     if (Array.isArray(c) && c.length) return c;
     const rec = asRecord(c);
     if (!rec) continue;
-    for (const key of ['items', 'results', 'rows', 'data', 'legs', 'ports', 'points']) {
+    for (const key of [
+      'items',
+      'results',
+      'rows',
+      'data',
+      'legs',
+      'ports',
+      'points',
+      'manifest_status',
+      'manifestStatus',
+      'arrival_report_status',
+      'arrivalReportStatus',
+    ]) {
       if (Array.isArray(rec[key]) && (rec[key] as unknown[]).length) {
         return rec[key] as unknown[];
       }
@@ -246,15 +260,23 @@ function normalizeRouteLegRow(raw: unknown, index: number): PublicTrackRouteLegR
     pickString(r.label, r.name, r.leg_name, r.legName, r.description) || undefined;
   const from = pickString(r.from, r.origin, r.pol, r.from_port, r.fromPort) || undefined;
   const to = pickString(r.to, r.destination, r.pod, r.to_port, r.toPort) || undefined;
-  if (!label && !from && !to) return null;
+  const vessel = pickString(r.vessel_name, r.vesselName, r.vessel) || undefined;
+  const voyage =
+    pickString(r.voyage_number, r.voyageNumber, r.voyage, r.voyage_no, r.voyageNo) ||
+    undefined;
+  const imo = pickString(r.imo) || undefined;
+  const legNo = pickNumber(r.leg_no, r.legNo);
+  if (!label && !from && !to && !vessel && !voyage && !imo) return null;
   return {
     id: pickString(r.id) || String(index),
-    label,
+    legNo,
+    label: label || (legNo != null ? `${legNo === 1 ? '1st' : legNo === 2 ? '2nd' : `Leg ${legNo}`}` : undefined),
     code: pickString(r.code, r.leg_type, r.legType) || undefined,
     from,
     to,
-    vessel: pickString(r.vessel_name, r.vesselName, r.vessel) || undefined,
-    voyage: pickString(r.voyage_number, r.voyageNumber, r.voyage) || undefined,
+    vessel,
+    voyage,
+    imo,
     etd: pickString(r.etd, r.etd_at, r.departure) || undefined,
     eta: pickString(r.eta, r.eta_at, r.arrival) || undefined,
     raw: r,
@@ -270,16 +292,21 @@ function normalizePortOfCall(raw: unknown, index: number): PublicTrackPortOfCall
   }
   const name =
     pickString(r.name, r.port_name, r.portName, r.location, r.city, r.label) || undefined;
-  if (!name && !pickString(r.code)) return null;
+  const role = pickString(r.role, r.code)?.toUpperCase() || undefined;
+  if (!name && !pickString(r.un_locode, r.unLocode) && !role) return null;
   return {
     id: pickString(r.id, r.un_locode, r.unLocode) || String(index),
+    role,
     name,
-    code: pickString(r.code, r.un_locode, r.unLocode) || undefined,
+    code: pickString(r.un_locode, r.unLocode, r.code) || undefined,
     country: pickString(r.country, r.country_code, r.countryCode) || undefined,
     eta: pickString(r.eta, r.eta_at) || undefined,
     etd: pickString(r.etd, r.etd_at) || undefined,
     ata: pickString(r.ata, r.ata_at, r.actual_arrival) || undefined,
     atd: pickString(r.atd, r.atd_at, r.actual_departure) || undefined,
+    vesselName: pickString(r.vessel_name, r.vesselName, r.vessel) || undefined,
+    voyageNumber:
+      pickString(r.voyage_number, r.voyageNumber, r.voyage, r.voyage_no) || undefined,
     raw: r,
   };
 }
@@ -290,13 +317,24 @@ function normalizeRoute(
   destination?: string,
 ): PublicTrackRoute | undefined {
   const routeRec = asRecord(body.route);
+  const blNumber =
+    pickString(
+      routeRec?.bl_number,
+      routeRec?.blNumber,
+      body.bl_number,
+      body.blNumber,
+    ) || undefined;
   const from =
     pickString(
       routeRec?.from,
       routeRec?.origin,
+      routeRec?.origin_port,
+      routeRec?.originPort,
       routeRec?.origin_label,
       routeRec?.originLabel,
       routeRec?.pol,
+      body.origin_port,
+      body.originPort,
       body.origin_label,
       body.originLabel,
       origin,
@@ -305,27 +343,35 @@ function normalizeRoute(
     pickString(
       routeRec?.to,
       routeRec?.destination,
+      routeRec?.dest_port,
+      routeRec?.destPort,
       routeRec?.dest_label,
       routeRec?.destLabel,
       routeRec?.pod,
+      body.dest_port,
+      body.destPort,
       body.dest_label,
       body.destLabel,
       destination,
     ) || undefined;
   const originLabel =
     pickString(
+      routeRec?.origin_port,
+      routeRec?.originPort,
       routeRec?.origin_label,
       routeRec?.originLabel,
+      body.origin_port,
       body.origin_label,
-      body.originLabel,
       from,
     ) || undefined;
   const destLabel =
     pickString(
+      routeRec?.dest_port,
+      routeRec?.destPort,
       routeRec?.dest_label,
       routeRec?.destLabel,
+      body.dest_port,
       body.dest_label,
-      body.destLabel,
       to,
     ) || undefined;
   const atBefore =
@@ -343,14 +389,35 @@ function normalizeRoute(
       body.terminalCutoffAt,
     ) || undefined;
 
-  const legsRaw = unwrapArray(
-    routeRec?.legs,
-    body.legs,
-    Array.isArray(body.route) ? undefined : undefined,
-  );
-  const legs = legsRaw
+  const firstLegRaw =
+    asRecord(routeRec?.first_leg) ??
+    asRecord(routeRec?.firstLeg) ??
+    asRecord(body.first_leg) ??
+    asRecord(body.firstLeg);
+  const secondLegRaw =
+    asRecord(routeRec?.second_leg) ??
+    asRecord(routeRec?.secondLeg) ??
+    asRecord(body.second_leg) ??
+    asRecord(body.secondLeg);
+  const firstLeg = firstLegRaw
+    ? normalizeRouteLegRow({ ...firstLegRaw, leg_no: 1 }, 0)
+    : null;
+  const secondLeg = secondLegRaw
+    ? normalizeRouteLegRow({ ...secondLegRaw, leg_no: 2 }, 1)
+    : null;
+
+  const legsRaw = unwrapArray(routeRec?.legs, body.legs);
+  const legsFromArray = legsRaw
     .map(normalizeRouteLegRow)
     .filter((r): r is PublicTrackRouteLegRow => Boolean(r));
+  const legs: PublicTrackRouteLegRow[] = [];
+  if (firstLeg) legs.push(firstLeg);
+  if (secondLeg) legs.push(secondLeg);
+  for (const leg of legsFromArray) {
+    if (leg.legNo === 1 && firstLeg) continue;
+    if (leg.legNo === 2 && secondLeg) continue;
+    legs.push(leg);
+  }
 
   const pocRaw = unwrapArray(
     routeRec?.port_of_call,
@@ -363,6 +430,7 @@ function normalizeRoute(
     .filter((r): r is PublicTrackPortOfCall => Boolean(r));
 
   if (
+    !blNumber &&
     !from &&
     !to &&
     !originLabel &&
@@ -376,87 +444,18 @@ function normalizeRoute(
   }
 
   return {
+    blNumber,
     from,
     to,
     originLabel,
     destLabel,
     atBefore,
     terminalCutoffAt,
+    firstLeg: firstLeg || legs.find((l) => l.legNo === 1),
+    secondLeg: secondLeg || legs.find((l) => l.legNo === 2),
     legs,
     portOfCall,
   };
-}
-
-function normalizeInfoRow(raw: unknown, index: number): PublicTrackInfoRow | null {
-  const r = asRecord(raw);
-  if (!r) {
-    const value = pickString(raw);
-    if (!value) return null;
-    return { id: String(index), value };
-  }
-  const label =
-    pickString(
-      r.label,
-      r.name,
-      r.title,
-      r.key,
-      r.field,
-      r.code,
-      r.type,
-      r.event,
-      r.status_label,
-    ) || undefined;
-  const value =
-    pickString(
-      r.value,
-      r.text,
-      r.description,
-      r.summary,
-      r.notes,
-      r.detail,
-      r.message,
-      r.status,
-      r.container_number,
-      r.containerNumber,
-    ) || undefined;
-  const status = pickString(r.status, r.status_code, r.statusCode) || undefined;
-  const date =
-    pickString(
-      r.date,
-      r.occurred_at,
-      r.occurredAt,
-      r.reported_at,
-      r.reportedAt,
-      r.timestamp,
-    ) || undefined;
-  const notes = pickString(r.notes, r.remark, r.remarks) || undefined;
-  if (!label && !value && !status && !date && !notes) {
-    // Keep opaque objects as a single JSON-ish value for display.
-    const keys = Object.keys(r);
-    if (!keys.length) return null;
-    return {
-      id: pickString(r.id) || String(index),
-      label: keys[0],
-      value: pickString(r[keys[0]]) || JSON.stringify(r[keys[0]]),
-      raw: r,
-    };
-  }
-  return {
-    id: pickString(r.id) || String(index),
-    label,
-    value,
-    status,
-    date,
-    notes,
-    raw: r,
-  };
-}
-
-function normalizeInfoRows(...candidates: unknown[]): PublicTrackInfoRow[] {
-  const raw = unwrapArray(...candidates);
-  return raw
-    .map(normalizeInfoRow)
-    .filter((r): r is PublicTrackInfoRow => Boolean(r));
 }
 
 function normalizeDetailedData(raw: unknown): Record<string, unknown> {
@@ -470,23 +469,134 @@ function normalizeDetailedData(raw: unknown): Record<string, unknown> {
   return out;
 }
 
+function normalizeArrivalReportRow(
+  raw: unknown,
+  index: number,
+): PublicTrackArrivalReportRow | null {
+  const r = asRecord(raw);
+  if (!r) return null;
+  const row: PublicTrackArrivalReportRow = {
+    id: pickString(r.id) || String(index),
+    status: pickString(r.status) || undefined,
+    sendingTime: pickString(r.sending_time, r.sendingTime) || undefined,
+    receiptTime: pickString(r.receipt_time, r.receiptTime) || undefined,
+    containerNo: pickString(r.container_no, r.containerNo, r.container_number) || undefined,
+    subContainerNo: pickString(r.sub_container_no, r.subContainerNo) || undefined,
+    vesselName: pickString(r.vessel_name, r.vesselName, r.vessel) || undefined,
+    voyageNo: pickString(r.voyage_no, r.voyageNo, r.voyage_number, r.voyage) || undefined,
+    imo: pickString(r.imo) || undefined,
+  };
+  if (
+    !row.status &&
+    !row.sendingTime &&
+    !row.receiptTime &&
+    !row.containerNo &&
+    !row.vesselName
+  ) {
+    return null;
+  }
+  return row;
+}
+
+function normalizeCustomsStatusRow(
+  raw: unknown,
+  index: number,
+): PublicTrackCustomsStatusRow | null {
+  const r = asRecord(raw);
+  if (!r) return null;
+  const row: PublicTrackCustomsStatusRow = {
+    id: pickString(r.id) || String(index),
+    carrierOperator: pickString(r.carrier_operator, r.carrierOperator) || undefined,
+    customsReleased:
+      typeof r.customs_released === 'boolean'
+        ? r.customs_released
+        : typeof r.customsReleased === 'boolean'
+          ? r.customsReleased
+          : undefined,
+    subCustomsNo: pickString(r.sub_customs_no, r.subCustomsNo) || undefined,
+    quantity: pickNumber(r.quantity),
+    weight: pickNumber(r.weight),
+    volume: pickNumber(r.volume),
+    customsDeclarationNo:
+      pickString(r.customs_declaration_no, r.customsDeclarationNo) || undefined,
+    customsInspectionStatus:
+      pickString(r.customs_inspection_status, r.customsInspectionStatus) || undefined,
+    customsInspectionTime:
+      pickString(r.customs_inspection_time, r.customsInspectionTime) || undefined,
+  };
+  if (
+    !row.carrierOperator &&
+    row.customsReleased == null &&
+    !row.subCustomsNo &&
+    row.quantity == null &&
+    !row.customsDeclarationNo &&
+    !row.customsInspectionStatus
+  ) {
+    return null;
+  }
+  return row;
+}
+
+function normalizeManifestStatusRow(
+  raw: unknown,
+  index: number,
+): PublicTrackManifestStatusRow | null {
+  const r = asRecord(raw);
+  if (!r) return null;
+  const row: PublicTrackManifestStatusRow = {
+    id: pickString(r.id) || String(index),
+    subCustomsNo: pickString(r.sub_customs_no, r.subCustomsNo) || undefined,
+    status: pickString(r.status) || undefined,
+    sendingTime: pickString(r.sending_time, r.sendingTime) || undefined,
+    receiptReceivingTime:
+      pickString(
+        r.receipt_receiving_time,
+        r.receiptReceivingTime,
+        r.receipt_time,
+        r.receiptTime,
+      ) || undefined,
+    containerNo: pickString(r.container_no, r.containerNo, r.container_number) || undefined,
+    vesselName: pickString(r.vessel_name, r.vesselName, r.vessel) || undefined,
+    voyageNo: pickString(r.voyage_no, r.voyageNo, r.voyage_number) || undefined,
+    imo: pickString(r.imo) || undefined,
+  };
+  if (
+    !row.subCustomsNo &&
+    !row.status &&
+    !row.sendingTime &&
+    !row.receiptReceivingTime &&
+    !row.containerNo &&
+    !row.vesselName
+  ) {
+    return null;
+  }
+  return row;
+}
+
 function normalizeCargoInfo(body: Record<string, unknown>): PublicTrackCargoInfo | undefined {
   const cargoRec =
     asRecord(body.cargo_info) ??
     asRecord(body.cargoInfo) ??
     asRecord(body.cargo);
-  const arrivalReport = normalizeInfoRows(
+  const arrivalReport = unwrapArray(
+    cargoRec?.arrival_report_status,
+    cargoRec?.arrivalReportStatus,
     cargoRec?.arrival_report,
     cargoRec?.arrivalReport,
+    body.arrival_report_status,
     body.arrival_report,
     body.arrivalReport,
-  );
-  const customsStatus = normalizeInfoRows(
+  )
+    .map(normalizeArrivalReportRow)
+    .filter((r): r is PublicTrackArrivalReportRow => Boolean(r));
+  const customsStatus = unwrapArray(
     cargoRec?.customs_status,
     cargoRec?.customsStatus,
     body.customs_status,
     body.customsStatus,
-  );
+  )
+    .map(normalizeCustomsStatusRow)
+    .filter((r): r is PublicTrackCustomsStatusRow => Boolean(r));
   const detailedData = normalizeDetailedData(
     cargoRec?.detailed_data ??
       cargoRec?.detailedData ??
@@ -499,11 +609,25 @@ function normalizeCargoInfo(body: Record<string, unknown>): PublicTrackCargoInfo
   return { arrivalReport, customsStatus, detailedData };
 }
 
-function stringifyQtyValue(v: unknown): string | undefined {
-  if (v == null) return undefined;
-  if (typeof v === 'number' && Number.isFinite(v)) return String(v);
-  const s = pickString(v);
-  return s || undefined;
+function normalizePreManifest(
+  body: Record<string, unknown>,
+): PublicTrackManifestStatusRow[] {
+  const preRec = asRecord(body.pre_manifest) ?? asRecord(body.preManifest);
+  return unwrapArray(
+    preRec?.manifest_status,
+    preRec?.manifestStatus,
+    Array.isArray(body.pre_manifest) ? body.pre_manifest : undefined,
+    Array.isArray(body.preManifest) ? body.preManifest : undefined,
+    body.manifest_status,
+    body.manifestStatus,
+  )
+    .map(normalizeManifestStatusRow)
+    .filter((r): r is PublicTrackManifestStatusRow => Boolean(r));
+}
+
+function formatWithUnit(value?: number, unit?: string): string | undefined {
+  if (value == null || !Number.isFinite(value)) return undefined;
+  return unit ? `${value} ${unit}` : String(value);
 }
 
 function normalizeQtyGwVol(body: Record<string, unknown>): PublicTrackQtyGwVol | undefined {
@@ -513,15 +637,19 @@ function normalizeQtyGwVol(body: Record<string, unknown>): PublicTrackQtyGwVol |
     asRecord(body.qty_gw_volume) ??
     null;
   if (!rec) return undefined;
-  const qty = stringifyQtyValue(
-    rec.qty ?? rec.quantity ?? rec.packages ?? rec.pkg ?? rec.pcs,
-  );
-  const gw = stringifyQtyValue(
-    rec.gw ?? rec.gross_weight ?? rec.grossWeight ?? rec.weight ?? rec.g_w,
-  );
-  const vol = stringifyQtyValue(
-    rec.vol ?? rec.volume ?? rec.cbm ?? rec.measurement,
-  );
+  const quantity = pickNumber(rec.quantity, rec.qty, rec.packages, rec.pkg, rec.pcs);
+  const grossWeight = pickNumber(rec.gross_weight, rec.grossWeight, rec.gw, rec.weight, rec.g_w);
+  const netWeight = pickNumber(rec.net_weight, rec.netWeight);
+  const volume = pickNumber(rec.volume, rec.vol, rec.cbm, rec.measurement);
+  const chargeableWeight = pickNumber(rec.chargeable_weight, rec.chargeableWeight);
+  const qtyUnit = pickString(rec.qty_unit, rec.qtyUnit) || undefined;
+  const weightUnit = pickString(rec.weight_unit, rec.weightUnit) || undefined;
+  const volumeUnit = pickString(rec.volume_unit, rec.volumeUnit) || undefined;
+  const lines = Array.isArray(rec.lines)
+    ? rec.lines
+        .map((line) => asRecord(line))
+        .filter((line): line is Record<string, unknown> => Boolean(line))
+    : [];
   const extras: Record<string, string> = {};
   const known = new Set([
     'qty',
@@ -534,18 +662,53 @@ function normalizeQtyGwVol(body: Record<string, unknown>): PublicTrackQtyGwVol |
     'grossWeight',
     'weight',
     'g_w',
+    'net_weight',
+    'netWeight',
     'vol',
     'volume',
     'cbm',
     'measurement',
+    'chargeable_weight',
+    'chargeableWeight',
+    'qty_unit',
+    'qtyUnit',
+    'weight_unit',
+    'weightUnit',
+    'volume_unit',
+    'volumeUnit',
+    'lines',
   ]);
   for (const [k, v] of Object.entries(rec)) {
     if (known.has(k)) continue;
-    const s = stringifyQtyValue(v);
-    if (s) extras[k] = s;
+    if (v == null || typeof v === 'object') continue;
+    extras[k] = String(v);
   }
-  if (!qty && !gw && !vol && !Object.keys(extras).length) return undefined;
-  return { qty, gw, vol, extras };
+  if (
+    quantity == null &&
+    grossWeight == null &&
+    netWeight == null &&
+    volume == null &&
+    chargeableWeight == null &&
+    !lines.length &&
+    !Object.keys(extras).length
+  ) {
+    return undefined;
+  }
+  return {
+    quantity,
+    grossWeight,
+    netWeight,
+    volume,
+    chargeableWeight,
+    qtyUnit,
+    weightUnit,
+    volumeUnit,
+    lines,
+    qty: formatWithUnit(quantity, qtyUnit),
+    gw: formatWithUnit(grossWeight, weightUnit),
+    vol: formatWithUnit(volume, volumeUnit),
+    extras,
+  };
 }
 
 function pickContainersFromBody(body: Record<string, unknown>): {
@@ -624,13 +787,16 @@ function peelTrackBody(raw: unknown): Record<string, unknown> | null {
       Array.isArray(rec.containers) ||
       Array.isArray(rec.pre_manifest) ||
       Array.isArray(rec.preManifest) ||
+      asRecord(rec.pre_manifest) != null ||
+      asRecord(rec.preManifest) != null ||
       asRecord(rec.route) != null ||
       asRecord(rec.cargo_info) != null ||
       asRecord(rec.cargoInfo) != null ||
       asRecord(rec.qty_gw_vol) != null ||
       asRecord(rec.qtyGwVol) != null ||
       rec.container_number != null ||
-      rec.job_number != null
+      rec.job_number != null ||
+      rec.bl_number != null
     ) {
       return rec;
     }
@@ -720,8 +886,10 @@ export function normalizePublicTrack(
     pickString(
       body.origin,
       body.origin_name,
+      body.origin_port,
       body.pol,
       routeRec?.from,
+      routeRec?.origin_port,
       routeRec?.origin_label,
       routeRec?.originLabel,
       summary?.origin,
@@ -730,8 +898,10 @@ export function normalizePublicTrack(
     pickString(
       body.destination,
       body.dest_name,
+      body.dest_port,
       body.pod,
       routeRec?.to,
+      routeRec?.dest_port,
       routeRec?.dest_label,
       routeRec?.destLabel,
       summary?.destination,
@@ -766,7 +936,7 @@ export function normalizePublicTrack(
 
   const route = normalizeRoute(body, origin, destination);
   const cargoInfo = normalizeCargoInfo(body);
-  const preManifest = normalizeInfoRows(body.pre_manifest, body.preManifest);
+  const preManifest = normalizePreManifest(body);
   const qtyGwVol = normalizeQtyGwVol(body);
 
   return {
@@ -787,6 +957,7 @@ export function normalizePublicTrack(
     destination,
     jobType: pickString(body.job_type, body.jobType) || undefined,
     partyName: pickString(body.party_name, summary?.party_name) || undefined,
+    blNumber: route?.blNumber || pickString(body.bl_number, body.blNumber) || undefined,
     containerNumber: container.containerNumber,
     containerType: container.containerType,
     containerKind: container.containerKind,
