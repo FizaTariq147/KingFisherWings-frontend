@@ -170,7 +170,7 @@ export function ShipmentFilters({
           />
         </FilterField>
 
-        <FilterField label="Job type">
+        <FilterField label="Type">
           <SelectInput
             options={jobTypeSelectOptions}
             value={draft.jobType}
@@ -190,14 +190,6 @@ export function ShipmentFilters({
           <TextInput
             value={draft.shipmentNo}
             onChange={(e) => patch({ shipmentNo: e.target.value })}
-          />
-        </FilterField>
-
-        <FilterField label="Job number">
-          <TextInput
-            value={draft.jobId}
-            onChange={(e) => patch({ jobId: e.target.value.trim() })}
-            placeholder="Search by job number…"
           />
         </FilterField>
 
