@@ -865,6 +865,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const [storageUpto, setStorageUpto] = useState('');
   const [storagePreview, setStoragePreview] = useState<unknown>(null);
   const [attachChargeId, setAttachChargeId] = useState('');
+  const [attachChargeName, setAttachChargeName] = useState('');
   const [attachFileName, setAttachFileName] = useState('');
   const [attachFileUrl, setAttachFileUrl] = useState('');
   const [attachPickFile, setAttachPickFile] = useState<File | null>(null);
@@ -955,8 +956,16 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     }
   };
 
-  const openSideAttach = (chargeId: string, side: 'SALE' | 'COST') => {
-    setAttachChargeId(chargeId);
+  const openSideAttach = (
+    charge: Pick<JobCharge, 'id' | 'description' | 'charge_code' | 'charge_code_name'>,
+    side: 'SALE' | 'COST',
+  ) => {
+    setAttachChargeId(charge.id);
+    setAttachChargeName(
+      [charge.description, charge.charge_code || charge.charge_code_name]
+        .filter(Boolean)
+        .join(' — ') || charge.id,
+    );
     setAttachSide(side);
     setAttachFileName('');
     setAttachFileUrl('');
@@ -968,7 +977,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const submitChargeAttachment = async () => {
     const chargeId = attachChargeId.trim();
     if (!isUuid(chargeId)) {
-      setError('Invalid charge id.');
+      setError('Invalid charge. Select a charge line first.');
       return;
     }
     if (attachPickFile) {
@@ -1927,7 +1936,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                         icon={<Paperclip className="h-4 w-4 stroke-[2.5]" />}
                         title="Sale attachments (?side=SALE)"
                         badge={saleAtt}
-                        onClick={() => openSideAttach(c.id, 'SALE')}
+                        onClick={() => openSideAttach(c, 'SALE')}
                       />
                     </td>
                     <td className={COST_TD}>{costAmt ?? '—'}</td>
@@ -1956,7 +1965,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                         icon={<Paperclip className="h-4 w-4 stroke-[2.5]" />}
                         title="Cost attachments (?side=COST)"
                         badge={costAtt}
-                        onClick={() => openSideAttach(c.id, 'COST')}
+                        onClick={() => openSideAttach(c, 'COST')}
                       />
                     </td>
                     <td
@@ -2210,7 +2219,11 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
             label="Charge"
             value={attachChargeId}
             options={chargeLineOptions}
-            onChange={setAttachChargeId}
+            onChange={(id) => {
+              setAttachChargeId(id);
+              const opt = chargeLineOptions.find((o) => o.value === id);
+              setAttachChargeName(opt?.label ?? '');
+            }}
             placeholder="Search charge by description…"
             allowManualUuid={false}
           />
@@ -3750,7 +3763,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         }
       >
         <div className="grid gap-3">
-          <Input label="Charge id" value={attachChargeId} readOnly />
+          <Input label="Charge name" value={attachChargeName || attachChargeId} readOnly />
           {attachListQuery.data && attachListQuery.data.length > 0 ? (
             <ul className="space-y-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-3 py-2">
               {attachListQuery.data.map((att, idx) => {
