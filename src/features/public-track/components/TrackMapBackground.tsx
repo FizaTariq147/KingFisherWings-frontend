@@ -24,6 +24,8 @@ type Props = {
   className?: string;
 };
 
+type Waypoint = LatLng & { label?: string; role?: string };
+
 function FitRoute({ points }: { points: LatLng[] }) {
   const map = useMap();
   useEffect(() => {
@@ -41,52 +43,219 @@ function FitRoute({ points }: { points: LatLng[] }) {
   return null;
 }
 
-function splitRoute(arc: LatLng[], progressPct: number) {
-  if (arc.length < 2) return { done: arc, rest: [] as LatLng[] };
-  const pct = Math.max(0, Math.min(100, progressPct || 35));
-  const idx = Math.max(1, Math.min(arc.length - 1, Math.round((pct / 100) * (arc.length - 1))));
+/** Leaflet often paints blank until the container has a real size — force refresh. */
+function InvalidateMapSize() {
+  const map = useMap();
+  useEffect(() => {
+    const refresh = () => {
+      map.invalidateSize({ animate: false });
+    };
+    refresh();
+    const t1 = window.setTimeout(refresh, 80);
+    const t2 = window.setTimeout(refresh, 320);
+    window.addEventListener('resize', refresh);
+    return () => {
+      window.clearTimeout(t1);
+      window.clearTimeout(t2);
+      window.removeEventListener('resize', refresh);
+    };
+  }, [map]);
+  return null;
+}
+
+function nearlySame(a: LatLng, b: LatLng): boolean {
+  return Math.abs(a.lat - b.lat) < 0.02 && Math.abs(a.lng - b.lng) < 0.02;
+}
+
+function resolveWaypoint(
+  label?: string | null,
+  lat?: number,
+  lng?: number,
+): LatLng | null {
+  if (
+    typeof lat === 'number' &&
+    typeof lng === 'number' &&
+    Number.isFinite(lat) &&
+    Number.isFinite(lng) &&
+    lat >= -90 &&
+    lat <= 90 &&
+    lng >= -180 &&
+    lng <= 180
+  ) {
+    return { lat, lng };
+  }
+  return resolvePortCoordinates(label);
+}
+
+function collectWaypoints(
+  rows: Array<{
+    label?: string | null;
+    lat?: number;
+    lng?: number;
+    role?: string;
+  }>,
+): Waypoint[] {
+  const out: Waypoint[] = [];
+  for (const row of rows) {
+    const pt = resolveWaypoint(row.label, row.lat, row.lng);
+    if (!pt) continue;
+    const last = out[out.length - 1];
+    if (last && nearlySame(last, pt)) {
+      if (row.label && !last.label) last.label = row.label;
+      if (row.role && !last.role) last.role = row.role;
+      continue;
+    }
+    out.push({
+      ...pt,
+      label: row.label || undefined,
+      role: row.role,
+    });
+  }
+  return out;
+}
+
+/** Build route stops from live tracking payload (legs → POC → origin/dest). */
+function buildLiveWaypoints(result: PublicTrackResult | null | undefined): Waypoint[] {
+  if (!result) return [];
+
+  const fromLegs = collectWaypoints(
+    (result.progressLegs ?? []).map((leg) => ({
+      label: leg.name,
+      lat: leg.lat,
+      lng: leg.lng,
+      role: String(leg.code || ''),
+    })),
+  );
+  if (fromLegs.length >= 2) return fromLegs;
+
+  const fromPoc = collectWaypoints(
+    (result.route?.portOfCall ?? []).map((stop) => ({
+      label: stop.name || stop.code,
+      lat: stop.lat,
+      lng: stop.lng,
+      role: stop.role || stop.code,
+    })),
+  );
+  if (fromPoc.length >= 2) return fromPoc;
+
+  const metrics = computeTrackMetrics(result);
+  return collectWaypoints([
+    { label: metrics.origin || 'Origin', role: 'POL' },
+    { label: metrics.destination || 'Destination', role: 'POD' },
+  ]);
+}
+
+function buildRouteArc(waypoints: Waypoint[]): LatLng[] {
+  if (waypoints.length < 2) return waypoints.map((w) => ({ lat: w.lat, lng: w.lng }));
+  const arc: LatLng[] = [];
+  for (let i = 0; i < waypoints.length - 1; i += 1) {
+    const segment = interpolateArc(waypoints[i], waypoints[i + 1], 24);
+    if (i > 0) segment.shift();
+    arc.push(...segment);
+  }
+  return arc;
+}
+
+function splitRoute(
+  arc: LatLng[],
+  progressPct: number,
+  livePosition?: LatLng | null,
+) {
+  if (livePosition && arc.length) {
+    let bestIdx = 0;
+    let bestDist = Number.POSITIVE_INFINITY;
+    for (let i = 0; i < arc.length; i += 1) {
+      const d =
+        (arc[i].lat - livePosition.lat) ** 2 + (arc[i].lng - livePosition.lng) ** 2;
+      if (d < bestDist) {
+        bestDist = d;
+        bestIdx = i;
+      }
+    }
+    return {
+      done: arc.slice(0, bestIdx + 1),
+      rest: arc.slice(bestIdx),
+      vessel: livePosition,
+      live: true as const,
+    };
+  }
+  if (arc.length < 2) {
+    return { done: arc, rest: [] as LatLng[], vessel: undefined, live: false as const };
+  }
+  const pct = Math.max(0, Math.min(100, progressPct || 0));
+  const idx =
+    pct <= 0
+      ? 0
+      : Math.max(
+          1,
+          Math.min(arc.length - 1, Math.round((pct / 100) * (arc.length - 1))),
+        );
   return {
     done: arc.slice(0, idx + 1),
     rest: arc.slice(idx),
     vessel: arc[idx],
+    live: false as const,
   };
 }
 
 /**
- * Full-bleed OSM map behind Track & Trace. Draws POL → POD arc and vessel marker.
- * No live AIS — approximate route from resolved port labels only.
+ * Full-bleed OSM map behind Track & Trace.
+ * Prefers live lat/lng + progress legs / port-of-call from the track payload;
+ * falls back to resolved port labels and progress-based position.
  */
 export function TrackMapBackground({ result, dark = false, className }: Props) {
   const metrics = result ? computeTrackMetrics(result) : null;
-  const origin = resolvePortCoordinates(metrics?.origin);
-  const dest = resolvePortCoordinates(metrics?.destination);
+  const waypoints = useMemo(() => buildLiveWaypoints(result), [result]);
+  const origin = waypoints[0] ?? null;
+  const dest = waypoints.length > 1 ? waypoints[waypoints.length - 1] : null;
 
-  const arc = useMemo(() => {
-    if (origin && dest) return interpolateArc(origin, dest);
-    return [] as LatLng[];
-  }, [origin, dest]);
+  const arc = useMemo(() => buildRouteArc(waypoints), [waypoints]);
+
+  const livePosition = useMemo(() => {
+    if (
+      result?.currentLat != null &&
+      result?.currentLng != null &&
+      Number.isFinite(result.currentLat) &&
+      Number.isFinite(result.currentLng)
+    ) {
+      return { lat: result.currentLat, lng: result.currentLng };
+    }
+    const currentLeg = (result?.progressLegs ?? []).find((l) => l.current);
+    if (currentLeg) {
+      return resolveWaypoint(currentLeg.name, currentLeg.lat, currentLeg.lng);
+    }
+    return null;
+  }, [result]);
 
   const split = useMemo(
-    () => splitRoute(arc, metrics?.progressPct ?? 35),
-    [arc, metrics?.progressPct],
+    () => splitRoute(arc, metrics?.progressPct ?? 0, livePosition),
+    [arc, metrics?.progressPct, livePosition],
   );
 
   const fitPoints = useMemo(() => {
-    const pts: LatLng[] = [];
-    if (origin) pts.push(origin);
-    if (dest) pts.push(dest);
+    const pts: LatLng[] = [...waypoints];
     if (split.vessel) pts.push(split.vessel);
     return pts;
-  }, [origin, dest, split.vessel]);
+  }, [waypoints, split.vessel]);
 
-  // OSM tiles (no API key). Dark style uses Carto dark CDN when available.
+  // Remount when the tracked shipment / route ends change (not every live ping).
+  const mapKey = [
+    result?.reference ?? 'empty',
+    origin ? `${origin.lat.toFixed(2)},${origin.lng.toFixed(2)}` : '',
+    dest ? `${dest.lat.toFixed(2)},${dest.lng.toFixed(2)}` : '',
+    String(waypoints.length),
+  ].join('|');
+
   const tileUrl = dark
     ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
     : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
+  const midStops = waypoints.slice(1, -1);
+
   return (
     <div className={className ?? 'absolute inset-0 z-0 h-full w-full'}>
       <MapContainer
+        key={mapKey}
         center={[22, 55]}
         zoom={3}
         className="h-full w-full min-h-[280px] [&_.leaflet-container]:h-full [&_.leaflet-container]:w-full"
@@ -104,6 +273,7 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
           url={tileUrl}
         />
         <ZoomControl position="bottomright" />
+        <InvalidateMapSize />
         <FitRoute points={fitPoints} />
 
         {split.done.length > 1 ? (
@@ -136,10 +306,28 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
             }}
           >
             <Tooltip permanent direction="top" offset={[0, -8]}>
-              POL {metrics?.origin || ''}
+              POL {origin.label || metrics?.origin || ''}
             </Tooltip>
           </CircleMarker>
         ) : null}
+
+        {midStops.map((stop, i) => (
+          <CircleMarker
+            key={`ts-${i}-${stop.lat}-${stop.lng}`}
+            center={[stop.lat, stop.lng]}
+            radius={6}
+            pathOptions={{
+              color: '#fff',
+              weight: 2,
+              fillColor: '#F59E0B',
+              fillOpacity: 1,
+            }}
+          >
+            <Tooltip direction="top" offset={[0, -6]}>
+              {stop.label || stop.role || 'TS'}
+            </Tooltip>
+          </CircleMarker>
+        ))}
 
         {dest ? (
           <CircleMarker
@@ -153,7 +341,7 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
             }}
           >
             <Tooltip permanent direction="top" offset={[0, -8]}>
-              POD {metrics?.destination || ''}
+              POD {dest.label || metrics?.destination || ''}
             </Tooltip>
           </CircleMarker>
         ) : null}
@@ -170,7 +358,9 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
             }}
           >
             <Tooltip direction="right" offset={[10, 0]}>
-              Current position (approx.)
+              {split.live
+                ? 'Current position (live)'
+                : 'Current position (from progress)'}
             </Tooltip>
           </CircleMarker>
         ) : null}

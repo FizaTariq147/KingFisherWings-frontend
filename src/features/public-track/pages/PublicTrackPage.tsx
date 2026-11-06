@@ -126,7 +126,7 @@ export default function PublicTrackPage() {
                 }}
               />
             ) : (
-              <div className="w-full overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
+              <div className="track-overlay-scrollbar w-full overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-primary-100,#DBEAFE)] text-[var(--color-primary,#2563EB)]">
                   <Search size={18} aria-hidden="true" />
                 </div>

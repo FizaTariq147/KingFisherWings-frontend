@@ -399,6 +399,42 @@ code, kbd, pre, samp {
   background: transparent;
 }
 
+/* ── Track & Trace left overlay card scrollbar ───────────────────── */
+.track-overlay-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(10, 41, 66, 0.4) rgba(10, 41, 66, 0.06);
+}
+.track-overlay-scrollbar::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.track-overlay-scrollbar::-webkit-scrollbar-track {
+  margin: 10px 0;
+  background: rgba(10, 41, 66, 0.05);
+  border-radius: 999px;
+}
+.track-overlay-scrollbar::-webkit-scrollbar-thumb {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 41, 66, 0.35) 0%,
+    rgba(37, 99, 235, 0.45) 100%
+  );
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.track-overlay-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(10, 41, 66, 0.55) 0%,
+    rgba(37, 99, 235, 0.65) 100%
+  );
+  background-clip: padding-box;
+}
+.track-overlay-scrollbar::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
 /* ── Colored action buttons (header chrome + toolbars) ─────────────
    Create/Add = sidebar navy · Edit sky · Report violet · Back slate
    + success / warning / danger for Actions toolbars                 */

@@ -616,7 +616,8 @@ export function PublicTrackTimeline({
       className={cn(
         'flex w-full flex-col bg-white text-[#1E293B]',
         // Overlay card: one continuous top→bottom scroll (header + tabs + body).
-        isOverlay && 'h-full min-h-0 max-h-full overflow-y-auto overscroll-contain rounded-2xl shadow-2xl',
+        isOverlay &&
+          'track-overlay-scrollbar h-full min-h-0 max-h-full overflow-y-auto overscroll-contain rounded-2xl shadow-2xl',
         !isOverlay && 'overflow-hidden',
         className,
       )}

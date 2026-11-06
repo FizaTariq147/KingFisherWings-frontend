@@ -34,6 +34,9 @@ export interface PublicTrackProgressLeg {
   /** True when this leg is the current / last reached point. */
   current?: boolean;
   completed?: boolean;
+  /** Live coordinates from tracking payload when present. */
+  lat?: number;
+  lng?: number;
 }
 
 export interface PublicTrackMatch {
@@ -90,6 +93,9 @@ export interface PublicTrackPortOfCall {
   arrivalFlightNumber?: string;
   mawbNumber?: string;
   hawbNumber?: string;
+  /** Live coordinates from tracking payload when present. */
+  lat?: number;
+  lng?: number;
   raw?: Record<string, unknown>;
 }
 
@@ -188,6 +194,9 @@ export interface PublicTrackResult {
   expectedDelivery?: string;
   origin?: string;
   destination?: string;
+  /** Live vessel/flight position from tracking payload when present. */
+  currentLat?: number;
+  currentLng?: number;
   jobType?: string;
   partyName?: string;
   /** B/L from route / profile. */
