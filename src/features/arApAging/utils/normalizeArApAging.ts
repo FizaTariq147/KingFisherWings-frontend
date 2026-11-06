@@ -590,6 +590,23 @@ export function normalizePendingJobCharge(raw: unknown): PendingJobChargeLine | 
   const charge_id =
     str(r.charge_id) ?? str(r.job_charge_id) ?? str(r.id) ?? str(r.chargeId);
   if (!charge_id) return null;
+  const sideRaw = (str(r.side) ?? str(r.charge_side) ?? str(r.chargeSide))?.toUpperCase();
+  const side: PendingJobChargeLine['side'] =
+    sideRaw === 'COST' || sideRaw === 'SALE'
+      ? sideRaw
+      : num(r.cost_amount) || num(r.costAmount)
+        ? 'COST'
+        : 'SALE';
+  const sale_amount =
+    num(r.sale_amount) || num(r.saleAmount) || (side === 'SALE' ? num(r.amount) : 0) || undefined;
+  const cost_amount =
+    num(r.cost_amount) || num(r.costAmount) || (side === 'COST' ? num(r.amount) : 0) || undefined;
+  const amount =
+    num(r.amount) ||
+    (side === 'COST' ? cost_amount : sale_amount) ||
+    sale_amount ||
+    cost_amount ||
+    undefined;
   return {
     charge_id,
     job_id: str(r.job_id) ?? str(r.jobId),
@@ -599,12 +616,10 @@ export function normalizePendingJobCharge(raw: unknown): PendingJobChargeLine | 
       str(r.charge_description) ??
       str(r.charge_name) ??
       str(r.name),
-    sale_amount:
-      num(r.sale_amount) ||
-      num(r.saleAmount) ||
-      num(r.amount) ||
-      num(r.bill_amount) ||
-      undefined,
+    side,
+    amount,
+    sale_amount: sale_amount || undefined,
+    cost_amount: cost_amount || undefined,
     currency_code: (str(r.currency_code) ?? str(r.currencyCode) ?? str(r.currency))?.toUpperCase(),
     needs_invoice:
       r.needs_invoice === true ||
@@ -749,17 +764,18 @@ export function normalizeStatementReport(raw: unknown, partyId?: string) {
     .map(normalizePendingJobCharge)
     .filter((c): c is PendingJobChargeLine => Boolean(c));
 
-  const invoiced =
+  const invoice_balance =
+    num(root.invoice_balance) ||
+    num(summary?.invoice_balance) ||
     num(root.invoiced) ||
     num(summary?.invoiced) ||
     num(root.invoiced_total) ||
-    num(summary?.invoiced_total) ||
     undefined;
   const pending_costing =
     num(root.pending_costing) ||
     num(summary?.pending_costing) ||
     num(root.pending_costing_total) ||
-    pending_job_charges.reduce((s, c) => s + (c.sale_amount ?? 0), 0) ||
+    pending_job_charges.reduce((s, c) => s + (c.amount ?? 0), 0) ||
     undefined;
   const paid =
     num(root.paid) ||
@@ -767,34 +783,38 @@ export function normalizeStatementReport(raw: unknown, partyId?: string) {
     num(root.paid_total) ||
     num(summary?.receipts_total) ||
     undefined;
-  const balance =
+  const opening_balance =
+    num(root.opening_balance) || num(summary?.opening_balance) || undefined;
+  // Plain sum of open items only (no FX/GP) — prefer API open_balance.
+  const open_balance =
+    num(root.open_balance) ||
+    num(summary?.open_balance) ||
     num(root.balance) ||
     num(summary?.balance) ||
-    num(summary?.open_balance) ||
-    num(root.closing_balance) ||
-    (invoiced != null || pending_costing != null || paid != null
-      ? (invoiced ?? 0) + (pending_costing ?? 0) - (paid ?? 0)
+    (invoice_balance != null || pending_costing != null || opening_balance != null
+      ? (opening_balance ?? 0) + (invoice_balance ?? 0) + (pending_costing ?? 0)
       : undefined);
 
   return {
     party_id: str(root.party_id) ?? str(party?.id) ?? partyId,
     party_name: str(root.party_name) ?? str(party?.name) ?? str(root.name),
     as_of: str(root.as_of) ?? str(root.as_of_date),
-    opening_balance: num(root.opening_balance),
+    opening_balance: opening_balance || undefined,
     closing_balance:
       num(root.closing_balance) ||
-      num(summary?.open_balance) ||
-      balance ||
+      open_balance ||
       (lines.length ? num(lines[lines.length - 1]?.balance) : 0),
     currency_code: (
       str(root.currency_code) ??
       str(party?.currency_code) ??
       currencyFromLines
     )?.toUpperCase(),
-    invoiced: invoiced || undefined,
+    invoice_balance: invoice_balance || undefined,
+    invoiced: invoice_balance || undefined,
     pending_costing: pending_costing || undefined,
     paid: paid || undefined,
-    balance: balance ?? undefined,
+    open_balance: open_balance ?? undefined,
+    balance: open_balance ?? undefined,
     lines,
     pending_job_charges,
     raw,

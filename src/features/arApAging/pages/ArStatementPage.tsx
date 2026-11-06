@@ -205,8 +205,14 @@ export default function ArStatementPage() {
           <>
             <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-[var(--color-neutral-600)]">
               {data?.as_of ? <span>As of {data.as_of}</span> : null}
-              {data?.invoiced != null ? (
-                <span>Invoiced: {formatMoney(data.invoiced, data.currency_code)}</span>
+              {data?.opening_balance != null && data.opening_balance !== 0 ? (
+                <span>Opening: {formatMoney(data.opening_balance, data.currency_code)}</span>
+              ) : null}
+              {(data?.invoice_balance ?? data?.invoiced) != null ? (
+                <span>
+                  Invoice balance:{' '}
+                  {formatMoney(data?.invoice_balance ?? data?.invoiced, data?.currency_code)}
+                </span>
               ) : null}
               {data?.pending_costing != null ? (
                 <span>
@@ -216,17 +222,14 @@ export default function ArStatementPage() {
               {data?.paid != null ? (
                 <span>Paid: {formatMoney(data.paid, data.currency_code)}</span>
               ) : null}
-              {data?.balance != null || data?.closing_balance != null ? (
+              {(data?.open_balance ?? data?.balance ?? data?.closing_balance) != null ? (
                 <span className="font-medium text-[var(--color-neutral-800)]">
-                  Balance:{' '}
+                  Open balance:{' '}
                   {formatMoney(
-                    data?.balance ?? data?.closing_balance,
+                    data?.open_balance ?? data?.balance ?? data?.closing_balance,
                     data?.currency_code,
                   )}
                 </span>
-              ) : null}
-              {data?.opening_balance != null && data.opening_balance !== 0 ? (
-                <span>Opening: {formatMoney(data.opening_balance, data.currency_code)}</span>
               ) : null}
             </div>
             <div className="overflow-x-auto">
@@ -235,14 +238,18 @@ export default function ArStatementPage() {
             {(data?.pending_job_charges?.length ?? 0) > 0 ? (
               <div className="space-y-2 pt-2 border-t border-[var(--color-neutral-100)]">
                 <h3 className="text-sm font-medium text-[var(--color-neutral-800)]">
-                  Uninvoiced sale charges
+                  Pending job charges (sale)
                 </h3>
                 <p className="text-xs text-[var(--color-neutral-500)]">
-                  Billable costing lines not yet on a posted/sent sale invoice. Generate a sale
-                  invoice from job costing before mark-paid.
+                  Uninvoiced SALE costing lines for this bill-to party. Mark paid uploads proof and
+                  creates/posts the sale invoice + RECEIPT (POST /jobs/:id/charges/:chargeId/mark-paid).
                 </p>
                 <div className="overflow-x-auto">
-                  <PendingJobChargesTable charges={data?.pending_job_charges ?? []} />
+                  <PendingJobChargesTable
+                    charges={data?.pending_job_charges ?? []}
+                    statementSide="AR"
+                    onMarkedPaid={() => void refetch()}
+                  />
                 </div>
               </div>
             ) : null}
