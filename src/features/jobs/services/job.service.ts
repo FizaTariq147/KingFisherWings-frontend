@@ -1072,12 +1072,13 @@ async function mergeRecentCreatedJobs(
 export const jobService = {
   /**
    * Load jobs for Active shipments / department / hub.
-   * BE owns visibility via resolveVisibleJobTypes (same as dashboard-counts).
+   * BE: GET /jobs + dashboard-counts share buildVisibleJobsBaseWhere /
+   * resolveVisibleJobTypes. Staff list ignores org department_id; admin MIS may use it.
    * FE:
-   * - Always plain GET /jobs first — **trust BE rows** (no client job_type drop on plain list)
+   * - Plain GET /jobs first — trust BE rows (same ACL as job_count)
    * - If under-delivered vs expectedTotal, recover via typed + search for probeTypes only
-   * - Never invent created_by / ops_user / salesperson filters
-   * - Staff: never send org department_id (ACL is job type, not org dept; most jobs have null)
+   * - Never invent created_by / ops_user / salesperson
+   * - Staff: never send org department_id (13/14 jobs can have department_id null)
    */
   async listVisibleJobs(
     params: JobListParams = {},

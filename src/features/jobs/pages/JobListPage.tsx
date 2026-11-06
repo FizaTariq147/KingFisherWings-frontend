@@ -33,6 +33,7 @@ import {
 } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { resolveListProbesFromCounts } from '../utils/resolveListProbesFromCounts';
+import { staffAlignedJobListParams } from '../utils/staffAlignedJobListParams';
 import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 /** Stamp job_type from job-number mid-code when it maps into this department. */
@@ -105,24 +106,22 @@ export default function JobListPage() {
     const params = jobMisFilterDraftToListParams(applied, 1, {
       segmentJobTypes: allowedSegmentTypes,
     });
-    // Department pages always scope to this segment's types (not a single job_type
-    // query that can empty the list under a broken JWT filter).
+    // Department pages scope to segment job types; never org department_id.
     if (!applied.jobType?.trim()) {
       params.job_type = undefined;
       params.job_types = [...allowedSegmentTypes];
     }
-    if (!applied.createdBy?.trim()) delete params.created_by;
-    if (!applied.salespersonId?.trim()) delete params.salesperson_id;
-    // Job-type department pages: never send org department_id (not staff ACL).
-    delete params.department_id;
-    return params;
+    return staffAlignedJobListParams(params, {
+      isStaff: true,
+      allowAdminDepartment: false,
+    });
   }, [applied, allowedSegmentTypes]);
 
   const listQuery = useQuery({
     queryKey: [
       'tenant',
       'jobs',
-      'department-segment-v12',
+      'department-segment-v13',
       segment,
       filterParams,
       fullScope.kind,
