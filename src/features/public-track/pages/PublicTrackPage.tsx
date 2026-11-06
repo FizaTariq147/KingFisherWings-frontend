@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { usePublicTrackEmbed } from '../hooks/usePublicTrack';
 import { PublicTrackTimeline } from '../components/PublicTrackTimeline';
+import { TrackMapBackground } from '../components/TrackMapBackground';
 import { publicTrackService } from '../services/publicTrack.service';
 import type { PublicTrackResult } from '../types/publicTrack.types';
 import {
@@ -15,7 +16,7 @@ import { isSafeHttpUrl } from '@/lib/safeHttpUrl';
 import { toTrackResult } from '../utils/toTrackResult';
 
 /**
- * Public Track & Trace — search + result panel (no map background).
+ * Public Track & Trace — full-bleed map background with floating search / result card.
  */
 export default function PublicTrackPage() {
   const [searchParams] = useSearchParams();
@@ -30,6 +31,7 @@ export default function PublicTrackPage() {
   const [result, setResult] = useState<PublicTrackResult | null>(null);
   const [pending, setPending] = useState(false);
   const [autoRan, setAutoRan] = useState(false);
+  const [mapDark, setMapDark] = useState(false);
 
   const embed = usePublicTrackEmbed(initialTenant || undefined);
 
@@ -66,16 +68,28 @@ export default function PublicTrackPage() {
 
   return (
     <div
-      className="min-h-[100dvh] w-full bg-[linear-gradient(180deg,#F4F7FB_0%,#EEF2F7_100%)]"
+      className="relative h-[100dvh] w-full overflow-hidden bg-[#0B1220]"
       style={
         branding?.primaryColor
           ? { ['--color-primary' as string]: branding.primaryColor }
           : undefined
       }
     >
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-4 px-4 py-8 sm:px-6 sm:py-10">
+      <TrackMapBackground result={result} dark={mapDark} />
+
+      <div className="pointer-events-none absolute inset-0 z-[500]">
+        <button
+          type="button"
+          className="pointer-events-auto absolute right-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-[#0A2942] shadow-md backdrop-blur"
+          onClick={() => setMapDark((v) => !v)}
+        >
+          {mapDark ? 'Light map' : 'Dark map'}
+        </button>
+      </div>
+
+      <div className="pointer-events-none absolute inset-y-0 left-0 z-[600] flex w-full max-w-[440px] flex-col p-3 sm:max-w-[480px] sm:p-4 lg:max-w-[520px]">
         {!result ? (
-          <div className="rounded-2xl border border-[#D8DEE6] bg-white p-5 shadow-sm sm:p-6">
+          <div className="pointer-events-auto mt-[12vh] w-full rounded-2xl bg-white/95 p-5 shadow-2xl backdrop-blur sm:p-6">
             {branding?.logoUrl && isSafeHttpUrl(branding.logoUrl) ? (
               <img
                 src={branding.logoUrl}
@@ -90,7 +104,7 @@ export default function PublicTrackPage() {
               {title}
             </h1>
             <p className="mt-1 text-sm text-neutral-500">
-              Search by job, shipment, container, BL, or AWB.
+              Search by job, shipment, container, BL, or AWB. Route draws on the map when found.
             </p>
 
             <div className="mt-5">
@@ -133,22 +147,28 @@ export default function PublicTrackPage() {
             </div>
           </div>
         ) : (
-          <PublicTrackTimeline
-            variant="panel"
-            className="overflow-hidden rounded-2xl border border-[#D8DEE6] shadow-sm"
-            result={result}
-            pdfSource={{
-              kind: 'public',
-              ref: result.reference || ref.trim(),
-              tenantSlug: resolvedTenant,
-            }}
-            onNewSearch={() => {
-              clearResult();
-              setRef('');
-            }}
-          />
+          <div className="pointer-events-auto flex min-h-0 flex-1 flex-col">
+            <PublicTrackTimeline
+              variant="overlay"
+              className="min-h-0 flex-1"
+              result={result}
+              pdfSource={{
+                kind: 'public',
+                ref: result.reference || ref.trim(),
+                tenantSlug: resolvedTenant,
+              }}
+              onNewSearch={() => {
+                clearResult();
+                setRef('');
+              }}
+            />
+          </div>
         )}
       </div>
+
+      <p className="pointer-events-none absolute bottom-3 left-1/2 z-[500] -translate-x-1/2 rounded-full bg-black/45 px-3 py-1 text-[10px] text-white/90 backdrop-blur sm:left-auto sm:right-16 sm:translate-x-0">
+        Map route is approximate from POL / POD · not live AIS
+      </p>
     </div>
   );
 }

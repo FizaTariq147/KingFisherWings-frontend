@@ -22,6 +22,7 @@ export const partyKeys = {
   typeCatalog: [...(['tenant', 'parties'] as const), 'types', 'catalog'] as const,
   detail: (id: string) => [...partyKeys.all, 'detail', id] as const,
   history: (id: string) => [...partyKeys.all, 'history', id] as const,
+  payments: (id: string) => [...partyKeys.all, 'payments', id] as const,
 };
 
 /** GET /parties/types — includes Vendor for create/select catalogs. */
@@ -88,6 +89,16 @@ export function useParty(id: string) {
     queryKey: partyKeys.detail(id),
     queryFn: () => partyService.getById(id),
     enabled: Boolean(accessToken) && isUuid(id),
+  });
+}
+
+/** GET /parties/:id/payments — posted RECEIPT / PAYMENT rows. */
+export function usePartyPayments(id: string, enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: partyKeys.payments(id),
+    queryFn: () => partyService.listPayments(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
   });
 }
 

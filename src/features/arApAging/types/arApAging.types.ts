@@ -31,6 +31,9 @@ export interface AgingReportResult {
   raw: unknown;
 }
 
+/** AR row payment lifecycle (posted invoice / receipt rows). */
+export type ArPaymentRowStatus = 'UNPAID' | 'PROOF_UPLOADED' | 'PAID';
+
 export interface StatementLine {
   id?: string;
   date?: string;
@@ -42,7 +45,22 @@ export interface StatementLine {
   balance?: number;
   document_id?: string;
   document_number?: string;
+  /** UNPAID | PROOF_UPLOADED | PAID when API sends ar_status / payment_status. */
+  payment_status?: ArPaymentRowStatus | string;
   [key: string]: unknown;
+}
+
+/** Uninvoiced billable sale charges folded into the party AR statement. */
+export interface PendingJobChargeLine {
+  charge_id: string;
+  job_id?: string;
+  job_number?: string;
+  description?: string;
+  sale_amount?: number;
+  currency_code?: string;
+  /** When true, mark-paid needs a sale invoice first. */
+  needs_invoice?: boolean;
+  raw?: Record<string, unknown>;
 }
 
 export interface StatementReportResult {
@@ -52,7 +70,16 @@ export interface StatementReportResult {
   opening_balance?: number;
   closing_balance?: number;
   currency_code?: string;
+  /** Posted/sent invoice total. */
+  invoiced?: number;
+  /** Uninvoiced costing sale total. */
+  pending_costing?: number;
+  /** Posted receipts total. */
+  paid?: number;
+  /** Open balance (invoiced + pending − paid, or API balance). */
+  balance?: number;
   lines: StatementLine[];
+  pending_job_charges: PendingJobChargeLine[];
   raw: unknown;
 }
 

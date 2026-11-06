@@ -8,6 +8,7 @@ import {
   Container,
   Leaf,
   MapPin,
+  Plane,
   Ship,
   Truck,
 } from 'lucide-react';
@@ -18,7 +19,6 @@ import type {
   PublicTrackMilestone,
   PublicTrackResult,
 } from '../types/publicTrack.types';
-import { resolveTrackStatusIcon } from '../utils/trackStatusIcon';
 import {
   TRACK_TONE_COLORS,
   trackMilestoneTone,
@@ -386,50 +386,123 @@ export function PublicTrackTimeline({
     [result.milestones],
   );
 
+  const isAir = /AIR/i.test(String(result.jobType ?? ''));
+
   const vesselRows = useMemo(() => {
+    type VesselFlightRow = {
+      id: string;
+      vessel?: string;
+      voyage?: string;
+      flightNumber?: string;
+      arrivalFlightNumber?: string;
+      mawbNumber?: string;
+      hawbNumber?: string;
+      imo?: string;
+      label?: string;
+      etd?: string;
+      eta?: string;
+      air?: boolean;
+    };
+
     const fromLegs = (route?.legs ?? [])
-      .filter((l) => l.vessel || l.voyage || l.imo)
-      .map((l, i) => ({
+      .filter(
+        (l) =>
+          l.vessel ||
+          l.voyage ||
+          l.imo ||
+          l.flightNumber ||
+          l.arrivalFlightNumber ||
+          l.mawbNumber ||
+          l.hawbNumber,
+      )
+      .map((l, i): VesselFlightRow => ({
         id: l.id || `leg-${i}`,
         vessel: l.vessel,
         voyage: l.voyage,
+        flightNumber: l.flightNumber,
+        arrivalFlightNumber: l.arrivalFlightNumber,
+        mawbNumber: l.mawbNumber,
+        hawbNumber: l.hawbNumber,
         imo: l.imo,
         label: l.label || [l.from, l.to].filter(Boolean).join(' → '),
         etd: l.etd,
         eta: l.eta,
+        air: Boolean(l.flightNumber || l.mawbNumber || l.hawbNumber),
       }));
     if (fromLegs.length) return fromLegs;
+
+    if (
+      isAir &&
+      (result.flightNumber || result.mawbNumber || result.hawbNumber || result.arrivalFlightNumber)
+    ) {
+      return [
+        {
+          id: 'air-top',
+          flightNumber: result.flightNumber,
+          arrivalFlightNumber: result.arrivalFlightNumber,
+          mawbNumber: result.mawbNumber,
+          hawbNumber: result.hawbNumber,
+          label: [result.origin, result.destination].filter(Boolean).join(' → '),
+          etd: metrics.etd,
+          eta: metrics.eta,
+          air: true,
+        },
+      ];
+    }
+
     const fromPoc = (route?.portOfCall ?? [])
-      .filter((p) => p.vesselName || p.voyageNumber)
-      .map((p, i) => ({
+      .filter((p) => p.vesselName || p.voyageNumber || p.flightNumber)
+      .map((p, i): VesselFlightRow => ({
         id: p.id || `poc-v-${i}`,
         vessel: p.vesselName,
         voyage: p.voyageNumber,
-        imo: undefined as string | undefined,
+        flightNumber: p.flightNumber,
+        arrivalFlightNumber: p.arrivalFlightNumber,
+        mawbNumber: p.mawbNumber,
+        hawbNumber: p.hawbNumber,
+        imo: undefined,
         label: [p.role, p.name].filter(Boolean).join(' · '),
         etd: p.etd,
         eta: p.eta,
+        air: Boolean(p.flightNumber),
       }));
     if (fromPoc.length) return fromPoc;
     const seen = new Set<string>();
-    const fromMoves: typeof fromLegs = [];
+    const fromMoves: VesselFlightRow[] = [];
     for (const m of history) {
-      if (!m.vessel && !m.voyage) continue;
-      const key = `${m.vessel ?? ''}|${m.voyage ?? ''}`;
+      if (!m.vessel && !m.voyage && !m.flightNumber) continue;
+      const key = `${m.vessel ?? ''}|${m.voyage ?? ''}|${m.flightNumber ?? ''}`;
       if (seen.has(key)) continue;
       seen.add(key);
       fromMoves.push({
         id: m.id,
         vessel: m.vessel,
         voyage: m.voyage,
+        flightNumber: m.flightNumber,
+        mawbNumber: m.mawbNumber,
+        hawbNumber: m.hawbNumber,
         imo: undefined,
         label: m.location || m.move || m.label,
         etd: undefined,
         eta: undefined,
+        air: Boolean(m.flightNumber),
       });
     }
     return fromMoves;
-  }, [route?.legs, route?.portOfCall, history]);
+  }, [
+    route?.legs,
+    route?.portOfCall,
+    history,
+    isAir,
+    result.flightNumber,
+    result.mawbNumber,
+    result.hawbNumber,
+    result.arrivalFlightNumber,
+    result.origin,
+    result.destination,
+    metrics.etd,
+    metrics.eta,
+  ]);
 
   const etaHistory = useMemo(() => {
     const rows: Array<{ id: string; label: string; when?: string; note?: string }> = [];
@@ -818,7 +891,17 @@ export function PublicTrackTimeline({
                           <p className="mt-0.5 text-[14px] font-semibold" style={{ color: C.navy }}>
                             {move}
                           </p>
-                          {m.vessel || m.voyage ? (
+                          {m.flightNumber || m.mawbNumber || m.hawbNumber ? (
+                            <p className="mt-1 text-[12px]" style={{ color: C.text }}>
+                              {[
+                                m.flightNumber ? `FLT ${m.flightNumber}` : null,
+                                m.mawbNumber ? `MAWB ${m.mawbNumber}` : null,
+                                m.hawbNumber ? `HAWB ${m.hawbNumber}` : null,
+                              ]
+                                .filter(Boolean)
+                                .join(' · ')}
+                            </p>
+                          ) : m.vessel || m.voyage ? (
                             <p className="mt-1 text-[12px]" style={{ color: C.text }}>
                               {m.vessel}
                               {m.voyage ? (
@@ -874,13 +957,21 @@ export function PublicTrackTimeline({
                     },
                     {
                       key: 'vessel',
-                      label: 'Vessel',
-                      render: (r) => String(r.vesselName ?? ''),
+                      label: isAir ? 'Flight' : 'Vessel',
+                      render: (r) =>
+                        String(
+                          (isAir
+                            ? r.flightNumber || r.arrivalFlightNumber
+                            : r.vesselName) ?? '',
+                        ),
                     },
                     {
                       key: 'voyage',
-                      label: 'Voyage',
-                      render: (r) => String(r.voyageNumber ?? ''),
+                      label: isAir ? 'MAWB / HAWB' : 'Voyage',
+                      render: (r) =>
+                        isAir
+                          ? [r.mawbNumber, r.hawbNumber].filter(Boolean).join(' / ')
+                          : String(r.voyageNumber ?? ''),
                     },
                     {
                       key: 'eta',
@@ -926,11 +1017,32 @@ export function PublicTrackTimeline({
                     style={{ borderColor: C.border }}
                   >
                     <div className="flex items-start gap-3">
-                      <Ship className="mt-0.5 h-5 w-5 shrink-0" style={{ color: C.badge }} />
+                      {row.air || row.flightNumber ? (
+                        <Plane className="mt-0.5 h-5 w-5 shrink-0" style={{ color: C.badge }} />
+                      ) : (
+                        <Ship className="mt-0.5 h-5 w-5 shrink-0" style={{ color: C.badge }} />
+                      )}
                       <div className="min-w-0">
                         <p className="text-[15px] font-bold" style={{ color: C.navy }}>
-                          {row.vessel || 'Vessel / Flight'}
+                          {row.flightNumber
+                            ? `Flight ${row.flightNumber}`
+                            : row.vessel || 'Vessel / Flight'}
                         </p>
+                        {row.arrivalFlightNumber ? (
+                          <p className="text-[13px] font-medium" style={{ color: C.badge }}>
+                            Arrival FLT {row.arrivalFlightNumber}
+                          </p>
+                        ) : null}
+                        {row.mawbNumber || row.hawbNumber ? (
+                          <p className="text-[13px]" style={{ color: C.text }}>
+                            {[
+                              row.mawbNumber ? `MAWB ${row.mawbNumber}` : null,
+                              row.hawbNumber ? `HAWB ${row.hawbNumber}` : null,
+                            ]
+                              .filter(Boolean)
+                              .join(' · ')}
+                          </p>
+                        ) : null}
                         {row.voyage ? (
                           <p className="text-[13px] font-medium" style={{ color: C.badge }}>
                             VOY {row.voyage}

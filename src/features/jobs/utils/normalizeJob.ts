@@ -1128,6 +1128,8 @@ export function normalizeJob(raw: unknown): Job | null {
             flight_status:
               pickString(air ?? {}, 'flight_status', 'flightStatus') || undefined,
             flight_date: pickString(air ?? {}, 'flight_date', 'flightDate') || undefined,
+            shipment_date:
+              pickString(air ?? {}, 'shipment_date', 'shipmentDate') || undefined,
             pallet_count: num(air?.pallet_count ?? air?.palletCount),
             dimensions: num(air?.dimensions ?? air?.volume_cbm ?? air?.volumeCbm),
             weight: num(air?.weight ?? air?.gross_weight_kg ?? air?.grossWeightKg),

@@ -27,6 +27,18 @@ export interface PortalStatementLine {
   credit?: number;
   balance?: number;
   description?: string;
+  /** UNPAID | PROOF_UPLOADED | PAID */
+  paymentStatus?: string;
+}
+
+export interface PortalPendingJobCharge {
+  chargeId: string;
+  jobId?: string;
+  jobNumber?: string;
+  description?: string;
+  saleAmount?: number;
+  currencyCode?: string;
+  needsInvoice?: boolean;
 }
 
 export interface PortalOpenInvoiceLine {
@@ -47,6 +59,14 @@ export interface PortalStatementResult {
   asOf?: string;
   openingBalance?: number;
   closingBalance?: number;
+  /** Posted/sent invoice total. */
+  invoiced?: number;
+  /** Uninvoiced costing sale total. */
+  pendingCosting?: number;
+  /** Posted receipts total. */
+  paid?: number;
+  /** Open balance. */
+  balance?: number;
   invoiceCount?: number;
   currencyCode?: string;
   truncated?: boolean;
@@ -54,5 +74,6 @@ export interface PortalStatementResult {
   composedFromLedgers?: boolean;
   /** Invoices with a remaining balance (paid some / due some). */
   openInvoices?: PortalOpenInvoiceLine[];
+  pendingJobCharges?: PortalPendingJobCharge[];
   lines: PortalStatementLine[];
 }

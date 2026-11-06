@@ -4,12 +4,20 @@ import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload'
 import { PAYMENT_PROOF_API } from '../api/paymentProof.api';
 import type {
   ApprovePaymentProofDto,
+  MarkInvoicePaidDto,
+  MarkPaidNeedsInvoiceError,
   PaymentProof,
   ReviewPaymentProofDto,
   UploadPaymentProofDto,
 } from '../types/paymentProof.types';
 import { formatPaymentProofActionError } from '../utils/formatPaymentProofActionError';
 import { normalizePaymentProof, normalizePaymentProofList } from '../utils/normalizePaymentProof';
+import {
+  assertPaymentProofUploadFields,
+  buildPaymentProofUploadFields,
+  formatAmountClaimed,
+  postPaymentProofMultipart,
+} from '../utils/uploadPaymentProofMultipart';
 
 function rethrowProofError(error: unknown, fallback: string): never {
   throw new Error(formatPaymentProofActionError(error, fallback));
@@ -28,6 +36,97 @@ export const paymentProofService = {
       axiosInstance.get(PAYMENT_PROOF_API.staffInvoiceProofs(invoiceId)),
     );
     return normalizePaymentProofList(res.data);
+  },
+
+  /**
+   * POST /invoices/:id/mark-paid — proof file required.
+   * Creates PaymentProof and posts RECEIPT. Without file the invoice stays unpaid.
+   * Pending costing with no invoice may return `needs_invoice`.
+   */
+  async markPaid(
+    invoiceId: string,
+    file: File,
+    dto: MarkInvoicePaidDto = {},
+  ): Promise<PaymentProof> {
+    if (!invoiceId?.trim()) throw new Error('Invoice id is required.');
+    if (!(file instanceof File) || file.size <= 0) {
+      throw new Error('A payment proof file is required to mark paid.');
+    }
+    const fields: Record<string, string | undefined> = {
+      ...buildPaymentProofUploadFields(
+        {
+          amount: dto.amount,
+          payment_date: dto.payment_date,
+          reference: dto.reference,
+          notes: dto.notes,
+        },
+        'extended',
+      ),
+    };
+    if (dto.amount != null && Number.isFinite(dto.amount) && !fields.amount_claimed) {
+      fields.amount_claimed = formatAmountClaimed(dto.amount);
+    }
+    if (dto.payment_method?.trim()) fields.payment_method = dto.payment_method.trim();
+    if (dto.bank_account_id?.trim()) fields.bank_account_id = dto.bank_account_id.trim();
+    // amount_claimed + payment_date recommended but OpenAPI only requires file
+    if (fields.amount_claimed && fields.payment_date) {
+      assertPaymentProofUploadFields(fields);
+    }
+    try {
+      const data = await withGatewayRetry(() =>
+        postPaymentProofMultipart(
+          axiosInstance,
+          PAYMENT_PROOF_API.markPaid(invoiceId),
+          file,
+          fields,
+        ),
+      );
+      const root =
+        data && typeof data === 'object' && 'data' in (data as object)
+          ? (data as { data: unknown }).data
+          : data;
+      const rec = root && typeof root === 'object' ? (root as Record<string, unknown>) : null;
+      const code = String(rec?.code ?? rec?.error_code ?? '').toLowerCase();
+      if (code === 'needs_invoice' || rec?.needs_invoice === true) {
+        const err: MarkPaidNeedsInvoiceError & Error = Object.assign(
+          new Error(
+            String(rec?.message ?? 'Generate a sale invoice from costing before marking paid.'),
+          ),
+          {
+            code: 'needs_invoice' as const,
+            message: String(
+              rec?.message ?? 'Generate a sale invoice from costing before marking paid.',
+            ),
+            job_id: typeof rec?.job_id === 'string' ? rec.job_id : undefined,
+          },
+        );
+        throw err;
+      }
+      const proof = normalizePaymentProof(root) ?? normalizePaymentProof(rec?.proof ?? rec?.payment_proof);
+      if (!proof && rec) {
+        // Success may return receipt / payment envelope without a nested proof shape.
+        return {
+          id: String(rec.id ?? rec.proof_id ?? invoiceId),
+          invoiceId,
+          status: 'APPROVED',
+          amount: dto.amount,
+          paymentDate: dto.payment_date,
+          raw: rec,
+        };
+      }
+      if (!proof) throw new Error('Mark paid succeeded but response was unexpected.');
+      return proof;
+    } catch (error) {
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        (error as { code?: string }).code === 'needs_invoice'
+      ) {
+        throw error;
+      }
+      rethrowProofError(error, 'Could not mark invoice paid.');
+    }
   },
 
   async listForPurchaseInvoice(invoiceId: string): Promise<PaymentProof[]> {

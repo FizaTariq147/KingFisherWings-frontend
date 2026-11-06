@@ -237,7 +237,7 @@ export function PaymentProofUploadForm({
 }
 
 interface PortalInvoicePaymentFormProps {
-  onRecord: (file: File | null, dto: RecordPortalInvoicePaymentDto) => Promise<void>;
+  onRecord: (file: File, dto: RecordPortalInvoicePaymentDto) => Promise<void>;
   disabled?: boolean;
   currencyCode?: string;
   remainingAmount?: number;
@@ -245,7 +245,7 @@ interface PortalInvoicePaymentFormProps {
 
 /**
  * Portal customer payment: POST …/payments posts RECEIPT immediately.
- * Proof file is optional; balance_due drops on success.
+ * Proof file is required. Without proof use POST …/payment-proofs (stays unpaid until staff mark-paid).
  */
 export function PortalInvoicePaymentForm({
   onRecord,
@@ -265,6 +265,10 @@ export function PortalInvoicePaymentForm({
   const submit = async () => {
     setError(null);
     setMessage(null);
+    if (!file) {
+      setError('A payment proof file is required to record payment.');
+      return;
+    }
     const amountRaw = amount.trim();
     if (!amountRaw) {
       setError('Enter the amount paid.');
@@ -324,11 +328,12 @@ export function PortalInvoicePaymentForm({
     <div className="space-y-3 rounded-md border border-[var(--color-neutral-200)] p-3">
       <p className="text-sm font-medium text-[var(--color-neutral-800)]">Record payment</p>
       <p className="text-xs text-[var(--color-neutral-500)]">
-        Records your payment and updates the invoice balance immediately
+        Posts a RECEIPT and updates the invoice balance immediately
         {remainingAmount != null && Number.isFinite(remainingAmount)
           ? ` (remaining ${remainingAmount.toLocaleString()}${currencyCode ? ` ${currencyCode}` : ''})`
           : ''}
-        . Attach a bank slip or receipt optionally.
+        . A bank slip / receipt file is required. To upload proof only (no balance change), use
+        Upload proof above.
       </p>
       <Input
         type="file"
@@ -346,7 +351,7 @@ export function PortalInvoicePaymentForm({
       {file ? (
         <p className="text-xs text-[var(--color-neutral-500)]">Attached: {file.name}</p>
       ) : (
-        <p className="text-xs text-[var(--color-neutral-400)]">Proof file optional</p>
+        <p className="text-xs text-[var(--color-danger-600)]">Proof file required</p>
       )}
       <div className="grid gap-2 sm:grid-cols-2">
         <Input
@@ -378,7 +383,12 @@ export function PortalInvoicePaymentForm({
       </div>
       {error ? <p className="text-xs text-[var(--color-danger-600)]">{error}</p> : null}
       {message ? <p className="text-xs text-[var(--color-success-700)]">{message}</p> : null}
-      <Button type="button" size="sm" disabled={disabled || pending} onClick={() => void submit()}>
+      <Button
+        type="button"
+        size="sm"
+        disabled={disabled || pending || !file}
+        onClick={() => void submit()}
+      >
         {pending ? 'Recording…' : 'Record payment'}
       </Button>
     </div>

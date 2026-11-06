@@ -28,6 +28,11 @@ function pickNumber(...values: unknown[]): number | undefined {
   return undefined;
 }
 
+function isAirJobType(jobType?: string | null): boolean {
+  const t = String(jobType || '').toUpperCase();
+  return t === 'AIR_EXPORT' || t === 'AIR_IMPORT' || t.startsWith('AIR');
+}
+
 function titleCaseMove(value: string): string {
   return value
     .replace(/[/\\|]+/g, ' ')
@@ -168,6 +173,10 @@ export function normalizePublicMilestone(
       pickString(r.container_number, r.containerNumber, r.container_no) || undefined,
     vessel: pickString(r.vessel_name, r.vesselName, r.vessel) || undefined,
     voyage: pickString(r.voyage_number, r.voyageNumber, r.voyage) || undefined,
+    flightNumber:
+      pickString(r.flight_number, r.flightNumber, r.flight_no, r.flightNo) || undefined,
+    mawbNumber: pickString(r.mawb_number, r.mawbNumber, r.mawb_no, r.mawbNo) || undefined,
+    hawbNumber: pickString(r.hawb_number, r.hawbNumber, r.hawb_no, r.hawbNo) || undefined,
   };
 }
 
@@ -249,7 +258,11 @@ function normalizeProgressLegs(
   return normalizeProgressLegRows(raw);
 }
 
-function normalizeRouteLegRow(raw: unknown, index: number): PublicTrackRouteLegRow | null {
+function normalizeRouteLegRow(
+  raw: unknown,
+  index: number,
+  airMode = false,
+): PublicTrackRouteLegRow | null {
   const r = asRecord(raw);
   if (!r) {
     const label = pickString(raw);
@@ -258,32 +271,95 @@ function normalizeRouteLegRow(raw: unknown, index: number): PublicTrackRouteLegR
   }
   const label =
     pickString(r.label, r.name, r.leg_name, r.legName, r.description) || undefined;
-  const from = pickString(r.from, r.origin, r.pol, r.from_port, r.fromPort) || undefined;
-  const to = pickString(r.to, r.destination, r.pod, r.to_port, r.toPort) || undefined;
-  const vessel = pickString(r.vessel_name, r.vesselName, r.vessel) || undefined;
-  const voyage =
-    pickString(r.voyage_number, r.voyageNumber, r.voyage, r.voyage_no, r.voyageNo) ||
-    undefined;
-  const imo = pickString(r.imo) || undefined;
+  const from =
+    pickString(
+      r.from,
+      r.origin,
+      r.pol,
+      r.from_port,
+      r.fromPort,
+      r.origin_airport,
+      r.originAirport,
+      r.from_airport,
+    ) || undefined;
+  const to =
+    pickString(
+      r.to,
+      r.destination,
+      r.pod,
+      r.to_port,
+      r.toPort,
+      r.dest_airport,
+      r.destAirport,
+      r.to_airport,
+    ) || undefined;
+  const flightNumber =
+    pickString(r.flight_number, r.flightNumber, r.flight_no, r.flightNo) || undefined;
+  const arrivalFlightNumber =
+    pickString(
+      r.arrival_flight_number,
+      r.arrivalFlightNumber,
+      r.arrival_flight,
+      r.arrivalFlight,
+    ) || undefined;
+  const mawbNumber =
+    pickString(r.mawb_number, r.mawbNumber, r.mawb_no, r.mawbNo) || undefined;
+  const hawbNumber =
+    pickString(r.hawb_number, r.hawbNumber, r.hawb_no, r.hawbNo) || undefined;
+  // Air: do not inject vessel/voyage fallbacks — leave null and surface flight fields.
+  const vessel = airMode
+    ? undefined
+    : pickString(r.vessel_name, r.vesselName, r.vessel) || undefined;
+  const voyage = airMode
+    ? undefined
+    : pickString(r.voyage_number, r.voyageNumber, r.voyage, r.voyage_no, r.voyageNo) ||
+      undefined;
+  const imo = airMode ? undefined : pickString(r.imo) || undefined;
   const legNo = pickNumber(r.leg_no, r.legNo);
-  if (!label && !from && !to && !vessel && !voyage && !imo) return null;
+  if (
+    !label &&
+    !from &&
+    !to &&
+    !vessel &&
+    !voyage &&
+    !imo &&
+    !flightNumber &&
+    !arrivalFlightNumber &&
+    !mawbNumber &&
+    !hawbNumber
+  ) {
+    return null;
+  }
   return {
     id: pickString(r.id) || String(index),
     legNo,
-    label: label || (legNo != null ? `${legNo === 1 ? '1st' : legNo === 2 ? '2nd' : `Leg ${legNo}`}` : undefined),
+    label:
+      label ||
+      (legNo != null
+        ? `${legNo === 1 ? '1st' : legNo === 2 ? '2nd' : `Leg ${legNo}`}`
+        : undefined),
     code: pickString(r.code, r.leg_type, r.legType) || undefined,
     from,
     to,
     vessel,
     voyage,
+    flightNumber,
+    arrivalFlightNumber,
+    mawbNumber,
+    hawbNumber,
     imo,
-    etd: pickString(r.etd, r.etd_at, r.departure) || undefined,
-    eta: pickString(r.eta, r.eta_at, r.arrival) || undefined,
+    etd:
+      pickString(r.etd, r.etd_at, r.departure, r.flight_date, r.flightDate) || undefined,
+    eta: pickString(r.eta, r.eta_at, r.arrival, r.actual_eta, r.actualEta) || undefined,
     raw: r,
   };
 }
 
-function normalizePortOfCall(raw: unknown, index: number): PublicTrackPortOfCall | null {
+function normalizePortOfCall(
+  raw: unknown,
+  index: number,
+  airMode = false,
+): PublicTrackPortOfCall | null {
   const r = asRecord(raw);
   if (!r) {
     const name = pickString(raw);
@@ -291,22 +367,49 @@ function normalizePortOfCall(raw: unknown, index: number): PublicTrackPortOfCall
     return { id: String(index), name };
   }
   const name =
-    pickString(r.name, r.port_name, r.portName, r.location, r.city, r.label) || undefined;
+    pickString(
+      r.name,
+      r.port_name,
+      r.portName,
+      r.location,
+      r.city,
+      r.label,
+      r.airport_name,
+      r.airportName,
+    ) || undefined;
   const role = pickString(r.role, r.code)?.toUpperCase() || undefined;
-  if (!name && !pickString(r.un_locode, r.unLocode) && !role) return null;
+  if (!name && !pickString(r.un_locode, r.unLocode, r.iata, r.icao) && !role) return null;
+  const flightNumber =
+    pickString(r.flight_number, r.flightNumber, r.flight_no, r.flightNo) || undefined;
+  const arrivalFlightNumber =
+    pickString(
+      r.arrival_flight_number,
+      r.arrivalFlightNumber,
+      r.arrival_flight,
+      r.arrivalFlight,
+    ) || undefined;
   return {
-    id: pickString(r.id, r.un_locode, r.unLocode) || String(index),
+    id: pickString(r.id, r.un_locode, r.unLocode, r.iata) || String(index),
     role,
     name,
-    code: pickString(r.un_locode, r.unLocode, r.code) || undefined,
+    code: pickString(r.un_locode, r.unLocode, r.code, r.iata, r.icao) || undefined,
     country: pickString(r.country, r.country_code, r.countryCode) || undefined,
-    eta: pickString(r.eta, r.eta_at) || undefined,
-    etd: pickString(r.etd, r.etd_at) || undefined,
+    eta: pickString(r.eta, r.eta_at, r.actual_eta, r.actualEta) || undefined,
+    etd: pickString(r.etd, r.etd_at, r.flight_date, r.flightDate) || undefined,
     ata: pickString(r.ata, r.ata_at, r.actual_arrival) || undefined,
     atd: pickString(r.atd, r.atd_at, r.actual_departure) || undefined,
-    vesselName: pickString(r.vessel_name, r.vesselName, r.vessel) || undefined,
-    voyageNumber:
-      pickString(r.voyage_number, r.voyageNumber, r.voyage, r.voyage_no) || undefined,
+    vesselName: airMode
+      ? undefined
+      : pickString(r.vessel_name, r.vesselName, r.vessel) || undefined,
+    voyageNumber: airMode
+      ? undefined
+      : pickString(r.voyage_number, r.voyageNumber, r.voyage, r.voyage_no) || undefined,
+    flightNumber,
+    arrivalFlightNumber,
+    mawbNumber:
+      pickString(r.mawb_number, r.mawbNumber, r.mawb_no, r.mawbNo) || undefined,
+    hawbNumber:
+      pickString(r.hawb_number, r.hawbNumber, r.hawb_no, r.hawbNo) || undefined,
     raw: r,
   };
 }
@@ -315,6 +418,7 @@ function normalizeRoute(
   body: Record<string, unknown>,
   origin?: string,
   destination?: string,
+  airMode = false,
 ): PublicTrackRoute | undefined {
   const routeRec = asRecord(body.route);
   const blNumber =
@@ -400,15 +504,15 @@ function normalizeRoute(
     asRecord(body.second_leg) ??
     asRecord(body.secondLeg);
   const firstLeg = firstLegRaw
-    ? normalizeRouteLegRow({ ...firstLegRaw, leg_no: 1 }, 0)
+    ? normalizeRouteLegRow({ ...firstLegRaw, leg_no: 1 }, 0, airMode)
     : null;
   const secondLeg = secondLegRaw
-    ? normalizeRouteLegRow({ ...secondLegRaw, leg_no: 2 }, 1)
+    ? normalizeRouteLegRow({ ...secondLegRaw, leg_no: 2 }, 1, airMode)
     : null;
 
   const legsRaw = unwrapArray(routeRec?.legs, body.legs);
   const legsFromArray = legsRaw
-    .map(normalizeRouteLegRow)
+    .map((row, i) => normalizeRouteLegRow(row, i, airMode))
     .filter((r): r is PublicTrackRouteLegRow => Boolean(r));
   const legs: PublicTrackRouteLegRow[] = [];
   if (firstLeg) legs.push(firstLeg);
@@ -426,7 +530,7 @@ function normalizeRoute(
     body.portOfCall,
   );
   const portOfCall = pocRaw
-    .map(normalizePortOfCall)
+    .map((row, i) => normalizePortOfCall(row, i, airMode))
     .filter((r): r is PublicTrackPortOfCall => Boolean(r));
 
   if (
@@ -925,19 +1029,109 @@ export function normalizePublicTrack(
     };
   }
 
-  const topVessel = pickString(body.vessel_name, body.vesselName);
-  const topVoyage = pickString(body.voyage_number, body.voyageNumber);
-  if (topVessel || topVoyage) {
+  const jobType =
+    pickString(body.job_type, body.jobType, summary?.job_type, summary?.jobType) ||
+    undefined;
+  const airMode = isAirJobType(jobType);
+  const airDetails =
+    asRecord(body.air_details) ??
+    asRecord(body.airDetails) ??
+    asRecord(summary?.air_details) ??
+    asRecord(routeRec?.air_details);
+
+  const mawbNumber =
+    pickString(
+      body.mawb_number,
+      body.mawbNumber,
+      airDetails?.mawb_number,
+      airDetails?.mawbNumber,
+      airDetails?.mawb_no,
+    ) || undefined;
+  const hawbNumber =
+    pickString(
+      body.hawb_number,
+      body.hawbNumber,
+      airDetails?.hawb_number,
+      airDetails?.hawbNumber,
+      airDetails?.hawb_no,
+    ) || undefined;
+  const flightNumber =
+    pickString(
+      body.flight_number,
+      body.flightNumber,
+      airDetails?.flight_number,
+      airDetails?.flightNumber,
+      airDetails?.flight_no,
+    ) || undefined;
+  const arrivalFlightNumber =
+    pickString(
+      body.arrival_flight_number,
+      body.arrivalFlightNumber,
+      airDetails?.arrival_flight_number,
+      airDetails?.arrivalFlightNumber,
+    ) || undefined;
+
+  if (airMode) {
+    // Prefer flight + MAWB/HAWB; do not inject vessel/voyage fallbacks for air.
     for (const m of ordered) {
-      if (!m.vessel && topVessel) m.vessel = topVessel;
-      if (!m.voyage && topVoyage) m.voyage = topVoyage;
+      if (!m.flightNumber && flightNumber) m.flightNumber = flightNumber;
+      if (!m.mawbNumber && mawbNumber) m.mawbNumber = mawbNumber;
+      if (!m.hawbNumber && hawbNumber) m.hawbNumber = hawbNumber;
+      m.vessel = undefined;
+      m.voyage = undefined;
+    }
+  } else {
+    const topVessel = pickString(body.vessel_name, body.vesselName);
+    const topVoyage = pickString(body.voyage_number, body.voyageNumber);
+    if (topVessel || topVoyage) {
+      for (const m of ordered) {
+        if (!m.vessel && topVessel) m.vessel = topVessel;
+        if (!m.voyage && topVoyage) m.voyage = topVoyage;
+      }
     }
   }
 
-  const route = normalizeRoute(body, origin, destination);
+  const route = normalizeRoute(body, origin, destination, airMode);
+  if (route && airMode && route.legs.length === 0 && (flightNumber || mawbNumber || hawbNumber)) {
+    route.legs.push({
+      id: 'air-flight',
+      label: 'Flight',
+      from: origin,
+      to: destination,
+      flightNumber,
+      arrivalFlightNumber,
+      mawbNumber,
+      hawbNumber,
+      etd:
+        pickString(
+          airDetails?.flight_date,
+          airDetails?.flightDate,
+          body.etd,
+          body.job_date,
+        ) || undefined,
+      eta:
+        pickString(
+          airDetails?.actual_eta,
+          airDetails?.actualEta,
+          body.eta,
+          body.expected_delivery,
+        ) || undefined,
+    });
+  }
+
   const cargoInfo = normalizeCargoInfo(body);
   const preManifest = normalizePreManifest(body);
   const qtyGwVol = normalizeQtyGwVol(body);
+
+  const expectedDelivery =
+    pickString(
+      body.expected_delivery,
+      airMode
+        ? airDetails?.actual_eta ?? airDetails?.actualEta ?? airDetails?.flight_date
+        : undefined,
+      body.eta,
+      summary?.eta,
+    ) || undefined;
 
   return {
     reference: ref,
@@ -951,13 +1145,16 @@ export function normalizePublicTrack(
         root.current_status,
       ) || undefined,
     progress,
-    expectedDelivery:
-      pickString(body.expected_delivery, body.eta, summary?.eta) || undefined,
+    expectedDelivery,
     origin,
     destination,
-    jobType: pickString(body.job_type, body.jobType) || undefined,
+    jobType,
     partyName: pickString(body.party_name, summary?.party_name) || undefined,
     blNumber: route?.blNumber || pickString(body.bl_number, body.blNumber) || undefined,
+    mawbNumber,
+    hawbNumber,
+    flightNumber,
+    arrivalFlightNumber,
     containerNumber: container.containerNumber,
     containerType: container.containerType,
     containerKind: container.containerKind,

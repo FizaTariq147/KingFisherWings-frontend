@@ -36,13 +36,30 @@ export interface UploadPaymentProofDto {
   currency_code?: string;
 }
 
-/** POST /portal/invoices/:id/payments — amount + payment_date required; file optional. */
+/** POST /portal/invoices/:id/payments — amount + payment_date + proof file required. */
 export interface RecordPortalInvoicePaymentDto {
   amount: number;
   payment_date: string;
   reference?: string;
   notes?: string;
 }
+
+/** POST /invoices/:id/mark-paid — multipart; file required; posts RECEIPT. */
+export interface MarkInvoicePaidDto {
+  amount?: number;
+  payment_date?: string;
+  reference?: string;
+  notes?: string;
+  payment_method?: string;
+  bank_account_id?: string;
+}
+
+/** Structured error when mark-paid needs a sale invoice first (pending costing). */
+export type MarkPaidNeedsInvoiceError = {
+  code: 'needs_invoice';
+  message: string;
+  job_id?: string;
+};
 
 export interface ReviewPaymentProofDto {
   review_notes?: string;

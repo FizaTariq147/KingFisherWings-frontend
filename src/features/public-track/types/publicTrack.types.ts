@@ -18,6 +18,10 @@ export interface PublicTrackMilestone {
   containerNumber?: string;
   vessel?: string;
   voyage?: string;
+  /** Air: flight number (prefer over vessel/voyage). */
+  flightNumber?: string;
+  mawbNumber?: string;
+  hawbNumber?: string;
   /** Move / event code shown in history (e.g. GATE IN EMPTY AT DEPOT). */
   move?: string;
 }
@@ -58,6 +62,11 @@ export interface PublicTrackRouteLegRow {
   to?: string;
   vessel?: string;
   voyage?: string;
+  /** Air: leave vessel/voyage null; surface flight + airports. */
+  flightNumber?: string;
+  arrivalFlightNumber?: string;
+  mawbNumber?: string;
+  hawbNumber?: string;
   imo?: string;
   etd?: string;
   eta?: string;
@@ -77,6 +86,10 @@ export interface PublicTrackPortOfCall {
   atd?: string;
   vesselName?: string;
   voyageNumber?: string;
+  flightNumber?: string;
+  arrivalFlightNumber?: string;
+  mawbNumber?: string;
+  hawbNumber?: string;
   raw?: Record<string, unknown>;
 }
 
@@ -179,6 +192,11 @@ export interface PublicTrackResult {
   partyName?: string;
   /** B/L from route / profile. */
   blNumber?: string;
+  /** Air document / flight refs (AIR_EXPORT / AIR_IMPORT). */
+  mawbNumber?: string;
+  hawbNumber?: string;
+  flightNumber?: string;
+  arrivalFlightNumber?: string;
   /** Primary container number (actual preferred over planned). */
   containerNumber?: string;
   /** ISO / type label e.g. 45G1 (40HC). */

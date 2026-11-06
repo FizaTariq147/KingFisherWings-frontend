@@ -10,6 +10,7 @@ import { isUuid } from '@/lib/isUuid';
 import { useParty } from '@/features/parties/hooks/useParties';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
+import { StaffMarkPaidPanel } from '@/features/payment-proofs/components/StaffMarkPaidPanel';
 import { StaffPaymentProofReviewPanel } from '@/features/payment-proofs/components/StaffPaymentProofReviewPanel';
 import { useInvoicePaymentProofs } from '@/features/payment-proofs/hooks/usePaymentProofs';
 import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
@@ -466,7 +467,14 @@ export default function InvoiceDetailPage() {
                   <CardHeader>
                     <CardTitle>Payment proofs</CardTitle>
                   </CardHeader>
-                  <div className="p-4 pt-0">
+                  <div className="space-y-4 p-4 pt-0">
+                    {amounts.remainingAmount > 0 ? (
+                      <StaffMarkPaidPanel
+                        invoiceId={id}
+                        remainingAmount={amounts.remainingAmount}
+                        currencyCode={invoice.currency_code}
+                      />
+                    ) : null}
                     <StaffPaymentProofReviewPanel invoiceId={id} />
                   </div>
                 </Card>

@@ -92,6 +92,8 @@ export interface JobAirDetail {
   flight_number?: string;
   flight_status?: string;
   flight_date?: string;
+  /** Optional cargo / shipment date (YYYY-MM-DD). */
+  shipment_date?: string;
   screened?: boolean;
   screening_ref?: string;
   awb_type?: 'Direct' | 'Back-to-Back' | 'Consol' | string;
@@ -203,6 +205,10 @@ export type UpdateAirBookingFormDto = {
 export interface UpdateAirMawbDto {
   flight_no?: string;
   flight_status?: string;
+  /** Flight departure date (YYYY-MM-DD). */
+  flight_date?: string | null;
+  /** Shipment / cargo date (YYYY-MM-DD). */
+  shipment_date?: string | null;
   mawb_no?: string;
   hawb_no?: string;
   pallet_count?: number;
@@ -218,6 +224,8 @@ export interface AirMawbPayload {
   flight_no?: string;
   flight_number?: string;
   flight_status?: string;
+  flight_date?: string;
+  shipment_date?: string;
   mawb_no?: string;
   mawb_number?: string;
   hawb_no?: string;
