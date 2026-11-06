@@ -16,8 +16,8 @@ import { isSafeHttpUrl } from '@/lib/safeHttpUrl';
 import { toTrackResult } from '../utils/toTrackResult';
 
 /**
- * Public Track & Trace — full-bleed map background with floating search / result card
- * (same map + overlay pattern as staff job Track & Trace / portal track).
+ * Public Track & Trace — same shell as job Track & Trace tab:
+ * white chrome header + map stage with left overlay card.
  */
 export default function PublicTrackPage() {
   const [searchParams] = useSearchParams();
@@ -32,13 +32,11 @@ export default function PublicTrackPage() {
   const [result, setResult] = useState<PublicTrackResult | null>(null);
   const [pending, setPending] = useState(false);
   const [autoRan, setAutoRan] = useState(false);
-  const [mapDark, setMapDark] = useState(false);
 
   const embed = usePublicTrackEmbed(initialTenant || undefined);
 
   const branding = embed.data;
   const resolvedTenant = branding?.tenantSlug || initialTenant || undefined;
-  const title = branding?.companyName ? `Track with ${branding.companyName}` : 'Find your shipment';
   const canSearch = ref.trim().length >= 2;
 
   const clearResult = () => {
@@ -69,106 +67,113 @@ export default function PublicTrackPage() {
 
   return (
     <div
-      className="relative h-[100dvh] w-full overflow-hidden bg-[#0B1220]"
+      className="min-h-[100dvh] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-4 sm:px-5 sm:py-6"
       style={
         branding?.primaryColor
           ? { ['--color-primary' as string]: branding.primaryColor }
           : undefined
       }
     >
-      {/* Full-bleed map behind search / result card */}
-      <TrackMapBackground result={result} dark={mapDark} />
-
-      <button
-        type="button"
-        className="absolute right-4 top-4 z-[5] rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-[#0A2942] shadow-md backdrop-blur"
-        onClick={() => setMapDark((v) => !v)}
-      >
-        {mapDark ? 'Light map' : 'Dark map'}
-      </button>
-
-      <div className="relative z-[1] flex h-full w-full max-w-[440px] flex-col p-3 sm:max-w-[480px] sm:p-4 lg:max-w-[520px]">
-        {!result ? (
-          <div className="mt-[12vh] w-full rounded-2xl bg-white/95 p-5 shadow-2xl backdrop-blur sm:p-6">
+      <div className="mx-auto w-full max-w-[1200px] overflow-hidden rounded-sm bg-white shadow-[0_10px_30px_rgba(10,41,66,0.06)]">
+        {/* Same chrome strip as job Track & Trace tab */}
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2">
+          <div className="flex min-w-0 items-center gap-3">
             {branding?.logoUrl && isSafeHttpUrl(branding.logoUrl) ? (
               <img
                 src={branding.logoUrl}
                 alt={branding.companyName ?? 'Company logo'}
-                className="mb-3 h-9 w-auto object-contain"
+                className="h-7 w-auto object-contain"
               />
             ) : null}
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-500">
+            <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
               Track &amp; Trace
-            </p>
-            <h1 className="mt-1 text-xl font-semibold tracking-tight text-[#0A2942] sm:text-2xl">
-              {title}
-            </h1>
-            <p className="mt-1 text-sm text-neutral-500">
-              Search by job, shipment, container, BL, or AWB. Route draws on the map when found.
-            </p>
-
-            <div className="mt-5">
-              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-primary-100,#DBEAFE)] text-[var(--color-primary,#2563EB)]">
-                <Search size={18} aria-hidden="true" />
-              </div>
-              {embed.isError ? (
-                <p className="mb-3 text-xs text-neutral-500">
-                  Using default branding — workspace could not be resolved from this domain.
-                </p>
+              {branding?.companyName ? (
+                <span className="ms-2 font-medium normal-case tracking-normal text-[#64748b]">
+                  · {branding.companyName}
+                </span>
               ) : null}
-              {error ? (
-                <p
-                  role="alert"
-                  className="mb-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
-                >
-                  {error}
-                </p>
-              ) : null}
-              <form
-                className="space-y-3"
-                noValidate
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  void runLookup();
-                }}
-              >
-                <Input
-                  label="Reference"
-                  required
-                  value={ref}
-                  onChange={(e) => setRef(e.target.value)}
-                  placeholder="Job / shipment / container / BL / AWB"
-                  hint="Enter the exact reference (e.g. MSCU1000001)"
-                />
-                <Button type="submit" className="w-full" disabled={pending || !canSearch}>
-                  {pending ? 'Searching…' : 'Track'}
-                </Button>
-              </form>
-            </div>
+            </p>
           </div>
-        ) : (
-          <div className="flex min-h-0 flex-1 flex-col">
-            <PublicTrackTimeline
-              variant="overlay"
-              className="min-h-0 flex-1 shadow-2xl"
-              result={result}
-              pdfSource={{
-                kind: 'public',
-                ref: result.reference || ref.trim(),
-                tenantSlug: resolvedTenant,
-              }}
-              onNewSearch={() => {
+          {result ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => {
                 clearResult();
                 setRef('');
               }}
-            />
-          </div>
-        )}
-      </div>
+            >
+              New search
+            </Button>
+          ) : null}
+        </div>
 
-      <p className="pointer-events-none absolute bottom-3 left-1/2 z-[5] -translate-x-1/2 rounded-full bg-black/45 px-3 py-1 text-[10px] text-white/90 backdrop-blur sm:left-auto sm:right-16 sm:translate-x-0">
-        Map route is approximate from POL / POD · not live AIS
-      </p>
+        {/* Same map + left overlay shell as JobTrackTracePanel */}
+        <div className="relative min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220] sm:min-h-[640px]">
+          <TrackMapBackground result={result} />
+
+          <div className="relative z-[1] flex min-h-[560px] max-w-[520px] flex-col p-3 sm:min-h-[640px] sm:p-4">
+            {result ? (
+              <PublicTrackTimeline
+                variant="overlay"
+                className="min-h-0 flex-1 shadow-2xl"
+                result={result}
+                pdfSource={{
+                  kind: 'public',
+                  ref: result.reference || ref.trim(),
+                  tenantSlug: resolvedTenant,
+                }}
+              />
+            ) : (
+              <div className="w-full rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[var(--color-primary-100,#DBEAFE)] text-[var(--color-primary,#2563EB)]">
+                  <Search size={18} aria-hidden="true" />
+                </div>
+                <h1 className="text-xl font-semibold tracking-tight text-[#0A2942]">
+                  Find your shipment
+                </h1>
+                <p className="mt-1 text-sm text-neutral-500">
+                  Search by job, shipment, container, BL, or AWB. Route draws on the map when found.
+                </p>
+                {embed.isError ? (
+                  <p className="mt-3 text-xs text-neutral-500">
+                    Using default branding — workspace could not be resolved from this domain.
+                  </p>
+                ) : null}
+                {error ? (
+                  <p
+                    role="alert"
+                    className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+                  >
+                    {error}
+                  </p>
+                ) : null}
+                <form
+                  className="mt-5 space-y-3"
+                  noValidate
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    void runLookup();
+                  }}
+                >
+                  <Input
+                    label="Reference"
+                    required
+                    value={ref}
+                    onChange={(e) => setRef(e.target.value)}
+                    placeholder="Job / shipment / container / BL / AWB"
+                    hint="Enter the exact reference (e.g. MSCU1000001)"
+                  />
+                  <Button type="submit" className="w-full" disabled={pending || !canSearch}>
+                    {pending ? 'Searching…' : 'Track'}
+                  </Button>
+                </form>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

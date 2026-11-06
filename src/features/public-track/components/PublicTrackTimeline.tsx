@@ -613,7 +613,9 @@ export function PublicTrackTimeline({
     <div
       className={cn(
         'flex w-full flex-col bg-white text-[#1E293B]',
-        variant === 'overlay' && 'max-h-[min(92vh,880px)] overflow-hidden rounded-2xl shadow-2xl',
+        // Match job Track & Trace tab: left card over map, fill panel height.
+        variant === 'overlay' &&
+          'max-h-full min-h-0 overflow-hidden rounded-2xl shadow-2xl',
         className,
       )}
     >

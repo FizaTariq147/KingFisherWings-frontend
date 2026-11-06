@@ -11,13 +11,15 @@ import { usePortalTrackByReference } from '../hooks/usePortalShipments';
 import type { PortalTrackByRefResult } from '../types/portalShipments.types';
 import { cn } from '@/lib/utils';
 
+/**
+ * Portal Track & Trace — same map + left overlay shell as job Track & Trace tab.
+ */
 export default function PortalTrackPage() {
   const location = useLocation();
   const [ref, setRef] = useState('');
   const [fieldError, setFieldError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [result, setResult] = useState<PortalTrackByRefResult | null>(null);
-  const [mapDark, setMapDark] = useState(false);
   const track = usePortalTrackByReference();
   const autoRanFor = useRef<string | null>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -30,9 +32,7 @@ export default function PortalTrackPage() {
     return null;
   };
 
-  const trackResult = result
-    ? toTrackResult(result.data, result.reference)
-    : null;
+  const trackResult = result ? toTrackResult(result.data, result.reference) : null;
 
   const runLookup = async (value?: string) => {
     const next = (value ?? ref).trim();
@@ -71,110 +71,113 @@ export default function PortalTrackPage() {
     <div className="space-y-4">
       <PortalPageHeader
         title="Track & Trace"
-        description="Search by job, shipment, container, BL, or quotation. Route draws on the map when found."
+        description="Search by job, shipment, container, BL, or quotation."
       />
 
-      <div className="relative min-h-[min(72vh,720px)] overflow-hidden rounded-2xl bg-[#0B1220] shadow-sm">
-        <TrackMapBackground result={trackResult} dark={mapDark} />
+      <div className="overflow-hidden rounded-sm bg-white shadow-[0_10px_30px_rgba(10,41,66,0.06)]">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2">
+          <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+            Track &amp; Trace
+          </p>
+          {result ? (
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => {
+                setResult(null);
+                setError(null);
+                setRef('');
+                requestAnimationFrame(() => inputRef.current?.focus());
+              }}
+            >
+              New search
+            </Button>
+          ) : null}
+        </div>
 
-        <button
-          type="button"
-          className="absolute right-3 top-3 z-[5] rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-[#0A2942] shadow-md backdrop-blur"
-          onClick={() => setMapDark((v) => !v)}
-        >
-          {mapDark ? 'Light map' : 'Dark map'}
-        </button>
+        <div className="relative min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220] sm:min-h-[640px]">
+          <TrackMapBackground result={trackResult} />
 
-        <div className="relative z-[1] flex min-h-[min(72vh,720px)] w-full max-w-[520px] flex-col p-3 sm:p-4">
-          {!result ? (
-            <div className="mt-6 w-full rounded-2xl bg-white/95 p-5 shadow-2xl backdrop-blur sm:mt-10 sm:p-6">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-neutral-500">
-                Track &amp; Trace
-              </p>
-              <h2 className="mt-1 text-xl font-semibold tracking-tight text-[#0A2942]">
-                Find your shipment
-              </h2>
-              <p className="mt-1 text-sm text-neutral-500">
-                Enter a reference to open tracking over the map.
-              </p>
-              <form
-                className="mt-5 space-y-3"
-                noValidate
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  void runLookup();
-                }}
-              >
-                <div className="relative">
-                  <Search
-                    size={16}
-                    className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#9AA8B5]"
-                    aria-hidden
-                  />
-                  <input
-                    ref={inputRef}
-                    value={ref}
-                    onChange={(e) => {
-                      setRef(e.target.value);
-                      if (fieldError) setFieldError(validateRef(e.target.value));
-                    }}
-                    onBlur={() => setFieldError(validateRef(ref))}
-                    placeholder="Search shipments, quotes, invoices…"
-                    className={cn(
-                      'h-11 w-full rounded-full border-0 bg-[#F4F7F9] pl-11 pr-4 text-sm text-[#0A2942] outline-none placeholder:text-[#9AA8B5] focus:ring-2 focus:ring-[#0A2942]/12',
-                      fieldError && 'ring-2 ring-red-300',
-                    )}
-                    aria-invalid={Boolean(fieldError)}
-                    aria-describedby={fieldError ? 'portal-track-ref-error' : undefined}
-                  />
-                </div>
-                {fieldError ? (
-                  <p id="portal-track-ref-error" className="text-xs text-red-600">
-                    {fieldError}
-                  </p>
-                ) : null}
-                {error ? (
-                  <p
-                    role="alert"
-                    className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
-                  >
-                    {error}
-                  </p>
-                ) : null}
-                <Button
-                  type="submit"
-                  className="h-11 w-full rounded-full"
-                  disabled={track.isPending || ref.trim().length < 2}
-                >
-                  {track.isPending ? 'Searching…' : 'Track'}
-                </Button>
-              </form>
-            </div>
-          ) : (
-            <div className="flex min-h-0 flex-1 flex-col">
+          <div className="relative z-[1] flex min-h-[560px] max-w-[520px] flex-col p-3 sm:min-h-[640px] sm:p-4">
+            {result && trackResult ? (
               <PublicTrackTimeline
                 variant="overlay"
                 className="min-h-0 flex-1 shadow-2xl"
-                result={trackResult!}
+                result={trackResult}
                 pdfSource={
                   result.kind === 'shipment'
                     ? { kind: 'portal', shipmentId: result.id }
                     : { kind: 'public', ref: result.reference }
                 }
-                onNewSearch={() => {
-                  setResult(null);
-                  setError(null);
-                  setRef('');
-                  requestAnimationFrame(() => inputRef.current?.focus());
-                }}
               />
-            </div>
-          )}
+            ) : (
+              <div className="w-full rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[#DBEAFE] text-[#2563EB]">
+                  <Search size={18} aria-hidden />
+                </div>
+                <h2 className="text-xl font-semibold tracking-tight text-[#0A2942]">
+                  Find your shipment
+                </h2>
+                <p className="mt-1 text-sm text-neutral-500">
+                  Enter a reference to open tracking over the map.
+                </p>
+                <form
+                  className="mt-5 space-y-3"
+                  noValidate
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    void runLookup();
+                  }}
+                >
+                  <div className="relative">
+                    <Search
+                      size={16}
+                      className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-[#9AA8B5]"
+                      aria-hidden
+                    />
+                    <input
+                      ref={inputRef}
+                      value={ref}
+                      onChange={(e) => {
+                        setRef(e.target.value);
+                        if (fieldError) setFieldError(validateRef(e.target.value));
+                      }}
+                      onBlur={() => setFieldError(validateRef(ref))}
+                      placeholder="Search shipments, quotes, invoices…"
+                      className={cn(
+                        'h-11 w-full rounded-full border-0 bg-[#F4F7F9] pl-11 pr-4 text-sm text-[#0A2942] outline-none placeholder:text-[#9AA8B5] focus:ring-2 focus:ring-[#0A2942]/12',
+                        fieldError && 'ring-2 ring-red-300',
+                      )}
+                      aria-invalid={Boolean(fieldError)}
+                      aria-describedby={fieldError ? 'portal-track-ref-error' : undefined}
+                    />
+                  </div>
+                  {fieldError ? (
+                    <p id="portal-track-ref-error" className="text-xs text-red-600">
+                      {fieldError}
+                    </p>
+                  ) : null}
+                  {error ? (
+                    <p
+                      role="alert"
+                      className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700"
+                    >
+                      {error}
+                    </p>
+                  ) : null}
+                  <Button
+                    type="submit"
+                    className="h-11 w-full"
+                    disabled={track.isPending || ref.trim().length < 2}
+                  >
+                    {track.isPending ? 'Searching…' : 'Track'}
+                  </Button>
+                </form>
+              </div>
+            )}
+          </div>
         </div>
-
-        <p className="pointer-events-none absolute bottom-3 right-3 z-[5] rounded-full bg-black/45 px-3 py-1 text-[10px] text-white/90 backdrop-blur">
-          Map route is approximate from POL / POD · not live AIS
-        </p>
       </div>
     </div>
   );
