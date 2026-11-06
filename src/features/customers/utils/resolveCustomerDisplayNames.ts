@@ -13,6 +13,7 @@ import { partyService } from '@/features/parties/services/party.service';
 import type { Enquiry } from '@/features/crm/types/crm.types';
 import type { Job } from '@/features/jobs/types/job.types';
 import { userService } from '@/features/users/services/user.service';
+import { canListTenantUsers } from '@/features/users/utils/canListTenantUsers';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import type { CustomerEnquiryRow } from '../types/customerService.types';
@@ -91,25 +92,33 @@ async function buildUserNameMap(ids: string[]): Promise<Map<string, string>> {
   const map = new Map<string, string>();
   if (!wanted.size) return map;
 
-  const tenantId = useAuthStore.getState().user?.tenantId ?? '';
-  let page = 1;
-  let totalPages = 1;
+  // Do not call GET /users unless ACL allows it. Staff 403s still appear in the
+  // console even when caught, and previously wiped job lists after enrich failed.
+  if (!canListTenantUsers()) return map;
 
-  while (page <= totalPages && page <= 10) {
-    const result = await userService.list({
-      tenantId,
-      page,
-      limit: 100,
-      lifecycle: 'all',
-      order: 'asc',
-    });
-    for (const user of result.users) {
-      const label = userLabel(user);
-      if (label) map.set(user.id, label);
+  try {
+    const tenantId = useAuthStore.getState().user?.tenantId ?? '';
+    let page = 1;
+    let totalPages = 1;
+
+    while (page <= totalPages && page <= 10) {
+      const result = await userService.list({
+        tenantId,
+        page,
+        limit: 100,
+        lifecycle: 'all',
+        order: 'asc',
+      });
+      for (const user of result.users) {
+        const label = userLabel(user);
+        if (label) map.set(user.id, label);
+      }
+      totalPages = result.meta.totalPages;
+      if ([...wanted].every((id) => map.has(id))) break;
+      page += 1;
     }
-    totalPages = result.meta.totalPages;
-    if ([...wanted].every((id) => map.has(id))) break;
-    page += 1;
+  } catch {
+    /* keep jobs without salesperson/ops display names */
   }
 
   return map;
@@ -143,11 +152,12 @@ export async function enrichJobsWithDisplayNames(jobs: Job[]): Promise<Job[]> {
   const userIds = uniqueIds(jobs.flatMap((job) => [job.salesperson_id, job.ops_user_id]));
   const branchIds = uniqueIds(jobs.map((job) => job.branch_id));
 
+  // Each lookup must be soft — one 403 must not discard the whole job list.
   const [parties, users, branches, ports, carriers, vessels] = await Promise.all([
-    buildPartyNameMap(partyIds),
-    buildUserNameMap(userIds),
-    buildBranchNameMap(branchIds),
-    fetchPortLookup(),
+    buildPartyNameMap(partyIds).catch(() => new Map<string, string>()),
+    buildUserNameMap(userIds).catch(() => new Map<string, string>()),
+    buildBranchNameMap(branchIds).catch(() => new Map<string, string>()),
+    fetchPortLookup().catch(() => new Map<string, string>()),
     fetchAllMasterRecords(MASTER_PATHS['shipping-lines'])
       .then((items) => buildMasterLookup(items, carrierLabel))
       .catch(() => new Map<string, string>()),

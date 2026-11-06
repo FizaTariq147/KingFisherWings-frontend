@@ -172,7 +172,7 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
     queryKey: [
       'tenant',
       'jobs',
-      'hub-be-aligned-v11',
+      'hub-enrich-safe-v12',
       variant,
       filterParams,
       isStaffScoped ? 'staff' : 'admin',
