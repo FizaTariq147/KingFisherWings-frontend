@@ -220,7 +220,7 @@ export function AuthLandingShell({
       >
         {summary ? (
           /* Same map + left overlay shell as job Track & Trace tab */
-          <div className="relative min-h-[min(70vh,560px)] flex-1 overflow-hidden bg-[#0B1220]">
+          <div className="relative h-[min(78vh,640px)] min-h-[480px] flex-1 overflow-hidden bg-[#0B1220]">
             <TrackMapBackground result={summary} />
             <div className="absolute right-3 top-3 z-[5]">
               <Button
@@ -238,10 +238,10 @@ export function AuthLandingShell({
                 New search
               </Button>
             </div>
-            <div className="relative z-[1] flex h-full min-h-[560px] max-w-[520px] flex-col p-3 sm:p-4">
+            <div className="absolute inset-y-0 left-0 z-[1] flex w-full max-w-[520px] flex-col p-3 sm:p-4">
               <PublicTrackTimeline
                 variant="overlay"
-                className="min-h-0 flex-1 shadow-2xl"
+                className="h-full min-h-0 shadow-2xl"
                 result={summary}
               />
             </div>
