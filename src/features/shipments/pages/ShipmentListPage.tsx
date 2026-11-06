@@ -96,6 +96,9 @@ export default function ShipmentListPage() {
             <h2 className={appType.pageTitle}>
               {dept ? `${dept.label} · Shipments` : 'Shipments'}
             </h2>
+            <p className={appType.pageSubtitle}>
+              Shipment records only — jobs belong under Operations departments / Jobs.
+            </p>
           </div>
           <div className="flex flex-wrap items-center gap-2">
             {canWriteCreate ? (

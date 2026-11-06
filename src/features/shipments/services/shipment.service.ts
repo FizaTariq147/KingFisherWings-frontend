@@ -83,6 +83,20 @@ function normalizeMeta(
   return { page, limit, total, totalPages };
 }
 
+/**
+ * Extract shipment rows only. Prefer `shipments`; never use a `jobs` array
+ * (ops list must not show job records).
+ */
+function pickShipmentArray(obj: Record<string, unknown> | null | undefined): unknown[] {
+  if (!obj) return [];
+  if (Array.isArray(obj.shipments)) return obj.shipments;
+  if (Array.isArray(obj.items)) return obj.items;
+  if (Array.isArray(obj.results)) return obj.results;
+  if (Array.isArray(obj.data)) return obj.data;
+  // Explicitly ignore obj.jobs — that is the jobs module list shape.
+  return [];
+}
+
 function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
   if (Array.isArray(raw)) return { items: raw };
   const envelope = asRecord(raw);
@@ -91,18 +105,10 @@ function unwrapList(raw: unknown): { items: unknown[]; meta?: unknown } {
   if (Array.isArray(data)) return { items: data, meta: envelope.meta };
   const nested = asRecord(data);
   if (nested) {
-    const list =
-      (Array.isArray(nested.items) && nested.items) ||
-      (Array.isArray(nested.results) && nested.results) ||
-      (Array.isArray(nested.shipments) && nested.shipments) ||
-      (Array.isArray(nested.data) && nested.data) ||
-      [];
+    const list = pickShipmentArray(nested);
     return { items: list, meta: nested.meta ?? envelope.meta };
   }
-  const topLevel =
-    (Array.isArray(envelope.items) && envelope.items) ||
-    (Array.isArray(envelope.shipments) && envelope.shipments) ||
-    [];
+  const topLevel = pickShipmentArray(envelope);
   if (topLevel.length) return { items: topLevel, meta: envelope.meta };
   return { items: [] };
 }
