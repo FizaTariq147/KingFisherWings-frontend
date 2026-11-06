@@ -672,6 +672,29 @@ export function useJobChargeMutations(jobId: string) {
       mutationFn: (chargeId: string) => jobService.deleteCharge(jobId, chargeId),
       onSuccess: after,
     }),
+    /** POST /jobs/:id/charges/:chargeId/mark-paid — proof required. */
+    markPaid: useMutation({
+      mutationFn: ({
+        chargeId,
+        file,
+        dto,
+      }: {
+        chargeId: string;
+        file: File;
+        dto?: {
+          side?: 'SALE' | 'COST';
+          amount?: number;
+          payment_date?: string;
+          reference?: string;
+          notes?: string;
+        };
+      }) => jobService.markChargePaid(jobId, chargeId, file, dto ?? {}),
+      onSuccess: () => {
+        after();
+        void queryClient.invalidateQueries({ queryKey: ['tenant', 'ar-ap'] });
+        void queryClient.invalidateQueries({ queryKey: ['tenant', 'parties'] });
+      },
+    }),
   };
 }
 

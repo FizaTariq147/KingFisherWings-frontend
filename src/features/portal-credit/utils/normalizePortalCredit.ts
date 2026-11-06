@@ -113,7 +113,13 @@ export function normalizeStatement(raw: unknown): PortalStatementResult {
       description:
         pickString(r.description, r.charge_description, r.charge_name, r.name) ||
         undefined,
-      saleAmount: pickNumber(r.sale_amount, r.saleAmount, r.amount),
+      saleAmount: pickNumber(
+        r.sale_amount,
+        r.saleAmount,
+        r.cost_amount,
+        r.costAmount,
+        r.amount,
+      ),
       currencyCode:
         pickString(r.currency_code, r.currencyCode, r.currency)?.toUpperCase() ||
         undefined,
@@ -124,22 +130,29 @@ export function normalizeStatement(raw: unknown): PortalStatementResult {
     });
   }
 
-  const invoiced = pickNumber(d.invoiced, summary?.invoiced, d.invoiced_total);
+  const invoiced = pickNumber(
+    d.invoice_balance,
+    summary?.invoice_balance,
+    d.invoiced,
+    summary?.invoiced,
+    d.invoiced_total,
+  );
   const pendingCosting =
     pickNumber(d.pending_costing, summary?.pending_costing, d.pending_costing_total) ??
     (pendingJobCharges.length
       ? pendingJobCharges.reduce((s, c) => s + (c.saleAmount ?? 0), 0)
       : undefined);
   const paid = pickNumber(d.paid, summary?.paid, d.paid_total, summary?.receipts_total);
+  const openingBalance = pickNumber(d.opening_balance, d.openingBalance);
   const balance =
-    pickNumber(d.balance, summary?.balance, summary?.open_balance, d.closing_balance) ??
-    (invoiced != null || pendingCosting != null || paid != null
-      ? (invoiced ?? 0) + (pendingCosting ?? 0) - (paid ?? 0)
+    pickNumber(d.open_balance, summary?.open_balance, d.balance, summary?.balance, d.closing_balance) ??
+    (invoiced != null || pendingCosting != null || openingBalance != null
+      ? (openingBalance ?? 0) + (invoiced ?? 0) + (pendingCosting ?? 0)
       : undefined);
 
   return {
     asOf: pickString(d.as_of, d.asOf) || undefined,
-    openingBalance: pickNumber(d.opening_balance, d.openingBalance),
+    openingBalance: openingBalance,
     closingBalance: pickNumber(
       d.closing_balance,
       d.closingBalance,

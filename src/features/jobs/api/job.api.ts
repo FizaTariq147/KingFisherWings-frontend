@@ -313,6 +313,9 @@ export const JOB_API = {
 
   charges: (id: string) => `/jobs/${id}/charges`,
   charge: (id: string, chargeId: string) => `/jobs/${id}/charges/${chargeId}`,
+  /** POST multipart — proof required; creates/posts invoice then RECEIPT/PAYMENT. */
+  chargeMarkPaid: (id: string, chargeId: string) =>
+    `/jobs/${id}/charges/${encodeURIComponent(chargeId)}/mark-paid`,
   pnl: (id: string) => `/jobs/${id}/pnl`,
 
   deposits: (id: string) => `/jobs/${id}/deposits`,

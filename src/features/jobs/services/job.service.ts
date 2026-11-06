@@ -4567,6 +4567,51 @@ export const jobService = {
     return requestVoid(() => axiosInstance.delete(JOB_API.charge(id, chargeId)));
   },
 
+  /**
+   * POST /jobs/:id/charges/:chargeId/mark-paid — proof file required.
+   * Creates/posts invoice for that party amount then RECEIPT (SALE) or PAYMENT (COST).
+   */
+  async markChargePaid(
+    id: string,
+    chargeId: string,
+    file: File,
+    dto: {
+      side?: 'SALE' | 'COST';
+      amount?: number;
+      payment_date?: string;
+      reference?: string;
+      notes?: string;
+    } = {},
+  ): Promise<unknown> {
+    assertId(id);
+    if (!chargeId?.trim()) throw new Error('Charge id is required.');
+    if (!(file instanceof File) || file.size <= 0) {
+      throw new Error('A payment proof file is required to mark the charge paid.');
+    }
+    const { postPaymentProofMultipart, formatAmountClaimed } = await import(
+      '@/features/payment-proofs/utils/uploadPaymentProofMultipart'
+    );
+    const fields: Record<string, string | undefined> = {
+      ...(dto.side ? { side: dto.side } : {}),
+      ...(dto.amount != null && Number.isFinite(dto.amount)
+        ? { amount_claimed: formatAmountClaimed(dto.amount) }
+        : {}),
+      ...(dto.payment_date?.trim()
+        ? { payment_date: dto.payment_date.trim().slice(0, 10) }
+        : {}),
+      ...(dto.reference?.trim() ? { reference_number: dto.reference.trim() } : {}),
+      ...(dto.notes?.trim() ? { notes: dto.notes.trim() } : {}),
+    };
+    return withGatewayRetry(() =>
+      postPaymentProofMultipart(
+        axiosInstance,
+        JOB_API.chargeMarkPaid(id, chargeId),
+        file,
+        fields,
+      ),
+    );
+  },
+
   async getPnl(id: string): Promise<JobPnl> {
     assertId(id);
     return request(() => axiosInstance.get(JOB_API.pnl(id)), normalizeJobPnl);

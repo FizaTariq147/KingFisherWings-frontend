@@ -50,15 +50,21 @@ export interface StatementLine {
   [key: string]: unknown;
 }
 
-/** Uninvoiced billable sale charges folded into the party AR statement. */
+/** Uninvoiced job costing lines on party AR (SALE) / AP (COST) statements. */
+export type PendingJobChargeSide = 'SALE' | 'COST';
+
 export interface PendingJobChargeLine {
   charge_id: string;
   job_id?: string;
   job_number?: string;
   description?: string;
+  /** SALE → sale_amount; COST → cost_amount; also exposed as amount. */
+  side?: PendingJobChargeSide;
+  amount?: number;
   sale_amount?: number;
+  cost_amount?: number;
   currency_code?: string;
-  /** When true, mark-paid needs a sale invoice first. */
+  /** Legacy flag when API still signals invoice needed before settle. */
   needs_invoice?: boolean;
   raw?: Record<string, unknown>;
 }
@@ -70,13 +76,18 @@ export interface StatementReportResult {
   opening_balance?: number;
   closing_balance?: number;
   currency_code?: string;
-  /** Posted/sent invoice total. */
+  /**
+   * Plain-sum totals from API:
+   * invoice_balance (sum balance_due), pending_costing, paid, opening_balance,
+   * open_balance (open items summed — no FX/GP math).
+   */
+  invoice_balance?: number;
+  /** @deprecated Prefer invoice_balance */
   invoiced?: number;
-  /** Uninvoiced costing sale total. */
   pending_costing?: number;
-  /** Posted receipts total. */
   paid?: number;
-  /** Open balance (invoiced + pending − paid, or API balance). */
+  open_balance?: number;
+  /** @deprecated Prefer open_balance */
   balance?: number;
   lines: StatementLine[];
   pending_job_charges: PendingJobChargeLine[];
