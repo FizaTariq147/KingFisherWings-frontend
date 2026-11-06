@@ -2738,7 +2738,8 @@ export const jobService = {
     file: File,
     side: CreateJobChargeAttachmentDto['side'] = 'CHARGE',
   ): Promise<JobChargeAttachment> {
-    const uploaded = await this.uploadJobTypedDocument(id, 'OTHER', file);
+    // JOB_COSTING is allowed across job types (OTHER is rejected on AIR_IMPORT / some modes).
+    const uploaded = await this.uploadJobTypedDocument(id, 'JOB_COSTING', file);
     const file_name =
       String(uploaded.file_name ?? uploaded.fileName ?? file.name).trim() || file.name;
     const s3_key =
