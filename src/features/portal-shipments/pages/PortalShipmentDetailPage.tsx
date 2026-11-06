@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/Button';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
+import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground';
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
 import {
   PortalAnimatedGrid,
@@ -592,29 +593,41 @@ export default function PortalShipmentDetailPage() {
       ) : null}
 
       {showTracking ? (
-        <PortalPanel padded>
+        <PortalPanel padded={false} className="overflow-hidden !p-0">
           <div
             id="portal-shipment-track-trace"
-            className="mb-4 flex items-center justify-end"
+            className="flex items-center justify-end border-b border-[var(--color-neutral-100)] px-4 py-2"
           >
             <Button type="button" size="sm" variant="secondary" onClick={() => setShowTracking(false)}>
               Hide
             </Button>
           </div>
           {trackingQuery.isLoading ? (
-            <p className="text-sm text-[var(--color-neutral-500)]">Loading tracking…</p>
+            <p className="px-5 py-6 text-sm text-[var(--color-neutral-500)]">Loading tracking…</p>
           ) : trackingQuery.isError ? (
-            <p className="text-sm text-[var(--color-danger-600)]">
+            <p className="px-5 py-6 text-sm text-[var(--color-danger-600)]">
               {getErrorMessage(trackingQuery.error, 'Could not load tracking.')}
             </p>
           ) : (
-            <PublicTrackTimeline
-              result={toTrackResult(
-                trackingQuery.data,
-                data?.reference || data?.jobNumber || id,
-              )}
-              pdfSource={{ kind: 'portal', shipmentId: id }}
-            />
+            <div className="relative min-h-[560px] overflow-hidden bg-[#0B1220]">
+              <TrackMapBackground
+                result={toTrackResult(
+                  trackingQuery.data,
+                  data?.reference || data?.jobNumber || id,
+                )}
+              />
+              <div className="relative z-[1] flex min-h-[560px] max-w-[520px] flex-col p-3 sm:p-4">
+                <PublicTrackTimeline
+                  variant="overlay"
+                  className="min-h-0 flex-1 shadow-2xl"
+                  result={toTrackResult(
+                    trackingQuery.data,
+                    data?.reference || data?.jobNumber || id,
+                  )}
+                  pdfSource={{ kind: 'portal', shipmentId: id }}
+                />
+              </div>
+            </div>
           )}
         </PortalPanel>
       ) : null}

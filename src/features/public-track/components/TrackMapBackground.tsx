@@ -85,11 +85,12 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
     : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   return (
-    <div className={className ?? 'absolute inset-0 z-0'}>
+    <div className={className ?? 'absolute inset-0 z-0 h-full w-full'}>
       <MapContainer
         center={[22, 55]}
         zoom={3}
-        className="h-full w-full"
+        className="h-full w-full min-h-[280px] [&_.leaflet-container]:h-full [&_.leaflet-container]:w-full"
+        style={{ height: '100%', width: '100%', minHeight: 280 }}
         zoomControl={false}
         attributionControl
         scrollWheelZoom

@@ -248,9 +248,15 @@ function buildTrackPrintHtml(result: PublicTrackResult, status: string): string 
     .map((m) => {
       const when = parseWhen(m.completedAt || m.occurredAt);
       const move = m.move || m.label || '—';
+      const desc = m.description
+        ? `<div style="font-weight:400;color:#64748b;margin-top:2px">${m.description}</div>`
+        : '';
       const loc = [m.location, m.terminal].filter(Boolean).join('<br/>') || '—';
-      const vessel = [m.vessel, m.voyage ? `(${m.voyage})` : null].filter(Boolean).join(' ') || '';
-      return `<tr><td>${when ? `${when.date}<br/>${when.time}` : '—'}</td><td>${move}</td><td>${loc}</td><td>${vessel}</td></tr>`;
+      const vessel =
+        [m.flightNumber ? `FLT ${m.flightNumber}` : null, m.vessel, m.voyage ? `(${m.voyage})` : null]
+          .filter(Boolean)
+          .join(' ') || '';
+      return `<tr><td>${when ? `${when.date}<br/>${when.time}` : '—'}</td><td><strong>${move}</strong>${desc}</td><td>${loc}</td><td>${vessel}</td></tr>`;
     })
     .join('');
 
@@ -259,7 +265,7 @@ function buildTrackPrintHtml(result: PublicTrackResult, status: string): string 
 </head><body>
 <h1>Track & Trace — ${result.reference}</h1>
 <p>Status: ${status || '—'}</p>
-<table><thead><tr><th>Date</th><th>Move</th><th>Location</th><th>Vessel</th></tr></thead><tbody>${rows}</tbody></table>
+<table><thead><tr><th>Date</th><th>Milestone</th><th>Location</th><th>Vessel / Flight</th></tr></thead><tbody>${rows}</tbody></table>
 </body></html>`;
 }
 
@@ -891,6 +897,11 @@ export function PublicTrackTimeline({
                           <p className="mt-0.5 text-[14px] font-semibold" style={{ color: C.navy }}>
                             {move}
                           </p>
+                          {m.description ? (
+                            <p className="mt-1 text-[12px] leading-snug" style={{ color: C.sub }}>
+                              {m.description}
+                            </p>
+                          ) : null}
                           {m.flightNumber || m.mawbNumber || m.hawbNumber ? (
                             <p className="mt-1 text-[12px]" style={{ color: C.text }}>
                               {[

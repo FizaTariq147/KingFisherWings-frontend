@@ -135,16 +135,35 @@ export function normalizePublicMilestone(
   const eventType =
     pickString(r.event_type, r.eventType, r.type, r.code) || undefined;
 
+  // Milestone name (code / move / label) — keep distinct from customer description.
   const moveRaw =
-    pickString(r.move, r.label, r.code, r.type, r.event_type, r.eventType) || 'EVENT';
+    pickString(
+      r.milestone,
+      r.milestone_name,
+      r.milestoneName,
+      r.name,
+      r.move,
+      r.label,
+      r.code,
+      r.type,
+      r.event_type,
+      r.eventType,
+    ) || 'EVENT';
   const move = titleCaseMove(moveRaw);
+  const description =
+    pickString(r.description, r.notes, r.summary, r.detail, r.details) || undefined;
+  // Avoid duplicating the same text as name + description.
+  const descriptionDistinct =
+    description && description.trim().toUpperCase() !== move.trim().toUpperCase()
+      ? description.trim()
+      : undefined;
 
   return {
     id: pickString(r.id, r.code) || String(index),
     label: move,
     move,
-    description: pickString(r.notes, r.description, r.summary) || undefined,
-    summary: pickString(r.notes, r.summary) || undefined,
+    description: descriptionDistinct,
+    summary: descriptionDistinct || pickString(r.summary) || undefined,
     occurredAt: completedAt,
     completedAt,
     location:

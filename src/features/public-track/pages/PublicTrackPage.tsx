@@ -16,7 +16,8 @@ import { isSafeHttpUrl } from '@/lib/safeHttpUrl';
 import { toTrackResult } from '../utils/toTrackResult';
 
 /**
- * Public Track & Trace — full-bleed map background with floating search / result card.
+ * Public Track & Trace — full-bleed map background with floating search / result card
+ * (same map + overlay pattern as staff job Track & Trace / portal track).
  */
 export default function PublicTrackPage() {
   const [searchParams] = useSearchParams();
@@ -75,21 +76,20 @@ export default function PublicTrackPage() {
           : undefined
       }
     >
+      {/* Full-bleed map behind search / result card */}
       <TrackMapBackground result={result} dark={mapDark} />
 
-      <div className="pointer-events-none absolute inset-0 z-[500]">
-        <button
-          type="button"
-          className="pointer-events-auto absolute right-4 top-4 rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-[#0A2942] shadow-md backdrop-blur"
-          onClick={() => setMapDark((v) => !v)}
-        >
-          {mapDark ? 'Light map' : 'Dark map'}
-        </button>
-      </div>
+      <button
+        type="button"
+        className="absolute right-4 top-4 z-[5] rounded-full bg-white/95 px-3 py-1.5 text-[12px] font-semibold text-[#0A2942] shadow-md backdrop-blur"
+        onClick={() => setMapDark((v) => !v)}
+      >
+        {mapDark ? 'Light map' : 'Dark map'}
+      </button>
 
-      <div className="pointer-events-none absolute inset-y-0 left-0 z-[600] flex w-full max-w-[440px] flex-col p-3 sm:max-w-[480px] sm:p-4 lg:max-w-[520px]">
+      <div className="relative z-[1] flex h-full w-full max-w-[440px] flex-col p-3 sm:max-w-[480px] sm:p-4 lg:max-w-[520px]">
         {!result ? (
-          <div className="pointer-events-auto mt-[12vh] w-full rounded-2xl bg-white/95 p-5 shadow-2xl backdrop-blur sm:p-6">
+          <div className="mt-[12vh] w-full rounded-2xl bg-white/95 p-5 shadow-2xl backdrop-blur sm:p-6">
             {branding?.logoUrl && isSafeHttpUrl(branding.logoUrl) ? (
               <img
                 src={branding.logoUrl}
@@ -147,10 +147,10 @@ export default function PublicTrackPage() {
             </div>
           </div>
         ) : (
-          <div className="pointer-events-auto flex min-h-0 flex-1 flex-col">
+          <div className="flex min-h-0 flex-1 flex-col">
             <PublicTrackTimeline
               variant="overlay"
-              className="min-h-0 flex-1"
+              className="min-h-0 flex-1 shadow-2xl"
               result={result}
               pdfSource={{
                 kind: 'public',
@@ -166,7 +166,7 @@ export default function PublicTrackPage() {
         )}
       </div>
 
-      <p className="pointer-events-none absolute bottom-3 left-1/2 z-[500] -translate-x-1/2 rounded-full bg-black/45 px-3 py-1 text-[10px] text-white/90 backdrop-blur sm:left-auto sm:right-16 sm:translate-x-0">
+      <p className="pointer-events-none absolute bottom-3 left-1/2 z-[5] -translate-x-1/2 rounded-full bg-black/45 px-3 py-1 text-[10px] text-white/90 backdrop-blur sm:left-auto sm:right-16 sm:translate-x-0">
         Map route is approximate from POL / POD · not live AIS
       </p>
     </div>
