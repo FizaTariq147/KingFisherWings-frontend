@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react';
 import { SearchableSelect } from '@/features/masters/components/SearchableSelect';
-import { useInvoices } from '@/features/invoices/hooks/useInvoices';
+import { useInvoice, useInvoices } from '@/features/invoices/hooks/useInvoices';
+import { invoiceDisplayNumber } from '@/features/invoices/utils/normalizeInvoice';
 import { isUuid } from '@/lib/isUuid';
 
 interface InvoiceSearchSelectProps {
@@ -12,6 +13,17 @@ interface InvoiceSearchSelectProps {
   error?: string;
   placeholder?: string;
   hint?: string;
+}
+
+function invoiceOptionLabel(
+  invoiceNumber?: string | null,
+  partyName?: string | null,
+  fallbackId?: string,
+): string {
+  const number = String(invoiceNumber ?? '').trim();
+  const party = String(partyName ?? '').trim();
+  const primary = number || (fallbackId ? `Invoice ${fallbackId.slice(0, 8)}` : 'Invoice');
+  return [primary, party].filter(Boolean).join(' · ');
 }
 
 /**
@@ -33,17 +45,35 @@ export function InvoiceSearchSelect({
     limit: 50,
     search: search.trim() || undefined,
   });
+  const { data: selectedInvoice } = useInvoice(isUuid(value) ? value : '');
 
   const options = useMemo(() => {
-    return (data?.invoices ?? [])
+    const fromList = (data?.invoices ?? [])
       .filter((inv) => isUuid(inv.id))
-      .map((inv) => {
-        const number = String(inv.invoice_number ?? '').trim();
-        const party = String(inv.party_name ?? '').trim();
-        const labelText = [number || 'Invoice', party].filter(Boolean).join(' · ');
-        return { value: inv.id, label: labelText };
-      });
-  }, [data?.invoices]);
+      .map((inv) => ({
+        value: inv.id,
+        label: invoiceOptionLabel(inv.invoice_number, inv.party_name, inv.id),
+      }));
+
+    if (
+      selectedInvoice &&
+      isUuid(selectedInvoice.id) &&
+      !fromList.some((o) => o.value === selectedInvoice.id)
+    ) {
+      return [
+        {
+          value: selectedInvoice.id,
+          label: invoiceOptionLabel(
+            invoiceDisplayNumber(selectedInvoice),
+            selectedInvoice.party_name,
+            selectedInvoice.id,
+          ),
+        },
+        ...fromList,
+      ];
+    }
+    return fromList;
+  }, [data?.invoices, selectedInvoice]);
 
   return (
     <SearchableSelect

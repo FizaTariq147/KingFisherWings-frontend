@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { PartySearchSelect } from '@/features/shared/entity-search';
 import { jobService } from '../services/job.service';
 import type {
   JobInvoiceFormLineDto,
@@ -343,19 +344,20 @@ export function JobInvoiceFormModal({
         ) : (
           <>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-              <Input
-                label={
-                  kind === 'purchase'
-                    ? 'Vendor / cost party id (required)'
-                    : 'Organization / party id'
-                }
+              <PartySearchSelect
+                name={kind === 'purchase' ? 'cost_party_id' : 'party_id'}
+                label={kind === 'purchase' ? 'Vendor' : 'Organization / party'}
                 value={
                   kind === 'purchase'
                     ? form.cost_party_id || form.party_id || ''
                     : form.organization_id || form.party_id || ''
                 }
-                onChange={(e) => {
-                  const value = e.target.value.trim() || undefined;
+                required={kind === 'purchase'}
+                placeholder={
+                  kind === 'purchase' ? 'Search vendor by name…' : 'Search party by name…'
+                }
+                onChange={(partyId) => {
+                  const value = partyId.trim() || undefined;
                   if (kind === 'purchase') {
                     patch({
                       cost_party_id: value,
@@ -368,11 +370,6 @@ export function JobInvoiceFormModal({
                     });
                   }
                 }}
-                placeholder={
-                  kind === 'purchase'
-                    ? 'Required vendor party UUID'
-                    : 'Optional — not required to open'
-                }
               />
               <Input
                 label="Voucher type"

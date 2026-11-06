@@ -8,8 +8,11 @@ import { isUuid } from '@/lib/isUuid';
 import { useAppForm } from '@/lib/validation';
 import { useChartOfAccounts } from '@/features/chartOfAccounts/hooks/useChartOfAccounts';
 import { chartOfAccountDisplayLabel } from '@/features/chartOfAccounts/utils/normalizeChartOfAccount';
-import { useParties } from '@/features/parties/hooks/useParties';
-import { JobSearchSelect } from '@/features/shared/entity-search';
+import {
+  InvoiceSearchSelect,
+  JobSearchSelect,
+  PartySearchSelect,
+} from '@/features/shared/entity-search';
 import {
   VOUCHER_CURRENCY_OPTIONS,
   VOUCHER_TYPES,
@@ -47,9 +50,7 @@ export function VoucherForm({
 }: VoucherFormProps) {
   const schema = mode === 'create' ? createVoucherSchema : updateVoucherSchema;
   const { data: accountsData } = useChartOfAccounts({ is_active: true, is_postable: true });
-  const { data: partiesResult } = useParties({ page: 1, limit: 200, order: 'asc' });
   const accounts = (accountsData?.accounts ?? []).filter((a) => isUuid(a.id));
-  const parties = (partiesResult?.parties ?? []).filter((p) => isUuid(p.id));
 
   const {
     register,
@@ -69,14 +70,6 @@ export function VoucherForm({
 
   const fieldError = (name: keyof CreateVoucherFormValues) =>
     errors[name]?.message as string | undefined;
-
-  const uuidSelect = {
-    setValueAs: (v: unknown) => {
-      if (v == null) return undefined;
-      const s = String(v).trim();
-      return s && isUuid(s) ? s : undefined;
-    },
-  };
 
   const showFormErrors = isSubmitted && !isValid;
 
@@ -157,18 +150,19 @@ export function VoucherForm({
             error={fieldError('reference_number')}
             {...register('reference_number')}
           />
-          <div className="space-y-1">
-            <label htmlFor="party_id" className="text-sm font-medium text-[var(--color-neutral-700)]">Party</label>
-            <select id="party_id" className={selectClass} {...register('party_id', uuidSelect)}>
-              <option value="">— None —</option>
-              {parties.map((p) => (
-                <option key={p.id} value={p.id}>
-                    {p.code ? `${p.name} (${p.code})` : p.name}
-                </option>
-              ))}
-            </select>
-            <FieldError message={fieldError('party_id')} />
-          </div>
+          <Controller
+            name="party_id"
+            control={control}
+            render={({ field }) => (
+              <PartySearchSelect
+                name="party_id"
+                label="Party"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || undefined)}
+                error={fieldError('party_id')}
+              />
+            )}
+          />
           <Controller
             name="job_id"
             control={control}
@@ -182,11 +176,19 @@ export function VoucherForm({
               />
             )}
           />
-          <Input
-            label="Invoice number / reference"
-            placeholder="Search or paste invoice reference"
-            error={fieldError('invoice_id')}
-            {...register('invoice_id', uuidSelect)}
+          <Controller
+            name="invoice_id"
+            control={control}
+            render={({ field }) => (
+              <InvoiceSearchSelect
+                name="invoice_id"
+                label="Invoice"
+                value={field.value ?? ''}
+                onChange={(id) => field.onChange(id || undefined)}
+                error={fieldError('invoice_id')}
+                placeholder="Search by invoice number…"
+              />
+            )}
           />
           <div className="sm:col-span-2">
             <Input label="Narration" error={fieldError('narration')} {...register('narration')} />
