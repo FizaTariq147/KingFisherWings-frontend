@@ -30,6 +30,7 @@ import { effectiveJobListType } from '../utils/effectiveJobListType';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeJob } from '../utils/normalizeJob';
 import { resolveListProbesFromCounts } from '../utils/resolveListProbesFromCounts';
+import { staffAlignedJobListParams } from '../utils/staffAlignedJobListParams';
 import { jobDetailPath } from '../utils/jobRoute';
 import { useAuthStore } from '@/store/authStore';
 
@@ -154,18 +155,14 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
     const params = jobMisFilterDraftToListParams(applied, 1, {
       segmentJobTypes: undefined,
     });
-    // Plain GET /jobs — BE DB-resolves staff scope. Filter job_type client-side.
+    // Hub default: BE resolves job types — do not send job_type / job_types.
     delete params.job_types;
     delete params.job_type;
-    // Default hub view: every creator in scope (admin + staff).
-    if (!applied.createdBy?.trim()) delete params.created_by;
-    if (!applied.salespersonId?.trim()) delete params.salesperson_id;
-    // Staff ACL is job type, not org department_id (null on most jobs → 14→1).
-    // Admin MIS may still filter by org department.
-    if (isStaffScoped || !applied.departmentId?.trim()) {
-      delete params.department_id;
-    }
-    return params;
+    // Match BE: staff never sends org department_id; admin MIS may.
+    return staffAlignedJobListParams(params, {
+      isStaff: isStaffScoped,
+      allowAdminDepartment: !isStaffScoped && Boolean(applied.departmentId?.trim()),
+    });
   }, [applied, isStaffScoped]);
 
   const categoryFilter = applied.category.trim();
@@ -175,14 +172,15 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
     queryKey: [
       'tenant',
       'jobs',
-      'hub-visible-v10',
+      'hub-be-aligned-v11',
       variant,
       filterParams,
       isStaffScoped ? 'staff' : 'admin',
       probeTypes.slice().sort().join(','),
     ],
     queryFn: async () => {
-      // Same ACL target as Total jobs: branch_id only — never org department_id.
+      // BE: list + dashboard-counts share resolveVisibleJobTypes.
+      // Same branch_id, no department_id / job_type ⇒ meta.total === job_count.
       const branchId = filterParams.branch_id?.trim() || undefined;
       let expectedTotal = 0;
       let countVisible: string[] | null | undefined;
@@ -210,46 +208,73 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
         expectedTotal,
       };
 
-      const listParams = {
-        order: filterParams.order ?? ('desc' as const),
-        search: filterParams.search,
-        status: filterParams.status,
-        shipper_id: filterParams.shipper_id,
-        consignee_id: filterParams.consignee_id,
-        branch_id: branchId,
-        origin_port_id: filterParams.origin_port_id,
-        dest_port_id: filterParams.dest_port_id,
-        date_field: filterParams.date_field,
-        from_date: filterParams.from_date,
-        to_date: filterParams.to_date,
-        masters_only: filterParams.masters_only,
-        created_by: filterParams.created_by,
-        salesperson_id: filterParams.salesperson_id,
-        // Staff: never org department_id (null on most jobs → empty/1-row lists).
-        department_id:
-          listScope === null && filterParams.department_id
-            ? filterParams.department_id
-            : undefined,
-      };
+      const listParams = staffAlignedJobListParams(
+        {
+          order: filterParams.order ?? ('desc' as const),
+          search: filterParams.search,
+          status: filterParams.status,
+          shipper_id: filterParams.shipper_id,
+          consignee_id: filterParams.consignee_id,
+          branch_id: branchId,
+          origin_port_id: filterParams.origin_port_id,
+          dest_port_id: filterParams.dest_port_id,
+          date_field: filterParams.date_field,
+          from_date: filterParams.from_date,
+          to_date: filterParams.to_date,
+          masters_only: filterParams.masters_only,
+          created_by: filterParams.created_by,
+          salesperson_id: filterParams.salesperson_id,
+          department_id: filterParams.department_id,
+        },
+        {
+          isStaff: listScope !== null,
+          allowAdminDepartment: listScope === null,
+        },
+      );
 
       const byId = new Map<string, Job>();
-      for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
-        const result = await jobService.listVisibleJobs(
-          { ...listParams, page: pageNum, limit: 100 },
-          listOpts,
-        );
-        for (const job of result.jobs ?? []) {
+
+      // 1) Trust plain GET /jobs (BE ignores staff department_id; same ACL as counts).
+      for (let pageNum = 1; pageNum <= 20; pageNum += 1) {
+        const plain = await jobService.list({
+          ...listParams,
+          page: pageNum,
+          limit: 100,
+          job_type: undefined,
+          job_types: undefined,
+          skip_client_hydrate: true,
+        });
+        for (const job of plain.jobs ?? []) {
           if (job?.id) byId.set(job.id, job);
         }
-        const got = result.jobs?.length ?? 0;
+        const total = plain.meta?.total ?? byId.size;
+        const got = plain.jobs?.length ?? 0;
         if (got === 0) break;
-        if (pageNum * 100 >= Math.max(result.meta?.total ?? got, expectedTotal)) break;
+        if (pageNum * 100 >= total) break;
         if (expectedTotal > 0 && byId.size >= expectedTotal) break;
+      }
+
+      // 2) If still short of job_count, recovery (typed + search) without org dept.
+      if (expectedTotal > byId.size || byId.size === 0) {
+        for (let pageNum = 1; pageNum <= 10; pageNum += 1) {
+          const result = await jobService.listVisibleJobs(
+            { ...listParams, page: pageNum, limit: 100 },
+            listOpts,
+          );
+          for (const job of result.jobs ?? []) {
+            if (job?.id) byId.set(job.id, job);
+          }
+          const got = result.jobs?.length ?? 0;
+          if (got === 0) break;
+          if (pageNum * 100 >= Math.max(result.meta?.total ?? got, expectedTotal)) break;
+          if (expectedTotal > 0 && byId.size >= expectedTotal) break;
+        }
       }
 
       return {
         jobs: [...byId.values()],
         expectedTotal: Math.max(expectedTotal, byId.size),
+        visibleJobTypes: countVisible ?? listProbes,
       };
     },
     enabled: Boolean(accessToken) && variant !== 'documentation' && !useCategoryList,
