@@ -1,6 +1,10 @@
 /** Jobs REST paths — Swagger tag Jobs (Bearer JWT). */
 export const JOB_API = {
   list: '/jobs',
+  /** Job create wizard draft (opaque FE payload). */
+  createDrafts: '/jobs/create-drafts',
+  createDraftCurrent: '/jobs/create-drafts/current',
+  createDraftById: (id: string) => `/jobs/create-drafts/${encodeURIComponent(id)}`,
   dashboardCounts: '/jobs/dashboard-counts',
   teamWorkload: '/jobs/team-workload',
   /** Catalog (Approved / Open / Closed labels); optional ?job_id= */
@@ -37,6 +41,8 @@ export const JOB_API = {
     `/jobs/${id}/detail/${encodeURIComponent(tab)}`,
   /** GET /jobs/:id/tracking — current status, progress, full history */
   tracking: (id: string) => `/jobs/${id}/tracking`,
+  /** GET/PUT /jobs/:id/tracking/profile — YQN-style staff tracking profile */
+  trackingProfile: (id: string) => `/jobs/${id}/tracking/profile`,
   /** GET /jobs/:id/tracking/pdf — Track & Trace PDF (live data) */
   trackingPdf: (id: string) => `/jobs/${id}/tracking/pdf`,
   changeStatus: (id: string) => `/jobs/${id}/change-status`,

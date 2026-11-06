@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { type Resolver } from 'react-hook-form';
 import { Controller } from 'react-hook-form';
@@ -59,6 +59,18 @@ interface JobFormProps {
   jobTypeOptions: JobType[];
   defaultJobType?: JobType;
   defaultValues?: Partial<CreateJobFormValues>;
+  /** Wizard create only — restored draft step index. */
+  initialStep?: number;
+  /** Wizard create only — restored draft charge lines. */
+  initialDraftCharges?: JobDraftChargeLine[];
+  /** Wizard create only — emit draft snapshot for debounce-save. */
+  onWizardDraftChange?: (draft: {
+    step: number;
+    values: CreateJobFormValues;
+    charges: JobDraftChargeLine[];
+    job_type?: string;
+    branch_id?: string;
+  }) => void;
   onSubmit: (
     values: CreateJobFormValues | UpdateJobFormValues,
     options?: { costing?: JobWizardCostingPayload },
@@ -103,13 +115,20 @@ export function JobForm({
   jobTypeOptions,
   defaultJobType,
   defaultValues,
+  initialStep = 0,
+  initialDraftCharges,
+  onWizardDraftChange,
   onSubmit,
   onCancel,
   isSubmitting,
 }: JobFormProps) {
   const isWizard = layout === 'wizard' && mode === 'create';
-  const [step, setStep] = useState(0);
-  const [draftCharges, setDraftCharges] = useState<JobDraftChargeLine[]>([]);
+  const [step, setStep] = useState(() =>
+    Math.max(0, Math.min(Math.floor(initialStep) || 0, JOB_CREATE_WIZARD_STEPS.length - 1)),
+  );
+  const [draftCharges, setDraftCharges] = useState<JobDraftChargeLine[]>(
+    () => initialDraftCharges ?? [],
+  );
   const schema = mode === 'create' ? createJobSchema : updateJobSchema;
   const {
     register,
@@ -160,6 +179,21 @@ export function JobForm({
   const originPortId = watch('origin_port_id');
   const destPortId = watch('dest_port_id');
   const watched = watch();
+
+  const onWizardDraftChangeRef = useRef(onWizardDraftChange);
+  useEffect(() => {
+    onWizardDraftChangeRef.current = onWizardDraftChange;
+  }, [onWizardDraftChange]);
+  useEffect(() => {
+    if (!isWizard) return;
+    onWizardDraftChangeRef.current?.({
+      step,
+      values: watched,
+      charges: draftCharges,
+      job_type: watched.job_type,
+      branch_id: watched.branch_id,
+    });
+  }, [isWizard, step, watched, draftCharges]);
 
   const fieldError = (name: keyof CreateJobFormValues) =>
     errors[name]?.message as string | undefined;

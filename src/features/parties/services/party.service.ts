@@ -19,6 +19,7 @@ import type {
   CreatePartyAddressDto,
   CreatePartyContactDto,
   CreatePartyDto,
+  CreatePartyTypeDto,
   PaginationMeta,
   Party,
   PartyAddress,
@@ -27,6 +28,7 @@ import type {
   PartyImportResult,
   PartyListParams,
   PartyListResult,
+  PartyTypeCatalogItem,
   UpdateCreditStatusDto,
   UpdatePartyAddressDto,
   UpdatePartyContactDto,
@@ -131,43 +133,94 @@ function buildListQuery(params: PartyListParams): Record<string, string | number
   return query;
 }
 
+function extractPartyTypeRows(raw: unknown): unknown[] {
+  if (Array.isArray(raw)) return raw;
+  const rec = asRecord(raw);
+  if (!rec) return [];
+  for (const key of ['types', 'items', 'data', 'results', 'party_types']) {
+    if (Array.isArray(rec[key])) return rec[key] as unknown[];
+    const nested = asRecord(rec[key]);
+    if (nested) {
+      for (const nk of ['types', 'items', 'data', 'results']) {
+        if (Array.isArray(nested[nk])) return nested[nk] as unknown[];
+      }
+    }
+  }
+  return [];
+}
+
+function normalizePartyTypeCode(value: unknown): string {
+  return String(value ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+}
+
 function normalizePartyTypeList(raw: unknown): string[] {
-  const items: unknown[] = Array.isArray(raw)
-    ? raw
-    : (() => {
-        const rec = asRecord(raw);
-        if (!rec) return [];
-        for (const key of ['types', 'items', 'data', 'results', 'party_types']) {
-          if (Array.isArray(rec[key])) return rec[key] as unknown[];
-          const nested = asRecord(rec[key]);
-          if (nested) {
-            for (const nk of ['types', 'items', 'data', 'results']) {
-              if (Array.isArray(nested[nk])) return nested[nk] as unknown[];
-            }
-          }
-        }
-        return [];
-      })();
   const out: string[] = [];
   const seen = new Set<string>();
-  for (const row of items) {
+  for (const row of extractPartyTypeRows(raw)) {
     const code =
       typeof row === 'string'
-        ? row.trim().toUpperCase()
-        : String(
+        ? normalizePartyTypeCode(row)
+        : normalizePartyTypeCode(
             asRecord(row)?.code ??
               asRecord(row)?.value ??
               asRecord(row)?.type ??
               asRecord(row)?.party_type ??
               asRecord(row)?.name ??
               '',
-          )
-            .trim()
-            .toUpperCase()
-            .replace(/[\s-]+/g, '_');
+          );
     if (!code || seen.has(code)) continue;
     seen.add(code);
     out.push(code);
+  }
+  return out;
+}
+
+function normalizePartyTypeCatalogItem(raw: unknown): PartyTypeCatalogItem | null {
+  if (typeof raw === 'string' && raw.trim()) {
+    const code = normalizePartyTypeCode(raw);
+    if (!code) return null;
+    return { code, label: code.replaceAll('_', ' '), is_active: true };
+  }
+  const rec = asRecord(raw);
+  if (!rec) return null;
+  const code = normalizePartyTypeCode(
+    rec.code ?? rec.value ?? rec.type ?? rec.party_type ?? rec.name,
+  );
+  if (!code) return null;
+  const idRaw = rec.id ?? rec.catalog_id ?? rec.catalogId;
+  const id = typeof idRaw === 'string' && idRaw.trim() ? idRaw.trim() : undefined;
+  const labelRaw = rec.label ?? rec.name ?? rec.title;
+  const label =
+    typeof labelRaw === 'string' && labelRaw.trim()
+      ? labelRaw.trim()
+      : code.replaceAll('_', ' ');
+  const is_system =
+    typeof rec.is_system === 'boolean'
+      ? rec.is_system
+      : typeof rec.isSystem === 'boolean'
+        ? rec.isSystem
+        : undefined;
+  const is_active =
+    typeof rec.is_active === 'boolean'
+      ? rec.is_active
+      : typeof rec.isActive === 'boolean'
+        ? rec.isActive
+        : true;
+  return { id, code, label, is_system, is_active };
+}
+
+function normalizePartyTypeCatalog(raw: unknown): PartyTypeCatalogItem[] {
+  const seen = new Set<string>();
+  const out: PartyTypeCatalogItem[] = [];
+  for (const item of extractPartyTypeRows(raw)) {
+    const row = normalizePartyTypeCatalogItem(item);
+    if (!row || seen.has(row.code)) continue;
+    if (row.is_active === false) continue;
+    seen.add(row.code);
+    out.push(row);
   }
   return out;
 }
@@ -181,6 +234,60 @@ export const partyService = {
       // Always ensure VENDOR is present even if an older API omits it.
       if (!types.includes('VENDOR')) types.push('VENDOR');
       return types.length ? types : [...PARTY_TYPES_FALLBACK];
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /parties/types — richer catalog (id/code/label/is_system/is_active). */
+  async listTypeCatalog(): Promise<PartyTypeCatalogItem[]> {
+    try {
+      const res = await withGatewayRetry(() => axiosInstance.get(PARTY_API.types));
+      const catalog = normalizePartyTypeCatalog(res.data);
+      if (!catalog.some((t) => t.code === 'VENDOR')) {
+        catalog.push({ code: 'VENDOR', label: 'Vendor', is_system: true, is_active: true });
+      }
+      if (catalog.length) return catalog;
+      return PARTY_TYPES_FALLBACK.map((code) => ({
+        code,
+        label: code.replaceAll('_', ' '),
+        is_system: true,
+        is_active: true,
+      }));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /parties/types — CreatePartyTypeDto. */
+  async createType(dto: CreatePartyTypeDto): Promise<PartyTypeCatalogItem> {
+    try {
+      const body = {
+        code: normalizePartyTypeCode(dto.code),
+        label: String(dto.label ?? '').trim() || normalizePartyTypeCode(dto.code).replaceAll('_', ' '),
+      };
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post<unknown>(PARTY_API.types, body),
+      );
+      const row = normalizePartyTypeCatalogItem(unwrapEntity(res.data));
+      if (!row) {
+        return { code: body.code, label: body.label, is_system: false, is_active: true };
+      }
+      return row;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** DELETE /parties/types/{id} — soft-deactivate custom type. */
+  async deactivateType(id: string): Promise<void> {
+    if (!id?.trim()) throw new Error('Invalid party type id.');
+    try {
+      await withGatewayRetry(() =>
+        axiosInstance.delete(PARTY_API.typeById(id.trim()), {
+          validateStatus: (status: number) => status === 204 || (status >= 200 && status < 300),
+        }),
+      );
     } catch (error) {
       throw formatAxiosError(error);
     }

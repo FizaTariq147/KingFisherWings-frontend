@@ -12,7 +12,6 @@ import { PartyTable } from '../components/PartyTable';
 import {
   DEFAULT_PARTY_PAGE_SIZE,
   type CreditStatus,
-  type PartyType,
 } from '../constants/party.constants';
 import { usePartyConfirmState } from '../hooks/usePartyConfirmState';
 import {
@@ -40,7 +39,7 @@ export default function PartyListPage() {
   const location = useLocation();
   const fileRef = useRef<HTMLInputElement>(null);
   const [search, setSearch] = useState('');
-  const [partyType, setPartyType] = useState<PartyType | 'all'>('all');
+  const [partyType, setPartyType] = useState<string | 'all'>('all');
   const [creditStatus, setCreditStatus] = useState<CreditStatus | 'all'>('all');
   const [companyId, setCompanyId] = useState('');
   const [order, setOrder] = useState<'asc' | 'desc'>('asc');

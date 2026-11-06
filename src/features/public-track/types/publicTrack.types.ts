@@ -48,6 +48,70 @@ export interface PublicTrackContainer {
   sealNumber?: string;
 }
 
+/** Route leg row from enriched `route.legs` (YQN-style). */
+export interface PublicTrackRouteLegRow {
+  id: string;
+  label?: string;
+  code?: string;
+  from?: string;
+  to?: string;
+  vessel?: string;
+  voyage?: string;
+  etd?: string;
+  eta?: string;
+  raw?: Record<string, unknown>;
+}
+
+/** Port-of-call stop from `route.port_of_call`. */
+export interface PublicTrackPortOfCall {
+  id: string;
+  name?: string;
+  code?: string;
+  country?: string;
+  eta?: string;
+  etd?: string;
+  ata?: string;
+  atd?: string;
+  raw?: Record<string, unknown>;
+}
+
+/** Enriched route block shared by public `/track` and staff `GET /jobs/:id/tracking`. */
+export interface PublicTrackRoute {
+  from?: string;
+  to?: string;
+  originLabel?: string;
+  destLabel?: string;
+  atBefore?: string;
+  terminalCutoffAt?: string;
+  legs: PublicTrackRouteLegRow[];
+  portOfCall: PublicTrackPortOfCall[];
+}
+
+/** Key/value or labeled row used in cargo / pre-manifest tables. */
+export interface PublicTrackInfoRow {
+  id: string;
+  label?: string;
+  value?: string;
+  status?: string;
+  date?: string;
+  notes?: string;
+  raw?: Record<string, unknown>;
+}
+
+export interface PublicTrackCargoInfo {
+  arrivalReport: PublicTrackInfoRow[];
+  customsStatus: PublicTrackInfoRow[];
+  detailedData: Record<string, unknown>;
+}
+
+export interface PublicTrackQtyGwVol {
+  qty?: string;
+  gw?: string;
+  vol?: string;
+  /** Extra numeric / text fields from API. */
+  extras: Record<string, string>;
+}
+
 export interface PublicTrackResult {
   reference: string;
   status?: string;
@@ -70,6 +134,14 @@ export interface PublicTrackResult {
   milestones: PublicTrackMilestone[];
   /** When the resolver returns multiple hits for the same ref. */
   matches?: PublicTrackMatch[];
+  /** YQN-style enriched route (from/to, legs, POC, cutoffs). */
+  route?: PublicTrackRoute;
+  /** Arrival report / customs / detailed cargo block. */
+  cargoInfo?: PublicTrackCargoInfo;
+  /** Pre-manifest rows. */
+  preManifest?: PublicTrackInfoRow[];
+  /** Quantity / gross weight / volume summary. */
+  qtyGwVol?: PublicTrackQtyGwVol;
 }
 
 export interface PublicTrackEmbedConfig {

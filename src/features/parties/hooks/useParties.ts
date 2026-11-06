@@ -7,6 +7,7 @@ import type {
   CreatePartyAddressDto,
   CreatePartyContactDto,
   CreatePartyDto,
+  CreatePartyTypeDto,
   PartyListParams,
   UpdateCreditStatusDto,
   UpdatePartyAddressDto,
@@ -18,6 +19,7 @@ export const partyKeys = {
   all: ['tenant', 'parties'] as const,
   list: (params: PartyListParams) => [...partyKeys.all, 'list', params] as const,
   types: [...(['tenant', 'parties'] as const), 'types'] as const,
+  typeCatalog: [...(['tenant', 'parties'] as const), 'types', 'catalog'] as const,
   detail: (id: string) => [...partyKeys.all, 'detail', id] as const,
   history: (id: string) => [...partyKeys.all, 'history', id] as const,
 };
@@ -30,6 +32,42 @@ export function usePartyTypes(enabled = true) {
     queryFn: () => partyService.listTypes(),
     enabled: Boolean(accessToken) && enabled,
     staleTime: 5 * 60_000,
+  });
+}
+
+/** GET /parties/types — richer catalog (id/code/label/is_system/is_active). */
+export function usePartyTypeCatalog(enabled = true) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: partyKeys.typeCatalog,
+    queryFn: () => partyService.listTypeCatalog(),
+    enabled: Boolean(accessToken) && enabled,
+    staleTime: 5 * 60_000,
+  });
+}
+
+function useInvalidatePartyTypes() {
+  const queryClient = useQueryClient();
+  return () => {
+    queryClient.invalidateQueries({ queryKey: partyKeys.types });
+  };
+}
+
+/** POST /parties/types */
+export function useCreatePartyType() {
+  const invalidate = useInvalidatePartyTypes();
+  return useMutation({
+    mutationFn: (dto: CreatePartyTypeDto) => partyService.createType(dto),
+    onSuccess: () => invalidate(),
+  });
+}
+
+/** DELETE /parties/types/{id} — soft-deactivate */
+export function useDeactivatePartyType() {
+  const invalidate = useInvalidatePartyTypes();
+  return useMutation({
+    mutationFn: (id: string) => partyService.deactivateType(id),
+    onSuccess: () => invalidate(),
   });
 }
 

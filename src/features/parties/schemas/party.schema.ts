@@ -17,9 +17,19 @@ import {
   requiredText,
   withPhoneCountryRefine,
 } from '@/lib/validation';
-import { CREDIT_STATUSES, PARTY_TYPES } from '../constants/party.constants';
+import { CREDIT_STATUSES } from '../constants/party.constants';
 
-const partyTypeSchema = z.enum(PARTY_TYPES);
+/** System enum codes + tenant custom codes (uppercase letters / digits / underscore). */
+const partyTypeSchema = z.preprocess(
+  (v) =>
+    typeof v === 'string'
+      ? v.trim().toUpperCase().replace(/[\s-]+/g, '_')
+      : v,
+  z
+    .string()
+    .min(1, 'Party type is required')
+    .regex(/^[A-Z][A-Z0-9_]*$/, 'Use uppercase letters, numbers, and underscores'),
+);
 const creditStatusSchema = z.enum(CREDIT_STATUSES);
 
 const createPartyObject = z.object({

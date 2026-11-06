@@ -74,7 +74,10 @@ export function PartyTable({
                     <div className="text-xs text-[var(--color-neutral-400)]">{party.short_name}</div>
                   ) : null}
                 </TableCell>
-                <TableCell>{PARTY_TYPE_LABELS[party.party_type] ?? party.party_type}</TableCell>
+                <TableCell>
+                  {(PARTY_TYPE_LABELS as Record<string, string>)[party.party_type] ??
+                    party.party_type}
+                </TableCell>
                 <TableCell>{party.country_code || '—'}</TableCell>
                 <TableCell>
                   <PartyCreditBadge status={party.credit_status} />

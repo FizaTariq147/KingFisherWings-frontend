@@ -89,6 +89,9 @@ export interface AuthMeResponse {
   product?: string;
   preferred_country_code?: string | null;
   preferredCountryCode?: string | null;
+  /** Server idle timeout in minutes (GET /auth/me). */
+  idle_timeout_minutes?: number;
+  idleTimeoutMinutes?: number;
   [key: string]: unknown;
 }
 

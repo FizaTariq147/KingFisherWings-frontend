@@ -1150,6 +1150,28 @@ export interface PutJobGpumDto {
   allocations: JobGpumLineDto[];
 }
 
+/** PUT /jobs/:id/tracking/profile — YQN-style tracking enrichment (staff edit). */
+export interface UpsertJobTrackingProfileDto {
+  origin_label?: string;
+  dest_label?: string;
+  at_before?: string;
+  terminal_cutoff_at?: string;
+  legs?: Record<string, unknown>[];
+  port_of_call?: Record<string, unknown>[];
+  container_events?: Record<string, unknown>[];
+  arrival_report?: Record<string, unknown>[];
+  customs_status?: Record<string, unknown>[];
+  detailed_data?: Record<string, unknown>;
+  pre_manifest?: Record<string, unknown>[];
+  qty_gw_vol?: Record<string, unknown>;
+}
+
+/** GET /jobs/:id/tracking/profile — empty seed is valid on first open. */
+export interface JobTrackingProfile extends UpsertJobTrackingProfileDto {
+  id?: string;
+  job_id?: string;
+}
+
 export interface JobGpumAllocation {
   employee_name: string;
   gp_percent: number;
@@ -1477,6 +1499,15 @@ export type PatchJobChargeSideDto = Partial<CreateJobChargeDto> &
 export type CreateJobInvoiceFromCostingDto = {
   charge_ids?: string[];
   party_id?: string;
+  /** Vendor party for purchase / cost-side invoice generation. */
+  cost_party_id?: string;
+  /**
+   * Sale invoice amount source.
+   * - `job` — costing sale amounts only (no quotation fallback)
+   * - `quotation` — quotation revenue lines
+   * - `auto` — legacy prefill (sale charges → quotation → empty)
+   */
+  source?: 'job' | 'quotation' | 'auto';
   invoice_date?: string;
   currency_code?: string;
   notes?: string;
@@ -1507,6 +1538,13 @@ export interface JobInvoiceFormSaveDto {
   charge_ids?: string[];
   organization_id?: string;
   party_id?: string;
+  /** Vendor party for purchase invoices (alias / explicit cost party). */
+  cost_party_id?: string;
+  /**
+   * Sale invoice amount source when posting to /invoices/sale.
+   * Omit or use `auto` only when no explicit user choice.
+   */
+  source?: 'job' | 'quotation' | 'auto';
   branch_id?: string;
   company_id?: string;
   voucher_type?: string;
@@ -1529,6 +1567,11 @@ export type JobInvoiceFormPreview = JobInvoiceFormSaveDto & {
   display_status?: string;
   status?: string;
   lines?: JobInvoiceFormLineDto[];
+  /** When source=job and costing sale amounts are missing. */
+  needs_costing?: boolean;
+  /** Schema / hint payload describing required costing entry when needs_costing. */
+  costing_entry?: unknown;
+  source?: string;
 } & Record<string, unknown>;
 
 /** OpenAPI GenerateJobEdiDto / GenerateShipmentEdiDto */

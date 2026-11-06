@@ -2,17 +2,16 @@ import {
   CREDIT_STATUSES,
   CREDIT_STATUS_LABELS,
   type CreditStatus,
-  type PartyType,
 } from '../../constants/party.constants';
-import { usePartyTypes } from '../../hooks/useParties';
+import { usePartyTypeCatalog } from '../../hooks/useParties';
 import { resolvePartyTypeOptions } from '../../utils/resolvePartyTypeOptions';
 import type { TenantCompanyOption } from '@/features/users/hooks/useTenantCompanies';
 
 interface PartyFiltersProps {
   search: string;
   onSearchChange: (value: string) => void;
-  partyType: PartyType | 'all';
-  onPartyTypeChange: (value: PartyType | 'all') => void;
+  partyType: string | 'all';
+  onPartyTypeChange: (value: string | 'all') => void;
   creditStatus: CreditStatus | 'all';
   onCreditStatusChange: (value: CreditStatus | 'all') => void;
   companyId: string;
@@ -35,7 +34,7 @@ export function PartyFilters({
   order,
   onOrderChange,
 }: PartyFiltersProps) {
-  const typesQuery = usePartyTypes(true);
+  const typesQuery = usePartyTypeCatalog(true);
   const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
 
   const selectClass =
@@ -54,7 +53,7 @@ export function PartyFilters({
 
       <select
         value={partyType}
-        onChange={(e) => onPartyTypeChange(e.target.value as PartyType | 'all')}
+        onChange={(e) => onPartyTypeChange(e.target.value)}
         aria-label="Filter by party type"
         className={selectClass}
       >

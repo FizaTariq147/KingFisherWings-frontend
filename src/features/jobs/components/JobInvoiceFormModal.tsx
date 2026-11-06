@@ -11,6 +11,7 @@ import type {
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 export type JobInvoiceFormKind = 'sale' | 'purchase';
+export type JobInvoiceFormSource = 'job' | 'quotation' | 'auto';
 
 type Props = {
   open: boolean;
@@ -21,10 +22,24 @@ type Props = {
   onSaved?: () => void;
   /** Optional PDF (purchase / vendor upload). */
   allowPdf?: boolean;
+  /**
+   * Sale form amount source. Costing Sales button should pass `job`.
+   * Only use `auto` (or omit) when there is no explicit user choice.
+   */
+  source?: JobInvoiceFormSource;
 };
 
-function asSaveDto(raw: JobInvoiceFormPreview | null): JobInvoiceFormSaveDto {
-  if (!raw || typeof raw !== 'object') return { lines: [], exchange_rate: 1 };
+function asSaveDto(
+  raw: JobInvoiceFormPreview | null,
+  source?: JobInvoiceFormSource,
+): JobInvoiceFormSaveDto {
+  if (!raw || typeof raw !== 'object') {
+    return {
+      lines: [],
+      exchange_rate: 1,
+      ...(source ? { source } : {}),
+    };
+  }
   const lines = Array.isArray(raw.lines)
     ? raw.lines.map((line) => ({
         job_charge_id: line.job_charge_id,
@@ -42,10 +57,21 @@ function asSaveDto(raw: JobInvoiceFormPreview | null): JobInvoiceFormSaveDto {
         pp_cc: line.pp_cc,
       }))
     : [];
+  const partyId = raw.party_id ? String(raw.party_id) : undefined;
+  const costPartyId = raw.cost_party_id
+    ? String(raw.cost_party_id)
+    : partyId;
+  const resolvedSource =
+    source ||
+    (raw.source === 'job' || raw.source === 'quotation' || raw.source === 'auto'
+      ? raw.source
+      : undefined);
   return {
     charge_ids: Array.isArray(raw.charge_ids) ? raw.charge_ids.map(String) : undefined,
     organization_id: raw.organization_id ? String(raw.organization_id) : undefined,
-    party_id: raw.party_id ? String(raw.party_id) : undefined,
+    party_id: partyId,
+    cost_party_id: costPartyId,
+    source: resolvedSource,
     branch_id: raw.branch_id ? String(raw.branch_id) : undefined,
     company_id: raw.company_id ? String(raw.company_id) : undefined,
     voucher_type:
@@ -78,7 +104,50 @@ function updateLine(
   index: number,
   patch: Partial<JobInvoiceFormLineDto>,
 ): JobInvoiceFormLineDto[] {
-  return lines.map((line, i) => (i === index ? { ...line, ...patch, amount: Number(patch.amount ?? line.amount) || 0 } : line));
+  return lines.map((line, i) =>
+    i === index ? { ...line, ...patch, amount: Number(patch.amount ?? line.amount) || 0 } : line,
+  );
+}
+
+function costingEntrySummary(entry: unknown): string[] {
+  if (entry == null) return [];
+  if (typeof entry === 'string') return [entry];
+  if (Array.isArray(entry)) {
+    return entry
+      .map((item) => {
+        if (typeof item === 'string') return item;
+        if (item && typeof item === 'object') {
+          const rec = item as Record<string, unknown>;
+          return (
+            String(rec.description ?? rec.name ?? rec.field ?? rec.key ?? '').trim() ||
+            JSON.stringify(item)
+          );
+        }
+        return String(item);
+      })
+      .filter(Boolean)
+      .slice(0, 12);
+  }
+  if (typeof entry === 'object') {
+    const rec = entry as Record<string, unknown>;
+    if (typeof rec.message === 'string' && rec.message.trim()) {
+      return [rec.message.trim()];
+    }
+    if (Array.isArray(rec.fields)) {
+      return costingEntrySummary(rec.fields);
+    }
+    if (Array.isArray(rec.required)) {
+      return costingEntrySummary(rec.required);
+    }
+    return Object.keys(rec)
+      .slice(0, 12)
+      .map((key) => {
+        const val = rec[key];
+        if (val == null || typeof val === 'object') return key;
+        return `${key}: ${String(val)}`;
+      });
+  }
+  return [String(entry)];
 }
 
 export function JobInvoiceFormModal({
@@ -89,13 +158,18 @@ export function JobInvoiceFormModal({
   chargeIds = [],
   onSaved,
   allowPdf,
+  source,
 }: Props) {
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState<JobInvoiceFormSaveDto>(() => asSaveDto(null));
+  const [form, setForm] = useState<JobInvoiceFormSaveDto>(() => asSaveDto(null, source));
   const [pdf, setPdf] = useState<File | null>(null);
+  const [needsCosting, setNeedsCosting] = useState(false);
+  const [costingEntry, setCostingEntry] = useState<unknown>(null);
   const showPdf = allowPdf ?? kind === 'purchase';
+  const saleSource: JobInvoiceFormSource | undefined =
+    kind === 'sale' ? source ?? undefined : undefined;
 
   useEffect(() => {
     if (!open || !jobId) return;
@@ -103,29 +177,41 @@ export function JobInvoiceFormModal({
     setLoading(true);
     setError(null);
     setPdf(null);
+    setNeedsCosting(false);
+    setCostingEntry(null);
     void (async () => {
       try {
         const preview =
           kind === 'sale'
-            ? await jobService.getSaleInvoiceForm(jobId, chargeIds)
+            ? await jobService.getSaleInvoiceForm(jobId, chargeIds, saleSource)
             : await jobService.getPurchaseInvoiceForm(jobId, chargeIds);
         if (cancelled) return;
-        const next = asSaveDto(preview);
+        const next = asSaveDto(preview, saleSource);
         if (!next.voucher_type) {
           next.voucher_type = kind === 'sale' ? 'SALES_INVOICE' : 'PURCHASE_INVOICE';
         }
+        if (kind === 'sale' && saleSource) {
+          next.source = saleSource;
+        }
         setForm(next);
+        setNeedsCosting(Boolean(preview.needs_costing));
+        setCostingEntry(preview.costing_entry ?? null);
       } catch (err) {
         if (!cancelled) {
           setError(getErrorMessage(err));
           setForm(
-            asSaveDto({
-              voucher_type: kind === 'sale' ? 'SALES_INVOICE' : 'PURCHASE_INVOICE',
-              currency_code: 'AED',
-              exchange_rate: 1,
-              lines: [],
-            }),
+            asSaveDto(
+              {
+                voucher_type: kind === 'sale' ? 'SALES_INVOICE' : 'PURCHASE_INVOICE',
+                currency_code: 'AED',
+                exchange_rate: 1,
+                lines: [],
+              },
+              saleSource,
+            ),
           );
+          setNeedsCosting(false);
+          setCostingEntry(null);
         }
       } finally {
         if (!cancelled) setLoading(false);
@@ -134,7 +220,7 @@ export function JobInvoiceFormModal({
     return () => {
       cancelled = true;
     };
-  }, [open, jobId, kind, chargeIds.join(',')]);
+  }, [open, jobId, kind, chargeIds.join(','), saleSource]);
 
   const patch = (partial: Partial<JobInvoiceFormSaveDto>) =>
     setForm((prev) => ({ ...prev, ...partial }));
@@ -143,10 +229,38 @@ export function JobInvoiceFormModal({
     setSaving(true);
     setError(null);
     try {
+      if (kind === 'purchase') {
+        const vendorId = (form.cost_party_id || form.party_id || '').trim();
+        if (!vendorId) {
+          setError(
+            'Vendor (cost_party_id) is required for purchase invoices. Set a vendor on cost lines or enter a party id before saving.',
+          );
+          setSaving(false);
+          return;
+        }
+      }
+      if (kind === 'sale' && saleSource === 'job' && needsCosting) {
+        setError(
+          'Costing sale amounts are required before generating a job-source sales invoice. Open the Costing tab, enter sale amounts, then try again.',
+        );
+        setSaving(false);
+        return;
+      }
+
       const dto: JobInvoiceFormSaveDto = {
         ...form,
         lines: (form.lines ?? []).filter((l) => Number(l.amount) >= 0),
       };
+      if (kind === 'sale' && saleSource) {
+        dto.source = saleSource;
+      }
+      if (kind === 'purchase') {
+        const vendorId = (form.cost_party_id || form.party_id || '').trim();
+        dto.cost_party_id = vendorId;
+        dto.party_id = vendorId;
+        delete dto.source;
+      }
+
       if (kind === 'sale') {
         await jobService.createSaleInvoiceFromJob(jobId, dto, pdf);
       } else {
@@ -164,6 +278,17 @@ export function JobInvoiceFormModal({
   const title =
     kind === 'sale' ? 'Sales invoice form' : 'Purchase / vendor invoice form';
 
+  const helpCopy =
+    kind === 'sale'
+      ? saleSource === 'job'
+        ? 'Prefills from job costing sale amounts only (no quotation fallback). Saves as DRAFT with display status CREATE.'
+        : saleSource === 'quotation'
+          ? 'Prefills from quotation revenue lines. Saves as DRAFT with display status CREATE.'
+          : 'Prefills from sale charges → quotation when available (legacy auto). Saves as DRAFT with display status CREATE.'
+      : 'Prefills from vendor offer → costing when available. Vendor (cost_party_id) is required before save. Saves as DRAFT with display status CREATE.';
+
+  const costingHints = costingEntrySummary(costingEntry);
+
   return (
     <Modal
       open={open}
@@ -178,7 +303,7 @@ export function JobInvoiceFormModal({
           <Button
             type="button"
             variant="create"
-            disabled={loading || saving}
+            disabled={loading || saving || (kind === 'sale' && saleSource === 'job' && needsCosting)}
             onClick={() => void save()}
           >
             {saving ? 'Saving…' : 'Save as DRAFT'}
@@ -187,10 +312,29 @@ export function JobInvoiceFormModal({
       }
     >
       <div className="space-y-4">
-        <p className="text-xs text-[var(--color-neutral-500)]">
-          Prefills from {kind === 'sale' ? 'sale charges → quotation' : 'vendor offer → costing'}{' '}
-          when available; opens empty otherwise. Saves as DRAFT with display status CREATE.
-        </p>
+        <p className="text-xs text-[var(--color-neutral-500)]">{helpCopy}</p>
+        {needsCosting ? (
+          <div className="space-y-2 rounded-sm border border-amber-300 bg-amber-50 px-3 py-2.5">
+            <p className="text-sm font-medium text-amber-900">
+              Costing required before generating from job
+            </p>
+            <p className="text-xs text-amber-800">
+              This job has no costing sale amounts yet. Open the{' '}
+              <span className="font-medium">Costing</span> tab (?tab=costing), enter sale amounts,
+              then generate again with source=job. Quotation amounts are not used as a fallback.
+            </p>
+            {costingHints.length > 0 ? (
+              <div className="space-y-1">
+                <p className="text-xs font-medium text-amber-900">Costing entry schema</p>
+                <ul className="list-disc space-y-0.5 pl-4 text-xs text-amber-900">
+                  {costingHints.map((hint) => (
+                    <li key={hint}>{hint}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
         {error ? (
           <p className="text-sm text-[var(--color-danger-600)]">{error}</p>
         ) : null}
@@ -200,15 +344,35 @@ export function JobInvoiceFormModal({
           <>
             <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
               <Input
-                label="Organization / party id"
-                value={form.organization_id || form.party_id || ''}
-                onChange={(e) =>
-                  patch({
-                    organization_id: e.target.value.trim() || undefined,
-                    party_id: e.target.value.trim() || undefined,
-                  })
+                label={
+                  kind === 'purchase'
+                    ? 'Vendor / cost party id (required)'
+                    : 'Organization / party id'
                 }
-                placeholder="Optional — not required to open"
+                value={
+                  kind === 'purchase'
+                    ? form.cost_party_id || form.party_id || ''
+                    : form.organization_id || form.party_id || ''
+                }
+                onChange={(e) => {
+                  const value = e.target.value.trim() || undefined;
+                  if (kind === 'purchase') {
+                    patch({
+                      cost_party_id: value,
+                      party_id: value,
+                    });
+                  } else {
+                    patch({
+                      organization_id: value,
+                      party_id: value,
+                    });
+                  }
+                }}
+                placeholder={
+                  kind === 'purchase'
+                    ? 'Required vendor party UUID'
+                    : 'Optional — not required to open'
+                }
               />
               <Input
                 label="Voucher type"

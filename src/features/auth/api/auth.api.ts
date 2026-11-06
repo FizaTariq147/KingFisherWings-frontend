@@ -8,6 +8,8 @@ export const AUTH_API = {
   logout: '/auth/logout',
   logoutAll: '/auth/logout-all',
   me: '/auth/me',
+  /** Keep server-side idle clock alive while the tab has user activity. */
+  sessionTouch: '/auth/session/touch',
   sessions: '/auth/sessions',
   revokeSession: (sessionId: string) => `/auth/sessions/${sessionId}/revoke`,
   changePassword: '/auth/change-password',

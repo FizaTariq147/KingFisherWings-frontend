@@ -33,7 +33,7 @@ import {
 } from '@/features/tenants/utils/isModuleEnabled'
 import { bootstrapLocaleSession, clearLocaleSession } from '@/features/locale/bootstrap/localeBootstrap'
 import { pickPreferredCountryCode } from '@/store/locale/localeSlice'
-import { useAuthStore } from '@/store/authStore'
+import { isIdleTimeoutAuthError, useAuthStore } from '@/store/authStore'
 import { warehouseSummaryFromRecord } from '@/features/wms/utils/normalizeWms'
 import type { AuthUser, PermissionKey, Role } from '@/types/auth.types'
 
@@ -84,6 +84,16 @@ function pickCanGrantPortalAccessFromRecord(
     return record.canGrantPortalAccess
   }
   return undefined
+}
+
+/** Idle timeout minutes from GET /auth/me (`idle_timeout_minutes` / camelCase). */
+function pickIdleTimeoutMinutesFromRecord(
+  record: Record<string, unknown>,
+): number | undefined {
+  const raw = record.idle_timeout_minutes ?? record.idleTimeoutMinutes
+  const n = typeof raw === 'number' ? raw : typeof raw === 'string' ? Number(raw) : NaN
+  if (!Number.isFinite(n) || n <= 0) return undefined
+  return Math.round(n)
 }
 
 function parseMeAccess(raw: unknown): MeMatrixGrant['access'] | null {
@@ -426,6 +436,7 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
   const writableJobTypes = pickWritableJobTypesFromRecord(record)
   const unrestrictedOps = pickUnrestrictedOpsFromRecord(record)
   const canGrantPortalAccess = pickCanGrantPortalAccessFromRecord(record)
+  const idleTimeoutMinutes = pickIdleTimeoutMinutesFromRecord(record)
 
   return {
     id: id || email,
@@ -444,6 +455,7 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     ...(writableJobTypes !== undefined ? { writableJobTypes } : {}),
     ...(unrestrictedOps !== undefined ? { unrestrictedOps } : {}),
     ...(canGrantPortalAccess !== undefined ? { canGrantPortalAccess } : {}),
+    ...(idleTimeoutMinutes !== undefined ? { idleTimeoutMinutes } : {}),
   }
 }
 
@@ -500,6 +512,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const accessToken = useAuthStore((s) => s.accessToken)
   const storeLogout = useAuthStore((s) => s.logout)
   const patchSessionUser = useAuthStore((s) => s.patchSessionUser)
+  const setIdleTimeoutMinutes = useAuthStore((s) => s.setIdleTimeoutMinutes)
   const setSubscriptionBlocked = useAuthStore((s) => s.setSubscriptionBlocked)
   const [user, setUser]       = useState<AuthUser | null>(DEV_BYPASS_AUTH ? MOCK_USER : null)
   const [isLoading, setLoading] = useState(!DEV_BYPASS_AUTH)
@@ -571,6 +584,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               ? priorMustChange
               : Boolean(normalized.mustChangePassword),
         })
+        if (normalized.idleTimeoutMinutes != null) {
+          setIdleTimeoutMinutes(normalized.idleTimeoutMinutes)
+        }
         bootstrapLocaleSession(pickPreferredCountryCode(data))
       })
       .catch((err) => {
@@ -586,16 +602,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         setSubscriptionBlocked(null)
 
         // Invalid session — sign out. Otherwise keep the login payload so navigation works.
+        // Skip if axios already soft-cleared (IDLE_TIMEOUT / refresh failure).
         if (status === 401 || !seeded) {
           setUser(null)
-          void storeLogout()
+          if (useAuthStore.getState().isAuthenticated) {
+            const data = (err as { response?: { data?: unknown } })?.response?.data
+            if (isIdleTimeoutAuthError(data)) {
+              useAuthStore.getState().forceLogoutDueToInactivity()
+            } else {
+              void storeLogout()
+            }
+          }
           return
         }
 
         setUser(seeded)
       })
       .finally(() => setLoading(false))
-  }, [accessToken, storeLogout, patchSessionUser, setSubscriptionBlocked])
+  }, [accessToken, storeLogout, patchSessionUser, setIdleTimeoutMinutes, setSubscriptionBlocked])
 
   const hasPermission    = useCallback((...keys: PermissionKey[]) => {
     if (DEV_BYPASS_AUTH) return true

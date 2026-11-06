@@ -1,32 +1,42 @@
-import { useMemo, useState } from 'react';
+import { useMemo, useState, type CSSProperties } from 'react';
 import {
-  AlertTriangle,
+  Anchor,
+  ArrowLeft,
+  Check,
   ChevronUp,
   Clock3,
   Container,
+  Leaf,
   MapPin,
   Ship,
   Truck,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
-import { appType } from '@/lib/erpTypography';
 import { cn } from '@/lib/utils';
-import type { PublicTrackMilestone, PublicTrackResult } from '../types/publicTrack.types';
+import type {
+  PublicTrackInfoRow,
+  PublicTrackMilestone,
+  PublicTrackResult,
+} from '../types/publicTrack.types';
 import { resolveTrackStatusIcon } from '../utils/trackStatusIcon';
 import {
   TRACK_TONE_COLORS,
   trackMilestoneTone,
   type TrackMilestoneTone,
 } from '../utils/trackMilestoneTone';
+import {
+  computeTrackMetrics,
+  formatTrackDateShort,
+} from '../utils/trackMetrics';
 
-/** Prefer server PDF endpoints; fall back to client HTML print. */
+type MainTab = 'route' | 'vessel' | 'eta' | 'cargo' | 'pre_manifest' | 'qty';
+
 export type PublicTrackPdfSource =
   | { kind: 'public'; ref: string; tenantSlug?: string }
   | { kind: 'job'; jobId: string; container?: string }
   | { kind: 'portal'; shipmentId: string; container?: string };
 
-/** Reference palette (rail / badges) — title uses system appType */
 const C = {
   navy: '#0A2942',
   badge: TRACK_TONE_COLORS.active,
@@ -39,6 +49,7 @@ const C = {
   chip: '#EEF1F4',
   border: '#D8DEE6',
   rowBorder: '#EEF2F6',
+  yellow: '#EAB308',
 } as const;
 
 function toneColor(tone: TrackMilestoneTone): string {
@@ -58,6 +69,7 @@ function headerStatusColor(status?: string): string {
   ) {
     return C.green;
   }
+  if (blob.includes('TRANSIT') || blob.includes('SAILING')) return C.yellow;
   return C.badge;
 }
 
@@ -89,20 +101,87 @@ function formatStatusLabel(value?: string): string {
   return value.replaceAll('_', ' ').trim().toUpperCase();
 }
 
-function legBadge(code: string): string {
-  const u = code.toUpperCase();
-  if (u === 'POL' || u === 'ORIGIN') return 'POL';
-  if (u === 'POD' || u === 'DEST' || u === 'DESTINATION') return 'POD';
-  if (u === 'PTS' || u === 'TS' || u === 'TRANSSHIPMENT') return 'PTS';
-  return u.slice(0, 3) || 'PTS';
+function formatWhenShort(value?: string): string {
+  if (!value?.trim()) return '—';
+  const parsed = parseWhen(value);
+  if (!parsed) return value;
+  return [parsed.date, parsed.time].filter(Boolean).join(' · ');
 }
 
-function legRailIcon(code: string) {
-  const u = code.toUpperCase();
-  if (u === 'POL' || u === 'ORIGIN') return Ship;
-  if (u === 'POD' || u === 'DEST' || u === 'DESTINATION') return MapPin;
-  if (u === 'PTS' || u === 'TS' || u === 'TRANSSHIPMENT') return Truck;
+function modeIcon(move?: string, eventType?: string) {
+  const blob = `${move ?? ''} ${eventType ?? ''}`.toUpperCase();
+  if (blob.includes('GATE') || blob.includes('TRUCK') || blob.includes('ROAD')) return Truck;
+  if (blob.includes('VESSEL') || blob.includes('SAIL') || blob.includes('LOAD') || blob.includes('DISCHARGE'))
+    return Ship;
+  if (blob.includes('PORT') || blob.includes('TERMINAL')) return Anchor;
   return MapPin;
+}
+
+function InfoRowsTable({
+  rows,
+  emptyLabel,
+}: {
+  rows: PublicTrackInfoRow[];
+  emptyLabel: string;
+}) {
+  if (!rows.length) {
+    return (
+      <p className="py-4 text-sm" style={{ color: C.sub }}>
+        {emptyLabel}
+      </p>
+    );
+  }
+  return (
+    <ul>
+      {rows.map((row) => (
+        <li
+          key={row.id}
+          className="grid grid-cols-1 gap-2 border-b py-3 sm:grid-cols-[1.2fr_1.4fr_1fr_1fr] sm:gap-3"
+          style={{ borderColor: C.rowBorder }}
+        >
+          <p className="text-[13px] font-bold uppercase" style={{ color: C.navy }}>
+            {row.label || '—'}
+          </p>
+          <p className="text-[13px]" style={{ color: C.text }}>
+            {row.value || row.notes || '—'}
+          </p>
+          <p className="text-[12px] uppercase" style={{ color: C.sub }}>
+            {row.status ? formatStatusLabel(row.status) : '\u00A0'}
+          </p>
+          <p className="text-[12px]" style={{ color: C.sub }}>
+            {row.date ? formatWhenShort(row.date) : '\u00A0'}
+          </p>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function DetailDataList({ data }: { data: Record<string, unknown> }) {
+  const entries = Object.entries(data);
+  if (!entries.length) return null;
+  return (
+    <dl className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+      {entries.map(([key, value]) => (
+        <div
+          key={key}
+          className="rounded-sm px-2.5 py-2"
+          style={{ backgroundColor: C.chip, border: `1px solid ${C.border}` }}
+        >
+          <dt className="text-[10px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
+            {key.replaceAll('_', ' ')}
+          </dt>
+          <dd className="mt-0.5 text-[13px] font-medium" style={{ color: C.navy }}>
+            {typeof value === 'string' || typeof value === 'number'
+              ? String(value)
+              : value == null
+                ? '—'
+                : JSON.stringify(value)}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  );
 }
 
 function buildTrackPrintHtml(result: PublicTrackResult, status: string): string {
@@ -118,161 +197,225 @@ function buildTrackPrintHtml(result: PublicTrackResult, status: string): string 
     .join('');
 
   return `<!doctype html><html><head><title>Tracking ${result.reference}</title>
-    <style>
-      @page { margin: 16mm; }
-      body{font-family:Arial,Helvetica,sans-serif;color:${C.navy};padding:28px;margin:0}
-      h1{font-size:20px;margin:0;color:#1E293B;font-weight:500;display:inline-block}
-      .badge{display:inline-block;background:${C.badge};color:#fff;padding:6px 12px;border-radius:999px;font-size:11px;font-weight:700;margin-left:12px;vertical-align:middle}
-      .meta{color:${C.text};font-size:14px;margin:12px 0 20px}
-      table{width:100%;border-collapse:collapse;font-size:12px}
-      th,td{border-bottom:1px solid #E5E7EB;padding:10px 8px;text-align:left;vertical-align:top}
-      th{color:${C.muted};font-size:11px;text-transform:uppercase;letter-spacing:.06em}
-      .note{color:${C.sub};font-size:11px;margin-top:14px}
-    </style></head><body>
-    <div><h1>Tracking details</h1>${status ? `<span class="badge">${status}</span>` : ''}</div>
-    <p class="meta">Container <strong>${result.containerNumber || '—'}</strong>${
-      result.containerType ? ` &nbsp; ${result.containerType}` : ''
-    } &nbsp;·&nbsp; Ref ${result.reference}</p>
-    <table><thead><tr><th>Date</th><th>Moves</th><th>Location/Terminal</th><th>Vessel (Voyage)</th></tr></thead>
-    <tbody>${rows || '<tr><td colspan="4">No history</td></tr>'}</tbody></table>
-    <p class="note">Times reflected are local Times</p>
-    </body></html>`;
+<style>body{font-family:system-ui,sans-serif;padding:24px;color:#0A2942}table{width:100%;border-collapse:collapse}td,th{border-bottom:1px solid #E2E8F0;padding:8px;text-align:left;font-size:12px}</style>
+</head><body>
+<h1>Track & Trace — ${result.reference}</h1>
+<p>Status: ${status || '—'}</p>
+<table><thead><tr><th>Date</th><th>Move</th><th>Location</th><th>Vessel</th></tr></thead><tbody>${rows}</tbody></table>
+</body></html>`;
 }
 
 async function downloadServerPdf(
   source: PublicTrackPdfSource,
-  fallbackName: string,
+  filenameBase: string,
 ): Promise<boolean> {
   try {
-    let blob: Blob;
     if (source.kind === 'public') {
       const { publicTrackService } = await import('../services/publicTrack.service');
-      blob = await publicTrackService.downloadPdf(source.ref, source.tenantSlug);
-    } else if (source.kind === 'job') {
+      const blob = await publicTrackService.downloadPdf(source.ref, source.tenantSlug);
+      triggerBlobDownload(blob, `${filenameBase}.pdf`);
+      return true;
+    }
+    if (source.kind === 'job') {
       const { jobService } = await import('@/features/jobs/services/job.service');
-      blob = await jobService.downloadTrackingPdf(source.jobId, source.container);
-    } else {
+      const blob = await jobService.downloadTrackingPdf(source.jobId, source.container);
+      triggerBlobDownload(blob, `${filenameBase}.pdf`);
+      return true;
+    }
+    if (source.kind === 'portal') {
       const { portalShipmentsService } = await import(
         '@/features/portal-shipments/services/portalShipments.service'
       );
-      blob = await portalShipmentsService.downloadTrackingPdf(
+      const blob = await portalShipmentsService.downloadTrackingPdf(
         source.shipmentId,
         source.container,
       );
+      triggerBlobDownload(blob, `${filenameBase}.pdf`);
+      return true;
     }
-    const name = `${fallbackName.replace(/[^\w.-]+/g, '_') || 'tracking'}.pdf`;
-    triggerBlobDownload(blob, name);
-    return true;
   } catch {
     return false;
   }
+  return false;
 }
 
-/** Print via hidden iframe — avoids popup blockers that break window.open(). */
 function exportPdfClient(result: PublicTrackResult, status: string) {
   const html = buildTrackPrintHtml(result, status);
-
-  const cleanupExisting = document.getElementById('track-export-print-frame');
-  cleanupExisting?.remove();
-
   const iframe = document.createElement('iframe');
-  iframe.id = 'track-export-print-frame';
-  iframe.setAttribute('title', 'Track export');
-  // Non-zero size helps some browsers render before print; keep off-screen.
-  iframe.style.cssText =
-    'position:fixed;top:0;left:0;width:800px;height:1100px;border:0;opacity:0;pointer-events:none;z-index:-1';
+  iframe.style.position = 'fixed';
+  iframe.style.right = '0';
+  iframe.style.bottom = '0';
+  iframe.style.width = '0';
+  iframe.style.height = '0';
+  iframe.style.border = '0';
   document.body.appendChild(iframe);
-
-  const cleanup = () => {
-    window.setTimeout(() => {
-      try {
-        iframe.remove();
-      } catch {
-        /* ignore */
-      }
-    }, 1500);
-  };
-
+  const win = iframe.contentWindow;
+  const doc = iframe.contentDocument || win?.document;
   const triggerPrint = () => {
-    const win = iframe.contentWindow;
-    if (!win) {
-      cleanup();
-      return;
-    }
     try {
-      win.focus();
-      win.print();
+      win?.focus();
+      win?.print();
     } finally {
-      cleanup();
+      window.setTimeout(() => iframe.remove(), 800);
     }
   };
-
-  iframe.onload = () => {
-    window.setTimeout(triggerPrint, 150);
-  };
-
-  // srcdoc avoids document.write quirks / CSP issues with about:blank
-  try {
-    iframe.srcdoc = html;
-  } catch {
-    const win = iframe.contentWindow;
-    const doc = win?.document;
-    if (win && doc) {
-      doc.open();
-      doc.write(html);
-      doc.close();
-      window.setTimeout(triggerPrint, 250);
-    } else {
-      iframe.remove();
-      const blob = new Blob([html], { type: 'text/html' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `tracking-${result.reference || 'export'}.html`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
+  if (win && doc) {
+    doc.open();
+    doc.write(html);
+    doc.close();
+    window.setTimeout(triggerPrint, 250);
+  } else {
+    iframe.remove();
+    const blob = new Blob([html], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `tracking-${result.reference || 'export'}.html`;
+    a.click();
+    URL.revokeObjectURL(url);
   }
 }
 
 /**
- * Shared Track & Trace details UI — public / portal / admin.
- * Visual contract matches the product reference (status, container, POL–POD rail, history).
+ * Track & Trace details card — used as map overlay (public) or embedded panel (staff/portal).
+ * Shows all fetched sections: route timeline, vessel, ETA, cargo, pre-manifest, qty.
  */
 export function PublicTrackTimeline({
   result,
   onNewSearch,
   className,
   pdfSource,
+  variant = 'panel',
 }: {
   result: PublicTrackResult;
   onNewSearch?: () => void;
   className?: string;
-  /** Server PDF: /track/pdf, /jobs/:id/tracking/pdf, or portal tracking/pdf. */
   pdfSource?: PublicTrackPdfSource;
-  /** @deprecated Ignored — same chrome everywhere. */
+  /** `overlay` = floating map card chrome; `panel` = embedded. */
+  variant?: 'overlay' | 'panel';
+  /** @deprecated Ignored. */
   compact?: boolean;
 }) {
-  const [showPrevious, setShowPrevious] = useState(false);
+  const [showPrevious, setShowPrevious] = useState(true);
   const [pdfPending, setPdfPending] = useState(false);
+  const [tab, setTab] = useState<MainTab>('route');
 
   const status = formatStatusLabel(result.currentStatus || result.status);
   const headerBadgeColor = headerStatusColor(result.currentStatus || result.status);
-  const HeaderStatusIcon = resolveTrackStatusIcon({
-    status: result.currentStatus || result.status,
-  });
-  const legs = result.progressLegs ?? [];
-  // Track & Trace history: completed + hold only (never pending placeholders).
+  const metrics = useMemo(() => computeTrackMetrics(result), [result]);
+  const route = result.route;
+  const cargoInfo = result.cargoInfo;
+  const preManifest = result.preManifest ?? [];
+  const qtyGwVol = result.qtyGwVol;
+
+  const hasCargo = Boolean(
+    cargoInfo &&
+      (cargoInfo.arrivalReport.length ||
+        cargoInfo.customsStatus.length ||
+        Object.keys(cargoInfo.detailedData).length),
+  );
+  const hasPreManifest = preManifest.length > 0;
+  const hasQty =
+    Boolean(qtyGwVol) &&
+    Boolean(
+      qtyGwVol?.qty ||
+        qtyGwVol?.gw ||
+        qtyGwVol?.vol ||
+        (qtyGwVol && Object.keys(qtyGwVol.extras).length),
+    );
+
   const history = useMemo(
     () => (result.milestones ?? []).filter((m) => trackMilestoneTone(m) !== 'pending'),
     [result.milestones],
   );
 
+  const vesselRows = useMemo(() => {
+    const fromLegs = (route?.legs ?? [])
+      .filter((l) => l.vessel || l.voyage)
+      .map((l, i) => ({
+        id: l.id || `leg-${i}`,
+        vessel: l.vessel,
+        voyage: l.voyage,
+        label: l.label || [l.from, l.to].filter(Boolean).join(' → '),
+        etd: l.etd,
+        eta: l.eta,
+      }));
+    if (fromLegs.length) return fromLegs;
+    const seen = new Set<string>();
+    const fromMoves: typeof fromLegs = [];
+    for (const m of history) {
+      if (!m.vessel && !m.voyage) continue;
+      const key = `${m.vessel ?? ''}|${m.voyage ?? ''}`;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      fromMoves.push({
+        id: m.id,
+        vessel: m.vessel,
+        voyage: m.voyage,
+        label: m.location || m.move || m.label,
+        etd: undefined,
+        eta: undefined,
+      });
+    }
+    return fromMoves;
+  }, [route?.legs, history]);
+
+  const etaHistory = useMemo(() => {
+    const rows: Array<{ id: string; label: string; when?: string; note?: string }> = [];
+    if (metrics.eta) {
+      rows.push({ id: 'eta-current', label: 'Current ETA', when: metrics.eta });
+    }
+    if (metrics.atd) {
+      rows.push({ id: 'atd', label: 'ATD', when: metrics.atd });
+    }
+    for (const port of route?.portOfCall ?? []) {
+      if (port.eta) {
+        rows.push({
+          id: `poc-eta-${port.id}`,
+          label: `ETA · ${port.name || port.code || 'Port'}`,
+          when: port.eta,
+          note: port.ata ? `ATA ${formatTrackDateShort(port.ata)}` : undefined,
+        });
+      }
+      if (port.etd) {
+        rows.push({
+          id: `poc-etd-${port.id}`,
+          label: `ETD · ${port.name || port.code || 'Port'}`,
+          when: port.etd,
+          note: port.atd ? `ATD ${formatTrackDateShort(port.atd)}` : undefined,
+        });
+      }
+    }
+    for (const leg of route?.legs ?? []) {
+      if (leg.eta) {
+        rows.push({
+          id: `leg-eta-${leg.id}`,
+          label: `ETA · ${leg.label || leg.to || 'Leg'}`,
+          when: leg.eta,
+        });
+      }
+    }
+    return rows;
+  }, [metrics.eta, metrics.atd, route]);
+
+  const tabs = useMemo(() => {
+    const list: { id: MainTab; label: string; count?: number }[] = [
+      { id: 'route', label: 'Route', count: history.length || undefined },
+      { id: 'vessel', label: 'Vessel', count: vesselRows.length || undefined },
+      { id: 'eta', label: 'ETA History', count: etaHistory.length || undefined },
+    ];
+    if (hasCargo) list.push({ id: 'cargo', label: 'Cargo Info' });
+    if (hasPreManifest) list.push({ id: 'pre_manifest', label: 'Pre-manifest', count: preManifest.length });
+    if (hasQty) list.push({ id: 'qty', label: 'QTY / G.W. / VOL.' });
+    return list;
+  }, [history.length, vesselRows.length, etaHistory.length, hasCargo, hasPreManifest, hasQty, preManifest.length]);
+
+  const activeTab = tabs.some((t) => t.id === tab) ? tab : 'route';
+
   const { latest, previous } = useMemo(() => {
     if (history.length <= 1) return { latest: history, previous: [] as PublicTrackMilestone[] };
     return { latest: history.slice(0, 1), previous: history.slice(1) };
   }, [history]);
-
   const visibleRows = showPrevious ? history : latest;
 
   const handleExportPdf = async () => {
@@ -280,16 +423,11 @@ export function PublicTrackTimeline({
     try {
       const source: PublicTrackPdfSource | undefined =
         pdfSource ??
-        (result.reference
-          ? { kind: 'public', ref: result.reference }
-          : undefined);
+        (result.reference ? { kind: 'public', ref: result.reference } : undefined);
       if (source) {
         const resolved: PublicTrackPdfSource =
           source.kind === 'job' || source.kind === 'portal'
-            ? {
-                ...source,
-                container: source.container || result.containerNumber,
-              }
+            ? { ...source, container: source.container || result.containerNumber }
             : source;
         const ok = await downloadServerPdf(
           resolved,
@@ -303,286 +441,495 @@ export function PublicTrackTimeline({
     }
   };
 
-  return (
-    <div className={cn('w-full bg-white text-[#1E293B]', className)}>
-      {/* —— Header —— */}
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="min-w-0">
-          <div className="flex flex-wrap items-center gap-3">
-            <h2 className={cn(appType.pageTitle, 'leading-none')}>Tracking details</h2>
-            {status ? (
-              <span
-                className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-bold uppercase tracking-[0.03em] text-white"
-                style={{ backgroundColor: headerBadgeColor }}
-              >
-                <HeaderStatusIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
-                {status}
-              </span>
-            ) : null}
-          </div>
+  const originLabel = metrics.origin || 'Origin';
+  const destLabel = metrics.destination || 'Destination';
+  const progressPct = metrics.progressPct > 0 ? metrics.progressPct : 35;
 
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[14px]">
-            <span style={{ color: C.text }}>
-              Container{' '}
-              <strong className="font-bold" style={{ color: C.navy }}>
-                {result.containerNumber || '—'}
-              </strong>
-            </span>
-            {result.containerType ? (
-              <span
-                className="inline-flex items-center gap-1.5 font-semibold"
-                style={{ color: C.navy }}
-              >
-                <Container className="h-4 w-4" style={{ color: C.red }} strokeWidth={2.25} aria-hidden />
-                {result.containerType}
-              </span>
-            ) : null}
+  return (
+    <div
+      className={cn(
+        'flex w-full flex-col bg-white text-[#1E293B]',
+        variant === 'overlay' && 'max-h-[min(92vh,880px)] overflow-hidden rounded-2xl shadow-2xl',
+        className,
+      )}
+    >
+      {/* —— Header —— */}
+      <div className="shrink-0 border-b px-4 pb-4 pt-4 sm:px-5" style={{ borderColor: C.border }}>
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex min-w-0 items-start gap-2">
             {onNewSearch ? (
               <button
                 type="button"
                 onClick={onNewSearch}
-                className="text-[14px] font-medium hover:underline"
-                style={{ color: C.badge }}
+                className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-full hover:bg-neutral-100"
+                aria-label="Back to search"
               >
-                New search
+                <ArrowLeft className="h-4 w-4" style={{ color: C.navy }} />
               </button>
             ) : null}
+            <div className="min-w-0">
+              <p
+                className="truncate text-[20px] font-bold tracking-tight sm:text-[22px]"
+                style={{ color: C.navy }}
+              >
+                {result.reference}
+              </p>
+              {result.partyName ? (
+                <p className="mt-0.5 text-[12px]" style={{ color: C.sub }}>
+                  {result.partyName}
+                </p>
+              ) : null}
+            </div>
           </div>
-          {result.containers && result.containers.length > 1 ? (
-            <ul className="mt-2 flex flex-wrap gap-2 text-[12px]" style={{ color: C.sub }}>
-              {result.containers.map((c) => {
-                const ContIcon = resolveTrackStatusIcon({
-                  status: c.statusLabel || c.status,
-                });
-                return (
-                  <li
-                    key={c.id}
-                    className="inline-flex items-center gap-1.5 rounded-sm px-2 py-1"
-                    style={{ backgroundColor: C.chip, border: `1px solid ${C.border}` }}
-                  >
-                    <ContIcon className="h-3.5 w-3.5 shrink-0" style={{ color: C.red }} aria-hidden />
-                    <span className="font-semibold" style={{ color: C.navy }}>
-                      {c.containerNumber || 'Container'}
-                    </span>
-                    {c.statusLabel || c.status ? (
-                      <span className="uppercase tracking-wide">
-                        {formatStatusLabel(c.statusLabel || c.status)}
-                      </span>
-                    ) : null}
-                  </li>
-                );
-              })}
-            </ul>
-          ) : result.containers?.[0]?.statusLabel || result.containers?.[0]?.status ? (
-            <p className="mt-1 text-[12px]" style={{ color: C.sub }}>
-              Status{' '}
-              <span className="font-semibold uppercase tracking-wide" style={{ color: C.navy }}>
-                {formatStatusLabel(
-                  result.containers[0].statusLabel || result.containers[0].status,
-                )}
+          <div className="flex shrink-0 flex-col items-end gap-2">
+            {status ? (
+              <span
+                className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold"
+                style={{ color: C.navy, backgroundColor: `${headerBadgeColor}22` }}
+              >
+                <span
+                  className="h-2 w-2 rounded-full"
+                  style={{ backgroundColor: headerBadgeColor }}
+                />
+                {status
+                  .toLowerCase()
+                  .replace(/\b\w/g, (c) => c.toUpperCase())}
               </span>
-            </p>
-          ) : null}
-        </div>
-
-        <Button
-          type="button"
-          disabled={pdfPending}
-          onClick={() => void handleExportPdf()}
-          className="h-10 shrink-0 px-5"
-        >
-          {pdfPending ? 'Exporting…' : 'Export PDF'}
-        </Button>
-      </div>
-
-      {result.matches && result.matches.length > 1 ? (
-        <div className="mt-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
-          <p className="font-medium">Multiple matches</p>
-          <ul className="mt-1 list-disc pl-5 text-[13px]">
-            {result.matches.map((m) => (
-              <li key={`${m.kind}-${m.reference}`}>
-                {m.reference}
-                {m.kind ? ` (${m.kind})` : ''}
-                {m.status ? ` · ${m.status}` : ''}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ) : null}
-
-      {/* —— Progress rail —— */}
-      {legs.length > 0 ? (
-        <div className="mt-10 overflow-x-auto pb-1">
-          <div
-            className="relative mx-auto px-2"
-            style={{ minWidth: Math.max(640, legs.length * 130) }}
-          >
-            <div
-              className="absolute left-10 right-10 top-[44px] h-[3px]"
-              style={{ backgroundColor: C.line }}
-            />
-            <ol className="relative flex w-full items-start justify-between">
-              {legs.map((leg) => {
-                const LegIcon = legRailIcon(leg.code);
-                const completed = Boolean(leg.completed);
-                const current = Boolean(leg.current);
-                const accent = completed ? C.green : current ? C.badge : C.muted;
-                return (
-                  <li
-                    key={leg.id}
-                    className="relative z-[1] flex flex-1 flex-col items-center"
-                  >
-                    <span
-                      className="mb-2 rounded-[3px] px-1.5 py-[3px] text-[9px] font-bold uppercase leading-none tracking-wide"
-                      style={{ backgroundColor: C.chip, color: C.muted }}
-                    >
-                      {legBadge(leg.code)}
-                    </span>
-                    <span className="-mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-white ring-[3px] ring-white">
-                      <LegIcon
-                        className="h-[20px] w-[20px]"
-                        style={{ color: accent }}
-                        {...(LegIcon === MapPin
-                          ? { fill: completed || current ? accent : 'transparent' }
-                          : {})}
-                        aria-hidden
-                      />
-                    </span>
-                    <p
-                      className="mt-2.5 max-w-[8.5rem] text-center text-[11px] font-bold uppercase leading-snug"
-                      style={{ color: C.text }}
-                    >
-                      {leg.name}
-                      {leg.country ? ` (${leg.country})` : ''}
-                    </p>
-                  </li>
-                );
-              })}
-            </ol>
+            ) : null}
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              disabled={pdfPending}
+              onClick={() => void handleExportPdf()}
+            >
+              {pdfPending ? 'PDF…' : 'Export PDF'}
+            </Button>
           </div>
         </div>
-      ) : null}
 
-      {/* —— History table —— */}
-      <div className="mt-10">
-        <div
-          className="grid grid-cols-1 gap-2 border-b pb-2 sm:grid-cols-[1.15fr_1.15fr_1.35fr_1fr] sm:gap-3"
-          style={{ borderColor: C.border }}
-        >
-          {['Date', 'Moves', 'Location/Terminal', 'Vessel (Voyage)'].map((h) => (
+        {/* POL → POD progress */}
+        <div className="mt-5">
+          <div className="flex items-center justify-between gap-3 text-[13px] font-semibold" style={{ color: C.navy }}>
+            <span className="min-w-0 truncate">{originLabel}</span>
+            <span className="min-w-0 truncate text-right">{destLabel}</span>
+          </div>
+          <div className="relative mt-3 h-1.5 rounded-full" style={{ backgroundColor: C.chip }}>
             <div
-              key={h}
-              className="hidden text-[11px] font-semibold uppercase tracking-[0.08em] sm:block"
-              style={{ color: C.muted }}
+              className="absolute left-0 top-0 h-1.5 rounded-full"
+              style={{
+                width: `${progressPct}%`,
+                background: `linear-gradient(90deg, ${C.green}, ${C.badge})`,
+              }}
+            />
+            <span
+              className="absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border-2 border-white shadow"
+              style={{
+                left: `calc(${progressPct}% - 7px)`,
+                backgroundColor: C.badge,
+              }}
+            />
+          </div>
+          <div className="mt-2 flex justify-between text-[11px]" style={{ color: C.sub }}>
+            <span>
+              {metrics.atd ? `ATD ${formatTrackDateShort(metrics.atd)}` : 'ATD —'}
+            </span>
+            <span>
+              {metrics.eta ? `ETA ${formatTrackDateShort(metrics.eta)}` : 'ETA —'}
+            </span>
+          </div>
+        </div>
+
+        {/* Metrics */}
+        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          {[
+            { label: 'Containers', value: String(metrics.containerCount || '—') },
+            { label: 'Transshipments', value: String(metrics.transshipments) },
+            {
+              label: 'Transit time',
+              value: metrics.transitDays != null ? `${metrics.transitDays} days` : '—',
+            },
+            {
+              label: 'CO₂',
+              value: metrics.co2 || '—',
+              icon: metrics.co2 ? Leaf : undefined,
+            },
+          ].map((item) => (
+            <div
+              key={item.label}
+              className="rounded-xl px-3 py-2.5"
+              style={{ backgroundColor: C.chip }}
             >
-              {h}
+              <p className="text-[10px] font-medium uppercase tracking-wide" style={{ color: C.muted }}>
+                {item.label}
+              </p>
+              <p
+                className="mt-1 flex items-center gap-1 text-[15px] font-bold"
+                style={{ color: C.navy }}
+              >
+                {item.icon ? <item.icon className="h-3.5 w-3.5 text-emerald-600" /> : null}
+                {item.value}
+              </p>
             </div>
           ))}
         </div>
+      </div>
 
-        {previous.length > 0 ? (
-          <div
-            className="flex justify-end border-b py-2.5"
-            style={{ borderColor: C.rowBorder }}
-          >
+      {/* Tabs */}
+      <div
+        className="flex shrink-0 gap-1 overflow-x-auto border-b px-3 sm:px-5"
+        style={{ borderColor: C.border, backgroundColor: '#FAFBFC' }}
+        role="tablist"
+      >
+        {tabs.map((t) => {
+          const active = t.id === activeTab;
+          return (
             <button
+              key={t.id}
               type="button"
-              onClick={() => setShowPrevious((v) => !v)}
-              className="inline-flex items-center gap-1 text-[13px] font-medium"
-              style={{ color: C.badge }}
+              role="tab"
+              aria-selected={active}
+              onClick={() => setTab(t.id)}
+              className={cn(
+                'shrink-0 border-b-2 px-3 py-2.5 text-[12px] font-semibold transition-colors',
+                active ? 'border-[var(--tab)] text-[var(--navy)]' : 'border-transparent',
+              )}
+                style={
+                {
+                  ['--tab' as string]: C.badge,
+                  ['--navy' as string]: C.navy,
+                  color: active ? C.navy : C.sub,
+                } as CSSProperties
+              }
             >
-              {showPrevious ? 'Hide previous moves' : 'Display Previous Moves'}
-              <ChevronUp
-                className={cn('h-4 w-4 transition-transform', !showPrevious && 'rotate-180')}
-                aria-hidden
-              />
+              {t.label}
+              {t.count != null ? (
+                <span
+                  className="ml-1.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full px-1 text-[10px] font-bold text-white"
+                  style={{ backgroundColor: active ? C.badge : C.muted }}
+                >
+                  {t.count}
+                </span>
+              ) : null}
             </button>
+          );
+        })}
+      </div>
+
+      {/* Scrollable body */}
+      <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4 sm:px-5">
+        {result.matches && result.matches.length > 1 ? (
+          <div className="mb-4 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-900">
+            <p className="font-medium">Multiple matches</p>
+            <ul className="mt-1 list-disc pl-5 text-[13px]">
+              {result.matches.map((m) => (
+                <li key={`${m.kind}-${m.reference}`}>
+                  {m.reference}
+                  {m.kind ? ` (${m.kind})` : ''}
+                  {m.status ? ` · ${m.status}` : ''}
+                </li>
+              ))}
+            </ul>
           </div>
         ) : null}
 
-        {history.length === 0 ? (
-          <p className="py-8 text-sm" style={{ color: C.sub }}>
-            No completed moves for this reference yet.
-          </p>
-        ) : (
-          <ul>
-            {visibleRows.map((m) => {
-              const when = parseWhen(m.completedAt || m.occurredAt);
-              const move = m.move || m.label;
-              const tone = trackMilestoneTone(m);
-              const accent = toneColor(tone);
-              const StatusIcon = resolveTrackStatusIcon({
-                status: m.status,
-                move: m.move,
-                eventType: m.eventType,
-                label: m.label,
-                pending: false,
-              });
-              const vesselLine = [m.vessel, m.voyage ? `(${m.voyage})` : null]
-                .filter(Boolean)
-                .join(' ');
-              return (
-                <li
-                  key={m.id}
-                  className="grid grid-cols-1 gap-3 border-b py-4 sm:grid-cols-[1.15fr_1.15fr_1.35fr_1fr] sm:gap-3"
-                  style={{ borderColor: C.rowBorder }}
+        {/* ROUTE — vertical timeline */}
+        {activeTab === 'route' ? (
+          <div>
+            <div className="mb-4 flex flex-wrap items-center gap-2">
+              <p className="text-[14px] font-bold" style={{ color: C.navy }}>
+                {result.containerNumber || result.reference}
+              </p>
+              {result.containerType ? (
+                <span
+                  className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold"
+                  style={{ backgroundColor: C.chip, color: C.sub }}
                 >
-                  <div className="flex items-start gap-2.5">
-                    <StatusIcon
-                      className="mt-0.5 h-4 w-4 shrink-0"
-                      style={{ color: accent }}
-                      aria-hidden
-                    />
+                  <Container className="h-3 w-3" />
+                  {result.containerType}
+                </span>
+              ) : null}
+            </div>
+
+            {route && (route.atBefore || route.terminalCutoffAt || route.legs.length || route.portOfCall.length) ? (
+              <div className="mb-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                {route.atBefore ? (
+                  <div className="rounded-lg px-3 py-2" style={{ backgroundColor: C.chip }}>
+                    <p className="text-[10px] font-semibold uppercase" style={{ color: C.muted }}>
+                      AT before
+                    </p>
+                    <p className="text-[13px] font-semibold" style={{ color: C.navy }}>
+                      {formatWhenShort(route.atBefore)}
+                    </p>
+                  </div>
+                ) : null}
+                {route.terminalCutoffAt ? (
+                  <div className="rounded-lg px-3 py-2" style={{ backgroundColor: C.chip }}>
+                    <p className="text-[10px] font-semibold uppercase" style={{ color: C.muted }}>
+                      Terminal cutoff
+                    </p>
+                    <p className="text-[13px] font-semibold" style={{ color: C.navy }}>
+                      {formatWhenShort(route.terminalCutoffAt)}
+                    </p>
+                  </div>
+                ) : null}
+              </div>
+            ) : null}
+
+            {previous.length > 0 ? (
+              <div className="mb-3 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setShowPrevious((v) => !v)}
+                  className="inline-flex items-center gap-1 text-[12px] font-medium"
+                  style={{ color: C.badge }}
+                >
+                  {showPrevious ? 'Hide previous moves' : 'Display previous moves'}
+                  <ChevronUp
+                    className={cn('h-3.5 w-3.5 transition-transform', !showPrevious && 'rotate-180')}
+                  />
+                </button>
+              </div>
+            ) : null}
+
+            {history.length === 0 ? (
+              <p className="py-8 text-sm" style={{ color: C.sub }}>
+                No completed moves for this reference yet.
+              </p>
+            ) : (
+              <ol className="relative ms-3 border-s-2 ps-5" style={{ borderColor: C.border }}>
+                {visibleRows.map((m) => {
+                  const when = parseWhen(m.completedAt || m.occurredAt);
+                  const move = m.move || m.label;
+                  const tone = trackMilestoneTone(m);
+                  const accent = toneColor(tone);
+                  const ModeIcon = modeIcon(m.move, m.eventType);
+                  const isActual = tone === 'complete' || Boolean(m.completedAt);
+                  return (
+                    <li key={m.id} className="relative pb-6 last:pb-0">
+                      <span
+                        className="absolute -start-[1.4rem] top-1 flex h-5 w-5 items-center justify-center rounded-full border-2 border-white"
+                        style={{ backgroundColor: accent }}
+                      >
+                        {isActual ? <Check className="h-3 w-3 text-white" strokeWidth={3} /> : null}
+                      </span>
+                      <div className="flex flex-wrap items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-[12px]" style={{ color: C.sub }}>
+                            {[m.location || '—', when?.date].filter(Boolean).join(' · ')}
+                          </p>
+                          <p className="mt-0.5 text-[14px] font-semibold" style={{ color: C.navy }}>
+                            {move}
+                          </p>
+                          {m.vessel || m.voyage ? (
+                            <p className="mt-1 text-[12px]" style={{ color: C.text }}>
+                              {m.vessel}
+                              {m.voyage ? (
+                                <span className="ms-1 font-medium" style={{ color: C.badge }}>
+                                  VOY {m.voyage}
+                                </span>
+                              ) : null}
+                            </p>
+                          ) : null}
+                          {m.terminal ? (
+                            <p className="mt-0.5 text-[11px]" style={{ color: C.muted }}>
+                              {m.terminal}
+                            </p>
+                          ) : null}
+                        </div>
+                        <div className="flex shrink-0 flex-col items-end gap-1.5">
+                          <ModeIcon className="h-4 w-4" style={{ color: C.muted }} />
+                          <span
+                            className="inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide"
+                            style={{
+                              color: isActual ? C.green : C.muted,
+                              backgroundColor: isActual ? '#DCFCE7' : C.chip,
+                            }}
+                          >
+                            {isActual ? <Check className="h-3 w-3" /> : <Clock3 className="h-3 w-3" />}
+                            {isActual ? 'Actual' : 'Planned'}
+                          </span>
+                        </div>
+                      </div>
+                    </li>
+                  );
+                })}
+              </ol>
+            )}
+
+            {route?.portOfCall?.length ? (
+              <div className="mt-6">
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
+                  Port of call
+                </p>
+                <ul>
+                  {route.portOfCall.map((port) => (
+                    <li
+                      key={port.id}
+                      className="flex flex-wrap justify-between gap-2 border-b py-2.5 text-[13px]"
+                      style={{ borderColor: C.rowBorder }}
+                    >
+                      <span className="font-semibold uppercase" style={{ color: C.navy }}>
+                        {port.name || '—'}
+                        {port.code ? ` (${port.code})` : ''}
+                      </span>
+                      <span style={{ color: C.sub }}>
+                        {[
+                          port.eta ? `ETA ${formatTrackDateShort(port.eta)}` : null,
+                          port.atd ? `ATD ${formatTrackDateShort(port.atd)}` : null,
+                          port.ata ? `ATA ${formatTrackDateShort(port.ata)}` : null,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ') || '—'}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+          </div>
+        ) : null}
+
+        {/* VESSEL */}
+        {activeTab === 'vessel' ? (
+          <div>
+            {vesselRows.length === 0 ? (
+              <p className="py-8 text-sm" style={{ color: C.sub }}>
+                No vessel / voyage data in this tracking payload.
+              </p>
+            ) : (
+              <ul className="space-y-3">
+                {vesselRows.map((row) => (
+                  <li
+                    key={row.id}
+                    className="rounded-xl border px-4 py-3"
+                    style={{ borderColor: C.border }}
+                  >
+                    <div className="flex items-start gap-3">
+                      <Ship className="mt-0.5 h-5 w-5 shrink-0" style={{ color: C.badge }} />
+                      <div className="min-w-0">
+                        <p className="text-[15px] font-bold" style={{ color: C.navy }}>
+                          {row.vessel || 'Vessel'}
+                        </p>
+                        {row.voyage ? (
+                          <p className="text-[13px] font-medium" style={{ color: C.badge }}>
+                            VOY {row.voyage}
+                          </p>
+                        ) : null}
+                        {row.label ? (
+                          <p className="mt-1 text-[12px]" style={{ color: C.sub }}>
+                            {row.label}
+                          </p>
+                        ) : null}
+                        <p className="mt-1 text-[12px]" style={{ color: C.muted }}>
+                          {[
+                            row.etd ? `ETD ${formatTrackDateShort(row.etd)}` : null,
+                            row.eta ? `ETA ${formatTrackDateShort(row.eta)}` : null,
+                          ]
+                            .filter(Boolean)
+                            .join(' · ') || '\u00A0'}
+                        </p>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : null}
+
+        {/* ETA HISTORY */}
+        {activeTab === 'eta' ? (
+          <div>
+            {etaHistory.length === 0 ? (
+              <p className="py-8 text-sm" style={{ color: C.sub }}>
+                No ETA / ATD history available.
+              </p>
+            ) : (
+              <ul>
+                {etaHistory.map((row) => (
+                  <li
+                    key={row.id}
+                    className="flex flex-wrap items-baseline justify-between gap-2 border-b py-3"
+                    style={{ borderColor: C.rowBorder }}
+                  >
                     <div>
-                      <p className="text-[13px] font-bold" style={{ color: C.navy }}>
-                        {when?.date || '—'}
+                      <p className="text-[13px] font-semibold" style={{ color: C.navy }}>
+                        {row.label}
                       </p>
-                      {when?.time ? (
-                        <p
-                          className="mt-1 inline-flex items-center gap-1 text-[12px]"
-                          style={{ color: C.sub }}
-                        >
-                          <Clock3 className="h-3.5 w-3.5" aria-hidden />
-                          {when.time}
+                      {row.note ? (
+                        <p className="text-[11px]" style={{ color: C.muted }}>
+                          {row.note}
                         </p>
                       ) : null}
                     </div>
-                  </div>
-
-                  <div>
-                    <span
-                      className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.03em] text-white"
-                      style={{ backgroundColor: accent }}
-                    >
-                      <StatusIcon className="h-3 w-3 shrink-0 opacity-95" aria-hidden />
-                      {move}
-                    </span>
-                  </div>
-
-                  <div>
-                    <p className="text-[13px] font-bold uppercase" style={{ color: C.navy }}>
-                      {m.location || '—'}
+                    <p className="text-[13px] font-medium" style={{ color: C.text }}>
+                      {formatTrackDateShort(row.when) || '—'}
                     </p>
-                    {m.terminal ? (
-                      <p className="mt-0.5 text-[12px]" style={{ color: C.sub }}>
-                        {m.terminal}
-                      </p>
-                    ) : null}
-                  </div>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        ) : null}
 
-                  <div className="text-[13px]" style={{ color: C.text }}>
-                    {vesselLine || '\u00A0'}
-                  </div>
-                </li>
-              );
-            })}
-          </ul>
-        )}
+        {/* CARGO */}
+        {activeTab === 'cargo' && hasCargo && cargoInfo ? (
+          <div className="space-y-6">
+            <div>
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
+                Arrival report
+              </p>
+              <InfoRowsTable rows={cargoInfo.arrivalReport} emptyLabel="No arrival report rows." />
+            </div>
+            <div>
+              <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
+                Customs status
+              </p>
+              <InfoRowsTable rows={cargoInfo.customsStatus} emptyLabel="No customs status rows." />
+            </div>
+            {Object.keys(cargoInfo.detailedData).length ? (
+              <div>
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
+                  Detailed data
+                </p>
+                <DetailDataList data={cargoInfo.detailedData} />
+              </div>
+            ) : null}
+          </div>
+        ) : null}
 
-        <p className="mt-3 inline-flex items-center gap-1.5 text-[11px]" style={{ color: C.sub }}>
-          <AlertTriangle className="h-3.5 w-3.5" style={{ color: '#F59E0B' }} aria-hidden />
-          Times reflected are local Times
-        </p>
+        {activeTab === 'pre_manifest' && hasPreManifest ? (
+          <InfoRowsTable rows={preManifest} emptyLabel="No pre-manifest rows." />
+        ) : null}
+
+        {activeTab === 'qty' && hasQty && qtyGwVol ? (
+          <div>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+              {[
+                { label: 'QTY', value: qtyGwVol.qty },
+                { label: 'G.W.', value: qtyGwVol.gw },
+                { label: 'VOL.', value: qtyGwVol.vol },
+              ].map((item) => (
+                <div
+                  key={item.label}
+                  className="rounded-xl px-3 py-3"
+                  style={{ backgroundColor: C.chip }}
+                >
+                  <p className="text-[10px] font-semibold uppercase" style={{ color: C.muted }}>
+                    {item.label}
+                  </p>
+                  <p className="mt-1 text-[18px] font-bold" style={{ color: C.navy }}>
+                    {item.value || '—'}
+                  </p>
+                </div>
+              ))}
+            </div>
+            {Object.keys(qtyGwVol.extras).length ? (
+              <DetailDataList data={qtyGwVol.extras} />
+            ) : null}
+          </div>
+        ) : null}
       </div>
     </div>
   );

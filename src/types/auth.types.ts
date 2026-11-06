@@ -127,6 +127,8 @@ export interface AuthUser {
   unrestrictedOps?: boolean
   /** Only TENANT_ADMIN may set party portal_access (from GET /auth/me). */
   canGrantPortalAccess?: boolean
+  /** Idle logout window from GET /auth/me (`idle_timeout_minutes`). */
+  idleTimeoutMinutes?: number
 }
 
 // Decoded JWT payload shape from NestJS backend
