@@ -121,7 +121,7 @@ export default function JobListPage() {
     queryKey: [
       'tenant',
       'jobs',
-      'department-segment-v13',
+      'department-segment-v14',
       segment,
       filterParams,
       fullScope.kind,

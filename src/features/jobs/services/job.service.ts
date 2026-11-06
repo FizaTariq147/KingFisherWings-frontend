@@ -282,7 +282,13 @@ async function listByCategorySingle(
       }),
     );
     const { items, meta } = unwrapList(res.data);
-    const jobs = await enrichJobsWithDisplayNames(normalizeJobs(items));
+    const normalized = normalizeJobs(items);
+    let jobs = normalized;
+    try {
+      jobs = await enrichJobsWithDisplayNames(normalized);
+    } catch {
+      jobs = normalized;
+    }
     return {
       jobs,
       meta: normalizePaginationMeta(meta, jobs.length, params),
@@ -382,7 +388,15 @@ async function fetchJobListPage(
     }),
   );
   const { items, meta } = unwrapList(res.data);
-  const jobs = await enrichJobsWithDisplayNames(normalizeJobs(items));
+  const normalized = normalizeJobs(items);
+  // Enrichment is display-only. Staff 403 on GET /users must not wipe the list
+  // (that caused job_count OK / Active shipments + /jobs/all empty).
+  let jobs = normalized;
+  try {
+    jobs = await enrichJobsWithDisplayNames(normalized);
+  } catch {
+    jobs = normalized;
+  }
   return {
     jobs,
     meta: normalizePaginationMeta(meta, jobs.length, params),

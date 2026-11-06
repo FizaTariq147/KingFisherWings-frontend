@@ -3,6 +3,7 @@ import { isUuid } from '@/lib/isUuid';
 import { resolveSessionTenantIdFromAuth } from '@/lib/tenantFromAuth';
 import { useAuthStore } from '@/store/authStore';
 import { userService } from '../services/user.service';
+import { canListTenantUsers } from '../utils/canListTenantUsers';
 import { rememberDeletedUser } from '../utils/deletedUsersRegistry';
 import type {
   CreateUserDto,
@@ -34,13 +35,15 @@ export function useUsers(
     tenantId: resolvedTenantId || params.tenantId,
   };
 
+  const allowList = canListTenantUsers();
+
   return useQuery({
     queryKey: userKeys.list(queryParams),
     queryFn: () => userService.list(queryParams),
-    // List is JWT-scoped; allow when authenticated even if tenant UUID is not in claims.
-    // Staff job filters should pass enabled:false — OPERATIONS_MANAGER gets 403 on GET /users.
+    // Skip GET /users when ACL will 403 (ops staff). Avoids console spam + empty job grids.
     enabled:
       (options?.enabled ?? true) &&
+      allowList &&
       (Boolean(accessToken) || (!!resolvedTenantId && isUuid(resolvedTenantId))),
     placeholderData: keepPreviousData,
     // Deleted list is local-registry backed — always refetch after delete/restore.

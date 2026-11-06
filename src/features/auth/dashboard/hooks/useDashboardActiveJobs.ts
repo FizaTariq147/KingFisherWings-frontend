@@ -41,7 +41,7 @@ export function useDashboardActiveJobs(options?: {
       'tenant',
       'dashboard',
       'active-jobs',
-      'staff-all-statuses-v18',
+      'staff-enrich-safe-v19',
       jobType,
       branchId,
       rowLimit,
