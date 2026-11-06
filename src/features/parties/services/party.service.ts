@@ -15,6 +15,8 @@ import {
 import { downloadPartyCsvExport } from '../utils/downloadPartyCsv';
 import { preparePartyImportCsvFile } from '../utils/normalizePartyImportCsv';
 import { normalizePartyHistory } from '../utils/normalizePartyHistory';
+import { normalizePartyPaymentList } from '../utils/normalizePartyPayments';
+import type { PartyPaymentRow } from '../types/partyPayments.types';
 import type {
   CreatePartyAddressDto,
   CreatePartyContactDto,
@@ -554,6 +556,19 @@ export const partyService = {
         axiosInstance.get<unknown>(PARTY_API.history(id)),
       );
       return normalizePartyHistory(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /parties/{id}/payments — RECEIPT + PAYMENT with invoice/proof links. */
+  async listPayments(id: string): Promise<PartyPaymentRow[]> {
+    assertPartyId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get<unknown>(PARTY_API.payments(id)),
+      );
+      return normalizePartyPaymentList(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }

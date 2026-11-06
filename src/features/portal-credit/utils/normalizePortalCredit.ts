@@ -8,6 +8,7 @@ import type {
   PortalAgingBucket,
   PortalAgingResult,
   PortalCreditSummary,
+  PortalPendingJobCharge,
   PortalStatementLine,
   PortalStatementResult,
 } from '../types/portalCredit.types';
@@ -75,6 +76,12 @@ export function normalizeStatement(raw: unknown): PortalStatementResult {
         : [];
   const lines: PortalStatementLine[] = linesRaw.map((line, i) => {
     const r = asRecord(line) ?? {};
+    const paymentStatus = pickString(
+      r.payment_status,
+      r.paymentStatus,
+      r.ar_status,
+      r.arStatus,
+    );
     return {
       id: pickString(r.id) || String(i),
       date: pickString(r.date, r.txn_date, r.transaction_date) || undefined,
@@ -84,8 +91,52 @@ export function normalizeStatement(raw: unknown): PortalStatementResult {
       credit: pickNumber(r.credit, r.credit_amount, r.payment_amount),
       balance: pickNumber(r.balance, r.running_balance),
       description: pickString(r.description, r.narration) || undefined,
+      paymentStatus: paymentStatus?.toUpperCase(),
     };
   });
+
+  const summary = asRecord(d.summary);
+  const pendingRaw =
+    (Array.isArray(d.pending_job_charges) && d.pending_job_charges) ||
+    (Array.isArray(d.pendingJobCharges) && d.pendingJobCharges) ||
+    (Array.isArray(summary?.pending_job_charges) && summary.pending_job_charges) ||
+    [];
+  const pendingJobCharges: PortalPendingJobCharge[] = [];
+  for (const row of pendingRaw) {
+    const r = asRecord(row) ?? {};
+    const chargeId = pickString(r.charge_id, r.chargeId, r.job_charge_id, r.id) || '';
+    if (!chargeId) continue;
+    pendingJobCharges.push({
+      chargeId,
+      jobId: pickString(r.job_id, r.jobId) || undefined,
+      jobNumber: pickString(r.job_number, r.jobNumber) || undefined,
+      description:
+        pickString(r.description, r.charge_description, r.charge_name, r.name) ||
+        undefined,
+      saleAmount: pickNumber(r.sale_amount, r.saleAmount, r.amount),
+      currencyCode:
+        pickString(r.currency_code, r.currencyCode, r.currency)?.toUpperCase() ||
+        undefined,
+      needsInvoice:
+        r.needs_invoice === true ||
+        r.needsInvoice === true ||
+        !pickString(r.invoice_id, r.invoiceId),
+    });
+  }
+
+  const invoiced = pickNumber(d.invoiced, summary?.invoiced, d.invoiced_total);
+  const pendingCosting =
+    pickNumber(d.pending_costing, summary?.pending_costing, d.pending_costing_total) ??
+    (pendingJobCharges.length
+      ? pendingJobCharges.reduce((s, c) => s + (c.saleAmount ?? 0), 0)
+      : undefined);
+  const paid = pickNumber(d.paid, summary?.paid, d.paid_total, summary?.receipts_total);
+  const balance =
+    pickNumber(d.balance, summary?.balance, summary?.open_balance, d.closing_balance) ??
+    (invoiced != null || pendingCosting != null || paid != null
+      ? (invoiced ?? 0) + (pendingCosting ?? 0) - (paid ?? 0)
+      : undefined);
+
   return {
     asOf: pickString(d.as_of, d.asOf) || undefined,
     openingBalance: pickNumber(d.opening_balance, d.openingBalance),
@@ -94,12 +145,17 @@ export function normalizeStatement(raw: unknown): PortalStatementResult {
       d.closingBalance,
       d.open_balance,
       d.openBalance,
-      d.balance,
+      balance,
       d.outstanding,
     ),
+    invoiced,
+    pendingCosting,
+    paid,
+    balance,
     invoiceCount: pickNumber(d.invoice_count, d.invoiceCount),
     currencyCode: pickString(d.currency_code, d.currencyCode) || undefined,
     truncated: typeof d.truncated === 'boolean' ? d.truncated : undefined,
+    pendingJobCharges: pendingJobCharges.length ? pendingJobCharges : undefined,
     lines,
   };
 }

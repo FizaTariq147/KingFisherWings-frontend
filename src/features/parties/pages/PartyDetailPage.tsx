@@ -18,7 +18,7 @@ import { PartyPortalUsersSection } from '../components/PartyPortalUsersSection';
 import { PartyTransactionSummarySection } from '../components/PartyTransactionSummarySection';
 import { PartyVendorPermissionsSection } from '../components/PartyVendorPermissionsSection';
 import { PartyVendorUsersSection } from '../components/PartyVendorUsersSection';
-import { PartyOnlinePaymentHistoryPanel } from '@/features/online-payments/components/PartyOnlinePaymentHistoryPanel';
+import { PartyPaymentsPanel } from '../components/PartyPaymentsPanel';
 import { StaffPartyVerificationPanel } from '@/features/party-verification/components/StaffPartyVerificationPanel';
 import { PARTY_TYPE_LABELS, type PartyType } from '../constants/party.constants';
 
@@ -170,9 +170,7 @@ export default function PartyDetailPage() {
     {
       key: 'payments',
       label: 'Payments',
-      content: (
-        <PartyOnlinePaymentHistoryPanel partyId={party.id} partyType={party.party_type} />
-      ),
+      content: <PartyPaymentsPanel partyId={party.id} partyType={party.party_type} />,
     },
     {
       key: 'history',

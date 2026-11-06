@@ -13,6 +13,8 @@ import { AIR_BOOKING_FORM_LIMITS, clipAirField } from '../../utils/airBookingFor
 type MawbForm = {
   flight_no: string;
   flight_status: string;
+  flight_date: string;
+  shipment_date: string;
   mawb_no: string;
   hawb_no: string;
   pallet_count: string;
@@ -30,6 +32,8 @@ type SavedMawbRow = {
   id: string;
   flight_no: string;
   flight_status: string;
+  flight_date: string;
+  shipment_date: string;
   mawb_no: string;
   hawb_no: string;
   pallet_count: string;
@@ -47,6 +51,8 @@ function emptyForm(): MawbForm {
   return {
     flight_no: '',
     flight_status: '',
+    flight_date: '',
+    shipment_date: '',
     mawb_no: '',
     hawb_no: '',
     pallet_count: '',
@@ -96,6 +102,8 @@ function payloadToForm(raw: unknown): MawbForm {
       0,
       AIR_BOOKING_FORM_LIMITS.flight_status,
     ),
+    flight_date: pickStr(nested.flight_date, nested.flightDate).slice(0, 10),
+    shipment_date: pickStr(nested.shipment_date, nested.shipmentDate).slice(0, 10),
     mawb_no: pickStr(nested.mawb_no, nested.mawb_number).slice(
       0,
       AIR_BOOKING_FORM_LIMITS.mawb_number,
@@ -120,6 +128,8 @@ function formHasValues(form: MawbForm): boolean {
   return [
     form.flight_no,
     form.flight_status,
+    form.flight_date,
+    form.shipment_date,
     form.mawb_no,
     form.hawb_no,
     form.pallet_count,
@@ -134,6 +144,8 @@ function formToSavedRow(form: MawbForm, id?: string): SavedMawbRow {
     id: id ?? `mawb-${Date.now()}`,
     flight_no: form.flight_no.trim(),
     flight_status: form.flight_status.trim(),
+    flight_date: form.flight_date.trim().slice(0, 10),
+    shipment_date: form.shipment_date.trim().slice(0, 10),
     mawb_no: form.mawb_no.trim(),
     hawb_no: form.hawb_no.trim(),
     pallet_count: form.pallet_count.trim(),
@@ -152,6 +164,8 @@ function savedRowToForm(row: SavedMawbRow): MawbForm {
   return {
     flight_no: row.flight_no,
     flight_status: row.flight_status,
+    flight_date: row.flight_date,
+    shipment_date: row.shipment_date,
     mawb_no: row.mawb_no,
     hawb_no: row.hawb_no,
     pallet_count: row.pallet_count,
@@ -171,6 +185,8 @@ function buildMawbDto(form: MawbForm, clear = false): UpdateAirMawbDto {
     return {
       flight_no: '',
       flight_status: '',
+      flight_date: null,
+      shipment_date: null,
       mawb_no: '',
       hawb_no: '',
       pallet_count: 0,
@@ -183,6 +199,8 @@ function buildMawbDto(form: MawbForm, clear = false): UpdateAirMawbDto {
     flight_no: clipAirField(form.flight_no, AIR_BOOKING_FORM_LIMITS.flight_number) ?? '',
     flight_status:
       clipAirField(form.flight_status, AIR_BOOKING_FORM_LIMITS.flight_status) ?? '',
+    flight_date: form.flight_date.trim().slice(0, 10) || null,
+    shipment_date: form.shipment_date.trim().slice(0, 10) || null,
     mawb_no: clipAirField(form.mawb_no, AIR_BOOKING_FORM_LIMITS.mawb_number) ?? '',
     hawb_no: clipAirField(form.hawb_no, AIR_BOOKING_FORM_LIMITS.hawb_number) ?? '',
   };
@@ -341,6 +359,18 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
             onChange={(e) => setField('flight_status', e.target.value)}
           />
           <Input
+            label="Flight date"
+            type="date"
+            value={form.flight_date}
+            onChange={(e) => setField('flight_date', e.target.value)}
+          />
+          <Input
+            label="Shipment date"
+            type="date"
+            value={form.shipment_date}
+            onChange={(e) => setField('shipment_date', e.target.value)}
+          />
+          <Input
             label="MAWB number"
             maxLength={AIR_BOOKING_FORM_LIMITS.mawb_number}
             value={form.mawb_no}
@@ -463,6 +493,8 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
                     <p className="text-xs text-[var(--color-neutral-500)]">
                       Flight: {row.flight_no || '—'}
                       {row.flight_status ? ` · ${row.flight_status}` : ''}
+                      {row.flight_date ? ` · Flight date ${row.flight_date}` : ''}
+                      {row.shipment_date ? ` · Shipment ${row.shipment_date}` : ''}
                       {row.hawb_no && row.mawb_no ? ` · HAWB ${row.hawb_no}` : ''}
                     </p>
                     <p className="text-xs text-[var(--color-neutral-500)]">

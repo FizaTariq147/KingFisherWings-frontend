@@ -139,7 +139,7 @@ export function useUploadPortalInvoicePaymentProof(invoiceId: string) {
   });
 }
 
-/** POST /portal/invoices/:id/payments — auto-posts RECEIPT; optional proof file. */
+/** POST /portal/invoices/:id/payments — auto-posts RECEIPT; proof file required. */
 export function useRecordPortalInvoicePayment(invoiceId: string) {
   const qc = useQueryClient();
   const scope = usePortalQueryScope();
@@ -148,7 +148,7 @@ export function useRecordPortalInvoicePayment(invoiceId: string) {
       file,
       dto,
     }: {
-      file?: File | null;
+      file: File;
       dto: import('@/features/payment-proofs/types/paymentProof.types').RecordPortalInvoicePaymentDto;
     }) => portalInvoicesService.recordPayment(invoiceId, dto, file),
     onSuccess: () => {

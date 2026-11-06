@@ -7,6 +7,7 @@ import { glPaymentKeys } from '@/features/glPayments/hooks/useGlPayments';
 import { paymentProofService } from '../services/paymentProof.service';
 import type {
   ApprovePaymentProofDto,
+  MarkInvoicePaidDto,
   ReviewPaymentProofDto,
   UploadPaymentProofDto,
 } from '../types/paymentProof.types';
@@ -48,6 +49,22 @@ export function useUploadPurchaseInvoicePaymentProof(invoiceId: string) {
       void qc.invalidateQueries({ queryKey: purchaseInvoiceKeys.detail(invoiceId) });
       void qc.invalidateQueries({ queryKey: purchaseInvoiceKeys.paymentProofs(invoiceId) });
       void qc.invalidateQueries({ queryKey: purchaseInvoiceKeys.all });
+    },
+  });
+}
+
+/** POST /invoices/:id/mark-paid — proof file required; posts RECEIPT. */
+export function useMarkInvoicePaid(invoiceId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ file, dto }: { file: File; dto?: MarkInvoicePaidDto }) =>
+      paymentProofService.markPaid(invoiceId, file, dto ?? {}),
+    onSuccess: () => {
+      void qc.invalidateQueries({ queryKey: paymentProofKeys.invoice(invoiceId) });
+      void qc.invalidateQueries({ queryKey: invoiceKeys.detail(invoiceId) });
+      void qc.invalidateQueries({ queryKey: invoiceKeys.all });
+      void qc.invalidateQueries({ queryKey: glPaymentKeys.all });
+      void qc.invalidateQueries({ queryKey: ['tenant', 'ar-ap'] });
     },
   });
 }

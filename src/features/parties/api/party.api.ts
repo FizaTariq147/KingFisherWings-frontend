@@ -46,6 +46,8 @@ export const PARTY_API = {
   creditSummarySendEmail: (id: string) => `/parties/${id}/credit/summary/send-email`,
   ediCodes: (id: string) => `/parties/${id}/edi-codes`,
   standardCharges: (id: string) => `/parties/${id}/standard-charges`,
+  /** GET /parties/:id/payments — posted RECEIPT + PAYMENT rows with invoice/proof refs. */
+  payments: (id: string) => `/parties/${encodeURIComponent(id)}/payments`,
 } as const;
 
 export const PARTY_PORTAL_DOCUMENT_TYPES = [

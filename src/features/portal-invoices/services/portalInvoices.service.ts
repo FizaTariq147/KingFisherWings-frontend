@@ -191,15 +191,18 @@ export const portalInvoicesService = {
   },
 
   /**
-   * POST /portal/invoices/:id/payments — records payment, posts RECEIPT immediately,
-   * optionally attaches a proof file. Invoice balance_due drops on success.
+   * POST /portal/invoices/:id/payments — records payment, posts RECEIPT immediately.
+   * Proof file is required. Without proof use POST …/payment-proofs (unpaid until staff mark-paid).
    */
   async recordPayment(
     invoiceId: string,
     dto: RecordPortalInvoicePaymentDto,
-    file?: File | null,
+    file: File,
   ): Promise<PaymentProof | null> {
     if (!invoiceId?.trim()) throw new Error('Invoice id is required.');
+    if (!(file instanceof File) || file.size <= 0) {
+      throw new Error('A payment proof file is required to record payment.');
+    }
     if (!Number.isFinite(dto.amount) || dto.amount <= 0) {
       throw new Error('Amount must be a positive number.');
     }
@@ -210,7 +213,7 @@ export const portalInvoicesService = {
       const token = usePortalAuthStore.getState().accessToken;
       const data = await postPaymentProofMultipartFetch({
         path: PORTAL_INVOICES_API.payments(invoiceId),
-        file: file ?? null,
+        file,
         accessToken: token,
         fields: buildPortalInvoicePaymentFields(dto),
         errorFactory: (message, status) => new PortalApiError(message, status),

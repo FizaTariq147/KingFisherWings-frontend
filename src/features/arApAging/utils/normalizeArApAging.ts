@@ -1,4 +1,8 @@
-import type { AgingLine, StatementLine } from '../types/arApAging.types';
+import type {
+  AgingLine,
+  PendingJobChargeLine,
+  StatementLine,
+} from '../types/arApAging.types';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -532,6 +536,16 @@ function buildStatementDescription(
   return unique.length ? unique.join(' · ') : undefined;
 }
 
+function normalizeArPaymentStatus(raw: unknown): string | undefined {
+  const s = str(raw)?.toUpperCase().replace(/\s+/g, '_');
+  if (!s) return undefined;
+  if (s === 'UNPAID' || s === 'PROOF_UPLOADED' || s === 'PAID') return s;
+  if (/proof/.test(s)) return 'PROOF_UPLOADED';
+  if (/paid|settled/.test(s)) return 'PAID';
+  if (/unpaid|open|due|outstanding/.test(s)) return 'UNPAID';
+  return s;
+}
+
 export function normalizeStatementLine(
   raw: unknown,
   side: 'AR' | 'AP' = 'AR',
@@ -564,6 +578,39 @@ export function normalizeStatementLine(
     balance: num(r.balance) || num(r.running_balance),
     document_id: str(r.document_id) ?? str(r.invoice_id) ?? str(r.payment_id) ?? str(r.id),
     document_number: str(r.document_number) ?? str(r.invoice_number) ?? str(r.payment_number),
+    payment_status: normalizeArPaymentStatus(
+      r.payment_status ?? r.ar_status ?? r.ar_payment_status ?? r.status,
+    ),
+  };
+}
+
+export function normalizePendingJobCharge(raw: unknown): PendingJobChargeLine | null {
+  const r = asRecord(raw);
+  if (!r) return null;
+  const charge_id =
+    str(r.charge_id) ?? str(r.job_charge_id) ?? str(r.id) ?? str(r.chargeId);
+  if (!charge_id) return null;
+  return {
+    charge_id,
+    job_id: str(r.job_id) ?? str(r.jobId),
+    job_number: str(r.job_number) ?? str(r.jobNumber),
+    description:
+      str(r.description) ??
+      str(r.charge_description) ??
+      str(r.charge_name) ??
+      str(r.name),
+    sale_amount:
+      num(r.sale_amount) ||
+      num(r.saleAmount) ||
+      num(r.amount) ||
+      num(r.bill_amount) ||
+      undefined,
+    currency_code: (str(r.currency_code) ?? str(r.currencyCode) ?? str(r.currency))?.toUpperCase(),
+    needs_invoice:
+      r.needs_invoice === true ||
+      r.needsInvoice === true ||
+      (!str(r.invoice_id) && !str(r.invoiceId)),
+    raw: r,
   };
 }
 
@@ -692,6 +739,43 @@ export function normalizeStatementReport(raw: unknown, partyId?: string) {
     .map((l) => str(l.currency_code) ?? str(l.currencyCode))
     .find(Boolean);
 
+  const pendingRaw =
+    (Array.isArray(root.pending_job_charges) && root.pending_job_charges) ||
+    (Array.isArray(root.pendingJobCharges) && root.pendingJobCharges) ||
+    (Array.isArray(root.pending_charges) && root.pending_charges) ||
+    (Array.isArray(summary?.pending_job_charges) && summary.pending_job_charges) ||
+    [];
+  const pending_job_charges = pendingRaw
+    .map(normalizePendingJobCharge)
+    .filter((c): c is PendingJobChargeLine => Boolean(c));
+
+  const invoiced =
+    num(root.invoiced) ||
+    num(summary?.invoiced) ||
+    num(root.invoiced_total) ||
+    num(summary?.invoiced_total) ||
+    undefined;
+  const pending_costing =
+    num(root.pending_costing) ||
+    num(summary?.pending_costing) ||
+    num(root.pending_costing_total) ||
+    pending_job_charges.reduce((s, c) => s + (c.sale_amount ?? 0), 0) ||
+    undefined;
+  const paid =
+    num(root.paid) ||
+    num(summary?.paid) ||
+    num(root.paid_total) ||
+    num(summary?.receipts_total) ||
+    undefined;
+  const balance =
+    num(root.balance) ||
+    num(summary?.balance) ||
+    num(summary?.open_balance) ||
+    num(root.closing_balance) ||
+    (invoiced != null || pending_costing != null || paid != null
+      ? (invoiced ?? 0) + (pending_costing ?? 0) - (paid ?? 0)
+      : undefined);
+
   return {
     party_id: str(root.party_id) ?? str(party?.id) ?? partyId,
     party_name: str(root.party_name) ?? str(party?.name) ?? str(root.name),
@@ -700,14 +784,19 @@ export function normalizeStatementReport(raw: unknown, partyId?: string) {
     closing_balance:
       num(root.closing_balance) ||
       num(summary?.open_balance) ||
-      num(root.balance) ||
+      balance ||
       (lines.length ? num(lines[lines.length - 1]?.balance) : 0),
     currency_code: (
       str(root.currency_code) ??
       str(party?.currency_code) ??
       currencyFromLines
     )?.toUpperCase(),
+    invoiced: invoiced || undefined,
+    pending_costing: pending_costing || undefined,
+    paid: paid || undefined,
+    balance: balance ?? undefined,
     lines,
+    pending_job_charges,
     raw,
   };
 }

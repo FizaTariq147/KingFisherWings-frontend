@@ -12,10 +12,19 @@ import {
 import { AR_AGING_ROUTE } from '../api/arApAging.api';
 import { AgingFilters } from '../components/AgingFilters';
 import { PartyOpeningBalanceModal } from '../components/PartyOpeningBalanceModal';
+import { PendingJobChargesTable } from '../components/PendingJobChargesTable';
 import { StatementTable } from '../components/StatementTable';
 import { useArStatement, useSendArStatementEmail } from '../hooks/useArApAging';
 import { downloadGlStatementPdf } from '../utils/downloadGlStatementPdf';
 import { getErrorMessage } from '../utils/getErrorMessage';
+
+function formatMoney(amount: number | undefined, currency?: string) {
+  if (amount == null || !Number.isFinite(amount)) return null;
+  return `${currency || ''} ${amount.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`.trim();
+}
 
 export default function ArStatementPage() {
   const navigate = useNavigate();
@@ -86,8 +95,8 @@ export default function ArStatementPage() {
             Customer statement
           </h2>
           <p className="text-sm text-[var(--color-neutral-400)] mt-0.5">
-            {data?.party_name || partyId} — invoices, receipts, and running balance
-            (GET /gl/ar/statement/:partyId).
+            {data?.party_name || partyId} — posted invoices/receipts plus uninvoiced sale
+            charges (GET /gl/ar/statement/:partyId).
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -194,30 +203,49 @@ export default function ArStatementPage() {
           <p className="text-sm text-[var(--color-neutral-400)] py-10 text-center">Loading…</p>
         ) : (
           <>
-            <div className="flex flex-wrap gap-4 text-sm text-[var(--color-neutral-600)]">
+            <div className="flex flex-wrap gap-x-5 gap-y-2 text-sm text-[var(--color-neutral-600)]">
               {data?.as_of ? <span>As of {data.as_of}</span> : null}
-              {data?.opening_balance != null && data.opening_balance !== 0 ? (
+              {data?.invoiced != null ? (
+                <span>Invoiced: {formatMoney(data.invoiced, data.currency_code)}</span>
+              ) : null}
+              {data?.pending_costing != null ? (
                 <span>
-                  Opening: {data.currency_code || ''}{' '}
-                  {data.opening_balance.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+                  Pending costing: {formatMoney(data.pending_costing, data.currency_code)}
                 </span>
               ) : null}
-              {data?.closing_balance != null ? (
-                <span className="font-medium">
-                  Closing: {data.currency_code || ''}{' '}
-                  {data.closing_balance.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                    maximumFractionDigits: 2,
-                  })}
+              {data?.paid != null ? (
+                <span>Paid: {formatMoney(data.paid, data.currency_code)}</span>
+              ) : null}
+              {data?.balance != null || data?.closing_balance != null ? (
+                <span className="font-medium text-[var(--color-neutral-800)]">
+                  Balance:{' '}
+                  {formatMoney(
+                    data?.balance ?? data?.closing_balance,
+                    data?.currency_code,
+                  )}
                 </span>
+              ) : null}
+              {data?.opening_balance != null && data.opening_balance !== 0 ? (
+                <span>Opening: {formatMoney(data.opening_balance, data.currency_code)}</span>
               ) : null}
             </div>
             <div className="overflow-x-auto">
               <StatementTable lines={data?.lines ?? []} currencyCode={data?.currency_code} />
             </div>
+            {(data?.pending_job_charges?.length ?? 0) > 0 ? (
+              <div className="space-y-2 pt-2 border-t border-[var(--color-neutral-100)]">
+                <h3 className="text-sm font-medium text-[var(--color-neutral-800)]">
+                  Uninvoiced sale charges
+                </h3>
+                <p className="text-xs text-[var(--color-neutral-500)]">
+                  Billable costing lines not yet on a posted/sent sale invoice. Generate a sale
+                  invoice from job costing before mark-paid.
+                </p>
+                <div className="overflow-x-auto">
+                  <PendingJobChargesTable charges={data?.pending_job_charges ?? []} />
+                </div>
+              </div>
+            ) : null}
           </>
         )}
       </Card>

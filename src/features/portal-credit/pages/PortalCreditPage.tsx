@@ -251,12 +251,27 @@ export default function PortalCreditPage() {
               {statement.data?.invoiceCount != null ? (
                 <span>{statement.data.invoiceCount} invoice(s)</span>
               ) : null}
+              {statement.data?.invoiced != null ? (
+                <span>Invoiced {formatMoney(statement.data.invoiced, currency)}</span>
+              ) : null}
+              {statement.data?.pendingCosting != null ? (
+                <span>
+                  Pending costing {formatMoney(statement.data.pendingCosting, currency)}
+                </span>
+              ) : null}
+              {statement.data?.paid != null ? (
+                <span>Paid {formatMoney(statement.data.paid, currency)}</span>
+              ) : null}
               {statement.data?.openingBalance != null ? (
                 <span>Opening {formatMoney(statement.data.openingBalance, currency)}</span>
               ) : null}
-              {statement.data?.closingBalance != null ? (
+              {(statement.data?.balance ?? statement.data?.closingBalance) != null ? (
                 <span className="font-semibold text-[var(--color-neutral-800)]">
-                  Open balance {formatMoney(statement.data.closingBalance, currency)}
+                  Open balance{' '}
+                  {formatMoney(
+                    statement.data?.balance ?? statement.data?.closingBalance,
+                    currency,
+                  )}
                 </span>
               ) : null}
               {statement.data?.composedFromLedgers ? (
@@ -272,6 +287,7 @@ export default function PortalCreditPage() {
                   <th className="px-4 py-2.5 font-semibold">Type</th>
                   <th className="px-4 py-2.5 font-semibold">Reference</th>
                   <th className="px-4 py-2.5 font-semibold">Description</th>
+                  <th className="px-4 py-2.5 font-semibold">Status</th>
                   <th className="px-4 py-2.5 font-semibold text-right">Debit</th>
                   <th className="px-4 py-2.5 font-semibold text-right">Credit</th>
                   <th className="px-4 py-2.5 font-semibold text-right">Balance</th>
@@ -288,6 +304,9 @@ export default function PortalCreditPage() {
                     <td className="max-w-[240px] truncate px-4 py-2.5 text-[var(--color-neutral-600)]">
                       {line.description || '—'}
                     </td>
+                    <td className="whitespace-nowrap px-4 py-2.5 text-xs">
+                      {line.paymentStatus?.replaceAll('_', ' ') || '—'}
+                    </td>
                     <td className="whitespace-nowrap px-4 py-2.5 text-right tabular-nums">
                       {line.debit != null ? formatMoney(line.debit) : '—'}
                     </td>
@@ -301,6 +320,24 @@ export default function PortalCreditPage() {
                 ))}
               </tbody>
             </table>
+            {(statement.data?.pendingJobCharges?.length ?? 0) > 0 ? (
+              <div className="border-t border-[var(--color-neutral-100)] px-4 py-3">
+                <p className="mb-2 text-sm font-medium text-[var(--color-neutral-800)]">
+                  Uninvoiced sale charges
+                </p>
+                <ul className="space-y-1 text-sm text-[var(--color-neutral-600)]">
+                  {statement.data!.pendingJobCharges!.map((c) => (
+                    <li key={c.chargeId}>
+                      {c.jobNumber || c.jobId || 'Job'} — {c.description || 'Charge'}
+                      {c.saleAmount != null
+                        ? ` · ${formatMoney(c.saleAmount, c.currencyCode || currency)}`
+                        : ''}
+                      {c.needsInvoice !== false ? ' · Needs invoice' : ''}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
           </div>
         )}
       </PortalPanel>

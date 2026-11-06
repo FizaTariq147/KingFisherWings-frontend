@@ -8,6 +8,9 @@ export const PAYMENT_PROOF_API = {
   reject: (id: string) => `/payment-proofs/${encodeURIComponent(id)}/reject`,
   staffInvoiceProofs: (invoiceId: string) =>
     `/invoices/${encodeURIComponent(invoiceId)}/payment-proofs`,
+  /** POST multipart — proof file required; creates PaymentProof + posts RECEIPT. */
+  markPaid: (invoiceId: string) =>
+    `/invoices/${encodeURIComponent(invoiceId)}/mark-paid`,
   /** Admin AP remittance proofs — GET/POST /purchase-invoices/{id}/payment-proofs */
   staffPurchaseInvoiceProofs: (invoiceId: string) =>
     PURCHASE_INVOICE_API.paymentProofs(invoiceId),
