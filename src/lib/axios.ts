@@ -4,7 +4,11 @@ import { matchesAnyApiPath } from '@/lib/apiPath'
 import { erpAccessBlockMessage } from '@/lib/detectErpAccessBlock'
 import { ensureErpAccessToken } from '@/lib/ensureErpAccessToken'
 import { notifyAxiosError } from '@/lib/toastNotify'
-import { isSessionInactivityTimeoutMessage, useAuthStore } from '@/store/authStore'
+import {
+  isIdleTimeoutAuthError,
+  softSignOutToLogin,
+  useAuthStore,
+} from '@/store/authStore'
 
 interface RetryConfig extends InternalAxiosRequestConfig {
   _retry?: boolean
@@ -32,6 +36,7 @@ const AUTH_NO_REFRESH_RETRY = [
   ...AUTH_PUBLIC_URLS,
   AUTH_API.logout,
   AUTH_API.logoutAll,
+  AUTH_API.sessionTouch,
 ] as const
 
 function isAuthPublicUrl(url?: string): boolean {
@@ -91,19 +96,19 @@ axiosInstance.interceptors.response.use(
 
     if (error.response?.status !== 401) return rejectWithToast(error)
 
-    // Backend SESSION_IDLE_TIMEOUT_MINUTES — clear tokens and send to login.
-    if (isSessionInactivityTimeoutMessage(error.response?.data)) {
+    // Backend idle revoke — prefer code IDLE_TIMEOUT; soft-navigate (no hard reload).
+    if (isIdleTimeoutAuthError(error.response?.data)) {
       useAuthStore.getState().forceLogoutDueToInactivity()
       return rejectWithToast(error)
     }
 
     const authState = useAuthStore.getState()
     if (!authState.refreshToken) {
-      // Only hard-redirect when an ERP session existed. Anonymous / Super Admin
-      // surfaces share AppShell and may hit ERP APIs without staff tokens —
-      // forceLogoutDueToInactivity would bounce Super Admin to /login.
+      // Soft clear when an ERP session existed. Anonymous / Super Admin surfaces
+      // share AppShell and may hit ERP APIs without staff tokens — do not bounce
+      // Super Admin to /login.
       if (authState.isAuthenticated) {
-        useAuthStore.getState().forceLogoutDueToInactivity()
+        softSignOutToLogin()
       }
       return rejectWithToast(error)
     }
@@ -116,8 +121,14 @@ axiosInstance.interceptors.response.use(
       original.headers.Authorization = `Bearer ${newToken}`
       return axiosInstance(original)
     } catch (refreshError) {
-      // Refresh failed or idle — auto sign-out (no Continue/Revoke popup).
-      useAuthStore.getState().forceLogoutDueToInactivity()
+      // Distinguish idle revoke from transient refresh failure.
+      const refreshData = (refreshError as AxiosError)?.response?.data
+      if (isIdleTimeoutAuthError(refreshData)) {
+        useAuthStore.getState().forceLogoutDueToInactivity()
+      } else {
+        // Soft clear — do not hard-reload SPA on background refresh-token blips.
+        softSignOutToLogin()
+      }
       return rejectWithToast(refreshError)
     }
   },

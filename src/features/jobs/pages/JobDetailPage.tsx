@@ -66,7 +66,9 @@ import {
   useJobTracking,
 } from '../hooks/useJobs';
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
+import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground';
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
+import { JobTrackingProfileEditor } from '../components/JobTrackingProfileEditor';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
@@ -204,6 +206,7 @@ export default function JobDetailPage() {
     job?.shipment_id && isUuid(job.shipment_id) ? job.shipment_id : undefined;
 
   const [showTracking, setShowTracking] = useState(false);
+  const [showTrackingProfileEditor, setShowTrackingProfileEditor] = useState(false);
   const trackingQuery = useJobTracking(
     {
       jobId: id,
@@ -240,44 +243,84 @@ export default function JobDetailPage() {
           <p className="text-[11px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
             Track &amp; Trace
           </p>
-          <Button
-            type="button"
-            size="sm"
-            variant="secondary"
-            onClick={() => setShowTracking(false)}
-          >
-            Hide
-          </Button>
+          <div className="flex flex-wrap items-center gap-2">
+            {job?.id ? (
+              <Button
+                type="button"
+                size="sm"
+                variant="secondary"
+                onClick={() => setShowTrackingProfileEditor((v) => !v)}
+              >
+                {showTrackingProfileEditor
+                  ? 'Hide profile editor'
+                  : 'Edit tracking profile'}
+              </Button>
+            ) : null}
+            <Button
+              type="button"
+              size="sm"
+              variant="secondary"
+              onClick={() => {
+                setShowTracking(false);
+                setShowTrackingProfileEditor(false);
+              }}
+            >
+              Hide
+            </Button>
+          </div>
         </div>
-        <div className="px-5 py-6 sm:px-8">
+        <div className="space-y-4">
+          {showTrackingProfileEditor && job?.id ? (
+            <div className="mx-3 mt-3 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-3 sm:mx-4 sm:px-4">
+              <JobTrackingProfileEditor
+                jobId={job.id}
+                onCancel={() => setShowTrackingProfileEditor(false)}
+                onSaved={() => {
+                  void trackingQuery.refetch();
+                }}
+              />
+            </div>
+          ) : null}
           {trackingQuery.isLoading ? (
-            <p className="text-[13px] text-[#64748b]">Loading tracking…</p>
+            <p className="px-5 py-6 text-[13px] text-[#64748b]">Loading tracking…</p>
           ) : trackingQuery.isError ? (
-            <p className="text-[13px] text-red-700">
+            <p className="px-5 py-6 text-[13px] text-red-700">
               {getErrorMessage(trackingQuery.error)}
             </p>
           ) : (
-            <PublicTrackTimeline
-              result={toTrackResult(
+            (() => {
+              const trackResult = toTrackResult(
                 trackingQuery.data?.data ?? trackingQuery.data,
                 job?.job_number || job?.id,
-              )}
-              pdfSource={
-                job?.id
-                  ? { kind: 'job', jobId: job.id }
-                  : undefined
-              }
-            />
+              );
+              return (
+                <div className="relative min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220]">
+                  <TrackMapBackground result={trackResult} />
+                  <div className="relative z-[1] flex min-h-[560px] max-w-[520px] flex-col p-3 sm:p-4">
+                    <PublicTrackTimeline
+                      variant="overlay"
+                      className="min-h-0 flex-1 shadow-2xl"
+                      result={trackResult}
+                      pdfSource={
+                        job?.id ? { kind: 'job', jobId: job.id } : undefined
+                      }
+                    />
+                  </div>
+                </div>
+              );
+            })()
           )}
         </div>
       </div>
     );
   }, [
     showTracking,
+    showTrackingProfileEditor,
     trackingQuery.isLoading,
     trackingQuery.isError,
     trackingQuery.error,
     trackingQuery.data,
+    trackingQuery.refetch,
     job?.job_number,
     job?.id,
   ]);
@@ -1126,6 +1169,7 @@ export default function JobDetailPage() {
                 onClick={() => {
                   if (showTracking) {
                     setShowTracking(false);
+                    setShowTrackingProfileEditor(false);
                     return;
                   }
                   openTrackTrace();

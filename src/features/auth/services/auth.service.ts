@@ -168,6 +168,11 @@ export const authService = {
     return (data ?? {}) as AuthMeResponse;
   },
 
+  /** POST /auth/session/touch — extend server idle while the tab has user activity. */
+  async touchSession(): Promise<void> {
+    await axiosInstance.post(AUTH_API.sessionTouch, undefined, { skipErrorToast: true });
+  },
+
   /**
    * PATCH /auth/me — used for preferred_country_code when the backend supports it.
    * Not documented under Auth OpenAPI; clients must tolerate 404/405.

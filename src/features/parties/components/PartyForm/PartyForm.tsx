@@ -22,12 +22,12 @@ import {
   resolveAuthRoleSlug,
 } from '@/features/users/constants/userPermissions';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
-import type { PartyType } from '../../constants/party.constants';
-import { usePartyTypes } from '../../hooks/useParties';
+import { usePartyTypeCatalog } from '../../hooks/useParties';
 import { createPartySchema, updatePartySchema } from '../../schemas/party.schema';
 import type { CreatePartyFormValues, UpdatePartyFormValues } from '../../types/party.types';
 import { loadPartyCurrencyOptions } from '../../utils/partyCurrencyOptions';
 import { resolvePartyTypeOptions } from '../../utils/resolvePartyTypeOptions';
+import { AddPartyTypeModal } from '../AddPartyTypeModal';
 import { PartyTypeSelectGrid, PartyWizardStepper } from '../party-wizard';
 
 const selectClass =
@@ -89,6 +89,7 @@ export function PartyForm({
 }: PartyFormProps) {
   const isWizard = layout === 'wizard' && mode === 'create';
   const [step, setStep] = useState(0);
+  const [addTypeOpen, setAddTypeOpen] = useState(false);
   const schema = mode === 'create' ? createPartySchema : updatePartySchema;
   const { user } = useAuth();
   const canGrantPortalAccess = useMemo(() => {
@@ -99,7 +100,7 @@ export function PartyForm({
     return isTenantUserManagerRole(resolveAuthRoleSlug(user?.role));
   }, [user?.canGrantPortalAccess, user?.role]);
   const { data: companies = [] } = useTenantCompanies(true);
-  const typesQuery = usePartyTypes(true);
+  const typesQuery = usePartyTypeCatalog(true);
   const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
 
   const { data: currencies = [] } = useQuery({
@@ -395,7 +396,7 @@ export function PartyForm({
           <div className="rounded-xl bg-white p-5 sm:p-6">
             <PartyTypeSelectGrid
               value={partyType}
-              onChange={(type: PartyType) =>
+              onChange={(type: string) =>
                 setValue('party_type', type, { shouldValidate: true, shouldDirty: true })
               }
               error={fieldError('party_type')}
@@ -469,7 +470,16 @@ export function PartyForm({
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <label className="text-xs font-medium text-[var(--color-neutral-500)] space-y-1 sm:col-span-2">
-            Party type *
+            <span className="flex items-center justify-between gap-2">
+              <span>Party type *</span>
+              <button
+                type="button"
+                className="text-[11px] font-medium text-[var(--color-primary-600)] hover:underline"
+                onClick={() => setAddTypeOpen(true)}
+              >
+                Add type
+              </button>
+            </span>
             <select className={selectClass} {...register('party_type')}>
               {partyTypeOptions.map(({ code, label }) => (
                 <option key={code} value={code}>
@@ -523,6 +533,15 @@ export function PartyForm({
           {isSubmitting ? 'Saving…' : mode === 'create' ? 'Create party' : 'Save changes'}
         </Button>
       </div>
+
+      <AddPartyTypeModal
+        open={addTypeOpen}
+        nested={false}
+        onClose={() => setAddTypeOpen(false)}
+        onCreated={(code) =>
+          setValue('party_type', code, { shouldValidate: true, shouldDirty: true })
+        }
+      />
     </form>
   );
 }

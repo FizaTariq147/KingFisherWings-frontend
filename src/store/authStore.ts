@@ -5,7 +5,13 @@ import type {
   LoginDto,
   TenantLoginDto,
 } from '@/features/auth/types/auth.api.types'
-import { IDLE_SESSION_MS, isIdleSessionExpired as isIdleExpired } from '@/lib/idleSession'
+import { appNavigate } from '@/lib/appNavigate'
+import {
+  DEFAULT_IDLE_TIMEOUT_MINUTES,
+  IDLE_SESSION_MS,
+  idleMinutesToMs,
+  isIdleSessionExpired as isIdleExpired,
+} from '@/lib/idleSession'
 import {
   resolveSessionTenantIdFromAuth,
   sessionIdFromAccessToken,
@@ -128,6 +134,8 @@ interface AuthState {
   sessionId: string | null
   /** Epoch ms of last user activity — idle timeout is based on this, not login. */
   lastActiveAt: number | null
+  /** Idle window from GET /auth/me `idle_timeout_minutes` (fallback 20). */
+  idleTimeoutMinutes: number
   isAuthenticated: boolean
   isLoading: boolean
   error: string | null
@@ -156,9 +164,10 @@ interface AuthActions {
   setAccessToken: (token: string) => void
   setTokens: (accessToken: string, refreshToken?: string | null) => void
   patchSessionUser: (partial: Partial<AuthUser>) => void
+  setIdleTimeoutMinutes: (minutes: number) => void
   clearMustChangePassword: () => void
   touchSessionActivity: () => void
-  /** Idle / refresh failure — clear session and go to login (no popup). */
+  /** Idle expiry — flush draft (if any), soft-clear session, navigate to login. */
   markSessionExpired: () => void
   setSubscriptionBlocked: (message: string | null) => void
   setErpAccessBlocked: (message: string | null) => void
@@ -169,23 +178,29 @@ interface AuthActions {
   /** Clear ERP staff/tenant session (e.g. when entering Super Admin). */
   clearSession: () => void
   /**
-   * Backend idle revoke (401 Session timed out due to inactivity) —
-   * clear tokens and hard-navigate to login.
+   * Backend idle revoke (401 code IDLE_TIMEOUT) —
+   * flush draft then soft-navigate to login (no hard reload).
    */
   forceLogoutDueToInactivity: () => void
+  /** Soft clear + SPA navigate — used for non-idle refresh/auth failures. */
+  softLogoutToLogin: (opts?: { reason?: 'idle' }) => void
 }
 
 type AuthStore = AuthState & AuthActions
 
-/** Idle timeout — inactivity only (not counted from login). 20 minutes for Admin / portals. */
+/** Idle timeout — inactivity only (not counted from login). Default 20 minutes. */
 export const SESSION_IDLE_MS = IDLE_SESSION_MS
 
-export function isSessionIdleExpired(lastActiveAt: number | null | undefined): boolean {
-  return isIdleExpired(lastActiveAt, SESSION_IDLE_MS)
+/** Read the effective idle window from the auth store (GET /auth/me override). */
+export function getSessionIdleMs(): number {
+  return idleMinutesToMs(useAuthStore.getState().idleTimeoutMinutes)
 }
 
-/** Detect API 401 body from SESSION_IDLE_TIMEOUT_MINUTES revoke. */
-export function isSessionInactivityTimeoutMessage(raw: unknown): boolean {
+export function isSessionIdleExpired(lastActiveAt: number | null | undefined): boolean {
+  return isIdleExpired(lastActiveAt, getSessionIdleMs())
+}
+
+function collectAuthErrorTextParts(raw: unknown): string[] {
   const parts: string[] = []
   if (typeof raw === 'string') parts.push(raw)
   else if (raw && typeof raw === 'object') {
@@ -203,12 +218,56 @@ export function isSessionInactivityTimeoutMessage(raw: unknown): boolean {
       }
     }
   }
-  const text = parts.join(' ').toLowerCase()
+  return parts
+}
+
+function readAuthErrorCode(raw: unknown): string | null {
+  if (!raw || typeof raw !== 'object') return null
+  const rec = raw as Record<string, unknown>
+  const candidates: unknown[] = [rec.code, rec.error_code, rec.errorCode]
+  if (rec.data && typeof rec.data === 'object') {
+    const nested = rec.data as Record<string, unknown>
+    candidates.push(nested.code, nested.error_code, nested.errorCode)
+  }
+  for (const c of candidates) {
+    if (typeof c === 'string' && c.trim()) return c.trim()
+  }
+  return null
+}
+
+/** Detect API 401 body from SESSION_IDLE_TIMEOUT_MINUTES revoke (message heuristics). */
+export function isSessionInactivityTimeoutMessage(raw: unknown): boolean {
+  const text = collectAuthErrorTextParts(raw).join(' ').toLowerCase()
   return (
     text.includes('session timed out') ||
     text.includes('due to inactivity') ||
-    text.includes('inactivity') && text.includes('session')
+    (text.includes('inactivity') && text.includes('session'))
   )
+}
+
+/** Prefer `code: "IDLE_TIMEOUT"`; fall back to inactivity message heuristics. */
+export function isIdleTimeoutAuthError(raw: unknown): boolean {
+  const code = readAuthErrorCode(raw)
+  if (code && code.toUpperCase() === 'IDLE_TIMEOUT') return true
+  return isSessionInactivityTimeoutMessage(raw)
+}
+
+/** Best-effort flush of in-progress job create draft before idle logout. */
+async function flushJobCreateDraftBeforeIdleLogout(): Promise<void> {
+  try {
+    // Optional — only resolves when jobs ships this helper (do not create it here).
+    const loaders = import.meta.glob<{
+      flushJobCreateDraftBeforeIdleLogout?: () => void | Promise<void>
+    }>('../features/jobs/utils/flushJobCreateDraft.ts')
+    const loader = Object.values(loaders)[0]
+    if (!loader) return
+    const mod = await loader()
+    if (typeof mod.flushJobCreateDraftBeforeIdleLogout === 'function') {
+      await mod.flushJobCreateDraftBeforeIdleLogout()
+    }
+  } catch {
+    // Optional helper — absent until jobs module ships it.
+  }
 }
 
 async function applyLoginSuccess(
@@ -264,6 +323,7 @@ function clearAuthState(): Partial<AuthState> {
     refreshToken: null,
     sessionId: null,
     lastActiveAt: null,
+    idleTimeoutMinutes: DEFAULT_IDLE_TIMEOUT_MINUTES,
     isAuthenticated: false,
     error: null,
     sessionExpired: false,
@@ -279,12 +339,7 @@ export const ERP_AUTH_STORAGE_KEY = 'KingFisher Tech-auth'
 /** Set before redirect so a late persist write cannot resurrect the session on /login. */
 export const ERP_AUTH_SIGNOUT_FLAG = 'KingFisher Tech-auth-signout'
 
-/**
- * Clear in-memory + persisted ERP auth, then hard-navigate to login.
- * Must wipe sessionStorage synchronously — async zustand persist can lose the race
- * against window.location and resurrect the idle session after "Revoke".
- */
-function hardSignOutToLogin(redirectPath = '/login'): void {
+function wipePersistedErpAuth(): void {
   try {
     sessionStorage.setItem(ERP_AUTH_SIGNOUT_FLAG, '1')
   } catch {
@@ -304,8 +359,39 @@ function hardSignOutToLogin(redirectPath = '/login'): void {
   } catch {
     /* ignore */
   }
+}
+
+/**
+ * Clear in-memory + persisted ERP auth, then hard-navigate to login.
+ * Used for intentional logout only — idle / 401 idle must use softSignOutToLogin.
+ */
+function hardSignOutToLogin(redirectPath = '/login'): void {
+  wipePersistedErpAuth()
   // replace: avoid back-button returning to an authenticated shell
   window.location.replace(redirectPath)
+}
+
+/**
+ * Soft clear session + SPA navigate (no window.location.replace).
+ * Idle paths may pass `{ reason: 'idle' }` for `/login?reason=idle`.
+ */
+export function softSignOutToLogin(opts?: { reason?: 'idle' }): void {
+  wipePersistedErpAuth()
+  const path = opts?.reason === 'idle' ? '/login?reason=idle' : '/login'
+  appNavigate(path)
+}
+
+function beginIdleSoftSignOut(): void {
+  const state = useAuthStore.getState()
+  if (state.sessionExpiryActionInProgress) return
+  useAuthStore.setState({ sessionExpiryActionInProgress: true })
+  void (async () => {
+    try {
+      await flushJobCreateDraftBeforeIdleLogout()
+    } finally {
+      softSignOutToLogin({ reason: 'idle' })
+    }
+  })()
 }
 
 /** Discard a resurrected ERP session after intentional sign-out / revoke. */
@@ -339,6 +425,7 @@ export const useAuthStore = create<AuthStore>()(
       refreshToken: null,
       sessionId: null,
       lastActiveAt: null,
+      idleTimeoutMinutes: DEFAULT_IDLE_TIMEOUT_MINUTES,
       isAuthenticated: false,
       isLoading: false,
       error: null,
@@ -476,7 +563,8 @@ export const useAuthStore = create<AuthStore>()(
       refreshAccessToken: async () => {
         const refreshToken = get().refreshToken
         if (!refreshToken) {
-          get().markSessionExpired()
+          // Refresh-token gap — soft clear (not idle). Do not hard-reload the SPA.
+          softSignOutToLogin()
           throw new Error('Session expired. Please sign in again.')
         }
         try {
@@ -492,7 +580,12 @@ export const useAuthStore = create<AuthStore>()(
             sessionExpired: false,
           })
         } catch (err) {
-          get().markSessionExpired()
+          // Distinguish from IDLE_TIMEOUT — soft clear without hard reload.
+          if (isIdleTimeoutAuthError((err as { response?: { data?: unknown } })?.response?.data)) {
+            get().forceLogoutDueToInactivity()
+          } else {
+            softSignOutToLogin()
+          }
           throw new Error('Session expired. Please sign in again.')
         }
       },
@@ -536,6 +629,15 @@ export const useAuthStore = create<AuthStore>()(
         })
       },
 
+      setIdleTimeoutMinutes: (minutes) => {
+        const n = typeof minutes === 'number' ? minutes : Number(minutes)
+        if (!Number.isFinite(n) || n <= 0) {
+          set({ idleTimeoutMinutes: DEFAULT_IDLE_TIMEOUT_MINUTES })
+          return
+        }
+        set({ idleTimeoutMinutes: Math.round(n) })
+      },
+
       clearMustChangePassword: () => {
         const current = get().user
         if (!current?.mustChangePassword) return
@@ -548,8 +650,8 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       markSessionExpired: () => {
-        // 20 minutes idle (or refresh failure): sign out automatically — no Continue/Revoke popup.
-        hardSignOutToLogin('/login')
+        // Client-side idle window elapsed — flush draft then soft-navigate.
+        beginIdleSoftSignOut()
       },
 
       setSubscriptionBlocked: (message) => {
@@ -575,7 +677,11 @@ export const useAuthStore = create<AuthStore>()(
       },
 
       forceLogoutDueToInactivity: () => {
-        hardSignOutToLogin('/login')
+        beginIdleSoftSignOut()
+      },
+
+      softLogoutToLogin: (opts) => {
+        softSignOutToLogin(opts)
       },
 
       clearSession: () => {
@@ -592,6 +698,7 @@ export const useAuthStore = create<AuthStore>()(
         refreshToken: state.refreshToken,
         sessionId: state.sessionId,
         lastActiveAt: state.lastActiveAt,
+        idleTimeoutMinutes: state.idleTimeoutMinutes,
         sessionExpired: state.sessionExpired,
       }),
       // If Revoke/logout set the sign-out flag, ignore any late-written persist blob.

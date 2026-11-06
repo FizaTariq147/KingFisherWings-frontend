@@ -9,9 +9,12 @@ import { InvoiceStatusBadge } from '@/features/invoices/components/InvoiceStatus
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import { invoiceDisplayNumber } from '@/features/invoices/utils/normalizeInvoice';
 import type { Invoice } from '@/features/invoices/types/invoice.types';
-import { jobService } from '@/features/jobs/services/job.service';
 import type { Job } from '@/features/jobs/types/job.types';
 import { isUuid } from '@/lib/isUuid';
+import {
+  JobInvoiceFormModal,
+  type JobInvoiceFormSource,
+} from '../JobInvoiceFormModal';
 
 interface JobInvoicesPanelProps {
   jobId: string;
@@ -36,6 +39,9 @@ export function JobInvoicesPanel({
   const [busy, setBusy] = useState(false);
   const [actionMsg, setActionMsg] = useState<string | null>(null);
   const [actionError, setActionError] = useState<string | null>(null);
+  const [saleFormSource, setSaleFormSource] = useState<JobInvoiceFormSource | null>(
+    null,
+  );
 
   const shipperId = job?.shipper_id || job?.billing_party_id;
 
@@ -60,6 +66,9 @@ export function JobInvoicesPanel({
         return await invoiceService.update(invoiceId, {
           party_id: inv.party_id,
           job_id: jobId,
+          currency_code: inv.currency_code,
+          exchange_rate: inv.exchange_rate,
+          vat_rate: inv.vat_rate,
         });
       } catch {
         return null;
@@ -110,77 +119,11 @@ export function JobInvoicesPanel({
     void recoverOrphanInvoices();
   }, [enabled, invoicesFromJob.length, recoverOrphanInvoices]);
 
-  const generateFromQuotation = async () => {
+  const openSaleForm = (source: JobInvoiceFormSource) => {
     if (!enabled) return;
-    setBusy(true);
     setActionError(null);
     setActionMsg(null);
-    try {
-      const { quotationService } = await import(
-        '@/features/quotations/services/quotation.service'
-      );
-      const { quotationLinesToInvoiceLineDtos } = await import(
-        '@/features/quotations/utils/quotationRevenueCharges'
-      );
-
-      // Always load full job — parent may pass a thin stub (e.g. NVOCC booking).
-      const fresh = await jobService.getById(jobId);
-
-      const quotation = await quotationService.findLinkedToJob(jobId, {
-        customerId: fresh.shipper_id || fresh.billing_party_id || shipperId,
-        jobType: fresh.job_type,
-      });
-
-      let jobForInvoice = fresh;
-      if (quotation?.lines?.length) {
-        try {
-          jobForInvoice = await jobService.ensureChargesFromQuotation(jobId, quotation);
-        } catch {
-          /* keep fresh */
-        }
-      }
-
-      const quotationLines = quotationLinesToInvoiceLineDtos(quotation?.lines);
-      if (!quotationLines.length && !(jobForInvoice.charges?.length)) {
-        throw new Error(
-          'No quotation charge lines found for this job. Link a quotation with revenue lines, or add billable charges on the Charges tab.',
-        );
-      }
-
-      const invoice = await invoiceService.ensureDraftForJob({
-        id: jobId,
-        shipper_id: jobForInvoice.shipper_id || shipperId,
-        billing_party_id: jobForInvoice.billing_party_id,
-        company_id: jobForInvoice.company_id,
-        branch_id: jobForInvoice.branch_id,
-        currency_code: quotation?.currency_code || jobForInvoice.currency_code,
-        charges: jobForInvoice.charges,
-        quotationLines,
-        lineHint: quotation?.quotation_number
-          ? `Charges from quotation ${quotation.quotation_number}`
-          : `Freight charges — ${fresh.job_type}`,
-      });
-
-      if (!invoice?.id || !isUuid(invoice.id)) {
-        throw new Error('Invoice create returned no id.');
-      }
-
-      await linkInvoice(invoice.id);
-      setExtraInvoices((prev) => {
-        const next = prev.filter((i) => i.id !== invoice.id);
-        return [invoice, ...next];
-      });
-      await refetch();
-      setActionMsg(
-        `Invoice ${invoiceDisplayNumber(invoice)} ready with ${
-          invoice.lines?.length || quotationLines.length || 0
-        } charge line(s).`,
-      );
-    } catch (err) {
-      setActionError(err instanceof Error ? err.message : String(err));
-    } finally {
-      setBusy(false);
-    }
+    setSaleFormSource(source);
   };
 
   return (
@@ -192,10 +135,21 @@ export function JobInvoicesPanel({
             type="button"
             variant="secondary"
             size="sm"
-            disabled={!enabled || busy}
-            onClick={() => void generateFromQuotation()}
+            disabled={!enabled || busy || Boolean(saleFormSource)}
+            title="GET /invoices/sale/form?source=quotation → POST with source=quotation"
+            onClick={() => openSaleForm('quotation')}
           >
-            {busy ? 'Generating…' : 'Generate from quotation'}
+            Generate from quotation
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            disabled={!enabled || busy || Boolean(saleFormSource)}
+            title="GET /invoices/sale/form?source=job → POST with source=job (costing sale amounts; no quotation fallback)"
+            onClick={() => openSaleForm('job')}
+          >
+            Generate from job
           </Button>
           <Button
             type="button"
@@ -214,9 +168,9 @@ export function JobInvoicesPanel({
       </CardHeader>
       <div className="space-y-3 px-4 pb-4">
         <p className="text-xs text-[var(--color-neutral-500)]">
-          Customer invoices linked to this job. Auto-created from quotation charges when the booking
-          form is marked complete — use Generate if the list is empty (e.g. invoice was created
-          before convert and not linked yet).
+          Customer invoices linked to this job. Generate from quotation uses quotation revenue
+          lines; generate from job uses costing sale amounts only (no silent quotation fallback).
+          Auto-created invoices from booking Mark complete also appear here.
         </p>
         {actionMsg ? (
           <p className="text-sm text-[var(--color-success-700)]">{actionMsg}</p>
@@ -237,13 +191,23 @@ export function JobInvoicesPanel({
             <p className="text-sm text-[var(--color-neutral-400)]">
               No invoices for this job yet.
             </p>
-            <Button
-              type="button"
-              disabled={busy}
-              onClick={() => void generateFromQuotation()}
-            >
-              {busy ? 'Generating…' : 'Generate invoice from quotation charges'}
-            </Button>
+            <div className="flex flex-wrap gap-2">
+              <Button
+                type="button"
+                disabled={busy || Boolean(saleFormSource)}
+                onClick={() => openSaleForm('quotation')}
+              >
+                Generate from quotation
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                disabled={busy || Boolean(saleFormSource)}
+                onClick={() => openSaleForm('job')}
+              >
+                Generate from job
+              </Button>
+            </div>
           </div>
         ) : (
           <ul className="divide-y divide-[var(--color-neutral-100)] rounded-md border border-[var(--color-neutral-200)]">
@@ -321,6 +285,26 @@ export function JobInvoicesPanel({
           </ul>
         )}
       </div>
+
+      {enabled ? (
+        <JobInvoiceFormModal
+          open={Boolean(saleFormSource)}
+          onClose={() => setSaleFormSource(null)}
+          jobId={jobId}
+          kind="sale"
+          source={saleFormSource ?? 'quotation'}
+          onSaved={() => {
+            setActionMsg(
+              saleFormSource === 'job'
+                ? 'Sales invoice draft saved from job costing sale amounts.'
+                : 'Sales invoice draft saved from quotation.',
+            );
+            setActionError(null);
+            void refetch();
+            void recoverOrphanInvoices();
+          }}
+        />
+      ) : null}
     </Card>
   );
 }

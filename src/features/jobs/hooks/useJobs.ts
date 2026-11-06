@@ -26,6 +26,7 @@ export const jobKeys = {
   pnl: (id: string) => [...jobKeys.all, 'pnl', id] as const,
   milestones: (id: string) => [...jobKeys.all, 'milestones', id] as const,
   tracking: (id: string) => [...jobKeys.all, 'tracking', id] as const,
+  trackingProfile: (id: string) => [...jobKeys.all, 'tracking-profile', id] as const,
   notes: (id: string) => [...jobKeys.all, 'notes', id] as const,
   documents: (id: string) => [...jobKeys.all, 'documents', id] as const,
   docStatus: (id: string) => [...jobKeys.all, 'doc-status', id] as const,
@@ -466,6 +467,28 @@ export function useJobTracking(
       });
     },
     enabled: Boolean(accessToken) && isUuid(opts.jobId) && enabled,
+  });
+}
+
+/** GET/PUT /jobs/:id/tracking/profile — staff YQN-style tracking profile. */
+export function useJobTrackingProfile(id: string, enabled = false) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.trackingProfile(id),
+    queryFn: () => jobService.getTrackingProfile(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+  });
+}
+
+export function useUpsertJobTrackingProfile(id: string) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (dto: import('../types/job.types').UpsertJobTrackingProfileDto) =>
+      jobService.upsertTrackingProfile(id, dto),
+    onSuccess: (profile) => {
+      queryClient.setQueryData(jobKeys.trackingProfile(id), profile);
+      void queryClient.invalidateQueries({ queryKey: jobKeys.tracking(id) });
+    },
   });
 }
 

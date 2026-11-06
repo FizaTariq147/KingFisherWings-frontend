@@ -532,6 +532,8 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const [invoiceForm, setInvoiceForm] = useState<{
     kind: JobInvoiceFormKind;
     allowPdf?: boolean;
+    /** Sale form source — costing Sales always uses job (no quotation fallback). */
+    source?: 'job' | 'quotation' | 'auto';
   } | null>(null);
 
   const { data: chargeCodes = [] } = useMasterOptions(
@@ -1563,8 +1565,29 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           <CostingBtn
             color={COSTING_COLORS.vendorInv}
             icon={<Truck className={ICO} />}
-            title="Purchase / vendor invoice form (optional PDF upload)"
-            onClick={() => setInvoiceForm({ kind: 'purchase', allowPdf: true })}
+            title="Purchase / vendor invoice form from cost amounts (vendor required)"
+            onClick={() => {
+              const missingVendor = costCharges.some((c) => {
+                const vendor =
+                  c.cost?.vendor ||
+                  (c.is_cost || c.cost_amount != null ? c.party_id : undefined);
+                return !vendor || !isUuid(String(vendor));
+              });
+              if (costCharges.length === 0) {
+                setError(
+                  'No cost lines found. Add costing cost amounts with a vendor (cost_party_id) before generating a purchase invoice.',
+                );
+                return;
+              }
+              if (missingVendor) {
+                setError(
+                  'Each cost line needs a vendor (cost_party_id) before generating a purchase invoice. Set vendors on cost lines, then try again.',
+                );
+                return;
+              }
+              setError(null);
+              setInvoiceForm({ kind: 'purchase', allowPdf: true });
+            }}
           >
             Vendor INV Upload
           </CostingBtn>
@@ -1666,16 +1689,37 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           <CostingBtn
             color={COSTING_COLORS.salesInv}
             icon={<FileText className={ICO} />}
-            title="Sales invoice form (sale charges → quotation → empty)"
-            onClick={() => setInvoiceForm({ kind: 'sale' })}
+            title="Sales invoice from job costing sale amounts only (source=job, no quotation fallback)"
+            onClick={() => setInvoiceForm({ kind: 'sale', source: 'job' })}
           >
             Generate Sales Invoice
           </CostingBtn>
           <CostingBtn
             color={COSTING_COLORS.purchaseInv}
             icon={<FileText className={ICO} />}
-            title="Purchase invoice form (vendor offer → costing → empty)"
-            onClick={() => setInvoiceForm({ kind: 'purchase' })}
+            title="Purchase invoice from cost amounts (vendor / cost_party_id required)"
+            onClick={() => {
+              const missingVendor = costCharges.some((c) => {
+                const vendor =
+                  c.cost?.vendor ||
+                  (c.is_cost || c.cost_amount != null ? c.party_id : undefined);
+                return !vendor || !isUuid(String(vendor));
+              });
+              if (costCharges.length === 0) {
+                setError(
+                  'No cost lines found. Add costing cost amounts with a vendor (cost_party_id) before generating a purchase invoice.',
+                );
+                return;
+              }
+              if (missingVendor) {
+                setError(
+                  'Each cost line needs a vendor (cost_party_id) before generating a purchase invoice. Set vendors on cost lines, then try again.',
+                );
+                return;
+              }
+              setError(null);
+              setInvoiceForm({ kind: 'purchase' });
+            }}
           >
             Generate Purchase Invoice
           </CostingBtn>
@@ -3796,16 +3840,23 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         jobId={job.id}
         kind={invoiceForm?.kind ?? 'sale'}
         allowPdf={invoiceForm?.allowPdf}
+        source={
+          invoiceForm?.kind === 'sale'
+            ? invoiceForm.source ?? 'job'
+            : undefined
+        }
         chargeIds={charges
           .filter((c) =>
-            invoiceForm?.kind === 'sale' ? !c.is_cost : Boolean(c.is_cost),
+            invoiceForm?.kind === 'sale'
+              ? c.sale_amount != null || Boolean(c.sale) || !c.is_cost
+              : c.cost_amount != null || Boolean(c.cost) || Boolean(c.is_cost),
           )
           .map((c) => c.id)
           .filter((id) => isUuid(id))}
         onSaved={() => {
           setMsg(
             invoiceForm?.kind === 'sale'
-              ? 'Sales invoice form saved as DRAFT.'
+              ? 'Sales invoice form saved as DRAFT (from job costing).'
               : 'Purchase / vendor invoice form saved as DRAFT.',
           );
           onChanged?.();

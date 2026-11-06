@@ -3,6 +3,7 @@ import { isUuid } from '@/lib/isUuid';
 const ALLOWED_PARTY_FIELDS = new Set([
   'company_id',
   'party_type',
+  'party_type_code',
   'code',
   'name',
   'short_name',
@@ -28,6 +29,10 @@ const ALLOWED_PARTY_FIELDS = new Set([
 
 const UUID_FIELDS = new Set(['company_id', 'salesperson_id']);
 
+function normalizePartyTypeCode(value: string): string {
+  return value.trim().toUpperCase().replace(/[\s-]+/g, '_');
+}
+
 /** Strip empties / invalid UUIDs before POST/PATCH party bodies. */
 export function preparePartyPayload<T extends Record<string, unknown>>(dto: T): T {
   const out: Record<string, unknown> = {};
@@ -46,8 +51,8 @@ export function preparePartyPayload<T extends Record<string, unknown>>(dto: T): 
       continue;
     }
 
-    if (key === 'party_type' && typeof value === 'string') {
-      out[key] = value.trim().toUpperCase();
+    if ((key === 'party_type' || key === 'party_type_code') && typeof value === 'string') {
+      out[key] = normalizePartyTypeCode(value);
       continue;
     }
     if (key === 'country_code' && typeof value === 'string') {
@@ -77,6 +82,16 @@ export function preparePartyPayload<T extends Record<string, unknown>>(dto: T): 
     }
 
     out[key] = value;
+  }
+
+  // Prefer sending both party_type and party_type_code (same uppercase code).
+  const typeCode =
+    (typeof out.party_type === 'string' && out.party_type) ||
+    (typeof out.party_type_code === 'string' && out.party_type_code) ||
+    '';
+  if (typeCode) {
+    out.party_type = typeCode;
+    out.party_type_code = typeCode;
   }
 
   return out as T;

@@ -15,6 +15,21 @@ export type {
   UpdatePartyFormValues,
 } from '../schemas/party.schema';
 
+/** GET /parties/types — system + tenant custom catalog row. */
+export interface PartyTypeCatalogItem {
+  id?: string;
+  code: string;
+  label: string;
+  is_system?: boolean;
+  is_active?: boolean;
+}
+
+/** POST /parties/types — CreatePartyTypeDto. */
+export interface CreatePartyTypeDto {
+  code: string;
+  label: string;
+}
+
 export interface PartyContact {
   id: string;
   name: string;
@@ -40,7 +55,8 @@ export interface PartyAddress {
 export interface Party {
   id: string;
   company_id?: string;
-  party_type: PartyType;
+  /** Known system type or tenant custom code. */
+  party_type: PartyType | string;
   code: string;
   name: string;
   short_name?: string;
@@ -82,7 +98,7 @@ export interface PartyListParams {
   page?: number;
   limit?: number;
   search?: string;
-  party_type?: PartyType;
+  party_type?: PartyType | string;
   credit_status?: CreditStatus;
   company_id?: string;
   order?: 'asc' | 'desc';

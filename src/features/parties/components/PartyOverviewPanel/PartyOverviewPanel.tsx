@@ -26,7 +26,13 @@ export function PartyOverviewPanel({ party }: PartyOverviewPanelProps) {
         </CardHeader>
         <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <Row label="Code" value={<span className="font-mono text-xs">{party.code}</span>} />
-          <Row label="Type" value={PARTY_TYPE_LABELS[party.party_type]} />
+          <Row
+            label="Type"
+            value={
+              (PARTY_TYPE_LABELS as Record<string, string>)[party.party_type] ??
+              party.party_type.replaceAll('_', ' ')
+            }
+          />
           <Row label="Name" value={party.name} />
           <Row label="Short name" value={party.short_name} />
           <Row label="VAT" value={party.vat_number} />

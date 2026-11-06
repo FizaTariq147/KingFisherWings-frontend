@@ -207,7 +207,7 @@ export default function PartyDetailPage() {
 
       <DetailPageTemplate
         title={party.name}
-        subtitle={`${party.code} · ${PARTY_TYPE_LABELS[party.party_type]}`}
+        subtitle={`${party.code} · ${(PARTY_TYPE_LABELS as Record<string, string>)[party.party_type] ?? party.party_type.replaceAll('_', ' ')}`}
         statusLabel={active ? 'Active' : 'Inactive'}
         statusTone={active ? 'emerald' : 'slate'}
         backTo={'/parties'}

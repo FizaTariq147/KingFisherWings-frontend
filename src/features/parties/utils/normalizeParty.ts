@@ -35,11 +35,13 @@ function pickBoolean(raw: Record<string, unknown>, ...keys: string[]): boolean |
   return undefined;
 }
 
-function normalizePartyType(value: unknown): PartyType {
+function normalizePartyType(value: unknown): PartyType | string {
   const raw = String(value ?? '')
     .trim()
-    .toUpperCase();
-  return (PARTY_TYPES as readonly string[]).includes(raw) ? (raw as PartyType) : 'OTHER';
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  if (!raw) return 'OTHER';
+  return (PARTY_TYPES as readonly string[]).includes(raw) ? (raw as PartyType) : raw;
 }
 
 function normalizeCreditStatus(value: unknown): CreditStatus | undefined {

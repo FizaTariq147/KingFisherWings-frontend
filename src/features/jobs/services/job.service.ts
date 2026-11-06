@@ -188,6 +188,8 @@ import type {
   UpsertJobExchangeRateDto,
   UpsertJobRoutingLegDto,
   UpsertJobCustomsRefDto,
+  UpsertJobTrackingProfileDto,
+  JobTrackingProfile,
   AddJobOrganizationDto,
   ReplaceJobOrganizationDto,
 } from '../types/job.types';
@@ -2957,23 +2959,29 @@ export const jobService = {
 
   /**
    * GET /jobs/:id/invoices/sale/form
-   * Prefill from sale charges → quotation → empty. `charge_ids` query is comma-separated.
+   * Prefill by `source`: job (costing sale amounts), quotation, or auto (legacy).
+   * `charge_ids` query is comma-separated.
    */
   async getSaleInvoiceForm(
     id: string,
     chargeIds: string[] = [],
+    source?: 'job' | 'quotation' | 'auto',
   ): Promise<JobInvoiceFormPreview> {
     assertId(id);
     return request(() =>
       axiosInstance.get(JOB_API.invoicesSaleForm(id), {
-        params: { charge_ids: chargeIds.filter(Boolean).join(',') },
+        params: {
+          charge_ids: chargeIds.filter(Boolean).join(','),
+          ...(source ? { source } : {}),
+        },
       }),
     ) as Promise<JobInvoiceFormPreview>;
   },
 
   /**
    * GET /jobs/:id/invoices/purchase/form
-   * Prefill from vendor offer → costing → empty (does not require cost_party_id).
+   * Prefill from vendor offer → costing → empty.
+   * POST purchase requires cost_party_id (vendor) — validated in the form modal.
    */
   async getPurchaseInvoiceForm(
     id: string,
@@ -5154,6 +5162,164 @@ export const jobService = {
       return this.getById(quotation.job_id);
     }
     throw new Error('Convert succeeded but no job id was returned.');
+  },
+
+  /** Empty seed for first-open GET /jobs/:id/tracking/profile. */
+  emptyTrackingProfile(): JobTrackingProfile {
+    return {
+      origin_label: '',
+      dest_label: '',
+      at_before: '',
+      terminal_cutoff_at: '',
+      legs: [],
+      port_of_call: [],
+      container_events: [],
+      arrival_report: [],
+      customs_status: [],
+      detailed_data: {},
+      pre_manifest: [],
+      qty_gw_vol: {},
+    };
+  },
+
+  /** GET /jobs/:id/tracking/profile — returns empty seed when API has no profile yet. */
+  async getTrackingProfile(id: string): Promise<JobTrackingProfile> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.trackingProfile(id)),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      if (data == null || data === '') return this.emptyTrackingProfile();
+      if (typeof data !== 'object' || Array.isArray(data)) {
+        return this.emptyTrackingProfile();
+      }
+      const rec = data as Record<string, unknown>;
+      const seed = this.emptyTrackingProfile();
+      return {
+        ...seed,
+        id: typeof rec.id === 'string' ? rec.id : undefined,
+        job_id:
+          typeof rec.job_id === 'string'
+            ? rec.job_id
+            : typeof rec.jobId === 'string'
+              ? rec.jobId
+              : undefined,
+        origin_label:
+          typeof rec.origin_label === 'string'
+            ? rec.origin_label
+            : typeof rec.originLabel === 'string'
+              ? rec.originLabel
+              : '',
+        dest_label:
+          typeof rec.dest_label === 'string'
+            ? rec.dest_label
+            : typeof rec.destLabel === 'string'
+              ? rec.destLabel
+              : '',
+        at_before:
+          typeof rec.at_before === 'string'
+            ? rec.at_before
+            : typeof rec.atBefore === 'string'
+              ? rec.atBefore
+              : '',
+        terminal_cutoff_at:
+          typeof rec.terminal_cutoff_at === 'string'
+            ? rec.terminal_cutoff_at
+            : typeof rec.terminalCutoffAt === 'string'
+              ? rec.terminalCutoffAt
+              : '',
+        legs: Array.isArray(rec.legs) ? (rec.legs as Record<string, unknown>[]) : [],
+        port_of_call: Array.isArray(rec.port_of_call)
+          ? (rec.port_of_call as Record<string, unknown>[])
+          : Array.isArray(rec.portOfCall)
+            ? (rec.portOfCall as Record<string, unknown>[])
+            : [],
+        container_events: Array.isArray(rec.container_events)
+          ? (rec.container_events as Record<string, unknown>[])
+          : Array.isArray(rec.containerEvents)
+            ? (rec.containerEvents as Record<string, unknown>[])
+            : [],
+        arrival_report: Array.isArray(rec.arrival_report)
+          ? (rec.arrival_report as Record<string, unknown>[])
+          : Array.isArray(rec.arrivalReport)
+            ? (rec.arrivalReport as Record<string, unknown>[])
+            : [],
+        customs_status: Array.isArray(rec.customs_status)
+          ? (rec.customs_status as Record<string, unknown>[])
+          : Array.isArray(rec.customsStatus)
+            ? (rec.customsStatus as Record<string, unknown>[])
+            : [],
+        detailed_data:
+          rec.detailed_data &&
+          typeof rec.detailed_data === 'object' &&
+          !Array.isArray(rec.detailed_data)
+            ? (rec.detailed_data as Record<string, unknown>)
+            : rec.detailedData &&
+                typeof rec.detailedData === 'object' &&
+                !Array.isArray(rec.detailedData)
+              ? (rec.detailedData as Record<string, unknown>)
+              : {},
+        pre_manifest: Array.isArray(rec.pre_manifest)
+          ? (rec.pre_manifest as Record<string, unknown>[])
+          : Array.isArray(rec.preManifest)
+            ? (rec.preManifest as Record<string, unknown>[])
+            : [],
+        qty_gw_vol:
+          rec.qty_gw_vol &&
+          typeof rec.qty_gw_vol === 'object' &&
+          !Array.isArray(rec.qty_gw_vol)
+            ? (rec.qty_gw_vol as Record<string, unknown>)
+            : rec.qtyGwVol &&
+                typeof rec.qtyGwVol === 'object' &&
+                !Array.isArray(rec.qtyGwVol)
+              ? (rec.qtyGwVol as Record<string, unknown>)
+              : {},
+      };
+    } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      // First open / no profile yet — seed empty rather than fail the editor.
+      if (status === 404) return this.emptyTrackingProfile();
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PUT /jobs/:id/tracking/profile */
+  async upsertTrackingProfile(
+    id: string,
+    dto: UpsertJobTrackingProfileDto,
+  ): Promise<JobTrackingProfile> {
+    assertId(id);
+    try {
+      const payload: UpsertJobTrackingProfileDto = {
+        origin_label: dto.origin_label?.trim() || undefined,
+        dest_label: dto.dest_label?.trim() || undefined,
+        at_before: dto.at_before?.trim() || undefined,
+        terminal_cutoff_at: dto.terminal_cutoff_at?.trim() || undefined,
+        legs: Array.isArray(dto.legs) ? dto.legs : [],
+        port_of_call: Array.isArray(dto.port_of_call) ? dto.port_of_call : [],
+        container_events: Array.isArray(dto.container_events) ? dto.container_events : [],
+        arrival_report: Array.isArray(dto.arrival_report) ? dto.arrival_report : [],
+        customs_status: Array.isArray(dto.customs_status) ? dto.customs_status : [],
+        detailed_data:
+          dto.detailed_data && typeof dto.detailed_data === 'object'
+            ? dto.detailed_data
+            : {},
+        pre_manifest: Array.isArray(dto.pre_manifest) ? dto.pre_manifest : [],
+        qty_gw_vol:
+          dto.qty_gw_vol && typeof dto.qty_gw_vol === 'object' ? dto.qty_gw_vol : {},
+      };
+      const res = await withGatewayRetry(() =>
+        axiosInstance.put(JOB_API.trackingProfile(id), payload),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      if (data && typeof data === 'object' && !Array.isArray(data)) {
+        return { ...this.emptyTrackingProfile(), ...(data as JobTrackingProfile) };
+      }
+      return this.getTrackingProfile(id);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
   },
 
   /** GET /jobs/:id/tracking/pdf — live Track & Trace PDF. */
