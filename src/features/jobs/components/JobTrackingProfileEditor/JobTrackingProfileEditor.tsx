@@ -1,68 +1,130 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
+import { Plus, Trash2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import {
+  useJob,
   useJobTrackingProfile,
   useUpsertJobTrackingProfile,
 } from '../../hooks/useJobs';
-import type { UpsertJobTrackingProfileDto } from '../../types/job.types';
+import type {
+  ArrivalReportStatusRowDto,
+  CustomsStatusRowDto,
+  JobTrackingLegDto,
+  JobTrackingPortOfCallDto,
+  JobTrackingProfile,
+  ManifestStatusRowDto,
+  QtyGwVolDto,
+} from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import {
+  emptyJobTrackingProfile,
+  seedTrackingProfileFromJob,
+  toUpsertJobTrackingProfileDto,
+} from '../../utils/normalizeJobTrackingProfile';
 
-type JsonFieldKey =
-  | 'legs'
-  | 'port_of_call'
-  | 'container_events'
-  | 'arrival_report'
-  | 'customs_status'
-  | 'pre_manifest'
-  | 'detailed_data'
-  | 'qty_gw_vol';
+const fieldClass =
+  'h-9 w-full rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white px-2.5 text-[13px] text-[var(--color-neutral-800)] focus:border-[var(--color-primary-500)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-500)]';
 
-const JSON_FIELDS: { key: JsonFieldKey; label: string; array: boolean }[] = [
-  { key: 'legs', label: 'Legs (JSON array)', array: true },
-  { key: 'port_of_call', label: 'Port of call (JSON array)', array: true },
-  { key: 'container_events', label: 'Container events (JSON array)', array: true },
-  { key: 'arrival_report', label: 'Arrival report (JSON array)', array: true },
-  { key: 'customs_status', label: 'Customs status (JSON array)', array: true },
-  { key: 'pre_manifest', label: 'Pre-manifest (JSON array)', array: true },
-  { key: 'detailed_data', label: 'Detailed data (JSON object)', array: false },
-  { key: 'qty_gw_vol', label: 'QTY / G.W. / VOL. (JSON object)', array: false },
-];
-
-function prettyJson(value: unknown, fallback: unknown): string {
-  try {
-    return JSON.stringify(value ?? fallback, null, 2);
-  } catch {
-    return JSON.stringify(fallback, null, 2);
-  }
+function Section({
+  title,
+  hint,
+  children,
+}: {
+  title: string;
+  hint?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section className="space-y-3 rounded-lg border border-[var(--fresa-border,#C9D3DF)] bg-white p-4">
+      <div>
+        <h3 className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
+          {title}
+        </h3>
+        {hint ? <p className="mt-0.5 text-[12px] text-[#64748b]">{hint}</p> : null}
+      </div>
+      {children}
+    </section>
+  );
 }
 
-function parseJsonField(
-  text: string,
-  asArray: boolean,
-): { ok: true; value: unknown } | { ok: false; error: string } {
-  const trimmed = text.trim();
-  if (!trimmed) return { ok: true, value: asArray ? [] : {} };
-  try {
-    const parsed = JSON.parse(trimmed) as unknown;
-    if (asArray) {
-      if (!Array.isArray(parsed)) {
-        return { ok: false, error: 'Expected a JSON array.' };
-      }
-      return { ok: true, value: parsed };
-    }
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      return { ok: false, error: 'Expected a JSON object.' };
-    }
-    return { ok: true, value: parsed };
-  } catch {
-    return { ok: false, error: 'Invalid JSON.' };
-  }
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: ReactNode;
+}) {
+  return (
+    <label className="block space-y-1">
+      <span className="text-[11px] font-medium text-[var(--color-neutral-600)]">{label}</span>
+      {children}
+    </label>
+  );
+}
+
+function TextInput({
+  value,
+  onChange,
+  placeholder,
+  type = 'text',
+}: {
+  value: string | number | null | undefined;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: string;
+}) {
+  return (
+    <input
+      type={type}
+      className={fieldClass}
+      value={value ?? ''}
+      placeholder={placeholder}
+      onChange={(e) => onChange(e.target.value)}
+    />
+  );
+}
+
+function NumInput({
+  value,
+  onChange,
+  placeholder,
+}: {
+  value: number | null | undefined;
+  onChange: (v: number | null) => void;
+  placeholder?: string;
+}) {
+  return (
+    <input
+      type="number"
+      step="any"
+      className={fieldClass}
+      value={value ?? ''}
+      placeholder={placeholder}
+      onChange={(e) => {
+        const raw = e.target.value;
+        if (raw === '') {
+          onChange(null);
+          return;
+        }
+        const n = Number(raw);
+        onChange(Number.isFinite(n) ? n : null);
+      }}
+    />
+  );
+}
+
+function RowActions({ onRemove }: { onRemove: () => void }) {
+  return (
+    <Button type="button" size="sm" variant="ghost" className="h-8 w-8 p-0" onClick={onRemove}>
+      <Trash2 className="h-4 w-4 text-[var(--color-danger-600)]" />
+    </Button>
+  );
 }
 
 /**
  * Staff editor for GET|PUT /jobs/:id/tracking/profile.
- * Seeds empty on first open; saves UpsertJobTrackingProfileDto.
+ * Seeds from job on first open; saved values feed staff tracking and public /track.
  */
 export function JobTrackingProfileEditor({
   jobId,
@@ -74,78 +136,66 @@ export function JobTrackingProfileEditor({
   onCancel?: () => void;
 }) {
   const profileQuery = useJobTrackingProfile(jobId, true);
+  const jobQuery = useJob(jobId);
   const upsert = useUpsertJobTrackingProfile(jobId);
 
-  const [originLabel, setOriginLabel] = useState('');
-  const [destLabel, setDestLabel] = useState('');
-  const [atBefore, setAtBefore] = useState('');
-  const [terminalCutoffAt, setTerminalCutoffAt] = useState('');
-  const [jsonText, setJsonText] = useState<Record<JsonFieldKey, string>>({
-    legs: '[]',
-    port_of_call: '[]',
-    container_events: '[]',
-    arrival_report: '[]',
-    customs_status: '[]',
-    pre_manifest: '[]',
-    detailed_data: '{}',
-    qty_gw_vol: '{}',
-  });
+  const [form, setForm] = useState<JobTrackingProfile>(() => emptyJobTrackingProfile());
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const p = profileQuery.data;
-    if (!p) return;
-    setOriginLabel(p.origin_label ?? '');
-    setDestLabel(p.dest_label ?? '');
-    setAtBefore(p.at_before ?? '');
-    setTerminalCutoffAt(p.terminal_cutoff_at ?? '');
-    setJsonText({
-      legs: prettyJson(p.legs, []),
-      port_of_call: prettyJson(p.port_of_call, []),
-      container_events: prettyJson(p.container_events, []),
-      arrival_report: prettyJson(p.arrival_report, []),
-      customs_status: prettyJson(p.customs_status, []),
-      pre_manifest: prettyJson(p.pre_manifest, []),
-      detailed_data: prettyJson(p.detailed_data, {}),
-      qty_gw_vol: prettyJson(p.qty_gw_vol, {}),
-    });
-  }, [profileQuery.data]);
+    setHydrated(false);
+  }, [jobId]);
+
+  useEffect(() => {
+    if (!profileQuery.data || hydrated) return;
+    // Wait for job (or its failure) so first-open seed can fill BL / ports / qty.
+    if (jobQuery.isLoading) return;
+    setForm(seedTrackingProfileFromJob(profileQuery.data, jobQuery.data));
+    setHydrated(true);
+  }, [profileQuery.data, jobQuery.data, jobQuery.isLoading, hydrated]);
+
+  const patch = (partial: Partial<JobTrackingProfile>) =>
+    setForm((prev) => ({ ...prev, ...partial }));
+
+  const patchLeg = (legNo: 1 | 2, partial: Partial<JobTrackingLegDto>) => {
+    setForm((prev) => ({
+      ...prev,
+      legs: (prev.legs ?? []).map((leg) =>
+        leg.leg_no === legNo ? { ...leg, ...partial } : leg,
+      ),
+    }));
+  };
+
+  const patchQty = (partial: Partial<QtyGwVolDto>) => {
+    setForm((prev) => ({
+      ...prev,
+      qty_gw_vol: { ...(prev.qty_gw_vol ?? {}), ...partial },
+    }));
+  };
 
   const save = async () => {
     setError(null);
     setMsg(null);
-
-    const parsedFields: Partial<UpsertJobTrackingProfileDto> = {};
-    for (const field of JSON_FIELDS) {
-      const parsed = parseJsonField(jsonText[field.key], field.array);
-      if (!parsed.ok) {
-        setError(`${field.label}: ${parsed.error}`);
-        return;
-      }
-      if (field.key === 'detailed_data' || field.key === 'qty_gw_vol') {
-        parsedFields[field.key] = parsed.value as Record<string, unknown>;
-      } else {
-        parsedFields[field.key] = parsed.value as Record<string, unknown>[];
-      }
-    }
-
-    const dto: UpsertJobTrackingProfileDto = {
-      origin_label: originLabel.trim() || undefined,
-      dest_label: destLabel.trim() || undefined,
-      at_before: atBefore.trim() || undefined,
-      terminal_cutoff_at: terminalCutoffAt.trim() || undefined,
-      ...parsedFields,
-    };
-
     try {
-      await upsert.mutateAsync(dto);
+      await upsert.mutateAsync(toUpsertJobTrackingProfileDto(form));
       setMsg('Tracking profile saved.');
       onSaved?.();
     } catch (err) {
       setError(getErrorMessage(err));
     }
   };
+
+  const legs = form.legs ?? [];
+  const firstLeg = legs.find((l) => l.leg_no === 1) ?? { leg_no: 1 };
+  const secondLeg = legs.find((l) => l.leg_no === 2) ?? { leg_no: 2 };
+  const poc = form.port_of_call ?? [];
+  const arrival = form.arrival_report ?? [];
+  const customs = form.customs_status ?? [];
+  const preManifest = form.pre_manifest ?? [];
+  const qty = form.qty_gw_vol ?? {};
+  const detailedEntries = Object.entries(form.detailed_data ?? {});
 
   return (
     <div className="space-y-4 text-sm">
@@ -155,8 +205,8 @@ export function JobTrackingProfileEditor({
             Edit tracking profile
           </p>
           <p className="mt-1 text-[12px] text-[#64748b]">
-            YQN-style route / cargo / pre-manifest enrichment. Empty seed is fine on first
-            open; saved values feed staff tracking and public /track.
+            BL, ports, legs, port of call, cargo / customs / pre-manifest / qty. Seeded from the
+            job on first open; public /track uses the same shape.
           </p>
         </div>
         {onCancel ? (
@@ -168,58 +218,569 @@ export function JobTrackingProfileEditor({
 
       {error ? <p className="text-[var(--color-danger-600)]">{error}</p> : null}
       {msg ? <p className="text-[var(--color-success-700)]">{msg}</p> : null}
-      {profileQuery.isLoading ? (
+      {profileQuery.isLoading || (!hydrated && jobQuery.isLoading) ? (
         <p className="text-[13px] text-[#64748b]">Loading tracking profile…</p>
       ) : null}
       {profileQuery.isError ? (
         <p className="text-[13px] text-red-700">{getErrorMessage(profileQuery.error)}</p>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        <Input
-          label="Origin label"
-          value={originLabel}
-          onChange={(e) => setOriginLabel(e.target.value)}
-          placeholder="POL / origin"
-        />
-        <Input
-          label="Destination label"
-          value={destLabel}
-          onChange={(e) => setDestLabel(e.target.value)}
-          placeholder="POD / destination"
-        />
-        <Input
-          label="AT before"
-          value={atBefore}
-          onChange={(e) => setAtBefore(e.target.value)}
-          placeholder="ISO datetime"
-        />
-        <Input
-          label="Terminal cutoff at"
-          value={terminalCutoffAt}
-          onChange={(e) => setTerminalCutoffAt(e.target.value)}
-          placeholder="ISO datetime"
-        />
-      </div>
-
-      <div className="space-y-3">
-        {JSON_FIELDS.map((field) => (
-          <label key={field.key} className="block space-y-1">
-            <span className="text-xs font-medium text-[var(--color-neutral-600)]">
-              {field.label}
-            </span>
-            <textarea
-              value={jsonText[field.key]}
-              onChange={(e) =>
-                setJsonText((prev) => ({ ...prev, [field.key]: e.target.value }))
-              }
-              rows={field.array ? 4 : 3}
-              className="w-full rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 py-2 font-mono text-[12px] text-[var(--color-neutral-800)] focus:border-[var(--color-primary-500)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary-500)]"
-              spellCheck={false}
+      <Section title="Header / route" hint="BL number, origin & dest ports, terminal cut-off">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <Field label="BL number">
+            <TextInput
+              value={form.bl_number}
+              onChange={(v) => patch({ bl_number: v })}
+              placeholder="HBL / MBL / HAWB"
             />
-          </label>
-        ))}
-      </div>
+          </Field>
+          <Field label="Port origin">
+            <TextInput
+              value={form.origin_port}
+              onChange={(v) => patch({ origin_port: v, origin_label: v })}
+            />
+          </Field>
+          <Field label="Dest port">
+            <TextInput
+              value={form.dest_port}
+              onChange={(v) => patch({ dest_port: v, dest_label: v })}
+            />
+          </Field>
+          <Field label="Terminal cut-off">
+            <TextInput
+              type="datetime-local"
+              value={String(form.terminal_cutoff_at ?? '').slice(0, 16)}
+              onChange={(v) => patch({ terminal_cutoff_at: v || undefined })}
+            />
+          </Field>
+          <Field label="AT before">
+            <TextInput
+              type="datetime-local"
+              value={String(form.at_before ?? '').slice(0, 16)}
+              onChange={(v) => patch({ at_before: v || undefined })}
+            />
+          </Field>
+        </div>
+      </Section>
+
+      <Section title="1st leg" hint="leg_no: 1 — vessel, voyage, IMO, POL, POD">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {(
+            [
+              ['Vessel name', 'vessel_name'],
+              ['Voyage', 'voyage_number'],
+              ['IMO', 'imo'],
+              ['POL', 'pol'],
+              ['POD', 'pod'],
+            ] as const
+          ).map(([label, key]) => (
+            <Field key={key} label={label}>
+              <TextInput
+                value={firstLeg[key]}
+                onChange={(v) => patchLeg(1, { [key]: v })}
+              />
+            </Field>
+          ))}
+        </div>
+      </Section>
+
+      <Section title="2nd leg" hint="leg_no: 2 — vessel, voyage, IMO, POL, POD">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {(
+            [
+              ['Vessel name', 'vessel_name'],
+              ['Voyage', 'voyage_number'],
+              ['IMO', 'imo'],
+              ['POL', 'pol'],
+              ['POD', 'pod'],
+            ] as const
+          ).map(([label, key]) => (
+            <Field key={key} label={label}>
+              <TextInput
+                value={secondLeg[key]}
+                onChange={(v) => patchLeg(2, { [key]: v })}
+              />
+            </Field>
+          ))}
+        </div>
+      </Section>
+
+      <Section
+        title="Port of call"
+        hint="ORIGIN + DEST (and more): port, ETA/ATA, ETD/ATD, vessel, voyage"
+      >
+        <div className="space-y-3">
+          {poc.map((row, index) => (
+            <div
+              key={`poc-${index}`}
+              className="grid grid-cols-1 gap-2 rounded-md border border-[var(--fresa-border,#C9D3DF)] p-3 sm:grid-cols-2 lg:grid-cols-4"
+            >
+              <Field label="Role">
+                <select
+                  className={fieldClass}
+                  value={row.role ?? ''}
+                  onChange={(e) => {
+                    const next = [...poc];
+                    next[index] = { ...row, role: e.target.value };
+                    patch({ port_of_call: next });
+                  }}
+                >
+                  {['ORIGIN', 'DEST', 'TRANSHIP', 'CALL'].map((r) => (
+                    <option key={r} value={r}>
+                      {r}
+                    </option>
+                  ))}
+                </select>
+              </Field>
+              {(
+                [
+                  ['Port name', 'port_name'],
+                  ['UN/LOCODE', 'un_locode'],
+                  ['Vessel', 'vessel_name'],
+                  ['Voyage', 'voyage_number'],
+                  ['ETA', 'eta'],
+                  ['ATA', 'ata'],
+                  ['ETD', 'etd'],
+                  ['ATD', 'atd'],
+                ] as const
+              ).map(([label, key]) => (
+                <Field key={key} label={label}>
+                  <TextInput
+                    type={
+                      key === 'eta' || key === 'ata' || key === 'etd' || key === 'atd'
+                        ? 'datetime-local'
+                        : 'text'
+                    }
+                    value={
+                      key === 'eta' || key === 'ata' || key === 'etd' || key === 'atd'
+                        ? String(row[key] ?? '').slice(0, 16)
+                        : (row[key] as string | undefined)
+                    }
+                    onChange={(v) => {
+                      const next = [...poc];
+                      next[index] = { ...row, [key]: v };
+                      patch({ port_of_call: next });
+                    }}
+                  />
+                </Field>
+              ))}
+              <div className="flex items-end">
+                <RowActions
+                  onRemove={() =>
+                    patch({ port_of_call: poc.filter((_, i) => i !== index) })
+                  }
+                />
+              </div>
+            </div>
+          ))}
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              patch({
+                port_of_call: [
+                  ...poc,
+                  {
+                    role: 'CALL',
+                    port_name: '',
+                    eta: '',
+                    ata: '',
+                    etd: '',
+                    atd: '',
+                    vessel_name: '',
+                    voyage_number: '',
+                  } satisfies JobTrackingPortOfCallDto,
+                ],
+              })
+            }
+          >
+            <Plus className="h-4 w-4" />
+            Add port of call
+          </Button>
+        </div>
+      </Section>
+
+      <Section title="Section 1 — Cargo info · Arrival report status">
+        <div className="space-y-3">
+          {arrival.map((row, index) => (
+            <div
+              key={`arr-${index}`}
+              className="grid grid-cols-1 gap-2 rounded-md border border-[var(--fresa-border,#C9D3DF)] p-3 sm:grid-cols-2 lg:grid-cols-4"
+            >
+              {(
+                [
+                  ['Status', 'status'],
+                  ['Sending time', 'sending_time'],
+                  ['Receipt time', 'receipt_time'],
+                  ['Container no', 'container_no'],
+                  ['Sub container no', 'sub_container_no'],
+                  ['Vessel name', 'vessel_name'],
+                  ['Voyage no', 'voyage_no'],
+                  ['IMO', 'imo'],
+                ] as const
+              ).map(([label, key]) => (
+                <Field key={key} label={label}>
+                  <TextInput
+                    type={key.includes('time') ? 'datetime-local' : 'text'}
+                    value={
+                      key.includes('time')
+                        ? String(row[key] ?? '').slice(0, 16)
+                        : row[key]
+                    }
+                    onChange={(v) => {
+                      const next = [...arrival];
+                      next[index] = { ...row, [key]: v };
+                      patch({ arrival_report: next });
+                    }}
+                  />
+                </Field>
+              ))}
+              <div className="flex items-end">
+                <RowActions
+                  onRemove={() =>
+                    patch({ arrival_report: arrival.filter((_, i) => i !== index) })
+                  }
+                />
+              </div>
+            </div>
+          ))}
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              patch({
+                arrival_report: [
+                  ...arrival,
+                  {
+                    status: '',
+                    sending_time: '',
+                    receipt_time: '',
+                    container_no: '',
+                    sub_container_no: '',
+                    vessel_name: '',
+                    voyage_no: '',
+                    imo: '',
+                  } satisfies ArrivalReportStatusRowDto,
+                ],
+              })
+            }
+          >
+            <Plus className="h-4 w-4" />
+            Add arrival report row
+          </Button>
+        </div>
+      </Section>
+
+      <Section title="Section 1 — Customs status">
+        <div className="space-y-3">
+          {customs.map((row, index) => (
+            <div
+              key={`cus-${index}`}
+              className="grid grid-cols-1 gap-2 rounded-md border border-[var(--fresa-border,#C9D3DF)] p-3 sm:grid-cols-2 lg:grid-cols-4"
+            >
+              <Field label="Carrier operator">
+                <TextInput
+                  value={row.carrier_operator}
+                  onChange={(v) => {
+                    const next = [...customs];
+                    next[index] = { ...row, carrier_operator: v };
+                    patch({ customs_status: next });
+                  }}
+                />
+              </Field>
+              <Field label="Customs released">
+                <select
+                  className={fieldClass}
+                  value={row.customs_released ? 'yes' : 'no'}
+                  onChange={(e) => {
+                    const next = [...customs];
+                    next[index] = { ...row, customs_released: e.target.value === 'yes' };
+                    patch({ customs_status: next });
+                  }}
+                >
+                  <option value="no">No</option>
+                  <option value="yes">Yes</option>
+                </select>
+              </Field>
+              {(
+                [
+                  ['Sub customs no', 'sub_customs_no'],
+                  ['Customs declaration no', 'customs_declaration_no'],
+                  ['Inspection status', 'customs_inspection_status'],
+                  ['Inspection time', 'customs_inspection_time'],
+                ] as const
+              ).map(([label, key]) => (
+                <Field key={key} label={label}>
+                  <TextInput
+                    type={key.includes('time') ? 'datetime-local' : 'text'}
+                    value={
+                      key.includes('time')
+                        ? String(row[key] ?? '').slice(0, 16)
+                        : (row[key] as string | undefined)
+                    }
+                    onChange={(v) => {
+                      const next = [...customs];
+                      next[index] = { ...row, [key]: v };
+                      patch({ customs_status: next });
+                    }}
+                  />
+                </Field>
+              ))}
+              <Field label="Quantity">
+                <NumInput
+                  value={row.quantity}
+                  onChange={(v) => {
+                    const next = [...customs];
+                    next[index] = { ...row, quantity: v ?? undefined };
+                    patch({ customs_status: next });
+                  }}
+                />
+              </Field>
+              <Field label="Weight">
+                <NumInput
+                  value={row.weight}
+                  onChange={(v) => {
+                    const next = [...customs];
+                    next[index] = { ...row, weight: v ?? undefined };
+                    patch({ customs_status: next });
+                  }}
+                />
+              </Field>
+              <Field label="Volume">
+                <NumInput
+                  value={row.volume}
+                  onChange={(v) => {
+                    const next = [...customs];
+                    next[index] = { ...row, volume: v ?? undefined };
+                    patch({ customs_status: next });
+                  }}
+                />
+              </Field>
+              <div className="flex items-end">
+                <RowActions
+                  onRemove={() =>
+                    patch({ customs_status: customs.filter((_, i) => i !== index) })
+                  }
+                />
+              </div>
+            </div>
+          ))}
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              patch({
+                customs_status: [
+                  ...customs,
+                  {
+                    carrier_operator: '',
+                    customs_released: false,
+                    sub_customs_no: '',
+                    customs_declaration_no: '',
+                    customs_inspection_status: '',
+                    customs_inspection_time: '',
+                  } satisfies CustomsStatusRowDto,
+                ],
+              })
+            }
+          >
+            <Plus className="h-4 w-4" />
+            Add customs status row
+          </Button>
+        </div>
+      </Section>
+
+      <Section
+        title="Section 1 — Detailed data"
+        hint="Job snapshot + staff overrides (key / value)"
+      >
+        <div className="space-y-2">
+          {detailedEntries.map(([key, value], index) => (
+            <div key={`dd-${index}`} className="flex flex-wrap items-end gap-2">
+              <div className="min-w-[140px] flex-1">
+                <Field label="Key">
+                  <TextInput
+                    value={key}
+                    onChange={(v) => {
+                      const next: Record<string, unknown> = {};
+                      detailedEntries.forEach(([k, val], i) => {
+                        if (i === index) next[v || `field_${i}`] = val;
+                        else next[k] = val;
+                      });
+                      patch({ detailed_data: next });
+                    }}
+                  />
+                </Field>
+              </div>
+              <div className="min-w-[180px] flex-[2]">
+                <Field label="Value">
+                  <TextInput
+                    value={
+                      typeof value === 'string' || typeof value === 'number'
+                        ? String(value)
+                        : value == null
+                          ? ''
+                          : JSON.stringify(value)
+                    }
+                    onChange={(v) => {
+                      patch({
+                        detailed_data: { ...(form.detailed_data ?? {}), [key]: v },
+                      });
+                    }}
+                  />
+                </Field>
+              </div>
+              <RowActions
+                onRemove={() => {
+                  const next = { ...(form.detailed_data ?? {}) };
+                  delete next[key];
+                  patch({ detailed_data: next });
+                }}
+              />
+            </div>
+          ))}
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              patch({
+                detailed_data: {
+                  ...(form.detailed_data ?? {}),
+                  [`note_${detailedEntries.length + 1}`]: '',
+                },
+              })
+            }
+          >
+            <Plus className="h-4 w-4" />
+            Add detail field
+          </Button>
+        </div>
+      </Section>
+
+      <Section title="Section 2 — Pre-manifest · Manifest status">
+        <div className="space-y-3">
+          {preManifest.map((row, index) => (
+            <div
+              key={`pm-${index}`}
+              className="grid grid-cols-1 gap-2 rounded-md border border-[var(--fresa-border,#C9D3DF)] p-3 sm:grid-cols-2 lg:grid-cols-4"
+            >
+              {(
+                [
+                  ['Sub customs no', 'sub_customs_no'],
+                  ['Status', 'status'],
+                  ['Sending time', 'sending_time'],
+                  ['Receipt / receiving time', 'receipt_receiving_time'],
+                  ['Container no', 'container_no'],
+                  ['Vessel name', 'vessel_name'],
+                  ['Voyage no', 'voyage_no'],
+                  ['IMO', 'imo'],
+                ] as const
+              ).map(([label, key]) => (
+                <Field key={key} label={label}>
+                  <TextInput
+                    type={key.includes('time') ? 'datetime-local' : 'text'}
+                    value={
+                      key.includes('time')
+                        ? String(row[key] ?? '').slice(0, 16)
+                        : row[key]
+                    }
+                    onChange={(v) => {
+                      const next = [...preManifest];
+                      next[index] = { ...row, [key]: v };
+                      patch({ pre_manifest: next });
+                    }}
+                  />
+                </Field>
+              ))}
+              <div className="flex items-end">
+                <RowActions
+                  onRemove={() =>
+                    patch({
+                      pre_manifest: preManifest.filter((_, i) => i !== index),
+                    })
+                  }
+                />
+              </div>
+            </div>
+          ))}
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() =>
+              patch({
+                pre_manifest: [
+                  ...preManifest,
+                  {
+                    sub_customs_no: '',
+                    status: '',
+                    sending_time: '',
+                    receipt_receiving_time: '',
+                    container_no: '',
+                    vessel_name: '',
+                    voyage_no: '',
+                    imo: '',
+                  } satisfies ManifestStatusRowDto,
+                ],
+              })
+            }
+          >
+            <Plus className="h-4 w-4" />
+            Add manifest status row
+          </Button>
+        </div>
+      </Section>
+
+      <Section title="Section 3 — QTY / G.W. / VOL.">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <Field label="Quantity">
+            <NumInput value={qty.quantity} onChange={(v) => patchQty({ quantity: v })} />
+          </Field>
+          <Field label="Qty unit">
+            <TextInput
+              value={qty.qty_unit}
+              onChange={(v) => patchQty({ qty_unit: v })}
+              placeholder="PKG"
+            />
+          </Field>
+          <Field label="Gross weight">
+            <NumInput
+              value={qty.gross_weight}
+              onChange={(v) => patchQty({ gross_weight: v })}
+            />
+          </Field>
+          <Field label="Net weight">
+            <NumInput value={qty.net_weight} onChange={(v) => patchQty({ net_weight: v })} />
+          </Field>
+          <Field label="Weight unit">
+            <TextInput
+              value={qty.weight_unit}
+              onChange={(v) => patchQty({ weight_unit: v })}
+              placeholder="KG"
+            />
+          </Field>
+          <Field label="Volume">
+            <NumInput value={qty.volume} onChange={(v) => patchQty({ volume: v })} />
+          </Field>
+          <Field label="Volume unit">
+            <TextInput
+              value={qty.volume_unit}
+              onChange={(v) => patchQty({ volume_unit: v })}
+              placeholder="CBM"
+            />
+          </Field>
+          <Field label="Chargeable weight">
+            <NumInput
+              value={qty.chargeable_weight}
+              onChange={(v) => patchQty({ chargeable_weight: v })}
+            />
+          </Field>
+        </div>
+      </Section>
 
       <div className="flex flex-wrap gap-2">
         <Button

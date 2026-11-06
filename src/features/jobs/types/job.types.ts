@@ -1150,23 +1150,117 @@ export interface PutJobGpumDto {
   allocations: JobGpumLineDto[];
 }
 
-/** PUT /jobs/:id/tracking/profile — YQN-style tracking enrichment (staff edit). */
-export interface UpsertJobTrackingProfileDto {
-  origin_label?: string;
-  dest_label?: string;
-  at_before?: string;
-  terminal_cutoff_at?: string;
-  legs?: Record<string, unknown>[];
-  port_of_call?: Record<string, unknown>[];
-  container_events?: Record<string, unknown>[];
-  arrival_report?: Record<string, unknown>[];
-  customs_status?: Record<string, unknown>[];
-  detailed_data?: Record<string, unknown>;
-  pre_manifest?: Record<string, unknown>[];
-  qty_gw_vol?: Record<string, unknown>;
+/** 1st / 2nd voyage leg on tracking profile. */
+export interface JobTrackingLegDto {
+  leg_no?: number;
+  vessel_name?: string;
+  voyage_number?: string;
+  imo?: string;
+  label?: string;
+  pol?: string;
+  pod?: string;
 }
 
-/** GET /jobs/:id/tracking/profile — empty seed is valid on first open. */
+/** Port-of-call stop (ORIGIN / DEST / TRANSHIP / CALL). */
+export interface JobTrackingPortOfCallDto {
+  role?: string;
+  port_name?: string;
+  un_locode?: string;
+  eta?: string | null;
+  ata?: string | null;
+  etd?: string | null;
+  atd?: string | null;
+  vessel_name?: string;
+  voyage_number?: string;
+  note?: string;
+}
+
+export interface JobTrackingContainerEventDto {
+  event_code?: string;
+  label?: string;
+  occurred_at?: string | null;
+  place?: string;
+  container_no?: string;
+}
+
+/** Cargo Info → Arrival Report Status row. */
+export interface ArrivalReportStatusRowDto {
+  status?: string;
+  sending_time?: string | null;
+  receipt_time?: string | null;
+  container_no?: string;
+  sub_container_no?: string;
+  vessel_name?: string;
+  voyage_no?: string;
+  imo?: string;
+}
+
+/** Cargo Info → Customs Status row. */
+export interface CustomsStatusRowDto {
+  carrier_operator?: string;
+  customs_released?: boolean;
+  sub_customs_no?: string;
+  quantity?: number;
+  weight?: number;
+  volume?: number;
+  customs_declaration_no?: string;
+  customs_inspection_status?: string;
+  customs_inspection_time?: string | null;
+}
+
+/** Pre-manifest → Manifest Status row. */
+export interface ManifestStatusRowDto {
+  sub_customs_no?: string;
+  status?: string;
+  sending_time?: string | null;
+  receipt_receiving_time?: string | null;
+  container_no?: string;
+  vessel_name?: string;
+  voyage_no?: string;
+  imo?: string;
+}
+
+/** Section 3 — QTY / G.W. / VOL. */
+export interface QtyGwVolDto {
+  quantity?: number | null;
+  gross_weight?: number | null;
+  net_weight?: number | null;
+  volume?: number | null;
+  chargeable_weight?: number | null;
+  qty_unit?: string;
+  weight_unit?: string;
+  volume_unit?: string;
+  lines?: Record<string, unknown>[];
+}
+
+/**
+ * PUT /jobs/:id/tracking/profile — staff tracking enrichment.
+ * Public `/track` and staff `GET /jobs/:id/tracking` return the same shape.
+ */
+export interface UpsertJobTrackingProfileDto {
+  /** B/L shown on track header (override or seeded from HBL/MBL/HAWB). */
+  bl_number?: string | null;
+  origin_port?: string | null;
+  /** Alias of origin_port. */
+  origin_label?: string | null;
+  dest_port?: string | null;
+  /** Alias of dest_port. */
+  dest_label?: string | null;
+  at_before?: string | null;
+  terminal_cutoff_at?: string | null;
+  /** 1st leg = leg_no 1, 2nd leg = leg_no 2. */
+  legs?: JobTrackingLegDto[];
+  port_of_call?: JobTrackingPortOfCallDto[];
+  container_events?: JobTrackingContainerEventDto[];
+  arrival_report?: ArrivalReportStatusRowDto[];
+  customs_status?: CustomsStatusRowDto[];
+  /** Job snapshot + staff overrides. */
+  detailed_data?: Record<string, unknown>;
+  pre_manifest?: ManifestStatusRowDto[];
+  qty_gw_vol?: QtyGwVolDto;
+}
+
+/** GET /jobs/:id/tracking/profile — empty / job-seeded on first open. */
 export interface JobTrackingProfile extends UpsertJobTrackingProfileDto {
   id?: string;
   job_id?: string;

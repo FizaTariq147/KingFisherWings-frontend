@@ -48,15 +48,17 @@ export interface PublicTrackContainer {
   sealNumber?: string;
 }
 
-/** Route leg row from enriched `route.legs` (YQN-style). */
+/** Route leg row from enriched `route.legs` / first_leg / second_leg. */
 export interface PublicTrackRouteLegRow {
   id: string;
+  legNo?: number;
   label?: string;
   code?: string;
   from?: string;
   to?: string;
   vessel?: string;
   voyage?: string;
+  imo?: string;
   etd?: string;
   eta?: string;
   raw?: Record<string, unknown>;
@@ -65,6 +67,7 @@ export interface PublicTrackRouteLegRow {
 /** Port-of-call stop from `route.port_of_call`. */
 export interface PublicTrackPortOfCall {
   id: string;
+  role?: string;
   name?: string;
   code?: string;
   country?: string;
@@ -72,22 +75,27 @@ export interface PublicTrackPortOfCall {
   etd?: string;
   ata?: string;
   atd?: string;
+  vesselName?: string;
+  voyageNumber?: string;
   raw?: Record<string, unknown>;
 }
 
 /** Enriched route block shared by public `/track` and staff `GET /jobs/:id/tracking`. */
 export interface PublicTrackRoute {
+  blNumber?: string;
   from?: string;
   to?: string;
   originLabel?: string;
   destLabel?: string;
   atBefore?: string;
   terminalCutoffAt?: string;
+  firstLeg?: PublicTrackRouteLegRow;
+  secondLeg?: PublicTrackRouteLegRow;
   legs: PublicTrackRouteLegRow[];
   portOfCall: PublicTrackPortOfCall[];
 }
 
-/** Key/value or labeled row used in cargo / pre-manifest tables. */
+/** @deprecated Prefer typed section rows; kept for legacy info-list UIs. */
 export interface PublicTrackInfoRow {
   id: string;
   label?: string;
@@ -98,13 +106,60 @@ export interface PublicTrackInfoRow {
   raw?: Record<string, unknown>;
 }
 
+export interface PublicTrackArrivalReportRow {
+  id: string;
+  status?: string;
+  sendingTime?: string;
+  receiptTime?: string;
+  containerNo?: string;
+  subContainerNo?: string;
+  vesselName?: string;
+  voyageNo?: string;
+  imo?: string;
+}
+
+export interface PublicTrackCustomsStatusRow {
+  id: string;
+  carrierOperator?: string;
+  customsReleased?: boolean;
+  subCustomsNo?: string;
+  quantity?: number;
+  weight?: number;
+  volume?: number;
+  customsDeclarationNo?: string;
+  customsInspectionStatus?: string;
+  customsInspectionTime?: string;
+}
+
+export interface PublicTrackManifestStatusRow {
+  id: string;
+  subCustomsNo?: string;
+  status?: string;
+  sendingTime?: string;
+  receiptReceivingTime?: string;
+  containerNo?: string;
+  vesselName?: string;
+  voyageNo?: string;
+  imo?: string;
+}
+
 export interface PublicTrackCargoInfo {
-  arrivalReport: PublicTrackInfoRow[];
-  customsStatus: PublicTrackInfoRow[];
+  arrivalReport: PublicTrackArrivalReportRow[];
+  customsStatus: PublicTrackCustomsStatusRow[];
   detailedData: Record<string, unknown>;
 }
 
 export interface PublicTrackQtyGwVol {
+  quantity?: number;
+  grossWeight?: number;
+  netWeight?: number;
+  volume?: number;
+  chargeableWeight?: number;
+  qtyUnit?: string;
+  weightUnit?: string;
+  volumeUnit?: string;
+  lines: Record<string, unknown>[];
+  /** Display helpers (with units). */
   qty?: string;
   gw?: string;
   vol?: string;
@@ -122,6 +177,8 @@ export interface PublicTrackResult {
   destination?: string;
   jobType?: string;
   partyName?: string;
+  /** B/L from route / profile. */
+  blNumber?: string;
   /** Primary container number (actual preferred over planned). */
   containerNumber?: string;
   /** ISO / type label e.g. 45G1 (40HC). */
@@ -138,8 +195,8 @@ export interface PublicTrackResult {
   route?: PublicTrackRoute;
   /** Arrival report / customs / detailed cargo block. */
   cargoInfo?: PublicTrackCargoInfo;
-  /** Pre-manifest rows. */
-  preManifest?: PublicTrackInfoRow[];
+  /** Pre-manifest → manifest_status rows. */
+  preManifest?: PublicTrackManifestStatusRow[];
   /** Quantity / gross weight / volume summary. */
   qtyGwVol?: PublicTrackQtyGwVol;
 }

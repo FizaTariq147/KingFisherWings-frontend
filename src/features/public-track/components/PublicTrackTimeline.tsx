@@ -15,7 +15,6 @@ import { Button } from '@/components/ui/Button';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { cn } from '@/lib/utils';
 import type {
-  PublicTrackInfoRow,
   PublicTrackMilestone,
   PublicTrackResult,
 } from '../types/publicTrack.types';
@@ -117,46 +116,6 @@ function modeIcon(move?: string, eventType?: string) {
   return MapPin;
 }
 
-function InfoRowsTable({
-  rows,
-  emptyLabel,
-}: {
-  rows: PublicTrackInfoRow[];
-  emptyLabel: string;
-}) {
-  if (!rows.length) {
-    return (
-      <p className="py-4 text-sm" style={{ color: C.sub }}>
-        {emptyLabel}
-      </p>
-    );
-  }
-  return (
-    <ul>
-      {rows.map((row) => (
-        <li
-          key={row.id}
-          className="grid grid-cols-1 gap-2 border-b py-3 sm:grid-cols-[1.2fr_1.4fr_1fr_1fr] sm:gap-3"
-          style={{ borderColor: C.rowBorder }}
-        >
-          <p className="text-[13px] font-bold uppercase" style={{ color: C.navy }}>
-            {row.label || '—'}
-          </p>
-          <p className="text-[13px]" style={{ color: C.text }}>
-            {row.value || row.notes || '—'}
-          </p>
-          <p className="text-[12px] uppercase" style={{ color: C.sub }}>
-            {row.status ? formatStatusLabel(row.status) : '\u00A0'}
-          </p>
-          <p className="text-[12px]" style={{ color: C.sub }}>
-            {row.date ? formatWhenShort(row.date) : '\u00A0'}
-          </p>
-        </li>
-      ))}
-    </ul>
-  );
-}
-
 function DetailDataList({ data }: { data: Record<string, unknown> }) {
   const entries = Object.entries(data);
   if (!entries.length) return null;
@@ -172,7 +131,7 @@ function DetailDataList({ data }: { data: Record<string, unknown> }) {
             {key.replaceAll('_', ' ')}
           </dt>
           <dd className="mt-0.5 text-[13px] font-medium" style={{ color: C.navy }}>
-            {typeof value === 'string' || typeof value === 'number'
+            {typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean'
               ? String(value)
               : value == null
                 ? '—'
@@ -181,6 +140,54 @@ function DetailDataList({ data }: { data: Record<string, unknown> }) {
         </div>
       ))}
     </dl>
+  );
+}
+
+function DataTable({
+  columns,
+  rows,
+  emptyLabel,
+}: {
+  columns: { key: string; label: string; render: (row: Record<string, unknown>) => string }[];
+  rows: Record<string, unknown>[];
+  emptyLabel: string;
+}) {
+  if (!rows.length) {
+    return (
+      <p className="py-4 text-sm" style={{ color: C.sub }}>
+        {emptyLabel}
+      </p>
+    );
+  }
+  return (
+    <div className="overflow-x-auto">
+      <table className="min-w-full text-left text-[12px]">
+        <thead>
+          <tr style={{ borderBottom: `1px solid ${C.border}` }}>
+            {columns.map((col) => (
+              <th
+                key={col.key}
+                className="whitespace-nowrap px-2 py-2 font-semibold uppercase tracking-wide"
+                style={{ color: C.muted }}
+              >
+                {col.label}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, i) => (
+            <tr key={String(row.id ?? i)} style={{ borderBottom: `1px solid ${C.rowBorder}` }}>
+              {columns.map((col) => (
+                <td key={col.key} className="whitespace-nowrap px-2 py-2.5" style={{ color: C.text }}>
+                  {col.render(row) || '—'}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }
 
@@ -321,6 +328,12 @@ export function PublicTrackTimeline({
       qtyGwVol?.qty ||
         qtyGwVol?.gw ||
         qtyGwVol?.vol ||
+        qtyGwVol?.quantity != null ||
+        qtyGwVol?.grossWeight != null ||
+        qtyGwVol?.volume != null ||
+        qtyGwVol?.netWeight != null ||
+        qtyGwVol?.chargeableWeight != null ||
+        (qtyGwVol?.lines?.length ?? 0) > 0 ||
         (qtyGwVol && Object.keys(qtyGwVol.extras).length),
     );
 
@@ -331,16 +344,29 @@ export function PublicTrackTimeline({
 
   const vesselRows = useMemo(() => {
     const fromLegs = (route?.legs ?? [])
-      .filter((l) => l.vessel || l.voyage)
+      .filter((l) => l.vessel || l.voyage || l.imo)
       .map((l, i) => ({
         id: l.id || `leg-${i}`,
         vessel: l.vessel,
         voyage: l.voyage,
+        imo: l.imo,
         label: l.label || [l.from, l.to].filter(Boolean).join(' → '),
         etd: l.etd,
         eta: l.eta,
       }));
     if (fromLegs.length) return fromLegs;
+    const fromPoc = (route?.portOfCall ?? [])
+      .filter((p) => p.vesselName || p.voyageNumber)
+      .map((p, i) => ({
+        id: p.id || `poc-v-${i}`,
+        vessel: p.vesselName,
+        voyage: p.voyageNumber,
+        imo: undefined as string | undefined,
+        label: [p.role, p.name].filter(Boolean).join(' · '),
+        etd: p.etd,
+        eta: p.eta,
+      }));
+    if (fromPoc.length) return fromPoc;
     const seen = new Set<string>();
     const fromMoves: typeof fromLegs = [];
     for (const m of history) {
@@ -352,13 +378,14 @@ export function PublicTrackTimeline({
         id: m.id,
         vessel: m.vessel,
         voyage: m.voyage,
+        imo: undefined,
         label: m.location || m.move || m.label,
         etd: undefined,
         eta: undefined,
       });
     }
     return fromMoves;
-  }, [route?.legs, history]);
+  }, [route?.legs, route?.portOfCall, history]);
 
   const etaHistory = useMemo(() => {
     const rows: Array<{ id: string; label: string; when?: string; note?: string }> = [];
@@ -472,13 +499,21 @@ export function PublicTrackTimeline({
                 className="truncate text-[20px] font-bold tracking-tight sm:text-[22px]"
                 style={{ color: C.navy }}
               >
-                {result.reference}
+                {result.blNumber || result.reference}
               </p>
-              {result.partyName ? (
-                <p className="mt-0.5 text-[12px]" style={{ color: C.sub }}>
-                  {result.partyName}
-                </p>
-              ) : null}
+              <p className="mt-0.5 text-[12px]" style={{ color: C.sub }}>
+                {[
+                  result.blNumber && result.blNumber !== result.reference
+                    ? `Ref ${result.reference}`
+                    : null,
+                  result.partyName,
+                  route?.terminalCutoffAt
+                    ? `Cut-off ${formatWhenShort(route.terminalCutoffAt)}`
+                    : null,
+                ]
+                  .filter(Boolean)
+                  .join(' · ')}
+              </p>
             </div>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-2">
@@ -762,29 +797,53 @@ export function PublicTrackTimeline({
                 <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
                   Port of call
                 </p>
-                <ul>
-                  {route.portOfCall.map((port) => (
-                    <li
-                      key={port.id}
-                      className="flex flex-wrap justify-between gap-2 border-b py-2.5 text-[13px]"
-                      style={{ borderColor: C.rowBorder }}
-                    >
-                      <span className="font-semibold uppercase" style={{ color: C.navy }}>
-                        {port.name || '—'}
-                        {port.code ? ` (${port.code})` : ''}
-                      </span>
-                      <span style={{ color: C.sub }}>
-                        {[
-                          port.eta ? `ETA ${formatTrackDateShort(port.eta)}` : null,
-                          port.atd ? `ATD ${formatTrackDateShort(port.atd)}` : null,
-                          port.ata ? `ATA ${formatTrackDateShort(port.ata)}` : null,
-                        ]
-                          .filter(Boolean)
-                          .join(' · ') || '—'}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <DataTable
+                  emptyLabel="No port of call rows."
+                  columns={[
+                    {
+                      key: 'role',
+                      label: 'Role',
+                      render: (r) => String(r.role ?? ''),
+                    },
+                    {
+                      key: 'port',
+                      label: 'Port',
+                      render: (r) =>
+                        [r.name, r.code ? `(${r.code})` : null].filter(Boolean).join(' '),
+                    },
+                    {
+                      key: 'vessel',
+                      label: 'Vessel',
+                      render: (r) => String(r.vesselName ?? ''),
+                    },
+                    {
+                      key: 'voyage',
+                      label: 'Voyage',
+                      render: (r) => String(r.voyageNumber ?? ''),
+                    },
+                    {
+                      key: 'eta',
+                      label: 'ETA',
+                      render: (r) => formatTrackDateShort(String(r.eta ?? '')) || '',
+                    },
+                    {
+                      key: 'ata',
+                      label: 'ATA',
+                      render: (r) => formatTrackDateShort(String(r.ata ?? '')) || '',
+                    },
+                    {
+                      key: 'etd',
+                      label: 'ETD',
+                      render: (r) => formatTrackDateShort(String(r.etd ?? '')) || '',
+                    },
+                    {
+                      key: 'atd',
+                      label: 'ATD',
+                      render: (r) => formatTrackDateShort(String(r.atd ?? '')) || '',
+                    },
+                  ]}
+                  rows={route.portOfCall.map((p) => ({ ...p }))}
+                />
               </div>
             ) : null}
           </div>
@@ -814,6 +873,11 @@ export function PublicTrackTimeline({
                         {row.voyage ? (
                           <p className="text-[13px] font-medium" style={{ color: C.badge }}>
                             VOY {row.voyage}
+                          </p>
+                        ) : null}
+                        {row.imo ? (
+                          <p className="text-[12px]" style={{ color: C.muted }}>
+                            IMO {row.imo}
                           </p>
                         ) : null}
                         {row.label ? (
@@ -878,15 +942,103 @@ export function PublicTrackTimeline({
           <div className="space-y-6">
             <div>
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
-                Arrival report
+                Arrival report status
               </p>
-              <InfoRowsTable rows={cargoInfo.arrivalReport} emptyLabel="No arrival report rows." />
+              <DataTable
+                emptyLabel="No arrival report rows."
+                columns={[
+                  { key: 'status', label: 'Status', render: (r) => String(r.status ?? '') },
+                  {
+                    key: 'sending',
+                    label: 'Sending time',
+                    render: (r) => formatWhenShort(String(r.sendingTime ?? '')),
+                  },
+                  {
+                    key: 'receipt',
+                    label: 'Receipt time',
+                    render: (r) => formatWhenShort(String(r.receiptTime ?? '')),
+                  },
+                  {
+                    key: 'container',
+                    label: 'Container no',
+                    render: (r) => String(r.containerNo ?? ''),
+                  },
+                  {
+                    key: 'sub',
+                    label: 'Sub container no',
+                    render: (r) => String(r.subContainerNo ?? ''),
+                  },
+                  {
+                    key: 'vessel',
+                    label: 'Vessel',
+                    render: (r) => String(r.vesselName ?? ''),
+                  },
+                  {
+                    key: 'voyage',
+                    label: 'Voyage no',
+                    render: (r) => String(r.voyageNo ?? ''),
+                  },
+                  { key: 'imo', label: 'IMO', render: (r) => String(r.imo ?? '') },
+                ]}
+                rows={cargoInfo.arrivalReport.map((r) => ({ ...r }))}
+              />
             </div>
             <div>
               <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
                 Customs status
               </p>
-              <InfoRowsTable rows={cargoInfo.customsStatus} emptyLabel="No customs status rows." />
+              <DataTable
+                emptyLabel="No customs status rows."
+                columns={[
+                  {
+                    key: 'carrier',
+                    label: 'Carrier operator',
+                    render: (r) => String(r.carrierOperator ?? ''),
+                  },
+                  {
+                    key: 'released',
+                    label: 'Customs released',
+                    render: (r) =>
+                      r.customsReleased == null ? '' : r.customsReleased ? 'Yes' : 'No',
+                  },
+                  {
+                    key: 'sub',
+                    label: 'Sub customs no',
+                    render: (r) => String(r.subCustomsNo ?? ''),
+                  },
+                  {
+                    key: 'qty',
+                    label: 'Quantity',
+                    render: (r) => (r.quantity != null ? String(r.quantity) : ''),
+                  },
+                  {
+                    key: 'weight',
+                    label: 'Weight',
+                    render: (r) => (r.weight != null ? String(r.weight) : ''),
+                  },
+                  {
+                    key: 'volume',
+                    label: 'Volume',
+                    render: (r) => (r.volume != null ? String(r.volume) : ''),
+                  },
+                  {
+                    key: 'decl',
+                    label: 'Declaration no',
+                    render: (r) => String(r.customsDeclarationNo ?? ''),
+                  },
+                  {
+                    key: 'insp',
+                    label: 'Inspection status',
+                    render: (r) => String(r.customsInspectionStatus ?? ''),
+                  },
+                  {
+                    key: 'inspTime',
+                    label: 'Inspection time',
+                    render: (r) => formatWhenShort(String(r.customsInspectionTime ?? '')),
+                  },
+                ]}
+                rows={cargoInfo.customsStatus.map((r) => ({ ...r }))}
+              />
             </div>
             {Object.keys(cargoInfo.detailedData).length ? (
               <div>
@@ -900,16 +1052,72 @@ export function PublicTrackTimeline({
         ) : null}
 
         {activeTab === 'pre_manifest' && hasPreManifest ? (
-          <InfoRowsTable rows={preManifest} emptyLabel="No pre-manifest rows." />
+          <div>
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
+              Manifest status
+            </p>
+            <DataTable
+              emptyLabel="No pre-manifest rows."
+              columns={[
+                {
+                  key: 'sub',
+                  label: 'Sub customs no',
+                  render: (r) => String(r.subCustomsNo ?? ''),
+                },
+                { key: 'status', label: 'Status', render: (r) => String(r.status ?? '') },
+                {
+                  key: 'sending',
+                  label: 'Sending time',
+                  render: (r) => formatWhenShort(String(r.sendingTime ?? '')),
+                },
+                {
+                  key: 'receipt',
+                  label: 'Receipt / receiving',
+                  render: (r) => formatWhenShort(String(r.receiptReceivingTime ?? '')),
+                },
+                {
+                  key: 'container',
+                  label: 'Container no',
+                  render: (r) => String(r.containerNo ?? ''),
+                },
+                {
+                  key: 'vessel',
+                  label: 'Vessel',
+                  render: (r) => String(r.vesselName ?? ''),
+                },
+                {
+                  key: 'voyage',
+                  label: 'Voyage no',
+                  render: (r) => String(r.voyageNo ?? ''),
+                },
+                { key: 'imo', label: 'IMO', render: (r) => String(r.imo ?? '') },
+              ]}
+              rows={preManifest.map((r) => ({ ...r }))}
+            />
+          </div>
         ) : null}
 
         {activeTab === 'qty' && hasQty && qtyGwVol ? (
-          <div>
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
               {[
                 { label: 'QTY', value: qtyGwVol.qty },
                 { label: 'G.W.', value: qtyGwVol.gw },
+                {
+                  label: 'N.W.',
+                  value:
+                    qtyGwVol.netWeight != null
+                      ? `${qtyGwVol.netWeight}${qtyGwVol.weightUnit ? ` ${qtyGwVol.weightUnit}` : ''}`
+                      : undefined,
+                },
                 { label: 'VOL.', value: qtyGwVol.vol },
+                {
+                  label: 'Chg. wt',
+                  value:
+                    qtyGwVol.chargeableWeight != null
+                      ? `${qtyGwVol.chargeableWeight}${qtyGwVol.weightUnit ? ` ${qtyGwVol.weightUnit}` : ''}`
+                      : undefined,
+                },
               ].map((item) => (
                 <div
                   key={item.label}
@@ -925,6 +1133,23 @@ export function PublicTrackTimeline({
                 </div>
               ))}
             </div>
+            {qtyGwVol.lines.length ? (
+              <div>
+                <p className="mb-2 text-[11px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
+                  Lines
+                </p>
+                <DetailDataList
+                  data={Object.fromEntries(
+                    qtyGwVol.lines.map((line, i) => [
+                      `line_${i + 1}`,
+                      Object.entries(line)
+                        .map(([k, v]) => `${k}: ${String(v ?? '')}`)
+                        .join(' · '),
+                    ]),
+                  )}
+                />
+              </div>
+            ) : null}
             {Object.keys(qtyGwVol.extras).length ? (
               <DetailDataList data={qtyGwVol.extras} />
             ) : null}
