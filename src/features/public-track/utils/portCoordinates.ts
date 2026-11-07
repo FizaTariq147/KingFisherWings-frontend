@@ -100,46 +100,71 @@ export function resolvePortCoordinates(label?: string | null): LatLng | null {
   return null;
 }
 
+/** Smooth segment between two points (optional southward ocean bulge). */
+function interpolateSegment(
+  from: LatLng,
+  to: LatLng,
+  steps: number,
+  bulgeLat = 0,
+): LatLng[] {
+  const out: LatLng[] = [];
+  for (let i = 0; i <= steps; i += 1) {
+    const t = i / steps;
+    const ease = t * t * (3 - 2 * t);
+    const pull = Math.sin(Math.PI * t) * bulgeLat;
+    out.push({
+      lat: Math.max(-85, Math.min(85, from.lat + (to.lat - from.lat) * ease + pull)),
+      lng: ((from.lng + (to.lng - from.lng) * ease + 540) % 360) - 180,
+    });
+  }
+  return out;
+}
+
 /**
- * Shipping-lane style arc between two ports.
- * Asia → Europe (e.g. Shanghai → Rotterdam) bulges south through the Indian Ocean
- * to match live-track reference maps (not a straight great-circle).
+ * East Asia → N. Europe sea lane (Shanghai → Rotterdam reference):
+ * South China Sea → Malacca → Indian Ocean → Arabian Sea → Red Sea → Med → N. Sea.
+ */
+const ASIA_TO_EUROPE_VIA: LatLng[] = [
+  { lat: 22.0, lng: 118.0 },
+  { lat: 7.0, lng: 108.0 },
+  { lat: 1.3, lng: 104.0 },
+  { lat: 5.5, lng: 80.0 },
+  { lat: 8.0, lng: 60.0 },
+  { lat: 12.5, lng: 48.0 },
+  { lat: 20.0, lng: 39.0 },
+  { lat: 29.5, lng: 32.5 },
+  { lat: 34.0, lng: 28.0 },
+  { lat: 36.5, lng: 15.0 },
+  { lat: 37.0, lng: 5.0 },
+  { lat: 43.0, lng: -5.0 },
+  { lat: 49.0, lng: 0.0 },
+];
+
+function isAsiaToNorthEurope(from: LatLng, to: LatLng): boolean {
+  return from.lng > 95 && to.lng < 20 && from.lat > 10 && to.lat > 40;
+}
+
+/**
+ * Shipping-lane style arc between two ports (matches live-track reference maps).
  */
 export function interpolateArc(
   from: LatLng,
   to: LatLng,
   steps = 64,
 ): LatLng[] {
-  const out: LatLng[] = [];
-  const lngDelta = to.lng - from.lng;
-  // East Asia / Pacific → Europe: go west via Indian Ocean / Suez corridor.
-  const asiaToEurope =
-    from.lng > 90 && to.lng < 30 && from.lat > 0 && to.lat > 0 && lngDelta < -40;
-  // Westbound ocean legs in general: mild southward bulge.
-  const westboundOcean = lngDelta < -20 || (from.lng > 100 && to.lng < 50);
-
-  for (let i = 0; i <= steps; i += 1) {
-    const t = i / steps;
-    const ease = t * t * (3 - 2 * t); // smoothstep
-    let lat = from.lat + (to.lat - from.lat) * ease;
-    let lng = from.lng + lngDelta * ease;
-
-    if (asiaToEurope) {
-      // Dip toward ~5–12°N through the Indian Ocean mid-voyage (reference style).
-      const southPull = Math.sin(Math.PI * t) * 22;
-      lat = lat - southPull;
-      // Nudge longitude through Arabian Sea / Red Sea approach mid-route.
-      lng = lng - Math.sin(Math.PI * t) * 8;
-    } else if (westboundOcean) {
-      lat = lat - Math.sin(Math.PI * t) * 6;
-    } else {
-      lat = lat + Math.sin(Math.PI * t) * 2;
+  if (isAsiaToNorthEurope(from, to)) {
+    const chain = [from, ...ASIA_TO_EUROPE_VIA, to];
+    const per = Math.max(4, Math.floor(steps / (chain.length - 1)));
+    const out: LatLng[] = [];
+    for (let i = 0; i < chain.length - 1; i += 1) {
+      const segment = interpolateSegment(chain[i], chain[i + 1], per, i >= 2 && i <= 5 ? -2 : 0);
+      if (i > 0) segment.shift();
+      out.push(...segment);
     }
-
-    out.push({
-      lat: Math.max(-85, Math.min(85, lat)),
-      lng: ((lng + 540) % 360) - 180,
-    });
+    return out;
   }
-  return out;
+
+  const lngDelta = to.lng - from.lng;
+  const westboundOcean = lngDelta < -20 || (from.lng > 100 && to.lng < 50);
+  return interpolateSegment(from, to, steps, westboundOcean ? -6 : 1.5);
 }
