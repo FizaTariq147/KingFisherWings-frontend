@@ -1,22 +1,9 @@
-import {
-  useEffect,
-  useMemo,
-  useState,
-  type ComponentType,
-  type FormEvent,
-  type ReactNode,
-} from 'react'
+import { useMemo, useState, type ComponentType, type FormEvent, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronRight, LogIn, Package, Search, Shield } from 'lucide-react'
 import loginBg from '@/assets/login-bg.mp4'
 import { BrandLogo } from '@/features/branding/components/BrandLogo'
-import { Button } from '@/components/ui/Button'
-import { Modal } from '@/components/ui/Modal'
-import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline'
-import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground'
-import { publicTrackService } from '@/features/public-track/services/publicTrack.service'
 import { resolveTenantSlugFromLocation } from '@/features/public-track/utils/publicTrackContext'
-import { toTrackResult } from '@/features/public-track/utils/toTrackResult'
 
 const NAVY = '#0A2942'
 
@@ -88,17 +75,9 @@ export function AuthLandingShell({
 }) {
   const defaultTenant = useMemo(() => resolveTenantSlugFromLocation(), [])
   const [trackRef, setTrackRef] = useState('')
-  const [pending, setPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [rawPayload, setRawPayload] = useState<unknown>(null)
-  const [modalOpen, setModalOpen] = useState(false)
-  const summary = rawPayload ? toTrackResult(rawPayload, trackRef.trim()) : null
 
-  const closeModal = () => {
-    setModalOpen(false)
-  }
-
-  const onTrack = async (e: FormEvent) => {
+  const onTrack = (e: FormEvent) => {
     e.preventDefault()
     e.stopPropagation()
     const ref = trackRef.trim()
@@ -107,39 +86,17 @@ export function AuthLandingShell({
       return
     }
     setError(null)
-    setRawPayload(null)
-    setModalOpen(true)
-    setPending(true)
-    try {
-      const data = await publicTrackService.trackRaw(defaultTenant || undefined, ref)
-      setRawPayload(data)
-    } catch (err) {
-      setRawPayload(null)
-      setModalOpen(false)
-      setError(err instanceof Error ? err.message : 'Track lookup failed.')
-    } finally {
-      setPending(false)
+
+    const params = new URLSearchParams()
+    params.set('ref', ref)
+    if (defaultTenant) params.set('tenant_slug', defaultTenant)
+    const url = `${window.location.origin}/track?${params.toString()}`
+    const opened = window.open(url, '_blank', 'noopener,noreferrer')
+    if (!opened) {
+      // Popup blocked — fall back to same-tab full-page track.
+      window.location.assign(url)
     }
   }
-
-  // Live refresh map + timeline while the Track modal is open.
-  useEffect(() => {
-    if (!modalOpen) return
-    const ref = trackRef.trim()
-    if (ref.length < 2) return
-    const refresh = () => {
-      void (async () => {
-        try {
-          const data = await publicTrackService.trackRaw(defaultTenant || undefined, ref)
-          setRawPayload(data)
-        } catch {
-          /* keep last good payload */
-        }
-      })()
-    }
-    const id = window.setInterval(refresh, 15_000)
-    return () => window.clearInterval(id)
-  }, [modalOpen, trackRef, defaultTenant])
 
   return (
     <div className="relative min-h-screen overflow-hidden">
@@ -159,129 +116,84 @@ export function AuthLandingShell({
       />
 
       {!videoOnly && (
-      <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-10">
-        <div className="w-full max-w-[440px]">
-          <div className="mx-auto mb-4 flex w-fit items-center justify-center rounded-2xl bg-white px-4 py-2.5 shadow-lg">
-            <BrandLogo alt="KingFisher Wings" className="h-12 w-auto sm:h-14" />
-          </div>
-          <h1 className="text-center text-[22px] font-semibold tracking-tight text-white sm:text-[24px]">
-            KingFisher Wings
-          </h1>
-          <p className="mt-1 mb-6 text-center text-[13px] text-white/75">
-            Seamless logistics management for shipments, invoices, and operations
-          </p>
+        <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-10">
+          <div className="w-full max-w-[440px]">
+            <div className="mx-auto mb-4 flex w-fit items-center justify-center rounded-2xl bg-white px-4 py-2.5 shadow-lg">
+              <BrandLogo alt="KingFisher Wings" className="h-12 w-auto sm:h-14" />
+            </div>
+            <h1 className="text-center text-[22px] font-semibold tracking-tight text-white sm:text-[24px]">
+              KingFisher Wings
+            </h1>
+            <p className="mt-1 mb-6 text-center text-[13px] text-white/75">
+              Seamless logistics management for shipments, invoices, and operations
+            </p>
 
-          <div className="mx-auto flex max-w-[440px] flex-col gap-3">
-            <HubCard
-              icon={LogIn}
-              iconBg="#DBEAFE"
-              iconColor="#2563EB"
-              title="Customer Login"
-              description="Track your shipments, quotations, and invoices."
-              to="/portal/login"
-            />
-            <HubCard
-              icon={Package}
-              iconBg="#D1FAE5"
-              iconColor="#059669"
-              title="Vendor Login"
-              description="Sign in for invoices, payments, and requests."
-              to="/vendor/login"
-            />
-            <HubCard
-              icon={Shield}
-              iconBg="#EDE9FE"
-              iconColor="#7C3AED"
-              title="Admin Login"
-              description="Staff and Tenant Admin sign-in for the ERP."
-              onClick={onAdminClick}
-            />
-          </div>
+            <div className="mx-auto flex max-w-[440px] flex-col gap-3">
+              <HubCard
+                icon={LogIn}
+                iconBg="#DBEAFE"
+                iconColor="#2563EB"
+                title="Customer Login"
+                description="Track your shipments, quotations, and invoices."
+                to="/portal/login"
+              />
+              <HubCard
+                icon={Package}
+                iconBg="#D1FAE5"
+                iconColor="#059669"
+                title="Vendor Login"
+                description="Sign in for invoices, payments, and requests."
+                to="/vendor/login"
+              />
+              <HubCard
+                icon={Shield}
+                iconBg="#EDE9FE"
+                iconColor="#7C3AED"
+                title="Admin Login"
+                description="Staff and Tenant Admin sign-in for the ERP."
+                onClick={onAdminClick}
+              />
+            </div>
 
-          <form
-            noValidate
-            onSubmit={(e) => void onTrack(e)}
-            className="mx-auto mt-4 max-w-[440px] rounded-2xl bg-white/18 px-4 py-4 shadow-[0_8px_32px_rgba(10,41,66,0.12)] backdrop-blur-md ring-1 ring-white/25"
-          >
-            <div className="mb-2.5 flex items-start gap-2 text-white">
-              <Search size={15} className="mt-0.5 shrink-0 opacity-90" />
-              <div>
-                <p className="text-[13.5px] font-semibold">Track a Shipment</p>
-                <p className="text-[11.5px] leading-snug text-white/75">
-                  Enter job, shipment, container, or BL number.
-                </p>
+            <form
+              noValidate
+              onSubmit={onTrack}
+              className="mx-auto mt-4 max-w-[440px] rounded-2xl bg-white/18 px-4 py-4 shadow-[0_8px_32px_rgba(10,41,66,0.12)] backdrop-blur-md ring-1 ring-white/25"
+            >
+              <div className="mb-2.5 flex items-start gap-2 text-white">
+                <Search size={15} className="mt-0.5 shrink-0 opacity-90" />
+                <div>
+                  <p className="text-[13.5px] font-semibold">Track a Shipment</p>
+                  <p className="text-[11.5px] leading-snug text-white/75">
+                    Opens live Track &amp; Trace in a new tab.
+                  </p>
+                </div>
               </div>
-            </div>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={trackRef}
-                onChange={(e) => setTrackRef(e.target.value)}
-                placeholder="Job / shipment / container / BL…"
-                className="h-10 min-w-0 flex-1 rounded-lg border-0 bg-white px-3 text-[13px] text-slate-800 outline-none placeholder:text-slate-400"
-              />
-              <button
-                type="submit"
-                disabled={pending || trackRef.trim().length < 2}
-                className="h-10 shrink-0 rounded-lg bg-white px-4 text-[13px] font-semibold text-slate-800 transition hover:bg-slate-100 disabled:opacity-60"
-              >
-                {pending ? '…' : 'Track'}
-              </button>
-            </div>
-            {error ? (
-              <p role="alert" className="mt-2 text-[12px] text-red-100">
-                {error}
-              </p>
-            ) : null}
-          </form>
-        </div>
-      </main>
-      )}
-
-      <Modal
-        open={modalOpen}
-        onClose={closeModal}
-        title="Track & Trace"
-        size="full"
-        panelClassName="max-h-[min(90vh,48rem)] w-full max-w-[min(96vw,72rem)]"
-        contentClassName="!flex !min-h-0 !flex-1 !flex-col !overflow-hidden !p-0"
-      >
-        {summary ? (
-          /* Left details · right live origin→destination map */
-          <div className="flex h-[min(74vh,560px)] min-h-[440px] flex-1 flex-col overflow-hidden md:flex-row">
-            <div className="flex min-h-0 w-full flex-col border-b border-[var(--fresa-border,#C9D3DF)] bg-white md:w-[min(42%,420px)] md:border-b-0 md:border-r">
-              <PublicTrackTimeline
-                variant="overlay"
-                className="h-full min-h-0 rounded-none shadow-none"
-                result={summary}
-              />
-            </div>
-            <div className="relative min-h-[280px] flex-1 overflow-hidden bg-[#0B1220]">
-              <TrackMapBackground result={summary} showLiveBadge />
-              <div className="absolute right-3 top-3 z-[5]">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="secondary"
-                  className="bg-white/95 shadow-md backdrop-blur"
-                  onClick={() => {
-                    closeModal()
-                    setRawPayload(null)
-                    setError(null)
-                    setTrackRef('')
-                  }}
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={trackRef}
+                  onChange={(e) => setTrackRef(e.target.value)}
+                  placeholder="Job / shipment / container / BL…"
+                  className="h-10 min-w-0 flex-1 rounded-lg border-0 bg-white px-3 text-[13px] text-slate-800 outline-none placeholder:text-slate-400"
+                />
+                <button
+                  type="submit"
+                  disabled={trackRef.trim().length < 2}
+                  className="h-10 shrink-0 rounded-lg bg-white px-4 text-[13px] font-semibold text-slate-800 transition hover:bg-slate-100 disabled:opacity-60"
                 >
-                  New search
-                </Button>
+                  Track
+                </button>
               </div>
-            </div>
+              {error ? (
+                <p role="alert" className="mt-2 text-[12px] text-red-100">
+                  {error}
+                </p>
+              ) : null}
+            </form>
           </div>
-        ) : (
-          <div className="flex min-h-[220px] flex-1 items-center justify-center bg-[#0B1220] px-6 py-10 text-sm text-white/80">
-            {pending ? 'Looking up shipment…' : 'No tracking data yet.'}
-          </div>
-        )}
-      </Modal>
+        </main>
+      )}
 
       {children}
     </div>
