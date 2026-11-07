@@ -14,7 +14,6 @@ import { Button } from '@/components/ui/Button'
 import { Modal } from '@/components/ui/Modal'
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline'
 import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground'
-import { TrackOverlayFrame } from '@/features/public-track/components/TrackOverlayFrame'
 import { publicTrackService } from '@/features/public-track/services/publicTrack.service'
 import { resolveTenantSlugFromLocation } from '@/features/public-track/utils/publicTrackContext'
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult'
@@ -101,6 +100,7 @@ export function AuthLandingShell({
 
   const onTrack = async (e: FormEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     const ref = trackRef.trim()
     if (ref.length < 2) {
       setError('Enter at least 2 characters.')
@@ -108,11 +108,11 @@ export function AuthLandingShell({
     }
     setError(null)
     setRawPayload(null)
+    setModalOpen(true)
     setPending(true)
     try {
       const data = await publicTrackService.trackRaw(defaultTenant || undefined, ref)
       setRawPayload(data)
-      setModalOpen(true)
     } catch (err) {
       setRawPayload(null)
       setModalOpen(false)
@@ -127,7 +127,7 @@ export function AuthLandingShell({
     if (!modalOpen) return
     const ref = trackRef.trim()
     if (ref.length < 2) return
-    const id = window.setInterval(() => {
+    const refresh = () => {
       void (async () => {
         try {
           const data = await publicTrackService.trackRaw(defaultTenant || undefined, ref)
@@ -136,7 +136,8 @@ export function AuthLandingShell({
           /* keep last good payload */
         }
       })()
-    }, 30_000)
+    }
+    const id = window.setInterval(refresh, 15_000)
     return () => window.clearInterval(id)
   }, [modalOpen, trackRef, defaultTenant])
 
@@ -198,6 +199,7 @@ export function AuthLandingShell({
           </div>
 
           <form
+            noValidate
             onSubmit={(e) => void onTrack(e)}
             className="mx-auto mt-4 max-w-[440px] rounded-2xl bg-white/18 px-4 py-4 shadow-[0_8px_32px_rgba(10,41,66,0.12)] backdrop-blur-md ring-1 ring-white/25"
           >
@@ -237,42 +239,48 @@ export function AuthLandingShell({
       )}
 
       <Modal
-        open={modalOpen && Boolean(summary)}
+        open={modalOpen}
         onClose={closeModal}
         title="Track & Trace"
         size="full"
-        panelClassName="max-h-[min(94vh,52rem)] max-w-[min(96vw,72rem)]"
+        panelClassName="max-h-[min(90vh,48rem)] w-full max-w-[min(96vw,72rem)]"
         contentClassName="!flex !min-h-0 !flex-1 !flex-col !overflow-hidden !p-0"
       >
         {summary ? (
-          /* Same map + left overlay shell as job Track & Trace tab */
-          <div className="relative h-[min(78vh,640px)] min-h-[480px] flex-1 overflow-hidden bg-[#0B1220]">
-            <TrackMapBackground result={summary} />
-            <div className="absolute right-3 top-3 z-[5]">
-              <Button
-                type="button"
-                size="sm"
-                variant="secondary"
-                className="bg-white/95 shadow-md backdrop-blur"
-                onClick={() => {
-                  closeModal()
-                  setRawPayload(null)
-                  setError(null)
-                  setTrackRef('')
-                }}
-              >
-                New search
-              </Button>
-            </div>
-            <TrackOverlayFrame>
+          /* Left details · right live origin→destination map */
+          <div className="flex h-[min(74vh,560px)] min-h-[440px] flex-1 flex-col overflow-hidden md:flex-row">
+            <div className="flex min-h-0 w-full flex-col border-b border-[var(--fresa-border,#C9D3DF)] bg-white md:w-[min(42%,420px)] md:border-b-0 md:border-r">
               <PublicTrackTimeline
                 variant="overlay"
-                className="h-full min-h-0 shadow-2xl"
+                className="h-full min-h-0 rounded-none shadow-none"
                 result={summary}
               />
-            </TrackOverlayFrame>
+            </div>
+            <div className="relative min-h-[280px] flex-1 overflow-hidden bg-[#0B1220]">
+              <TrackMapBackground result={summary} showLiveBadge />
+              <div className="absolute right-3 top-3 z-[5]">
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="secondary"
+                  className="bg-white/95 shadow-md backdrop-blur"
+                  onClick={() => {
+                    closeModal()
+                    setRawPayload(null)
+                    setError(null)
+                    setTrackRef('')
+                  }}
+                >
+                  New search
+                </Button>
+              </div>
+            </div>
           </div>
-        ) : null}
+        ) : (
+          <div className="flex min-h-[220px] flex-1 items-center justify-center bg-[#0B1220] px-6 py-10 text-sm text-white/80">
+            {pending ? 'Looking up shipment…' : 'No tracking data yet.'}
+          </div>
+        )}
       </Modal>
 
       {children}
