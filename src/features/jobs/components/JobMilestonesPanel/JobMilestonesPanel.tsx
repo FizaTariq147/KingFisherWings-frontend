@@ -153,12 +153,15 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                     <div>
                       <p className="font-medium">{heading}</p>
                       <p className="text-xs text-[var(--color-neutral-400)]">
-                        {key && formatMilestoneHeading(key) !== heading
-                          ? `Code: ${key} · `
-                          : ''}
-                        Planned: {m.planned_date || '—'} · Actual:{' '}
-                        {m.completed_at || m.actual_date || '—'}
-                        {done ? ' · Completed' : ''}
+                        {[
+                          key && formatMilestoneHeading(key) !== heading
+                            ? `Code: ${key}`
+                            : null,
+                          m.completed_at || m.actual_date || m.planned_date || null,
+                          done ? 'Completed' : null,
+                        ]
+                          .filter(Boolean)
+                          .join(' · ') || '—'}
                       </p>
                     </div>
                     {!done ? (
