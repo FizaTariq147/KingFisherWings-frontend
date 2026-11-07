@@ -117,7 +117,12 @@ export function normalizeParty(raw: unknown): Party | null {
   return {
     id,
     company_id: companyId && isUuid(companyId) ? companyId : undefined,
-    party_type: normalizePartyType(record.party_type ?? record.partyType),
+    party_type: normalizePartyType(
+      record.party_type_code ??
+        record.partyTypeCode ??
+        record.party_type ??
+        record.partyType,
+    ),
     code: pickString(record, 'code') ?? '',
     name: pickString(record, 'name') ?? '—',
     short_name: pickString(record, 'short_name', 'shortName'),
