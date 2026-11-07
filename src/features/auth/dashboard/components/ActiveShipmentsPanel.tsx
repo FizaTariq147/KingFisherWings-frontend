@@ -471,7 +471,6 @@ export function ActiveShipmentsPanel({
                   job.primary_container_status ||
                   job.primary_container_status_code ||
                   '';
-                const containerKind = container?.kind;
                 const containerPending =
                   !containerNumber &&
                   !containerStatus &&
@@ -589,11 +588,6 @@ export function ActiveShipmentsPanel({
                           <p className="text-[11px] font-semibold text-[var(--color-neutral-800)]">
                             {containerNumber}
                           </p>
-                          {containerKind === 'ACTUAL' || containerKind === 'PLANNED' ? (
-                            <p className="mt-0.5 text-[10px] text-[var(--color-neutral-500)]">
-                              {containerKind === 'ACTUAL' ? 'Actual' : 'Planned'}
-                            </p>
-                          ) : null}
                         </div>
                       ) : containerPending ? (
                         <span className="text-[11px] text-[var(--color-neutral-400)]">…</span>

@@ -978,7 +978,11 @@ export function PublicTrackTimeline({
                             }}
                           >
                             {isActual ? <Check className="h-3 w-3" /> : <Clock3 className="h-3 w-3" />}
-                            {isActual ? 'Actual' : 'Planned'}
+                            {m.containerNumber
+                              ? m.containerNumber
+                              : isActual
+                                ? 'Done'
+                                : 'Pending'}
                           </span>
                         </div>
                       </div>

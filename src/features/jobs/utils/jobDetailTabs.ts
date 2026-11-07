@@ -378,8 +378,9 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
     if (key === 'tracking') {
       continue;
     }
-    // One containers tab only — planned mirrors actual; MAWB for air lives on actual.
-    if (key === 'planned_container') {
+    // One containers tab only — planned mirrors actual; air MAWB lives on actual_container.
+    // Drop dedicated `mawb` tab (API often places it next to booking_form on every job).
+    if (key === 'planned_container' || key === 'mawb') {
       continue;
     }
     seen.add(key);
