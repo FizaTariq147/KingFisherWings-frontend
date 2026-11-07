@@ -7,6 +7,7 @@ import { PortalApiError } from '@/lib/portalApiClient';
 import { getErrorMessage } from '@/features/management/utils/getErrorMessage';
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
 import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground';
+import { TrackOverlayFrame } from '@/features/public-track/components/TrackOverlayFrame';
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
 import {
   PortalAnimatedGrid,
@@ -619,7 +620,7 @@ export default function PortalShipmentDetailPage() {
                   data?.reference || data?.jobNumber || id,
                 )}
               />
-              <div className="absolute inset-y-0 left-0 z-[1] flex w-full max-w-[520px] flex-col p-3 sm:p-4">
+              <TrackOverlayFrame>
                 <PublicTrackTimeline
                   variant="overlay"
                   className="h-full min-h-0 shadow-2xl"
@@ -629,7 +630,7 @@ export default function PortalShipmentDetailPage() {
                   )}
                   pdfSource={{ kind: 'portal', shipmentId: id }}
                 />
-              </div>
+              </TrackOverlayFrame>
             </div>
           )}
         </div>
