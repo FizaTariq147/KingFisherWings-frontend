@@ -93,6 +93,14 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
   const startsWithFormChrome =
     bodyBlocks[0]?.type === 'companyHeader' || bodyBlocks[0]?.type === 'hblBlShell';
 
+  // Fresa sample PDFs: dark outer frame + inner content inset so text never hugs the edge.
+  const frameInk =
+    theme.primary === '#000000' || theme.primary === '#101010'
+      ? '#101010'
+      : theme.primary || '#0E4D95';
+  const contentPadX = 14;
+  const contentPadY = 12;
+
   return (
     <div
       dir={rtl ? 'rtl' : 'ltr'}
@@ -108,14 +116,19 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
         minHeight: geom.cssHeight,
         marginLeft: 'auto',
         marginRight: 'auto',
-        overflow: 'visible',
+        overflow: 'hidden',
         backgroundColor: theme.white || '#FFFFFF',
-        borderWidth: 1,
+        // Outer page frame (Fresa tax / commercial samples).
+        // Double-frame via border + inset box-shadow (html2canvas-safe; outline often drops).
+        borderWidth: 2,
         borderStyle: 'solid',
-        borderColor: theme.primary === '#000000' ? '#999999' : theme.primary,
+        borderColor: frameInk,
+        boxShadow: `inset 0 0 0 1px ${frameInk}`,
         color: theme.ink,
         fontSize: 10,
-        lineHeight: 1.35,
+        lineHeight: 1.4,
+        wordBreak: 'break-word',
+        overflowWrap: 'anywhere',
         breakInside: 'avoid',
         pageBreakInside: 'avoid',
       }}
@@ -130,6 +143,12 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
           width: '100%',
           flex: '0 0 auto',
           breakInside: 'avoid',
+          boxSizing: 'border-box',
+          paddingTop: contentPadY,
+          paddingBottom: 8,
+          paddingLeft: contentPadX,
+          paddingRight: contentPadX,
+          minWidth: 0,
         }}
         data-invoice-body="true"
       >
@@ -140,7 +159,13 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
           <div
             key={`${block.type}-${i}`}
             data-keep-together="true"
-            style={{ breakInside: 'avoid', pageBreakInside: 'avoid' }}
+            style={{
+              breakInside: 'avoid',
+              pageBreakInside: 'avoid',
+              minWidth: 0,
+              maxWidth: '100%',
+              marginBottom: 2,
+            }}
           >
             <Block
               block={block}
@@ -157,12 +182,11 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
           style={{
             color: theme.gray,
             fontSize: 8,
-            lineHeight: 1.35,
-            paddingTop: 8,
+            lineHeight: 1.4,
+            paddingTop: 10,
             paddingBottom: 6,
-            paddingLeft: 12,
-            paddingRight: 12,
             margin: 0,
+            wordBreak: 'break-word',
           }}
         >
           This is a computer generated document and does not require a signature
@@ -182,6 +206,10 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
           position: 'relative',
           zIndex: 2,
           backgroundColor: theme.white || '#FFFFFF',
+          boxSizing: 'border-box',
+          paddingLeft: contentPadX,
+          paddingRight: contentPadX,
+          paddingBottom: 6,
         }}
       >
         <InvoiceUserFooter
@@ -215,51 +243,90 @@ function Block({
       // Fresa sample geometry: compact logo left, company block right-aligned.
       // Table layout survives html2canvas more reliably than flex + text-end.
       return (
-        <div>
+        <div style={{ marginBottom: 4 }}>
           <table
             style={{
               width: '100%',
               borderCollapse: 'collapse',
               backgroundColor: theme.white,
+              tableLayout: 'fixed',
             }}
           >
             <tbody>
               <tr>
-                <td style={{ width: 148, verticalAlign: 'top', padding: '8px 10px' }}>
+                <td
+                  style={{
+                    width: '28%',
+                    verticalAlign: 'top',
+                    padding: '6px 10px 8px 0',
+                  }}
+                >
                   <img
                     src={brandLogoSrc(branding)}
                     alt={branding.company}
-                    style={{ height: 36, width: 'auto', maxWidth: 140, objectFit: 'contain' }}
+                    style={{
+                      height: 42,
+                      width: 'auto',
+                      maxWidth: '100%',
+                      objectFit: 'contain',
+                      display: 'block',
+                    }}
                   />
                 </td>
-                <td style={{ verticalAlign: 'top', padding: '8px 10px', textAlign: 'right' }}>
+                <td
+                  style={{
+                    width: '72%',
+                    verticalAlign: 'top',
+                    padding: '6px 0 8px 12px',
+                    textAlign: 'right',
+                  }}
+                >
                   <div
                     style={{
-                      fontSize: 12,
+                      fontSize: 13,
                       fontWeight: 700,
                       textTransform: 'uppercase',
-                      lineHeight: 1.25,
+                      lineHeight: 1.3,
                       color: theme.ink,
+                      wordBreak: 'break-word',
+                      overflowWrap: 'anywhere',
                     }}
                   >
                     {branding.company}
                   </div>
                   <div
                     style={{
-                      marginTop: 2,
-                      fontSize: 8,
+                      marginTop: 3,
+                      fontSize: 8.5,
                       textTransform: 'uppercase',
-                      lineHeight: 1.35,
+                      lineHeight: 1.4,
                       color: theme.ink,
+                      wordBreak: 'break-word',
                     }}
                   >
                     {branding.address}
                   </div>
-                  <div style={{ marginTop: 2, fontSize: 8, lineHeight: 1.35, color: theme.ink }}>
+                  <div
+                    style={{
+                      marginTop: 2,
+                      fontSize: 8.5,
+                      lineHeight: 1.4,
+                      color: theme.ink,
+                      wordBreak: 'break-word',
+                    }}
+                  >
                     WEB : {branding.web}
                   </div>
                   {block.showContact ? (
-                    <div style={{ marginTop: 2, fontSize: 8, lineHeight: 1.35, color: theme.gray }}>
+                    <div
+                      style={{
+                        marginTop: 3,
+                        fontSize: 8,
+                        lineHeight: 1.45,
+                        color: theme.gray,
+                        wordBreak: 'break-word',
+                      }}
+                    >
                       {branding.phone ? `Phone : ${branding.phone}` : ''}
                       {branding.phone && branding.email ? ' · ' : ''}
                       {branding.email ? `Email : ${branding.email}` : ''}
@@ -273,7 +340,7 @@ function Block({
                   {block.title ? (
                     <div
                       style={{
-                        marginTop: 4,
+                        marginTop: 6,
                         fontSize: 12,
                         fontWeight: 700,
                         letterSpacing: '0.04em',
@@ -287,7 +354,7 @@ function Block({
               </tr>
             </tbody>
           </table>
-          <div style={{ borderBottom: `1px solid ${theme.primary}` }} />
+          <div style={{ borderBottom: `1.5px solid ${theme.primary}` }} />
         </div>
       );
     case 'docTitle': {
@@ -312,11 +379,16 @@ function Block({
       }
       return (
         <p
-          className={`border-b px-3 py-1.5 text-[12px] font-bold tracking-wide ${
+          className={`border px-3 py-2 text-[12px] font-bold tracking-wide ${
             block.align === 'start' ? 'text-start' : block.align === 'end' ? 'text-end' : 'text-center'
           }`}
           style={{
             borderColor: theme.primary,
+            borderWidth: 1,
+            borderStyle: 'solid',
+            marginTop: 4,
+            marginBottom: 4,
+            lineHeight: 1.35,
             color: block.band ? (inkBand ? theme.ink : theme.white) : theme.primary,
             // soft=cyan (Format-1); fill=grey (Format-2); solid=accent (ASN/Format-3).
             backgroundColor: block.band
@@ -730,12 +802,25 @@ function MetaTriple({
   const line = theme.primary;
   const colPad: CSSProperties = {
     borderRight: `1px solid ${line}`,
-    padding: '6px 8px',
+    padding: '8px 10px',
     verticalAlign: 'top',
+    minWidth: 0,
+    overflow: 'hidden',
+    wordBreak: 'break-word',
+    overflowWrap: 'anywhere',
   };
   const kv = (rows: { k: string; v: string }[]) =>
     rows.map((r) => (
-      <p key={`${r.k}-${r.v}`} className="leading-normal" style={{ color: theme.ink, marginTop: 2 }}>
+      <p
+        key={`${r.k}-${r.v}`}
+        className="leading-normal"
+        style={{
+          color: theme.ink,
+          marginTop: 3,
+          lineHeight: 1.4,
+          wordBreak: 'break-word',
+        }}
+      >
         <span className="font-bold" style={{ color: theme.ink }}>
           {r.k} :
         </span>{' '}
@@ -744,23 +829,34 @@ function MetaTriple({
     ));
   return (
     <div
-      className="border-b text-[9px] leading-normal"
+      className="border text-[9px] leading-normal"
       style={{
         borderColor: line,
+        borderWidth: 1,
+        borderStyle: 'solid',
         display: 'grid',
         gridTemplateColumns: 'minmax(0, 1.15fr) minmax(0, 1fr) minmax(0, 1fr)',
         width: '100%',
+        boxSizing: 'border-box',
+        marginTop: 4,
+        marginBottom: 4,
       }}
     >
       <div style={{ ...colPad, backgroundColor: theme.panel }}>
-        <p className="font-bold" style={{ color: theme.ink }}>
+        <p className="font-bold" style={{ color: theme.ink, marginBottom: 2 }}>
           {demo.billToLabel || 'Client'} :
         </p>
-        <p className="font-semibold leading-normal" style={{ color: theme.ink }}>
+        <p
+          className="font-semibold leading-normal"
+          style={{ color: theme.ink, lineHeight: 1.4, wordBreak: 'break-word' }}
+        >
           {demo.billToName}
         </p>
         {demo.billToAddress ? (
-          <p className="mt-0.5 leading-normal" style={{ color: theme.gray }}>
+          <p
+            className="mt-0.5 leading-normal"
+            style={{ color: theme.gray, lineHeight: 1.4, wordBreak: 'break-word' }}
+          >
             {demo.billToAddress}
           </p>
         ) : null}
@@ -790,37 +886,53 @@ function PartyTriple({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: Invoi
   const cols = demo.partyNotify ? 4 : 3;
   return (
     <div
-      className={`grid border-b text-[9.5px] leading-normal ${cols === 4 ? 'grid-cols-4' : 'grid-cols-3'}`}
-      style={{ borderColor: theme.primary }}
+      className={`grid text-[9.5px] leading-normal ${cols === 4 ? 'grid-cols-4' : 'grid-cols-3'}`}
+      style={{
+        borderColor: theme.primary,
+        borderWidth: 1,
+        borderStyle: 'solid',
+        marginTop: 4,
+        marginBottom: 4,
+        boxSizing: 'border-box',
+      }}
     >
-      <div className="border-r p-3" style={{ borderColor: theme.primary }}>
+      <div
+        className="border-r p-3"
+        style={{ borderColor: theme.primary, minWidth: 0, wordBreak: 'break-word' }}
+      >
         <p className="mb-1 font-bold" style={{ color: theme.primary }}>
           {demo.partyLeft?.title || 'Shipper'}
         </p>
         {(demo.partyLeft?.lines ?? []).map((line) => (
-          <p key={line} className="mt-0.5">
+          <p key={line} className="mt-0.5" style={{ lineHeight: 1.4, wordBreak: 'break-word' }}>
             {line}
           </p>
         ))}
       </div>
-      <div className="border-r p-3" style={{ borderColor: theme.primary }}>
+      <div
+        className="border-r p-3"
+        style={{ borderColor: theme.primary, minWidth: 0, wordBreak: 'break-word' }}
+      >
         <p className="mb-1 font-bold" style={{ color: theme.primary }}>
           {demo.partyMid?.title || 'Consignee'}
         </p>
         {(demo.partyMid?.lines ?? []).map((line) => (
-          <p key={line} className="mt-0.5">
+          <p key={line} className="mt-0.5" style={{ lineHeight: 1.4, wordBreak: 'break-word' }}>
             {line}
           </p>
         ))}
       </div>
-      <div className={`${demo.partyNotify ? 'border-r' : ''} p-3`} style={{ borderColor: theme.primary }}>
+      <div
+        className={`${demo.partyNotify ? 'border-r' : ''} p-3`}
+        style={{ borderColor: theme.primary, minWidth: 0, wordBreak: 'break-word' }}
+      >
         {demo.partyThird ? (
           <>
             <p className="mb-1 font-bold" style={{ color: theme.primary }}>
               {demo.partyThird.title}
             </p>
             {demo.partyThird.lines.map((line) => (
-              <p key={line} className="mt-0.5">
+              <p key={line} className="mt-0.5" style={{ lineHeight: 1.4, wordBreak: 'break-word' }}>
                 {line}
               </p>
             ))}
@@ -828,7 +940,7 @@ function PartyTriple({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: Invoi
         ) : (
           <div className="space-y-1">
             {(demo.partyRight ?? []).map((r) => (
-              <p key={r.k}>
+              <p key={r.k} style={{ lineHeight: 1.4, wordBreak: 'break-word' }}>
                 <span className="font-bold">{r.k} :</span> {r.v}
               </p>
             ))}
@@ -836,12 +948,12 @@ function PartyTriple({ theme, demo }: { theme: InvoiceFormatUiTheme; demo: Invoi
         )}
       </div>
       {demo.partyNotify ? (
-        <div className="p-3">
+        <div className="p-3" style={{ minWidth: 0, wordBreak: 'break-word' }}>
           <p className="mb-1 font-bold" style={{ color: theme.primary }}>
             {demo.partyNotify.title}
           </p>
           {demo.partyNotify.lines.map((line) => (
-            <p key={line} className="mt-0.5">
+            <p key={line} className="mt-0.5" style={{ lineHeight: 1.4, wordBreak: 'break-word' }}>
               {line}
             </p>
           ))}
@@ -1005,26 +1117,26 @@ function ChargeTable({
   const useGrid = chrome === 'grid';
   const line = gridBorder === 'ink' ? theme.ink || '#101010' : theme.primary;
   const cellPad = manyCols ? '3px 3px' : '6px 6px';
-  const cellBorder: CSSProperties = useGrid
-    ? {
-        borderWidth: 1,
-        borderStyle: 'solid',
-        borderColor: line,
-      }
-    : { borderColor: theme.primary };
-  const cellClass = useGrid ? 'text-start' : 'border text-start';
+  // Fresa samples always draw cell borders on charge grids (plain + grid chrome).
+  const cellBorder: CSSProperties = {
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: useGrid ? line : theme.primary || line,
+  };
+  const cellClass = 'text-start';
 
   return (
-    <div className="w-full px-0">
+    <div className="w-full px-0" style={{ marginTop: 4, marginBottom: 4, minWidth: 0 }}>
       <table
         className="w-full border-collapse leading-normal"
         style={{
           tableLayout: manyCols ? 'fixed' : 'auto',
           width: '100%',
-          fontSize: manyCols ? 7.5 : 9,
+          fontSize: manyCols ? 7 : 9,
+          lineHeight: 1.35,
           borderCollapse: 'collapse',
-          // Cell borders alone form the perimeter under collapse (no double outer box).
-          ...(useGrid ? { border: `1px solid ${line}` } : null),
+          // Always draw a clear table frame like Fresa samples.
+          border: `1px solid ${line}`,
         }}
       >
         <thead>
@@ -1035,9 +1147,12 @@ function ChargeTable({
                 className={`${cellClass} font-bold`}
                 style={{
                   ...cellBorder,
-                  padding: manyCols ? '4px 3px' : '6px 6px',
+                  padding: manyCols ? '5px 3px' : '7px 6px',
                   wordBreak: 'break-word',
                   overflowWrap: 'anywhere',
+                  whiteSpace: 'normal',
+                  verticalAlign: 'middle',
+                  lineHeight: 1.3,
                 }}
               >
                 {h}
@@ -1075,18 +1190,18 @@ function ChargeTable({
               };
               return (
                 <tr key={ri}>
-                  <td colSpan={span} className={useGrid ? undefined : 'border'} style={totalCell}>
+                  <td colSpan={span} style={totalCell}>
                     {cells[0]}
                   </td>
                   {rest.map((cell, ci) => (
                     <td
                       key={ci}
-                      className={useGrid ? undefined : 'border'}
                       style={{
                         ...totalCell,
                         textAlign: String(cell).trim() ? 'right' : 'left',
                         wordBreak: 'break-word',
                         overflowWrap: 'anywhere',
+                        whiteSpace: 'normal',
                       }}
                     >
                       {cell}
@@ -1101,13 +1216,15 @@ function ChargeTable({
                 {cells.map((cell, ci) => (
                   <td
                     key={ci}
-                    className={useGrid ? undefined : 'border'}
                     style={{
                       ...cellBorder,
                       padding: cellPad,
                       wordBreak: 'break-word',
                       overflowWrap: 'anywhere',
+                      whiteSpace: 'normal',
                       verticalAlign: 'top',
+                      lineHeight: 1.35,
+                      backgroundColor: rowBg,
                     }}
                   >
                     {cell}
