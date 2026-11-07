@@ -1,7 +1,9 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import L from 'leaflet';
 import {
   CircleMarker,
   MapContainer,
+  Marker,
   Polyline,
   TileLayer,
   Tooltip,
@@ -9,6 +11,7 @@ import {
   ZoomControl,
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import { Moon, Sun } from 'lucide-react';
 import type { PublicTrackResult } from '../types/publicTrack.types';
 import {
   interpolateArc,
@@ -24,11 +27,51 @@ type Props = {
   className?: string;
   /** Show origin → destination live chip over the map. */
   showLiveBadge?: boolean;
+  /**
+   * Extra left padding when an expandable panel covers the left side
+   * so POL→POD stays visible on the right (Leaflet [top, right, bottom, left]).
+   */
+  fitPadding?: [number, number, number, number];
 };
 
 type Waypoint = LatLng & { label?: string; role?: string };
 
-function FitRoute({ points }: { points: LatLng[] }) {
+function portIcon(kind: 'pol' | 'pod', label: string) {
+  const fill = kind === 'pol' ? '#16A34A' : '#2563EB';
+  const title = kind === 'pol' ? 'POL' : 'POD';
+  const safe = label.replace(/[<>&"]/g, '');
+  return L.divIcon({
+    className: 'kf-track-port-icon',
+    iconSize: [28, 36],
+    iconAnchor: [14, 34],
+    html: `<div style="display:flex;flex-direction:column;align-items:center;filter:drop-shadow(0 1px 2px rgba(0,0,0,.35))">
+      <div style="width:22px;height:22px;border-radius:9999px;background:${fill};border:2px solid #fff;display:flex;align-items:center;justify-content:center">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><path d="M12 21s7-5.2 7-11a7 7 0 1 0-14 0c0 5.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5" fill="#fff" stroke="none"/></svg>
+      </div>
+      <span style="margin-top:2px;padding:1px 6px;border-radius:9999px;background:rgba(255,255,255,.95);font:600 10px/1.2 system-ui,sans-serif;color:#0A2942;white-space:nowrap;max-width:9rem;overflow:hidden;text-overflow:ellipsis">${title} ${safe}</span>
+    </div>`,
+  });
+}
+
+function vesselIcon(live: boolean) {
+  const ring = live ? 'box-shadow:0 0 0 6px rgba(34,197,94,.28);' : '';
+  return L.divIcon({
+    className: 'kf-track-vessel-icon',
+    iconSize: [28, 28],
+    iconAnchor: [14, 14],
+    html: `<div style="width:28px;height:28px;border-radius:9999px;background:#22C55E;border:2px solid #0A2942;display:flex;align-items:center;justify-content:center;${ring}">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="#0A2942"><path d="M3 15.5 12 4l9 11.5H3Zm2.2-1.5h13.6L12 7.2 5.2 14Z"/><path d="M4 17h16v2H4z"/></svg>
+    </div>`,
+  });
+}
+
+function FitRoute({
+  points,
+  padding,
+}: {
+  points: LatLng[];
+  padding: [number, number, number, number];
+}) {
   const map = useMap();
   useEffect(() => {
     if (!points.length) {
@@ -40,8 +83,8 @@ function FitRoute({ points }: { points: LatLng[] }) {
       return;
     }
     const bounds = points.map((p) => [p.lat, p.lng] as [number, number]);
-    map.fitBounds(bounds, { padding: [80, 80], maxZoom: 6 });
-  }, [map, points]);
+    map.fitBounds(bounds, { paddingTopLeft: [padding[3], padding[0]], paddingBottomRight: [padding[1], padding[2]], maxZoom: 5 });
+  }, [map, points, padding]);
   return null;
 }
 
@@ -75,7 +118,6 @@ function FollowLiveVessel({ point }: { point?: LatLng | null }) {
     const center = map.getCenter();
     const dist =
       (center.lat - point.lat) ** 2 + (center.lng - point.lng) ** 2;
-    // Only pan when the pin drifts far from the current view center.
     if (dist > 0.08) {
       map.panTo([point.lat, point.lng], { animate: true, duration: 0.6 });
     }
@@ -160,8 +202,8 @@ function buildLiveWaypoints(result: PublicTrackResult | null | undefined): Waypo
 
   const metrics = computeTrackMetrics(result);
   return collectWaypoints([
-    { label: metrics.origin || 'Origin', role: 'POL' },
-    { label: metrics.destination || 'Destination', role: 'POD' },
+    { label: metrics.origin || result.origin || 'Origin', role: 'POL' },
+    { label: metrics.destination || result.destination || 'Destination', role: 'POD' },
   ]);
 }
 
@@ -169,7 +211,7 @@ function buildRouteArc(waypoints: Waypoint[]): LatLng[] {
   if (waypoints.length < 2) return waypoints.map((w) => ({ lat: w.lat, lng: w.lng }));
   const arc: LatLng[] = [];
   for (let i = 0; i < waypoints.length - 1; i += 1) {
-    const segment = interpolateArc(waypoints[i], waypoints[i + 1], 24);
+    const segment = interpolateArc(waypoints[i], waypoints[i + 1], 64);
     if (i > 0) segment.shift();
     arc.push(...segment);
   }
@@ -220,15 +262,17 @@ function splitRoute(
 
 /**
  * Full-bleed OSM map behind Track & Trace.
- * Prefers live lat/lng + progress legs / port-of-call from the track payload;
- * falls back to resolved port labels and progress-based position.
+ * Prefers live lat/lng from the track payload; otherwise places the vessel
+ * along the ocean route using progress % / ATD→ETA.
  */
 export function TrackMapBackground({
   result,
-  dark = false,
+  dark: darkProp,
   className,
   showLiveBadge = false,
+  fitPadding = [48, 48, 48, 360],
 }: Props) {
+  const [dark, setDark] = useState(Boolean(darkProp));
   const metrics = result ? computeTrackMetrics(result) : null;
   const waypoints = useMemo(() => buildLiveWaypoints(result), [result]);
   const origin = waypoints[0] ?? null;
@@ -237,6 +281,8 @@ export function TrackMapBackground({
   const arc = useMemo(() => buildRouteArc(waypoints), [waypoints]);
 
   const livePosition = useMemo(() => {
+    // Only trust explicit live / AIS coordinates — not milestone port names
+    // (those pin the ship to POL and break the mid-ocean reference look).
     if (
       result?.currentLat != null &&
       result?.currentLng != null &&
@@ -246,15 +292,12 @@ export function TrackMapBackground({
       return { lat: result.currentLat, lng: result.currentLng };
     }
     const currentLeg = (result?.progressLegs ?? []).find((l) => l.current);
-    if (currentLeg) {
-      const fromLeg = resolveWaypoint(currentLeg.name, currentLeg.lat, currentLeg.lng);
-      if (fromLeg) return fromLeg;
-    }
-    // Latest completed milestone location → live pin when BE omits current_position.
-    for (const m of result?.milestones ?? []) {
-      if (m.pending) continue;
-      const fromMilestone = resolvePortCoordinates(m.location || m.terminal);
-      if (fromMilestone) return fromMilestone;
+    if (
+      currentLeg &&
+      typeof currentLeg.lat === 'number' &&
+      typeof currentLeg.lng === 'number'
+    ) {
+      return { lat: currentLeg.lat, lng: currentLeg.lng };
     }
     return null;
   }, [result]);
@@ -270,7 +313,6 @@ export function TrackMapBackground({
     return pts;
   }, [waypoints, split.vessel]);
 
-  // Remount when the tracked shipment / route ends change (not every live ping).
   const mapKey = [
     result?.reference ?? 'empty',
     origin ? `${origin.lat.toFixed(2)},${origin.lng.toFixed(2)}` : '',
@@ -281,6 +323,7 @@ export function TrackMapBackground({
   const sizeRevision = [
     mapKey,
     split.vessel ? `${split.vessel.lat.toFixed(3)},${split.vessel.lng.toFixed(3)}` : '',
+    dark ? 'dark' : 'light',
   ].join('|');
 
   const tileUrl = dark
@@ -288,28 +331,56 @@ export function TrackMapBackground({
     : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   const midStops = waypoints.slice(1, -1);
-  const originLabel = origin?.label || metrics?.origin || 'Origin';
-  const destLabel = dest?.label || metrics?.destination || 'Destination';
+  const originLabel = (origin?.label || metrics?.origin || 'Origin').replace(
+    /\s*\([^)]*\)\s*/g,
+    ' ',
+  ).trim();
+  const destLabel = (dest?.label || metrics?.destination || 'Destination')
+    .replace(/\s*\([^)]*\)\s*/g, ' ')
+    .trim();
+
+  const polIcon = useMemo(
+    () => (origin ? portIcon('pol', originLabel) : null),
+    [origin, originLabel],
+  );
+  const podIcon = useMemo(
+    () => (dest ? portIcon('pod', destLabel) : null),
+    [dest, destLabel],
+  );
+  const shipIcon = useMemo(() => vesselIcon(split.live), [split.live]);
 
   return (
     <div className={className ?? 'absolute inset-0 z-0 h-full w-full'}>
       {showLiveBadge ? (
-        <div className="pointer-events-none absolute left-3 top-3 z-[6] max-w-[min(90%,20rem)] rounded-lg bg-white/95 px-3 py-2 text-[11px] shadow-md backdrop-blur">
+        <div className="pointer-events-none absolute right-14 top-3 z-[6] max-w-[min(90%,18rem)] rounded-lg bg-white/95 px-3 py-2 text-[11px] shadow-md backdrop-blur">
           <div className="flex items-center gap-1.5 font-semibold text-[#0A2942]">
             <span
               className={`inline-block h-2 w-2 rounded-full ${
                 split.live ? 'animate-pulse bg-emerald-500' : 'bg-sky-500'
               }`}
             />
-            {split.live ? 'Live tracking' : 'Route tracking'}
+            {split.live ? 'Live AIS position' : 'Live route progress'}
           </div>
           <p className="mt-1 leading-snug text-[#64748b]">
             <span className="font-medium text-emerald-700">{originLabel}</span>
             {' → '}
             <span className="font-medium text-sky-700">{destLabel}</span>
+            {metrics && metrics.progressPct > 0 ? (
+              <span className="ms-1 text-[#94A3B8]">· {metrics.progressPct}%</span>
+            ) : null}
           </p>
         </div>
       ) : null}
+
+      <button
+        type="button"
+        onClick={() => setDark((v) => !v)}
+        className="absolute right-3 top-3 z-[6] flex h-9 w-9 items-center justify-center rounded-full border border-white/40 bg-white/95 text-[#0A2942] shadow-md backdrop-blur hover:bg-white"
+        aria-label={dark ? 'Switch to light map' : 'Switch to dark map'}
+        title={dark ? 'Light map' : 'Dark map'}
+      >
+        {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      </button>
 
       <MapContainer
         key={mapKey}
@@ -331,13 +402,13 @@ export function TrackMapBackground({
         />
         <ZoomControl position="bottomright" />
         <InvalidateMapSize revision={sizeRevision} />
-        <FitRoute points={fitPoints} />
+        <FitRoute points={fitPoints} padding={fitPadding} />
         <FollowLiveVessel point={split.live ? split.vessel : null} />
 
         {split.done.length > 1 ? (
           <Polyline
             positions={split.done.map((p) => [p.lat, p.lng] as [number, number])}
-            pathOptions={{ color: '#16A34A', weight: 4, opacity: 0.9 }}
+            pathOptions={{ color: '#16A34A', weight: 4.5, opacity: 0.95 }}
           />
         ) : null}
         {split.rest.length > 1 ? (
@@ -345,28 +416,15 @@ export function TrackMapBackground({
             positions={split.rest.map((p) => [p.lat, p.lng] as [number, number])}
             pathOptions={{
               color: '#2563EB',
-              weight: 3.5,
-              opacity: 0.85,
+              weight: 4,
+              opacity: 0.9,
               dashArray: '10 8',
             }}
           />
         ) : null}
 
-        {origin ? (
-          <CircleMarker
-            center={[origin.lat, origin.lng]}
-            radius={10}
-            pathOptions={{
-              color: '#fff',
-              weight: 2,
-              fillColor: '#16A34A',
-              fillOpacity: 1,
-            }}
-          >
-            <Tooltip permanent direction="top" offset={[0, -8]}>
-              POL {originLabel}
-            </Tooltip>
-          </CircleMarker>
+        {origin && polIcon ? (
+          <Marker position={[origin.lat, origin.lng]} icon={polIcon} />
         ) : null}
 
         {midStops.map((stop, i) => (
@@ -387,54 +445,16 @@ export function TrackMapBackground({
           </CircleMarker>
         ))}
 
-        {dest ? (
-          <CircleMarker
-            center={[dest.lat, dest.lng]}
-            radius={10}
-            pathOptions={{
-              color: '#fff',
-              weight: 2,
-              fillColor: '#2563EB',
-              fillOpacity: 1,
-            }}
-          >
-            <Tooltip permanent direction="top" offset={[0, -8]}>
-              POD {destLabel}
-            </Tooltip>
-          </CircleMarker>
+        {dest && podIcon ? (
+          <Marker position={[dest.lat, dest.lng]} icon={podIcon} />
         ) : null}
 
         {split.vessel ? (
-          <>
-            {split.live ? (
-              <CircleMarker
-                center={[split.vessel.lat, split.vessel.lng]}
-                radius={16}
-                pathOptions={{
-                  color: '#22C55E',
-                  weight: 1,
-                  fillColor: '#22C55E',
-                  fillOpacity: 0.2,
-                }}
-              />
-            ) : null}
-            <CircleMarker
-              center={[split.vessel.lat, split.vessel.lng]}
-              radius={8}
-              pathOptions={{
-                color: '#0A2942',
-                weight: 2,
-                fillColor: '#22C55E',
-                fillOpacity: 1,
-              }}
-            >
-              <Tooltip direction="right" offset={[10, 0]}>
-                {split.live
-                  ? 'Current position (live)'
-                  : 'Current position (from progress)'}
-              </Tooltip>
-            </CircleMarker>
-          </>
+          <Marker position={[split.vessel.lat, split.vessel.lng]} icon={shipIcon}>
+            <Tooltip direction="right" offset={[12, 0]}>
+              {split.live ? 'Current position (live AIS)' : 'Current position (route progress)'}
+            </Tooltip>
+          </Marker>
         ) : null}
       </MapContainer>
     </div>

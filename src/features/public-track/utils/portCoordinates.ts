@@ -100,20 +100,45 @@ export function resolvePortCoordinates(label?: string | null): LatLng | null {
   return null;
 }
 
-/** Great-circle-ish arc points between two coords (for dashed remaining path). */
+/**
+ * Shipping-lane style arc between two ports.
+ * Asia → Europe (e.g. Shanghai → Rotterdam) bulges south through the Indian Ocean
+ * to match live-track reference maps (not a straight great-circle).
+ */
 export function interpolateArc(
   from: LatLng,
   to: LatLng,
-  steps = 48,
+  steps = 64,
 ): LatLng[] {
   const out: LatLng[] = [];
+  const lngDelta = to.lng - from.lng;
+  // East Asia / Pacific → Europe: go west via Indian Ocean / Suez corridor.
+  const asiaToEurope =
+    from.lng > 90 && to.lng < 30 && from.lat > 0 && to.lat > 0 && lngDelta < -40;
+  // Westbound ocean legs in general: mild southward bulge.
+  const westboundOcean = lngDelta < -20 || (from.lng > 100 && to.lng < 50);
+
   for (let i = 0; i <= steps; i += 1) {
     const t = i / steps;
-    // Slight southward bulge so Asia→Europe routes look more ocean-like.
-    const bulge = Math.sin(Math.PI * t) * -8;
+    const ease = t * t * (3 - 2 * t); // smoothstep
+    let lat = from.lat + (to.lat - from.lat) * ease;
+    let lng = from.lng + lngDelta * ease;
+
+    if (asiaToEurope) {
+      // Dip toward ~5–12°N through the Indian Ocean mid-voyage (reference style).
+      const southPull = Math.sin(Math.PI * t) * 22;
+      lat = lat - southPull;
+      // Nudge longitude through Arabian Sea / Red Sea approach mid-route.
+      lng = lng - Math.sin(Math.PI * t) * 8;
+    } else if (westboundOcean) {
+      lat = lat - Math.sin(Math.PI * t) * 6;
+    } else {
+      lat = lat + Math.sin(Math.PI * t) * 2;
+    }
+
     out.push({
-      lat: from.lat + (to.lat - from.lat) * t + bulge * 0.15,
-      lng: from.lng + (to.lng - from.lng) * t,
+      lat: Math.max(-85, Math.min(85, lat)),
+      lng: ((lng + 540) % 360) - 180,
     });
   }
   return out;

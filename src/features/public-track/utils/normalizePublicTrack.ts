@@ -1289,12 +1289,29 @@ export function normalizePublicTrack(
       summary?.eta,
     ) || undefined;
 
+  const vesselRec =
+    asRecord(body.vessel) ||
+    asRecord(body.ais) ||
+    asRecord(body.ais_position) ||
+    asRecord(body.aisPosition) ||
+    asRecord(summary?.vessel);
+  const trackingRec = asRecord(body.tracking) || asRecord(body.live_tracking);
+
   const livePosition =
     pickLatLng(asRecord(body.current_position) ?? asRecord(body.currentPosition)) ||
     pickLatLng(asRecord(body.vessel_position) ?? asRecord(body.vesselPosition)) ||
     pickLatLng(asRecord(body.last_known_position) ?? asRecord(body.lastKnownPosition)) ||
     pickLatLng(asRecord(body.live_position) ?? asRecord(body.livePosition)) ||
-    pickLatLng(asRecord(summary?.current_position) ?? asRecord(summary?.currentPosition));
+    pickLatLng(asRecord(body.position)) ||
+    pickLatLng(asRecord(summary?.current_position) ?? asRecord(summary?.currentPosition)) ||
+    pickLatLng(vesselRec) ||
+    pickLatLng(trackingRec) ||
+    pickLatLng(asRecord(trackingRec?.current_position) ?? asRecord(trackingRec?.currentPosition)) ||
+    (() => {
+      // Flat lat/lng on root (some AIS providers).
+      const flat = pickLatLng(body) || pickLatLng(summary);
+      return flat;
+    })();
 
   return {
     reference: ref,
