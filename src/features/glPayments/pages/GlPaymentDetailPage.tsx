@@ -33,7 +33,11 @@ import {
   useRemovePaymentAllocation,
   useSendGlPaymentRemittanceEmail,
 } from '../hooks/useGlPayments';
-import { glPaymentDisplayNumber } from '../utils/normalizeGlPayment';
+import { VOUCHER_ROUTE_PREFIX } from '@/features/vouchers/api/voucher.api';
+import {
+  glAccountDisplayLabel,
+  glPaymentDisplayNumber,
+} from '../utils/normalizeGlPayment';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 function Field({ label, value }: { label: string; value?: string | number | null }) {
@@ -212,7 +216,7 @@ export default function GlPaymentDetailPage() {
                           : undefined
                       }
                     />
-                    <Field label="Party" value={payment.party_name || payment.party_id} />
+                    <Field label="Party" value={payment.party_name} />
                     <Field
                       label="Amount"
                       value={`${payment.currency_code} ${payment.amount.toLocaleString()}`}
@@ -220,9 +224,26 @@ export default function GlPaymentDetailPage() {
                     <Field label="Allocated" value={allocated.toLocaleString()} />
                     <Field label="Unallocated" value={unallocated.toLocaleString()} />
                     <Field label="Reference" value={payment.reference_number} />
-                    <Field label="GL account" value={payment.gl_account_code || payment.gl_account_id} />
-                    <Field label="Bank account" value={payment.bank_account_id} />
-                    <Field label="Voucher" value={payment.voucher_id} />
+                    <Field label="GL account" value={glAccountDisplayLabel(payment)} />
+                    <Field label="Bank account" value={payment.bank_account_name} />
+                    <div>
+                      <dt className="text-xs text-[var(--color-neutral-400)]">Voucher</dt>
+                      <dd className="text-sm text-[var(--color-neutral-800)] mt-0.5">
+                        {payment.voucher_id ? (
+                          <button
+                            type="button"
+                            className="underline-offset-2 hover:underline"
+                            onClick={() =>
+                              navigate(`${VOUCHER_ROUTE_PREFIX}/${payment.voucher_id}`)
+                            }
+                          >
+                            {payment.voucher_number || 'Open voucher'}
+                          </button>
+                        ) : (
+                          '—'
+                        )}
+                      </dd>
+                    </div>
                     <Field label="Narration" value={payment.narration} />
                     <Field label="Posted at" value={payment.posted_at} />
                     <Field label="Cancelled at" value={payment.cancelled_at} />
@@ -267,7 +288,7 @@ export default function GlPaymentDetailPage() {
                         allocations.map((row) => (
                           <TableRow key={row.id}>
                             <TableCell mono>
-                              {row.invoice_number || row.invoice_id.slice(0, 8)}
+                              {row.invoice_number || '—'}
                             </TableCell>
                             <TableCell mono>{row.amount.toLocaleString()}</TableCell>
                             {isDraft ? (

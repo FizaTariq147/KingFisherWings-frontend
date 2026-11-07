@@ -14,6 +14,8 @@ import {
 export type GenerateCatalogLayoutPdfOptions = {
   /** Override T&C append for this call (validation / layout-only capture). */
   appendCustomerTerms?: boolean;
+  /** Registered org / tenant logo URL. */
+  logoUrl?: string;
 };
 
 export async function generateCatalogLayoutPdf(
@@ -39,6 +41,7 @@ export async function generateCatalogLayoutPdf(
 
   const blob = await generateInvoiceFormatLayoutPdf(preview, data, {
     appendCustomerTerms: options.appendCustomerTerms,
+    logoUrl: options.logoUrl,
   });
   return { blob, preview };
 }

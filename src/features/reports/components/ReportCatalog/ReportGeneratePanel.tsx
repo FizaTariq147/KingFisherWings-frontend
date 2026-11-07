@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/Button';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { isApiOriginUrl } from '@/lib/safeHttpUrl';
+import { getOperationsReportByFormatCode } from '@/features/operations/config/operationsReports';
 import {
   useActivateReportTemplate,
   useBindReportRenderer,
@@ -40,7 +42,7 @@ import {
 } from '../../utils/reportParameterUtils';
 import { allowClientLayoutGenerate } from '../../utils/clientLayoutFallback';
 import { isReportPackReady } from '../../utils/reportPackGenerate';
-import { resolveReportLogoUrl } from '../../constants/reportBranding.constants';
+import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
 import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
 import { isInvoiceReportFormatCode } from '../../types/invoiceFormatPreview.types';
 import { InvoiceFormatAutoPdf } from './InvoiceFormatAutoPdf';
@@ -269,7 +271,15 @@ export function ReportGeneratePanel({
         let data = await resolveCatalogContextPdfData(contextIds, {
           formatCode: resolved.code,
         });
-        const logo = resolveReportLogoUrl();
+        const orgChrome = await resolveReportOrgChrome();
+        data = {
+          ...data,
+          companyName: data.companyName || orgChrome.company,
+          companyAddress: data.companyAddress || orgChrome.address,
+          companyWeb: data.companyWeb || orgChrome.web,
+          companyPhone: data.companyPhone || orgChrome.phone,
+          companyEmail: data.companyEmail || orgChrome.email,
+        };
 
         if (isInvoiceFormatPdf) {
           const invoiceId = contextIds.invoice_id;
@@ -284,7 +294,8 @@ export function ReportGeneratePanel({
           const preview = getInvoiceFormatPreview(resolved.code);
           if (preview) {
             const blob = await generateInvoiceFormatLayoutPdf(preview, data, {
-              logoUrl: logo,
+              chrome: orgChrome,
+              logoUrl: orgChrome.logoUrl,
             });
             const fileName = formatPdfFilename(
               `Format-${preview.formatNumber}-${resolved.code}`,
@@ -297,14 +308,16 @@ export function ReportGeneratePanel({
             setJobId(null);
             setMessage(
               entityBound
-                ? 'Report PDF ready (Fresa layout + KingFisher logo, live record data).'
-                : 'Sample report ready — Fresa layout/colors/footer with KingFisher logo and dummy data (as on fresatechnologies.com/sample-report-formats).',
+                ? 'Report PDF ready (Fresa layout + registered company branding, live record data).'
+                : 'Sample report ready — Fresa layout/colors/footer with registered company name/logo and sample data.',
             );
             return;
           }
         }
 
-        const generated = await generateCatalogLayoutPdf(resolved.code, data);
+        const generated = await generateCatalogLayoutPdf(resolved.code, data, {
+          logoUrl: orgChrome.logoUrl,
+        });
         if (!generated) {
           setError('No Fresa sample layout registered for this format code.');
           return;
@@ -320,8 +333,8 @@ export function ReportGeneratePanel({
         setJobId(null);
         setMessage(
           entityBound
-            ? 'Report PDF ready (Fresa layout + KingFisher logo, live record data).'
-            : 'Sample report ready — Fresa layout/colors/footer with KingFisher logo and dummy data (as on fresatechnologies.com/sample-report-formats).',
+            ? 'Report PDF ready (Fresa layout + registered company branding, live record data).'
+            : 'Sample report ready — Fresa layout/colors/footer with registered company name/logo and sample data.',
         );
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Could not generate sample PDF.');
@@ -626,25 +639,48 @@ export function ReportGeneratePanel({
           role="status"
           className="rounded-md border border-emerald-100 bg-emerald-50 px-3 py-2 text-xs text-emerald-900"
         >
-          Fresa-sample layout PDF is available via Generate (dummy data + KingFisher logo). Binding
-          a Puppeteer pack remains optional for live backend print — default invoice/quotation PDFs
-          stay unchanged.
+          Fresa-sample layout PDF is available via Generate (sample data + registered company
+          name/logo). Binding a Puppeteer pack remains optional for live backend print — default
+          invoice/quotation PDFs stay unchanged.
         </div>
       ) : null}
 
-      {resolved.existingPath ? (
-        <p className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2 text-xs text-[var(--color-neutral-600)]">
-          {resolved.gapStatus === 'covered_analytics'
-            ? 'Live analytics screen (primary): '
-            : 'Related screen: '}
-          <span className="font-medium text-[var(--color-neutral-800)]">
-            {resolved.existingPath}
-          </span>
-          {resolved.gapStatus === 'covered_analytics'
-            ? ' — catalogue layout PDF remains additive and does not replace this screen.'
-            : null}
-        </p>
+      {resolved.gapStatus === 'covered_analytics' ? (
+        <div
+          role="status"
+          className="rounded-md border border-sky-100 bg-sky-50 px-3 py-2 text-xs text-sky-950"
+        >
+          This is a live analytics / list report — open the module hub below. No fake document
+          layout is invented for KPI screens.
+        </div>
       ) : null}
+
+      {(() => {
+        const opsLive = getOperationsReportByFormatCode(resolved.code);
+        const hubPath = opsLive?.path || resolved.existingPath;
+        if (!hubPath) return null;
+        const isAppPath = hubPath.startsWith('/');
+        return (
+          <p className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2 text-xs text-[var(--color-neutral-600)]">
+            {resolved.gapStatus === 'covered_analytics'
+              ? 'Live analytics screen (primary): '
+              : 'Related screen: '}
+            {isAppPath ? (
+              <Link
+                to={hubPath}
+                className="font-medium text-[var(--color-primary-700)] underline underline-offset-2 hover:text-[var(--color-primary-900)]"
+              >
+                {opsLive?.title || hubPath}
+              </Link>
+            ) : (
+              <span className="font-medium text-[var(--color-neutral-800)]">{hubPath}</span>
+            )}
+            {resolved.gapStatus === 'covered_analytics'
+              ? ' — catalogue Generate does not replace this screen.'
+              : null}
+          </p>
+        );
+      })()}
 
       <div className="space-y-1">
         <label className="text-xs font-medium text-[var(--color-neutral-500)]" htmlFor="report-format">

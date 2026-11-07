@@ -2,10 +2,12 @@ import type { CSSProperties } from 'react';
 import logo from '@/assets/logo.png';
 import type {
   InvoiceFormatUiBlock,
+  InvoiceFormatUiBranding,
   InvoiceFormatUiDemo,
   InvoiceFormatUiLayout,
   InvoiceFormatUiTheme,
 } from '../../types/invoiceFormatUiLayout.types';
+import { REPORT_BRANDING } from '../../constants/reportBranding.constants';
 import { normalizeFresaThemeColors } from '../../constants/fresaInvoiceColors';
 import { resolveReportPaperGeometry } from '../../utils/reportPaperGeometry';
 import { InvoiceUserFooter } from './invoiceLayouts/InvoiceUserFooter';
@@ -17,6 +19,14 @@ type Props = {
   /** Override page label when compositing multi-page PDFs. */
   pageLabel?: string;
 };
+
+/** Registered org logo when present; otherwise KF default asset. */
+function brandLogoSrc(branding: InvoiceFormatUiBranding): string {
+  const fromOrg = branding.logoUrl?.trim();
+  if (fromOrg) return fromOrg;
+  if (typeof logo === 'string' && logo.trim()) return logo;
+  return REPORT_BRANDING.defaultLogoUrl || '/kingfisher-logo.png';
+}
 
 function themeColor(
   theme: InvoiceFormatUiTheme,
@@ -217,7 +227,7 @@ function Block({
               <tr>
                 <td style={{ width: 148, verticalAlign: 'top', padding: '8px 10px' }}>
                   <img
-                    src={logo}
+                    src={brandLogoSrc(branding)}
                     alt={branding.company}
                     style={{ height: 36, width: 'auto', maxWidth: 140, objectFit: 'contain' }}
                   />
@@ -409,7 +419,11 @@ function Block({
             className="flex items-center justify-between px-4 py-3"
             style={{ backgroundColor: theme.primary }}
           >
-            <img src={logo} alt={branding.company} className="h-8 w-auto brightness-0 invert" />
+            <img
+              src={brandLogoSrc(branding)}
+              alt={branding.company}
+              className="h-8 w-auto brightness-0 invert"
+            />
             <div className="text-end text-white">
               <p
                 className="text-[8px] font-semibold uppercase tracking-[0.12em]"
@@ -1238,7 +1252,11 @@ function ArabicHeader({
             Tax Invoice
           </p>
         </div>
-        <img src={logo} alt={branding.company} className="h-10 w-auto object-contain" />
+        <img
+          src={brandLogoSrc(branding)}
+          alt={branding.company}
+          className="h-10 w-auto object-contain"
+        />
         <div className="text-end">
           <TcBrandTagline className="mb-0.5" text="DOCUMENT" color={theme.orange} />
           <p className="text-sm font-bold" style={{ color: theme.primary }}>
@@ -2171,7 +2189,7 @@ function HblBlShell({
               {/* Fresa identity cell: logo + company + address + registration. */}
               {embedLogo ? (
                 <img
-                  src={logo}
+                  src={brandLogoSrc(branding)}
                   alt={branding.company}
                   style={{
                     height: 32,

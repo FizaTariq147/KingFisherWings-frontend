@@ -19,14 +19,39 @@ export const REPORT_FAMILY_ROLLOUT = {
 
 /**
  * Active FE rollout ceiling for "?rollout=active" filter.
- * Full catalog remains browsable via family/phase chips; raise this as backend
- * Puppeteer packs ship (exact FRESA PDF look): 1 ops → 2 sea → 3 air → 4 commercial → 5 finance → 6 wms.
- * See fresaCorePackShells.constants.ts + BACKEND_REPORT_CATALOG_API.md.
- * FE never owns per-report product layouts (JSON layouts frozen).
+ * Full program (Option D): all six waves are in the product catalogue.
+ * Exact FRESA print still requires backend Puppeteer packs
+ * (`fresaCorePackShells.constants.ts` + BACKEND_REPORT_CATALOG_API.md).
+ * Client JSON layouts remain the Dev/offline fallback
+ * (`VITE_REPORTS_CLIENT_LAYOUT_FALLBACK`, default ON) with registered org branding.
  *
- * Pipeline target: ops.list_generic + sea.hbl_draft + air.hawb_draft + commercial.invoice_tax_india_1.
+ * Pipeline smoke packs: ops.list_generic + sea.hbl_draft + air.hawb_draft +
+ * commercial.invoice_tax_india_1 (additive — never replaces POST /invoices/:id/pdf).
  */
-export const ACTIVE_REPORT_ROLLOUT_PHASE = REPORT_FAMILY_ROLLOUT.phase1;
+export const ACTIVE_REPORT_ROLLOUT_PHASE = REPORT_FAMILY_ROLLOUT.phase6;
+
+/**
+ * Backend pack dependency — FE does not invent renderer_key values.
+ * Bind only keys returned by GET /reports/templates/renderers.
+ */
+export const REPORT_PACK_BACKEND_DEPENDENCY = {
+  generatePath: 'POST /reports/generate',
+  renderersPath: 'GET /reports/templates/renderers',
+  brandingFields: [
+    'legal_name',
+    'trade_name',
+    'logo_url',
+    'logo_base64',
+    'address',
+    'phone',
+    'email',
+    'web',
+    'vat_number',
+    'gstin',
+  ] as const,
+  note:
+    'Packs must inject registered organization name + logo (never Fresa logos). Client layout fallback keeps catalogue Generate working when packs are unbound.',
+} as const;
 
 export const ROLLOUT_PHASE_LABELS: Record<number, string> = {
   1: 'Ops lists',

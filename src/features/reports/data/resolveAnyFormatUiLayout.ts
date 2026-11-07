@@ -110,6 +110,46 @@ export function listAllRegisteredFormatCatalogEntries(): RegisteredFormatCatalog
   );
 }
 
+/**
+ * HAWB Draft Format-3…27 / Original Pre Printed-1 are in the complete catalog
+ * but share the core HAWB draft / original shell (no unique JSON store row yet).
+ * Clone the nearest permanent layout so catalogue Generate stays covered.
+ */
+function resolveHawbLayoutFallback(code: string): InvoiceFormatUiLayout | undefined {
+  const upper = code.trim().toUpperCase();
+  const draftMatch = /^HAWB_DRAFT_REPORT_FORMAT_(\d+)$/.exec(upper);
+  if (draftMatch) {
+    const n = Number(draftMatch[1]);
+    if (n >= 3 && n <= 27) {
+      const base =
+        getHawbFormatUiLayout('HAWB_DRAFT_REPORT_FORMAT_1') ||
+        getHawbFormatUiLayout('HAWB_DRAFT_REPORT_FORMAT');
+      if (!base) return undefined;
+      const reg = getRegistryByCode(upper);
+      return {
+        ...base,
+        code: upper,
+        name: reg?.name || `HAWB Draft Report Format-${n}`,
+        formatNumber: n,
+      };
+    }
+  }
+  if (upper === 'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1') {
+    const base =
+      getHawbFormatUiLayout('HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2') ||
+      getHawbFormatUiLayout('HAWB_DRAFT_REPORT_FORMAT_1');
+    if (!base) return undefined;
+    const reg = getRegistryByCode(upper);
+    return {
+      ...base,
+      code: upper,
+      name: reg?.name || 'HAWB Original Pre Printed Report Format-1',
+      formatNumber: 1,
+    };
+  }
+  return undefined;
+}
+
 /** Resolve a permanent JSON layout for any FRESA catalog / registry report code. */
 export function resolveAnyFormatUiLayout(code: string): InvoiceFormatUiLayout | undefined {
   const needle = code.trim();
@@ -121,6 +161,7 @@ export function resolveAnyFormatUiLayout(code: string): InvoiceFormatUiLayout | 
     getArrivalNoticeFormatUiLayout(needle) ??
     getDeliveryOrderFormatUiLayout(needle) ??
     getHawbFormatUiLayout(needle) ??
+    resolveHawbLayoutFallback(needle) ??
     getHblFormatUiLayout(needle) ??
     getOtherReportsFormatUiLayout(needle) ??
     getQuotationFormatUiLayout(needle) ??

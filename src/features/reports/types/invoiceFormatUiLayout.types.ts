@@ -24,6 +24,8 @@ export type InvoiceFormatUiBranding = {
   phone?: string;
   email?: string;
   logo: 'kingfisher';
+  /** Runtime org/tenant logo URL injected by applySharedLayoutChrome. */
+  logoUrl?: string;
 };
 
 export type InvoiceFormatUiKv = { k: string; v: string };

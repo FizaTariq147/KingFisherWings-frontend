@@ -37,7 +37,7 @@ export const FRESA_PDF_PACK_PRIORITY = [
     phase: 3,
     family: 'air_docs',
     label: 'Air documents',
-    suggestedPackPrefix: 'ops.', // or air. if BE expands pattern beyond ops|sea
+    suggestedPackPrefix: 'air.',
     examples: ['HAWB / MAWB Draft', 'Air Arrival Notice', 'Air Cargo Manifest'],
     strategy: 'HAWB/MAWB family shells; map FRESA air codes onto shared packs.',
   },
@@ -58,7 +58,7 @@ export const FRESA_PDF_PACK_PRIORITY = [
     phase: 5,
     family: 'finance',
     label: 'Finance & GL',
-    suggestedPackPrefix: 'ops.',
+    suggestedPackPrefix: 'finance.',
     examples: ['AR/AP Aging', 'Statement of Accounts', 'Trial Balance', 'Outstanding Letter'],
     strategy: 'Statement/aging table packs; align with existing GL analytics where possible.',
   },
@@ -66,9 +66,9 @@ export const FRESA_PDF_PACK_PRIORITY = [
     phase: 6,
     family: 'wms',
     label: 'WMS',
-    suggestedPackPrefix: 'ops.',
+    suggestedPackPrefix: 'wms.',
     examples: ['ASN', 'Warehouse invoice / notes'],
-    strategy: 'Warehouse document shells after core freight packs.',
+    strategy: 'Warehouse document shells (wms.asn*) after core freight packs.',
   },
 ] as const;
 

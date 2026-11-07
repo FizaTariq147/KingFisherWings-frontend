@@ -4,6 +4,7 @@ import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
 import { postShareEmail, type ShareEmailDto, type ShareEmailResult } from '@/features/shared/share-email';
 import { GL_PAYMENT_API } from '../api/glPayment.api';
+import { enrichGlPaymentsDisplay } from '../utils/enrichGlPaymentDisplay';
 import {
   normalizeGlPayment,
   normalizeGlPayments,
@@ -168,7 +169,8 @@ export const glPaymentService = {
           params: buildListQuery(params),
         }),
       );
-      return { payments: normalizeGlPayments(unwrapList(data)) };
+      const payments = await enrichGlPaymentsDisplay(normalizeGlPayments(unwrapList(data)));
+      return { payments };
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -182,7 +184,8 @@ export const glPaymentService = {
       );
       const payment = normalizeGlPayment(unwrapEntity(data));
       if (!payment) throw new Error('Payment not found.');
-      return payment;
+      const [enriched] = await enrichGlPaymentsDisplay([payment]);
+      return enriched ?? payment;
     } catch (error) {
       throw formatAxiosError(error);
     }
@@ -195,7 +198,10 @@ export const glPaymentService = {
         axiosInstance.post<ApiEnvelope<unknown> | unknown>(GL_PAYMENT_API.create, payload),
       );
       const created = normalizeGlPayment(unwrapEntity(data));
-      if (created) return created;
+      if (created) {
+        const [enriched] = await enrichGlPaymentsDisplay([created]);
+        return enriched ?? created;
+      }
       const id = extractId(data);
       if (id) return glPaymentService.getById(id);
       throw new Error('Create succeeded but payment could not be read.');
@@ -212,7 +218,10 @@ export const glPaymentService = {
         axiosInstance.patch<ApiEnvelope<unknown> | unknown>(GL_PAYMENT_API.byId(id), payload),
       );
       const updated = normalizeGlPayment(unwrapEntity(data));
-      if (updated) return updated;
+      if (updated) {
+        const [enriched] = await enrichGlPaymentsDisplay([updated]);
+        return enriched ?? updated;
+      }
       return glPaymentService.getById(id);
     } catch (error) {
       throw formatAxiosError(error);
@@ -265,7 +274,10 @@ export const glPaymentService = {
         axiosInstance.post<ApiEnvelope<unknown> | unknown>(GL_PAYMENT_API.post(id)),
       );
       const posted = normalizeGlPayment(unwrapEntity(data));
-      if (posted) return posted;
+      if (posted) {
+        const [enriched] = await enrichGlPaymentsDisplay([posted]);
+        return enriched ?? posted;
+      }
       return glPaymentService.getById(id);
     } catch (error) {
       throw formatAxiosError(error);
@@ -279,7 +291,10 @@ export const glPaymentService = {
         axiosInstance.post<ApiEnvelope<unknown> | unknown>(GL_PAYMENT_API.cancel(id)),
       );
       const cancelled = normalizeGlPayment(unwrapEntity(data));
-      if (cancelled) return cancelled;
+      if (cancelled) {
+        const [enriched] = await enrichGlPaymentsDisplay([cancelled]);
+        return enriched ?? cancelled;
+      }
       return glPaymentService.getById(id);
     } catch (error) {
       throw formatAxiosError(error);

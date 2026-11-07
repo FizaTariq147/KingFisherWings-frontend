@@ -1,7 +1,7 @@
 /**
  * Client JSON layouts render Fresa-sample look (colors / header / footer) with
- * KingFisher logo + embedded dummy data — matching
- * https://fresatechnologies.com/sample-report-formats/
+ * registered organization name + logo (fallback KF asset) and embedded dummy
+ * data — matching https://fresatechnologies.com/sample-report-formats/
  *
  * Disable only when explicitly set:
  *   VITE_REPORTS_CLIENT_LAYOUT_FALLBACK=false
