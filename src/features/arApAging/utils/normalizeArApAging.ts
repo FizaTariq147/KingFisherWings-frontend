@@ -578,9 +578,29 @@ export function normalizeStatementLine(
     balance: num(r.balance) || num(r.running_balance),
     document_id: str(r.document_id) ?? str(r.invoice_id) ?? str(r.payment_id) ?? str(r.id),
     document_number: str(r.document_number) ?? str(r.invoice_number) ?? str(r.payment_number),
-    payment_status: normalizeArPaymentStatus(
-      r.payment_status ?? r.ar_status ?? r.ar_payment_status ?? r.status,
-    ),
+    payment_status:
+      normalizeArPaymentStatus(
+        r.payment_status ?? r.ar_status ?? r.ar_payment_status ?? r.status,
+      ) ||
+      (() => {
+        const balance = num(r.balance) ?? num(r.balance_due) ?? num(r.outstanding_balance);
+        const paid = num(r.paid_amount) ?? num(r.paidAmount);
+        const total = num(r.total_amount) ?? num(r.amount);
+        if (balance != null && balance <= 0) return 'PAID';
+        if (paid != null && total != null && total > 0 && paid >= total) return 'PAID';
+        if (
+          r.proof_uploaded === true ||
+          r.has_payment_proof === true ||
+          Boolean(str(r.proof_id) || str(r.proof_url))
+        ) {
+          return 'PROOF_UPLOADED';
+        }
+        // Receipt / payment credit lines are settled payments.
+        if (/receipt|payment|credit/i.test(String(r.type ?? r.document_type ?? ''))) {
+          return 'PAID';
+        }
+        return undefined;
+      })(),
   };
 }
 
@@ -648,6 +668,8 @@ function linesFromInvoicesAndPayments(
     if (!r) continue;
     const type = str(r.invoice_type) ?? str(r.type) ?? 'INVOICE';
     const amount = num(r.total_amount) || num(r.balance_due) || num(r.amount);
+    const balanceDue = num(r.balance_due) ?? num(r.outstanding_balance) ?? num(r.balance);
+    const paidAmount = num(r.paid_amount) ?? num(r.paidAmount);
     const creditNote = isCreditNoteType(type);
     let debit = 0;
     let credit = 0;
@@ -658,6 +680,17 @@ function linesFromInvoicesAndPayments(
       if (creditNote || /debit.?note/i.test(type)) debit = amount;
       else credit = amount;
     }
+    const payment_status =
+      normalizeArPaymentStatus(
+        r.payment_status ?? r.ar_status ?? r.ar_payment_status ?? r.status,
+      ) ||
+      (balanceDue != null && balanceDue <= 0
+        ? 'PAID'
+        : paidAmount != null && amount > 0 && paidAmount >= amount
+          ? 'PAID'
+          : r.proof_uploaded === true || r.has_payment_proof === true
+            ? 'PROOF_UPLOADED'
+            : undefined);
     events.push({
       id: str(r.id) ?? str(r.invoice_id),
       date: str(r.invoice_date) ?? str(r.date),
@@ -672,6 +705,7 @@ function linesFromInvoicesAndPayments(
       document_id: str(r.id) ?? str(r.invoice_id),
       document_number: str(r.invoice_number),
       currency_code: str(r.currency_code),
+      payment_status,
     });
   }
 
@@ -684,6 +718,14 @@ function linesFromInvoicesAndPayments(
       num(r.allocated_amount) ||
       num(r.payment_amount);
     const type = str(r.payment_type) ?? str(r.type) ?? (side === 'AR' ? 'RECEIPT' : 'PAYMENT');
+    // Credited receipts / posted payments are paid; show Paid when proof is attached too.
+    const payment_status =
+      normalizeArPaymentStatus(
+        r.payment_status ?? r.ar_status ?? r.status ?? r.proof_status,
+      ) ||
+      (r.proof_id || r.proof_url || r.payment_proof_id || amount > 0
+        ? 'PAID'
+        : undefined);
     events.push({
       id: str(r.id) ?? str(r.payment_id),
       date: str(r.payment_date) ?? str(r.date) ?? str(r.paid_at),
@@ -698,6 +740,7 @@ function linesFromInvoicesAndPayments(
       document_id: str(r.id) ?? str(r.payment_id),
       document_number: str(r.payment_number) ?? str(r.number),
       currency_code: str(r.currency_code),
+      payment_status,
     });
   }
 

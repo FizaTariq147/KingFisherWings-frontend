@@ -187,6 +187,9 @@ export function ActiveShipmentsPanel({
       if (!matchesChip(job, chip)) return false;
       if (!q) return true;
       const awb = jobMawbHawb(job);
+      const containerNo =
+        job.primary_container_number ||
+        job.containers?.find((c) => c.container_number)?.container_number;
       const hay = [
         jobDisplayNumber(job),
         jobClient(job),
@@ -195,6 +198,8 @@ export function ActiveShipmentsPanel({
         job.status,
         awb.mawb,
         awb.hawb,
+        containerNo,
+        job.primary_container_status,
       ]
         .filter(Boolean)
         .join(' ')
@@ -243,6 +248,46 @@ export function ActiveShipmentsPanel({
     });
     return set;
   }, [airJobsNeedingDetail, airDetailQueries]);
+
+  /** Jobs missing container on list — hydrate from GET /jobs/:id/containers. */
+  const jobsNeedingContainers = useMemo(
+    () =>
+      visibleRows
+        .filter((job) => {
+          if (!isUuid(job.id)) return false;
+          const has =
+            Boolean(job.primary_container_number?.trim()) ||
+            Boolean(job.containers?.some((c) => c.container_number?.trim()));
+          return !has;
+        })
+        .slice(0, 40),
+    [visibleRows],
+  );
+  const containerQueries = useQueries({
+    queries: jobsNeedingContainers.map((job) => ({
+      queryKey: [...jobKeys.containers(job.id), 'dashboard-container'] as const,
+      queryFn: () => jobService.listContainers(job.id),
+      enabled: Boolean(accessToken) && isUuid(job.id),
+      staleTime: 60_000,
+    })),
+  });
+  const containersByJobId = useMemo(() => {
+    const map = new Map<string, NonNullable<Job['containers']>>();
+    jobsNeedingContainers.forEach((job, i) => {
+      const rows = containerQueries[i]?.data;
+      if (rows?.length) map.set(job.id, rows);
+    });
+    return map;
+  }, [jobsNeedingContainers, containerQueries]);
+  const containerLoadingIds = useMemo(() => {
+    const set = new Set<string>();
+    jobsNeedingContainers.forEach((job, i) => {
+      if (containerQueries[i]?.isLoading || containerQueries[i]?.isFetching) {
+        set.add(job.id);
+      }
+    });
+    return set;
+  }, [jobsNeedingContainers, containerQueries]);
   const loadingRowCount = Math.min(8, Math.max(1, catalog.length || 3));
 
   const inTransitCount = chipCounts.in_transit + chipCounts.customs;
@@ -410,13 +455,27 @@ export function ActiveShipmentsPanel({
                 const visibleHints = hints.slice(0, 2);
                 const extraHints = hints.length - visibleHints.length;
                 const eta = formatShortDate(job.eta || job.sea_fcl_details?.eta);
-                const container = pickJobContainerDisplay(job.containers, {
+                const hydratedContainers =
+                  job.containers?.length
+                    ? job.containers
+                    : containersByJobId.get(job.id);
+                const container = pickJobContainerDisplay(hydratedContainers, {
                   number: job.primary_container_number,
-                  status: job.primary_container_status,
+                  status:
+                    job.primary_container_status ||
+                    job.primary_container_status_code,
                 });
                 const containerNumber = container?.number || '';
-                const containerStatus = container?.status || '';
+                const containerStatus =
+                  container?.status ||
+                  job.primary_container_status ||
+                  job.primary_container_status_code ||
+                  '';
                 const containerKind = container?.kind;
+                const containerPending =
+                  !containerNumber &&
+                  !containerStatus &&
+                  containerLoadingIds.has(job.id);
                 const hydrated = airDetailById.get(job.id);
                 const awb = jobMawbHawb(hydrated ?? job);
                 const awbPending =
@@ -536,6 +595,8 @@ export function ActiveShipmentsPanel({
                             </p>
                           ) : null}
                         </div>
+                      ) : containerPending ? (
+                        <span className="text-[11px] text-[var(--color-neutral-400)]">…</span>
                       ) : (
                         <span className="text-[11px] text-[var(--color-neutral-400)]">—</span>
                       )}
@@ -545,6 +606,8 @@ export function ActiveShipmentsPanel({
                         <span className="inline-flex rounded-full bg-[#EEF2F5] px-2.5 py-1 text-[11px] font-semibold capitalize text-[var(--color-neutral-700)]">
                           {String(containerStatus).replace(/_/g, ' ').toLowerCase()}
                         </span>
+                      ) : containerPending ? (
+                        <span className="text-[11px] text-[var(--color-neutral-400)]">…</span>
                       ) : (
                         <span className="text-[11px] text-[var(--color-neutral-400)]">—</span>
                       )}
