@@ -71,7 +71,7 @@ export function JobTrackTracePanel({
           </p>
         ) : (
           <div className="relative h-[min(70vh,640px)] min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220]">
-            <TrackMapBackground result={trackResult} />
+            <TrackMapBackground result={trackResult} showLiveBadge />
             <TrackOverlayFrame>
               <PublicTrackTimeline
                 variant="overlay"
