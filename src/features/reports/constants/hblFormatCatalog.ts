@@ -25,6 +25,8 @@ export type HblFormatSpec = {
   family: 'sea_docs';
   /** Jasper/FG family vs legacy Sea-column drafts. */
   hblFamily?: 'jasper' | 'legacy';
+  /** Classic print-family variant for live-data fallback. */
+  variant?: 'combined' | 'jasper' | 'multimodal' | 'mt' | 'ocean' | string;
   samplePdfUrl: string;
 };
 
@@ -35,6 +37,7 @@ export const HBL_FORMAT_CATALOG: HblFormatSpec[] = HBL_OFFICIAL_CATALOG.map((row
   sortOrder: row.sortOrder,
   family: 'sea_docs',
   hblFamily: row.hblFamily,
+  variant: row.variant,
   // Broken Jasper-10 link stays empty string — do not invent a PDF URL.
   samplePdfUrl: row.samplePdfUrl || '',
 }));

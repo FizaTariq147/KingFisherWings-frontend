@@ -1,12 +1,16 @@
+import { useEffect, useRef, useState } from 'react';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
+import { PdfViewerModal } from '@/features/files/components/PdfViewerModal';
+import { usePdfViewer } from '@/features/files/hooks/usePdfViewer';
 import { getHblFormatSpec } from '../../constants/hblFormatCatalog';
-import { getHblFormatUiLayout } from '../../data/hblFormatUiLayouts';
-import type { InvoiceFormatPreview } from '../../types/invoiceFormatPreview.types';
 import type { ReportContextIds } from '../../utils/reportParameterUtils';
 import {
-  CatalogFormatPdfViewerShell,
-  useCatalogFormatLayoutPdf,
-} from '../../hooks/useCatalogFormatLayoutPdf';
+  catalogContextCacheKey,
+  resolveCatalogContextPdfData,
+} from '../../utils/resolveCatalogContextPdfData';
+import { generateHblSamplePdf } from '../../utils/generateHblSamplePdf';
+import { generateHblFamilyClassicPdf } from '@/features/shared/bl-draft/generateHblFamilyClassicPdf';
+import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
 
 type Props = {
   code: string;
@@ -14,41 +18,131 @@ type Props = {
   autoOpen?: boolean;
 };
 
+/**
+ * HBL catalogue preview: official Fresa sample PDF (stamped) when browsing;
+ * classic family print doc when a live entity context is bound.
+ * Does not use hblBlShell / JSON html2canvas layouts.
+ */
 export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
   const spec = getHblFormatSpec(code);
-  const layout = getHblFormatUiLayout(code);
-  const preview: InvoiceFormatPreview | undefined = layout
-    ? {
-        code: layout.code,
-        formatNumber: layout.formatNumber || spec?.sortOrder || 0,
-        name: layout.name || spec?.name || layout.code,
-        samplePdfUrl: null,
-        layoutKind: 'warehouse',
-        paper: layout.paper,
-        rtl: layout.rtl,
-        sections: [],
-      }
-    : undefined;
+  const viewer = usePdfViewer();
+  const [error, setError] = useState<string | null>(null);
+  const [boundLabel, setBoundLabel] = useState<string | null>(null);
+  const openedFor = useRef<string | null>(null);
+  const contextKey = catalogContextCacheKey(context);
 
-  const { viewer, error, boundLabel } = useCatalogFormatLayoutPdf({
-    autoOpen,
-    preview,
-    fileName: formatPdfFilename(
-      `HBL-${layout?.formatNumber ?? 0}-${layout?.code ?? code}`,
-      'hbl-format',
-    ),
-    title: preview?.name || spec?.name,
-    context,
-    formatCode: preview?.code,
-  });
+  useEffect(() => {
+    if (!autoOpen || !spec) return;
+    const key = `${spec.code}:${contextKey}`;
+    if (openedFor.current === key) return;
 
-  if (!layout || !preview) return null;
+    let cancelled = false;
+    setError(null);
+    setBoundLabel(null);
+
+    void viewer
+      .loadPreview(
+        async () => {
+          const [data, orgChrome] = await Promise.all([
+            resolveCatalogContextPdfData(context, { formatCode: spec.code }),
+            resolveReportOrgChrome(),
+          ]);
+          if (!cancelled) {
+            const label =
+              data.jobNumber ||
+              data.shipmentNumber ||
+              data.referenceNo ||
+              (contextKey ? 'live record' : null);
+            setBoundLabel(label ? `bound to ${label}` : 'official Fresa sample');
+          }
+
+          if (data.entityBound) {
+            const { blob } = await generateHblFamilyClassicPdf(
+              spec.code,
+              {
+                ...data,
+                companyName: data.companyName || orgChrome.company,
+                companyAddress: data.companyAddress || orgChrome.address,
+                companyWeb: data.companyWeb || orgChrome.web,
+                companyPhone: data.companyPhone || orgChrome.phone,
+                companyEmail: data.companyEmail || orgChrome.email,
+              },
+              { appendCustomerTerms: true },
+            );
+            return blob;
+          }
+
+          try {
+            const { blob } = await generateHblSamplePdf(spec.code, {
+              chrome: orgChrome,
+              appendCustomerTerms: true,
+            });
+            return blob;
+          } catch {
+            const { blob } = await generateHblFamilyClassicPdf(
+              spec.code,
+              {
+                companyName: orgChrome.company,
+                companyAddress: orgChrome.address,
+                companyWeb: orgChrome.web,
+                companyPhone: orgChrome.phone,
+                companyEmail: orgChrome.email,
+              },
+              { appendCustomerTerms: true },
+            );
+            return blob;
+          }
+        },
+        {
+          fileName: formatPdfFilename(
+            `HBL-${spec.sortOrder || 0}-${spec.code}`,
+            'hbl-format',
+          ),
+          title: spec.name,
+        },
+      )
+      .then(() => {
+        if (!cancelled) openedFor.current = key;
+      })
+      .catch((err: unknown) => {
+        if (!cancelled) {
+          openedFor.current = null;
+          setError(err instanceof Error ? err.message : 'Could not open HBL PDF.');
+        }
+      });
+
+    return () => {
+      cancelled = true;
+      openedFor.current = null;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- open once per code / context
+  }, [autoOpen, spec?.code, contextKey]);
+
+  if (!spec) return null;
+
   return (
-    <CatalogFormatPdfViewerShell
-      viewer={viewer}
-      error={error}
-      title={preview.name || spec?.name}
-      boundLabel={boundLabel}
-    />
+    <>
+      {boundLabel ? (
+        <p className="text-xs text-[var(--color-success-700)]" role="status">
+          HBL PDF · {boundLabel}
+        </p>
+      ) : null}
+      {error ? (
+        <p className="text-xs text-[var(--color-danger-700)]" role="alert">
+          {error}
+        </p>
+      ) : null}
+      <PdfViewerModal
+        open={viewer.open}
+        onClose={viewer.close}
+        src={viewer.src}
+        blob={viewer.blob}
+        fileName={viewer.fileName}
+        title={viewer.title || spec.name}
+        loading={viewer.loading}
+        error={viewer.error}
+        skipBranding
+      />
+    </>
   );
 }

@@ -317,6 +317,7 @@ export function ReportGeneratePanel({
 
         const generated = await generateCatalogLayoutPdf(resolved.code, data, {
           logoUrl: orgChrome.logoUrl,
+          hblMode: entityBound ? 'classic' : 'sample',
         });
         if (!generated) {
           setError('No Fresa sample layout registered for this format code.');
@@ -333,8 +334,10 @@ export function ReportGeneratePanel({
         setJobId(null);
         setMessage(
           entityBound
-            ? 'Report PDF ready (Fresa layout + registered company branding, live record data).'
-            : 'Sample report ready — Fresa layout/colors/footer with registered company name/logo and sample data.',
+            ? 'Report PDF ready (HBL classic family / Fresa layout + live record data). Pack preferred when bound.'
+            : generated.preview.samplePdfUrl
+              ? 'Official Fresa HBL sample PDF ready (org branding stamped). Distinct per catalogue format.'
+              : 'Sample report ready — Fresa layout/colors/footer with registered company name/logo and sample data.',
         );
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Could not generate sample PDF.');
