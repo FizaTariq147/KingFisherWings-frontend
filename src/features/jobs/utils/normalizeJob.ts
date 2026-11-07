@@ -15,7 +15,10 @@ import type {
 } from '../types/job.types';
 import type { JobStatus } from '../constants/job.constants';
 import { canonicalizeJobType } from './canonicalizeJobType';
-import { normalizeJobContainers } from './normalizeJobContainers';
+import {
+  normalizeJobContainers,
+  pickJobContainerDisplay,
+} from './normalizeJobContainers';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -788,6 +791,22 @@ export function normalizeJob(raw: unknown): Job | null {
     ? houseRaw.map(normalizeJob).filter((j): j is Job => Boolean(j))
     : undefined;
 
+  const containersMerged = (() => {
+    const merged = [
+      ...normalizeJobContainers(r.containers),
+      ...normalizeJobContainers(r.actual_container ?? r.actualContainer ?? r.actual_containers),
+      ...normalizeJobContainers(r.planned_container ?? r.plannedContainer ?? r.planned_containers),
+    ];
+    if (!merged.length) return undefined;
+    const seen = new Set<string>();
+    return merged.filter((c) => {
+      if (seen.has(c.id)) return false;
+      seen.add(c.id);
+      return true;
+    });
+  })();
+  const containerDisplay = pickJobContainerDisplay(containersMerged);
+
   const air = asRecord(r.air_details ?? r.airDetails);
   const sea = asRecord(r.sea_fcl_details ?? r.seaFclDetails);
   const seaLcl = asRecord(r.sea_lcl_details ?? r.seaLclDetails);
@@ -1033,7 +1052,9 @@ export function normalizeJob(raw: unknown): Job | null {
         'primaryContainerNumber',
         'container_number',
         'containerNumber',
-      ) || undefined,
+      ) ||
+      containerDisplay?.number ||
+      undefined,
     primary_container_status:
       pickString(
         r,
@@ -1041,7 +1062,9 @@ export function normalizeJob(raw: unknown): Job | null {
         'primaryContainerStatus',
         'container_status',
         'containerStatus',
-      ) || undefined,
+      ) ||
+      containerDisplay?.status ||
+      undefined,
     primary_container_status_code:
       pickString(
         r,
@@ -1049,7 +1072,9 @@ export function normalizeJob(raw: unknown): Job | null {
         'primaryContainerStatusCode',
         'container_status_code',
         'containerStatusCode',
-      ) || undefined,
+      ) ||
+      containerDisplay?.status ||
+      undefined,
     edi_company_code:
       pickString(r, 'edi_company_code', 'ediCompanyCode', 'company_code', 'companyCode') ||
       undefined,
@@ -1363,20 +1388,7 @@ export function normalizeJob(raw: unknown): Job | null {
     milestones,
     notes_list: notesList,
     house_jobs: houseJobs,
-    containers: (() => {
-      const merged = [
-        ...normalizeJobContainers(r.containers),
-        ...normalizeJobContainers(r.actual_container ?? r.actualContainer ?? r.actual_containers),
-        ...normalizeJobContainers(r.planned_container ?? r.plannedContainer ?? r.planned_containers),
-      ];
-      if (!merged.length) return undefined;
-      const seen = new Set<string>();
-      return merged.filter((c) => {
-        if (seen.has(c.id)) return false;
-        seen.add(c.id);
-        return true;
-      });
-    })(),
+    containers: containersMerged,
     cargo: Array.isArray(r.cargo) ? (r.cargo as Job['cargo']) : undefined,
     documents: Array.isArray(r.documents) ? (r.documents as Job['documents']) : undefined,
     bills_of_lading: Array.isArray(r.bills_of_lading ?? r.billsOfLading)

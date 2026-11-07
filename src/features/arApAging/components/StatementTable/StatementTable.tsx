@@ -23,12 +23,18 @@ function paymentStatusLabel(status?: string): string {
   return status;
 }
 
-function paymentStatusClass(status?: string): string {
+function paymentStatusTagClass(status?: string): string {
   const s = status?.toUpperCase();
-  if (s === 'PAID') return 'text-emerald-700';
-  if (s === 'PROOF_UPLOADED') return 'text-amber-700';
-  if (s === 'UNPAID') return 'text-[var(--color-danger-600)]';
-  return 'text-[var(--color-neutral-500)]';
+  if (s === 'PAID') {
+    return 'bg-emerald-50 text-emerald-800 ring-1 ring-inset ring-emerald-200';
+  }
+  if (s === 'PROOF_UPLOADED') {
+    return 'bg-amber-50 text-amber-800 ring-1 ring-inset ring-amber-200';
+  }
+  if (s === 'UNPAID') {
+    return 'bg-red-50 text-[var(--color-danger-700)] ring-1 ring-inset ring-red-200';
+  }
+  return 'bg-[var(--color-neutral-50)] text-[var(--color-neutral-600)]';
 }
 
 export function StatementTable({ lines, currencyCode }: StatementTableProps) {
@@ -80,9 +86,15 @@ export function StatementTable({ lines, currencyCode }: StatementTableProps) {
                 </TableCell>
                 <TableCell>{line.description || '—'}</TableCell>
                 <TableCell>
-                  <span className={`text-xs font-medium ${paymentStatusClass(line.payment_status)}`}>
-                    {paymentStatusLabel(line.payment_status)}
-                  </span>
+                  {line.payment_status ? (
+                    <span
+                      className={`inline-flex rounded-full px-2 py-0.5 text-[11px] font-semibold ${paymentStatusTagClass(line.payment_status)}`}
+                    >
+                      {paymentStatusLabel(line.payment_status)}
+                    </span>
+                  ) : (
+                    <span className="text-xs text-[var(--color-neutral-400)]">—</span>
+                  )}
                 </TableCell>
                 <TableCell mono>
                   {line.debit

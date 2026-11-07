@@ -40,6 +40,8 @@ function PaymentRow({ row }: { row: PartyPaymentRow }) {
             <Badge variant={directionVariant(row.direction)}>
               {row.direction || 'Payment'}
             </Badge>
+            <Badge variant="success">Paid</Badge>
+            {proof ? <Badge variant="info">Proof uploaded</Badge> : null}
             <span className="text-sm font-medium text-[var(--color-neutral-800)]">
               {row.amount != null
                 ? `${row.currency_code || ''} ${row.amount.toLocaleString()}`.trim()
