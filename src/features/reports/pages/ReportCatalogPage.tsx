@@ -73,7 +73,6 @@ import { hasWmsFormatUiLayout } from '../data/wmsFormatUiLayouts';
 import { hasArrivalNoticeFormatUiLayout } from '../data/arrivalNoticeFormatUiLayouts';
 import { hasDeliveryOrderFormatUiLayout } from '../data/deliveryOrderFormatUiLayouts';
 import { hasHawbFormatUiLayout } from '../data/hawbFormatUiLayouts';
-import { hasHblFormatUiLayout } from '../data/hblFormatUiLayouts';
 import { hasOtherReportsFormatUiLayout } from '../data/otherReportsFormatUiLayouts';
 import { hasQuotationFormatUiLayout } from '../data/quotationFormatUiLayouts';
 import { hasOpsListFormatUiLayout } from '../data/opsListFormatUiLayouts';
@@ -118,7 +117,6 @@ import {
 import {
   getHblFormatSpec,
   isHblFormatCode,
-  listHblFormats,
   listOfficialHblFormats,
   hblFormatsMatchSearch,
 } from '../constants/hblFormatCatalog';
@@ -1002,7 +1000,8 @@ export default function ReportCatalogPage() {
   const hasDeliveryOrderLayout =
     isDeliveryOrderSelected && hasDeliveryOrderFormatUiLayout(selectedCode);
   const hasHawbLayout = isHawbSelected && hasHawbFormatUiLayout(selectedCode);
-  const hasHblLayout = isHblSelected && hasHblFormatUiLayout(selectedCode);
+  // HBL preview uses sample-PDF / classic family path (not JSON shell layouts).
+  const hasHblLayout = isHblSelected && Boolean(getHblFormatSpec(selectedCode));
   const hasOtherReportsLayout =
     isOtherReportsSelected && hasOtherReportsFormatUiLayout(selectedCode);
   const hasQuotationLayout = isQuotationSelected && hasQuotationFormatUiLayout(selectedCode);

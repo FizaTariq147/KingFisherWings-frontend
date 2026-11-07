@@ -56,6 +56,15 @@ export default defineConfig(({ mode }) => ({
         rewrite: (requestPath) => requestPath.replace(/^\/backend/, ''),
         cookieDomainRewrite: 'localhost',
       },
+      // Official Fresa sample PDFs (HBL catalogue browse) — avoids browser CORS.
+      '/fresa-sample': {
+        target: 'https://fresatechnologies.com',
+        changeOrigin: true,
+        secure: true,
+        timeout: 120_000,
+        proxyTimeout: 120_000,
+        rewrite: (requestPath) => requestPath.replace(/^\/fresa-sample/, ''),
+      },
     },
   },
 
@@ -69,6 +78,16 @@ export default defineConfig(({ mode }) => ({
       '.onrender.com',
           'freightnest.kingfishertec.com',
     ],
+    proxy: {
+      '/fresa-sample': {
+        target: 'https://fresatechnologies.com',
+        changeOrigin: true,
+        secure: true,
+        timeout: 120_000,
+        proxyTimeout: 120_000,
+        rewrite: (requestPath) => requestPath.replace(/^\/fresa-sample/, ''),
+      },
+    },
   },
 
   resolve: {
