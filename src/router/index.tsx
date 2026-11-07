@@ -321,6 +321,7 @@ import OrganizationProfilePage from '../features/organization/pages/Organization
 import BankAccountsPage from '../features/organization/pages/BankAccountsPage'
 import NumberFormatsPage from '../features/organization/pages/NumberFormatsPage'
 import JobDateSettingsPage from '../features/organization/pages/JobDateSettingsPage'
+import CostingSettingsPage from '../features/organization/pages/CostingSettingsPage'
 import { TENANT_USER_MANAGER_ROLE_SLUGS } from '../features/users/constants/userPermissions'
 function Placeholder({ title }: { title: string }) {
   return (
@@ -547,6 +548,7 @@ export const router = createBrowserRouter([
                   { path: 'bank-accounts', element: <BankAccountsPage /> },
                   { path: 'number-formats', element: <NumberFormatsPage /> },
                   { path: 'job-date', element: <JobDateSettingsPage /> },
+                  { path: 'costing', element: <CostingSettingsPage /> },
                 ],
               },
             ],

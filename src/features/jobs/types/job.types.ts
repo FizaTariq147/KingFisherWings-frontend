@@ -1299,13 +1299,25 @@ export interface ConfirmStorageChargesDto {
 
 export type JobChargeAttachmentSide = 'CHARGE' | 'SALE' | 'COST';
 
+/** Costing attachment purpose — PAYMENT_PROOF can auto mark-paid when tenant setting is on. */
+export type JobChargeAttachmentPurpose = 'GENERAL' | 'PAYMENT_PROOF';
+
 export interface CreateJobChargeAttachmentDto {
-  file_name: string;
-  file_url: string;
+  file_name?: string;
+  file_url?: string;
   s3_key?: string;
   file_size?: number;
   mime_type?: string;
   side?: JobChargeAttachmentSide;
+  purpose?: JobChargeAttachmentPurpose;
+  visible_to_customer?: boolean;
+  visible_to_vendor?: boolean;
+  downloadable_by_customer?: boolean;
+  downloadable_by_vendor?: boolean;
+  amount_claimed?: string;
+  payment_date?: string;
+  reference_number?: string;
+  notes?: string;
 }
 
 export interface JobChargeAttachment {
@@ -1316,6 +1328,15 @@ export interface JobChargeAttachment {
   file_size?: number;
   mime_type?: string;
   side?: JobChargeAttachmentSide | string;
+  purpose?: JobChargeAttachmentPurpose | string;
+  visible_to_customer?: boolean;
+  visible_to_vendor?: boolean;
+  downloadable_by_customer?: boolean;
+  downloadable_by_vendor?: boolean;
+  /** True when purpose=PAYMENT_PROOF auto-ran mark-paid successfully. */
+  marked_paid?: boolean;
+  /** Soft warning when auto mark-paid was skipped / failed. */
+  mark_paid_warning?: string;
   created_at?: string;
 }
 

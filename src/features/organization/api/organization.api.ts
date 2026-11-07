@@ -9,6 +9,8 @@ export const ORGANIZATION_API = {
     `/organization/number-formats/${encodeURIComponent(documentType)}/preview`,
   /** Job date source: ETD_ATD | ETA_ATA | SYSTEM_DATE */
   jobDateSettings: '/organization/settings/job-date',
+  /** Costing attachment PAYMENT_PROOF auto mark-paid */
+  costingSettings: '/organization/settings/costing',
   /** Volumetric weight divisor (cm → kg) */
   dimensionsSettings: '/organization/settings/dimensions',
   /** GET/PATCH /organization/settings/job-create — create wizard defaults */

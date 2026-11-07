@@ -870,6 +870,13 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const [attachFileUrl, setAttachFileUrl] = useState('');
   const [attachPickFile, setAttachPickFile] = useState<File | null>(null);
   const [attachSide, setAttachSide] = useState<'CHARGE' | 'SALE' | 'COST'>('CHARGE');
+  const [attachPurpose, setAttachPurpose] = useState<'GENERAL' | 'PAYMENT_PROOF'>(
+    'GENERAL',
+  );
+  const [attachVisibleCustomer, setAttachVisibleCustomer] = useState(false);
+  const [attachVisibleVendor, setAttachVisibleVendor] = useState(false);
+  const [attachDownloadCustomer, setAttachDownloadCustomer] = useState(false);
+  const [attachDownloadVendor, setAttachDownloadVendor] = useState(false);
   const [attachModalOpen, setAttachModalOpen] = useState(false);
   const attachListQuery = useJobChargeAttachments(
     job.id,
@@ -956,6 +963,15 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     }
   };
 
+  const applyAttachSideDefaults = (side: 'CHARGE' | 'SALE' | 'COST') => {
+    setAttachSide(side);
+    // SALE → customer; COST → vendor (BE defaults).
+    setAttachVisibleCustomer(side === 'SALE');
+    setAttachDownloadCustomer(side === 'SALE');
+    setAttachVisibleVendor(side === 'COST');
+    setAttachDownloadVendor(side === 'COST');
+  };
+
   const openSideAttach = (
     charge: Pick<JobCharge, 'id' | 'description' | 'charge_code' | 'charge_code_name'>,
     side: 'SALE' | 'COST',
@@ -966,12 +982,29 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
         .filter(Boolean)
         .join(' — ') || charge.id,
     );
-    setAttachSide(side);
+    applyAttachSideDefaults(side);
+    setAttachPurpose('GENERAL');
     setAttachFileName('');
     setAttachFileUrl('');
     setAttachPickFile(null);
     setSidePanel(null);
     setAttachModalOpen(true);
+  };
+
+  const attachmentSuccessMessage = (
+    side: string,
+    result: {
+      marked_paid?: boolean;
+      mark_paid_warning?: string;
+    } | void,
+  ) => {
+    if (result?.marked_paid) {
+      return `${side} payment proof uploaded and charge marked paid.`;
+    }
+    if (result?.mark_paid_warning) {
+      return `${side} attachment uploaded. ${result.mark_paid_warning}`;
+    }
+    return `${side} attachment uploaded.`;
   };
 
   const submitChargeAttachment = async () => {
@@ -980,37 +1013,57 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       setError('Invalid charge. Select a charge line first.');
       return;
     }
+    const visibility = {
+      visible_to_customer: attachVisibleCustomer,
+      visible_to_vendor: attachVisibleVendor,
+      downloadable_by_customer: attachDownloadCustomer,
+      downloadable_by_vendor: attachDownloadVendor,
+    };
     if (attachPickFile) {
-      await run(
-        () =>
-          actions.uploadChargeAttachmentFile.mutateAsync({
-            chargeId,
-            file: attachPickFile,
-            side: attachSide,
-          }),
-        `${attachSide} attachment uploaded.`,
-      );
-      setAttachPickFile(null);
-      setAttachModalOpen(false);
+      setError(null);
+      setMsg(null);
+      try {
+        const result = await actions.uploadChargeAttachmentFile.mutateAsync({
+          chargeId,
+          file: attachPickFile,
+          side: attachSide,
+          purpose: attachPurpose,
+          ...visibility,
+        });
+        setMsg(attachmentSuccessMessage(attachSide, result));
+        setAttachPickFile(null);
+        setAttachModalOpen(false);
+        onChanged?.();
+        void chargesQuery.refetch();
+      } catch (err) {
+        setError(getErrorMessage(err));
+      }
       return;
     }
     if (!attachFileName.trim() || !attachFileUrl.trim()) {
       setError('Choose a file to upload or enter file name and URL.');
       return;
     }
-    await run(
-      () =>
-        actions.createChargeAttachment.mutateAsync({
-          chargeId,
-          dto: {
-            file_name: attachFileName.trim(),
-            file_url: attachFileUrl.trim(),
-            side: attachSide,
-          },
-        }),
-      `${attachSide} attachment added.`,
-    );
-    setAttachModalOpen(false);
+    setError(null);
+    setMsg(null);
+    try {
+      const result = await actions.createChargeAttachment.mutateAsync({
+        chargeId,
+        dto: {
+          file_name: attachFileName.trim(),
+          file_url: attachFileUrl.trim(),
+          side: attachSide,
+          purpose: attachPurpose,
+          ...visibility,
+        },
+      });
+      setMsg(attachmentSuccessMessage(attachSide, result));
+      setAttachModalOpen(false);
+      onChanged?.();
+      void chargesQuery.refetch();
+    } catch (err) {
+      setError(getErrorMessage(err));
+    }
   };
 
   const run = async (fn: () => Promise<unknown>, success?: string) => {
@@ -2235,7 +2288,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
               value={attachSide}
               onChange={(e) =>
-                setAttachSide(
+                applyAttachSideDefaults(
                   e.target.value === 'SALE'
                     ? 'SALE'
                     : e.target.value === 'COST'
@@ -2247,6 +2300,23 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
               <option value="CHARGE">CHARGE</option>
               <option value="SALE">SALE</option>
               <option value="COST">COST</option>
+            </select>
+          </label>
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-[var(--color-neutral-600)]">
+              Purpose
+            </span>
+            <select
+              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+              value={attachPurpose}
+              onChange={(e) =>
+                setAttachPurpose(
+                  e.target.value === 'PAYMENT_PROOF' ? 'PAYMENT_PROOF' : 'GENERAL',
+                )
+              }
+            >
+              <option value="GENERAL">GENERAL</option>
+              <option value="PAYMENT_PROOF">PAYMENT_PROOF</option>
             </select>
           </label>
           <label className="block space-y-1 sm:col-span-2">
@@ -3764,6 +3834,63 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       >
         <div className="grid gap-3">
           <Input label="Charge name" value={attachChargeName || attachChargeId} readOnly />
+          <label className="block space-y-1">
+            <span className="text-xs font-medium text-[var(--color-neutral-600)]">
+              Purpose
+            </span>
+            <select
+              className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+              value={attachPurpose}
+              onChange={(e) =>
+                setAttachPurpose(
+                  e.target.value === 'PAYMENT_PROOF' ? 'PAYMENT_PROOF' : 'GENERAL',
+                )
+              }
+            >
+              <option value="GENERAL">GENERAL</option>
+              <option value="PAYMENT_PROOF">PAYMENT_PROOF</option>
+            </select>
+            {attachPurpose === 'PAYMENT_PROOF' ? (
+              <span className="text-[11px] text-[var(--color-neutral-500)]">
+                When tenant auto mark-paid is on, this uploads as proof and may post a
+                receipt for the {attachSide === 'COST' ? 'vendor' : 'customer'} amount.
+              </span>
+            ) : null}
+          </label>
+          <div className="grid gap-2 sm:grid-cols-2">
+            <label className="flex items-center gap-2 text-[12px]">
+              <input
+                type="checkbox"
+                checked={attachVisibleCustomer}
+                onChange={(e) => setAttachVisibleCustomer(e.target.checked)}
+              />
+              Visible to customer
+            </label>
+            <label className="flex items-center gap-2 text-[12px]">
+              <input
+                type="checkbox"
+                checked={attachVisibleVendor}
+                onChange={(e) => setAttachVisibleVendor(e.target.checked)}
+              />
+              Visible to vendor
+            </label>
+            <label className="flex items-center gap-2 text-[12px]">
+              <input
+                type="checkbox"
+                checked={attachDownloadCustomer}
+                onChange={(e) => setAttachDownloadCustomer(e.target.checked)}
+              />
+              Downloadable by customer
+            </label>
+            <label className="flex items-center gap-2 text-[12px]">
+              <input
+                type="checkbox"
+                checked={attachDownloadVendor}
+                onChange={(e) => setAttachDownloadVendor(e.target.checked)}
+              />
+              Downloadable by vendor
+            </label>
+          </div>
           {attachListQuery.data && attachListQuery.data.length > 0 ? (
             <ul className="space-y-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-3 py-2">
               {attachListQuery.data.map((att, idx) => {

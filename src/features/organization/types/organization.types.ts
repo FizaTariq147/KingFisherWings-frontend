@@ -43,6 +43,15 @@ export interface UpdateJobDateSettingsDto {
   job_date_source: JobDateSource | string;
 }
 
+/** GET/PATCH /organization/settings/costing */
+export interface CostingSettings {
+  costing_payment_proof_auto_mark_paid: boolean;
+}
+
+export interface UpdateCostingSettingsDto {
+  costing_payment_proof_auto_mark_paid: boolean;
+}
+
 /** GET/PATCH /organization/settings/dimensions — volumetric divisor (cm → kg). */
 export interface DimensionsSettings {
   volumetric_divisor?: number;

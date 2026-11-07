@@ -132,13 +132,14 @@ export function PendingJobChargesTable({
           <TableHead>Side</TableHead>
           <TableHead>Description</TableHead>
           <TableHead>{amountLabel}</TableHead>
+          <TableHead>Invoice</TableHead>
           <TableHead>Mark paid</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {charges.length === 0 ? (
           <TableRow>
-            <TableCell colSpan={5} className="text-center text-[var(--color-neutral-400)] py-8">
+            <TableCell colSpan={6} className="text-center text-[var(--color-neutral-400)] py-8">
               No uninvoiced pending job charges
             </TableCell>
           </TableRow>
@@ -169,6 +170,15 @@ export function PendingJobChargesTable({
                   {amt != null
                     ? `${c.currency_code || ''} ${amt.toLocaleString()}`.trim()
                     : '—'}
+                </TableCell>
+                <TableCell>
+                  {c.needs_invoice ? (
+                    <span className="inline-flex rounded-sm bg-amber-50 px-1.5 py-0.5 text-[11px] font-medium text-amber-800">
+                      Needs invoice
+                    </span>
+                  ) : (
+                    <span className="text-[11px] text-[var(--color-neutral-400)]">—</span>
+                  )}
                 </TableCell>
                 <TableCell>
                   <MarkChargePaidCell

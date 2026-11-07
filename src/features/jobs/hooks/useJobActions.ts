@@ -118,11 +118,41 @@ export function useJobActions(jobId: string) {
       chargeId,
       file,
       side,
+      purpose,
+      visible_to_customer,
+      visible_to_vendor,
+      downloadable_by_customer,
+      downloadable_by_vendor,
+      amount_claimed,
+      payment_date,
+      reference_number,
+      notes,
     }: {
       chargeId: string;
       file: File;
       side?: CreateJobChargeAttachmentDto['side'];
-    }) => jobService.uploadChargeAttachmentFile(id, chargeId, file, side),
+      purpose?: CreateJobChargeAttachmentDto['purpose'];
+      visible_to_customer?: boolean;
+      visible_to_vendor?: boolean;
+      downloadable_by_customer?: boolean;
+      downloadable_by_vendor?: boolean;
+      amount_claimed?: string;
+      payment_date?: string;
+      reference_number?: string;
+      notes?: string;
+    }) =>
+      jobService.uploadChargeAttachmentFile(id, chargeId, file, {
+        side,
+        purpose,
+        visible_to_customer,
+        visible_to_vendor,
+        downloadable_by_customer,
+        downloadable_by_vendor,
+        amount_claimed,
+        payment_date,
+        reference_number,
+        notes,
+      }),
     onSuccess: (_data, vars) => {
       invalidate(id);
       void queryClient.invalidateQueries({ queryKey: jobKeys.jobCharges(id) });
