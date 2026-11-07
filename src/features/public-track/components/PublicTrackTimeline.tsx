@@ -837,6 +837,35 @@ export function PublicTrackTimeline({
               ) : null}
             </div>
 
+            {(result.containers?.length ?? 0) > 0 ? (
+              <div className="mb-5 space-y-2">
+                <p className="text-[12px] font-semibold uppercase tracking-wide" style={{ color: C.muted }}>
+                  Containers
+                </p>
+                <ul className="space-y-1.5">
+                  {result.containers!.map((c) => (
+                    <li
+                      key={c.id}
+                      className="flex flex-wrap items-center justify-between gap-2 rounded-lg px-3 py-2"
+                      style={{ backgroundColor: C.chip }}
+                    >
+                      <span className="text-[13px] font-semibold" style={{ color: C.navy }}>
+                        {c.containerNumber || '—'}
+                        {c.containerType ? (
+                          <span className="ms-2 text-[11px] font-medium" style={{ color: C.sub }}>
+                            {c.containerType}
+                          </span>
+                        ) : null}
+                      </span>
+                      <span className="text-[11px] font-medium" style={{ color: C.sub }}>
+                        {[c.kind, c.statusLabel || c.status].filter(Boolean).join(' · ') || '—'}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
             {route && (route.atBefore || route.terminalCutoffAt || route.legs.length || route.portOfCall.length) ? (
               <div className="mb-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
                 {route.atBefore ? (

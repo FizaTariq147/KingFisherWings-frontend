@@ -1090,6 +1090,110 @@ async function mergeRecentCreatedJobs(
   return [...byId.values()];
 }
 
+/** SALE → customer visibility; COST → vendor (OpenAPI defaults). */
+function defaultChargeAttachmentVisibility(
+  side: NonNullable<CreateJobChargeAttachmentDto['side']>,
+  overrides: Partial<CreateJobChargeAttachmentDto> = {},
+): Required<
+  Pick<
+    CreateJobChargeAttachmentDto,
+    | 'visible_to_customer'
+    | 'visible_to_vendor'
+    | 'downloadable_by_customer'
+    | 'downloadable_by_vendor'
+  >
+> {
+  const sale = side === 'SALE';
+  const cost = side === 'COST';
+  return {
+    visible_to_customer:
+      typeof overrides.visible_to_customer === 'boolean'
+        ? overrides.visible_to_customer
+        : sale,
+    visible_to_vendor:
+      typeof overrides.visible_to_vendor === 'boolean'
+        ? overrides.visible_to_vendor
+        : cost,
+    downloadable_by_customer:
+      typeof overrides.downloadable_by_customer === 'boolean'
+        ? overrides.downloadable_by_customer
+        : sale,
+    downloadable_by_vendor:
+      typeof overrides.downloadable_by_vendor === 'boolean'
+        ? overrides.downloadable_by_vendor
+        : cost,
+  };
+}
+
+function normalizeChargeAttachment(
+  raw: unknown,
+  fallback: CreateJobChargeAttachmentDto & { file_name?: string; file_url?: string },
+): JobChargeAttachment {
+  const r =
+    raw && typeof raw === 'object' && !Array.isArray(raw)
+      ? (raw as Record<string, unknown>)
+      : {};
+  const nested =
+    r.attachment && typeof r.attachment === 'object' && !Array.isArray(r.attachment)
+      ? (r.attachment as Record<string, unknown>)
+      : r;
+  const bool = (v: unknown): boolean | undefined =>
+    typeof v === 'boolean' ? v : v === 'true' ? true : v === 'false' ? false : undefined;
+  return {
+    id: typeof nested.id === 'string' ? nested.id : undefined,
+    file_name: String(
+      nested.file_name ?? nested.fileName ?? fallback.file_name ?? '',
+    ),
+    file_url: String(nested.file_url ?? nested.fileUrl ?? fallback.file_url ?? ''),
+    s3_key:
+      typeof nested.s3_key === 'string'
+        ? nested.s3_key
+        : typeof nested.s3Key === 'string'
+          ? nested.s3Key
+          : fallback.s3_key,
+    file_size: Number.isFinite(Number(nested.file_size ?? nested.fileSize ?? fallback.file_size))
+      ? Number(nested.file_size ?? nested.fileSize ?? fallback.file_size)
+      : undefined,
+    mime_type:
+      typeof nested.mime_type === 'string'
+        ? nested.mime_type
+        : typeof nested.mimeType === 'string'
+          ? nested.mimeType
+          : fallback.mime_type,
+    side: String(nested.side ?? fallback.side ?? 'CHARGE') as JobChargeAttachment['side'],
+    purpose: String(
+      nested.purpose ?? fallback.purpose ?? 'GENERAL',
+    ) as JobChargeAttachment['purpose'],
+    visible_to_customer:
+      bool(nested.visible_to_customer ?? nested.visibleToCustomer) ??
+      fallback.visible_to_customer,
+    visible_to_vendor:
+      bool(nested.visible_to_vendor ?? nested.visibleToVendor) ??
+      fallback.visible_to_vendor,
+    downloadable_by_customer:
+      bool(nested.downloadable_by_customer ?? nested.downloadableByCustomer) ??
+      fallback.downloadable_by_customer,
+    downloadable_by_vendor:
+      bool(nested.downloadable_by_vendor ?? nested.downloadableByVendor) ??
+      fallback.downloadable_by_vendor,
+    marked_paid:
+      bool(r.marked_paid ?? r.markedPaid ?? nested.marked_paid ?? nested.markedPaid) ===
+      true,
+    mark_paid_warning:
+      typeof (r.mark_paid_warning ?? r.markPaidWarning) === 'string'
+        ? String(r.mark_paid_warning ?? r.markPaidWarning)
+        : typeof (nested.mark_paid_warning ?? nested.markPaidWarning) === 'string'
+          ? String(nested.mark_paid_warning ?? nested.markPaidWarning)
+          : undefined,
+    created_at:
+      typeof nested.created_at === 'string'
+        ? nested.created_at
+        : typeof nested.createdAt === 'string'
+          ? nested.createdAt
+          : undefined,
+  };
+}
+
 export const jobService = {
   /**
    * Load jobs for Active shipments / department / hub.
@@ -2731,61 +2835,138 @@ export const jobService = {
     }
   },
 
-  /** Upload file then POST charge attachment metadata (OpenAPI CreateJobChargeAttachmentDto). */
+  /**
+   * Preferred: multipart POST /jobs/:id/charges/:chargeId/attachments
+   * (file + side + purpose + visibility). Falls back to JOB_COSTING typed upload
+   * + JSON metadata only when the multipart endpoint rejects the file field.
+   */
   async uploadChargeAttachmentFile(
     id: string,
     chargeId: string,
     file: File,
-    side: CreateJobChargeAttachmentDto['side'] = 'CHARGE',
+    options: {
+      side?: CreateJobChargeAttachmentDto['side'];
+      purpose?: CreateJobChargeAttachmentDto['purpose'];
+      visible_to_customer?: boolean;
+      visible_to_vendor?: boolean;
+      downloadable_by_customer?: boolean;
+      downloadable_by_vendor?: boolean;
+      amount_claimed?: string;
+      payment_date?: string;
+      reference_number?: string;
+      notes?: string;
+    } = {},
   ): Promise<JobChargeAttachment> {
-    // JOB_COSTING is allowed across job types (OTHER is rejected on AIR_IMPORT / some modes).
-    const uploaded = await this.uploadJobTypedDocument(id, 'JOB_COSTING', file);
-    const file_name =
-      String(uploaded.file_name ?? uploaded.fileName ?? file.name).trim() || file.name;
-    const s3_key =
-      typeof uploaded.s3_key === 'string'
-        ? uploaded.s3_key
-        : typeof uploaded.s3Key === 'string'
-          ? uploaded.s3Key
-          : undefined;
-    let file_url = String(
-      uploaded.file_url ?? uploaded.fileUrl ?? uploaded.url ?? uploaded.download_url ?? '',
-    ).trim();
-    if (!file_url) {
-      file_url =
-        resolveJobDocumentFileUrl(
-          { s3_key, file_name, file_url: undefined },
-          typeof uploaded.tenant_id === 'string'
-            ? uploaded.tenant_id
-            : typeof uploaded.tenantId === 'string'
-              ? uploaded.tenantId
-              : undefined,
-        ) || '';
+    assertId(id);
+    if (!isUuid(chargeId)) throw new Error('Invalid charge id.');
+    const side = options.side ?? 'CHARGE';
+    const purpose = options.purpose ?? 'GENERAL';
+    const visibility = defaultChargeAttachmentVisibility(side, options);
+
+    const form = new FormData();
+    form.append('file', file);
+    form.append('side', side);
+    form.append('purpose', purpose);
+    form.append('visible_to_customer', String(visibility.visible_to_customer));
+    form.append('visible_to_vendor', String(visibility.visible_to_vendor));
+    form.append(
+      'downloadable_by_customer',
+      String(visibility.downloadable_by_customer),
+    );
+    form.append(
+      'downloadable_by_vendor',
+      String(visibility.downloadable_by_vendor),
+    );
+    if (file.name) form.append('file_name', file.name);
+    if (options.amount_claimed?.trim()) {
+      form.append('amount_claimed', options.amount_claimed.trim());
     }
-    if (!file_url && !s3_key) {
-      throw new Error('Upload succeeded but no file URL or storage key was returned.');
+    if (options.payment_date?.trim()) {
+      form.append('payment_date', options.payment_date.trim().slice(0, 10));
     }
-    // OpenAPI requires file_url — use s3_key as last-resort absolute-ish ref.
-    if (!file_url && s3_key) file_url = s3_key;
-    const file_size = Number.isFinite(Number(uploaded.file_size ?? uploaded.fileSize))
-      ? Number(uploaded.file_size ?? uploaded.fileSize)
-      : file.size;
-    const mime_type =
-      (typeof uploaded.mime_type === 'string' && uploaded.mime_type) ||
-      (typeof uploaded.mimeType === 'string' && uploaded.mimeType) ||
-      file.type ||
-      undefined;
-    return this.createChargeAttachment(id, chargeId, {
-      file_name,
-      file_url,
-      s3_key,
-      file_size,
-      mime_type,
-      side,
-    });
+    if (options.reference_number?.trim()) {
+      form.append('reference_number', options.reference_number.trim());
+    }
+    if (options.notes?.trim()) form.append('notes', options.notes.trim());
+
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.chargeAttachments(id, chargeId), form, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }),
+      );
+      return normalizeChargeAttachment(
+        unwrapEntity(res.data) ?? res.data,
+        {
+          file_name: file.name,
+          file_url: '',
+          side,
+          purpose,
+          ...visibility,
+        },
+      );
+    } catch (multipartError) {
+      // Legacy fallback: typed JOB_COSTING doc then JSON attachment metadata.
+      try {
+        const uploaded = await this.uploadJobTypedDocument(id, 'JOB_COSTING', file);
+        const file_name =
+          String(uploaded.file_name ?? uploaded.fileName ?? file.name).trim() ||
+          file.name;
+        const s3_key =
+          typeof uploaded.s3_key === 'string'
+            ? uploaded.s3_key
+            : typeof uploaded.s3Key === 'string'
+              ? uploaded.s3Key
+              : undefined;
+        let file_url = String(
+          uploaded.file_url ??
+            uploaded.fileUrl ??
+            uploaded.url ??
+            uploaded.download_url ??
+            '',
+        ).trim();
+        if (!file_url) {
+          file_url =
+            resolveJobDocumentFileUrl(
+              { s3_key, file_name, file_url: undefined },
+              typeof uploaded.tenant_id === 'string'
+                ? uploaded.tenant_id
+                : typeof uploaded.tenantId === 'string'
+                  ? uploaded.tenantId
+                  : undefined,
+            ) || '';
+        }
+        if (!file_url && !s3_key) {
+          throw multipartError;
+        }
+        if (!file_url && s3_key) file_url = s3_key;
+        const file_size = Number.isFinite(
+          Number(uploaded.file_size ?? uploaded.fileSize),
+        )
+          ? Number(uploaded.file_size ?? uploaded.fileSize)
+          : file.size;
+        const mime_type =
+          (typeof uploaded.mime_type === 'string' && uploaded.mime_type) ||
+          (typeof uploaded.mimeType === 'string' && uploaded.mimeType) ||
+          file.type ||
+          undefined;
+        return this.createChargeAttachment(id, chargeId, {
+          file_name,
+          file_url,
+          s3_key,
+          file_size,
+          mime_type,
+          side,
+          purpose,
+          ...visibility,
+        });
+      } catch {
+        throw formatAxiosError(multipartError);
+      }
+    }
   },
 
-  /** POST /jobs/:id/charges/:chargeId/attachments */
+  /** POST /jobs/:id/charges/:chargeId/attachments (JSON metadata path). */
   async createChargeAttachment(
     id: string,
     chargeId: string,
@@ -2793,27 +2974,23 @@ export const jobService = {
   ): Promise<JobChargeAttachment> {
     assertId(id);
     if (!isUuid(chargeId)) throw new Error('Invalid charge id.');
+    const side = dto.side ?? 'CHARGE';
+    const purpose = dto.purpose ?? 'GENERAL';
+    const visibility = defaultChargeAttachmentVisibility(side, dto);
+    const payload: CreateJobChargeAttachmentDto = {
+      ...dto,
+      side,
+      purpose,
+      ...visibility,
+    };
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(JOB_API.chargeAttachments(id, chargeId), dto),
+        axiosInstance.post(JOB_API.chargeAttachments(id, chargeId), payload),
       );
-      const data = unwrapEntity(res.data) ?? res.data;
-      const r =
-        data && typeof data === 'object' && !Array.isArray(data)
-          ? (data as Record<string, unknown>)
-          : {};
-      return {
-        id: typeof r.id === 'string' ? r.id : undefined,
-        file_name: String(r.file_name ?? r.fileName ?? dto.file_name),
-        file_url: String(r.file_url ?? r.fileUrl ?? dto.file_url),
-        s3_key: typeof r.s3_key === 'string' ? r.s3_key : dto.s3_key,
-        file_size:
-          Number.isFinite(Number(r.file_size ?? r.fileSize ?? dto.file_size))
-            ? Number(r.file_size ?? r.fileSize ?? dto.file_size)
-            : undefined,
-        mime_type:
-          typeof r.mime_type === 'string' ? r.mime_type : dto.mime_type,
-      };
+      return normalizeChargeAttachment(
+        unwrapEntity(res.data) ?? res.data,
+        payload,
+      );
     } catch (error) {
       throw formatAxiosError(error);
     }

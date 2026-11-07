@@ -6,6 +6,7 @@ import type {
   BankAccountFormValues,
   BankAccountListParams,
   BankAccountListResult,
+  CostingSettings,
   CreateNumberFormatDto,
   DimensionsSettings,
   JobDateSettings,
@@ -15,6 +16,7 @@ import type {
   OrganizationProfile,
   OrganizationProfileFormValues,
   TenantBankAccount,
+  UpdateCostingSettingsDto,
   UpdateDimensionsSettingsDto,
   UpdateJobDateSettingsDto,
   UpdateNumberFormatDto,
@@ -295,6 +297,54 @@ export const organizationService = {
         job_date_source: String(
           record.job_date_source ?? record.jobDateSource ?? dto.job_date_source,
         ),
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /organization/settings/costing */
+  async getCostingSettings(): Promise<CostingSettings> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(ORGANIZATION_API.costingSettings),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      const record =
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as Record<string, unknown>)
+          : {};
+      const raw =
+        record.costing_payment_proof_auto_mark_paid ??
+        record.costingPaymentProofAutoMarkPaid;
+      return {
+        // BE default is true when unset.
+        costing_payment_proof_auto_mark_paid: raw !== false && raw !== 'false',
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PATCH /organization/settings/costing */
+  async updateCostingSettings(
+    dto: UpdateCostingSettingsDto,
+  ): Promise<CostingSettings> {
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch(ORGANIZATION_API.costingSettings, dto),
+      );
+      const data = unwrapEntity(res.data) ?? res.data;
+      const record =
+        data && typeof data === 'object' && !Array.isArray(data)
+          ? (data as Record<string, unknown>)
+          : {};
+      const raw =
+        record.costing_payment_proof_auto_mark_paid ??
+        record.costingPaymentProofAutoMarkPaid ??
+        dto.costing_payment_proof_auto_mark_paid;
+      return {
+        costing_payment_proof_auto_mark_paid: raw !== false && raw !== 'false',
       };
     } catch (error) {
       throw formatAxiosError(error);

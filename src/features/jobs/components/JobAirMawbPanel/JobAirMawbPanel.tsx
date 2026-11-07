@@ -241,10 +241,11 @@ interface JobAirMawbPanelProps {
 
 /**
  * AIR_EXPORT / AIR_IMPORT containers tab — MAWB payload (planned tab removed).
- * Loads from detail tab · PUT /jobs/:id/detail/mawb
+ * GET/PUT /jobs/:id/detail/mawb (falls back to container tabs for older payloads).
  */
 export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
-  // Prefer actual_container (current tab); fall back to planned for older payloads.
+  const mawbQuery = useJobDetailTab(jobId, 'mawb', true);
+  // Fallback for tenants that still nest MAWB under container detail tabs.
   const actualQuery = useJobDetailTab(jobId, 'actual_container', true);
   const plannedQuery = useJobDetailTab(jobId, 'planned_container', true);
   const mutations = useJobSubresourceMutations(jobId);
@@ -265,10 +266,17 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const tabData = actualQuery.data ?? plannedQuery.data;
+  const tabData = mawbQuery.data ?? actualQuery.data ?? plannedQuery.data;
+  const tabLoading =
+    mawbQuery.isLoading || actualQuery.isLoading || plannedQuery.isLoading;
 
   useEffect(() => {
-    if (!tabData || hydrated) return;
+    if (hydrated) return;
+    if (tabLoading) return;
+    if (!tabData) {
+      setHydrated(true);
+      return;
+    }
     const next = payloadToForm(tabData as AirMawbPayload);
     if (formHasValues(next)) {
       setSavedRows([formToSavedRow(next, 'mawb-current')]);
@@ -277,7 +285,7 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
     }
     setForm(emptyForm());
     setHydrated(true);
-  }, [tabData, hydrated]);
+  }, [tabData, tabLoading, hydrated]);
 
   const setField = (key: keyof MawbForm, value: string) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -296,7 +304,11 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
       setForm(emptyForm());
       setEditingId(null);
       setMsg('MAWB details saved.');
-      await Promise.all([actualQuery.refetch(), plannedQuery.refetch()]);
+      await Promise.all([
+        mawbQuery.refetch(),
+        actualQuery.refetch(),
+        plannedQuery.refetch(),
+      ]);
     } catch (err) {
       setError(getErrorMessage(err));
     }
@@ -320,7 +332,11 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
         setEditingId(null);
       }
       setMsg('MAWB details removed.');
-      await Promise.all([actualQuery.refetch(), plannedQuery.refetch()]);
+      await Promise.all([
+        mawbQuery.refetch(),
+        actualQuery.refetch(),
+        plannedQuery.refetch(),
+      ]);
     } catch (err) {
       setError(getErrorMessage(err));
     }

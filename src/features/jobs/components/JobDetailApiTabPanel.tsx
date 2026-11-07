@@ -920,6 +920,12 @@ function InteractiveTabBody({
   if (key === 'dimensions') {
     return <JobDimensionsPanel job={job} onChanged={onChanged} />;
   }
+  if (key === 'mawb') {
+    if (isAirwayBillJobType(job.job_type)) {
+      return <JobAirMawbPanel jobId={job.id} />;
+    }
+    return null;
+  }
   if (key === 'planned_container' || key === 'actual_container') {
     // Planned tab is hidden — one Containers/MAWB surface on actual_container.
     if (key === 'planned_container') return null;
