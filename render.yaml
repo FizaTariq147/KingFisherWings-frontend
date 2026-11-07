@@ -1,6 +1,10 @@
 # FreightNest / KingFisher Wings frontend — static SPA on Render.
 # Ensures client routes (invitation activation, portal login, etc.)
 # fall back to index.html without interfering with the NestJS API host.
+#
+# IMPORTANT: Static hosting has NO /backend proxy (that exists only in Vite dev).
+# Production builds must bake the absolute API origin, or login POSTs hit
+# index.html and surface as Axios 404 / "backend not working".
 services:
   - type: web
     name: kingfisherwings-frontend
@@ -8,6 +12,15 @@ services:
     # Use && so vite never runs after a failed install (semicolon would continue).
     buildCommand: npm install && vite build
     staticPublishPath: dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://kingfisherwings-backend.onrender.com
+      - key: VITE_API_BASE_URL
+        value: https://kingfisherwings-backend.onrender.com
+      - key: VITE_MOCK_API
+        value: 'false'
+      - key: VITE_BYPASS_AUTH
+        value: 'false'
     routes:
       - type: rewrite
         source: /*
