@@ -14,9 +14,11 @@ export function InvoiceFormatPreviewPanel({ code, className = '' }: InvoiceForma
 
   return (
     <div
-      className={`max-h-[520px] overflow-y-auto rounded border border-[var(--color-neutral-200)] bg-[var(--color-neutral-100)] p-3 ${className}`}
+      className={`max-h-[520px] overflow-y-auto rounded border border-[var(--color-neutral-200)] bg-[var(--color-neutral-100)] p-4 ${className}`}
     >
-      <InvoiceFormatLayoutByKindLive preview={preview} />
+      <div className="mx-auto w-fit max-w-full shadow-sm">
+        <InvoiceFormatLayoutByKindLive preview={preview} />
+      </div>
     </div>
   );
 }

@@ -59,25 +59,36 @@ export function InvoiceUserFooter({
         <div
           style={{
             display: 'flex',
-            flexWrap: 'nowrap',
-            gap: 14,
-            padding: '6px 12px',
+            flexWrap: 'wrap',
+            gap: '6px 14px',
+            padding: '8px 10px',
             backgroundColor: panel,
             alignItems: 'baseline',
             boxSizing: 'border-box',
             width: '100%',
+            border: `1px solid ${navy}33`,
+            lineHeight: 1.4,
           }}
         >
-          <span>
+          <span style={{ wordBreak: 'break-word', minWidth: 0 }}>
             <strong style={{ color: navy }}>Printed By :</strong> {email}
           </span>
-          <span>
+          <span style={{ wordBreak: 'break-word' }}>
             <strong style={{ color: navy }}>Printed Date :</strong> {printed}
           </span>
-          <span>
+          <span style={{ wordBreak: 'break-word', minWidth: 0 }}>
             <strong style={{ color: navy }}>Powered By :</strong> {poweredBy}
           </span>
-          <span style={{ marginLeft: 'auto', fontWeight: 700, color: orange }}>{pageLabel}</span>
+          <span
+            style={{
+              marginLeft: 'auto',
+              fontWeight: 700,
+              color: orange,
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {pageLabel}
+          </span>
         </div>
       </footer>
     );
@@ -115,8 +126,15 @@ export function InvoiceUserFooter({
           alignItems: 'stretch',
         }}
       >
-        <div style={{ ...cell, flex: '1 1 42%', backgroundColor: navy }}>
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <div style={{ ...cell, flex: '1 1 42%', backgroundColor: navy, minWidth: 0 }}>
+          <span
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%',
+            }}
+          >
             <strong>User :</strong> {email}
           </span>
         </div>
@@ -127,9 +145,17 @@ export function InvoiceUserFooter({
             backgroundColor: orange,
             justifyContent: 'center',
             textAlign: 'center',
+            minWidth: 0,
           }}
         >
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%',
+            }}
+          >
             {printed}
           </span>
         </div>
@@ -140,9 +166,18 @@ export function InvoiceUserFooter({
             backgroundColor: red,
             justifyContent: 'space-between',
             gap: 8,
+            minWidth: 0,
           }}
         >
-          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          <span
+            style={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              minWidth: 0,
+              flex: '1 1 auto',
+            }}
+          >
             <strong>Powered by</strong> {poweredBy}
           </span>
           <span style={{ flexShrink: 0, fontWeight: 700 }}>{pageLabel}</span>
