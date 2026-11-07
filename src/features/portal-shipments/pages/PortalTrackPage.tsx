@@ -67,6 +67,24 @@ export default function PortalTrackPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- auto-run once per preset ref
   }, [location.state]);
 
+  // Live refresh while a track result is visible (map + timeline).
+  useEffect(() => {
+    if (!result?.reference) return;
+    const trackedRef = result.reference;
+    const id = window.setInterval(() => {
+      void (async () => {
+        try {
+          const data = await track.mutateAsync(trackedRef);
+          setResult(data);
+        } catch {
+          /* keep last good result */
+        }
+      })();
+    }, 30_000);
+    return () => window.clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- poll while result reference is open
+  }, [result?.reference]);
+
   return (
     <div className="space-y-4">
       <PortalPageHeader

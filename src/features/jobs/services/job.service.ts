@@ -5480,6 +5480,19 @@ export const jobService = {
       );
       const data = unwrapEntity(res.data) ?? res.data;
       if (data != null && data !== '') {
+        // Attach job milestone descriptions so Track & Trace can show customer text
+        // even when history/timeline rows omit `description`.
+        try {
+          const milestones = await this.listMilestones(opts.jobId);
+          if (milestones.length && data && typeof data === 'object' && !Array.isArray(data)) {
+            const body = data as Record<string, unknown>;
+            if (!Array.isArray(body.milestones) || body.milestones.length === 0) {
+              body.milestones = milestones;
+            }
+          }
+        } catch {
+          /* tracking payload alone is still usable */
+        }
         return { source: 'job', data };
       }
     } catch {

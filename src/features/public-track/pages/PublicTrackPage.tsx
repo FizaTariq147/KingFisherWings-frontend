@@ -65,6 +65,22 @@ export default function PublicTrackPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- auto-run once when URL ref is present
   }, [autoRan, initialRef]);
 
+  // Keep map + timeline live while a result is on screen.
+  useEffect(() => {
+    if (!result || ref.trim().length < 2) return;
+    const id = window.setInterval(() => {
+      void (async () => {
+        try {
+          const raw = await publicTrackService.trackRaw(resolvedTenant, ref.trim());
+          setResult(toTrackResult(raw, ref.trim()));
+        } catch {
+          /* keep last good result while polling */
+        }
+      })();
+    }, 30_000);
+    return () => window.clearInterval(id);
+  }, [result?.reference, ref, resolvedTenant]);
+
   return (
     <div
       className="min-h-[100dvh] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-4 sm:px-5 sm:py-6"

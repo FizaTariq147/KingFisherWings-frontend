@@ -1,4 +1,11 @@
-import { useMemo, useState, type ComponentType, type FormEvent, type ReactNode } from 'react'
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type ComponentType,
+  type FormEvent,
+  type ReactNode,
+} from 'react'
 import { Link } from 'react-router-dom'
 import { ChevronRight, LogIn, Package, Search, Shield } from 'lucide-react'
 import loginBg from '@/assets/login-bg.mp4'
@@ -113,6 +120,24 @@ export function AuthLandingShell({
       setPending(false)
     }
   }
+
+  // Live refresh map + timeline while the Track modal is open.
+  useEffect(() => {
+    if (!modalOpen) return
+    const ref = trackRef.trim()
+    if (ref.length < 2) return
+    const id = window.setInterval(() => {
+      void (async () => {
+        try {
+          const data = await publicTrackService.trackRaw(defaultTenant || undefined, ref)
+          setRawPayload(data)
+        } catch {
+          /* keep last good payload */
+        }
+      })()
+    }, 30_000)
+    return () => window.clearInterval(id)
+  }, [modalOpen, trackRef, defaultTenant])
 
   return (
     <div className="relative min-h-screen overflow-hidden">

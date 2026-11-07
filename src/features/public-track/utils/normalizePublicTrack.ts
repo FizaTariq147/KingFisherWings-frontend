@@ -151,13 +151,20 @@ export function isTrackTimelineNoise(
   );
 }
 
-/** OpenAPI TrackHistoryEventDto (+ legacy aliases). */
+/** OpenAPI TrackHistoryEventDto (+ job milestone description / legacy aliases). */
 export function normalizePublicMilestone(
   raw: unknown,
   index: number,
 ): PublicTrackMilestone | null {
   const r = asRecord(raw);
   if (!r) return null;
+
+  const nestedMilestone =
+    asRecord(r.milestone) ||
+    asRecord(r.milestone_def) ||
+    asRecord(r.milestoneDef) ||
+    asRecord(r.details) ||
+    asRecord(r.detail);
 
   const completedAt =
     pickString(
@@ -171,11 +178,14 @@ export function normalizePublicMilestone(
       r.plannedAt,
       r.date,
       r.timestamp,
+      nestedMilestone?.actual_at,
+      nestedMilestone?.completed_at,
     ) || undefined;
 
   const isCompleted =
     r.is_completed === true ||
     r.isCompleted === true ||
+    nestedMilestone?.is_completed === true ||
     Boolean(
       pickString(r.actual_at, r.actualAt, r.completed_at, r.completedAt, r.occurred_at),
     );
@@ -183,23 +193,57 @@ export function normalizePublicMilestone(
   const eventType =
     pickString(r.event_type, r.eventType, r.type, r.code) || undefined;
 
-  // Milestone name (code / move / label) — keep distinct from customer description.
-  const moveRaw =
+  // Prefer short code/name as the title; keep label free for description fallback.
+  const codeOrName =
     pickString(
-      r.milestone,
+      typeof r.milestone === 'string' ? r.milestone : undefined,
+      r.milestone_key,
+      r.milestoneKey,
+      r.milestone_code,
+      r.milestoneCode,
       r.milestone_name,
       r.milestoneName,
+      nestedMilestone?.name,
+      nestedMilestone?.code,
+      nestedMilestone?.label,
       r.name,
       r.move,
-      r.label,
       r.code,
-      r.type,
-      r.event_type,
-      r.eventType,
-    ) || 'EVENT';
-  const move = titleCaseMove(moveRaw);
-  const description =
-    pickString(r.description, r.notes, r.summary, r.detail, r.details) || undefined;
+    ) || undefined;
+  const label = pickString(r.label, r.title, r.display_name, r.displayName) || undefined;
+  const move = titleCaseMove(codeOrName || label || eventType || 'EVENT');
+
+  // Customer-visible description (UpdateJobMilestoneDto.description / notes alias).
+  let description =
+    pickString(
+      r.description,
+      r.customer_description,
+      r.customerDescription,
+      r.milestone_description,
+      r.milestoneDescription,
+      r.notes,
+      r.remark,
+      r.remarks,
+      r.message,
+      r.summary,
+      r.detail,
+      typeof r.details === 'string' ? r.details : undefined,
+      nestedMilestone?.description,
+      nestedMilestone?.notes,
+      nestedMilestone?.summary,
+    ) || undefined;
+
+  // When title came from code and label is a longer human sentence, treat label as description.
+  if (
+    !description &&
+    label &&
+    codeOrName &&
+    label.trim().toUpperCase() !== move.trim().toUpperCase() &&
+    label.trim().toUpperCase() !== codeOrName.trim().toUpperCase()
+  ) {
+    description = label.trim();
+  }
+
   // Avoid duplicating the same text as name + description.
   const descriptionDistinct =
     description && description.trim().toUpperCase() !== move.trim().toUpperCase()
@@ -207,7 +251,7 @@ export function normalizePublicMilestone(
       : undefined;
 
   return {
-    id: pickString(r.id, r.code) || String(index),
+    id: pickString(r.id, r.code, codeOrName) || String(index),
     label: move,
     move,
     description: descriptionDistinct,
@@ -286,17 +330,22 @@ function normalizeProgressLegRows(raw: unknown[]): PublicTrackProgressLeg[] {
       });
       continue;
     }
+    const locode =
+      pickString(r.un_locode, r.unLocode, r.locode, r.port_code, r.portCode) || undefined;
     const name =
-      pickString(r.name, r.port_name, r.portName, r.location, r.city, r.label) || '';
+      pickString(r.name, r.port_name, r.portName, r.location, r.city, r.label) ||
+      locode ||
+      '';
     if (!name) continue;
     const code =
       pickString(r.code, r.leg_type, r.legType, r.role, r.kind, r.type)?.toUpperCase() ||
       (index === 0 ? 'POL' : index === raw.length - 1 ? 'POD' : 'PTS');
     const coords = pickLatLng(r);
     out.push({
-      id: pickString(r.id, r.un_locode, r.unLocode) || String(index),
+      id: pickString(r.id, locode) || String(index),
       code,
-      name,
+      // Prefer "Name (UNLOCODE)" so portCoordinates can resolve LOCODE.
+      name: locode && !name.includes(locode) ? `${name} (${locode})` : name,
       country: pickString(r.country, r.country_code, r.countryCode) || undefined,
       current: r.current === true || r.is_current === true || r.isCurrent === true,
       completed:
@@ -1030,14 +1079,18 @@ export function normalizePublicTrack(
     ) || '';
   if (!ref) return null;
 
+  // Prefer `timeline` (milestone + container/ops, no STATUS spam) then history aliases.
   const historyRaw = unwrapArray(
+    body.timeline,
     body.history,
     body.moves,
     body.events,
-    body.timeline,
     body.milestones,
+    body.custom_milestones,
+    body.customMilestones,
     body.container_events,
     body.containerEvents,
+    root.timeline,
     root.history,
     root.moves,
     root.events,
@@ -1048,6 +1101,36 @@ export function normalizePublicTrack(
     .map(normalizePublicMilestone)
     .filter((m): m is PublicTrackMilestone => Boolean(m))
     .filter((m) => !isTrackTimelineNoise(m));
+
+  // Enrich descriptions from a parallel milestones catalog when history rows omit them.
+  const catalogRaw = unwrapArray(
+    body.milestones,
+    body.custom_milestones,
+    body.customMilestones,
+    asRecord(body.job)?.milestones,
+  );
+  if (catalogRaw.length) {
+    const byKey = new Map<string, string>();
+    for (let i = 0; i < catalogRaw.length; i += 1) {
+      const cat = normalizePublicMilestone(catalogRaw[i], i);
+      if (!cat?.description) continue;
+      const key = String(cat.move || cat.label || cat.id)
+        .trim()
+        .toUpperCase();
+      if (key) byKey.set(key, cat.description);
+    }
+    for (const m of milestones) {
+      if (m.description) continue;
+      const key = String(m.move || m.label || m.id)
+        .trim()
+        .toUpperCase();
+      const fromCatalog = byKey.get(key);
+      if (fromCatalog) {
+        m.description = fromCatalog;
+        m.summary = m.summary || fromCatalog;
+      }
+    }
+  }
 
   // Prefer newest first for "current move" + previous collapses.
   const ordered = [...milestones].sort((a, b) => {

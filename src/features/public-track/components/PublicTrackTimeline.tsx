@@ -248,8 +248,9 @@ function buildTrackPrintHtml(result: PublicTrackResult, status: string): string 
     .map((m) => {
       const when = parseWhen(m.completedAt || m.occurredAt);
       const move = m.move || m.label || '—';
-      const desc = m.description
-        ? `<div style="font-weight:400;color:#64748b;margin-top:2px">${m.description}</div>`
+      const descText = m.description || m.summary;
+      const desc = descText
+        ? `<div style="font-weight:400;color:#64748b;margin-top:2px">${descText}</div>`
         : '';
       const loc = [m.location, m.terminal].filter(Boolean).join('<br/>') || '—';
       const vessel =
@@ -936,9 +937,9 @@ export function PublicTrackTimeline({
                           <p className="mt-0.5 text-[14px] font-semibold" style={{ color: C.navy }}>
                             {move}
                           </p>
-                          {m.description ? (
+                          {m.description || m.summary ? (
                             <p className="mt-1 text-[12px] leading-snug" style={{ color: C.sub }}>
-                              {m.description}
+                              {m.description || m.summary}
                             </p>
                           ) : null}
                           {m.flightNumber || m.mawbNumber || m.hawbNumber ? (

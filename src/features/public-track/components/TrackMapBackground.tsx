@@ -222,7 +222,14 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
     }
     const currentLeg = (result?.progressLegs ?? []).find((l) => l.current);
     if (currentLeg) {
-      return resolveWaypoint(currentLeg.name, currentLeg.lat, currentLeg.lng);
+      const fromLeg = resolveWaypoint(currentLeg.name, currentLeg.lat, currentLeg.lng);
+      if (fromLeg) return fromLeg;
+    }
+    // Latest completed milestone location → live pin when BE omits current_position.
+    for (const m of result?.milestones ?? []) {
+      if (m.pending) continue;
+      const fromMilestone = resolvePortCoordinates(m.location || m.terminal);
+      if (fromMilestone) return fromMilestone;
     }
     return null;
   }, [result]);
