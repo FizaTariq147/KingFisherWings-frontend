@@ -6,6 +6,7 @@ import { PortalApiError } from '@/lib/portalApiClient';
 import { PortalPageHeader } from '@/features/portal-auth/components/portal-ui';
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
 import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground';
+import { TrackOverlayFrame } from '@/features/public-track/components/TrackOverlayFrame';
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
 import { usePortalTrackByReference } from '../hooks/usePortalShipments';
 import type { PortalTrackByRefResult } from '../types/portalShipments.types';
@@ -117,7 +118,7 @@ export default function PortalTrackPage() {
         <div className="relative h-[min(70vh,640px)] min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220]">
           <TrackMapBackground result={trackResult} />
 
-          <div className="absolute inset-y-0 left-0 z-[1] flex w-full max-w-[520px] flex-col p-3 sm:p-4">
+          <TrackOverlayFrame>
             {result && trackResult ? (
               <PublicTrackTimeline
                 variant="overlay"
@@ -130,7 +131,7 @@ export default function PortalTrackPage() {
                 }
               />
             ) : (
-              <div className="track-overlay-scrollbar w-full overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
+              <div className="track-overlay-scrollbar h-full w-full overflow-y-auto rounded-2xl bg-white p-5 shadow-2xl sm:p-6">
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-xl bg-[#DBEAFE] text-[#2563EB]">
                   <Search size={18} aria-hidden />
                 </div>
@@ -194,7 +195,7 @@ export default function PortalTrackPage() {
                 </form>
               </div>
             )}
-          </div>
+          </TrackOverlayFrame>
         </div>
       </div>
     </div>

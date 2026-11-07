@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
 import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground';
+import { TrackOverlayFrame } from '@/features/public-track/components/TrackOverlayFrame';
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
 import { useJobTracking } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
@@ -71,14 +72,14 @@ export function JobTrackTracePanel({
         ) : (
           <div className="relative h-[min(70vh,640px)] min-h-[560px] overflow-hidden rounded-b-sm bg-[#0B1220]">
             <TrackMapBackground result={trackResult} />
-            <div className="absolute inset-y-0 left-0 z-[1] flex w-full max-w-[520px] flex-col p-3 sm:p-4">
+            <TrackOverlayFrame>
               <PublicTrackTimeline
                 variant="overlay"
                 className="h-full min-h-0 shadow-2xl"
                 result={trackResult}
                 pdfSource={{ kind: 'job', jobId }}
               />
-            </div>
+            </TrackOverlayFrame>
           </div>
         )}
       </div>
