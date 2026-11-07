@@ -119,6 +119,7 @@ import {
   getHblFormatSpec,
   isHblFormatCode,
   listHblFormats,
+  listOfficialHblFormats,
   hblFormatsMatchSearch,
 } from '../constants/hblFormatCatalog';
 import {
@@ -837,7 +838,8 @@ export default function ReportCatalogPage() {
   const arrivalStripCodes = useMemo(() => listArrivalNoticeFormats().map((r) => r.code), []);
   const deliveryStripCodes = useMemo(() => listDeliveryOrderFormats().map((r) => r.code), []);
   const hawbStripCodes = useMemo(() => listHawbFormats().map((r) => r.code), []);
-  const hblStripCodes = useMemo(() => listHblFormats().map((r) => r.code), []);
+  // Official Fresa HBL catalogue = 113 (95 Jasper/FG + 18 legacy).
+  const hblStripCodes = useMemo(() => listOfficialHblFormats().map((r) => r.code), []);
   const otherStripCodes = useMemo(() => listOtherReportsFormats().map((r) => r.code), []);
   const quotationStripCodes = useMemo(() => listQuotationFormats().map((r) => r.code), []);
   const opsStripCodes = useMemo(() => listOpsListFormats().map((r) => r.code), []);

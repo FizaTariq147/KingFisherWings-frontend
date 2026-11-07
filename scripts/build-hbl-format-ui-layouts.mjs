@@ -1,10 +1,20 @@
 /**
- * HBL formats from Fresa sample PDFs.
+ * HBL formats — official Fresa catalogue of 113 entries.
+ * https://fresatechnologies.com/sample-report-formats/
+ *
  * Usage: node scripts/build-hbl-format-ui-layouts.mjs
+ *
+ * Page-1 = Bill of Lading form (hblBlShell + hblFreightSignature).
+ * BL Terms & Conditions remain the separate BL T&C PDF append (unchanged).
+ *
+ * 95 Jasper / FG variants + 18 legacy drafts (Format 2, 4–20).
+ * Visual shells are shared by family after sampling official PDFs — not 113 unique designs.
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { HBL_OFFICIAL_113 } from './hblOfficial113.mjs';
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 
 const BRAND = {
@@ -17,7 +27,7 @@ const BRAND = {
 };
 
 const THEME = {
-  primary: '#0F4D96',
+  primary: '#101010',
   accent: '#2286C8',
   fill: '#F3F3F3',
   panel: '#EBF0F4',
@@ -29,85 +39,13 @@ const THEME = {
   white: '#FFFFFF',
 };
 
-const CATALOG = [
-  ['HBL_DRAFT_REPORT_FORMAT_JASPER', 'HBL Draft Report Format Jasper', 'hbl_draft_jasper', 0],
-  ['FG_HBL_HKG', 'FG HBL HKG', 'fg_hbl_hkg', 1],
-  ['FG_HBL_FORMAT_1', 'FG HBL Format-1', 'fg_hbl_format_1', 2],
-  ['FG_HBL_MAGICLOGISYS', 'FG HBL Magiclogisys', 'fg_hbl_magiclogisys', 3],
-  ['HBL_DRAFT_REPORT_FORMAT_2', 'HBL Draft Report Format-2', 'hbl_draft_2', 4],
-  ...[4, 5, 6, 7, 8, 9, 10, 11, 12, 13].map((n, i) => [
-    `HBL_DRAFT_REPORT_FORMAT_${n}`,
-    `HBL Draft Report Format-${n}`,
-    `hbl_draft_${n}`,
-    5 + i,
-  ]),
-  ['HBL_DRAFT_REPORT_FORMAT_14', 'HBL Draft Report Format-14', 'hbl_draft_14', 15],
-  ['HBL_DRAFT_REPORT_FORMAT_15', 'HBL Draft Report Format-15', 'hbl_draft_15', 16],
-  ['HBL_DRAFT_REPORT_FORMAT_16', 'HBL Draft Report Format-16', 'hbl_draft_16', 17],
-  ['HBL_DRAFT_REPORT_FORMAT_17', 'HBL Draft Report Format-17', 'hbl_draft_17', 18],
-  ['HBL_DRAFT_REPORT_FORMAT_18', 'HBL Draft Report Format-18', 'hbl_draft_18', 19],
-  ['HBL_DRAFT_REPORT_FORMAT_19', 'HBL Draft Report Format-19', 'hbl_draft_19', 20],
-  ['HBL_DRAFT_REPORT_FORMAT_20', 'HBL Draft Report Format-20', 'hbl_draft_20', 21],
-  ['HBL_DRAFT_REPORT_FORMAT_23', 'HBL Draft Report Format-23', 'hbl_draft_23', 22],
-  ['HBL_DRAFT_REPORT_FORMAT_25', 'HBL Draft Report Format-25', 'hbl_draft_25', 23],
-  ['HBL_DRAFT_REPORT_FORMAT_26', 'HBL Draft Report Format-26', 'hbl_draft_26', 24],
-  ['HBL_DRAFT_REPORT_FORMAT_27', 'HBL Draft Report Format-27', 'hbl_draft_27', 25],
-  ['HBL_DRAFT_REPORT_FORMAT_29', 'HBL Draft Report Format-29', 'hbl_draft_29_html', 26],
-  ['HBL_DRAFT_REPORT_FORMAT_33', 'HBL Draft Report Format-33', 'hbl_draft_33', 27],
-  ['HBL_DRAFT_REPORT_FORMAT_40', 'HBL Draft Report Format-40', 'hbl_draft_40', 28],
-  ['HBL_DRAFT_REPORT_FORMAT_41', 'HBL Draft Report Format-41', 'hbl_draft_41', 29],
-  ['HBL_DRAFT_REPORT_FORMAT_42', 'HBL Draft Report Format-42', 'hbl_draft_42', 30],
-  ['HBL_DRAFT_REPORT_FORMAT_43', 'HBL Draft Report Format-43', 'hbl_draft_43', 31],
-  ['HBL_DRAFT_REPORT_FORMAT_44', 'HBL Draft Report Format-44', 'hbl_draft_44', 32],
-  ['HBL_DRAFT_REPORT_FORMAT_45', 'HBL Draft Report Format-45', 'hbl_draft_45', 33],
-  ['HBL_DRAFT_REPORT_FORMAT_46', 'HBL Draft Report Format-46', 'hbl_draft_46', 34],
-  ['HBL_DRAFT_REPORT_FORMAT_47', 'HBL Draft Report Format-47', 'hbl_draft_47', 35],
-  ['HBL_DRAFT_REPORT_FORMAT_48', 'HBL Draft Report Format-48', 'hbl_draft_48', 36],
-  ['HBL_DRAFT_REPORT_FORMAT_49', 'HBL Draft Report Format-49', 'hbl_draft_49', 37],
-  ['HBL_DRAFT_REPORT_FORMAT_50', 'HBL Draft Report Format-50', 'hbl_draft_50', 38],
-  ['HBL_DRAFT_REPORT_FORMAT_51', 'HBL Draft Report Format-51', 'hbl_draft_51', 39],
-  ['HBL_DRAFT_REPORT_FORMAT_52', 'HBL Draft Report Format-52', 'hbl_draft_52', 40],
-  ['HBL_DRAFT_REPORT_FORMAT_53', 'HBL Draft Report Format-53', 'hbl_draft_53', 41],
-  ['HBL_DRAFT_REPORT_FORMAT_54', 'HBL Draft Report Format-54', 'hbl_draft_54', 42],
-  ['HBL_DRAFT_REPORT_FORMAT_55', 'HBL Draft Report Format-55', 'hbl_draft_55', 43],
-  ['HBL_DRAFT_REPORT_FORMAT_56', 'HBL Draft Report Format-56', 'hbl_draft_56', 44],
-  ['HBL_DRAFT_REPORT_FORMAT_59', 'HBL Draft Report Format-59', 'hbl_draft_59', 45],
-  ['HBL_DRAFT_REPORT_FORMAT_60', 'HBL Draft Report Format-60', 'hbl_draft_60', 46],
-  ['HBL_DRAFT_REPORT_FORMAT_61', 'HBL Draft Report Format-61', 'hbl_draft_61', 47],
-  ['HBL_DRAFT_REPORT_FORMAT_63', 'HBL Draft Report Format-63', 'hbl_draft_63', 48],
-  ['HBL_DRAFT_REPORT_FORMAT_64', 'HBL Draft Report Format-64', 'hbl_draft_64', 49],
-  ['HBL_DRAFT_REPORT_FORMAT_65', 'HBL Draft Report Format-65', 'hbl_draft_65', 50],
-  ['HBL_DRAFT_REPORT_FORMAT_66', 'HBL Draft Report Format-66', 'hbl_draft_66', 51],
-  ['HBL_DRAFT_REPORT_FORMAT_67', 'HBL Draft Report Format-67', 'hbl_draft_67', 52],
-  ['HBL_DRAFT_REPORT_FORMAT_68', 'HBL Draft Report Format-68', 'hbl_draft_68', 53],
-  ['HBL_DRAFT_REPORT_FORMAT_69', 'HBL Draft Report Format-69', 'hbl_draft_69', 54],
-  ['HBL_DRAFT_REPORT_FORMAT_70', 'HBL Draft Report Format-70', 'hbl_draft_70', 55],
-  ['HBL_DRAFT_REPORT_FORMAT_72', 'HBL Draft Report Format-72', 'hbl_draft_72', 55],
-  ['HBL_DRAFT_REPORT_FORMAT_73', 'HBL Draft Report Format-73', 'hbl_draft_73', 56],
-  ['HBL_DRAFT_REPORT_FORMAT_75', 'HBL Draft Report Format-75', 'hbl_draft_75', 57],
-  ['HBL_DRAFT_REPORT_FORMAT_77', 'HBL Draft Report Format-77', 'hbl_draft_77', 58],
-  ['HBL_DRAFT_REPORT_FORMAT_83', 'HBL Draft Report Format-83', 'hbl_draft_83', 59],
-  ['HBL_DRAFT_REPORT_FORMAT_84', 'HBL Draft Report Format-84', 'hbl_draft_84', 60],
-  ['HBL_DRAFT_REPORT_FORMAT_85', 'HBL Draft Report Format-85', 'hbl_draft_85', 61],
-  ['HBL_DRAFT_REPORT_FORMAT_86', 'HBL Draft Report Format-86', 'hbl_draft_86', 62],
-  ['HBL_DRAFT_REPORT_FORMAT_87', 'HBL Draft Report Format-87', 'hbl_draft_87', 63],
-  ['FG_HBL_ORIGINAL_FORMAT_87', 'FG HBL Original Format-87', 'fg_hbl_original_format_87', 64],
-  ['HBL_DRAFT_REPORT_FORMAT_88', 'HBL Draft Report Format-88', 'hbl_draft_88', 66],
-  ['HBL_DRAFT_REPORT_FORMAT_89', 'HBL Draft Report Format-89', 'hbl_draft_89', 67],
-  ['HBL_DRAFT_REPORT_FORMAT_90', 'HBL Draft Report Format-90', 'hbl_draft_90', 68],
-  ['HBL_DRAFT_REPORT_FORMAT_92', 'HBL Draft Report Format-92', 'hbl_draft_92', 69],
-  ['HBL_DRAFT_REPORT_FORMAT_95', 'HBL Draft Report Format-95', 'hbl_draft_95', 70],
-  ['HBL_DRAFT_REPORT_FORMAT_96', 'HBL Draft Report Format-96', 'hbl_draft_96', 71],
-  ...[
-    97, 99, 100, 101, 102, 107, 109, 114, 116, 117, 118, 120, 122, 127, 128, 129, 130, 132, 134,
-    135, 136, 137, 138, 139, 140, 141, 142, 143, 144, 145, 146, 147, 148, 149, 151, 171, 172,
-  ].map((n, i) => [
-    `HBL_DRAFT_REPORT_FORMAT_${n}`,
-    `HBL Draft Report Format-${n}`,
-    `hbl_draft_${n}`,
-    72 + i,
-  ]),
-];
+const TITLES = {
+  combined: 'Bill of Lading FOR COMBINED TRANSPORT OR PORT TO PORT SHIPMENT',
+  jasper: 'BILL OF LADING  NOT NEGOTIABLE UNLESS CONSIGNED "TO ORDER"',
+  multimodal: 'MULTI-MODAL TRANSPORT DOCUMENT',
+  mt: 'MULTIMODAL TRANSPORT DOCUMENT',
+  ocean: 'BILL OF LADING',
+};
 
 const SHIPPER = {
   title: 'Shipper',
@@ -129,327 +67,137 @@ const CONSIGNEE = {
 
 const NOTIFY = {
   title: 'Notify Party',
-  lines: CONSIGNEE.lines,
+  lines: [
+    'AL NASER TRADING COMPANY LLC',
+    'POST BOX : 12356',
+    '30 AL MAKTHOOM BUILDING',
+    'AL NABHA SHARJAH UAE',
+  ],
 };
 
-const HBL_META = [
-  { k: 'HBL No.', v: 'PLMAAJEA00081' },
-  { k: 'MBL No.', v: 'MBLCOPY87667888' },
-  { k: 'Booking Ref.', v: 'B/EXP/19/0254' },
-  { k: 'Port of Loading', v: 'CHENNAI (EX MADRAS), INDIA' },
-  { k: 'Port of Discharge', v: 'JEBEL ALI, UNITED ARAB EMIRATES' },
-  { k: 'Place of Delivery', v: 'JEBEL ALI, UNITED ARAB EMIRATES' },
-  { k: 'Vessel / Voyage', v: 'EVERGREEN MARINE / 9887' },
-  { k: 'ETD', v: '29-JAN-19' },
-  { k: 'ETA', v: '07-FEB-19' },
-  { k: 'Service Type', v: 'FCL' },
-  { k: 'Freight', v: 'PREPAID' },
-  { k: 'No. of Packages', v: '125' },
-  { k: 'Gross Weight', v: '18,000.000 KGS' },
-  { k: 'Measurement', v: '24.000 CBM' },
+const DELIVERY = {
+  title: 'APPLICATION FOR DELIVERY AT DESTINATION MUST BE MADE TO:',
+  lines: [
+    'KingFisher Wings Dubai LLC',
+    'DUBAI UNITED ARAB EMIRATES',
+    'TEL: +971 55 5355 286',
+    'EMAIL: inquiry@kingfishertec.com',
+  ],
+};
+
+const CARGO_HEADERS = [
+  'Container Nos, Seal Nos, Mark and Nos',
+  'Number and kind of packages : description of goods',
+  'Gross Weight(Kg)',
+  'Volume',
 ];
 
-const CONTAINER_HEADERS = ['Container No.', 'Type', 'Seal', 'Pkgs', 'Weight', 'Volume'];
-const CONTAINER_ROW = ['ABCU9877666', "20' DC", 'SL988888', '125', '18,000.000', '24.000'];
+const CARGO_ROW = [
+  "ABCU9877666 / SEAL NO. : SL345566 /\n20' DC X 1\nNIL MARKS",
+  "STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
+  '18,000.000 KGS',
+  '24.000 CBM',
+];
 
-function layout(partial) {
-  return {
-    paper: partial.paper || 'A4',
-    rtl: false,
-    theme: THEME,
-    branding: BRAND,
-    demo: partial.demo,
-    blocks: partial.blocks,
-  };
+function fieldGrid(extra = []) {
+  return [
+    { k: 'Bill of Lading No.', v: 'PLMAAJEA00081' },
+    { k: 'HBL No.', v: 'PLMAAJEA00081' },
+    { k: 'MBL No.', v: 'MBLCOPY87667888' },
+    { k: 'Job No.', v: 'CEXP190150' },
+    { k: 'Booking Ref.', v: 'B/EXP/19/0254' },
+    { k: 'Place of Receipt', v: 'CHENNAI (EX MADRAS), INDIA' },
+    { k: 'Port of Loading', v: 'CHENNAI (EX MADRAS), INDIA' },
+    { k: 'Vessel / Voyage', v: 'CMA CGM / 9887' },
+    { k: 'Ocean Vessel', v: 'CMA CGM' },
+    { k: 'Voyage Number', v: '9887' },
+    { k: 'Port of Discharge', v: 'JEBEL ALI, UNITED ARAB EMIRATES' },
+    { k: 'Place of Delivery', v: 'JEBEL ALI, UNITED ARAB EMIRATES' },
+    { k: 'No. of Bills of Lading', v: '1(ONE)' },
+    { k: 'Freight', v: 'PREPAID' },
+    { k: 'Payable At', v: 'CHENNAI AS ARRANGED' },
+    { k: 'Onboard Date', v: '16-JAN-19' },
+    { k: 'Place and Date of Issue', v: 'CHENNAI 28-JAN-19' },
+    { k: 'Gross Weight', v: '18,000.000 KGS' },
+    { k: 'Measurement', v: '24.000 CBM' },
+    { k: 'Pre-carriage by', v: '' },
+    ...extra,
+  ];
 }
 
-/** Classic HBL structure (not invoice chargeTable / ops diversity). */
-function standardHbl(docTitle, opts = {}) {
-  const {
-    extraGrid = [],
-    badge,
-    letterBody,
-    termsExtra,
-    isDraft = true,
-    variant = 0,
-  } = opts;
-  const titleAlign = variant % 3 === 0 ? 'center' : variant % 3 === 1 ? 'start' : 'end';
-  const band = variant % 2 === 0;
-  const blocks = [
-    { type: 'companyHeader', showContact: true },
-    ...(badge ? [{ type: 'formatBadge', label: badge }] : []),
-    { type: 'docTitle', text: docTitle, align: titleAlign, band },
-    ...(letterBody ? [{ type: 'letterBody' }] : []),
-    { type: 'partyNotifyGrid' },
-    { type: 'fieldGrid', cols: variant % 2 === 0 ? 2 : 3 },
-    { type: 'hblCargoTable' },
-    { type: 'hblFreightSignature' },
-    { type: 'termsBank' },
-    ...(variant % 4 === 0 ? [{ type: 'signatureRow' }] : []),
-    { type: 'colorfulFooter' },
-  ];
-  return layout({
+function hblShellLayout(row) {
+  const variant = row.variant || 'combined';
+  const isOriginal = row.isOriginal === true;
+  const badge = isOriginal ? 'ORIGINAL' : row.family === 'jasper' ? 'JASPER' : 'DRAFT';
+
+  return {
+    paper: 'A4',
+    rtl: false,
+    appendCustomerTerms: true,
+    theme: THEME,
+    branding: BRAND,
     demo: {
       invoiceNo: 'PLMAAJEA00081',
       invoiceDate: '28-JAN-19',
-      letterBody,
       formatBadgeLabel: badge,
-      partyLeft: SHIPPER,
-      partyMid: CONSIGNEE,
-      partyNotify: NOTIFY,
-      fieldGrid: [...HBL_META, ...extraGrid],
-      hblCargoHeaders: [
-        'Container No. / Seal No. / Mark & No.',
-        'No. of Pkgs',
-        'Description of Goods',
-        'Gross Weight',
-        'Measurement',
-      ],
-      hblCargoRows: [
-        [
-          "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
-          '125 PACKAGES',
-          'FCL STC: VALVE MATERIALS FOR MACHINERY PARTS',
-          '18,000.000 KGS',
-          '24.000 CBM',
-        ],
-      ],
-      tableHeaders: CONTAINER_HEADERS,
-      tableRows: [CONTAINER_ROW],
+      heroTitle: isOriginal ? 'ORIGINAL BILL OF LADING' : 'DRAFT BILL OF LADING',
+      partyLeft: { ...SHIPPER },
+      partyMid: { ...CONSIGNEE },
+      partyNotify: { ...NOTIFY },
+      fieldGrid: fieldGrid([
+        { k: 'Layout', v: row.name },
+        { k: 'Catalogue', v: `${row.family} #${row.sortOrder}` },
+      ]),
+      hblCargoHeaders: CARGO_HEADERS,
+      hblCargoRows: [CARGO_ROW],
+      tableHeaders: ['Container No.', 'Type', 'Seal', 'Pkgs', 'Weight', 'Volume'],
+      tableRows: [['ABCU9877666', "20' DC", 'SL988888', '125', '18,000.000', '24.000']],
+      containerNote: "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
       hblFreightText: 'FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED',
       hblOnboardDate: '16-JAN-19',
       hblPlaceDate: 'CHENNAI 28-JAN-19',
       hblCarrierAgent: 'CMA CGM',
+      hblBlTitle: TITLES[variant] || TITLES.combined,
+      hblOriginals: '1(ONE)',
+      hblRegisteredNo: 'MTO/DGS/1182/APR/2019',
+      hblDeliveryAgent: { ...DELIVERY },
       termsLines: [
-        isDraft
-          ? 'DRAFT — Not negotiable unless marked original.'
-          : 'ORIGINAL — Negotiable when duly endorsed.',
-        ...(termsExtra ? [termsExtra] : []),
-        'STC: VALVE MATERIALS FOR MACHINERY PARTS',
+        isOriginal
+          ? 'ORIGINAL — Negotiable when duly endorsed.'
+          : 'DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED "TO ORDER"',
+        'RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.',
+        'AS AGENT FOR THE CARRIER',
       ],
       remarks: badge,
     },
-    blocks,
-  });
+    blocks: [
+      { type: 'hblBlShell', embedLogo: true, variant },
+      { type: 'hblFreightSignature', variant: 'blClosing' },
+      { type: 'colorfulFooter', variant: 'plain' },
+    ],
+  };
 }
 
-function draftFormat(n, headerColor = 'primary') {
-  void headerColor;
-  return standardHbl(`HOUSE BILL OF LADING — DRAFT FORMAT ${n}`, {
-    variant: n,
-    extraGrid: [{ k: 'Layout', v: `HBL Draft Report Format-${n}` }],
-    badge: `Format-${n}`,
-  });
-}
-
-const KINDS = {
-  hbl_draft_jasper: () =>
-    standardHbl('HOUSE BILL OF LADING — DRAFT (JASPER)', {
-      headerColor: 'primary',
-      extraGrid: [{ k: 'Layout', v: 'HBL Draft Report Format Jasper' }],
-      badge: 'Jasper Draft',
-    }),
-
-  /** Exact Fresa sample: fg_hbl_hkg_rpm_ref_245.pdf — KingFisher logo in companyHeader. */
-  fg_hbl_hkg: () =>
-    layout({
-      demo: {
-        invoiceNo: 'PLMAAJEA00081',
-        invoiceDate: '28-JAN-19',
-        formatBadgeLabel: 'DRAFT',
-        heroTitle: 'BILL OF LADING',
-        partyLeft: SHIPPER,
-        partyMid: CONSIGNEE,
-        partyNotify: {
-          title: 'Notify Party',
-          lines: [
-            'AL NASER TRADING COMPANY LLC',
-            'POST BOX : 12356',
-            '30 AL MAKTHOOM BUILDING',
-            'AL NABHA SHARJAH UAE',
-          ],
-        },
-        fieldGrid: [
-          { k: 'Bill of Lading No.', v: 'PLMAAJEA00081' },
-          { k: 'Job No.', v: 'CEXP190150' },
-          { k: 'Place of Receipt', v: 'CHENNAI (EX MADRAS), INDIA' },
-          { k: 'Port of Loading', v: 'CHENNAI (EX MADRAS), INDIA' },
-          { k: 'Vessel / Voyage No.', v: 'CMA CGM / 9887' },
-          { k: 'Port of Discharge', v: 'JEBEL ALI, UNITED ARAB EMIRATES' },
-          { k: 'Place of Delivery', v: 'JEBEL ALI, UNITED ARAB EMIRATES' },
-          { k: 'No. of Bills of Lading', v: '1(ONE)' },
-          { k: 'Freight', v: 'PREPAID' },
-          { k: 'Payable At', v: 'CHENNAI AS ARRANGED' },
-          { k: 'Onboard Date', v: '16-JAN-19' },
-          { k: 'Place and Date of Issue', v: 'CHENNAI 28-JAN-19' },
-        ],
-        hblCargoHeaders: [
-          'Container No. / Seal No. / Mark & No.',
-          'No. of Pkgs or Shipping Units',
-          'Description of Goods & Pkgs.',
-          'Gross Weight',
-          'Measurement',
-        ],
-        hblCargoRows: [
-          [
-            "ABCU9877666 / SEAL NO. : SL345566 / 20' DC X 1\nNIL MARKS",
-            '125 PACKAGES',
-            "FCL STC: VALVE MATERIALS FOR MACHINERY PARTS\nFREIGHT PREPAID\nALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
-            '18,000.000 KGS',
-            '24.000 CBM',
-          ],
-        ],
-        containerNote: "Total Number of Containers or Packages (In words): ONE(1X20' DC) CONTAINER ONLY",
-        hblFreightText: 'FREIGHT PREPAID PAYABLE AT : CHENNAI AS ARRANGED',
-        hblOnboardDate: '16-JAN-19',
-        hblPlaceDate: 'CHENNAI 28-JAN-19',
-        hblCarrierAgent: 'CMA CGM',
-        termsLines: [
-          'DRAFT — BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED "TO ORDER"',
-          'RECEIVED by the Carrier the Goods as specified above in apparent good order and condition unless otherwise stated.',
-          'AS AGENT FOR THE CARRIER',
-        ],
-        remarks: 'DRAFT',
-      },
-      blocks: [
-        { type: 'companyHeader', showContact: true },
-        { type: 'formatBadge', label: 'DRAFT' },
-        {
-          type: 'docTitle',
-          text: 'BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED "TO ORDER"',
-          align: 'center',
-          band: true,
-        },
-        { type: 'partyNotifyGrid' },
-        { type: 'fieldGrid', cols: 2 },
-        { type: 'hblCargoTable' },
-        { type: 'hblFreightSignature' },
-        { type: 'termsBank' },
-        { type: 'colorfulFooter' },
-      ],
-    }),
-
-  fg_hbl_format_1: () =>
-    standardHbl('FG HBL — FORMAT 1', {
-      headerColor: 'fill',
-      extraGrid: [{ k: 'Layout', v: 'FG HBL Format-1' }],
-      badge: 'FG Format-1',
-    }),
-
-  fg_hbl_magiclogisys: () =>
-    standardHbl('FG HBL — MAGICLOGISYS', {
-      headerColor: 'primary',
-      extraGrid: [{ k: 'Template', v: 'Magiclogisys' }],
-      badge: 'Magiclogisys',
-    }),
-
-  hbl_draft_14: () => draftFormat(14, 'primary'),
-  hbl_draft_16: () => draftFormat(16, 'accent'),
-  hbl_draft_20: () => draftFormat(20, 'fill'),
-  hbl_draft_23: () => draftFormat(23, 'primary'),
-  hbl_draft_25: () => draftFormat(25, 'accent'),
-  hbl_draft_26: () => draftFormat(26, 'fill'),
-  hbl_draft_27: () => draftFormat(27, 'primary'),
-
-  hbl_draft_29_html: () =>
-    standardHbl('HOUSE BILL OF LADING — DRAFT FORMAT 29 (HTML)', {
-      headerColor: 'cyan',
-      extraGrid: [
-        { k: 'Layout', v: 'HBL Draft Report Format-29' },
-        { k: 'Renderer', v: 'HTML draft layout' },
-      ],
-      badge: 'HTML Format-29',
-      letterBody: 'HTML-rendered draft HBL — sample export from Fresa Gold.',
-      termsExtra: 'Generated from HTML draft template.',
-    }),
-
-  hbl_draft_33: () => draftFormat(33, 'accent'),
-  hbl_draft_40: () => draftFormat(40, 'orange'),
-  hbl_draft_41: () => draftFormat(41, 'primary'),
-  hbl_draft_42: () => draftFormat(42, 'accent'),
-  hbl_draft_43: () => draftFormat(43, 'fill'),
-  hbl_draft_44: () => draftFormat(44, 'primary'),
-  hbl_draft_45: () => draftFormat(45, 'accent'),
-  hbl_draft_46: () => draftFormat(46, 'fill'),
-  hbl_draft_47: () => draftFormat(47, 'primary'),
-  hbl_draft_48: () => draftFormat(48, 'accent'),
-  hbl_draft_49: () => draftFormat(49, 'fill'),
-  hbl_draft_50: () => draftFormat(50, 'primary'),
-  hbl_draft_51: () => draftFormat(51, 'accent'),
-  hbl_draft_52: () => draftFormat(52, 'fill'),
-  hbl_draft_53: () => draftFormat(53, 'orange'),
-  hbl_draft_54: () => draftFormat(54, 'cyan'),
-  hbl_draft_55: () => draftFormat(55, 'primary'),
-  hbl_draft_56: () => draftFormat(56, 'accent'),
-  hbl_draft_59: () => draftFormat(59, 'fill'),
-  hbl_draft_60: () => draftFormat(60, 'primary'),
-  hbl_draft_61: () => draftFormat(61, 'accent'),
-  hbl_draft_63: () => draftFormat(63, 'fill'),
-  hbl_draft_64: () => draftFormat(64, 'primary'),
-  hbl_draft_65: () => draftFormat(65, 'accent'),
-  hbl_draft_66: () => draftFormat(66, 'fill'),
-  hbl_draft_67: () => draftFormat(67, 'orange'),
-  hbl_draft_68: () => draftFormat(68, 'cyan'),
-  hbl_draft_69: () => draftFormat(69, 'primary'),
-  hbl_draft_70: () => draftFormat(70, 'primary'),
-  hbl_draft_72: () => draftFormat(72, 'accent'),
-  hbl_draft_73: () => draftFormat(73, 'fill'),
-  hbl_draft_75: () => draftFormat(75, 'primary'),
-  hbl_draft_77: () => draftFormat(77, 'accent'),
-  hbl_draft_83: () => draftFormat(83, 'fill'),
-  hbl_draft_84: () => draftFormat(84, 'primary'),
-  hbl_draft_85: () => draftFormat(85, 'accent'),
-  hbl_draft_86: () => draftFormat(86, 'fill'),
-  hbl_draft_87: () => draftFormat(87, 'primary'),
-  fg_hbl_original_format_87: () =>
-    standardHbl('HOUSE BILL OF LADING — ORIGINAL FORMAT 87', {
-      headerColor: 'orange',
-      isDraft: false,
-      extraGrid: [
-        { k: 'Layout', v: 'FG HBL Original Format-87' },
-        { k: 'Document Type', v: 'ORIGINAL' },
-      ],
-      badge: 'Original Format-87',
-      termsExtra: 'FG HBL original sample (Format-87).',
-    }),
-  hbl_draft_88: () => draftFormat(88, 'accent'),
-  hbl_draft_89: () => draftFormat(89, 'fill'),
-  hbl_draft_90: () => draftFormat(90, 'fill'),
-  hbl_draft_92: () => draftFormat(92, 'primary'),
-  hbl_draft_95: () => draftFormat(95, 'accent'),
-  hbl_draft_96: () => draftFormat(96, 'cyan'),
-};
-
-const HEADER_CYCLE = ['primary', 'accent', 'fill', 'orange', 'cyan'];
-for (const [, , kind, n] of CATALOG) {
-  if (KINDS[kind]) continue;
-  const m = /^hbl_draft_(\d+)$/.exec(kind);
-  if (m) {
-    const num = Number(m[1]);
-    KINDS[kind] = () => draftFormat(num, HEADER_CYCLE[n % HEADER_CYCLE.length]);
-  }
-}
-
-function buildRow([code, name, kind, n]) {
-  const factory = KINDS[kind];
-  if (!factory) throw new Error(`Missing kind ${kind}`);
-  const base = factory();
+const layouts = HBL_OFFICIAL_113.map((row) => {
+  const base = hblShellLayout(row);
   return {
-    code,
-    formatNumber: n,
-    name,
-    paper: base.paper || 'A4',
+    code: row.code,
+    formatNumber: row.sortOrder,
+    name: row.name,
+    paper: base.paper,
     rtl: false,
+    appendCustomerTerms: true,
     theme: base.theme,
     branding: base.branding,
     demo: base.demo,
     blocks: base.blocks,
   };
-}
+});
 
-const layouts = CATALOG.map(buildRow);
 const outJson = path.join(root, 'src/features/reports/data/hblFormatUiLayouts.json');
 const outTs = path.join(root, 'src/features/reports/data/hblFormatUiLayouts.generated.ts');
+const outCatalog = path.join(root, 'src/features/reports/constants/hblOfficialCatalog.generated.ts');
+
 fs.writeFileSync(outJson, JSON.stringify(layouts, null, 2) + '\n', 'utf8');
 fs.writeFileSync(
   outTs,
@@ -458,4 +206,42 @@ fs.writeFileSync(
     `export const HBL_FORMAT_UI_LAYOUTS: InvoiceFormatUiLayout[] = ${JSON.stringify(layouts, null, 2)} as InvoiceFormatUiLayout[];\n`,
   'utf8',
 );
-console.log(`Wrote ${layouts.length} HBL layouts matched to Fresa sample PDFs`);
+
+const catalogRows = HBL_OFFICIAL_113.map((row) => ({
+  code: row.code,
+  name: row.name,
+  kind: row.kind,
+  sortOrder: row.sortOrder,
+  family: 'sea_docs',
+  hblFamily: row.family,
+  samplePdfUrl: row.samplePdfUrl,
+  variant: row.variant,
+}));
+
+fs.writeFileSync(
+  outCatalog,
+  `/** Auto-generated from scripts/hblOfficial113.mjs — run: node scripts/build-hbl-format-ui-layouts.mjs */\n` +
+    `export type HblOfficialCatalogRow = {\n` +
+    `  code: string;\n` +
+    `  name: string;\n` +
+    `  kind: string;\n` +
+    `  sortOrder: number;\n` +
+    `  family: 'sea_docs';\n` +
+    `  hblFamily: 'jasper' | 'legacy';\n` +
+    `  samplePdfUrl: string | null;\n` +
+    `  variant: string;\n` +
+    `};\n\n` +
+    `export const HBL_OFFICIAL_CATALOG: HblOfficialCatalogRow[] = ${JSON.stringify(catalogRows, null, 2)};\n`,
+  'utf8',
+);
+
+const byVariant = layouts.reduce((acc, row) => {
+  const v = row.blocks.find((b) => b.type === 'hblBlShell')?.variant || '?';
+  acc[v] = (acc[v] || 0) + 1;
+  return acc;
+}, {});
+const jasper = HBL_OFFICIAL_113.filter((r) => r.family === 'jasper').length;
+const legacy = HBL_OFFICIAL_113.filter((r) => r.family === 'legacy').length;
+
+console.log(`Wrote ${layouts.length} HBL layouts (jasper ${jasper} + legacy ${legacy})`);
+console.log('Variants:', byVariant);

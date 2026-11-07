@@ -1,6 +1,6 @@
 /**
- * HAWB formats from Fresa official report-format PDFs (verified references only).
- * Draft Format-3…27 and Original Pre Printed Format-1 are excluded (unsupported / stub PDF).
+ * HAWB formats from Fresa official report-format PDFs (IATA Air Waybill shells).
+ * https://fresatechnologies.com/sample-report-formats/
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
 import { listHawbFormatUiLayouts } from '../data/hawbFormatUiLayouts';
@@ -19,7 +19,7 @@ export type HawbFormatSpec = {
   samplePdfUrl: string;
 };
 
-/** Four verified Fresa HAWB formats only. */
+/** Five verified Fresa HAWB formats (draft + original pre-printed). */
 export const HAWB_FORMAT_CATALOG: HawbFormatSpec[] = [
   {
     code: 'HAWB_DRAFT_REPORT_FORMAT',
@@ -46,10 +46,18 @@ export const HAWB_FORMAT_CATALOG: HawbFormatSpec[] = [
     samplePdfUrl: `${FRESA_HAWB_REPORT_FORMAT_BASE}hawb-draft-report-format-2.pdf`,
   },
   {
+    code: 'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1',
+    name: 'HAWB Original Pre Printed Report Format-1',
+    kind: 'hawb_original_pre_printed_1',
+    sortOrder: 4,
+    family: 'air_docs',
+    samplePdfUrl: `${FRESA_HAWB_REPORT_FORMAT_BASE}hawb-original-pre-printed-report-format-1.pdf`,
+  },
+  {
     code: 'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2',
     name: 'HAWB Original Pre Printed Report Format-2',
     kind: 'hawb_original_pre_printed_2',
-    sortOrder: 4,
+    sortOrder: 5,
     family: 'air_docs',
     samplePdfUrl: `${FRESA_HAWB_REPORT_FORMAT_BASE}hawb-original-pre-printed-report-format-2.pdf`,
   },
@@ -60,7 +68,6 @@ const VERIFIED_HAWB_CODES = new Set(HAWB_FORMAT_CATALOG.map((r) => r.code.toUppe
 const ALL_HAWB_FORMATS: HawbFormatSpec[] = (() => {
   const by = new Map<string, HawbFormatSpec>();
   for (const row of HAWB_FORMAT_CATALOG) by.set(row.code.toUpperCase(), row);
-  // Layout store is the source of truth for openable PDFs — keep catalog in sync.
   listHawbFormatUiLayouts().forEach((layout, i) => {
     const key = layout.code.toUpperCase();
     if (!VERIFIED_HAWB_CODES.has(key)) return;

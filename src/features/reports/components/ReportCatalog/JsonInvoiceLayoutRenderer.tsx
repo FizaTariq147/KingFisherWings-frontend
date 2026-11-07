@@ -1,15 +1,15 @@
 import type { CSSProperties } from 'react';
-import logo from '@/assets/logo.png';
 import type {
   InvoiceFormatUiBlock,
-  InvoiceFormatUiBranding,
   InvoiceFormatUiDemo,
   InvoiceFormatUiLayout,
   InvoiceFormatUiTheme,
 } from '../../types/invoiceFormatUiLayout.types';
-import { REPORT_BRANDING } from '../../constants/reportBranding.constants';
 import { normalizeFresaThemeColors } from '../../constants/fresaInvoiceColors';
 import { resolveReportPaperGeometry } from '../../utils/reportPaperGeometry';
+import { brandLogoSrc } from './invoiceLayouts/brandLogoSrc';
+import { HawbAwbShell } from './invoiceLayouts/HawbAwbShell';
+import { HblBlShell } from './invoiceLayouts/HblBlShell';
 import { InvoiceUserFooter } from './invoiceLayouts/InvoiceUserFooter';
 import { TcBrandColorBar, TcBrandTagline } from './invoiceLayouts/TcBrandChrome';
 
@@ -19,14 +19,6 @@ type Props = {
   /** Override page label when compositing multi-page PDFs. */
   pageLabel?: string;
 };
-
-/** Registered org logo when present; otherwise KF default asset. */
-function brandLogoSrc(branding: InvoiceFormatUiBranding): string {
-  const fromOrg = branding.logoUrl?.trim();
-  if (fromOrg) return fromOrg;
-  if (typeof logo === 'string' && logo.trim()) return logo;
-  return REPORT_BRANDING.defaultLogoUrl || '/kingfisher-logo.png';
-}
 
 function themeColor(
   theme: InvoiceFormatUiTheme,
@@ -88,18 +80,23 @@ export function JsonInvoiceLayoutRenderer({ layout, className = '', pageLabel }:
   const hasTopChrome = bodyBlocks.some(
     (b) => b.type === 'colorBar' || b.type === 'summaryHero',
   );
-  // Fresa ASN/invoice samples start with companyHeader; Format-11 BL starts with
-  // hblBlShell — neither has a dual color stripe above the form.
+  // Fresa ASN/invoice samples start with companyHeader; BL/HAWB shells are full forms.
   const startsWithFormChrome =
-    bodyBlocks[0]?.type === 'companyHeader' || bodyBlocks[0]?.type === 'hblBlShell';
+    bodyBlocks[0]?.type === 'companyHeader' ||
+    bodyBlocks[0]?.type === 'hblBlShell' ||
+    bodyBlocks[0]?.type === 'hawbAwbShell';
+  const isHawbShell = bodyBlocks[0]?.type === 'hawbAwbShell';
+  const isHblShell = bodyBlocks[0]?.type === 'hblBlShell';
+  const isDocShell = isHawbShell || isHblShell;
 
   // Fresa sample PDFs: dark outer frame + inner content inset so text never hugs the edge.
+  // HAWB/HBL shells draw their own black form border — keep a light page pad only.
   const frameInk =
-    theme.primary === '#000000' || theme.primary === '#101010'
+    theme.primary === '#000000' || theme.primary === '#101010' || isDocShell
       ? '#101010'
       : theme.primary || '#0E4D95';
-  const contentPadX = 14;
-  const contentPadY = 12;
+  const contentPadX = isDocShell ? 8 : 14;
+  const contentPadY = isDocShell ? 8 : 12;
 
   return (
     <div
@@ -532,11 +529,36 @@ function Block({
           theme={theme}
           demo={demo}
           branding={branding}
-          embedLogo={block.embedLogo === true}
+          embedLogo={block.embedLogo !== false}
+          variant={
+            block.variant === 'jasper' ||
+            block.variant === 'multimodal' ||
+            block.variant === 'mt' ||
+            block.variant === 'ocean' ||
+            block.variant === 'combined'
+              ? block.variant
+              : 'combined'
+          }
         />
       );
     case 'hawbRouteGrid':
       return <HawbRouteGrid theme={theme} demo={demo} />;
+    case 'hawbAwbShell':
+      return (
+        <HawbAwbShell
+          theme={theme}
+          demo={demo}
+          branding={branding}
+          variant={
+            block.variant === 'draft1' ||
+            block.variant === 'draft2' ||
+            block.variant === 'original1' ||
+            block.variant === 'original2'
+              ? block.variant
+              : 'draft'
+          }
+        />
+      );
     case 'arrivalChargesOptional':
       return (
         <ArrivalChargesOptional
@@ -2175,256 +2197,6 @@ function OfficeAddressBand({ theme, demo }: { theme: InvoiceFormatUiTheme; demo:
       {lines.map((line) => (
         <p key={line}>{line}</p>
       ))}
-    </div>
-  );
-}
-
-function demoField(demo: InvoiceFormatUiDemo, ...keys: string[]): string {
-  const rows = demo.fieldGrid ?? [];
-  for (const key of keys) {
-    const hit = rows.find((r) => r.k.toLowerCase() === key.toLowerCase());
-    if (hit?.v) return hit.v;
-  }
-  for (const key of keys) {
-    const hit = rows.find((r) => r.k.toLowerCase().includes(key.toLowerCase()));
-    if (hit?.v) return hit.v;
-  }
-  return '';
-}
-
-/**
- * Fresa Format-11 upper BL shell: bordered party / route / cargo grid.
- * Uses ink borders (reference is black grid, not theme blue chrome).
- */
-function HblBlShell({
-  theme,
-  demo,
-  branding,
-  embedLogo = false,
-}: {
-  theme: InvoiceFormatUiTheme;
-  demo: InvoiceFormatUiDemo;
-  branding: InvoiceFormatUiLayout['branding'];
-  /** When true, KF logo replaces Fresa’s identity-cell logo (no outer companyHeader). */
-  embedLogo?: boolean;
-}) {
-  const border = theme.ink || '#101010';
-  const label: CSSProperties = {
-    fontSize: 7.5,
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    color: border,
-    lineHeight: 1.25,
-    margin: 0,
-  };
-  const body: CSSProperties = {
-    fontSize: 8.5,
-    color: border,
-    lineHeight: 1.35,
-    margin: 0,
-  };
-  const cell: CSSProperties = {
-    border: `1px solid ${border}`,
-    verticalAlign: 'top',
-    padding: '3px 5px',
-  };
-  const shipper = demo.partyLeft ?? { title: 'Shipper', lines: [] as string[] };
-  const consignee = demo.partyMid ?? { title: 'Consignee', lines: [] as string[] };
-  const notify = demo.partyNotify ?? demo.partyThird ?? { title: 'Notify Address', lines: [] as string[] };
-  const delivery =
-    demo.hblDeliveryAgent ?? {
-      title: 'APPLICATION FOR DELIVERY AT DESTINATION MUST BE MADE TO:',
-      lines: [
-        branding.company,
-        branding.address,
-        branding.phone ? `TEL: ${branding.phone}` : '',
-        branding.email ? `EMAIL: ${branding.email}` : '',
-      ].filter(Boolean),
-    };
-  const blNo = demo.invoiceNo || demoField(demo, 'HBL No.', 'BILL OF LADING NUMBER', 'HBL');
-  const vesselRaw = demoField(demo, 'Vessel / Voyage', 'Ocean Vessel', 'Vessel');
-  const vesselParts = vesselRaw.split('/').map((s) => s.trim()).filter(Boolean);
-  const oceanVessel = vesselParts[0] || vesselRaw || demo.hblCarrierAgent || '';
-  const voyageNo = vesselParts.length > 1 ? vesselParts.slice(1).join(' / ') : '';
-  const placeReceipt = demoField(demo, 'Place of Receipt') || demoField(demo, 'Port of Loading');
-  const portLoading = demoField(demo, 'Port of Loading');
-  const portDischarge = demoField(demo, 'Port of Discharge');
-  const placeDelivery = demoField(demo, 'Place of Delivery');
-  const originals = demo.hblOriginals || '1(ONE)';
-  const title =
-    demo.hblBlTitle ||
-    'Bill of Lading FOR COMBINED TRANSPORT OR PORT TO PORT SHIPMENT';
-  const cargoHeaders = demo.hblCargoHeaders ?? [
-    'Container Nos, Seal Nos, Mark and Nos',
-    'Number and kind of packages : description of goods',
-    'Gross Weight(Kg)',
-    'Volume',
-  ];
-  const cargoRows = demo.hblCargoRows ?? [];
-  const weight =
-    demoField(demo, 'Gross Weight') ||
-    (cargoRows[0] && cargoRows[0][cargoHeaders.length - 2]) ||
-    '';
-  const volume =
-    demoField(demo, 'Measurement') ||
-    demoField(demo, 'Volume') ||
-    (cargoRows[0] && cargoRows[0][cargoHeaders.length - 1]) ||
-    '';
-
-  const partyLines = (lines: string[]) =>
-    (lines ?? []).map((line) => (
-      <p key={line} style={{ ...body, marginTop: 1 }}>
-        {line}
-      </p>
-    ));
-
-  return (
-    <div data-hbl-bl-shell="true" style={{ margin: '0 0 2px', color: border }}>
-      <table style={{ width: '100%', borderCollapse: 'collapse', border: `1.5px solid ${border}` }}>
-        <tbody>
-          <tr>
-            <td colSpan={4} style={{ ...cell, textAlign: 'center', padding: '4px 6px' }}>
-              <p style={{ ...label, fontSize: 10, letterSpacing: '0.02em' }}>{title}</p>
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={2} style={{ ...cell, width: '52%' }}>
-              <p style={label}>{shipper.title || 'SHIPPER'}</p>
-              {partyLines(shipper.lines ?? [])}
-            </td>
-            <td colSpan={2} style={{ ...cell, width: '48%' }}>
-              <p style={label}>Bill of Lading Number</p>
-              <p style={{ ...body, fontWeight: 700, marginTop: 2 }}>{blNo}</p>
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={2} style={cell}>
-              <p style={label}>{consignee.title || 'CONSIGNEE OR ORDER'}</p>
-              {partyLines(consignee.lines ?? [])}
-            </td>
-            <td colSpan={2} style={{ ...cell, textAlign: 'center' }}>
-              {/* Fresa identity cell: logo + company + address + registration. */}
-              {embedLogo ? (
-                <img
-                  src={brandLogoSrc(branding)}
-                  alt={branding.company}
-                  style={{
-                    height: 32,
-                    width: 'auto',
-                    maxWidth: 120,
-                    objectFit: 'contain',
-                    display: 'block',
-                    margin: '0 auto 4px',
-                  }}
-                />
-              ) : null}
-              <p style={{ ...label, fontSize: 9 }}>{branding.company}</p>
-              <p style={{ ...body, marginTop: 2 }}>{branding.address}</p>
-              {demo.hblRegisteredNo ? (
-                <p style={{ ...label, marginTop: 8, fontSize: 8 }}>
-                  Registered No. : {demo.hblRegisteredNo}
-                </p>
-              ) : null}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={2} style={cell}>
-              <p style={label}>
-                {notify.title ||
-                  'NOTIFY ADDRESS (Carrier not responsible for failure to notify)'}
-              </p>
-              {partyLines(notify.lines ?? [])}
-            </td>
-            <td colSpan={2} style={cell}>
-              <p style={label}>
-                {delivery.title || 'APPLICATION FOR DELIVERY AT DESTINATION MUST BE MADE TO:'}
-              </p>
-              {partyLines(delivery.lines ?? [])}
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={2} style={cell}>
-              <p style={label}>Ocean Vessel</p>
-              <p style={{ ...body, marginTop: 2 }}>{oceanVessel}</p>
-            </td>
-            <td colSpan={2} style={cell}>
-              <p style={label}>Voyage Number</p>
-              <p style={{ ...body, marginTop: 2 }}>{voyageNo}</p>
-            </td>
-          </tr>
-          <tr>
-            <td colSpan={2} style={cell}>
-              <p style={label}>Place of Receipt</p>
-              <p style={{ ...body, marginTop: 2 }}>{placeReceipt}</p>
-            </td>
-            <td colSpan={2} style={cell}>
-              <p style={label}>Port of Loading</p>
-              <p style={{ ...body, marginTop: 2 }}>{portLoading}</p>
-            </td>
-          </tr>
-          <tr>
-            <td style={cell}>
-              <p style={label}>Port of Discharge</p>
-              <p style={{ ...body, marginTop: 2 }}>{portDischarge}</p>
-            </td>
-            <td style={cell}>
-              <p style={label}>Place of Delivery</p>
-              <p style={{ ...body, marginTop: 2 }}>{placeDelivery}</p>
-            </td>
-            <td style={cell}>
-              <p style={label}>Freight Charges</p>
-            </td>
-            <td style={cell}>
-              <p style={label}>No. of Original / BL</p>
-              <p style={{ ...body, marginTop: 2 }}>{originals}</p>
-            </td>
-          </tr>
-          <tr>
-            {cargoHeaders.map((h, hi) => (
-              <th
-                key={h}
-                style={{
-                  ...cell,
-                  width:
-                    cargoHeaders.length === 4
-                      ? hi === 0
-                        ? '28%'
-                        : hi === 1
-                          ? '36%'
-                          : '18%'
-                      : undefined,
-                  fontSize: 7,
-                  fontWeight: 700,
-                  textTransform: 'uppercase',
-                  textAlign: 'left',
-                  backgroundColor: theme.fill || '#F3F3F3',
-                }}
-              >
-                {h}
-              </th>
-            ))}
-          </tr>
-          {(cargoRows.length ? cargoRows : [Array.from({ length: cargoHeaders.length }, () => '')]).map(
-            (row, ri) => (
-              <tr key={ri}>
-                {cargoHeaders.map((_, ci) => (
-                  <td
-                    key={ci}
-                    style={{
-                      ...cell,
-                      minHeight: 64,
-                      whiteSpace: 'pre-wrap',
-                      fontSize: 8,
-                    }}
-                  >
-                    {row[ci] ?? (ci === cargoHeaders.length - 2 ? weight : ci === cargoHeaders.length - 1 ? volume : '')}
-                  </td>
-                ))}
-              </tr>
-            ),
-          )}
-        </tbody>
-      </table>
     </div>
   );
 }
