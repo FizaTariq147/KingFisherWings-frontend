@@ -18,7 +18,7 @@ export function TrackOverlayFrame({ children, className }: Props) {
     <div
       className={cn(
         'absolute inset-y-0 left-0 z-[1] flex flex-col p-3 transition-[max-width] duration-300 ease-out sm:p-4',
-        expanded ? 'w-full max-w-[min(920px,96%)]' : 'w-full max-w-[520px]',
+        expanded ? 'w-full max-w-[min(920px,96%)]' : 'w-full max-w-[540px]',
         className,
       )}
     >
