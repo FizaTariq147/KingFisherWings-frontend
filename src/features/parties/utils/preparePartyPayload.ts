@@ -1,4 +1,5 @@
 import { isUuid } from '@/lib/isUuid';
+import { PARTY_TYPES } from '../constants/party.constants';
 
 const ALLOWED_PARTY_FIELDS = new Set([
   'company_id',
@@ -29,8 +30,14 @@ const ALLOWED_PARTY_FIELDS = new Set([
 
 const UUID_FIELDS = new Set(['company_id', 'salesperson_id']);
 
+const SYSTEM_PARTY_TYPES = new Set<string>(PARTY_TYPES);
+
 function normalizePartyTypeCode(value: string): string {
   return value.trim().toUpperCase().replace(/[\s-]+/g, '_');
+}
+
+function isSystemPartyType(code: string): boolean {
+  return SYSTEM_PARTY_TYPES.has(code);
 }
 
 /** Strip empties / invalid UUIDs before POST/PATCH party bodies. */
@@ -84,14 +91,19 @@ export function preparePartyPayload<T extends Record<string, unknown>>(dto: T): 
     out[key] = value;
   }
 
-  // Prefer sending both party_type and party_type_code (same uppercase code).
+  // OpenAPI: party_type is a fixed enum; custom types must use party_type_code only.
   const typeCode =
-    (typeof out.party_type === 'string' && out.party_type) ||
     (typeof out.party_type_code === 'string' && out.party_type_code) ||
+    (typeof out.party_type === 'string' && out.party_type) ||
     '';
   if (typeCode) {
-    out.party_type = typeCode;
-    out.party_type_code = typeCode;
+    if (isSystemPartyType(typeCode)) {
+      out.party_type = typeCode;
+      out.party_type_code = typeCode;
+    } else {
+      out.party_type_code = typeCode;
+      delete out.party_type;
+    }
   }
 
   return out as T;
