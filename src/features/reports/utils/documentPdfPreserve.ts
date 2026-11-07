@@ -33,4 +33,18 @@ export const DOCUMENT_PDF_PRESERVE = {
   fresaFormat1Code: 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA',
   fresaFormat1Pack: 'commercial.invoice_tax_india_1',
   brandingLogo: 'kingfisher',
+  /** Catalogue chrome only — do not rewire default invoice/quotation PDF buttons. */
+  orgChromeResolver: 'src/features/reports/utils/resolveReportOrgChrome.ts',
 } as const;
+
+/** Smoke checklist — catalogue work must not regress these (manual / E2E). */
+export const DOCUMENT_PDF_PRESERVE_SMOKE = [
+  'Invoice detail → Generate PDF (pdf-lib path)',
+  'Quotation detail → Generate PDF',
+  'Job documents → classic BL draft fallback',
+  'WMS document PDF',
+  'GL account statement PDF',
+  'Catalogue Generate with unbound pack → client layout + org logo',
+  'Catalogue Generate with bound pack → POST /reports/generate',
+  'Deep-link ?invoice_id= / ?job_id= / ?quotation_id= still opens catalog',
+] as const;

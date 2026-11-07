@@ -40,8 +40,10 @@ export interface GlPayment {
   company_id?: string;
   branch_id?: string;
   bank_account_id?: string;
+  bank_account_name?: string;
   gl_account_id?: string;
   gl_account_code?: string;
+  gl_account_name?: string;
   reference_number?: string;
   narration?: string;
   cheque_number?: string;
@@ -52,6 +54,7 @@ export interface GlPayment {
   allocated_amount?: number;
   unallocated_amount?: number;
   voucher_id?: string;
+  voucher_number?: string;
   posted_at?: string;
   cancelled_at?: string;
   deleted_at?: string | null;

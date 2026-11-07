@@ -7,11 +7,11 @@ import type { InvoiceFormatPdfData } from './invoiceFormatToInvoicePdfModel';
 import { shouldAppendCustomerTermsPage } from './shouldAppendCustomerTermsPage';
 import { appendOfficialCustomerTermsPdf } from './appendOfficialCustomerTermsPdf';
 import { resolveCustomerTermsKind } from './resolveCustomerTermsKind';
-import { resolveCustomerTermsBranding } from './resolveCustomerTermsBranding';
 import {
   SHARED_LAYOUT_CHROME,
   type SharedLayoutChrome,
 } from './applySharedLayoutChrome';
+import { resolveReportOrgChrome } from './resolveReportOrgChrome';
 import { sanitizeHtml2CanvasClone } from './html2canvasSafeColors';
 import { resolveReportPaperGeometry } from './reportPaperGeometry';
 import { resolveAnyFormatUiLayout } from '../data/resolveAnyFormatUiLayout';
@@ -44,6 +44,10 @@ export type GenerateInvoiceFormatPreviewPdfOptions = {
    * When omitted, BL → BL Terms PDF and airway bill → Airway Terms PDF.
    */
   appendCustomerTerms?: boolean;
+  /** Optional pre-resolved chrome (avoids a second org profile fetch). */
+  chrome?: SharedLayoutChrome;
+  /** Registered org / tenant logo URL for header chrome. */
+  logoUrl?: string;
 };
 
 /**
@@ -92,18 +96,25 @@ export async function generateInvoiceFormatPreviewPdf(
   let root: Root | null = null;
   try {
     // Shared header/footer chrome from org profile (same for every format).
-    let chrome: SharedLayoutChrome = SHARED_LAYOUT_CHROME;
-    try {
-      const termsBrand = await resolveCustomerTermsBranding();
-      if (termsBrand.companyName?.trim()) {
-        chrome = { ...SHARED_LAYOUT_CHROME, company: termsBrand.companyName.trim() };
+    let chrome: SharedLayoutChrome = options.chrome ?? SHARED_LAYOUT_CHROME;
+    if (!options.chrome) {
+      try {
+        const orgChrome = await resolveReportOrgChrome();
+        chrome = orgChrome;
+      } catch {
+        /* keep default chrome */
       }
-    } catch {
-      /* keep default chrome */
+    }
+    if (options.logoUrl?.trim()) {
+      chrome = { ...chrome, logoUrl: options.logoUrl.trim() };
     }
     const liveData = {
       ...data,
       companyName: data.companyName || chrome.company,
+      companyAddress: data.companyAddress || chrome.address,
+      companyWeb: data.companyWeb || chrome.web,
+      companyPhone: data.companyPhone || chrome.phone,
+      companyEmail: data.companyEmail || chrome.email,
     };
 
     // Ensure layout orientation/paper reach the renderer even when preview omits them.

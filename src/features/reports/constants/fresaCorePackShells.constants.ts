@@ -57,10 +57,25 @@ export const FRESA_COMMERCIAL_FINANCE_PACKS = [
   { key: 'finance.outstanding_letter', family: 'finance', additive: true },
 ] as const;
 
-/** MY REPORTS / ops list shell (Phase 4) — XLSX preferred. */
+/** MY REPORTS / ops list shell — XLSX preferred. */
 export const FRESA_OPS_LIST_PACK = {
   key: 'ops.list_generic',
   family: 'ops_list',
   preferredFormats: ['XLSX', 'PDF', 'CSV'] as const,
   strategy: 'Shared list/table pack; column config per template code; real filter queries',
 } as const;
+
+/** WMS ASN shells (Phase 6). */
+export const FRESA_WMS_PACKS = [
+  { key: 'wms.asn', family: 'wms', additive: true },
+  { key: 'wms.asn_location', family: 'wms', additive: true },
+  { key: 'wms.asn_summary', family: 'wms', additive: true },
+] as const;
+
+/** All shells FE may bind when exposed on GET /reports/templates/renderers. */
+export const FRESA_ALL_PACK_SHELLS = [
+  FRESA_OPS_LIST_PACK.key,
+  ...FRESA_CORE_DOC_PACKS.map((p) => p.key),
+  ...FRESA_COMMERCIAL_FINANCE_PACKS.map((p) => p.key),
+  ...FRESA_WMS_PACKS.map((p) => p.key),
+] as const;

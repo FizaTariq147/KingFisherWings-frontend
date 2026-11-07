@@ -24,8 +24,13 @@ import { parseCatalogFamiliesParam } from '../utils/moduleCatalogFamily';
 import { hasReportEntityContext } from '../utils/reportParameterUtils';
 import { templateCompatibleWithEntityContext } from '../utils/reportContextCompatibility';
 import { isClientLayoutFallbackEnabled } from '../utils/clientLayoutFallback';
-import { REPORT_BRANDING } from '../constants/reportBranding.constants';
 import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
+import { FresaSamplePageTable } from '../components/ReportCatalog/FresaSamplePageTable';
+import {
+  FRESA_PAGE_COLUMNS,
+  fresaColumnForFamily,
+  type FresaPageColumnId,
+} from '../constants/fresaPageColumns';
 import { InvoiceFormatBrowseStrip } from '../components/ReportCatalog/InvoiceFormatBrowseStrip';
 import { InvoiceFormatAutoPdf } from '../components/ReportCatalog/InvoiceFormatAutoPdf';
 import { AccountsFormatBrowseStrip } from '../components/ReportCatalog/AccountsFormatBrowseStrip';
@@ -175,6 +180,12 @@ export default function ReportCatalogPage() {
     () => parseCatalogFamiliesParam(searchParams.get('families')),
     [searchParams],
   );
+  /** `fresa` = Sea/Air/Accounts/My Reports table; `strips` = advanced family strips. */
+  const catalogView = searchParams.get('view') === 'strips' ? 'strips' : 'fresa';
+  const fresaFocusColumn = useMemo((): FresaPageColumnId | null => {
+    if (family === 'all') return null;
+    return fresaColumnForFamily(family);
+  }, [family]);
 
   const [searchInput, setSearchInput] = useState(() => searchParams.get('q') || '');
   const searchQuery = searchInput.trim();
@@ -1032,7 +1043,7 @@ export default function ReportCatalogPage() {
             ? ` · families: ${familiesFilter.map((f) => reportFamilyLabel(f)).join(', ')}`
             : ''}
           . Generate prefers a live backend pack when ready; otherwise the Fresa sample layout
-          with this record overlaid and {REPORT_BRANDING.brandName} logo. Default invoice/quotation
+          with this record overlaid and your registered company name/logo. Default invoice/quotation
           PDF buttons are unchanged.
         </div>
       ) : null}
@@ -1041,7 +1052,7 @@ export default function ReportCatalogPage() {
         <div>
           <h2 className={appType.pageTitle}>Sample report formats</h2>
           <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
-            Inspired by{' '}
+            Same layout as{' '}
             <a
               className="underline underline-offset-2"
               href="https://fresatechnologies.com/sample-report-formats/"
@@ -1050,9 +1061,9 @@ export default function ReportCatalogPage() {
             >
               Fresa sample report formats
             </a>
-            . Client previews use {REPORT_BRANDING.brandName} logo + dummy data — exact
-            Fresa pixel match needs backend packs · {metaTotal} of {completeReportTotal}{' '}
-            registered
+            {' '}
+            ({FRESA_PAGE_COLUMNS.map((c) => c.title).join(' · ')}). Registered company name and
+            logo appear on every report · {metaTotal} of {completeReportTotal} formats
             {isReportSearchActive(searchQuery) ||
             family !== 'all' ||
             familiesFilter.length > 0 ||
@@ -1195,118 +1206,151 @@ export default function ReportCatalogPage() {
         </div>
       </div>
 
-      <InvoiceFormatBrowseStrip
-        visible={showInvoiceFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectInvoiceFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+      <div className="flex flex-wrap items-center gap-2">
+        <span className="text-xs font-medium text-[var(--color-neutral-500)]">Browse as</span>
+        <Button
+          type="button"
+          size="sm"
+          variant={catalogView === 'fresa' ? 'primary' : 'secondary'}
+          onClick={() => patchParams({ view: null })}
+        >
+          Fresa page (Sea / Air / Accounts / My Reports)
+        </Button>
+        <Button
+          type="button"
+          size="sm"
+          variant={catalogView === 'strips' ? 'primary' : 'secondary'}
+          onClick={() => patchParams({ view: 'strips' })}
+        >
+          Advanced family strips
+        </Button>
+      </div>
 
-      <AccountsFormatBrowseStrip
-        visible={showAccountsFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectAccountsFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+      {catalogView === 'fresa' ? (
+        <FresaSamplePageTable
+          items={items}
+          selectedCode={selectedCode}
+          onSelect={selectTemplate}
+          loading={listLoading}
+          emptyHint="No reports match these filters."
+          focusColumn={fresaFocusColumn}
+        />
+      ) : (
+        <>
+          <InvoiceFormatBrowseStrip
+            visible={showInvoiceFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectInvoiceFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <WmsFormatBrowseStrip
-        visible={showWmsFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectWmsFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <AccountsFormatBrowseStrip
+            visible={showAccountsFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectAccountsFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <ArrivalNoticeFormatBrowseStrip
-        visible={showArrivalNoticeFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectArrivalNoticeFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <WmsFormatBrowseStrip
+            visible={showWmsFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectWmsFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <DeliveryOrderFormatBrowseStrip
-        visible={showDeliveryOrderFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectDeliveryOrderFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <ArrivalNoticeFormatBrowseStrip
+            visible={showArrivalNoticeFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectArrivalNoticeFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <HawbFormatBrowseStrip
-        visible={showHawbFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectHawbFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <DeliveryOrderFormatBrowseStrip
+            visible={showDeliveryOrderFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectDeliveryOrderFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <HblFormatBrowseStrip
-        visible={showHblFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectHblFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <HawbFormatBrowseStrip
+            visible={showHawbFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectHawbFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <OtherReportsFormatBrowseStrip
-        visible={showOtherReportsFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectOtherReportsFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <HblFormatBrowseStrip
+            visible={showHblFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectHblFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <QuotationFormatBrowseStrip
-        visible={showQuotationFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectQuotationFormatCode}
-        searchQuery={searchQuery}
-        // Deep-link with quotation_id: show all quotation formats (don't hide via family allow-list).
-        allowedCodes={quotationId ? null : allowedCodes}
-      />
+          <OtherReportsFormatBrowseStrip
+            visible={showOtherReportsFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectOtherReportsFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <OpsListFormatBrowseStrip
-        visible={showOpsListFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectOpsListFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <QuotationFormatBrowseStrip
+            visible={showQuotationFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectQuotationFormatCode}
+            searchQuery={searchQuery}
+            // Deep-link with quotation_id: show all quotation formats (don't hide via family allow-list).
+            allowedCodes={quotationId ? null : allowedCodes}
+          />
 
-      <CommercialExtraFormatBrowseStrip
-        visible={showCommercialExtraFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectCommercialExtraFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <OpsListFormatBrowseStrip
+            visible={showOpsListFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectOpsListFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <SeaDocsExtraFormatBrowseStrip
-        visible={showSeaDocsExtraFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectSeaDocsExtraFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <CommercialExtraFormatBrowseStrip
+            visible={showCommercialExtraFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectCommercialExtraFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <LeftoverFormatBrowseStrip
-        visible={showLeftoverFormatStrip}
-        selectedCode={selectedCode || undefined}
-        onSelect={selectLeftoverFormatCode}
-        searchQuery={searchQuery}
-        allowedCodes={allowedCodes}
-      />
+          <SeaDocsExtraFormatBrowseStrip
+            visible={showSeaDocsExtraFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectSeaDocsExtraFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
 
-      <ReportCatalogBrowseList
-        items={items}
-        selectedCode={selectedCode}
-        onSelect={selectTemplate}
-        loading={listLoading}
-        emptyHint="No reports match these filters."
-      />
+          <LeftoverFormatBrowseStrip
+            visible={showLeftoverFormatStrip}
+            selectedCode={selectedCode || undefined}
+            onSelect={selectLeftoverFormatCode}
+            searchQuery={searchQuery}
+            allowedCodes={allowedCodes}
+          />
+
+          <ReportCatalogBrowseList
+            items={items}
+            selectedCode={selectedCode}
+            onSelect={selectTemplate}
+            loading={listLoading}
+            emptyHint="No reports match these filters."
+          />
+        </>
+      )}
 
       {showClientLayoutPreview && hasInvoiceLayout ? (
         <InvoiceFormatAutoPdf

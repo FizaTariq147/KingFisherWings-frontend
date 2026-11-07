@@ -1,7 +1,7 @@
 import type { ReportTemplateMeta } from '../types/reportCatalog.types';
 
-/** Auto-generated registry — unsupported HAWB codes pruned. Refresh via sync-report-registry-from-layouts.mjs when layouts change. */
-export const FRESA_REPORT_REGISTRY = [
+/** Auto-generated registry — synced from fresaReportCatalogComplete (852). */
+export const FRESA_REPORT_REGISTRY: ReportTemplateMeta[] = [
   {
     "code": "ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT",
     "name": "Activity Completed Jobs List Report Format",
@@ -194,326 +194,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 6,
     "gapStatus": "covered_document_pdf",
     "description": "KingFisher layout PDF: Advance Shipping Note Location Wise-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_2",
-    "name": "Advance Shipping Note Report Format-2",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Advance Shipping Note Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_3",
-    "name": "Advance Shipping Note Report Format-3",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Advance Shipping Note Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_4",
-    "name": "Advance Shipping Note Report Format-4",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Advance Shipping Note Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_5",
-    "name": "Advance Shipping Note Report Format-5",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Advance Shipping Note Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_6",
-    "name": "Advance Shipping Note Report Format-6",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Advance Shipping Note Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_7",
-    "name": "Advance Shipping Note Report Format-7",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Advance Shipping Note Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_8",
-    "name": "Advance Shipping Note Report Format-8",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Advance Shipping Note Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_9",
-    "name": "Advance Shipping Note Report Format-9",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Advance Shipping Note Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
     "hasClientLayout": true,
     "layoutStore": "wmsFormatUiLayouts",
     "layoutBucket": "wms",
@@ -920,6 +600,46 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "wms.asn"
   },
   {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_2",
+    "name": "Advance Shipping Note Report Format-2",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Advance Shipping Note Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
     "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_20",
     "name": "Advance Shipping Note Report Format-20",
     "family": "wms",
@@ -974,6 +694,286 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 6,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Advance Shipping Note Report Format-21 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_3",
+    "name": "Advance Shipping Note Report Format-3",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Advance Shipping Note Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_4",
+    "name": "Advance Shipping Note Report Format-4",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Advance Shipping Note Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_5",
+    "name": "Advance Shipping Note Report Format-5",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Advance Shipping Note Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_6",
+    "name": "Advance Shipping Note Report Format-6",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Advance Shipping Note Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_7",
+    "name": "Advance Shipping Note Report Format-7",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Advance Shipping Note Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_8",
+    "name": "Advance Shipping Note Report Format-8",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Advance Shipping Note Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_9",
+    "name": "Advance Shipping Note Report Format-9",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Advance Shipping Note Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -1435,214 +1435,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.arrival_notice"
   },
   {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_2_CARGO_ARRIVAL_NOTICE_JASPER",
-    "name": "Arrival Notice Report Format-2 Cargo Arrival Notice Jasper",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Arrival Notice Report Format-2 Cargo Arrival Notice Jasper Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "arrivalNoticeFormatUiLayouts",
-    "layoutBucket": "arrival",
-    "suggestedPackKey": "sea.arrival_notice"
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA",
-    "name": "Arrival Notice Report Format-3 Arrival Notice USA",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Arrival Notice Report Format-3 Arrival Notice USA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "arrivalNoticeFormatUiLayouts",
-    "layoutBucket": "arrival",
-    "suggestedPackKey": "sea.arrival_notice"
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA",
-    "name": "Arrival Notice Report Format-4 Arrival Notice USA",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Arrival Notice Report Format-4 Arrival Notice USA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "arrivalNoticeFormatUiLayouts",
-    "layoutBucket": "arrival",
-    "suggestedPackKey": "sea.arrival_notice"
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA",
-    "name": "Arrival Notice Report Format-5 Cargo Arrival Notice SEA",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Arrival Notice Report Format-5 Cargo Arrival Notice SEA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "arrivalNoticeFormatUiLayouts",
-    "layoutBucket": "arrival",
-    "suggestedPackKey": "sea.arrival_notice"
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA",
-    "name": "Arrival Notice Report Format-6 Cargo Arrival Notice SEA",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Arrival Notice Report Format-6 Cargo Arrival Notice SEA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "arrivalNoticeFormatUiLayouts",
-    "layoutBucket": "arrival",
-    "suggestedPackKey": "sea.arrival_notice"
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA",
-    "name": "Arrival Notice Report Format-7 Cargo Arrival Notice SEA",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Arrival Notice Report Format-7 Cargo Arrival Notice SEA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "arrivalNoticeFormatUiLayouts",
-    "layoutBucket": "arrival",
-    "suggestedPackKey": "sea.arrival_notice"
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
-    "name": "Arrival Notice Report Format-8 Cargo Arrival Notice SEA Without Charges",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Arrival Notice Report Format-8 Cargo Arrival Notice SEA Without Charges Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "arrivalNoticeFormatUiLayouts",
-    "layoutBucket": "arrival",
-    "suggestedPackKey": "sea.arrival_notice"
-  },
-  {
-    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
-    "name": "Arrival Notice Report Format-9 Cargo Arrival Notice SEA Without Charges",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Arrival Notice Report Format-9 Cargo Arrival Notice SEA Without Charges Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "arrivalNoticeFormatUiLayouts",
-    "layoutBucket": "arrival",
-    "suggestedPackKey": "sea.arrival_notice"
-  },
-  {
     "code": "ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM",
     "name": "Arrival Notice Report Format-10 SEA Arrival Notice FCL Vietnam",
     "family": "sea_docs",
@@ -1889,6 +1681,32 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Arrival Notice Report Format-19 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "arrivalNoticeFormatUiLayouts",
+    "layoutBucket": "arrival",
+    "suggestedPackKey": "sea.arrival_notice"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_2_CARGO_ARRIVAL_NOTICE_JASPER",
+    "name": "Arrival Notice Report Format-2 Cargo Arrival Notice Jasper",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Arrival Notice Report Format-2 Cargo Arrival Notice Jasper Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -2163,6 +1981,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.arrival_notice"
   },
   {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA",
+    "name": "Arrival Notice Report Format-3 Arrival Notice USA",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Arrival Notice Report Format-3 Arrival Notice USA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "arrivalNoticeFormatUiLayouts",
+    "layoutBucket": "arrival",
+    "suggestedPackKey": "sea.arrival_notice"
+  },
+  {
     "code": "ARRIVAL_NOTICE_REPORT_FORMAT_30",
     "name": "Arrival Notice Report Format-30",
     "family": "sea_docs",
@@ -2305,6 +2149,162 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Arrival Notice Report Format-35 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "arrivalNoticeFormatUiLayouts",
+    "layoutBucket": "arrival",
+    "suggestedPackKey": "sea.arrival_notice"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA",
+    "name": "Arrival Notice Report Format-4 Arrival Notice USA",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Arrival Notice Report Format-4 Arrival Notice USA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "arrivalNoticeFormatUiLayouts",
+    "layoutBucket": "arrival",
+    "suggestedPackKey": "sea.arrival_notice"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA",
+    "name": "Arrival Notice Report Format-5 Cargo Arrival Notice SEA",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Arrival Notice Report Format-5 Cargo Arrival Notice SEA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "arrivalNoticeFormatUiLayouts",
+    "layoutBucket": "arrival",
+    "suggestedPackKey": "sea.arrival_notice"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA",
+    "name": "Arrival Notice Report Format-6 Cargo Arrival Notice SEA",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Arrival Notice Report Format-6 Cargo Arrival Notice SEA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "arrivalNoticeFormatUiLayouts",
+    "layoutBucket": "arrival",
+    "suggestedPackKey": "sea.arrival_notice"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA",
+    "name": "Arrival Notice Report Format-7 Cargo Arrival Notice SEA",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Arrival Notice Report Format-7 Cargo Arrival Notice SEA Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "arrivalNoticeFormatUiLayouts",
+    "layoutBucket": "arrival",
+    "suggestedPackKey": "sea.arrival_notice"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+    "name": "Arrival Notice Report Format-8 Cargo Arrival Notice SEA Without Charges",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Arrival Notice Report Format-8 Cargo Arrival Notice SEA Without Charges Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "arrivalNoticeFormatUiLayouts",
+    "layoutBucket": "arrival",
+    "suggestedPackKey": "sea.arrival_notice"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+    "name": "Arrival Notice Report Format-9 Cargo Arrival Notice SEA Without Charges",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Arrival Notice Report Format-9 Cargo Arrival Notice SEA Without Charges Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -2464,6 +2464,32 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Booking Confirmation Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "otherReportsFormatUiLayouts",
+    "layoutBucket": "other",
+    "suggestedPackKey": "sea.booking_confirmation"
+  },
+  {
+    "code": "BOOKING_CONFIRMATION_REPORT_FORMAT_10",
+    "name": "Booking Confirmation Report Format-10",
+    "family": "other",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Booking Confirmation Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -2672,32 +2698,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Booking Confirmation Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "otherReportsFormatUiLayouts",
-    "layoutBucket": "other",
-    "suggestedPackKey": "sea.booking_confirmation"
-  },
-  {
-    "code": "BOOKING_CONFIRMATION_REPORT_FORMAT_10",
-    "name": "Booking Confirmation Report Format-10",
-    "family": "other",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Booking Confirmation Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -3040,214 +3040,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.cargo_manifest"
   },
   {
-    "code": "CARGO_MANIFEST_REPORT_FORMAT_2",
-    "name": "Cargo Manifest Report Format-2",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Cargo Manifest Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "sea.cargo_manifest"
-  },
-  {
-    "code": "CARGO_MANIFEST_REPORT_FORMAT_3",
-    "name": "Cargo Manifest Report Format-3",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Cargo Manifest Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "sea.cargo_manifest"
-  },
-  {
-    "code": "CARGO_MANIFEST_REPORT_FORMAT_4",
-    "name": "Cargo Manifest Report Format-4",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Cargo Manifest Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "sea.cargo_manifest"
-  },
-  {
-    "code": "CARGO_MANIFEST_REPORT_FORMAT_5",
-    "name": "Cargo Manifest Report Format-5",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Cargo Manifest Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "sea.cargo_manifest"
-  },
-  {
-    "code": "CARGO_MANIFEST_REPORT_FORMAT_6",
-    "name": "Cargo Manifest Report Format-6",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Cargo Manifest Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "sea.cargo_manifest"
-  },
-  {
-    "code": "CARGO_MANIFEST_REPORT_FORMAT_7",
-    "name": "Cargo Manifest Report Format-7",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Cargo Manifest Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "sea.cargo_manifest"
-  },
-  {
-    "code": "CARGO_MANIFEST_REPORT_FORMAT_8",
-    "name": "Cargo Manifest Report Format-8",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Cargo Manifest Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "sea.cargo_manifest"
-  },
-  {
-    "code": "CARGO_MANIFEST_REPORT_FORMAT_9",
-    "name": "Cargo Manifest Report Format-9",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Cargo Manifest Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "sea.cargo_manifest"
-  },
-  {
     "code": "CARGO_MANIFEST_REPORT_FORMAT_10",
     "name": "Cargo Manifest Report Format-10",
     "family": "sea_docs",
@@ -3508,6 +3300,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.cargo_manifest"
   },
   {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT_2",
+    "name": "Cargo Manifest Report Format-2",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Cargo Manifest Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "sea.cargo_manifest"
+  },
+  {
     "code": "CARGO_MANIFEST_REPORT_FORMAT_20",
     "name": "Cargo Manifest Report Format-20",
     "family": "sea_docs",
@@ -3546,6 +3364,188 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Cargo Manifest Report Format-21 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "sea.cargo_manifest"
+  },
+  {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT_3",
+    "name": "Cargo Manifest Report Format-3",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Cargo Manifest Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "sea.cargo_manifest"
+  },
+  {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT_4",
+    "name": "Cargo Manifest Report Format-4",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Cargo Manifest Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "sea.cargo_manifest"
+  },
+  {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT_5",
+    "name": "Cargo Manifest Report Format-5",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Cargo Manifest Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "sea.cargo_manifest"
+  },
+  {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT_6",
+    "name": "Cargo Manifest Report Format-6",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Cargo Manifest Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "sea.cargo_manifest"
+  },
+  {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT_7",
+    "name": "Cargo Manifest Report Format-7",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Cargo Manifest Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "sea.cargo_manifest"
+  },
+  {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT_8",
+    "name": "Cargo Manifest Report Format-8",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Cargo Manifest Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "sea.cargo_manifest"
+  },
+  {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT_9",
+    "name": "Cargo Manifest Report Format-9",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Cargo Manifest Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -4108,6 +4108,44 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "commercial.credit_note"
   },
   {
+    "code": "CREDIT_NOTE_REPORT_FORMAT_10",
+    "name": "Credit Note Report Format-10",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Credit Note Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.credit_note"
+  },
+  {
     "code": "CREDIT_NOTE_REPORT_FORMAT_2",
     "name": "Credit Note Report Format-2",
     "family": "commercial",
@@ -4412,44 +4450,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "commercial.credit_note"
   },
   {
-    "code": "CREDIT_NOTE_REPORT_FORMAT_10",
-    "name": "Credit Note Report Format-10",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Credit Note Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.credit_note"
-  },
-  {
     "code": "DAILY_STATUS_REPORT_FORMAT_1",
     "name": "Daily Status Report Format-1",
     "family": "ops_list",
@@ -4506,327 +4506,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 1,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Daily Status Report Format 1 (DSR) List Report Format Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "DAILY_STATUS_REPORT_FORMAT_2",
-    "name": "Daily Status Report Format-2",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Daily Status Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "otherReportsFormatUiLayouts",
-    "layoutBucket": "other",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "DAILY_STATUS_REPORT_FORMAT_3",
-    "name": "Daily Status Report Format-3",
-    "family": "ops_list",
-    "contexts": [
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Daily Status Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "DAILY_STATUS_REPORT_FORMAT_4",
-    "name": "Daily Status Report Format-4",
-    "family": "ops_list",
-    "contexts": [
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Daily Status Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "DAILY_STATUS_REPORT_FORMAT_5",
-    "name": "Daily Status Report Format-5",
-    "family": "ops_list",
-    "contexts": [
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Daily Status Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "DAILY_STATUS_REPORT_FORMAT_6",
-    "name": "Daily Status Report Format-6",
-    "family": "ops_list",
-    "contexts": [
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Daily Status Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "DAILY_STATUS_REPORT_FORMAT_7",
-    "name": "Daily Status Report Format-7",
-    "family": "ops_list",
-    "contexts": [
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Daily Status Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "DAILY_STATUS_REPORT_FORMAT_8",
-    "name": "Daily Status Report Format-8",
-    "family": "ops_list",
-    "contexts": [
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Daily Status Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "DAILY_STATUS_REPORT_FORMAT_9",
-    "name": "Daily Status Report Format-9",
-    "family": "ops_list",
-    "contexts": [
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Daily Status Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -5253,6 +4932,47 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "ops.list_generic"
   },
   {
+    "code": "DAILY_STATUS_REPORT_FORMAT_2",
+    "name": "Daily Status Report Format-2",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Daily Status Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "otherReportsFormatUiLayouts",
+    "layoutBucket": "other",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
     "code": "DAILY_STATUS_REPORT_FORMAT_20",
     "name": "Daily Status Report Format-20",
     "family": "ops_list",
@@ -5373,6 +5093,286 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "ops.list_generic"
   },
   {
+    "code": "DAILY_STATUS_REPORT_FORMAT_3",
+    "name": "Daily Status Report Format-3",
+    "family": "ops_list",
+    "contexts": [
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Daily Status Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_4",
+    "name": "Daily Status Report Format-4",
+    "family": "ops_list",
+    "contexts": [
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Daily Status Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_5",
+    "name": "Daily Status Report Format-5",
+    "family": "ops_list",
+    "contexts": [
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Daily Status Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_6",
+    "name": "Daily Status Report Format-6",
+    "family": "ops_list",
+    "contexts": [
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Daily Status Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_7",
+    "name": "Daily Status Report Format-7",
+    "family": "ops_list",
+    "contexts": [
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Daily Status Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_8",
+    "name": "Daily Status Report Format-8",
+    "family": "ops_list",
+    "contexts": [
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Daily Status Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_9",
+    "name": "Daily Status Report Format-9",
+    "family": "ops_list",
+    "contexts": [
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Daily Status Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
     "code": "DEBIT_NOTE_REPORT_FORMAT_1",
     "name": "Debit Note Report Format-1",
     "family": "commercial",
@@ -5385,6 +5385,44 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 4,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Debit Note Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.debit_note"
+  },
+  {
+    "code": "DEBIT_NOTE_REPORT_FORMAT_10",
+    "name": "Debit Note Report Format-10",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Debit Note Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -5715,44 +5753,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "commercial.debit_note"
   },
   {
-    "code": "DEBIT_NOTE_REPORT_FORMAT_10",
-    "name": "Debit Note Report Format-10",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Debit Note Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.debit_note"
-  },
-  {
     "code": "DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT",
     "name": "Delivery Confirmation OSA Report Format",
     "family": "sea_docs",
@@ -5809,214 +5809,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 3,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Delivery Order AIR Jasper Report Format Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "deliveryOrderFormatUiLayouts",
-    "layoutBucket": "delivery",
-    "suggestedPackKey": "air.delivery_order"
-  },
-  {
-    "code": "DELIVERY_ORDER_REPORT_FORMAT_2",
-    "name": "Delivery Order Report Format-2",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Delivery Order Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.delivery_order"
-  },
-  {
-    "code": "DELIVERY_ORDER_REPORT_FORMAT_3",
-    "name": "Delivery Order Report Format-3",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Delivery Order Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "deliveryOrderFormatUiLayouts",
-    "layoutBucket": "delivery",
-    "suggestedPackKey": "air.delivery_order"
-  },
-  {
-    "code": "DELIVERY_ORDER_REPORT_FORMAT_4",
-    "name": "Delivery Order Report Format-4",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Delivery Order Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.delivery_order"
-  },
-  {
-    "code": "DELIVERY_ORDER_REPORT_FORMAT_5",
-    "name": "Delivery Order Report Format-5",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Delivery Order Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.delivery_order"
-  },
-  {
-    "code": "DELIVERY_ORDER_REPORT_FORMAT_6",
-    "name": "Delivery Order Report Format-6",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Delivery Order Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.delivery_order"
-  },
-  {
-    "code": "DELIVERY_ORDER_REPORT_FORMAT_7",
-    "name": "Delivery Order Report Format-7",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Delivery Order Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.delivery_order"
-  },
-  {
-    "code": "DELIVERY_ORDER_REPORT_FORMAT_8",
-    "name": "Delivery Order Report Format-8",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Delivery Order Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "deliveryOrderFormatUiLayouts",
-    "layoutBucket": "delivery",
-    "suggestedPackKey": "air.delivery_order"
-  },
-  {
-    "code": "DELIVERY_ORDER_REPORT_FORMAT_9",
-    "name": "Delivery Order Report Format-9",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Delivery Order Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -6247,6 +6039,214 @@ export const FRESA_REPORT_REGISTRY = [
     "layoutStore": "deliveryOrderFormatUiLayouts",
     "layoutBucket": "delivery",
     "suggestedPackKey": "sea.delivery_order"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_2",
+    "name": "Delivery Order Report Format-2",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Delivery Order Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.delivery_order"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_3",
+    "name": "Delivery Order Report Format-3",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Delivery Order Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "deliveryOrderFormatUiLayouts",
+    "layoutBucket": "delivery",
+    "suggestedPackKey": "air.delivery_order"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_4",
+    "name": "Delivery Order Report Format-4",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Delivery Order Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.delivery_order"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_5",
+    "name": "Delivery Order Report Format-5",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Delivery Order Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.delivery_order"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_6",
+    "name": "Delivery Order Report Format-6",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Delivery Order Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.delivery_order"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_7",
+    "name": "Delivery Order Report Format-7",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Delivery Order Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.delivery_order"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_8",
+    "name": "Delivery Order Report Format-8",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Delivery Order Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "deliveryOrderFormatUiLayouts",
+    "layoutBucket": "delivery",
+    "suggestedPackKey": "air.delivery_order"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_9",
+    "name": "Delivery Order Report Format-9",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Delivery Order Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "deliveryOrderFormatUiLayouts",
+    "layoutBucket": "delivery",
+    "suggestedPackKey": "air.delivery_order"
   },
   {
     "code": "DELIVERY_ORDER_REPORT_FORMAT_FCL_VIETNAM",
@@ -6846,24 +6846,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.delivery_order"
   },
   {
-    "code": "FG_DELIVERY_ORDER_FORMAT_8",
-    "name": "FG Delivery Order Format-8",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: FG Delivery Order Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "deliveryOrderFormatUiLayouts",
-    "layoutBucket": "delivery",
-    "suggestedPackKey": "sea.delivery_order"
-  },
-  {
     "code": "FG_DELIVERY_ORDER_FORMAT_16",
     "name": "FG Delivery Order Format-16",
     "family": "sea_docs",
@@ -6882,6 +6864,24 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.delivery_order"
   },
   {
+    "code": "FG_DELIVERY_ORDER_FORMAT_8",
+    "name": "FG Delivery Order Format-8",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: FG Delivery Order Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "deliveryOrderFormatUiLayouts",
+    "layoutBucket": "delivery",
+    "suggestedPackKey": "sea.delivery_order"
+  },
+  {
     "code": "FG_DELIVERY_ORDER_SEA_FORMAT_1",
     "name": "FG Delivery Order SEA Format-1",
     "family": "sea_docs",
@@ -6894,6 +6894,24 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "KingFisher layout PDF: FG Delivery Order SEA Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "deliveryOrderFormatUiLayouts",
+    "layoutBucket": "delivery",
+    "suggestedPackKey": "sea.delivery_order"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_SEA_FORMAT_10",
+    "name": "FG Delivery Order SEA Format-10",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: FG Delivery Order SEA Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "hasClientLayout": true,
     "layoutStore": "deliveryOrderFormatUiLayouts",
     "layoutBucket": "delivery",
@@ -6966,24 +6984,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "KingFisher layout PDF: FG Delivery Order SEA Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "deliveryOrderFormatUiLayouts",
-    "layoutBucket": "delivery",
-    "suggestedPackKey": "sea.delivery_order"
-  },
-  {
-    "code": "FG_DELIVERY_ORDER_SEA_FORMAT_10",
-    "name": "FG Delivery Order SEA Format-10",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: FG Delivery Order SEA Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "hasClientLayout": true,
     "layoutStore": "deliveryOrderFormatUiLayouts",
     "layoutBucket": "delivery",
@@ -7376,6 +7376,266 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "air.hawb_draft"
   },
   {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_10",
+    "name": "HAWB Draft Report Format-10",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_11",
+    "name": "HAWB Draft Report Format-11",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-11 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_12",
+    "name": "HAWB Draft Report Format-12",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-12 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_13",
+    "name": "HAWB Draft Report Format-13",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-13 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_14",
+    "name": "HAWB Draft Report Format-14",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-14 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_15",
+    "name": "HAWB Draft Report Format-15",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-15 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_16",
+    "name": "HAWB Draft Report Format-16",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-16 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_17",
+    "name": "HAWB Draft Report Format-17",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-17 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_18",
+    "name": "HAWB Draft Report Format-18",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-18 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_19",
+    "name": "HAWB Draft Report Format-19",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-19 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
     "code": "HAWB_DRAFT_REPORT_FORMAT_2",
     "name": "HAWB Draft Report Format-2",
     "family": "air_docs",
@@ -7388,6 +7648,422 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 3,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: HAWB Draft Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_20",
+    "name": "HAWB Draft Report Format-20",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-20 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_21",
+    "name": "HAWB Draft Report Format-21",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-21 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_22",
+    "name": "HAWB Draft Report Format-22",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-22 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_23",
+    "name": "HAWB Draft Report Format-23",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-23 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_24",
+    "name": "HAWB Draft Report Format-24",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-24 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_25",
+    "name": "HAWB Draft Report Format-25",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-25 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_26",
+    "name": "HAWB Draft Report Format-26",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-26 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_27",
+    "name": "HAWB Draft Report Format-27",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-27 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_3",
+    "name": "HAWB Draft Report Format-3",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_4",
+    "name": "HAWB Draft Report Format-4",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_5",
+    "name": "HAWB Draft Report Format-5",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_6",
+    "name": "HAWB Draft Report Format-6",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_7",
+    "name": "HAWB Draft Report Format-7",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_8",
+    "name": "HAWB Draft Report Format-8",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_9",
+    "name": "HAWB Draft Report Format-9",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Draft Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hawbFormatUiLayouts",
+    "layoutBucket": "hawb",
+    "suggestedPackKey": "air.hawb_draft"
+  },
+  {
+    "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+    "name": "HAWB Original Pre Printed Report Format-1",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: HAWB Original Pre Printed Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -7428,188 +8104,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "air.hawb_draft"
   },
   {
-    "code": "HBL_DRAFT_REPORT_FORMAT_2",
-    "name": "HBL Draft Report Format-2",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "House Bill of Lading draft Jasper format 2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_4",
-    "name": "HBL Draft Report Format-4",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "House Bill of Lading draft Jasper format 3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_5",
-    "name": "HBL Draft Report Format-5",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "House Bill of Lading draft Jasper format 4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_6",
-    "name": "HBL Draft Report Format-6",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "House Bill of Lading draft Jasper format 5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_7",
-    "name": "HBL Draft Report Format-7",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "House Bill of Lading draft Jasper format 6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_8",
-    "name": "HBL Draft Report Format-8",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "House Bill of Lading draft Jasper format 7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_9",
-    "name": "HBL Draft Report Format-9",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "House Bill of Lading draft Jasper format 8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
     "code": "HBL_DRAFT_REPORT_FORMAT_10",
     "name": "HBL Draft Report Format-10",
     "family": "sea_docs",
@@ -7630,6 +8124,96 @@ export const FRESA_REPORT_REGISTRY = [
         "required": true
       }
     ],
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_100",
+    "name": "HBL Draft Report Format-100",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-100 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_101",
+    "name": "HBL Draft Report Format-101",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-101 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_102",
+    "name": "HBL Draft Report Format-102",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-102 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_107",
+    "name": "HBL Draft Report Format-107",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-107 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_109",
+    "name": "HBL Draft Report Format-109",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-109 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "hasClientLayout": true,
     "layoutStore": "hblFormatUiLayouts",
     "layoutBucket": "hbl",
@@ -7662,6 +8246,78 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.hbl_draft"
   },
   {
+    "code": "HBL_DRAFT_REPORT_FORMAT_114",
+    "name": "HBL Draft Report Format-114",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-114 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_116",
+    "name": "HBL Draft Report Format-116",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-116 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_117",
+    "name": "HBL Draft Report Format-117",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-117 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_118",
+    "name": "HBL Draft Report Format-118",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-118 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
     "code": "HBL_DRAFT_REPORT_FORMAT_12",
     "name": "HBL Draft Report Format-12",
     "family": "sea_docs",
@@ -7682,6 +8338,96 @@ export const FRESA_REPORT_REGISTRY = [
         "required": true
       }
     ],
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_120",
+    "name": "HBL Draft Report Format-120",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-120 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_122",
+    "name": "HBL Draft Report Format-122",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-122 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_127",
+    "name": "HBL Draft Report Format-127",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-127 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_128",
+    "name": "HBL Draft Report Format-128",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-128 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_129",
+    "name": "HBL Draft Report Format-129",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-129 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "hasClientLayout": true,
     "layoutStore": "hblFormatUiLayouts",
     "layoutBucket": "hbl",
@@ -7714,6 +8460,150 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.hbl_draft"
   },
   {
+    "code": "HBL_DRAFT_REPORT_FORMAT_130",
+    "name": "HBL Draft Report Format-130",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-130 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_132",
+    "name": "HBL Draft Report Format-132",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-132 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_134",
+    "name": "HBL Draft Report Format-134",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-134 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_135",
+    "name": "HBL Draft Report Format-135",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-135 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_136",
+    "name": "HBL Draft Report Format-136",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-136 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_137",
+    "name": "HBL Draft Report Format-137",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-137 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_138",
+    "name": "HBL Draft Report Format-138",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-138 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_139",
+    "name": "HBL Draft Report Format-139",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-139 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
     "code": "HBL_DRAFT_REPORT_FORMAT_14",
     "name": "HBL Draft Report Format-14",
     "family": "sea_docs",
@@ -7740,6 +8630,186 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.hbl_draft"
   },
   {
+    "code": "HBL_DRAFT_REPORT_FORMAT_140",
+    "name": "HBL Draft Report Format-140",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-140 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_141",
+    "name": "HBL Draft Report Format-141",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-141 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_142",
+    "name": "HBL Draft Report Format-142",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-142 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_143",
+    "name": "HBL Draft Report Format-143",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-143 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_144",
+    "name": "HBL Draft Report Format-144",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-144 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_145",
+    "name": "HBL Draft Report Format-145",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-145 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_146",
+    "name": "HBL Draft Report Format-146",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-146 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_147",
+    "name": "HBL Draft Report Format-147",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-147 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_148",
+    "name": "HBL Draft Report Format-148",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-148 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_149",
+    "name": "HBL Draft Report Format-149",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-149 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
     "code": "HBL_DRAFT_REPORT_FORMAT_15",
     "name": "HBL Draft Report Format-15",
     "family": "sea_docs",
@@ -7760,6 +8830,24 @@ export const FRESA_REPORT_REGISTRY = [
         "required": true
       }
     ],
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_151",
+    "name": "HBL Draft Report Format-151",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-151 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "hasClientLayout": true,
     "layoutStore": "hblFormatUiLayouts",
     "layoutBucket": "hbl",
@@ -7818,6 +8906,42 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.hbl_draft"
   },
   {
+    "code": "HBL_DRAFT_REPORT_FORMAT_171",
+    "name": "HBL Draft Report Format-171",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-171 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_172",
+    "name": "HBL Draft Report Format-172",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: HBL Draft Report Format-172 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
     "code": "HBL_DRAFT_REPORT_FORMAT_18",
     "name": "HBL Draft Report Format-18",
     "family": "sea_docs",
@@ -7856,6 +8980,32 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "House Bill of Lading draft Jasper format 18 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_2",
+    "name": "HBL Draft Report Format-2",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "House Bill of Lading draft Jasper format 2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -8390,6 +9540,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.hbl_draft"
   },
   {
+    "code": "HBL_DRAFT_REPORT_FORMAT_4",
+    "name": "HBL Draft Report Format-4",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "House Bill of Lading draft Jasper format 3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
     "code": "HBL_DRAFT_REPORT_FORMAT_40",
     "name": "HBL Draft Report Format-40",
     "family": "sea_docs",
@@ -8650,6 +9826,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.hbl_draft"
   },
   {
+    "code": "HBL_DRAFT_REPORT_FORMAT_5",
+    "name": "HBL Draft Report Format-5",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "House Bill of Lading draft Jasper format 4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
     "code": "HBL_DRAFT_REPORT_FORMAT_50",
     "name": "HBL Draft Report Format-50",
     "family": "sea_docs",
@@ -8796,6 +9998,32 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "KingFisher layout PDF: HBL Draft Report Format-59 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_6",
+    "name": "HBL Draft Report Format-6",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "House Bill of Lading draft Jasper format 5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
     "hasClientLayout": true,
     "layoutStore": "hblFormatUiLayouts",
     "layoutBucket": "hbl",
@@ -8964,6 +10192,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.hbl_draft"
   },
   {
+    "code": "HBL_DRAFT_REPORT_FORMAT_7",
+    "name": "HBL Draft Report Format-7",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "House Bill of Lading draft Jasper format 6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
     "code": "HBL_DRAFT_REPORT_FORMAT_70",
     "name": "HBL Draft Report Format-70",
     "family": "sea_docs",
@@ -9048,6 +10302,32 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "KingFisher layout PDF: HBL Draft Report Format-77 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_8",
+    "name": "HBL Draft Report Format-8",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "House Bill of Lading draft Jasper format 7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
     "hasClientLayout": true,
     "layoutStore": "hblFormatUiLayouts",
     "layoutBucket": "hbl",
@@ -9180,6 +10460,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.hbl_draft"
   },
   {
+    "code": "HBL_DRAFT_REPORT_FORMAT_9",
+    "name": "HBL Draft Report Format-9",
+    "family": "sea_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "House Bill of Lading draft Jasper format 8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "hblFormatUiLayouts",
+    "layoutBucket": "hbl",
+    "suggestedPackKey": "sea.hbl_draft"
+  },
+  {
     "code": "HBL_DRAFT_REPORT_FORMAT_90",
     "name": "HBL Draft Report Format-90",
     "family": "sea_docs",
@@ -9282,636 +10588,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "KingFisher layout PDF: HBL Draft Report Format-99 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_100",
-    "name": "HBL Draft Report Format-100",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-100 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_101",
-    "name": "HBL Draft Report Format-101",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-101 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_102",
-    "name": "HBL Draft Report Format-102",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-102 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_107",
-    "name": "HBL Draft Report Format-107",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-107 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_109",
-    "name": "HBL Draft Report Format-109",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-109 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_114",
-    "name": "HBL Draft Report Format-114",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-114 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_116",
-    "name": "HBL Draft Report Format-116",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-116 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_117",
-    "name": "HBL Draft Report Format-117",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-117 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_118",
-    "name": "HBL Draft Report Format-118",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-118 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_120",
-    "name": "HBL Draft Report Format-120",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-120 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_122",
-    "name": "HBL Draft Report Format-122",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-122 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_127",
-    "name": "HBL Draft Report Format-127",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-127 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_128",
-    "name": "HBL Draft Report Format-128",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-128 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_129",
-    "name": "HBL Draft Report Format-129",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-129 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_130",
-    "name": "HBL Draft Report Format-130",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-130 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_132",
-    "name": "HBL Draft Report Format-132",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-132 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_134",
-    "name": "HBL Draft Report Format-134",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-134 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_135",
-    "name": "HBL Draft Report Format-135",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-135 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_136",
-    "name": "HBL Draft Report Format-136",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-136 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_137",
-    "name": "HBL Draft Report Format-137",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-137 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_138",
-    "name": "HBL Draft Report Format-138",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-138 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_139",
-    "name": "HBL Draft Report Format-139",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-139 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_140",
-    "name": "HBL Draft Report Format-140",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-140 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_141",
-    "name": "HBL Draft Report Format-141",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-141 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_142",
-    "name": "HBL Draft Report Format-142",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-142 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_143",
-    "name": "HBL Draft Report Format-143",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-143 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_144",
-    "name": "HBL Draft Report Format-144",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-144 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_145",
-    "name": "HBL Draft Report Format-145",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-145 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_146",
-    "name": "HBL Draft Report Format-146",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-146 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_147",
-    "name": "HBL Draft Report Format-147",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-147 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_148",
-    "name": "HBL Draft Report Format-148",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-148 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_149",
-    "name": "HBL Draft Report Format-149",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-149 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_151",
-    "name": "HBL Draft Report Format-151",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-151 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_171",
-    "name": "HBL Draft Report Format-171",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-171 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "hblFormatUiLayouts",
-    "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
-  },
-  {
-    "code": "HBL_DRAFT_REPORT_FORMAT_172",
-    "name": "HBL Draft Report Format-172",
-    "family": "sea_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: HBL Draft Report Format-172 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "hasClientLayout": true,
     "layoutStore": "hblFormatUiLayouts",
     "layoutBucket": "hbl",
@@ -10046,214 +10722,6 @@ export const FRESA_REPORT_REGISTRY = [
     "layoutStore": "invoiceFormatUiLayouts",
     "layoutBucket": "invoice",
     "suggestedPackKey": "commercial.invoice_tax_india_1"
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
-    "name": "Invoice Report Format-2 Tax Invoice India",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "Invoice Report Format-2 Tax Invoice India — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "invoice_id",
-        "label": "Invoice",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "invoiceFormatUiLayouts",
-    "layoutBucket": "invoice",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
-    "name": "Invoice Report Format-3 Summary Invoice",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "Invoice Report Format-3 Summary Invoice — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "invoice_id",
-        "label": "Invoice",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "invoiceFormatUiLayouts",
-    "layoutBucket": "invoice",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
-    "name": "Invoice Report Format-4 Standard Tax Invoice",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "Invoice Report Format-4 Standard Tax Invoice — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "invoice_id",
-        "label": "Invoice",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "invoiceFormatUiLayouts",
-    "layoutBucket": "invoice",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
-    "name": "Invoice Report Format-5 Tax Invoice India",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "Invoice Report Format-5 Tax Invoice India — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "invoice_id",
-        "label": "Invoice",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "invoiceFormatUiLayouts",
-    "layoutBucket": "invoice",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
-    "name": "Invoice Report Format-6 Simple Invoice (India)",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "Invoice Report Format-6 Simple Invoice (India) — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "invoice_id",
-        "label": "Invoice",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "invoiceFormatUiLayouts",
-    "layoutBucket": "invoice",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
-    "name": "Invoice Report Format-7 Simple Invoice",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "Invoice Report Format-7 Simple Invoice — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "invoice_id",
-        "label": "Invoice",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "invoiceFormatUiLayouts",
-    "layoutBucket": "invoice",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
-    "name": "Invoice Report Format-8 Standard Invoice Arabic",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "Invoice Report Format-8 Standard Invoice Arabic — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "invoice_id",
-        "label": "Invoice",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "invoiceFormatUiLayouts",
-    "layoutBucket": "invoice",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
-    "name": "Invoice Report Format-9 Standard Invoice USA",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "Invoice Report Format-9 Standard Invoice USA — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "invoice_id",
-        "label": "Invoice",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "invoiceFormatUiLayouts",
-    "layoutBucket": "invoice",
-    "suggestedPackKey": "commercial.invoice_generic"
   },
   {
     "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
@@ -10502,6 +10970,32 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 4,
     "gapStatus": "covered_document_pdf",
     "description": "Invoice Report Format-19 Debit Note Vietnam — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "invoice_id",
+        "label": "Invoice",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "invoiceFormatUiLayouts",
+    "layoutBucket": "invoice",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+    "name": "Invoice Report Format-2 Tax Invoice India",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "Invoice Report Format-2 Tax Invoice India — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "invoice_id",
@@ -10872,6 +11366,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "commercial.invoice_generic"
   },
   {
+    "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+    "name": "Invoice Report Format-3 Summary Invoice",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "Invoice Report Format-3 Summary Invoice — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "invoice_id",
+        "label": "Invoice",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "invoiceFormatUiLayouts",
+    "layoutBucket": "invoice",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
     "code": "INVOICE_REPORT_FORMAT_30",
     "name": "Invoice Report Format Overseas Debit Note Format-2",
     "family": "commercial",
@@ -11130,6 +11650,32 @@ export const FRESA_REPORT_REGISTRY = [
         "label": "Branch",
         "type": "uuid",
         "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "invoiceFormatUiLayouts",
+    "layoutBucket": "invoice",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+    "name": "Invoice Report Format-4 Standard Tax Invoice",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "Invoice Report Format-4 Standard Tax Invoice — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "invoice_id",
+        "label": "Invoice",
+        "type": "uuid",
+        "required": true
       }
     ],
     "hasClientLayout": true,
@@ -11518,6 +12064,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "commercial.invoice_generic"
   },
   {
+    "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+    "name": "Invoice Report Format-5 Tax Invoice India",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "Invoice Report Format-5 Tax Invoice India — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "invoice_id",
+        "label": "Invoice",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "invoiceFormatUiLayouts",
+    "layoutBucket": "invoice",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
     "code": "INVOICE_REPORT_FORMAT_50",
     "name": "Invoice Report Format-50 Standard Invoice Malaysia",
     "family": "commercial",
@@ -11890,6 +12462,32 @@ export const FRESA_REPORT_REGISTRY = [
         "label": "Branch",
         "type": "uuid",
         "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "invoiceFormatUiLayouts",
+    "layoutBucket": "invoice",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+    "name": "Invoice Report Format-6 Simple Invoice (India)",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "Invoice Report Format-6 Simple Invoice (India) — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "invoice_id",
+        "label": "Invoice",
+        "type": "uuid",
+        "required": true
       }
     ],
     "hasClientLayout": true,
@@ -12278,6 +12876,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "commercial.invoice_generic"
   },
   {
+    "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+    "name": "Invoice Report Format-7 Simple Invoice",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "Invoice Report Format-7 Simple Invoice — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "invoice_id",
+        "label": "Invoice",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "invoiceFormatUiLayouts",
+    "layoutBucket": "invoice",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
     "code": "INVOICE_REPORT_FORMAT_70",
     "name": "Invoice Report Format-70 Warehouse Invoice India Format",
     "family": "commercial",
@@ -12658,6 +13282,32 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "commercial.invoice_generic"
   },
   {
+    "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+    "name": "Invoice Report Format-8 Standard Invoice Arabic",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "Invoice Report Format-8 Standard Invoice Arabic — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "invoice_id",
+        "label": "Invoice",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "invoiceFormatUiLayouts",
+    "layoutBucket": "invoice",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
     "code": "INVOICE_REPORT_FORMAT_80",
     "name": "Invoice Report Format-80 Standard Tax Invoice Format-21",
     "family": "commercial",
@@ -12878,6 +13528,32 @@ export const FRESA_REPORT_REGISTRY = [
         "label": "Branch",
         "type": "uuid",
         "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "invoiceFormatUiLayouts",
+    "layoutBucket": "invoice",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+    "name": "Invoice Report Format-9 Standard Invoice USA",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "Invoice Report Format-9 Standard Invoice USA — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "invoice_id",
+        "label": "Invoice",
+        "type": "uuid",
+        "required": true
       }
     ],
     "hasClientLayout": true,
@@ -13219,238 +13895,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "ops.list_generic"
   },
   {
-    "code": "JOB_STATUS_LIST_REPORT_FORMAT_2",
-    "name": "Job Status List Report Format-2",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Job Status List Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "JOB_STATUS_LIST_REPORT_FORMAT_3",
-    "name": "Job Status List Report Format-3",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Job Status List Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "JOB_STATUS_LIST_REPORT_FORMAT_4",
-    "name": "Job Status List Report Format-4",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Job Status List Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "JOB_STATUS_LIST_REPORT_FORMAT_5",
-    "name": "Job Status List Report Format-5",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Job Status List Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "JOB_STATUS_LIST_REPORT_FORMAT_6",
-    "name": "Job Status List Report Format-6",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Job Status List Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "JOB_STATUS_LIST_REPORT_FORMAT_7",
-    "name": "Job Status List Report Format-7",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Job Status List Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "JOB_STATUS_LIST_REPORT_FORMAT_8",
-    "name": "Job Status List Report Format-8",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Job Status List Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "JOB_STATUS_LIST_REPORT_FORMAT_9",
-    "name": "Job Status List Report Format-9",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Job Status List Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
     "code": "JOB_STATUS_LIST_REPORT_FORMAT_10",
     "name": "Job Status List Report Format-10",
     "family": "ops_list",
@@ -13741,6 +14185,35 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "ops.list_generic"
   },
   {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_2",
+    "name": "Job Status List Report Format-2",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Job Status List Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
     "code": "JOB_STATUS_LIST_REPORT_FORMAT_20",
     "name": "Job Status List Report Format-20",
     "family": "ops_list",
@@ -13770,6 +14243,209 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "ops.list_generic"
   },
   {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_3",
+    "name": "Job Status List Report Format-3",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Job Status List Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_4",
+    "name": "Job Status List Report Format-4",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Job Status List Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_5",
+    "name": "Job Status List Report Format-5",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Job Status List Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_6",
+    "name": "Job Status List Report Format-6",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Job Status List Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_7",
+    "name": "Job Status List Report Format-7",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Job Status List Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_8",
+    "name": "Job Status List Report Format-8",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Job Status List Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "JOB_STATUS_LIST_REPORT_FORMAT_9",
+    "name": "Job Status List Report Format-9",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Job Status List Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
     "code": "JOURNAL_VOUCHER_REPORT_FORMAT_1",
     "name": "Journal Voucher Report Format-1",
     "family": "finance",
@@ -13784,6 +14460,120 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 5,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Journal Voucher Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.journal_voucher"
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_10",
+    "name": "Journal Voucher Report Format-10",
+    "family": "finance",
+    "contexts": [
+      "gl"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Journal Voucher Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.journal_voucher"
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_11",
+    "name": "Journal Voucher Report Format-11",
+    "family": "finance",
+    "contexts": [
+      "gl"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Journal Voucher Report Format-11 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.journal_voucher"
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_12",
+    "name": "Journal Voucher Report Format-12",
+    "family": "finance",
+    "contexts": [
+      "gl"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Journal Voucher Report Format-12 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -14116,120 +14906,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "finance.journal_voucher"
   },
   {
-    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_10",
-    "name": "Journal Voucher Report Format-10",
-    "family": "finance",
-    "contexts": [
-      "gl"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Journal Voucher Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.journal_voucher"
-  },
-  {
-    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_11",
-    "name": "Journal Voucher Report Format-11",
-    "family": "finance",
-    "contexts": [
-      "gl"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Journal Voucher Report Format-11 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.journal_voucher"
-  },
-  {
-    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_12",
-    "name": "Journal Voucher Report Format-12",
-    "family": "finance",
-    "contexts": [
-      "gl"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Journal Voucher Report Format-12 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.journal_voucher"
-  },
-  {
     "code": "LEFTOVER_HBL_DRAFT_JASPER",
     "name": "HBL Draft- Jasper",
     "family": "commercial",
@@ -14278,6 +14954,78 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 4,
     "gapStatus": "covered_document_pdf",
     "description": "KingFisher layout PDF: Invoice format1 –Jasper Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "leftoverFormatUiLayouts",
+    "layoutBucket": "leftover",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "LEFTOVER_INVOICE_FORMAT12_JASPER",
+    "name": "Invoice Format12 –Jasper",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: Invoice Format12 –Jasper Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "leftoverFormatUiLayouts",
+    "layoutBucket": "leftover",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "LEFTOVER_INVOICE_FORMAT14_JASPER",
+    "name": "Invoice Format14 –Jasper",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: Invoice Format14 –Jasper Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "leftoverFormatUiLayouts",
+    "layoutBucket": "leftover",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "LEFTOVER_INVOICE_FORMAT15_JASPER_PREPRINTED",
+    "name": "Invoice format15 –Jasper Preprinted",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: Invoice format15 –Jasper Preprinted Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "leftoverFormatUiLayouts",
+    "layoutBucket": "leftover",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "LEFTOVER_INVOICE_FORMAT15_JASPER_STANDARD",
+    "name": "Invoice format15 –Jasper Standard",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: Invoice format15 –Jasper Standard Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "hasClientLayout": true,
     "layoutStore": "leftoverFormatUiLayouts",
     "layoutBucket": "leftover",
@@ -14458,78 +15206,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 4,
     "gapStatus": "covered_document_pdf",
     "description": "KingFisher layout PDF: Invoice Format9 with QR/IRN –Jasper Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "leftoverFormatUiLayouts",
-    "layoutBucket": "leftover",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "LEFTOVER_INVOICE_FORMAT12_JASPER",
-    "name": "Invoice Format12 –Jasper",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: Invoice Format12 –Jasper Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "leftoverFormatUiLayouts",
-    "layoutBucket": "leftover",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "LEFTOVER_INVOICE_FORMAT14_JASPER",
-    "name": "Invoice Format14 –Jasper",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: Invoice Format14 –Jasper Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "leftoverFormatUiLayouts",
-    "layoutBucket": "leftover",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "LEFTOVER_INVOICE_FORMAT15_JASPER_PREPRINTED",
-    "name": "Invoice format15 –Jasper Preprinted",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: Invoice format15 –Jasper Preprinted Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "leftoverFormatUiLayouts",
-    "layoutBucket": "leftover",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "LEFTOVER_INVOICE_FORMAT15_JASPER_STANDARD",
-    "name": "Invoice format15 –Jasper Standard",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: Invoice format15 –Jasper Standard Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "hasClientLayout": true,
     "layoutStore": "leftoverFormatUiLayouts",
     "layoutBucket": "leftover",
@@ -15022,96 +15698,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "commercial.invoice_generic"
   },
   {
-    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT3",
-    "name": "Standard Invoice –Jasper format3",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: Standard Invoice –Jasper format3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "leftoverFormatUiLayouts",
-    "layoutBucket": "leftover",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT4",
-    "name": "Standard Invoice –Jasper Format4",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: Standard Invoice –Jasper Format4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "leftoverFormatUiLayouts",
-    "layoutBucket": "leftover",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT5",
-    "name": "Standard Invoice –Jasper format5",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: Standard Invoice –Jasper format5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "leftoverFormatUiLayouts",
-    "layoutBucket": "leftover",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT6",
-    "name": "Standard Invoice –Jasper format6",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: Standard Invoice –Jasper format6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "leftoverFormatUiLayouts",
-    "layoutBucket": "leftover",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
-    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT9",
-    "name": "Standard Invoice –Jasper format9",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "KingFisher layout PDF: Standard Invoice –Jasper format9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "hasClientLayout": true,
-    "layoutStore": "leftoverFormatUiLayouts",
-    "layoutBucket": "leftover",
-    "suggestedPackKey": "commercial.invoice_generic"
-  },
-  {
     "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT10",
     "name": "Standard Invoice –Jasper format10",
     "family": "commercial",
@@ -15322,6 +15908,96 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 4,
     "gapStatus": "covered_document_pdf",
     "description": "KingFisher layout PDF: Standard Invoice –Jasper format22 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "leftoverFormatUiLayouts",
+    "layoutBucket": "leftover",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT3",
+    "name": "Standard Invoice –Jasper format3",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: Standard Invoice –Jasper format3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "leftoverFormatUiLayouts",
+    "layoutBucket": "leftover",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT4",
+    "name": "Standard Invoice –Jasper Format4",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: Standard Invoice –Jasper Format4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "leftoverFormatUiLayouts",
+    "layoutBucket": "leftover",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT5",
+    "name": "Standard Invoice –Jasper format5",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: Standard Invoice –Jasper format5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "leftoverFormatUiLayouts",
+    "layoutBucket": "leftover",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT6",
+    "name": "Standard Invoice –Jasper format6",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: Standard Invoice –Jasper format6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "hasClientLayout": true,
+    "layoutStore": "leftoverFormatUiLayouts",
+    "layoutBucket": "leftover",
+    "suggestedPackKey": "commercial.invoice_generic"
+  },
+  {
+    "code": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT9",
+    "name": "Standard Invoice –Jasper format9",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "KingFisher layout PDF: Standard Invoice –Jasper format9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "hasClientLayout": true,
     "layoutStore": "leftoverFormatUiLayouts",
     "layoutBucket": "leftover",
@@ -15835,6 +16511,188 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "air.mawb_draft"
   },
   {
+    "code": "MAWB_DRAFT_REPORT_FORMAT_10",
+    "name": "MAWB Draft Report Format-10",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: MAWB Draft Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.mawb_draft"
+  },
+  {
+    "code": "MAWB_DRAFT_REPORT_FORMAT_11",
+    "name": "MAWB Draft Report Format-11",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: MAWB Draft Report Format-11 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.mawb_draft"
+  },
+  {
+    "code": "MAWB_DRAFT_REPORT_FORMAT_12",
+    "name": "MAWB Draft Report Format-12",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: MAWB Draft Report Format-12 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.mawb_draft"
+  },
+  {
+    "code": "MAWB_DRAFT_REPORT_FORMAT_13",
+    "name": "MAWB Draft Report Format-13",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: MAWB Draft Report Format-13 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.mawb_draft"
+  },
+  {
+    "code": "MAWB_DRAFT_REPORT_FORMAT_14",
+    "name": "MAWB Draft Report Format-14",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: MAWB Draft Report Format-14 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.mawb_draft"
+  },
+  {
+    "code": "MAWB_DRAFT_REPORT_FORMAT_15",
+    "name": "MAWB Draft Report Format-15",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: MAWB Draft Report Format-15 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.mawb_draft"
+  },
+  {
+    "code": "MAWB_DRAFT_REPORT_FORMAT_16",
+    "name": "MAWB Draft Report Format-16",
+    "family": "air_docs",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: MAWB Draft Report Format-16 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "seaDocsExtraFormatUiLayouts",
+    "layoutBucket": "sea_air",
+    "suggestedPackKey": "air.mawb_draft"
+  },
+  {
     "code": "MAWB_DRAFT_REPORT_FORMAT_2",
     "name": "MAWB Draft Report Format-2",
     "family": "air_docs",
@@ -16043,188 +16901,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "air.mawb_draft"
   },
   {
-    "code": "MAWB_DRAFT_REPORT_FORMAT_10",
-    "name": "MAWB Draft Report Format-10",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: MAWB Draft Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.mawb_draft"
-  },
-  {
-    "code": "MAWB_DRAFT_REPORT_FORMAT_11",
-    "name": "MAWB Draft Report Format-11",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: MAWB Draft Report Format-11 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.mawb_draft"
-  },
-  {
-    "code": "MAWB_DRAFT_REPORT_FORMAT_12",
-    "name": "MAWB Draft Report Format-12",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: MAWB Draft Report Format-12 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.mawb_draft"
-  },
-  {
-    "code": "MAWB_DRAFT_REPORT_FORMAT_13",
-    "name": "MAWB Draft Report Format-13",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: MAWB Draft Report Format-13 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.mawb_draft"
-  },
-  {
-    "code": "MAWB_DRAFT_REPORT_FORMAT_14",
-    "name": "MAWB Draft Report Format-14",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: MAWB Draft Report Format-14 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.mawb_draft"
-  },
-  {
-    "code": "MAWB_DRAFT_REPORT_FORMAT_15",
-    "name": "MAWB Draft Report Format-15",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: MAWB Draft Report Format-15 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.mawb_draft"
-  },
-  {
-    "code": "MAWB_DRAFT_REPORT_FORMAT_16",
-    "name": "MAWB Draft Report Format-16",
-    "family": "air_docs",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: MAWB Draft Report Format-16 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "seaDocsExtraFormatUiLayouts",
-    "layoutBucket": "sea_air",
-    "suggestedPackKey": "air.mawb_draft"
-  },
-  {
     "code": "MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT",
     "name": "MAWB Original Preprinted KC Report Format",
     "family": "air_docs",
@@ -16327,326 +17003,6 @@ export const FRESA_REPORT_REGISTRY = [
       }
     ],
     "existingPath": "/gl/ar/aging",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.outstanding_letter"
-  },
-  {
-    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER",
-    "name": "Outstanding Letter Report Format-2 Outstanding Letter Jasper",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Outstanding Letter Report Format-2 Outstanding Letter Jasper",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/ar/aging",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.outstanding_letter"
-  },
-  {
-    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING",
-    "name": "Outstanding Letter Report Format-3 Outstanding Letter With Aging",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Outstanding Letter Report Format-3 Outstanding Letter With Aging",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/ar/aging",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.outstanding_letter"
-  },
-  {
-    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS",
-    "name": "Outstanding Letter Report Format-4 Outstanding Letter With BL Details",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Outstanding Letter Report Format-4 Outstanding Letter With BL Details",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/ar/aging",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.outstanding_letter"
-  },
-  {
-    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES",
-    "name": "Outstanding Letter Report Format-5 Outstanding Letter With Invoices",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Outstanding Letter Report Format-5 Outstanding Letter With Invoices",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/ar/aging",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.outstanding_letter"
-  },
-  {
-    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_6",
-    "name": "Outstanding Letter Report Format-6",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "party"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Outstanding Letter Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.outstanding_letter"
-  },
-  {
-    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_7",
-    "name": "Outstanding Letter Report Format-7",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "party"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Outstanding Letter Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.outstanding_letter"
-  },
-  {
-    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_8",
-    "name": "Outstanding Letter Report Format-8",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "party"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Outstanding Letter Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.outstanding_letter"
-  },
-  {
-    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_9",
-    "name": "Outstanding Letter Report Format-9",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "party"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Outstanding Letter Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
     "hasClientLayout": true,
     "layoutStore": "accountsFormatUiLayouts",
     "layoutBucket": "accounts",
@@ -17043,6 +17399,47 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "finance.outstanding_letter"
   },
   {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER",
+    "name": "Outstanding Letter Report Format-2 Outstanding Letter Jasper",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Outstanding Letter Report Format-2 Outstanding Letter Jasper",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/ar/aging",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.outstanding_letter"
+  },
+  {
     "code": "OUTSTANDING_LETTER_REPORT_FORMAT_20",
     "name": "Outstanding Letter Report Format-20",
     "family": "finance",
@@ -17056,6 +17453,285 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 5,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Outstanding Letter Report Format-20 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.outstanding_letter"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING",
+    "name": "Outstanding Letter Report Format-3 Outstanding Letter With Aging",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Outstanding Letter Report Format-3 Outstanding Letter With Aging",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/ar/aging",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.outstanding_letter"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS",
+    "name": "Outstanding Letter Report Format-4 Outstanding Letter With BL Details",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Outstanding Letter Report Format-4 Outstanding Letter With BL Details",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/ar/aging",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.outstanding_letter"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES",
+    "name": "Outstanding Letter Report Format-5 Outstanding Letter With Invoices",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Outstanding Letter Report Format-5 Outstanding Letter With Invoices",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/ar/aging",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.outstanding_letter"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_6",
+    "name": "Outstanding Letter Report Format-6",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "party"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Outstanding Letter Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.outstanding_letter"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_7",
+    "name": "Outstanding Letter Report Format-7",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "party"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Outstanding Letter Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.outstanding_letter"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_8",
+    "name": "Outstanding Letter Report Format-8",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "party"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Outstanding Letter Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.outstanding_letter"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_9",
+    "name": "Outstanding Letter Report Format-9",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "party"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Outstanding Letter Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -17113,6 +17789,44 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 5,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Payment Voucher Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.payment_voucher"
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_10",
+    "name": "Payment Voucher Report Format-10",
+    "family": "finance",
+    "contexts": [
+      "gl"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Payment Voucher Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -17483,44 +18197,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "finance.payment_voucher"
   },
   {
-    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_10",
-    "name": "Payment Voucher Report Format-10",
-    "family": "finance",
-    "contexts": [
-      "gl"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Payment Voucher Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.payment_voucher"
-  },
-  {
     "code": "PENDING_JOBS_ATD_UPDATED_BUT_CONTAINER_LOADING_DATE_NOT_UPDATED_LIST_REPORT_FORM",
     "name": "Pending Jobs Atd Updated But Container Loading Date Not Updated List Report Format",
     "family": "ops_list",
@@ -17782,238 +18458,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 1,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Pending Shipments List Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_2",
-    "name": "Pending Shipments List Report Format-2",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pending Shipments List Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_3",
-    "name": "Pending Shipments List Report Format-3",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pending Shipments List Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_4",
-    "name": "Pending Shipments List Report Format-4",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pending Shipments List Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_5",
-    "name": "Pending Shipments List Report Format-5",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pending Shipments List Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_6",
-    "name": "Pending Shipments List Report Format-6",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pending Shipments List Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_7",
-    "name": "Pending Shipments List Report Format-7",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pending Shipments List Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_8",
-    "name": "Pending Shipments List Report Format-8",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pending Shipments List Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "opsListFormatUiLayouts",
-    "layoutBucket": "ops_list",
-    "suggestedPackKey": "ops.list_generic"
-  },
-  {
-    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_9",
-    "name": "Pending Shipments List Report Format-9",
-    "family": "ops_list",
-    "contexts": [
-      "list",
-      "job"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 1,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pending Shipments List Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -18318,6 +18762,35 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "ops.list_generic"
   },
   {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_2",
+    "name": "Pending Shipments List Report Format-2",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pending Shipments List Report Format-2 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
     "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_20",
     "name": "Pending Shipments List Report Format-20",
     "family": "ops_list",
@@ -18492,6 +18965,209 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "ops.list_generic"
   },
   {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_3",
+    "name": "Pending Shipments List Report Format-3",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pending Shipments List Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_4",
+    "name": "Pending Shipments List Report Format-4",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pending Shipments List Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_5",
+    "name": "Pending Shipments List Report Format-5",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pending Shipments List Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_6",
+    "name": "Pending Shipments List Report Format-6",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pending Shipments List Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_7",
+    "name": "Pending Shipments List Report Format-7",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pending Shipments List Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_8",
+    "name": "Pending Shipments List Report Format-8",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pending Shipments List Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
+    "code": "PENDING_SHIPMENTS_LIST_REPORT_FORMAT_9",
+    "name": "Pending Shipments List Report Format-9",
+    "family": "ops_list",
+    "contexts": [
+      "list",
+      "job"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 1,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pending Shipments List Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "opsListFormatUiLayouts",
+    "layoutBucket": "ops_list",
+    "suggestedPackKey": "ops.list_generic"
+  },
+  {
     "code": "PICKUP_CONFIRMATION_REPORT_FORMAT",
     "name": "Pickup Confirmation Report Format",
     "family": "sea_docs",
@@ -18548,6 +19224,84 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 2,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Pre Alert Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "otherReportsFormatUiLayouts",
+    "layoutBucket": "other",
+    "suggestedPackKey": "sea.pre_alert"
+  },
+  {
+    "code": "PRE_ALERT_REPORT_FORMAT_10",
+    "name": "Pre Alert Report Format-10",
+    "family": "other",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pre Alert Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "otherReportsFormatUiLayouts",
+    "layoutBucket": "other",
+    "suggestedPackKey": "sea.pre_alert"
+  },
+  {
+    "code": "PRE_ALERT_REPORT_FORMAT_11",
+    "name": "Pre Alert Report Format-11",
+    "family": "other",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pre Alert Report Format-11 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "job_id",
+        "label": "Job",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "otherReportsFormatUiLayouts",
+    "layoutBucket": "other",
+    "suggestedPackKey": "sea.pre_alert"
+  },
+  {
+    "code": "PRE_ALERT_REPORT_FORMAT_12",
+    "name": "Pre Alert Report Format-12",
+    "family": "other",
+    "contexts": [
+      "job"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 2,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Pre Alert Report Format-12 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "job_id",
@@ -18770,84 +19524,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "sea.pre_alert"
   },
   {
-    "code": "PRE_ALERT_REPORT_FORMAT_10",
-    "name": "Pre Alert Report Format-10",
-    "family": "other",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pre Alert Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "otherReportsFormatUiLayouts",
-    "layoutBucket": "other",
-    "suggestedPackKey": "sea.pre_alert"
-  },
-  {
-    "code": "PRE_ALERT_REPORT_FORMAT_11",
-    "name": "Pre Alert Report Format-11",
-    "family": "other",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pre Alert Report Format-11 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "otherReportsFormatUiLayouts",
-    "layoutBucket": "other",
-    "suggestedPackKey": "sea.pre_alert"
-  },
-  {
-    "code": "PRE_ALERT_REPORT_FORMAT_12",
-    "name": "Pre Alert Report Format-12",
-    "family": "other",
-    "contexts": [
-      "job"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 2,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Pre Alert Report Format-12 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "job_id",
-        "label": "Job",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "otherReportsFormatUiLayouts",
-    "layoutBucket": "other",
-    "suggestedPackKey": "sea.pre_alert"
-  },
-  {
     "code": "PRE_ALERT_TO_CLIENT_REPORT_FORMAT",
     "name": "Pre Alert To Client Report Format",
     "family": "other",
@@ -18968,6 +19644,252 @@ export const FRESA_REPORT_REGISTRY = [
         "required": false
       }
     ],
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_10",
+    "name": "Profit and Loss Report Format-10",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Profit and Loss Report Format-10",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/reports",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_11",
+    "name": "Profit and Loss Report Format-11",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Profit and Loss Report Format-11",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/reports",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_12",
+    "name": "Profit and Loss Report Format-12",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Profit and Loss Report Format-12",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/reports",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_13",
+    "name": "Profit and Loss Report Format-13",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Profit and Loss Report Format-13",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/reports",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_14",
+    "name": "Profit and Loss Report Format-14",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Profit and Loss Report Format-14",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/reports",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_15",
+    "name": "Profit and Loss Report Format-15",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Profit and Loss Report Format-15",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/reports",
     "hasClientLayout": true,
     "layoutStore": "accountsFormatUiLayouts",
     "layoutBucket": "accounts",
@@ -19302,252 +20224,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "finance.gl_listing"
   },
   {
-    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_10",
-    "name": "Profit and Loss Report Format-10",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Profit and Loss Report Format-10",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/reports",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_11",
-    "name": "Profit and Loss Report Format-11",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Profit and Loss Report Format-11",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/reports",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_12",
-    "name": "Profit and Loss Report Format-12",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Profit and Loss Report Format-12",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/reports",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_13",
-    "name": "Profit and Loss Report Format-13",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Profit and Loss Report Format-13",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/reports",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_14",
-    "name": "Profit and Loss Report Format-14",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Profit and Loss Report Format-14",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/reports",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_15",
-    "name": "Profit and Loss Report Format-15",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Profit and Loss Report Format-15",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/reports",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
     "code": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
     "name": "Proforma Invoice All Charges Report Format",
     "family": "commercial",
@@ -19592,298 +20268,6 @@ export const FRESA_REPORT_REGISTRY = [
         "label": "Invoice",
         "type": "uuid",
         "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.proforma"
-  },
-  {
-    "code": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
-    "name": "Proforma Invoice Report Format-2 Proforma Invoice All Charges",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "Proforma Invoice Report Format-2 Proforma Invoice All Charges — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "invoice_id",
-        "label": "Invoice",
-        "type": "uuid",
-        "required": true
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.proforma"
-  },
-  {
-    "code": "PROFORMA_INVOICE_REPORT_FORMAT_3",
-    "name": "Proforma Invoice Report Format-3",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Proforma Invoice Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.proforma"
-  },
-  {
-    "code": "PROFORMA_INVOICE_REPORT_FORMAT_4",
-    "name": "Proforma Invoice Report Format-4",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Proforma Invoice Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.proforma"
-  },
-  {
-    "code": "PROFORMA_INVOICE_REPORT_FORMAT_5",
-    "name": "Proforma Invoice Report Format-5",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Proforma Invoice Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.proforma"
-  },
-  {
-    "code": "PROFORMA_INVOICE_REPORT_FORMAT_6",
-    "name": "Proforma Invoice Report Format-6",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Proforma Invoice Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.proforma"
-  },
-  {
-    "code": "PROFORMA_INVOICE_REPORT_FORMAT_7",
-    "name": "Proforma Invoice Report Format-7",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Proforma Invoice Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.proforma"
-  },
-  {
-    "code": "PROFORMA_INVOICE_REPORT_FORMAT_8",
-    "name": "Proforma Invoice Report Format-8",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Proforma Invoice Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "commercialExtraFormatUiLayouts",
-    "layoutBucket": "commercial",
-    "suggestedPackKey": "commercial.proforma"
-  },
-  {
-    "code": "PROFORMA_INVOICE_REPORT_FORMAT_9",
-    "name": "Proforma Invoice Report Format-9",
-    "family": "commercial",
-    "contexts": [
-      "invoice"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 4,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Proforma Invoice Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
       }
     ],
     "hasClientLayout": true,
@@ -20196,6 +20580,298 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "commercial.proforma"
   },
   {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
+    "name": "Proforma Invoice Report Format-2 Proforma Invoice All Charges",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "Proforma Invoice Report Format-2 Proforma Invoice All Charges — additional format; does not replace default invoice PDF Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "invoice_id",
+        "label": "Invoice",
+        "type": "uuid",
+        "required": true
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.proforma"
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_3",
+    "name": "Proforma Invoice Report Format-3",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Proforma Invoice Report Format-3 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.proforma"
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_4",
+    "name": "Proforma Invoice Report Format-4",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Proforma Invoice Report Format-4 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.proforma"
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_5",
+    "name": "Proforma Invoice Report Format-5",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Proforma Invoice Report Format-5 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.proforma"
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_6",
+    "name": "Proforma Invoice Report Format-6",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Proforma Invoice Report Format-6 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.proforma"
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_7",
+    "name": "Proforma Invoice Report Format-7",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Proforma Invoice Report Format-7 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.proforma"
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_8",
+    "name": "Proforma Invoice Report Format-8",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Proforma Invoice Report Format-8 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.proforma"
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_9",
+    "name": "Proforma Invoice Report Format-9",
+    "family": "commercial",
+    "contexts": [
+      "invoice"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 4,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Proforma Invoice Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "commercialExtraFormatUiLayouts",
+    "layoutBucket": "commercial",
+    "suggestedPackKey": "commercial.proforma"
+  },
+  {
     "code": "PROOF_OF_DELIVERY_REPORT_FORMAT",
     "name": "Proof Of Delivery Report Format",
     "family": "sea_docs",
@@ -20280,6 +20956,234 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 3,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Quotation Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "quotationFormatUiLayouts",
+    "layoutBucket": "quotation",
+    "suggestedPackKey": "quotation.shell"
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_10",
+    "name": "Quotation Report Format-10",
+    "family": "quotation",
+    "contexts": [
+      "quotation"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Quotation Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "quotationFormatUiLayouts",
+    "layoutBucket": "quotation",
+    "suggestedPackKey": "quotation.shell"
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_11",
+    "name": "Quotation Report Format-11",
+    "family": "quotation",
+    "contexts": [
+      "quotation"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Quotation Report Format-11 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "quotationFormatUiLayouts",
+    "layoutBucket": "quotation",
+    "suggestedPackKey": "quotation.shell"
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_12",
+    "name": "Quotation Report Format-12",
+    "family": "quotation",
+    "contexts": [
+      "quotation"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Quotation Report Format-12 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "quotationFormatUiLayouts",
+    "layoutBucket": "quotation",
+    "suggestedPackKey": "quotation.shell"
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_13",
+    "name": "Quotation Report Format-13",
+    "family": "quotation",
+    "contexts": [
+      "quotation"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Quotation Report Format-13 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "quotationFormatUiLayouts",
+    "layoutBucket": "quotation",
+    "suggestedPackKey": "quotation.shell"
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_14",
+    "name": "Quotation Report Format-14",
+    "family": "quotation",
+    "contexts": [
+      "quotation"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Quotation Report Format-14 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "quotationFormatUiLayouts",
+    "layoutBucket": "quotation",
+    "suggestedPackKey": "quotation.shell"
+  },
+  {
+    "code": "QUOTATION_REPORT_FORMAT_15",
+    "name": "Quotation Report Format-15",
+    "family": "quotation",
+    "contexts": [
+      "quotation"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 3,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: Quotation Report Format-15 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -20584,234 +21488,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 3,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: Quotation Report Format-9 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "quotationFormatUiLayouts",
-    "layoutBucket": "quotation",
-    "suggestedPackKey": "quotation.shell"
-  },
-  {
-    "code": "QUOTATION_REPORT_FORMAT_10",
-    "name": "Quotation Report Format-10",
-    "family": "quotation",
-    "contexts": [
-      "quotation"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Quotation Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "quotationFormatUiLayouts",
-    "layoutBucket": "quotation",
-    "suggestedPackKey": "quotation.shell"
-  },
-  {
-    "code": "QUOTATION_REPORT_FORMAT_11",
-    "name": "Quotation Report Format-11",
-    "family": "quotation",
-    "contexts": [
-      "quotation"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Quotation Report Format-11 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "quotationFormatUiLayouts",
-    "layoutBucket": "quotation",
-    "suggestedPackKey": "quotation.shell"
-  },
-  {
-    "code": "QUOTATION_REPORT_FORMAT_12",
-    "name": "Quotation Report Format-12",
-    "family": "quotation",
-    "contexts": [
-      "quotation"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Quotation Report Format-12 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "quotationFormatUiLayouts",
-    "layoutBucket": "quotation",
-    "suggestedPackKey": "quotation.shell"
-  },
-  {
-    "code": "QUOTATION_REPORT_FORMAT_13",
-    "name": "Quotation Report Format-13",
-    "family": "quotation",
-    "contexts": [
-      "quotation"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Quotation Report Format-13 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "quotationFormatUiLayouts",
-    "layoutBucket": "quotation",
-    "suggestedPackKey": "quotation.shell"
-  },
-  {
-    "code": "QUOTATION_REPORT_FORMAT_14",
-    "name": "Quotation Report Format-14",
-    "family": "quotation",
-    "contexts": [
-      "quotation"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Quotation Report Format-14 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "hasClientLayout": true,
-    "layoutStore": "quotationFormatUiLayouts",
-    "layoutBucket": "quotation",
-    "suggestedPackKey": "quotation.shell"
-  },
-  {
-    "code": "QUOTATION_REPORT_FORMAT_15",
-    "name": "Quotation Report Format-15",
-    "family": "quotation",
-    "contexts": [
-      "quotation"
-    ],
-    "formats": [
-      "PDF"
-    ],
-    "rolloutPhase": 3,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: Quotation Report Format-15 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -22158,6 +22834,293 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "finance.gl_listing"
   },
   {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_10",
+    "name": "Trial Balance Report Format-10",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Trial Balance Report Format-10",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/accounts/trial-balance",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_11",
+    "name": "Trial Balance Report Format-11",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Trial Balance Report Format-11",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/accounts/trial-balance",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_12",
+    "name": "Trial Balance Report Format-12",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Trial Balance Report Format-12",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/accounts/trial-balance",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_13",
+    "name": "Trial Balance Report Format-13",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Trial Balance Report Format-13",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/accounts/trial-balance",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_14",
+    "name": "Trial Balance Report Format-14",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Trial Balance Report Format-14",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/accounts/trial-balance",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_15",
+    "name": "Trial Balance Report Format-15",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Trial Balance Report Format-15",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/accounts/trial-balance",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_16",
+    "name": "Trial Balance Report Format-16",
+    "family": "finance",
+    "contexts": [
+      "gl",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX"
+    ],
+    "rolloutPhase": 5,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: Trial Balance Report Format-16",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/gl/accounts/trial-balance",
+    "hasClientLayout": true,
+    "layoutStore": "accountsFormatUiLayouts",
+    "layoutBucket": "accounts",
+    "suggestedPackKey": "finance.gl_listing"
+  },
+  {
     "code": "TRIAL_BALANCE_REPORT_FORMAT_2_TRIAL_BALANCE_SUMMARY",
     "name": "Trial Balance Report Format-2 Trial Balance Summary",
     "family": "finance",
@@ -22486,293 +23449,6 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "finance.gl_listing"
   },
   {
-    "code": "TRIAL_BALANCE_REPORT_FORMAT_10",
-    "name": "Trial Balance Report Format-10",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Trial Balance Report Format-10",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/accounts/trial-balance",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "TRIAL_BALANCE_REPORT_FORMAT_11",
-    "name": "Trial Balance Report Format-11",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Trial Balance Report Format-11",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/accounts/trial-balance",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "TRIAL_BALANCE_REPORT_FORMAT_12",
-    "name": "Trial Balance Report Format-12",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Trial Balance Report Format-12",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/accounts/trial-balance",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "TRIAL_BALANCE_REPORT_FORMAT_13",
-    "name": "Trial Balance Report Format-13",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Trial Balance Report Format-13",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/accounts/trial-balance",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "TRIAL_BALANCE_REPORT_FORMAT_14",
-    "name": "Trial Balance Report Format-14",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Trial Balance Report Format-14",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/accounts/trial-balance",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "TRIAL_BALANCE_REPORT_FORMAT_15",
-    "name": "Trial Balance Report Format-15",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Trial Balance Report Format-15",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/accounts/trial-balance",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
-    "code": "TRIAL_BALANCE_REPORT_FORMAT_16",
-    "name": "Trial Balance Report Format-16",
-    "family": "finance",
-    "contexts": [
-      "gl",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX"
-    ],
-    "rolloutPhase": 5,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: Trial Balance Report Format-16",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/gl/accounts/trial-balance",
-    "hasClientLayout": true,
-    "layoutStore": "accountsFormatUiLayouts",
-    "layoutBucket": "accounts",
-    "suggestedPackKey": "finance.gl_listing"
-  },
-  {
     "code": "TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT",
     "name": "Truck Cargo Pickup Request Report Format",
     "family": "sea_docs",
@@ -22852,6 +23528,44 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 6,
     "gapStatus": "covered_document_pdf",
     "description": "FRESA sample: WMS GDO Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.gdo"
+  },
+  {
+    "code": "WMS_GDO_REPORT_FORMAT_10",
+    "name": "WMS GDO Report Format-10",
+    "family": "wms",
+    "contexts": [
+      "wms"
+    ],
+    "formats": [
+      "PDF"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_document_pdf",
+    "description": "FRESA sample: WMS GDO Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -23182,8 +23896,8 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "wms.gdo"
   },
   {
-    "code": "WMS_GDO_REPORT_FORMAT_10",
-    "name": "WMS GDO Report Format-10",
+    "code": "WMS_GRN_REPORT_FORMAT_1",
+    "name": "WMS GRN Report Format-1",
     "family": "wms",
     "contexts": [
       "wms"
@@ -23193,7 +23907,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 6,
     "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: WMS GDO Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "description": "FRESA sample: WMS GRN Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -23217,11 +23931,11 @@ export const FRESA_REPORT_REGISTRY = [
     "hasClientLayout": true,
     "layoutStore": "wmsFormatUiLayouts",
     "layoutBucket": "wms",
-    "suggestedPackKey": "wms.gdo"
+    "suggestedPackKey": "wms.grn"
   },
   {
-    "code": "WMS_GRN_REPORT_FORMAT_1",
-    "name": "WMS GRN Report Format-1",
+    "code": "WMS_GRN_REPORT_FORMAT_10",
+    "name": "WMS GRN Report Format-10",
     "family": "wms",
     "contexts": [
       "wms"
@@ -23231,7 +23945,7 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 6,
     "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: WMS GRN Report Format-1 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "description": "FRESA sample: WMS GRN Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
     "defaultParams": [
       {
         "name": "from_date",
@@ -23562,18 +24276,21 @@ export const FRESA_REPORT_REGISTRY = [
     "suggestedPackKey": "wms.grn"
   },
   {
-    "code": "WMS_GRN_REPORT_FORMAT_10",
-    "name": "WMS GRN Report Format-10",
+    "code": "WMS_STOCK_REPORT_FORMAT_1",
+    "name": "WMS Stock Report Format-1",
     "family": "wms",
     "contexts": [
-      "wms"
+      "wms",
+      "list"
     ],
     "formats": [
-      "PDF"
+      "PDF",
+      "XLSX",
+      "CSV"
     ],
     "rolloutPhase": 6,
-    "gapStatus": "covered_document_pdf",
-    "description": "FRESA sample: WMS GRN Report Format-10 Client layout PDF is FE coverage; default invoice/quotation PDFs stay preserved. Optional BE Puppeteer pack remains additive.",
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: WMS Stock Report Format-1",
     "defaultParams": [
       {
         "name": "from_date",
@@ -23594,14 +24311,15 @@ export const FRESA_REPORT_REGISTRY = [
         "required": false
       }
     ],
+    "existingPath": "/warehouse/stock",
     "hasClientLayout": true,
     "layoutStore": "wmsFormatUiLayouts",
     "layoutBucket": "wms",
-    "suggestedPackKey": "wms.grn"
+    "suggestedPackKey": "wms.asn"
   },
   {
-    "code": "WMS_STOCK_REPORT_FORMAT_1",
-    "name": "WMS Stock Report Format-1",
+    "code": "WMS_STOCK_REPORT_FORMAT_10",
+    "name": "WMS Stock Report Format-10",
     "family": "wms",
     "contexts": [
       "wms",
@@ -23614,7 +24332,217 @@ export const FRESA_REPORT_REGISTRY = [
     ],
     "rolloutPhase": 6,
     "gapStatus": "covered_analytics",
-    "description": "FRESA sample: WMS Stock Report Format-1",
+    "description": "FRESA sample: WMS Stock Report Format-10",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/warehouse/stock",
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_11",
+    "name": "WMS Stock Report Format-11",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: WMS Stock Report Format-11",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/warehouse/stock",
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_12",
+    "name": "WMS Stock Report Format-12",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: WMS Stock Report Format-12",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/warehouse/stock",
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_13",
+    "name": "WMS Stock Report Format-13",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: WMS Stock Report Format-13",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/warehouse/stock",
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_14",
+    "name": "WMS Stock Report Format-14",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: WMS Stock Report Format-14",
+    "defaultParams": [
+      {
+        "name": "from_date",
+        "label": "From date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "to_date",
+        "label": "To date",
+        "type": "date",
+        "required": false
+      },
+      {
+        "name": "branch_id",
+        "label": "Branch",
+        "type": "uuid",
+        "required": false
+      }
+    ],
+    "existingPath": "/warehouse/stock",
+    "hasClientLayout": true,
+    "layoutStore": "wmsFormatUiLayouts",
+    "layoutBucket": "wms",
+    "suggestedPackKey": "wms.asn"
+  },
+  {
+    "code": "WMS_STOCK_REPORT_FORMAT_15",
+    "name": "WMS Stock Report Format-15",
+    "family": "wms",
+    "contexts": [
+      "wms",
+      "list"
+    ],
+    "formats": [
+      "PDF",
+      "XLSX",
+      "CSV"
+    ],
+    "rolloutPhase": 6,
+    "gapStatus": "covered_analytics",
+    "description": "FRESA sample: WMS Stock Report Format-15",
     "defaultParams": [
       {
         "name": "from_date",
@@ -23951,258 +24879,6 @@ export const FRESA_REPORT_REGISTRY = [
     "rolloutPhase": 6,
     "gapStatus": "covered_analytics",
     "description": "FRESA sample: WMS Stock Report Format-9",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/warehouse/stock",
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "WMS_STOCK_REPORT_FORMAT_10",
-    "name": "WMS Stock Report Format-10",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: WMS Stock Report Format-10",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/warehouse/stock",
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "WMS_STOCK_REPORT_FORMAT_11",
-    "name": "WMS Stock Report Format-11",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: WMS Stock Report Format-11",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/warehouse/stock",
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "WMS_STOCK_REPORT_FORMAT_12",
-    "name": "WMS Stock Report Format-12",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: WMS Stock Report Format-12",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/warehouse/stock",
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "WMS_STOCK_REPORT_FORMAT_13",
-    "name": "WMS Stock Report Format-13",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: WMS Stock Report Format-13",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/warehouse/stock",
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "WMS_STOCK_REPORT_FORMAT_14",
-    "name": "WMS Stock Report Format-14",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: WMS Stock Report Format-14",
-    "defaultParams": [
-      {
-        "name": "from_date",
-        "label": "From date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "to_date",
-        "label": "To date",
-        "type": "date",
-        "required": false
-      },
-      {
-        "name": "branch_id",
-        "label": "Branch",
-        "type": "uuid",
-        "required": false
-      }
-    ],
-    "existingPath": "/warehouse/stock",
-    "hasClientLayout": true,
-    "layoutStore": "wmsFormatUiLayouts",
-    "layoutBucket": "wms",
-    "suggestedPackKey": "wms.asn"
-  },
-  {
-    "code": "WMS_STOCK_REPORT_FORMAT_15",
-    "name": "WMS Stock Report Format-15",
-    "family": "wms",
-    "contexts": [
-      "wms",
-      "list"
-    ],
-    "formats": [
-      "PDF",
-      "XLSX",
-      "CSV"
-    ],
-    "rolloutPhase": 6,
-    "gapStatus": "covered_analytics",
-    "description": "FRESA sample: WMS Stock Report Format-15",
     "defaultParams": [
       {
         "name": "from_date",

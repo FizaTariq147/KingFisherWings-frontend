@@ -102,6 +102,10 @@ export function shipmentRecordToFormatPdfData(shipment: Shipment): InvoiceFormat
   const shipmentNo =
     shipment.shipment_number || shipment.reference || shipment.hbl_number || undefined;
   const partyName = shipment.party_name || shipment.customer_name || undefined;
+  const shipperName =
+    typeof shipment.shipper_name === 'string' ? shipment.shipper_name.trim() : '';
+  const consigneeName =
+    typeof shipment.consignee_name === 'string' ? shipment.consignee_name.trim() : '';
   const vesselFlight = [shipment.vessel_name, shipment.voyage_number, shipment.carrier_name]
     .filter(Boolean)
     .join(' / ');
@@ -113,11 +117,12 @@ export function shipmentRecordToFormatPdfData(shipment: Shipment): InvoiceFormat
     invoiceDate: formatReportLayoutDate(shipment.created_at?.slice(0, 10)),
     etd: formatReportLayoutDate(shipment.etd),
     eta: formatReportLayoutDate(shipment.eta),
-    billToName: partyName,
+    billToName: consigneeName || partyName,
     billToAddress:
       [route, shipment.commodity || shipment.cargo_details].filter(Boolean).join(' · ') ||
       undefined,
-    consigneeLines: partyName ? [partyName] : undefined,
+    shipperLines: shipperName ? [shipperName] : undefined,
+    consigneeLines: consigneeName ? [consigneeName] : partyName ? [partyName] : undefined,
     pol: origin || undefined,
     pod: dest || undefined,
     commodity: shipment.commodity || shipment.cargo_details || undefined,
@@ -356,6 +361,32 @@ export async function resolveCatalogContextPdfData(
       linkedCustomerId =
         shipment.customer_id?.trim() || shipment.party_id?.trim() || linkedCustomerId;
       linkedCompanyId = shipment.company_id?.trim() || linkedCompanyId;
+      // Party masters on shipment (Fresa HBL/AN/DO fields) — best-effort enrich.
+      const shipperId =
+        typeof shipment.shipper_id === 'string' ? shipment.shipper_id.trim() : '';
+      const consigneeId =
+        typeof shipment.consignee_id === 'string' ? shipment.consignee_id.trim() : '';
+      const notifyId =
+        typeof shipment.notify_party_id === 'string'
+          ? shipment.notify_party_id.trim()
+          : '';
+      if (isEntityId(shipperId)) {
+        data = await enrichFromPartyId(shipperId, 'shipper', data);
+      }
+      if (isEntityId(consigneeId)) {
+        data = await enrichFromPartyId(consigneeId, 'consignee', data);
+      } else if (linkedCustomerId) {
+        data = await enrichFromPartyId(linkedCustomerId, 'consignee', data);
+      }
+      if (isEntityId(notifyId)) {
+        try {
+          const notify = await partyService.getById(notifyId);
+          const lines = partyToFormatPdfLines(notify);
+          if (lines.length) data = mergePdfData(data, { notifyLines: lines });
+        } catch {
+          /* keep empty notify */
+        }
+      }
       if (!data.lines?.length) {
         try {
           const charges = await shipmentService.listCharges(shipmentId);

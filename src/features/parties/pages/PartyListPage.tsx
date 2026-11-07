@@ -94,9 +94,7 @@ export default function PartyListPage() {
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <h2 className={appType.pageTitle}>Parties</h2>
-          <p className={appType.pageSubtitle}>
-            Portal tabs follow party type: Vendor/Supplier get Vendor Portal; others get Users Portal.
-          </p>
+
         </div>
         <div className="flex flex-wrap gap-2">
           <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>

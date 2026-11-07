@@ -4,6 +4,8 @@
  * Do NOT expand *FormatUiLayouts.json / scraped layouts for product PDF.
  * Exact FRESA look = backend packs (BACKEND_REPORT_CATALOG_API.md).
  * Client html2canvas layouts are Dev/offline fallback only (see clientLayoutFallback.ts).
+ * Catalogue chrome injects registered org name/logo via resolveReportOrgChrome —
+ * never rewrite default invoice/quotation PDF buttons to catalog Format-N.
  */
 
 export const REPORT_LAYOUT_FREEZE = {

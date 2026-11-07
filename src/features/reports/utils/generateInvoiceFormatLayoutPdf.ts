@@ -8,23 +8,19 @@ import {
 
 export type { InvoiceFormatPdfData, InvoiceFormatPdfLine };
 
-export type GenerateInvoiceFormatLayoutPdfOptions = GenerateInvoiceFormatPreviewPdfOptions & {
-  /** Reserved — logo comes from shared chrome / assets. */
-  logoUrl?: string;
-};
+export type GenerateInvoiceFormatLayoutPdfOptions = GenerateInvoiceFormatPreviewPdfOptions;
 
 /**
  * Client PDF matching the KingFisher layout preview exactly.
  * Renders the same React preview used in the catalog, then captures it to PDF.
+ * Org name + logo come from resolveReportOrgChrome (or options.chrome / logoUrl).
  */
 export async function generateInvoiceFormatLayoutPdf(
   preview: InvoiceFormatPreview,
   data: InvoiceFormatPdfData = {},
   options: GenerateInvoiceFormatLayoutPdfOptions = {},
 ): Promise<Blob> {
-  const { logoUrl: _logoUrl, ...pdfOptions } = options;
-  void _logoUrl;
-  return generateInvoiceFormatPreviewPdf(preview, data, pdfOptions);
+  return generateInvoiceFormatPreviewPdf(preview, data, options);
 }
 
 /** Map a staff invoice record into layout PDF data (best-effort). */

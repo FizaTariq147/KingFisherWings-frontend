@@ -11,6 +11,10 @@ import {
   hasReportEntityContext,
   mergeReportContextIds,
 } from './reportParameterUtils';
+import {
+  orgChromeToPackParameters,
+  resolveReportOrgChrome,
+} from './resolveReportOrgChrome';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -25,6 +29,7 @@ export function isReportPackReady(template: {
 /**
  * POST /reports/generate → poll job → download blob.
  * Used by catalog Generate (live pack) and job Documents when pack is active.
+ * Always injects registered org name/logo into parameters for pack headers.
  */
 export async function generateAndDownloadReportPack(opts: {
   code: string;
@@ -39,11 +44,22 @@ export async function generateAndDownloadReportPack(opts: {
   const entityBound = hasReportEntityContext(contextIds);
   const format = (opts.format ?? 'PDF') as ReportExportFormat;
 
+  let orgParams: Record<string, unknown> = {};
+  try {
+    const chrome = await resolveReportOrgChrome();
+    orgParams = orgChromeToPackParameters(chrome);
+  } catch {
+    /* packs still generate; BE may resolve org from tenant */
+  }
+
   const dto: ReportGenerateRequest = {
     code: opts.code,
     template_id: opts.templateId,
     format,
-    parameters: opts.parameters,
+    parameters: {
+      ...orgParams,
+      ...(opts.parameters ?? {}),
+    },
     context: entityBound
       ? {
           job_id: contextIds.job_id,

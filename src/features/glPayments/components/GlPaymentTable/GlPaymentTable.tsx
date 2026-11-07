@@ -73,7 +73,7 @@ export function GlPaymentTable({
                 </TableCell>
                 <TableCell>{p.payment_date || '—'}</TableCell>
                 <TableCell>{PAYMENT_DIRECTION_LABELS[p.direction] ?? p.direction}</TableCell>
-                <TableCell>{p.party_name || p.party_id.slice(0, 8)}</TableCell>
+                <TableCell>{p.party_name || '—'}</TableCell>
                 <TableCell mono>
                   {`${p.currency_code} ${p.amount.toLocaleString()}`}
                 </TableCell>

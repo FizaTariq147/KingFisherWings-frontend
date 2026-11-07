@@ -8,6 +8,7 @@ import {
   resolveCatalogContextPdfData,
 } from '../utils/resolveCatalogContextPdfData';
 import type { ReportContextIds } from '../utils/reportParameterUtils';
+import { resolveReportOrgChrome } from '../utils/resolveReportOrgChrome';
 
 type UseCatalogFormatLayoutPdfArgs = {
   autoOpen?: boolean;
@@ -51,9 +52,12 @@ export function useCatalogFormatLayoutPdf({
     void viewer
       .loadPreview(
         async () => {
-          const data = await resolveCatalogContextPdfData(context, {
-            formatCode: formatCode || previewCode,
-          });
+          const [data, orgChrome] = await Promise.all([
+            resolveCatalogContextPdfData(context, {
+              formatCode: formatCode || previewCode,
+            }),
+            resolveReportOrgChrome(),
+          ]);
           if (!cancelled) {
             const label =
               data.invoiceNumber ||
@@ -61,7 +65,18 @@ export function useCatalogFormatLayoutPdf({
               (contextKey ? 'live record' : null);
             setBoundLabel(label ? `Bound to ${label}` : null);
           }
-          return generateInvoiceFormatLayoutPdf(preview, data);
+          return generateInvoiceFormatLayoutPdf(
+            preview,
+            {
+              ...data,
+              companyName: data.companyName || orgChrome.company,
+              companyAddress: data.companyAddress || orgChrome.address,
+              companyWeb: data.companyWeb || orgChrome.web,
+              companyPhone: data.companyPhone || orgChrome.phone,
+              companyEmail: data.companyEmail || orgChrome.email,
+            },
+            { chrome: orgChrome, logoUrl: orgChrome.logoUrl },
+          );
         },
         { fileName, title: title || preview.name },
       )

@@ -1,3 +1,5 @@
+import { useMemo } from 'react';
+import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
 import type { InvoiceFormatPreview } from '../../../types/invoiceFormatPreview.types';
 import type { InvoiceFormatPdfData } from '../../../utils/invoiceFormatToInvoicePdfModel';
 import { resolveAnyFormatUiLayout } from '../../../data/resolveAnyFormatUiLayout';
@@ -6,10 +8,14 @@ import {
   SHARED_LAYOUT_CHROME,
   type SharedLayoutChrome,
 } from '../../../utils/applySharedLayoutChrome';
+import { chromeFromOrganizationProfile } from '../../../utils/resolveReportOrgChrome';
 import { mergeInvoiceFormatDemo } from '../../../utils/mergeInvoiceFormatDemo';
 import { JsonInvoiceLayoutRenderer } from '../JsonInvoiceLayoutRenderer';
 
-/** Render format layouts from permanent JSON stores (+ optional live data). */
+/**
+ * Pure layout renderer — safe for off-screen PDF capture (no React Query).
+ * Pass `chrome` from resolveReportOrgChrome for registered company name/logo.
+ */
 export function InvoiceFormatLayoutByKind({
   preview,
   data,
@@ -40,4 +46,20 @@ export function InvoiceFormatLayoutByKind({
   };
   const layout = applySharedLayoutChrome(merged, resolvedChrome);
   return <JsonInvoiceLayoutRenderer layout={layout} />;
+}
+
+/** On-screen preview — injects registered org name/logo from organization profile. */
+export function InvoiceFormatLayoutByKindLive({
+  preview,
+  data,
+}: {
+  preview: InvoiceFormatPreview;
+  data?: InvoiceFormatPdfData;
+}) {
+  const { data: orgProfile } = useOrganizationProfile();
+  const chrome = useMemo(
+    () => chromeFromOrganizationProfile(orgProfile ?? null),
+    [orgProfile],
+  );
+  return <InvoiceFormatLayoutByKind preview={preview} data={data} chrome={chrome} />;
 }
