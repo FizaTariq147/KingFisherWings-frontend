@@ -292,13 +292,27 @@ export type InvoiceFormatUiBlock =
   /** Shipper / Consignee / Notify three-column party block for sea docs. */
   | { type: 'partyNotifyGrid' }
   /**
-   * Fresa Format-11 style upper boxed bill-of-lading shell (parties, routing, cargo).
-   * Report-specific; prefer over reshaping shared partyNotifyGrid.
+   * Fresa HBL upper boxed bill-of-lading shell (parties, routing, cargo).
+   * Variants match https://fresatechnologies.com/sample-report-formats/ families:
+   * combined / jasper / multimodal / mt / ocean.
    * `embedLogo` — place KF logo in the B/L identity cell (Fresa logo substitution).
+   * BL Terms PDF append stays separate (appendCustomerTerms / resolveCustomerTermsKind).
    */
-  | { type: 'hblBlShell'; embedLogo?: boolean }
+  | {
+      type: 'hblBlShell';
+      embedLogo?: boolean;
+      variant?: 'combined' | 'jasper' | 'multimodal' | 'mt' | 'ocean';
+    }
   /** HAWB origin/destination/flight strip. */
   | { type: 'hawbRouteGrid' }
+  /**
+   * Fresa HOUSE AIR WAYBILL / Air Waybill IATA form shell.
+   * Airway Terms PDF append stays separate (unchanged).
+   */
+  | {
+      type: 'hawbAwbShell';
+      variant?: 'draft' | 'draft1' | 'draft2' | 'original1' | 'original2';
+    }
   /** Arrival notice body with optional charges section. */
   | { type: 'arrivalChargesOptional'; showCharges?: boolean }
   /** Delivery order release instruction strip. */

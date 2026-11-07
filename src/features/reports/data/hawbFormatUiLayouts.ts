@@ -6,20 +6,36 @@ export const HAWB_FORMAT_UI_LAYOUT_LIST: InvoiceFormatUiLayout[] = HAWB_FORMAT_U
 const byCode = new Map(HAWB_FORMAT_UI_LAYOUT_LIST.map((row) => [row.code.toUpperCase(), row]));
 
 const FALLBACK_DRAFT = 'HAWB_DRAFT_REPORT_FORMAT';
-/** Format-1 original is a stub Fresa PDF — fallback to verified Format-2 only. */
-const FALLBACK_ORIGINAL = 'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2';
+const FALLBACK_ORIGINAL = 'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1';
 
 function resolveLayoutCode(code: string): string {
   const needle = code.trim().toUpperCase();
   if (byCode.has(needle)) return needle;
-  // Legacy deep-links to removed draft indices resolve to the base verified draft.
+  // Extra draft indices (Format-3…N) share the base draft IATA shell.
   if (/^HAWB_DRAFT_REPORT_FORMAT_\d+$/.test(needle)) return FALLBACK_DRAFT;
   if (/^HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_\d+$/.test(needle)) return FALLBACK_ORIGINAL;
   return needle;
 }
 
 export function getHawbFormatUiLayout(code: string): InvoiceFormatUiLayout | undefined {
-  return byCode.get(resolveLayoutCode(code));
+  const resolved = byCode.get(resolveLayoutCode(code));
+  if (!resolved) return undefined;
+  const needle = code.trim().toUpperCase();
+  if (needle === resolved.code.toUpperCase()) return resolved;
+  // Preserve requested code/name when falling back from Format-N extras.
+  return {
+    ...resolved,
+    code: needle,
+    name:
+      needle.startsWith('HAWB_DRAFT_REPORT_FORMAT_')
+        ? `HAWB Draft Report Format-${needle.replace('HAWB_DRAFT_REPORT_FORMAT_', '')}`
+        : needle.startsWith('HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_')
+          ? `HAWB Original Pre Printed Report Format-${needle.replace(
+              'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_',
+              '',
+            )}`
+          : resolved.name,
+  };
 }
 
 export function hasHawbFormatUiLayout(code: string): boolean {

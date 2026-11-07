@@ -5,16 +5,22 @@ export const HBL_FORMAT_UI_LAYOUT_LIST: InvoiceFormatUiLayout[] = HBL_FORMAT_UI_
 
 const byCode = new Map(HBL_FORMAT_UI_LAYOUT_LIST.map((row) => [row.code.toUpperCase(), row]));
 
-const FALLBACK = 'HBL_DRAFT_REPORT_FORMAT_20';
+const FALLBACK = 'HBL_DRAFT_REPORT_FORMAT_11';
 
 function resolveLayoutCode(code: string): string {
   const needle = code.trim().toUpperCase();
   if (byCode.has(needle)) return needle;
-  if (/^HBL_DRAFT_REPORT_FORMAT(_\d+|_JASPER)?$/.test(needle)) return FALLBACK;
+  // Marketing-page Jasper PDF shares the HKG "NOT NEGOTIABLE" shell.
+  if (needle === 'HBL_DRAFT_REPORT_FORMAT_JASPER' || needle === 'LEFTOVER_HBL_DRAFT_JASPER') {
+    return 'FG_HBL_HKG';
+  }
+  if (needle === 'LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1') return 'FG_HBL_FORMAT_1';
+  if (/^HBL_DRAFT_REPORT_FORMAT_\d+$/.test(needle)) return FALLBACK;
   if (needle.startsWith('FG_HBL_')) {
     if (needle.includes('HKG')) return 'FG_HBL_HKG';
     if (needle.includes('MAGIC')) return 'FG_HBL_MAGICLOGISYS';
-    return 'FG_HBL_FORMAT_1';
+    if (needle.includes('ORIGINAL')) return 'FG_HBL_ORIGINAL_FORMAT_87';
+    if (byCode.has('FG_HBL_FORMAT_1')) return 'FG_HBL_FORMAT_1';
   }
   return needle;
 }
