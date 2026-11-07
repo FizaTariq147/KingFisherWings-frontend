@@ -67,6 +67,23 @@ function extractErrorMessage(err: unknown): string {
     return 'The API gateway timed out (502). The Render backend may still be waking — wait ~30 seconds and try again (login will auto-retry).'
   }
 
+  // Bare Axios 404 (HTML/empty body) usually means the request never reached Nest Auth —
+  // wrong VITE_API_URL, missing /backend Vite proxy, or a stale dev server.
+  if (status === 404) {
+    const nestMsg =
+      data && typeof data === 'object' && 'message' in data && data.message
+        ? Array.isArray(data.message)
+          ? data.message[0]
+          : data.message
+        : null
+    if (typeof nestMsg === 'string' && nestMsg.trim() && !/not found/i.test(nestMsg)) {
+      return nestMsg
+    }
+    return import.meta.env.DEV
+      ? 'Login API returned 404 — the Auth route was not found. Check VITE_API_URL=/backend in .env, restart Vite, and confirm the /backend proxy is running (not a missing Nest path).'
+      : 'Login service is temporarily unavailable (404). Please try again or contact support.'
+  }
+
   if (data && typeof data === 'object' && 'message' in data && data.message) {
     const msg = Array.isArray(data.message) ? data.message[0] : data.message
 

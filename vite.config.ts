@@ -79,6 +79,16 @@ export default defineConfig(({ mode }) => ({
           'freightnest.kingfishertec.com',
     ],
     proxy: {
+      // Keep login/API working under `vite preview` the same as `vite` dev.
+      '/backend': {
+        target: 'https://kingfisherwings-backend.onrender.com',
+        changeOrigin: true,
+        secure: true,
+        timeout: 300_000,
+        proxyTimeout: 300_000,
+        rewrite: (requestPath) => requestPath.replace(/^\/backend/, ''),
+        cookieDomainRewrite: 'localhost',
+      },
       '/fresa-sample': {
         target: 'https://fresatechnologies.com',
         changeOrigin: true,

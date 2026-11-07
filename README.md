@@ -46,10 +46,16 @@ npm install
 
 ### Environment Setup
 
-Create a `.env.local` file in the root:
+Create a `.env` (or `.env.local`) in the root:
 
 ```env
-VITE_API_URL=https://kingfisherwings-backend.onrender.com/api
+# Local: use Vite /backend proxy (recommended)
+VITE_API_URL=/backend
+VITE_API_BASE_URL=/backend
+
+# Production builds (Render static): use absolute API URL — /backend is not proxied there
+# VITE_API_URL=https://kingfisherwings-backend.onrender.com
+# VITE_API_BASE_URL=https://kingfisherwings-backend.onrender.com
 ```
 
 ### Running the App
