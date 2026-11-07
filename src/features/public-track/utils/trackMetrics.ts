@@ -74,14 +74,14 @@ export function computeTrackMetrics(result: PublicTrackResult) {
   const tsFromPoc = Math.max(0, (result.route?.portOfCall.length ?? 0) - 2);
   const transshipments = Math.max(tsFromLegs, tsFromPoc, 0);
 
-  const atdMs = parseMs(deriveTrackAtd(result));
-  const etaMs = parseMs(deriveTrackEta(result));
+  const atd = deriveTrackAtd(result);
+  const etd = deriveTrackEtd(result);
+  const eta = deriveTrackEta(result);
+  const atdMs = parseMs(atd);
+  const etaMs = parseMs(eta);
   let transitDays: number | undefined;
   if (atdMs != null && etaMs != null && etaMs >= atdMs) {
     transitDays = Math.max(1, Math.round((etaMs - atdMs) / (24 * 60 * 60 * 1000)));
-  } else if (result.progress != null && result.progress > 0 && etaMs != null) {
-    // Rough fallback when ATD missing.
-    transitDays = undefined;
   }
 
   const co2 =
@@ -93,10 +93,15 @@ export function computeTrackMetrics(result: PublicTrackResult) {
         ? String(result.cargoInfo.detailedData.CO2)
         : undefined);
 
-  const progressPct = Math.max(
-    0,
-    Math.min(100, Number(result.progress ?? 0) || 0),
-  );
+  let progressPct = Math.max(0, Math.min(100, Number(result.progress ?? 0) || 0));
+  // When API omits progress %, estimate from ATD→ETA so the vessel sits mid-route.
+  if (progressPct <= 0 && atdMs != null && etaMs != null && etaMs > atdMs) {
+    const now = Date.now();
+    progressPct = Math.max(
+      0,
+      Math.min(100, Math.round(((now - atdMs) / (etaMs - atdMs)) * 100)),
+    );
+  }
 
   return {
     containerCount,
@@ -104,9 +109,9 @@ export function computeTrackMetrics(result: PublicTrackResult) {
     transitDays,
     co2: co2 ? String(co2) : undefined,
     progressPct,
-    atd: deriveTrackAtd(result),
-    etd: deriveTrackEtd(result),
-    eta: deriveTrackEta(result),
+    atd,
+    etd,
+    eta,
     origin: result.route?.originLabel || result.route?.from || result.origin,
     destination: result.route?.destLabel || result.route?.to || result.destination,
   };
