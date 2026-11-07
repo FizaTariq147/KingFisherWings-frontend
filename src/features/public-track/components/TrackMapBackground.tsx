@@ -22,6 +22,8 @@ type Props = {
   /** Prefer dark (CARTO-like) or light OSM tiles. */
   dark?: boolean;
   className?: string;
+  /** Show origin → destination live chip over the map. */
+  showLiveBadge?: boolean;
 };
 
 type Waypoint = LatLng & { label?: string; role?: string };
@@ -44,7 +46,7 @@ function FitRoute({ points }: { points: LatLng[] }) {
 }
 
 /** Leaflet often paints blank until the container has a real size — force refresh. */
-function InvalidateMapSize() {
+function InvalidateMapSize({ revision }: { revision?: string }) {
   const map = useMap();
   useEffect(() => {
     const refresh = () => {
@@ -53,13 +55,31 @@ function InvalidateMapSize() {
     refresh();
     const t1 = window.setTimeout(refresh, 80);
     const t2 = window.setTimeout(refresh, 320);
+    const t3 = window.setTimeout(refresh, 700);
     window.addEventListener('resize', refresh);
     return () => {
       window.clearTimeout(t1);
       window.clearTimeout(t2);
+      window.clearTimeout(t3);
       window.removeEventListener('resize', refresh);
     };
-  }, [map]);
+  }, [map, revision]);
+  return null;
+}
+
+/** Keep the live vessel in view without remounting the map on every ping. */
+function FollowLiveVessel({ point }: { point?: LatLng | null }) {
+  const map = useMap();
+  useEffect(() => {
+    if (!point) return;
+    const center = map.getCenter();
+    const dist =
+      (center.lat - point.lat) ** 2 + (center.lng - point.lng) ** 2;
+    // Only pan when the pin drifts far from the current view center.
+    if (dist > 0.08) {
+      map.panTo([point.lat, point.lng], { animate: true, duration: 0.6 });
+    }
+  }, [map, point?.lat, point?.lng]);
   return null;
 }
 
@@ -203,7 +223,12 @@ function splitRoute(
  * Prefers live lat/lng + progress legs / port-of-call from the track payload;
  * falls back to resolved port labels and progress-based position.
  */
-export function TrackMapBackground({ result, dark = false, className }: Props) {
+export function TrackMapBackground({
+  result,
+  dark = false,
+  className,
+  showLiveBadge = false,
+}: Props) {
   const metrics = result ? computeTrackMetrics(result) : null;
   const waypoints = useMemo(() => buildLiveWaypoints(result), [result]);
   const origin = waypoints[0] ?? null;
@@ -253,14 +278,39 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
     String(waypoints.length),
   ].join('|');
 
+  const sizeRevision = [
+    mapKey,
+    split.vessel ? `${split.vessel.lat.toFixed(3)},${split.vessel.lng.toFixed(3)}` : '',
+  ].join('|');
+
   const tileUrl = dark
     ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
     : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   const midStops = waypoints.slice(1, -1);
+  const originLabel = origin?.label || metrics?.origin || 'Origin';
+  const destLabel = dest?.label || metrics?.destination || 'Destination';
 
   return (
     <div className={className ?? 'absolute inset-0 z-0 h-full w-full'}>
+      {showLiveBadge ? (
+        <div className="pointer-events-none absolute left-3 top-3 z-[6] max-w-[min(90%,20rem)] rounded-lg bg-white/95 px-3 py-2 text-[11px] shadow-md backdrop-blur">
+          <div className="flex items-center gap-1.5 font-semibold text-[#0A2942]">
+            <span
+              className={`inline-block h-2 w-2 rounded-full ${
+                split.live ? 'animate-pulse bg-emerald-500' : 'bg-sky-500'
+              }`}
+            />
+            {split.live ? 'Live tracking' : 'Route tracking'}
+          </div>
+          <p className="mt-1 leading-snug text-[#64748b]">
+            <span className="font-medium text-emerald-700">{originLabel}</span>
+            {' → '}
+            <span className="font-medium text-sky-700">{destLabel}</span>
+          </p>
+        </div>
+      ) : null}
+
       <MapContainer
         key={mapKey}
         center={[22, 55]}
@@ -280,8 +330,9 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
           url={tileUrl}
         />
         <ZoomControl position="bottomright" />
-        <InvalidateMapSize />
+        <InvalidateMapSize revision={sizeRevision} />
         <FitRoute points={fitPoints} />
+        <FollowLiveVessel point={split.live ? split.vessel : null} />
 
         {split.done.length > 1 ? (
           <Polyline
@@ -313,7 +364,7 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
             }}
           >
             <Tooltip permanent direction="top" offset={[0, -8]}>
-              POL {origin.label || metrics?.origin || ''}
+              POL {originLabel}
             </Tooltip>
           </CircleMarker>
         ) : null}
@@ -348,28 +399,42 @@ export function TrackMapBackground({ result, dark = false, className }: Props) {
             }}
           >
             <Tooltip permanent direction="top" offset={[0, -8]}>
-              POD {dest.label || metrics?.destination || ''}
+              POD {destLabel}
             </Tooltip>
           </CircleMarker>
         ) : null}
 
         {split.vessel ? (
-          <CircleMarker
-            center={[split.vessel.lat, split.vessel.lng]}
-            radius={8}
-            pathOptions={{
-              color: '#0A2942',
-              weight: 2,
-              fillColor: '#22C55E',
-              fillOpacity: 1,
-            }}
-          >
-            <Tooltip direction="right" offset={[10, 0]}>
-              {split.live
-                ? 'Current position (live)'
-                : 'Current position (from progress)'}
-            </Tooltip>
-          </CircleMarker>
+          <>
+            {split.live ? (
+              <CircleMarker
+                center={[split.vessel.lat, split.vessel.lng]}
+                radius={16}
+                pathOptions={{
+                  color: '#22C55E',
+                  weight: 1,
+                  fillColor: '#22C55E',
+                  fillOpacity: 0.2,
+                }}
+              />
+            ) : null}
+            <CircleMarker
+              center={[split.vessel.lat, split.vessel.lng]}
+              radius={8}
+              pathOptions={{
+                color: '#0A2942',
+                weight: 2,
+                fillColor: '#22C55E',
+                fillOpacity: 1,
+              }}
+            >
+              <Tooltip direction="right" offset={[10, 0]}>
+                {split.live
+                  ? 'Current position (live)'
+                  : 'Current position (from progress)'}
+              </Tooltip>
+            </CircleMarker>
+          </>
         ) : null}
       </MapContainer>
     </div>
