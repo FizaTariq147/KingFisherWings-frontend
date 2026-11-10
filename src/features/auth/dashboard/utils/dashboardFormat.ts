@@ -1,5 +1,9 @@
 import type { Job } from '@/features/jobs/types/job.types';
-import type { JobStatus, JobType } from '@/features/jobs/constants/job.constants';
+import {
+  JOB_TYPE_LABELS,
+  type JobStatus,
+  type JobType,
+} from '@/features/jobs/constants/job.constants';
 import { isUuid } from '@/lib/isUuid';
 
 const UUID_IN_TEXT_RE =
@@ -173,12 +177,49 @@ export function jobInitials(name: string): string {
   return `${parts[0][0] ?? ''}${parts[1][0] ?? ''}`.toUpperCase();
 }
 
+/** Title-case job type labels; keep FCL / LCL / NVOCC as acronyms. */
+function formatJobTypeModeLabel(raw: string): string {
+  return raw
+    .trim()
+    .toLowerCase()
+    .split(/[\s_]+/)
+    .filter(Boolean)
+    .map((word) => {
+      if (word === 'fcl' || word === 'lcl' || word === 'nvocc') {
+        return word.toUpperCase();
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ');
+}
+
+/**
+ * Mode column label — include Import/Export (and FCL/LCL) from job_type.
+ * e.g. AIR_IMPORT → "Air Import", SEA_FCL_EXPORT → "Sea FCL Export".
+ */
 export function jobModeDetail(job: Pick<Job, 'job_type'>): string {
-  const type = String(job.job_type);
+  const type = String(job.job_type || '');
+  const catalog = JOB_TYPE_LABELS[type as JobType];
+  if (catalog) {
+    if (type.startsWith('SEA_')) {
+      const body = formatJobTypeModeLabel(catalog); // "FCL Export"
+      return body.toLowerCase().startsWith('sea ') ? body : `Sea ${body}`;
+    }
+    return formatJobTypeModeLabel(catalog);
+  }
+  if (type.startsWith('AIR_EXPORT') || type === 'AIR_EXPORT') return 'Air Export';
+  if (type.startsWith('AIR_IMPORT') || type === 'AIR_IMPORT') return 'Air Import';
+  if (type.includes('LCL') && type.includes('EXPORT')) return 'Sea LCL Export';
+  if (type.includes('LCL') && type.includes('IMPORT')) return 'Sea LCL Import';
+  if (type.includes('FCL') && type.includes('EXPORT')) return 'Sea FCL Export';
+  if (type.includes('FCL') && type.includes('IMPORT')) return 'Sea FCL Import';
+  if (type.startsWith('NVOCC') && type.includes('EXPORT')) return 'NVOCC Export';
+  if (type.startsWith('NVOCC') && type.includes('IMPORT')) return 'NVOCC Import';
   if (type.startsWith('AIR')) return 'Air';
-  if (type.includes('LCL')) return 'Sea LCL';
-  if (type.startsWith('SEA') || type.startsWith('NVOCC')) return 'Sea FCL';
-  if (type === 'LAND' || type === 'COURIER') return 'Land';
+  if (type.startsWith('SEA') || type.startsWith('NVOCC')) return 'Sea';
+  if (type === 'LAND' || type === 'COURIER' || type === 'ROAD_FREIGHT') {
+    return formatJobTypeModeLabel(type.replaceAll('_', ' '));
+  }
   return jobMode(job.job_type);
 }
 
