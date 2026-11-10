@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, type ReactNode } from 'react';
 import { Eye, Paperclip, Upload } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { getServerErrorMessage } from '@/lib/validation/mapApiErrors';
@@ -21,6 +21,10 @@ interface SectionAttachmentsPanelProps {
   title?: string;
   compact?: boolean;
   className?: string;
+  /** Extra actions in the header (e.g. Send acknowledgement). */
+  headerActions?: ReactNode;
+  /** Rendered below upload controls. */
+  footer?: ReactNode;
 }
 
 export function SectionAttachmentsPanel({
@@ -31,6 +35,8 @@ export function SectionAttachmentsPanel({
   title,
   compact = false,
   className = '',
+  headerActions,
+  footer,
 }: SectionAttachmentsPanelProps) {
   const fileRef = useRef<HTMLInputElement>(null);
   const query = useSectionAttachments(entity, entityId, section);
@@ -81,9 +87,12 @@ export function SectionAttachmentsPanel({
           <Paperclip className="h-3.5 w-3.5" aria-hidden />
           {heading}
         </p>
-        <span className="text-[11px] text-[var(--color-neutral-500)]">
-          {items.length} file{items.length === 1 ? '' : 's'}
-        </span>
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="text-[11px] text-[var(--color-neutral-500)]">
+            {items.length} file{items.length === 1 ? '' : 's'}
+          </span>
+          {headerActions}
+        </div>
       </div>
 
       {error ? (
@@ -232,6 +241,7 @@ export function SectionAttachmentsPanel({
           Upload not available for this section.
         </p>
       )}
+      {footer ? <div className="mt-2 border-t border-[var(--fresa-border,#C9D3DF)] pt-2">{footer}</div> : null}
     </div>
   );
 }

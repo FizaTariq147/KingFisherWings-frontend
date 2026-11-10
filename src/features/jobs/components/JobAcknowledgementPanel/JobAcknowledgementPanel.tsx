@@ -1,6 +1,6 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Paperclip } from 'lucide-react';
+import { Paperclip, Send } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
@@ -109,6 +109,17 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   const closed = status === 'RECEIVED_BY_ADMIN';
   const adminText = ack?.admin_message || ack?.template_message || ack?.remarks;
 
+  useEffect(() => {
+    if (!canSend || message.trim()) return;
+    const seed = (ack?.template_message || ack?.admin_message || '').trim();
+    if (seed) setMessage(seed);
+  }, [canSend, ack?.template_message, ack?.admin_message, message]);
+
+  const sendDisabled =
+    send.isPending ||
+    !message.trim() ||
+    (containerOptions.length > 1 && !containerId.trim());
+
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
     setMsg(null);
@@ -120,6 +131,9 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
       setError(getErrorMessage(err));
     }
   };
+
+  const runSend = () =>
+    void run(() => send.mutateAsync(), 'Acknowledgement sent to customer.');
 
   return (
     <Card>
@@ -252,20 +266,11 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
           </div>
         ) : null}
 
-        <SectionAttachmentsPanel
-          entity="jobs"
-          entityId={jobId}
-          section="acknowledgement"
-          recordId={ack?.id}
-          title="Acknowledgement attachments"
-          compact
-        />
-
         {canSend ? (
           <div className="grid gap-3 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] p-3 sm:grid-cols-2">
             <p className="sm:col-span-2 text-[12px] text-[#64748b]">
-              Compose a written acknowledgement for the customer. Optional file attaches with the
-              send. Customer can only mark received after this is sent.
+              Compose a written acknowledgement for the customer, upload files below, then Send.
+              Customer can only mark received after this is sent.
             </p>
             {containerOptions.length > 1 ? (
               <label className="block text-sm sm:col-span-2">
@@ -318,11 +323,48 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                 leftIcon={<Paperclip className="h-3.5 w-3.5" />}
                 onClick={() => fileRef.current?.click()}
               >
-                {file ? file.name : 'Optional attachment'}
+                {file ? file.name : 'Optional attachment with send'}
               </Button>
             </div>
           </div>
         ) : null}
+
+        <SectionAttachmentsPanel
+          entity="jobs"
+          entityId={jobId}
+          section="pods"
+          recordId={ack?.id}
+          title="Acknowledgement attachments"
+          compact
+          headerActions={
+            canSend ? (
+              <Button
+                type="button"
+                size="sm"
+                leftIcon={<Send className="h-3.5 w-3.5" />}
+                disabled={sendDisabled}
+                onClick={runSend}
+              >
+                {send.isPending ? 'Sending…' : 'Send'}
+              </Button>
+            ) : null
+          }
+          footer={
+            canSend ? (
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                <Button
+                  type="button"
+                  size="sm"
+                  leftIcon={<Send className="h-3.5 w-3.5" />}
+                  disabled={sendDisabled}
+                  onClick={runSend}
+                >
+                  {send.isPending ? 'Sending…' : 'Send to customer'}
+                </Button>
+              </div>
+            ) : null
+          }
+        />
 
         {canReceive ? (
           <Input
@@ -334,21 +376,6 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
         ) : null}
 
         <div className="flex flex-wrap gap-2 pt-1">
-          {canSend ? (
-            <Button
-              type="button"
-              disabled={
-                send.isPending ||
-                !message.trim() ||
-                (containerOptions.length > 1 && !containerId.trim())
-              }
-              onClick={() =>
-                void run(() => send.mutateAsync(), 'Acknowledgement sent to customer.')
-              }
-            >
-              {send.isPending ? 'Sending…' : 'Send to customer'}
-            </Button>
-          ) : null}
           {canReceive ? (
             <Button
               type="button"
