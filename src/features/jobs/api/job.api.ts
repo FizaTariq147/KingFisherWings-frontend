@@ -41,6 +41,8 @@ export const JOB_API = {
     `/jobs/${id}/detail/${encodeURIComponent(tab)}`,
   /** GET /jobs/:id/tracking — current status, progress, full history */
   tracking: (id: string) => `/jobs/${id}/tracking`,
+  /** GET /jobs/:id/tracking/live — live vessel/flight card from job flight/vessel */
+  trackingLive: (id: string) => `/jobs/${id}/tracking/live`,
   /** GET/PUT /jobs/:id/tracking/profile — YQN-style staff tracking profile */
   trackingProfile: (id: string) => `/jobs/${id}/tracking/profile`,
   /** GET /jobs/:id/tracking/pdf — Track & Trace PDF (live data) */

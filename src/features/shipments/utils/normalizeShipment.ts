@@ -137,6 +137,7 @@ function normalizeActions(raw: unknown): ShipmentActions | undefined {
       'can_hbl',
       'hbl_document',
     ),
+    can_delete: flag('can_delete', 'canDelete', 'delete'),
     allowed_edi_actions: stringList(
       r.allowed_edi_actions ?? r.allowedEdiActions ?? r.edi_actions,
     ),

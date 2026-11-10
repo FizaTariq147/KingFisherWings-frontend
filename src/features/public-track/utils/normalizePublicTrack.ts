@@ -19,6 +19,7 @@ import type {
   PublicTrackRoute,
   PublicTrackRouteLegRow,
 } from '../types/publicTrack.types';
+import { extractLiveTrackingFromPayload } from './normalizeLiveTracking';
 
 function pickNumber(...values: unknown[]): number | undefined {
   for (const v of values) {
@@ -1367,6 +1368,10 @@ export function normalizePublicTrack(
     asRecord(body.aisPosition) ||
     asRecord(summary?.vessel);
   const trackingRec = asRecord(body.tracking) || asRecord(body.live_tracking);
+  const liveTracking =
+    extractLiveTrackingFromPayload(body) ||
+    extractLiveTrackingFromPayload(root) ||
+    extractLiveTrackingFromPayload(trackingRec);
 
   const livePosition =
     pickLatLng(asRecord(body.current_position) ?? asRecord(body.currentPosition)) ||
@@ -1378,6 +1383,9 @@ export function normalizePublicTrack(
     pickLatLng(vesselRec) ||
     pickLatLng(trackingRec) ||
     pickLatLng(asRecord(trackingRec?.current_position) ?? asRecord(trackingRec?.currentPosition)) ||
+    (liveTracking?.lat != null && liveTracking?.lng != null
+      ? { lat: liveTracking.lat, lng: liveTracking.lng }
+      : null) ||
     (() => {
       // Flat lat/lng on root (some AIS providers).
       const flat = pickLatLng(body) || pickLatLng(summary);
@@ -1401,6 +1409,7 @@ export function normalizePublicTrack(
     destination,
     currentLat: livePosition?.lat,
     currentLng: livePosition?.lng,
+    liveTracking: liveTracking || undefined,
     jobType,
     partyName: pickString(body.party_name, summary?.party_name) || undefined,
     blNumber: route?.blNumber || pickString(body.bl_number, body.blNumber) || undefined,

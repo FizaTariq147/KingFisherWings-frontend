@@ -65,6 +65,8 @@ export const SHIPMENT_API = {
     `/shipments/${id}/edi/submissions/${encodeURIComponent(submissionId)}/download`,
   kpi: (id: string) => `/shipments/${id}/kpi`,
   tracking: (id: string) => `/shipments/${id}/tracking`,
+  /** GET /shipments/:id/tracking/live — live vessel/flight card */
+  trackingLive: (id: string) => `/shipments/${id}/tracking/live`,
   routingLegs: (id: string) => `/shipments/${id}/routing-legs`,
   routingLegById: (id: string, legId: string) => `/shipments/${id}/routing-legs/${legId}`,
   charges: (id: string) => `/shipments/${id}/charges`,

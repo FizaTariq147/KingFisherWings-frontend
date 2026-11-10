@@ -1,8 +1,10 @@
 import axios from 'axios';
 import { PUBLIC_TRACK_API } from '../api/publicTrack.api';
+import type { LiveTrackingCard } from '../types/liveTracking.types';
 import type { PublicTrackEmbedConfig, PublicTrackResult } from '../types/publicTrack.types';
 import { buildPublicTrackHeaders } from '../utils/publicTrackContext';
 import { getPublicTrackErrorMessage } from '../utils/publicTrackErrors';
+import { normalizeLiveTracking } from '../utils/normalizeLiveTracking';
 import { normalizeEmbedConfig, normalizePublicTrack } from '../utils/normalizePublicTrack';
 
 const publicClient = axios.create({
@@ -112,6 +114,40 @@ export const publicTrackService = {
     } catch (error) {
       throw new Error(
         getPublicTrackErrorMessage(error, 'Could not download track PDF.'),
+      );
+    }
+  },
+
+  /** GET /track/live/flight?q=… */
+  async liveFlight(query: string, tenantSlug?: string): Promise<LiveTrackingCard | null> {
+    const q = query.trim();
+    if (!q) throw new Error('Flight query is required.');
+    try {
+      const res = await publicClient.get(PUBLIC_TRACK_API.liveFlight, {
+        params: { q, ...(tenantSlug?.trim() ? { tenant_slug: tenantSlug.trim() } : {}) },
+        headers: buildPublicTrackHeaders(tenantSlug),
+      });
+      return normalizeLiveTracking(res.data, { kind: 'flight', query: q });
+    } catch (error) {
+      throw new Error(
+        getPublicTrackErrorMessage(error, 'Live flight lookup failed.'),
+      );
+    }
+  },
+
+  /** GET /track/live/vessel?q=… */
+  async liveVessel(query: string, tenantSlug?: string): Promise<LiveTrackingCard | null> {
+    const q = query.trim();
+    if (!q) throw new Error('Vessel query is required.');
+    try {
+      const res = await publicClient.get(PUBLIC_TRACK_API.liveVessel, {
+        params: { q, ...(tenantSlug?.trim() ? { tenant_slug: tenantSlug.trim() } : {}) },
+        headers: buildPublicTrackHeaders(tenantSlug),
+      });
+      return normalizeLiveTracking(res.data, { kind: 'vessel', query: q });
+    } catch (error) {
+      throw new Error(
+        getPublicTrackErrorMessage(error, 'Live vessel lookup failed.'),
       );
     }
   },

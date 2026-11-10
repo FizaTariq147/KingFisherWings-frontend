@@ -20,6 +20,7 @@ import {
   Save,
   Split,
   SwitchCamera,
+  Trash2,
   X,
 } from 'lucide-react';
 import { OperationTypeBadge, StatusBadge } from '@/components/erp';
@@ -52,6 +53,7 @@ import {
 } from '../components/ShipmentTabPanel';
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
+import { normalizeLiveTracking } from '@/features/public-track/utils/normalizeLiveTracking';
 import { useShipmentPaths } from '../hooks/useShipmentPaths';
 import { useShipmentResolvedLabels } from '../hooks/useShipmentResolvedLabels';
 import {
@@ -59,6 +61,7 @@ import {
   useChangeShipmentDepartment,
   useChangeShipmentStatus,
   useCopyShipment,
+  useDeleteShipment,
   useGenerateShipmentJob,
   useMergeShipments,
   useQueueShipmentHbl,
@@ -73,6 +76,7 @@ import {
   useShipmentKpi,
   useShipmentStatusOptions,
   useShipmentTracking,
+  useShipmentTrackingLive,
   useSplitShipment,
   useSwitchShipmentBl,
   useUpdateShipment,
@@ -83,6 +87,7 @@ import {
   SHIPMENT_STATUSES,
   type Shipment,
 } from '../types/shipment.types';
+import { canDeleteShipment } from '../utils/canDeleteShipment';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { shipmentDisplayNumber } from '../utils/normalizeShipment';
 import {
@@ -160,7 +165,8 @@ type ConfirmKind =
   | 'create-submaster'
   | 'change-status'
   | 'change-bl-status'
-  | 'change-department';
+  | 'change-department'
+  | 'delete';
 
 export default function ShipmentDetailPage() {
   const { id = '' } = useParams();
@@ -182,6 +188,7 @@ export default function ShipmentDetailPage() {
   const changeBlStatus = useChangeShipmentBlStatus(id);
   const changeDepartment = useChangeShipmentDepartment(id);
   const createSubmaster = useShipmentCreateSubmaster(id);
+  const deleteShipment = useDeleteShipment();
 
   const infoRef = useRef<HTMLElement>(null);
   const [actionError, setActionError] = useState<string | null>(null);
@@ -228,6 +235,7 @@ export default function ShipmentDetailPage() {
 
   const kpiQuery = useShipmentKpi(id, showKpi);
   const trackingQuery = useShipmentTracking(id, showTracking);
+  const trackingLiveQuery = useShipmentTrackingLive(id, showTracking);
   const awbQuery = useShipmentAwb(id, showAwb);
   const blEntryQuery = useShipmentBillsOfLading(id, showBlEntry);
   const shipmentEdiTypesQuery = useShipmentEdiTypes(id, confirmKind === 'edi');
@@ -246,6 +254,16 @@ export default function ShipmentDetailPage() {
   const effectiveTab = tabs.some((t) => t.key === activeTab)
     ? activeTab
     : defaultTabKey;
+
+  const trackResult = useMemo(() => {
+    const base = toTrackResult(
+      trackingQuery.data,
+      (shipment ? shipmentDisplayNumber(shipment) : '') || id,
+    );
+    if (base.liveTracking) return base;
+    const live = normalizeLiveTracking(trackingLiveQuery.data);
+    return live ? { ...base, liveTracking: live } : base;
+  }, [trackingQuery.data, trackingLiveQuery.data, shipment, id]);
 
   useEffect(() => {
     if (!(location.state as { startEdit?: boolean } | null)?.startEdit) return;
@@ -349,6 +367,7 @@ export default function ShipmentDetailPage() {
   const canBookingForm = perms.canView && actions?.can_booking_form !== false;
   const canHblDoc =
     perms.canWriteGenerate && hasJob && actions?.can_hbl_document === true;
+  const canDelete = canDeleteShipment(shipment, perms.canWriteDelete);
 
   /**
    * Prefer status-options catalog (system + custom), then detail allowed_*,
@@ -395,7 +414,8 @@ export default function ShipmentDetailPage() {
     changeStatus.isPending ||
     changeBlStatus.isPending ||
     changeDepartment.isPending ||
-    createSubmaster.isPending;
+    createSubmaster.isPending ||
+    deleteShipment.isPending;
 
   const run = async (fn: () => Promise<void>) => {
     setActionError(null);
@@ -883,6 +903,18 @@ export default function ShipmentDetailPage() {
             {showAwb ? 'Hide AWB' : 'AWB'}
           </Button>
         )}
+        {canDelete && (
+          <Button
+            size="sm"
+            type="button"
+            variant="danger"
+            leftIcon={<Trash2 />}
+            disabled={anyPending}
+            onClick={() => setConfirmKind('delete')}
+          >
+            Delete
+          </Button>
+        )}
         {canHblDoc && (
           <Button
             size="sm"
@@ -1061,12 +1093,7 @@ export default function ShipmentDetailPage() {
                             {getErrorMessage(trackingQuery.error)}
                           </p>
                         ) : (
-                          <PublicTrackTimeline
-                            result={toTrackResult(
-                              trackingQuery.data,
-                              shipmentDisplayNumber(shipment) || id,
-                            )}
-                          />
+                          <PublicTrackTimeline result={trackResult} />
                         )}
                       </div>
                     </div>
@@ -1327,6 +1354,30 @@ export default function ShipmentDetailPage() {
         />
       )}
 
+      {confirmKind === 'delete' && (
+        <ConfirmModal
+          title="Delete shipment?"
+          body={`Soft-deletes ${shipmentDisplayNumber(shipment) || 'this shipment'}, its charges, and frees the shipment number for reuse. This cannot be undone from the UI.`}
+          pending={deleteShipment.isPending}
+          confirmLabel="Delete"
+          danger
+          onClose={() => setConfirmKind(null)}
+          onConfirm={() => {
+            setActionError(null);
+            void (async () => {
+              try {
+                await deleteShipment.mutateAsync(id);
+                setConfirmKind(null);
+                navigate(paths.list, { replace: true });
+              } catch (e) {
+                setActionError(getErrorMessage(e));
+                setConfirmKind(null);
+              }
+            })();
+          }}
+        />
+      )}
+
       {confirmKind === 'change-status' && (
         <Modal
           open
@@ -1526,6 +1577,7 @@ function ConfirmModal({
   body,
   pending,
   confirmLabel,
+  danger,
   onClose,
   onConfirm,
 }: {
@@ -1533,6 +1585,7 @@ function ConfirmModal({
   body: ReactNode;
   pending: boolean;
   confirmLabel: string;
+  danger?: boolean;
   onClose: () => void;
   onConfirm: () => void;
 }) {
@@ -1546,7 +1599,13 @@ function ConfirmModal({
           <Button type="button" variant="back" leftIcon={<ArrowLeft />} disabled={pending} onClick={onClose}>
             Back
           </Button>
-          <Button type="button" leftIcon={<Check />} disabled={pending} onClick={onConfirm}>
+          <Button
+            type="button"
+            variant={danger ? 'danger' : undefined}
+            leftIcon={danger ? <Trash2 /> : <Check />}
+            disabled={pending}
+            onClick={onConfirm}
+          >
             {pending ? 'Working…' : confirmLabel}
           </Button>
         </div>

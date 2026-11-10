@@ -101,6 +101,22 @@ const FIELD_DEFS: Array<{
   { key: 'agent_code', label: 'Agent code', kind: 'text', group: 'Parties' },
   { key: 'carrier_name', label: 'Carrier name', kind: 'text', group: 'Parties' },
   { key: 'carrier_code', label: 'Carrier code', kind: 'text', group: 'Parties' },
+  { key: 'airline_name', label: 'Airline', kind: 'text', group: 'Air / MAWB' },
+  { key: 'flight_no', label: 'Flight number', kind: 'text', group: 'Air / MAWB' },
+  {
+    key: 'arrival_flight_number',
+    label: 'Arrival flight number',
+    kind: 'text',
+    group: 'Air / MAWB',
+  },
+  { key: 'flight_status', label: 'Flight status', kind: 'text', group: 'Air / MAWB' },
+  { key: 'flight_date', label: 'Flight date', kind: 'date', group: 'Air / MAWB' },
+  { key: 'shipment_date', label: 'Shipment date', kind: 'date', group: 'Air / MAWB' },
+  { key: 'mawb_no', label: 'MAWB number', kind: 'text', group: 'Air / MAWB' },
+  { key: 'hawb_no', label: 'HAWB number', kind: 'text', group: 'Air / MAWB' },
+  { key: 'pallet_count', label: 'Pallet count', kind: 'number', group: 'Air / MAWB' },
+  { key: 'dimensions', label: 'Dimensions / volume CBM', kind: 'number', group: 'Air / MAWB' },
+  { key: 'weight', label: 'Weight (kg)', kind: 'number', group: 'Air / MAWB' },
 ];
 
 function strVal(v: unknown): string {
@@ -172,11 +188,7 @@ export function ShowAllEditModal({
     });
     if (kind === 'number') {
       if (!raw.trim()) {
-        setDraft((prev) => {
-          const next = { ...prev };
-          delete next[key];
-          return next;
-        });
+        setDraft((prev) => ({ ...prev, [key]: '' }));
         return;
       }
       const n = Number(raw);
@@ -189,7 +201,7 @@ export function ShowAllEditModal({
   const submit = async () => {
     setFormError(null);
     setFieldErrors({});
-    const payload = toPatchShowAllPayload(draft);
+    const payload = toPatchShowAllPayload(draft, defaults);
     if (!Object.keys(payload).length) {
       setFormError('Enter at least one field to update.');
       return;
@@ -237,8 +249,9 @@ export function ShowAllEditModal({
       }
     >
       <p className="mb-3 text-[13px] text-[var(--color-neutral-600)]">
-        Saved values stay filled when you reopen. Only non-empty fields are sent on save —
-        blanks are not cleared on the server. Incomplete fields are highlighted.
+        Saved values stay filled when you reopen. Clearing Air / MAWB fields sends null so
+        the server clears them; other blank fields are left unchanged. Incomplete fields are
+        highlighted.
       </p>
       {formError ? (
         <p className="mb-3 text-sm text-[var(--color-danger-600)]">{formError}</p>
