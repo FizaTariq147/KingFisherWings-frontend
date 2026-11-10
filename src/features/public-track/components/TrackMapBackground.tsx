@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
 import {
   CircleMarker,
@@ -22,7 +22,7 @@ import { computeTrackMetrics } from '../utils/trackMetrics';
 
 type Props = {
   result?: PublicTrackResult | null;
-  /** Prefer dark (CARTO-like) or light OSM tiles. */
+  /** Prefer dark or light tiles. */
   dark?: boolean;
   className?: string;
   /** Kept for call-site compat (unused). */
@@ -35,6 +35,75 @@ type Props = {
 };
 
 type Waypoint = LatLng & { label?: string; role?: string };
+
+type GoogleMapsNamespace = {
+  maps: {
+    Map: new (
+      el: HTMLElement,
+      opts: Record<string, unknown>,
+    ) => GoogleMapInstance;
+    LatLngBounds: new () => GoogleLatLngBounds;
+    Polyline: new (opts: Record<string, unknown>) => { setMap: (m: unknown) => void };
+    Marker: new (opts: Record<string, unknown>) => { setMap: (m: unknown) => void };
+    SymbolPath: { CIRCLE: unknown };
+    TravelMode?: unknown;
+  };
+};
+
+type GoogleMapInstance = {
+  fitBounds: (b: GoogleLatLngBounds, padding?: number | Record<string, number>) => void;
+  setCenter: (c: { lat: number; lng: number }) => void;
+  setZoom: (z: number) => void;
+};
+
+type GoogleLatLngBounds = {
+  extend: (p: { lat: number; lng: number }) => void;
+  isEmpty: () => boolean;
+};
+
+declare global {
+  interface Window {
+    google?: GoogleMapsNamespace;
+    __kfGoogleMapsPromise?: Promise<GoogleMapsNamespace>;
+  }
+}
+
+function googleMapsApiKey(): string {
+  return String(import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '').trim();
+}
+
+function loadGoogleMaps(apiKey: string): Promise<GoogleMapsNamespace> {
+  if (window.google?.maps) return Promise.resolve(window.google);
+  if (window.__kfGoogleMapsPromise) return window.__kfGoogleMapsPromise;
+
+  window.__kfGoogleMapsPromise = new Promise((resolve, reject) => {
+    const existing = document.querySelector<HTMLScriptElement>(
+      'script[data-kf-google-maps="1"]',
+    );
+    if (existing) {
+      existing.addEventListener('load', () => {
+        if (window.google?.maps) resolve(window.google);
+        else reject(new Error('Google Maps failed to load'));
+      });
+      existing.addEventListener('error', () => reject(new Error('Google Maps failed to load')));
+      return;
+    }
+    const script = document.createElement('script');
+    script.dataset.kfGoogleMaps = '1';
+    script.async = true;
+    script.defer = true;
+    // language=en → English labels like the Google Maps link.
+    script.src = `https://maps.googleapis.com/maps/api/js?key=${encodeURIComponent(apiKey)}&language=en&v=weekly`;
+    script.onload = () => {
+      if (window.google?.maps) resolve(window.google);
+      else reject(new Error('Google Maps failed to load'));
+    };
+    script.onerror = () => reject(new Error('Google Maps failed to load'));
+    document.head.appendChild(script);
+  });
+
+  return window.__kfGoogleMapsPromise;
+}
 
 /** Green POL pin + white anchor — matches reference. */
 function polIcon(label: string) {
@@ -80,6 +149,27 @@ function vesselIcon() {
   });
 }
 
+function fitMaxZoom(points: LatLng[]): number {
+  if (points.length < 2) return 12;
+  let minLat = points[0].lat;
+  let maxLat = points[0].lat;
+  let minLng = points[0].lng;
+  let maxLng = points[0].lng;
+  for (const p of points) {
+    minLat = Math.min(minLat, p.lat);
+    maxLat = Math.max(maxLat, p.lat);
+    minLng = Math.min(minLng, p.lng);
+    maxLng = Math.max(maxLng, p.lng);
+  }
+  const span = Math.max(maxLat - minLat, maxLng - minLng);
+  if (span < 0.08) return 14;
+  if (span < 0.4) return 12;
+  if (span < 2) return 9;
+  if (span < 8) return 7;
+  if (span < 25) return 5;
+  return 4;
+}
+
 function FitRoute({
   points,
   padding,
@@ -94,14 +184,14 @@ function FitRoute({
       return;
     }
     if (points.length === 1) {
-      map.setView([points[0].lat, points[0].lng], 5);
+      map.setView([points[0].lat, points[0].lng], 10);
       return;
     }
     const bounds = L.latLngBounds(points.map((p) => [p.lat, p.lng] as [number, number]));
     map.fitBounds(bounds, {
       paddingTopLeft: [padding[3], padding[0]],
       paddingBottomRight: [padding[1], padding[2]],
-      maxZoom: 4,
+      maxZoom: fitMaxZoom(points),
     });
   }, [map, points, padding]);
   return null;
@@ -123,6 +213,16 @@ function InvalidateMapSize({ revision }: { revision?: string }) {
       window.removeEventListener('resize', refresh);
     };
   }, [map, revision]);
+  return null;
+}
+
+function DarkTiles({ enabled }: { enabled: boolean }) {
+  const map = useMap();
+  useEffect(() => {
+    const pane = map.getPanes().tilePane;
+    if (!pane) return;
+    pane.classList.toggle('kf-map-tiles-dark', enabled);
+  }, [map, enabled]);
   return null;
 }
 
@@ -258,17 +358,7 @@ function shortPortLabel(raw?: string): string {
     .trim();
 }
 
-/**
- * Full-bleed live map behind Track & Trace (free OpenStreetMap / Leaflet — no card).
- * Green completed lane, blue dashed remaining, POL/POD pins, mid-route vessel.
- */
-export function TrackMapBackground({
-  result,
-  dark: darkProp,
-  className,
-  fitPadding = [56, 56, 56, 520],
-}: Props) {
-  const [dark, setDark] = useState(Boolean(darkProp));
+function useTrackMapModel(result?: PublicTrackResult | null) {
   const metrics = result ? computeTrackMetrics(result) : null;
   const waypoints = useMemo(() => buildLiveWaypoints(result), [result]);
   const origin = waypoints[0] ?? null;
@@ -310,6 +400,224 @@ export function TrackMapBackground({
     return pts;
   }, [waypoints, split.vessel, arc]);
 
+  const originLabel =
+    shortPortLabel(origin?.label || metrics?.origin) || 'Origin';
+  const destLabel =
+    shortPortLabel(dest?.label || metrics?.destination) || 'Destination';
+
+  return {
+    metrics,
+    waypoints,
+    origin,
+    dest,
+    arc,
+    livePosition,
+    split,
+    fitPoints,
+    originLabel,
+    destLabel,
+    midStops: waypoints.slice(1, -1),
+  };
+}
+
+/** Live Google Maps (English) when VITE_GOOGLE_MAPS_API_KEY is set. */
+function GoogleTrackMap({
+  result,
+  dark: darkProp,
+  className,
+  fitPadding = [56, 56, 56, 520],
+  apiKey,
+}: Props & { apiKey: string }) {
+  const [dark, setDark] = useState(Boolean(darkProp));
+  const [error, setError] = useState<string | null>(null);
+  const hostRef = useRef<HTMLDivElement | null>(null);
+  const mapRef = useRef<GoogleMapInstance | null>(null);
+  const overlaysRef = useRef<Array<{ setMap: (m: unknown) => void }>>([]);
+  const model = useTrackMapModel(result);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadGoogleMaps(apiKey)
+      .then((g) => {
+        if (cancelled || !hostRef.current) return;
+        if (!mapRef.current) {
+          mapRef.current = new g.maps.Map(hostRef.current, {
+            center: { lat: 22, lng: 55 },
+            zoom: 3,
+            mapTypeId: dark ? 'hybrid' : 'roadmap',
+            disableDefaultUI: true,
+            zoomControl: true,
+            zoomControlOptions: { position: 9 },
+            gestureHandling: 'greedy',
+            clickableIcons: false,
+            keyboardShortcuts: false,
+          });
+        } else {
+          (mapRef.current as unknown as { setMapTypeId: (id: string) => void }).setMapTypeId(
+            dark ? 'hybrid' : 'roadmap',
+          );
+        }
+      })
+      .catch(() => {
+        if (!cancelled) {
+          setError('Google Maps key invalid or blocked. Falling back…');
+        }
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [apiKey, dark]);
+
+  useEffect(() => {
+    let cancelled = false;
+    loadGoogleMaps(apiKey)
+      .then((g) => {
+        if (cancelled || !mapRef.current) return;
+        for (const o of overlaysRef.current) o.setMap(null);
+        overlaysRef.current = [];
+
+        const map = mapRef.current;
+        const { split, origin, dest, midStops, originLabel, destLabel, fitPoints, livePosition } =
+          model;
+
+        if (split.done.length > 1) {
+          const line = new g.maps.Polyline({
+            path: split.done,
+            geodesic: true,
+            strokeColor: '#22C55E',
+            strokeOpacity: 1,
+            strokeWeight: 5,
+            map,
+          });
+          overlaysRef.current.push(line);
+        }
+        if (split.rest.length > 1) {
+          const line = new g.maps.Polyline({
+            path: split.rest,
+            geodesic: true,
+            strokeColor: '#3B82F6',
+            strokeOpacity: 0,
+            strokeWeight: 4.5,
+            map,
+            icons: [
+              {
+                icon: {
+                  path: 'M 0,-1 0,1',
+                  strokeOpacity: 0.95,
+                  strokeColor: '#3B82F6',
+                  scale: 3,
+                },
+                offset: '0',
+                repeat: '14px',
+              },
+            ],
+          });
+          overlaysRef.current.push(line);
+        }
+
+        const pin = (
+          position: LatLng,
+          title: string,
+          color: string,
+        ) => {
+          const m = new g.maps.Marker({
+            position,
+            map,
+            title,
+            icon: {
+              path: g.maps.SymbolPath.CIRCLE,
+              scale: 9,
+              fillColor: color,
+              fillOpacity: 1,
+              strokeColor: '#fff',
+              strokeWeight: 2.5,
+            },
+          });
+          overlaysRef.current.push(m);
+        };
+
+        if (origin) pin(origin, `POL ${originLabel}`, '#22C55E');
+        for (const stop of midStops) pin(stop, stop.label || 'TS', '#F59E0B');
+        if (dest) pin(dest, `POD ${destLabel}`, '#2563EB');
+        if (split.vessel) {
+          const m = new g.maps.Marker({
+            position: split.vessel,
+            map,
+            title: livePosition ? 'Live position' : 'In transit',
+            icon: {
+              path: g.maps.SymbolPath.CIRCLE,
+              scale: 11,
+              fillColor: '#22C55E',
+              fillOpacity: 1,
+              strokeColor: '#fff',
+              strokeWeight: 2.5,
+            },
+            zIndex: 999,
+          });
+          overlaysRef.current.push(m);
+        }
+
+        if (fitPoints.length) {
+          const bounds = new g.maps.LatLngBounds();
+          for (const p of fitPoints) bounds.extend(p);
+          if (!bounds.isEmpty()) {
+            map.fitBounds(bounds, {
+              top: fitPadding[0],
+              right: fitPadding[1],
+              bottom: fitPadding[2],
+              left: fitPadding[3],
+            });
+          }
+        }
+      })
+      .catch(() => undefined);
+
+    return () => {
+      cancelled = true;
+    };
+  }, [apiKey, model, fitPadding]);
+
+  if (error) {
+    return <LeafletTrackMap result={result} dark={dark} className={className} fitPadding={fitPadding} />;
+  }
+
+  return (
+    <div className={className ?? 'absolute inset-0 z-0 h-full w-full'}>
+      <button
+        type="button"
+        onClick={() => setDark((v) => !v)}
+        className="absolute right-3 top-3 z-[6] flex h-9 w-9 items-center justify-center rounded-full border border-black/5 bg-white/95 text-[#0A2942] shadow-md backdrop-blur hover:bg-white"
+        aria-label={dark ? 'Switch to light map' : 'Switch to dark map'}
+        title={dark ? 'Light map' : 'Satellite map'}
+      >
+        {dark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+      </button>
+      <div ref={hostRef} className="h-full w-full min-h-[280px]" />
+    </div>
+  );
+}
+
+/** Free OSM basemap (no key / no card) — used when Google key is absent. */
+function LeafletTrackMap({
+  result,
+  dark: darkProp,
+  className,
+  fitPadding = [56, 56, 56, 520],
+}: Props) {
+  const [dark, setDark] = useState(Boolean(darkProp));
+  const model = useTrackMapModel(result);
+  const {
+    waypoints,
+    origin,
+    dest,
+    split,
+    fitPoints,
+    originLabel,
+    destLabel,
+    midStops,
+    livePosition,
+  } = model;
+
   const mapKey = [
     result?.reference ?? 'empty',
     origin ? `${origin.lat.toFixed(2)},${origin.lng.toFixed(2)}` : '',
@@ -317,16 +625,8 @@ export function TrackMapBackground({
     String(waypoints.length),
   ].join('|');
 
-  // English-labeled free tiles (no Google key / no card).
-  const tileUrl = dark
-    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
-
-  const midStops = waypoints.slice(1, -1);
-  const originLabel =
-    shortPortLabel(origin?.label || metrics?.origin) || 'Origin';
-  const destLabel =
-    shortPortLabel(dest?.label || metrics?.destination) || 'Destination';
+  // Standard OSM — free, no API key (CARTO was painting "API KEY REQUIRED").
+  const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
 
   const polMarkerIcon = useMemo(() => polIcon(originLabel), [originLabel]);
   const podMarkerIcon = useMemo(() => podIcon(destLabel), [destLabel]);
@@ -355,10 +655,13 @@ export function TrackMapBackground({
         scrollWheelZoom
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
           url={tileUrl}
+          subdomains={['a', 'b', 'c']}
+          maxZoom={19}
         />
         <ZoomControl position="bottomright" />
+        <DarkTiles enabled={dark} />
         <InvalidateMapSize revision={`${mapKey}|${dark ? 'd' : 'l'}`} />
         <FitRoute points={fitPoints} padding={fitPadding} />
 
@@ -419,6 +722,25 @@ export function TrackMapBackground({
           </Marker>
         ) : null}
       </MapContainer>
+
+      <style>{`
+        .kf-map-tiles-dark {
+          filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
+        }
+      `}</style>
     </div>
   );
+}
+
+/**
+ * Full-bleed live Track & Trace map.
+ * - Set `VITE_GOOGLE_MAPS_API_KEY` for real Google Maps (English roadmap / hybrid).
+ * - Otherwise free OpenStreetMap (no key, no "API KEY REQUIRED" watermark).
+ */
+export function TrackMapBackground(props: Props) {
+  const apiKey = googleMapsApiKey();
+  if (apiKey) {
+    return <GoogleTrackMap {...props} apiKey={apiKey} />;
+  }
+  return <LeafletTrackMap {...props} />;
 }
