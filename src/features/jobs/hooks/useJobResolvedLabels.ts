@@ -282,12 +282,12 @@ export function useJobResolvedLabels(job: Job) {
     () =>
       resolvePartyName(
         job.billing_party_id,
-        undefined,
+        job.billing_party_name,
         partyMap,
         billingParty,
         billingLoading,
       ),
-    [job.billing_party_id, partyMap, billingParty, billingLoading],
+    [job.billing_party_id, job.billing_party_name, partyMap, billingParty, billingLoading],
   );
 
   const originLabel = useMemo(() => {

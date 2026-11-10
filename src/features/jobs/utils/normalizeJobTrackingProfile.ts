@@ -326,8 +326,16 @@ const FLIGHT_DETAILED_KEYS = [
 
 function pickFlightFromDetailed(
   detailed: Record<string, unknown>,
-): Partial<JobTrackingProfile> {
-  const out: Partial<JobTrackingProfile> = {};
+): Partial<JobTrackingProfile> & {
+  flight_etd?: string;
+  flight_eta?: string;
+  connecting?: Partial<JobTrackingLegDto>;
+} {
+  const out: Partial<JobTrackingProfile> & {
+    flight_etd?: string;
+    flight_eta?: string;
+    connecting?: Partial<JobTrackingLegDto>;
+  } = {};
   for (const key of FLIGHT_DETAILED_KEYS) {
     const value = str(detailed[key]);
     if (value) (out as Record<string, string>)[key] = value;
@@ -350,6 +358,32 @@ function pickFlightFromDetailed(
   if (looksAir && !out.airline_name) {
     const airline = str(detailed.vessel_name) ?? str(detailed.vesselName);
     if (airline) out.airline_name = airline;
+  }
+  out.flight_etd = str(detailed.flight_etd) ?? str(detailed.flightEtd) ?? '';
+  out.flight_eta = str(detailed.flight_eta) ?? str(detailed.flightEta) ?? '';
+  const connectingAirline =
+    str(detailed.connecting_airline_name) ?? str(detailed.connectingAirlineName);
+  const connectingFlight =
+    str(detailed.connecting_flight_number) ?? str(detailed.connectingFlightNumber);
+  if (
+    connectingAirline ||
+    connectingFlight ||
+    str(detailed.connecting_pol) ||
+    str(detailed.connecting_pod)
+  ) {
+    out.connecting = {
+      airline_name: connectingAirline ?? '',
+      flight_number: connectingFlight ?? '',
+      arrival_flight_number:
+        str(detailed.connecting_arrival_flight_number) ?? '',
+      flight_date: str(detailed.connecting_flight_date) ?? '',
+      etd: str(detailed.connecting_flight_etd) ?? '',
+      eta: str(detailed.connecting_flight_eta) ?? '',
+      pol: str(detailed.connecting_pol) ?? '',
+      pod: str(detailed.connecting_pod) ?? '',
+      voyage_number: connectingFlight ?? '',
+      vessel_name: connectingAirline ?? '',
+    };
   }
   return out;
 }
@@ -403,6 +437,53 @@ export function normalizeJobTrackingProfile(raw: unknown): JobTrackingProfile {
     asRecord(r.detailed_data) ?? asRecord(r.detailedData) ?? {};
   const fromDetailed = pickFlightFromDetailed(detailed);
   const first = legs[0] ?? emptyLeg(1);
+  const second = legs[1] ?? emptyLeg(2);
+
+  // Rehydrate air editor fields from detailed_data / voyage mirrors (BE strips flight_* on legs).
+  legs[0] = {
+    ...first,
+    airline_name:
+      first.airline_name ||
+      fromDetailed.airline_name ||
+      (fromDetailed.flight_number || fromDetailed.mawb_number
+        ? first.vessel_name
+        : '') ||
+      '',
+    flight_number:
+      first.flight_number ||
+      fromDetailed.flight_number ||
+      (fromDetailed.flight_number ||
+      fromDetailed.mawb_number ||
+      fromDetailed.airline_name
+        ? first.voyage_number
+        : '') ||
+      '',
+    arrival_flight_number:
+      first.arrival_flight_number || fromDetailed.arrival_flight_number || '',
+    mawb_number: first.mawb_number || fromDetailed.mawb_number || '',
+    hawb_number: first.hawb_number || fromDetailed.hawb_number || '',
+    flight_date: first.flight_date || fromDetailed.flight_date || '',
+    flight_status: first.flight_status || fromDetailed.flight_status || '',
+    etd: first.etd || fromDetailed.flight_etd || '',
+    eta: first.eta || fromDetailed.flight_eta || '',
+  };
+  if (fromDetailed.connecting) {
+    legs[1] = {
+      ...second,
+      ...Object.fromEntries(
+        Object.entries(fromDetailed.connecting).filter(
+          ([, v]) => v != null && String(v).trim() !== '',
+        ),
+      ),
+      leg_no: 2,
+      airline_name:
+        second.airline_name || fromDetailed.connecting.airline_name || '',
+      flight_number:
+        second.flight_number || fromDetailed.connecting.flight_number || '',
+      etd: second.etd || fromDetailed.connecting.etd || '',
+      eta: second.eta || fromDetailed.connecting.eta || '',
+    };
+  }
 
   return {
     id: str(r.id),
@@ -419,51 +500,43 @@ export function normalizeJobTrackingProfile(raw: unknown): JobTrackingProfile {
       str(r.airline_name) ??
       str(r.airlineName) ??
       fromDetailed.airline_name ??
-      first.airline_name ??
+      legs[0].airline_name ??
       '',
     flight_number:
       str(r.flight_number) ??
       str(r.flightNumber) ??
       fromDetailed.flight_number ??
-      first.flight_number ??
-      (fromDetailed.airline_name ||
-      fromDetailed.mawb_number ||
-      fromDetailed.hawb_number ||
-      first.airline_name ||
-      first.mawb_number ||
-      first.hawb_number
-        ? first.voyage_number
-        : '') ??
+      legs[0].flight_number ??
       '',
     arrival_flight_number:
       str(r.arrival_flight_number) ??
       str(r.arrivalFlightNumber) ??
       fromDetailed.arrival_flight_number ??
-      first.arrival_flight_number ??
+      legs[0].arrival_flight_number ??
       '',
     mawb_number:
       str(r.mawb_number) ??
       str(r.mawbNumber) ??
       fromDetailed.mawb_number ??
-      first.mawb_number ??
+      legs[0].mawb_number ??
       '',
     hawb_number:
       str(r.hawb_number) ??
       str(r.hawbNumber) ??
       fromDetailed.hawb_number ??
-      first.hawb_number ??
+      legs[0].hawb_number ??
       '',
     flight_date:
       str(r.flight_date) ??
       str(r.flightDate) ??
       fromDetailed.flight_date ??
-      first.flight_date ??
+      legs[0].flight_date ??
       '',
     flight_status:
       str(r.flight_status) ??
       str(r.flightStatus) ??
       fromDetailed.flight_status ??
-      first.flight_status ??
+      legs[0].flight_status ??
       '',
     legs,
     port_of_call: ensureOriginDestPoc(
@@ -493,7 +566,7 @@ function cleanNum(value?: number | null): number | undefined {
   return Number.isFinite(n) ? n : undefined;
 }
 
-/** Build PUT body — omit empty fluff, keep arrays. */
+/** Build PUT body — omit empty fluff, keep arrays. Flight fields are first-class (BE to accept). */
 export function toUpsertJobTrackingProfileDto(
   profile: JobTrackingProfile | UpsertJobTrackingProfileDto,
 ): UpsertJobTrackingProfileDto {
@@ -521,7 +594,7 @@ export function toUpsertJobTrackingProfileDto(
       ? profile.detailed_data
       : {}),
   };
-  // Mirror flight into detailed_data so tracking can read it even if leg extras are stripped.
+  // Also mirror into detailed_data for track consumers / older BE responses.
   if (airlineName) detailed.airline_name = airlineName;
   if (flightNumber) detailed.flight_number = flightNumber;
   if (arrivalFlight) detailed.arrival_flight_number = arrivalFlight;
@@ -552,8 +625,6 @@ export function toUpsertJobTrackingProfileDto(
         cleanStr(leg.airline_name) || (i === 0 ? airlineName : undefined);
       return {
         leg_no: leg.leg_no ?? i + 1,
-        // Documented sea fields — for air, also mirror flight into voyage_number so
-        // OpenAPI-strict BE still stores a usable flight identifier.
         vessel_name: cleanStr(leg.vessel_name) || legAirline,
         voyage_number: cleanStr(leg.voyage_number) || legFlight,
         imo: cleanStr(leg.imo),
