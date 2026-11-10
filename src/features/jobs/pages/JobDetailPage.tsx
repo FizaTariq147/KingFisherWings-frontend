@@ -66,7 +66,10 @@ import {
   useJobOrganizations,
   useJobStatusOptions,
 } from '../hooks/useJobs';
-import { pickOrgByType } from '@/features/shared/organizations/pickOrgByType';
+import {
+  pickOrgByType,
+  resolveOrgPartyDisplay,
+} from '@/features/shared/organizations/pickOrgByType';
 import { JobTrackTracePanel } from '../components/JobTrackTracePanel';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
@@ -332,6 +335,21 @@ export default function JobDetailPage() {
       status: 'DRAFT',
       shipper_id: '',
     },
+  );
+
+  // Parties tab orgs are source of truth — job.shipper_id often holds the commercial client.
+  const clientDisplay = useMemo(
+    () => resolveOrgPartyDisplay(clientOrg),
+    [clientOrg],
+  );
+  const shipperDisplay = useMemo(
+    () => resolveOrgPartyDisplay(shipperOrg, shipperLabel, job?.shipper_id),
+    [shipperOrg, shipperLabel, job?.shipper_id],
+  );
+  const billingDisplay = useMemo(
+    () =>
+      resolveOrgPartyDisplay(billingOrg, billingPartyLabel, job?.billing_party_id),
+    [billingOrg, billingPartyLabel, job?.billing_party_id],
   );
 
   const highlightInvoiceId = useMemo(() => {
@@ -650,10 +668,10 @@ export default function JobDetailPage() {
         subtitle={
           <span className="inline-flex flex-wrap items-center gap-2">
             <OperationTypeBadge code={job.job_type} />
-            {clientOrg?.label && clientOrg.label !== '—' ? (
-              <span>{clientOrg.label}</span>
-            ) : shipperLabel && shipperLabel !== '—' ? (
-              <span>{shipperLabel}</span>
+            {clientDisplay.label !== '—' ? (
+              <span>{clientDisplay.label}</span>
+            ) : shipperDisplay.label !== '—' ? (
+              <span>{shipperDisplay.label}</span>
             ) : null}
           </span>
         }
@@ -693,46 +711,18 @@ export default function JobDetailPage() {
             <FresaReadonlyField label="Job No" value={jobDisplayNumber(job)} />
             <FresaReadonlyField
               label="Client"
-              value={clientOrg?.label && clientOrg.label !== '—' ? clientOrg.label : '—'}
-              href={
-                clientOrg?.partyId && isUuid(clientOrg.partyId)
-                  ? `/parties/${clientOrg.partyId}`
-                  : undefined
-              }
+              value={clientDisplay.label}
+              href={clientDisplay.href}
             />
             <FresaReadonlyField
               label="Shipper"
-              value={
-                shipperLabel !== '—'
-                  ? shipperLabel
-                  : shipperOrg?.label && shipperOrg.label !== '—'
-                    ? shipperOrg.label
-                    : '—'
-              }
-              href={
-                job.shipper_id && isUuid(job.shipper_id)
-                  ? `/parties/${job.shipper_id}`
-                  : shipperOrg?.partyId && isUuid(shipperOrg.partyId)
-                    ? `/parties/${shipperOrg.partyId}`
-                    : undefined
-              }
+              value={shipperDisplay.label}
+              href={shipperDisplay.href}
             />
             <FresaReadonlyField
               label="Billing party"
-              value={
-                billingPartyLabel !== '—'
-                  ? billingPartyLabel
-                  : billingOrg?.label && billingOrg.label !== '—'
-                    ? billingOrg.label
-                    : '—'
-              }
-              href={
-                job.billing_party_id && isUuid(job.billing_party_id)
-                  ? `/parties/${job.billing_party_id}`
-                  : billingOrg?.partyId && isUuid(billingOrg.partyId)
-                    ? `/parties/${billingOrg.partyId}`
-                    : undefined
-              }
+              value={billingDisplay.label}
+              href={billingDisplay.href}
             />
             <OptionalFresaField label="Consignee" value={consigneeLabel !== '—' ? consigneeLabel : undefined} />
             <FresaReadonlyField
