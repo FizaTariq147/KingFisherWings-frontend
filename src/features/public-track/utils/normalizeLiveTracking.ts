@@ -123,7 +123,7 @@ function defaultLinks(card: Omit<LiveTrackingCard, 'links'>): LiveTrackingLink[]
   return links;
 }
 
-/** Normalize GET /track/live/* · */tracking/live · live_tracking bag. */
+/** Normalize GET /track/live/flight|vessel, job/shipment tracking/live, or live_tracking bag. */
 export function normalizeLiveTracking(
   raw: unknown,
   opts?: { kind?: 'flight' | 'vessel'; query?: string },

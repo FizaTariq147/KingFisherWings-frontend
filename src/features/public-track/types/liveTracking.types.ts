@@ -1,4 +1,4 @@
-/** Live vessel / flight card from /track/live/* and */tracking/live. */
+/** Live vessel / flight card from /track/live/* and job|shipment tracking/live. */
 export interface LiveTrackingLink {
   label: string;
   url: string;

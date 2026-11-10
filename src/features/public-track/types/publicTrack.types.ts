@@ -199,7 +199,7 @@ export interface PublicTrackResult {
   /** Live vessel/flight position from tracking payload when present. */
   currentLat?: number;
   currentLng?: number;
-  /** Live flight/vessel card from `live_tracking` or */tracking/live. */
+  /** Live flight/vessel card from `live_tracking` or tracking/live. */
   liveTracking?: LiveTrackingCard;
   jobType?: string;
   partyName?: string;
