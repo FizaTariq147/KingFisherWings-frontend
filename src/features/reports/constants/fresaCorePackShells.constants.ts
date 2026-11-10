@@ -40,6 +40,7 @@ export const FRESA_CORE_DOC_PACKS = [
   { key: 'sea.cargo_manifest', family: 'sea_docs' },
   { key: 'sea.delivery_order', family: 'sea_docs' },
   { key: 'air.hawb_draft', family: 'air_docs' },
+  { key: 'air.hawb_final', family: 'air_docs' },
   { key: 'air.mawb_draft', family: 'air_docs' },
   { key: 'air.arrival_notice', family: 'air_docs' },
   { key: 'air.delivery_order', family: 'air_docs' },

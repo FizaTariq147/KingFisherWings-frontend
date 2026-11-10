@@ -1,37 +1,45 @@
 import type { InvoiceFormatPreview } from '../types/invoiceFormatPreview.types';
 import { isHblFormatCode, getHblFormatSpec } from '../constants/hblFormatCatalog';
+import { isHawbFormatCode, getHawbFormatSpec } from '../constants/hawbFormatCatalog';
 import { resolveAnyFormatUiLayout } from '../data/resolveAnyFormatUiLayout';
 import { generateHblFamilyClassicPdf } from '@/features/shared/bl-draft/generateHblFamilyClassicPdf';
 import { generateHblSamplePdf, hasHblSamplePdf } from './generateHblSamplePdf';
+import { generateHawbSamplePdf, hasHawbSamplePdf } from './generateHawbSamplePdf';
 import {
   generateInvoiceFormatLayoutPdf,
   type InvoiceFormatPdfData,
 } from './generateInvoiceFormatLayoutPdf';
 
 /**
- * Client layout PDF for any catalogue / registry code that has a permanent JSON layout.
- * Used for entity-bound live data (quotation / invoice / job / party) and as fallback
- * when POST /reports/generate is unavailable. Never replaces POST /invoices/:id/pdf
- * or /quotations/:id/pdf.
+ * Client layout PDF for catalogue codes when backend pack is unavailable.
+ * Never replaces POST /invoices|quotations/:id/pdf.
  *
- * HBL is special-cased (plan: sample-PDF + pack path):
- * - sample browse → official Fresa sample PDF + org stamp + BL T&C
- * - entity-bound → classic family print doc (not hblBlShell / JSON raster)
+ * HBL / HAWB browse → official Fresa sample PDF (not shared React shells).
+ * HBL entity-bound fallback → classic family print doc.
  */
 export type GenerateCatalogLayoutPdfOptions = {
-  /** Override T&C append for this call (validation / layout-only capture). */
   appendCustomerTerms?: boolean;
-  /** Registered org / tenant logo URL. */
   logoUrl?: string;
-  /**
-   * Force HBL path: `sample` (official PDF) | `classic` (family live doc).
-   * When omitted: entityBound → classic, else sample.
-   */
   hblMode?: 'sample' | 'classic';
 };
 
 function hblPreviewMeta(code: string): InvoiceFormatPreview {
   const spec = getHblFormatSpec(code);
+  return {
+    code: spec?.code || code,
+    formatNumber: spec?.sortOrder || 0,
+    name: spec?.name || code,
+    samplePdfUrl: spec?.samplePdfUrl || null,
+    layoutKind: 'generic',
+    paper: 'A4',
+    appendCustomerTerms: true,
+    rtl: false,
+    sections: [],
+  };
+}
+
+function hawbPreviewMeta(code: string): InvoiceFormatPreview {
+  const spec = getHawbFormatSpec(code);
   return {
     code: spec?.code || code,
     formatNumber: spec?.sortOrder || 0,
@@ -62,9 +70,7 @@ export async function generateCatalogLayoutPdf(
         });
         return { blob, preview: hblPreviewMeta(code) };
       } catch (sampleErr) {
-        // If sample CDN/proxy fails on entity browse, fall through to classic.
         if (!data.entityBound) {
-          // Still try classic so Generate is not a hard failure.
           const { blob } = await generateHblFamilyClassicPdf(code, data, {
             appendCustomerTerms: options.appendCustomerTerms,
           });
@@ -78,6 +84,17 @@ export async function generateCatalogLayoutPdf(
       appendCustomerTerms: options.appendCustomerTerms,
     });
     return { blob, preview: hblPreviewMeta(code) };
+  }
+
+  if (isHawbFormatCode(code) && hasHawbSamplePdf(code) && !data.entityBound) {
+    try {
+      const { blob } = await generateHawbSamplePdf(code, {
+        appendCustomerTerms: options.appendCustomerTerms,
+      });
+      return { blob, preview: hawbPreviewMeta(code) };
+    } catch {
+      /* fall through to JSON shell if sample CDN/proxy fails */
+    }
   }
 
   const layout = resolveAnyFormatUiLayout(code);
@@ -105,5 +122,6 @@ export async function generateCatalogLayoutPdf(
 
 export function hasCatalogLayoutPdf(code: string): boolean {
   if (isHblFormatCode(code) && hasHblSamplePdf(code)) return true;
+  if (isHawbFormatCode(code) && hasHawbSamplePdf(code)) return true;
   return Boolean(resolveAnyFormatUiLayout(code));
 }

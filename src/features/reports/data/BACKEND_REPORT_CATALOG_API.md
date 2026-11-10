@@ -46,7 +46,9 @@ FE status (do not re-do on BE / do not regress catalogue Generate):
 
 **BE required for Fresa-parity product print:** live FRESA-like PDF/XLSX via Puppeteer/Excel packs (`suggestedPackKey` / `fresaCorePackShells.constants.ts`). Inject **KingFisher / tenant logo** (never Fresa logos). FE catalogue Generate prefers packs; client JSON layout is Dev/fallback only (`VITE_REPORTS_CLIENT_LAYOUT_FALLBACK`).
 
-**Phase-1 pipeline packs (must smoke with entity deep-links):** `sea.hbl_draft`, `air.hawb_draft`, `commercial.invoice_tax_india_1` (additive — do not replace `POST /invoices/:id/pdf`). **Lists:** `ops.list_generic` (prefer XLSX).
+**Phase-1 pipeline packs (must smoke with entity deep-links):** `sea.hbl_draft`, `air.hawb_draft`, `commercial.invoice_tax_india_1` (additive — do not replace `POST /invoices/:id/pdf`). **Lists:** `ops.list_generic` (prefer XLSX). Optional: `sea.hbl_original`, `air.hawb_final`.
+
+**FE ↔ BE alignment (current engine):** Generate uses request `code` + bound `renderer_key` (not a first-class `format_code`). Many HBL/HAWB catalogue codes bind to the same `HBL_FORM` / `HAWB_FORM` shell — FE still sends soft `parameters.template_code` / `document_kind` / `template_variant` for future variant work; BE may ignore until shells grow. Catalogue sample browse stays on FE for visual QA. Default `POST /invoices|quotations/:id/pdf` and job document PDFs stay untouched.
 
 ### A. Preserve (must not break)
 
@@ -102,7 +104,9 @@ On import/activate, if a rule matches set real `renderer_key`; unmatched stay `p
 HBL_DRAFT_* / FG_HBL_*                   → sea.hbl_draft / sea.hbl_original
 ARRIVAL_NOTICE_* / FG_ARRIVAL_*          → sea.arrival_notice | air.arrival_notice
 DELIVERY_* / FG_DELIVERY_* / PROOF_OF_*  → sea.delivery_order | air.delivery_order
-HAWB_* / MAWB_*                          → air.hawb_draft / air.mawb_draft
+HAWB_* draft                             → air.hawb_draft
+HAWB_* original / final / pre-printed    → air.hawb_final (fallback air.hawb_draft)
+MAWB_*                                   → air.mawb_draft / air.mawb
 *_LIST_* / DAILY_STATUS_* / JOB_STATUS_* → ops.list_generic
 INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA → commercial.invoice_tax_india_1
 INVOICE_REPORT_FORMAT_*                  → commercial.invoice_* (per shell)
@@ -234,7 +238,8 @@ Maintain a map `template_code → renderer_key` (or regex/family rules), e.g.:
 HBL_DRAFT_* / FG_HBL_*                   → sea.hbl_draft / sea.hbl_original
 ARRIVAL_NOTICE_* / FG_ARRIVAL_*          → sea.arrival_notice | air.arrival_notice
 DELIVERY_* / FG_DELIVERY_* / PROOF_OF_*  → sea.delivery_order | air.delivery_order
-HAWB_*                                   → air.hawb_draft
+HAWB_* draft                             → air.hawb_draft
+HAWB_* original / final / pre-printed    → air.hawb_final (fallback air.hawb_draft)
 DSR_* / OPS_LIST_* / JOB_LIST_*          → ops.list_generic
 INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA → commercial.invoice_tax_india_1
 INVOICE_REPORT_FORMAT_*                  → commercial.invoice_* (per format pack)

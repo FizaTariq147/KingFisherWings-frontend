@@ -1,27 +1,24 @@
 /**
- * Client JSON layouts render Fresa-sample look (colors / header / footer) with
- * registered organization name + logo (fallback KF asset) and embedded dummy
- * data — matching https://fresatechnologies.com/sample-report-formats/
+ * Client JSON / sample PDF fallback for catalogue Generate.
  *
- * Disable only when explicitly set:
+ * Product print = backend Puppeteer packs. When a pack is ready, FE must not
+ * use html2canvas shells (rough / identical layouts).
+ *
+ * Disable all client fallback:
  *   VITE_REPORTS_CLIENT_LAYOUT_FALLBACK=false
- *
- * Entity-bound Generate still prefers a live backend pack when bound+active.
  */
 export function isClientLayoutFallbackEnabled(): boolean {
   const raw = String(import.meta.env.VITE_REPORTS_CLIENT_LAYOUT_FALLBACK ?? '')
     .trim()
     .toLowerCase();
   if (raw === '0' || raw === 'false' || raw === 'no') return false;
-  // Default ON — catalogue samples show Fresa dummy data + KF logo.
   return true;
 }
 
 /**
- * When to use client layout PDF:
- * - Sample/browse (no entity) → always if enabled (dummy data).
- * - Entity-bound with ready pack → never (use Fresa pack bytes).
- * - Entity-bound without pack → yes if enabled (live overlay on sample chrome).
+ * When to use client layout / official-sample PDF:
+ * - Pack ready (bound + active) → never (Fresa-parity pack bytes only).
+ * - Pack not ready + fallback enabled → yes (browse sample or classic fallback).
  */
 export function allowClientLayoutGenerate(opts: {
   packReady: boolean;
@@ -29,6 +26,9 @@ export function allowClientLayoutGenerate(opts: {
   entityBound?: boolean;
 }): boolean {
   if (!isClientLayoutFallbackEnabled()) return false;
-  if (opts.entityBound && opts.packReady && opts.templateActive) return false;
+  // Pack ready ⇒ pack-only. Do not fall back to shells even for sample browse.
+  if (opts.packReady) return false;
+  void opts.templateActive;
+  void opts.entityBound;
   return true;
 }
