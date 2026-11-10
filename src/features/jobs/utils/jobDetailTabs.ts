@@ -360,6 +360,7 @@ export function resolveJobActionPanels(
 /**
  * Tab strip = only keys from GET /jobs/:id/detail `tabs`.
  * Each key is passed as-is (normalized) to GET /jobs/:id/detail/:tab — no hardcoded fallback.
+ * Sea ↔ air: air hides container tabs; sea/NVOCC hides mawb.
  */
 export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
   const apiTabs = job.tabs;
@@ -367,6 +368,9 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
 
   const seen = new Set<string>();
   const out: JobDetailTab[] = [];
+  const air = isAirwayBillJobType(job.job_type) ||
+    String(job.transport_mode ?? '').toUpperCase().startsWith('AIR') ||
+    job.actions?.can_edit_air_fields === true;
 
   for (const t of apiTabs) {
     if (!t?.key) continue;
@@ -378,9 +382,20 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
     if (key === 'tracking') {
       continue;
     }
-    // One containers tab only — planned mirrors actual; air MAWB lives on actual_container.
-    // Drop dedicated `mawb` tab (API often places it next to booking_form on every job).
-    if (key === 'planned_container' || key === 'mawb') {
+    // Planned always mirrors actual — one containers surface.
+    if (key === 'planned_container') {
+      continue;
+    }
+    // Sea / NVOCC: mawb tab hidden.
+    if (!air && key === 'mawb') {
+      continue;
+    }
+    // Air: container tabs hidden; map legacy actual_container → MAWB once.
+    if (air && (key === 'actual_container' || key === 'actual_containers')) {
+      if (seen.has('mawb')) continue;
+      seen.add('mawb');
+      seen.add(key);
+      out.push({ key: 'mawb', label: 'MAWB' });
       continue;
     }
     seen.add(key);
@@ -394,10 +409,11 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
       lower !== 'organisation'
         ? apiLabel
         : jobDetailTabLabel(key);
-    if (key === 'actual_container' && isAirwayBillJobType(job.job_type)) {
-      label = 'MAWB';
-    } else if (key === 'actual_container') {
+    if (key === 'actual_container') {
       label = 'Containers';
+    }
+    if (key === 'mawb') {
+      label = 'MAWB';
     }
     out.push({ key, label });
   }

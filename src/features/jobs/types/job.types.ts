@@ -906,6 +906,9 @@ export interface JobActions {
   can_cc_declaration?: boolean;
   can_cc_queries?: boolean;
   can_cc_finance?: boolean;
+  /** Sea ↔ air isolation (GET detail actions). */
+  can_edit_air_fields?: boolean;
+  can_edit_sea_fields?: boolean;
   /** Permitted status values when provided by backend. */
   allowed_statuses?: string[];
   raw?: Record<string, unknown>;
@@ -1143,7 +1146,29 @@ export interface UpsertJobCustomsRefDto {
   customs_status?: string;
   filed_at?: string;
   cleared_at?: string;
+  /** Customs hold flag (inspection / exam hold). */
+  on_hold?: boolean;
+  /** When cargo was placed on customs hold. */
+  held_at?: string | null;
+  /** Customs inspection date/time. */
+  inspection_at?: string | null;
+  /** Inspection / exam notes. */
+  inspection_notes?: string | null;
+  /** Customs release date/time. */
+  released_at?: string | null;
   remarks?: string;
+}
+
+/** Ops stop/hold snapshot returned on customs detail tab. */
+export interface JobCustomsJobHold {
+  on_hold?: boolean;
+  status?: string;
+  hold_reason?: string;
+  held_at?: string;
+  expected_release_at?: string;
+  resume_reason?: string;
+  resumed_at?: string;
+  raw?: Record<string, unknown>;
 }
 
 /** PUT /jobs/:id/gpum — employee_name is full name or email from dropdown. */
@@ -1458,6 +1483,8 @@ export interface Job {
   updated_at?: string;
   /** From GET /jobs/:id/detail */
   actions?: JobActions;
+  /** AIR | SEA from detail (sea ↔ air isolation). */
+  transport_mode?: string;
   /** GET /jobs/:id/detail path_hints — ops report / sync deep-links */
   path_hints?: string[];
   /** GET /jobs/:id/detail ops continuum summary / badges */
@@ -2266,6 +2293,13 @@ export interface DeliveryAcknowledgement {
   received_at?: string;
   actual_delivery_date?: string;
   attachments?: DeliveryAcknowledgementAttachment[];
+  /** After first send — message + container locked. */
+  fields_locked?: boolean;
+  /** May POST …/acknowledgement/attachments. */
+  can_attach_proof?: boolean;
+  /** May resend with file only on …/send (notifies customer again). */
+  can_resend_with_proof?: boolean;
+  has_proof?: boolean;
   path_hints?: Record<string, string> | string[];
   raw?: Record<string, unknown>;
 }
@@ -2282,12 +2316,14 @@ export interface SubmitDeliveryAcknowledgementDto {
 }
 
 export interface SendDeliveryAcknowledgementDto {
-  /** Required written acknowledgement for the customer (alias: remarks). */
+  /** Required on first send; omit when resending proof only. */
   message?: string;
   remarks?: string;
   container_id?: string;
-  /** Optional multipart attachment. */
+  /** Optional multipart attachment (or proof-only resend). */
   file?: File;
+  /** When true, send file only after fields are locked. */
+  proof_only?: boolean;
 }
 
 export interface CreatePaymentRequestFromJobDto {

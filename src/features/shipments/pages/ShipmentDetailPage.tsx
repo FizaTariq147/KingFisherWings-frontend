@@ -135,8 +135,7 @@ function FresaReadonlyField({
 
 /**
  * Tab strip = keys from GET /shipments/:id/detail `tabs`, plus frontend Section files.
- * Same air rule as jobs: one Containers/MAWB surface on `actual_container`
- * (drop planned_container + dedicated mawb; label MAWB for air types).
+ * Sea ↔ air: air hides container tabs (map legacy actual → MAWB); sea hides mawb.
  */
 function resolveShipmentTabs(shipment: Shipment): { key: string; label: string }[] {
   const apiTabs = shipment.tabs;
@@ -148,15 +147,20 @@ function resolveShipmentTabs(shipment: Shipment): { key: string; label: string }
   for (const t of apiTabs ?? []) {
     const key = toApiShipmentDetailTabKey(t.key);
     if (!key || seen.has(key)) continue;
-    // One containers tab only — planned mirrors actual; air MAWB lives on actual_container.
-    // Drop dedicated `mawb` (API often places it next to booking_form on every shipment).
-    if (key === 'planned_container' || key === 'mawb') continue;
+    if (key === 'planned_container') continue;
+    if (!air && key === 'mawb') continue;
+    if (air && key === 'actual_container') {
+      if (seen.has('mawb')) continue;
+      seen.add('mawb');
+      seen.add(key);
+      tabs.push({ key: 'mawb', label: 'MAWB' });
+      continue;
+    }
     seen.add(key);
     const apiLabel = t.label?.trim();
     let label = shipmentDetailTabLabel(key, apiLabel);
-    if (key === 'actual_container') {
-      label = air ? 'MAWB' : 'Containers';
-    }
+    if (key === 'actual_container') label = 'Containers';
+    if (key === 'mawb') label = 'MAWB';
     tabs.push({ key, label });
   }
   if (!seen.has('section-files') && !seen.has('section_files')) {

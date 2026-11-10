@@ -484,9 +484,18 @@ function ShipmentShowAllPanel({
   footer?: ReactNode;
 }) {
   const query = useShipmentShowAll(shipmentId, siblingTabKeys, true);
+  const shipmentQuery = useShipment(shipmentId);
   const patchShowAll = usePatchShipmentShowAll(shipmentId);
   const [editOpen, setEditOpen] = useState(false);
   const [savedOverlay, setSavedOverlay] = useState<PatchShowAllDto>({});
+
+  const transportEditMode = (() => {
+    const s = shipmentQuery.data;
+    const jt = String(s?.job_type || s?.service_type || '').toUpperCase();
+    if (/AIR/.test(jt)) return 'air' as const;
+    if (/SEA|NVOCC/.test(jt)) return 'sea' as const;
+    return 'all' as const;
+  })();
 
   const saveShowAll = async (dto: PatchShowAllDto) => {
     const refreshed = await patchShowAll.mutateAsync(dto);
@@ -523,6 +532,7 @@ function ShipmentShowAllPanel({
   }
 
   const { sections = [], arrays = [] } = query.data ?? {};
+
   const editModal = (
     <ShowAllEditModal
       open={editOpen}
@@ -531,6 +541,7 @@ function ShipmentShowAllPanel({
       sources={[savedOverlay, query.data, ...sections.map((s) => s.data)]}
       pending={patchShowAll.isPending}
       onSubmit={saveShowAll}
+      transportEditMode={transportEditMode}
     />
   );
 

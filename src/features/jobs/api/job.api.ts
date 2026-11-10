@@ -22,6 +22,10 @@ export const JOB_API = {
   acknowledgementReceive: (id: string) => `/jobs/${id}/acknowledgement/receive`,
   acknowledgementGeneratePdf: (id: string) =>
     `/jobs/${id}/acknowledgement/generate-pdf`,
+  acknowledgementAttachments: (id: string) =>
+    `/jobs/${id}/acknowledgement/attachments`,
+  acknowledgementAttachmentDownload: (id: string, attachmentId: string) =>
+    `/jobs/${id}/acknowledgement/attachments/${encodeURIComponent(attachmentId)}/download`,
   /** Job finance ledger — invoices + credit/debit notes. */
   ledger: (id: string) => `/jobs/${id}/ledger`,
   /** Port token form + admin confirm. */

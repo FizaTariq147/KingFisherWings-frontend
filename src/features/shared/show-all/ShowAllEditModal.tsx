@@ -13,6 +13,11 @@ import {
   isPatchShowAllFieldEmpty,
   toPatchShowAllPayload,
 } from './extractPatchShowAllDefaults';
+import {
+  filterShowAllPayloadForTransport,
+  showAllFieldAllowed,
+  type ShowAllTransportEditMode,
+} from './showAllTransportFields';
 
 type FieldKind = 'text' | 'number' | 'date' | 'select';
 
@@ -131,6 +136,7 @@ export function ShowAllEditModal({
   sources,
   pending,
   onSubmit,
+  transportEditMode = 'all',
 }: {
   open: boolean;
   onClose: () => void;
@@ -139,6 +145,8 @@ export function ShowAllEditModal({
   sources: unknown[];
   pending?: boolean;
   onSubmit: (dto: PatchShowAllDto) => Promise<void>;
+  /** Sea ↔ air isolation — hide / strip fields BE would reject. */
+  transportEditMode?: ShowAllTransportEditMode;
 }) {
   const defaults = useMemo(
     () => extractPatchShowAllDefaults(sources),
@@ -170,12 +178,13 @@ export function ShowAllEditModal({
   const groups = useMemo(() => {
     const map = new Map<string, typeof FIELD_DEFS>();
     for (const field of FIELD_DEFS) {
+      if (!showAllFieldAllowed(field.key, transportEditMode)) continue;
       const list = map.get(field.group) ?? [];
       list.push(field);
       map.set(field.group, list);
     }
     return [...map.entries()];
-  }, []);
+  }, [transportEditMode]);
 
   if (!open) return null;
 
@@ -201,7 +210,10 @@ export function ShowAllEditModal({
   const submit = async () => {
     setFormError(null);
     setFieldErrors({});
-    const payload = toPatchShowAllPayload(draft, defaults);
+    const payload = filterShowAllPayloadForTransport(
+      toPatchShowAllPayload(draft, defaults),
+      transportEditMode,
+    );
     if (!Object.keys(payload).length) {
       setFormError('Enter at least one field to update.');
       return;
