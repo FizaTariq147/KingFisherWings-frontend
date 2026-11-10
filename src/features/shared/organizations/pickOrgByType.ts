@@ -1,3 +1,4 @@
+import { isUuid } from '@/lib/isUuid';
 import {
   normalizeOrganizationRows,
   orgPartyLabel,
@@ -26,4 +27,29 @@ export function pickOrgByType(
     };
   }
   return null;
+}
+
+/**
+ * Prefer Parties-tab organization over job FK labels.
+ * job.shipper_id is often the commercial client, not the SHIPPER org.
+ */
+export function resolveOrgPartyDisplay(
+  org: JobOrgPartyRef | null | undefined,
+  fallbackLabel?: string | null,
+  fallbackPartyId?: string | null,
+): { label: string; partyId?: string; href?: string } {
+  const orgLabel = org?.label && org.label !== '—' ? org.label : '';
+  const fb =
+    fallbackLabel && fallbackLabel.trim() && fallbackLabel.trim() !== '—'
+      ? fallbackLabel.trim()
+      : '';
+  const partyId =
+    (org?.partyId && isUuid(org.partyId) ? org.partyId : undefined) ||
+    (fallbackPartyId && isUuid(fallbackPartyId) ? fallbackPartyId : undefined);
+  const label = orgLabel || fb || '—';
+  return {
+    label,
+    partyId,
+    href: partyId ? `/parties/${partyId}` : undefined,
+  };
 }

@@ -1,7 +1,10 @@
 import { useMemo, type ReactNode } from 'react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { isNvoccJobType } from '@/features/nvocc/hooks/useNvoccJobs';
-import { pickOrgByType } from '@/features/shared/organizations/pickOrgByType';
+import {
+  pickOrgByType,
+  resolveOrgPartyDisplay,
+} from '@/features/shared/organizations/pickOrgByType';
 import { isUuid } from '@/lib/isUuid';
 import { JOB_TYPE_LABELS, JOB_STATUS_LABELS } from '../../constants/job.constants';
 import { useJobOrganizations } from '../../hooks/useJobs';
@@ -83,20 +86,17 @@ export function JobOverviewPanel({ job }: { job: Job }) {
     () => pickOrgByType(orgsQuery.data, 'SHIPPER'),
     [orgsQuery.data],
   );
-  const clientLabel =
-    clientOrg?.label && clientOrg.label !== '—' ? clientOrg.label : undefined;
-  const shipperLabel =
-    labels.shipperLabel !== '—'
-      ? labels.shipperLabel
-      : shipperOrg?.label && shipperOrg.label !== '—'
-        ? shipperOrg.label
-        : undefined;
-  const billingLabel =
-    labels.billingPartyLabel !== '—'
-      ? labels.billingPartyLabel
-      : billingOrg?.label && billingOrg.label !== '—'
-        ? billingOrg.label
-        : undefined;
+  const clientLabel = resolveOrgPartyDisplay(clientOrg).label;
+  const shipperLabel = resolveOrgPartyDisplay(
+    shipperOrg,
+    labels.shipperLabel,
+    job.shipper_id,
+  ).label;
+  const billingLabel = resolveOrgPartyDisplay(
+    billingOrg,
+    labels.billingPartyLabel,
+    job.billing_party_id,
+  ).label;
 
   const isAir = job.job_type === 'AIR_EXPORT' || job.job_type === 'AIR_IMPORT';
   const isSeaFcl =
@@ -206,9 +206,18 @@ export function JobOverviewPanel({ job }: { job: Job }) {
       </Section>
 
       <Section title="Parties">
-        <Row label="Client" value={clientLabel} />
-        <Row label="Shipper" value={shipperLabel} />
-        <Row label="Billing party" value={billingLabel} />
+        <Row
+          label="Client"
+          value={clientLabel !== '—' ? clientLabel : undefined}
+        />
+        <Row
+          label="Shipper"
+          value={shipperLabel !== '—' ? shipperLabel : undefined}
+        />
+        <Row
+          label="Billing party"
+          value={billingLabel !== '—' ? billingLabel : undefined}
+        />
         <Row label="Consignee" value={labels.consigneeLabel} />
         <Row label="Agent" value={labels.agentLabel} />
       </Section>
