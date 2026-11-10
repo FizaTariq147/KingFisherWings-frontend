@@ -42,6 +42,10 @@ import {
 } from '../../utils/reportParameterUtils';
 import { allowClientLayoutGenerate } from '../../utils/clientLayoutFallback';
 import { buildFresaPackGenerateParams } from '../../utils/fresaPackGenerateParams';
+import {
+  hasOfficialSamplePdf,
+  shouldPreferOfficialSamplePdf,
+} from '../../utils/preferOfficialSamplePdf';
 import { isReportPackReady } from '../../utils/reportPackGenerate';
 import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
 import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
@@ -339,9 +343,11 @@ export function ReportGeneratePanel({
         setJobId(null);
         setMessage(
           entityBound
-            ? 'Report PDF ready (HBL classic family / Fresa layout + live record data). Pack preferred when bound.'
+            ? generated.preview.samplePdfUrl
+              ? 'Official Fresa sample PDF ready (distinct per format). Shared backend pack still used for live job documents.'
+              : 'Report PDF ready (classic / JSON layout + live record data).'
             : generated.preview.samplePdfUrl
-              ? 'Official Fresa HBL sample PDF ready (org branding stamped). Distinct per catalogue format.'
+              ? 'Official Fresa sample PDF ready (org branding stamped). Distinct per catalogue format.'
               : 'Sample report ready — Fresa layout/colors/footer with registered company name/logo and sample data.',
         );
       } catch (err) {
@@ -351,7 +357,26 @@ export function ReportGeneratePanel({
       }
     };
 
-    // Product path: backend Fresa pack when ready (or bindable). Client shells only if pack unavailable.
+    // HBL/HAWB: official Fresa samples are distinct per format. Shared packs
+    // (one HAWB_FORM / HBL_FORM) make every code look identical — prefer samples.
+    const officialSample = shouldPreferOfficialSamplePdf({
+      code: resolved.code,
+      format,
+    });
+    if (
+      officialSample &&
+      allowClientLayoutGenerate({
+        packReady,
+        templateActive: resolved.is_active,
+        entityBound,
+        hasOfficialSample: true,
+      })
+    ) {
+      await runClientSamplePdf();
+      return;
+    }
+
+    // Product path: backend pack when ready (or bindable). Client shells only if pack unavailable.
     let workingPackReady = packReady;
     if (!detailFailed) {
       let working: ReportTemplate = resolved;
@@ -388,6 +413,7 @@ export function ReportGeneratePanel({
           packReady: false,
           templateActive: resolved.is_active,
           entityBound,
+          hasOfficialSample: hasOfficialSamplePdf(resolved.code),
         });
         if (canClient && format === 'PDF' && (isInvoiceFormatPdf || hasLayout)) {
           await runClientSamplePdf();
@@ -409,6 +435,7 @@ export function ReportGeneratePanel({
         packReady: workingPackReady,
         templateActive: resolved.is_active,
         entityBound,
+        hasOfficialSample: hasOfficialSamplePdf(resolved.code),
       });
 
     if (preferClientSample) {
@@ -518,13 +545,17 @@ export function ReportGeneratePanel({
 
   const packReadyForGenerate = isReportPackReady(resolved);
   const entityBoundForUi = hasReportEntityContext(mergeReportContextIds(context, params));
+  const officialSampleForUi = hasOfficialSamplePdf(resolved.code);
   const canClientLayoutPdf =
     format === 'PDF' &&
-    (isInvoiceReportFormatCode(resolved.code) || hasCatalogLayoutPdf(resolved.code)) &&
+    (isInvoiceReportFormatCode(resolved.code) ||
+      hasCatalogLayoutPdf(resolved.code) ||
+      officialSampleForUi) &&
     allowClientLayoutGenerate({
       packReady: packReadyForGenerate,
       templateActive: resolved.is_active,
       entityBound: entityBoundForUi,
+      hasOfficialSample: officialSampleForUi,
     });
   const generateBlocked =
     busy ||
@@ -562,6 +593,7 @@ export function ReportGeneratePanel({
         packReady: packReadyForGenerate,
         templateActive: resolved.is_active,
         entityBound: entityBoundForUi,
+        hasOfficialSample: officialSampleForUi,
       }) ? (
         <InvoiceFormatAutoPdf
           code={resolved.code}
@@ -591,7 +623,18 @@ export function ReportGeneratePanel({
         </div>
       ) : null}
 
-      {!detailFailed && needsPackBind ? (
+      {!detailFailed && officialSampleForUi ? (
+        <div
+          role="status"
+          className="rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-xs text-sky-950"
+        >
+          Catalogue PDF uses the official Fresa sample for this format (distinct layout). Shared
+          backend HAWB/HBL packs are one shell for many codes — use job Documents for live pack
+          print.
+        </div>
+      ) : null}
+
+      {!detailFailed && needsPackBind && !officialSampleForUi ? (
         <div
           role="status"
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"

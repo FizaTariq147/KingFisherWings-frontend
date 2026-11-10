@@ -1379,6 +1379,12 @@ export interface Job {
   currency_code?: string;
   shipper_id: string;
   shipper_name?: string;
+  /**
+   * Commercial client (organizations CLIENT) — distinct from shipper / billing.
+   * Prefer over shipper_name when list/detail embeds it.
+   */
+  client_id?: string;
+  client_name?: string;
   consignee_id?: string;
   consignee_name?: string;
   billing_party_id?: string;

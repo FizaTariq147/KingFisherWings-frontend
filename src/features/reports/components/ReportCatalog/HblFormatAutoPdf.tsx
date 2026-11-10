@@ -56,7 +56,22 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             setBoundLabel(label ? `bound to ${label}` : 'official Fresa sample');
           }
 
-          if (data.entityBound) {
+          // Prefer official Fresa sample so formats stay visually distinct.
+          // Classic family is only for sample-fetch failure (shared packs look identical).
+          try {
+            const { blob } = await generateHblSamplePdf(spec.code, {
+              chrome: orgChrome,
+              appendCustomerTerms: true,
+            });
+            if (!cancelled) {
+              setBoundLabel(
+                data.entityBound
+                  ? `official Fresa sample · record ${data.jobNumber || data.shipmentNumber || 'bound'}`
+                  : 'official Fresa sample',
+              );
+            }
+            return blob;
+          } catch {
             const { blob } = await generateHblFamilyClassicPdf(
               spec.code,
               {
@@ -66,27 +81,6 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
                 companyWeb: data.companyWeb || orgChrome.web,
                 companyPhone: data.companyPhone || orgChrome.phone,
                 companyEmail: data.companyEmail || orgChrome.email,
-              },
-              { appendCustomerTerms: true },
-            );
-            return blob;
-          }
-
-          try {
-            const { blob } = await generateHblSamplePdf(spec.code, {
-              chrome: orgChrome,
-              appendCustomerTerms: true,
-            });
-            return blob;
-          } catch {
-            const { blob } = await generateHblFamilyClassicPdf(
-              spec.code,
-              {
-                companyName: orgChrome.company,
-                companyAddress: orgChrome.address,
-                companyWeb: orgChrome.web,
-                companyPhone: orgChrome.phone,
-                companyEmail: orgChrome.email,
               },
               { appendCustomerTerms: true },
             );

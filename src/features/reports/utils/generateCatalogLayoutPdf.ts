@@ -86,7 +86,9 @@ export async function generateCatalogLayoutPdf(
     return { blob, preview: hblPreviewMeta(code) };
   }
 
-  if (isHawbFormatCode(code) && hasHawbSamplePdf(code) && !data.entityBound) {
+  // Prefer official HAWB samples even when entity-bound — JSON hawbAwbShell is
+  // identical across formats; samples are the only distinct catalogue visuals.
+  if (isHawbFormatCode(code) && hasHawbSamplePdf(code)) {
     try {
       const { blob } = await generateHawbSamplePdf(code, {
         appendCustomerTerms: options.appendCustomerTerms,

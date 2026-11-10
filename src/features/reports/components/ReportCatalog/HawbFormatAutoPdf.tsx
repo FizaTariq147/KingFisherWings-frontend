@@ -19,8 +19,8 @@ type Props = {
 };
 
 /**
- * HAWB catalogue preview: official Fresa sample PDF when browsing;
- * JSON IATA shell only if sample fetch fails or live entity is bound (until pack ready).
+ * HAWB catalogue preview: always prefer official Fresa sample PDF (distinct per
+ * format). Shared JSON hawbAwbShell / backend HAWB_FORM only as last resort.
  */
 export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
   const spec = getHawbFormatSpec(code);
@@ -52,19 +52,17 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
               data.shipmentNumber ||
               data.referenceNo ||
               (contextKey ? 'live record' : null);
-            setBoundLabel(label ? `bound to ${label}` : 'official Fresa sample');
+            setBoundLabel(label ? `sample format · bound to ${label}` : 'official Fresa sample');
           }
 
-          if (!data.entityBound) {
-            try {
-              const { blob } = await generateHawbSamplePdf(spec.code, {
-                chrome: orgChrome,
-                appendCustomerTerms: true,
-              });
-              return blob;
-            } catch {
-              /* fall through */
-            }
+          try {
+            const { blob } = await generateHawbSamplePdf(spec.code, {
+              chrome: orgChrome,
+              appendCustomerTerms: true,
+            });
+            return blob;
+          } catch {
+            /* fall through */
           }
 
           const generated = await generateCatalogLayoutPdf(
@@ -80,7 +78,9 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             { logoUrl: orgChrome.logoUrl },
           );
           if (!generated) {
-            throw new Error('No HAWB sample or layout for this format.');
+            throw new Error(
+              'Could not load official HAWB sample PDF. Check /fresa-sample proxy, or this format has no distinct Fresa sample.',
+            );
           }
           return generated.blob;
         },

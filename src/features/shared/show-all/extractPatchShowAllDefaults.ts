@@ -72,6 +72,9 @@ const CLEARABLE_KEYS = new Set<keyof PatchShowAllDto>([
   'weight',
   'gross_weight',
   'volume_cbm',
+  /** Primary container status — OpenAPI: send null/"" to clear. */
+  'container_status',
+  'container_number',
 ]);
 
 const ALIASES: Record<string, keyof PatchShowAllDto> = {
@@ -224,7 +227,18 @@ function collectFromRecord(
       (PATCH_KEYS.includes(norm as keyof PatchShowAllDto)
         ? (norm as keyof PatchShowAllDto)
         : ALIASES[norm]) ?? undefined;
-    if (!mapped || (into[mapped] != null && into[mapped] !== '')) continue;
+    if (!mapped) continue;
+    // First source wins — including intentional clears (null / "") so a removed
+    // container_status is not resurrected from a stale sibling tab payload.
+    if (Object.prototype.hasOwnProperty.call(into, mapped)) continue;
+
+    if (
+      CLEARABLE_KEYS.has(mapped) &&
+      (rawVal === null || (typeof rawVal === 'string' && !rawVal.trim()))
+    ) {
+      into[mapped] = '' as never;
+      continue;
+    }
 
     if (
       mapped === 'pieces' ||
@@ -382,10 +396,11 @@ export function mergeShowAllSavedOverlay(
     ...submitted,
     ...fromResponse,
   };
-  // Explicit nulls from clear should wipe overlay values.
+  // Explicit nulls from clear keep an empty claim so reopen shows "—" and
+  // stale GET/detail tab payloads cannot resurrect the previous value.
   for (const key of CLEARABLE_KEYS) {
     if (submitted[key] === null) {
-      delete next[key];
+      next[key] = '' as never;
     }
   }
   return next;
