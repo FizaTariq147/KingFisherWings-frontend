@@ -1,4 +1,8 @@
-/** Path segment for GET|POST /:entity/:id/:section/attachments */
+/**
+ * Path segment for GET|POST /:entity/:id/:section/attachments.
+ * Must match BE allowlist (Unknown section otherwise).
+ * Delivery acknowledgement files use `pods` (ack extends ProofOfDelivery).
+ */
 export type OpsSectionKey =
   | 'customs_status'
   | 'cfs_storage'
@@ -11,12 +15,13 @@ export type OpsSectionKey =
   | 'payment_requests'
   | 'sub_jobs'
   | 'bills_of_lading'
-  | 'air_waybills'
   | 'stuffing_records'
-  | 'acknowledgement';
+  /** Air waybill panel only — not in Section files hub allowlist. */
+  | 'air_waybills';
 
 export type SectionAttachmentEntity = 'jobs' | 'shipments' | 'quotations';
 
+/** Sections offered in Entity Section files — matches BE allowlist. */
 export const OPS_SECTION_KEYS: OpsSectionKey[] = [
   'customs_status',
   'cfs_storage',
@@ -29,9 +34,7 @@ export const OPS_SECTION_KEYS: OpsSectionKey[] = [
   'payment_requests',
   'sub_jobs',
   'bills_of_lading',
-  'air_waybills',
   'stuffing_records',
-  'acknowledgement',
 ];
 
 export const OPS_SECTION_LABELS: Record<OpsSectionKey, string> = {
@@ -46,9 +49,8 @@ export const OPS_SECTION_LABELS: Record<OpsSectionKey, string> = {
   payment_requests: 'Payment requests',
   sub_jobs: 'Sub-jobs',
   bills_of_lading: 'Bills of lading',
-  air_waybills: 'Airway bills',
   stuffing_records: 'Stuffing records',
-  acknowledgement: 'Acknowledgement',
+  air_waybills: 'Airway bills',
 };
 
 export interface SectionAttachment {
