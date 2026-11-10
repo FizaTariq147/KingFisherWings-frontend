@@ -1,16 +1,19 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import L from 'leaflet';
+import { maplibreGL } from '@maplibre/maplibre-gl-leaflet';
+import { setWorkerUrl } from 'maplibre-gl';
+import maplibreWorkerUrl from 'maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url';
 import {
   CircleMarker,
   MapContainer,
   Marker,
   Polyline,
-  TileLayer,
   Tooltip,
   useMap,
   ZoomControl,
 } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
+import 'maplibre-gl/dist/maplibre-gl.css';
 import { Moon, Sun } from 'lucide-react';
 import type { PublicTrackResult } from '../types/publicTrack.types';
 import {
@@ -19,6 +22,42 @@ import {
   type LatLng,
 } from '../utils/portCoordinates';
 import { computeTrackMetrics } from '../utils/trackMetrics';
+
+setWorkerUrl(maplibreWorkerUrl);
+
+const ENGLISH_TEXT_FIELD = [
+  'coalesce',
+  ['get', 'name:en'],
+  ['get', 'name_en'],
+  ['get', 'name:latin'],
+  ['get', 'name'],
+] as const;
+
+function preferEnglishLabels(maplibreMap: {
+  getStyle: () => { layers?: Array<Record<string, unknown>> } | undefined;
+  getLayoutProperty: (id: string, key: string) => unknown;
+  setLayoutProperty: (id: string, key: string, value: unknown) => void;
+}) {
+  const layers = maplibreMap.getStyle()?.layers ?? [];
+  for (const layer of layers) {
+    if (layer.type !== 'symbol' || typeof layer.id !== 'string') continue;
+    let textField: unknown;
+    try {
+      textField = maplibreMap.getLayoutProperty(layer.id, 'text-field');
+    } catch {
+      continue;
+    }
+    if (textField == null) continue;
+    const serialized = JSON.stringify(textField);
+    // Keep highway shields / refs as numbers, not place names.
+    if (serialized.includes('"ref"') && !serialized.includes('"name"')) continue;
+    try {
+      maplibreMap.setLayoutProperty(layer.id, 'text-field', [...ENGLISH_TEXT_FIELD]);
+    } catch {
+      // Some style layers reject text-field updates — ignore.
+    }
+  }
+}
 
 type Props = {
   result?: PublicTrackResult | null;
@@ -216,13 +255,58 @@ function InvalidateMapSize({ revision }: { revision?: string }) {
   return null;
 }
 
-function DarkTiles({ enabled }: { enabled: boolean }) {
+/** Free OpenFreeMap vector basemap with English-only place labels. */
+function EnglishBasemap({ dark }: { dark: boolean }) {
   const map = useMap();
+
   useEffect(() => {
-    const pane = map.getPanes().tilePane;
-    if (!pane) return;
-    pane.classList.toggle('kf-map-tiles-dark', enabled);
-  }, [map, enabled]);
+    const styleUrl = dark
+      ? 'https://tiles.openfreemap.org/styles/dark'
+      : 'https://tiles.openfreemap.org/styles/liberty';
+
+    const glLayer = maplibreGL({
+      style: styleUrl,
+      interactive: false,
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://openfreemap.org">OpenFreeMap</a>',
+    });
+    glLayer.addTo(map);
+
+    const mlMap = glLayer.getMaplibreMap?.() as
+      | {
+          getStyle: () => { layers?: Array<Record<string, unknown>> } | undefined;
+          getLayoutProperty: (id: string, key: string) => unknown;
+          setLayoutProperty: (id: string, key: string, value: unknown) => void;
+          once: (event: string, cb: () => void) => void;
+          on: (event: string, cb: () => void) => void;
+          off: (event: string, cb: () => void) => void;
+        }
+      | undefined;
+
+    const apply = () => {
+      if (!mlMap) return;
+      preferEnglishLabels(mlMap);
+    };
+
+    if (mlMap) {
+      mlMap.once('load', apply);
+      mlMap.on('styledata', apply);
+      // Style may already be ready.
+      apply();
+    }
+
+    return () => {
+      if (mlMap) {
+        mlMap.off('styledata', apply);
+      }
+      try {
+        map.removeLayer(glLayer);
+      } catch {
+        // Layer may already be gone with map remount.
+      }
+    };
+  }, [map, dark]);
+
   return null;
 }
 
@@ -597,7 +681,7 @@ function GoogleTrackMap({
   );
 }
 
-/** Free OSM basemap (no key / no card) — used when Google key is absent. */
+/** Free English-label basemap (OpenFreeMap) — used when Google key is absent. */
 function LeafletTrackMap({
   result,
   dark: darkProp,
@@ -625,9 +709,6 @@ function LeafletTrackMap({
     String(waypoints.length),
   ].join('|');
 
-  // Standard OSM — free, no API key (CARTO was painting "API KEY REQUIRED").
-  const tileUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
-
   const polMarkerIcon = useMemo(() => polIcon(originLabel), [originLabel]);
   const podMarkerIcon = useMemo(() => podIcon(destLabel), [destLabel]);
   const shipMarkerIcon = useMemo(() => vesselIcon(), []);
@@ -648,20 +729,20 @@ function LeafletTrackMap({
         key={mapKey}
         center={[20, 60]}
         zoom={3}
+        minZoom={1}
+        maxBounds={[
+          [-85, -180],
+          [85, 180],
+        ]}
+        maxBoundsViscosity={1}
         className="h-full w-full min-h-[280px] [&_.leaflet-container]:h-full [&_.leaflet-container]:w-full"
         style={{ height: '100%', width: '100%', minHeight: 280 }}
         zoomControl={false}
         attributionControl
         scrollWheelZoom
       >
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-          url={tileUrl}
-          subdomains={['a', 'b', 'c']}
-          maxZoom={19}
-        />
+        <EnglishBasemap dark={dark} />
         <ZoomControl position="bottomright" />
-        <DarkTiles enabled={dark} />
         <InvalidateMapSize revision={`${mapKey}|${dark ? 'd' : 'l'}`} />
         <FitRoute points={fitPoints} padding={fitPadding} />
 
@@ -722,12 +803,6 @@ function LeafletTrackMap({
           </Marker>
         ) : null}
       </MapContainer>
-
-      <style>{`
-        .kf-map-tiles-dark {
-          filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9);
-        }
-      `}</style>
     </div>
   );
 }
@@ -735,7 +810,7 @@ function LeafletTrackMap({
 /**
  * Full-bleed live Track & Trace map.
  * - Set `VITE_GOOGLE_MAPS_API_KEY` for real Google Maps (English roadmap / hybrid).
- * - Otherwise free OpenStreetMap (no key, no "API KEY REQUIRED" watermark).
+ * - Otherwise free OpenFreeMap with English-only place labels (no key).
  */
 export function TrackMapBackground(props: Props) {
   const apiKey = googleMapsApiKey();
