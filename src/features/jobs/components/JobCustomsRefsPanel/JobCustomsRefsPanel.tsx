@@ -57,28 +57,6 @@ function extractJobHold(tabData: Record<string, unknown> | undefined) {
   };
 }
 
-function extractFieldHints(tabData: Record<string, unknown> | undefined): string[] {
-  if (!tabData) return [];
-  const raw =
-    tabData.field_hints ??
-    tabData.fieldHints ??
-    tabData.hints ??
-    tabData.path_hints ??
-    tabData.pathHints;
-  if (Array.isArray(raw)) {
-    return raw.map((h) => String(h ?? '').trim()).filter(Boolean);
-  }
-  const rec = asRecord(raw);
-  if (!rec) return [];
-  return Object.entries(rec)
-    .map(([k, v]) => {
-      if (typeof v === 'string' && v.trim()) return v.trim();
-      if (v === true) return k.replace(/[_-]+/g, ' ');
-      return '';
-    })
-    .filter(Boolean);
-}
-
 /** Customs / Shipping bill · BOE — POST/PATCH/DELETE /customs-refs */
 export function JobCustomsRefsPanel({
   job,
@@ -107,7 +85,6 @@ export function JobCustomsRefsPanel({
 
   const rows = useMemo(() => refRows(tabQuery.data), [tabQuery.data]);
   const jobHold = useMemo(() => extractJobHold(tabQuery.data), [tabQuery.data]);
-  const fieldHints = useMemo(() => extractFieldHints(tabQuery.data), [tabQuery.data]);
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -201,14 +178,6 @@ export function JobCustomsRefsPanel({
               .join(' · ') || '—'}
           </p>
         </div>
-      ) : null}
-
-      {fieldHints.length ? (
-        <ul className="list-disc space-y-0.5 pl-5 text-[12px] text-[#64748b]">
-          {fieldHints.map((hint) => (
-            <li key={hint}>{hint}</li>
-          ))}
-        </ul>
       ) : null}
 
       {tabQuery.isLoading ? (
