@@ -72,7 +72,6 @@ import { hasAccountsFormatUiLayout } from '../data/accountsFormatUiLayouts';
 import { hasWmsFormatUiLayout } from '../data/wmsFormatUiLayouts';
 import { hasArrivalNoticeFormatUiLayout } from '../data/arrivalNoticeFormatUiLayouts';
 import { hasDeliveryOrderFormatUiLayout } from '../data/deliveryOrderFormatUiLayouts';
-import { hasHawbFormatUiLayout } from '../data/hawbFormatUiLayouts';
 import { hasOtherReportsFormatUiLayout } from '../data/otherReportsFormatUiLayouts';
 import { hasQuotationFormatUiLayout } from '../data/quotationFormatUiLayouts';
 import { hasOpsListFormatUiLayout } from '../data/opsListFormatUiLayouts';
@@ -999,7 +998,8 @@ export default function ReportCatalogPage() {
     isArrivalNoticeSelected && hasArrivalNoticeFormatUiLayout(selectedCode);
   const hasDeliveryOrderLayout =
     isDeliveryOrderSelected && hasDeliveryOrderFormatUiLayout(selectedCode);
-  const hasHawbLayout = isHawbSelected && hasHawbFormatUiLayout(selectedCode);
+  // HAWB preview uses official sample PDF (not JSON shell as primary).
+  const hasHawbLayout = isHawbSelected && Boolean(getHawbFormatSpec(selectedCode));
   // HBL preview uses sample-PDF / classic family path (not JSON shell layouts).
   const hasHblLayout = isHblSelected && Boolean(getHblFormatSpec(selectedCode));
   const hasOtherReportsLayout =

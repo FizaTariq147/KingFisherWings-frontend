@@ -15,6 +15,7 @@ import {
   orgChromeToPackParameters,
   resolveReportOrgChrome,
 } from './resolveReportOrgChrome';
+import { buildFresaPackGenerateParams } from './fresaPackGenerateParams';
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
@@ -58,6 +59,7 @@ export async function generateAndDownloadReportPack(opts: {
     format,
     parameters: {
       ...orgParams,
+      ...buildFresaPackGenerateParams(opts.code),
       ...(opts.parameters ?? {}),
     },
     context: entityBound

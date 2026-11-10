@@ -6,6 +6,7 @@ import type { ReportFamily } from '../types/reportCatalog.types';
 import { FRESA_INVOICE_FORMAT_1 } from '../constants/fresaPdfParity.constants';
 import { FRESA_OPS_LIST_PACK } from '../constants/fresaCorePackShells.constants';
 import { getRegistryByCode } from '../data/fresaReportRegistry';
+import { preferredHblHawbPackKeyHint } from './fresaPackGenerateParams';
 
 export type ReportPackOption = { key: string; label?: string; description?: string };
 
@@ -25,6 +26,44 @@ function hasPrefix(prefix: string) {
 }
 
 /**
+ * Registry often stamps every HBL/HAWB code as *_draft. Prefer live
+ * sea.hbl_original / air.hawb_final when the catalogue code is original/final.
+ */
+function refineHblHawbPackKey(
+  code: string,
+  options: ReportPackOption[],
+  candidate: string | null,
+): string | null {
+  const hint = preferredHblHawbPackKeyHint(code);
+  if (!hint) return candidate;
+
+  if (hint === 'hbl_original') {
+    return (
+      pick(options, [(k) => /sea\.hbl_original|hbl_original/i.test(k)]) ?? candidate
+    );
+  }
+  if (hint === 'hbl_draft') {
+    return (
+      pick(options, [(k) => /sea\.hbl_draft|hbl_draft/i.test(k)]) ?? candidate
+    );
+  }
+  if (hint === 'hawb_final') {
+    return (
+      pick(options, [
+        (k) => /air\.hawb_final|hawb_final/i.test(k),
+        (k) => /air\.hawb_draft|hawb_draft/i.test(k),
+      ]) ?? candidate
+    );
+  }
+  if (hint === 'hawb_draft') {
+    return (
+      pick(options, [(k) => /air\.hawb_draft|hawb_draft/i.test(k)]) ?? candidate
+    );
+  }
+  return candidate;
+}
+
+/**
  * Best-effort pack suggestion from live renderer list.
  * Prefer registry suggestedPackKey, then specific shells, then family generic.
  * Returns null if nothing matches live /renderers.
@@ -41,12 +80,16 @@ export function suggestReportPackKey(
   const registryHint = getRegistryByCode(c)?.suggestedPackKey?.trim();
   if (registryHint) {
     const exact = options.find((o) => o.key === registryHint);
-    if (exact?.key) return exact.key;
+    if (exact?.key) {
+      return refineHblHawbPackKey(c, options, exact.key);
+    }
     const prefix = registryHint.split('.')[0];
     const sameFamily = options.find(
       (o) => o.key.startsWith(`${prefix}.`) && !/pending/i.test(o.key),
     );
-    if (sameFamily?.key) return sameFamily.key;
+    if (sameFamily?.key) {
+      return refineHblHawbPackKey(c, options, sameFamily.key);
+    }
   }
 
   if (c === FRESA_INVOICE_FORMAT_1.code || /INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA/i.test(c)) {
@@ -67,7 +110,11 @@ export function suggestReportPackKey(
   }
 
   if (/^HBL_|^FG_HBL_/i.test(c) || (fam === 'sea_docs' && /HBL/i.test(c))) {
+    const hint = preferredHblHawbPackKeyHint(c);
     const sea = pick(options, [
+      ...(hint === 'hbl_original'
+        ? [(k: string) => /sea\.hbl_original|hbl_original/i.test(k)]
+        : [(k: string) => /sea\.hbl_draft|hbl_draft/i.test(k)]),
       (k) => /sea\.hbl|hbl_draft|hbl_original/i.test(k),
       hasPrefix('sea'),
     ]);
@@ -93,7 +140,17 @@ export function suggestReportPackKey(
   }
 
   if (/^HAWB_|^MAWB_|^AIR_/i.test(c) || fam === 'air_docs') {
+    const hint = preferredHblHawbPackKeyHint(c);
     const air = pick(options, [
+      ...(hint === 'hawb_final'
+        ? [
+            (k: string) => /air\.hawb_final|hawb_final/i.test(k),
+            // BE may only expose draft until final is seeded; still prefer hawb over mawb.
+            (k: string) => /air\.hawb_draft|hawb_draft/i.test(k),
+          ]
+        : hint === 'hawb_draft'
+          ? [(k: string) => /air\.hawb_draft|hawb_draft/i.test(k)]
+          : []),
       (k) => /air\.hawb|hawb|mawb/i.test(k),
       hasPrefix('air'),
       hasPrefix('ops'),

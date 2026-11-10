@@ -41,6 +41,7 @@ import {
   type ReportContextIds,
 } from '../../utils/reportParameterUtils';
 import { allowClientLayoutGenerate } from '../../utils/clientLayoutFallback';
+import { buildFresaPackGenerateParams } from '../../utils/fresaPackGenerateParams';
 import { isReportPackReady } from '../../utils/reportPackGenerate';
 import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
 import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
@@ -241,12 +242,16 @@ export function ReportGeneratePanel({
     }
 
     const runLiveGenerate = async (templateForGenerate: ReportTemplate) => {
+      const packHints = buildFresaPackGenerateParams(templateForGenerate.code);
+      const mergedParameters = {
+        ...packHints,
+        ...(!coerceError ? parameters : {}),
+      };
       const job = await generate.mutateAsync({
         template_id: isUuid(templateForGenerate.id) ? templateForGenerate.id : undefined,
         code: templateForGenerate.code,
         format,
-        parameters:
-          !coerceError && Object.keys(parameters).length ? parameters : undefined,
+        parameters: Object.keys(mergedParameters).length ? mergedParameters : undefined,
         context: entityBound ? contextIds : context,
       });
       handledReadyJobId.current = null;
@@ -258,8 +263,8 @@ export function ReportGeneratePanel({
         entityBound
           ? `Generating Fresa-parity pack with this record's data… (${job.status})`
           : job.status === 'ready'
-            ? 'Report ready.'
-            : `Job ${job.status}…`,
+            ? 'Report ready (backend pack).'
+            : `Pack job ${job.status}…`,
       );
     };
 
@@ -346,22 +351,8 @@ export function ReportGeneratePanel({
       }
     };
 
-    // Default: Fresa-sample client PDF with dummy data (+ KF logo).
-    // Entity + ready pack: use backend Fresa-parity pack instead.
-    const preferClientSample =
-      format === 'PDF' &&
-      (isInvoiceFormatPdf || hasLayout) &&
-      allowClientLayoutGenerate({
-        packReady,
-        templateActive: resolved.is_active,
-        entityBound,
-      });
-
-    if (preferClientSample && (!entityBound || !packReady)) {
-      await runClientSamplePdf();
-      return;
-    }
-
+    // Product path: backend Fresa pack when ready (or bindable). Client shells only if pack unavailable.
+    let workingPackReady = packReady;
     if (!detailFailed) {
       let working: ReportTemplate = resolved;
       try {
@@ -387,23 +378,38 @@ export function ReportGeneratePanel({
             }
           }
         }
-        if (isReportPackReady(working)) {
+        workingPackReady = isReportPackReady(working);
+        if (workingPackReady) {
           await runLiveGenerate(working);
           return;
         }
       } catch (err) {
-        if (preferClientSample) {
+        const canClient = allowClientLayoutGenerate({
+          packReady: false,
+          templateActive: resolved.is_active,
+          entityBound,
+        });
+        if (canClient && format === 'PDF' && (isInvoiceFormatPdf || hasLayout)) {
           await runClientSamplePdf();
           return;
         }
         setError(
           err instanceof Error
             ? err.message
-            : 'Generate failed. Open a sample layout or bind a Fresa pack.',
+            : 'Generate failed. Bind a Fresa pack on the backend, then retry.',
         );
         return;
       }
     }
+
+    const preferClientSample =
+      format === 'PDF' &&
+      (isInvoiceFormatPdf || hasLayout) &&
+      allowClientLayoutGenerate({
+        packReady: workingPackReady,
+        templateActive: resolved.is_active,
+        entityBound,
+      });
 
     if (preferClientSample) {
       await runClientSamplePdf();
@@ -413,13 +419,15 @@ export function ReportGeneratePanel({
     if (detailFailed) {
       setError(
         hasLayout
-          ? 'Backend template missing — use Import registry, or Generate still opens the Fresa sample layout with dummy data when client layouts are enabled.'
+          ? 'Backend template missing — Import registry, or wait for sea.hbl_draft|original / air.hawb_draft|final. Client sample is disabled while a pack is ready.'
           : 'Template is not on the backend yet. Import registry first.',
       );
       return;
     }
     setError(
-      'No Fresa sample layout and no active pack for this format. Import registry / bind pack, then retry.',
+      workingPackReady
+        ? 'Pack is ready but generate did not start. Retry or check /reports/generate.'
+        : 'No active Fresa pack for this format yet (backend). Many codes share one shell — bind sea.hbl_draft / air.hawb_draft|final when available, or use sample browse / client fallback.',
     );
   };
 
