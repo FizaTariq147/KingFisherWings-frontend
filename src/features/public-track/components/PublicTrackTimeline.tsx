@@ -393,7 +393,7 @@ export function PublicTrackTimeline({
     [result.milestones],
   );
 
-  const isAir = /AIR/i.test(String(result.jobType ?? ''));
+  const isAir = /AIR|COURIER/i.test(String(result.jobType ?? ''));
 
   const vesselRows = useMemo(() => {
     type VesselFlightRow = {
@@ -434,7 +434,7 @@ export function PublicTrackTimeline({
         label: l.label || [l.from, l.to].filter(Boolean).join(' → '),
         etd: l.etd,
         eta: l.eta,
-        air: Boolean(l.flightNumber || l.mawbNumber || l.hawbNumber),
+        air: isAir || Boolean(l.flightNumber || l.mawbNumber || l.hawbNumber),
       }));
     if (fromLegs.length) return fromLegs;
 
@@ -445,6 +445,7 @@ export function PublicTrackTimeline({
       return [
         {
           id: 'air-top',
+          vessel: route?.legs?.[0]?.vessel,
           flightNumber: result.flightNumber,
           arrivalFlightNumber: result.arrivalFlightNumber,
           mawbNumber: result.mawbNumber,
@@ -471,7 +472,7 @@ export function PublicTrackTimeline({
         label: [p.role, p.name].filter(Boolean).join(' · '),
         etd: p.etd,
         eta: p.eta,
-        air: Boolean(p.flightNumber),
+        air: isAir || Boolean(p.flightNumber),
       }));
     if (fromPoc.length) return fromPoc;
     const seen = new Set<string>();
@@ -492,7 +493,7 @@ export function PublicTrackTimeline({
         label: m.location || m.move || m.label,
         etd: undefined,
         eta: undefined,
-        air: Boolean(m.flightNumber),
+        air: isAir || Boolean(m.flightNumber),
       });
     }
     return fromMoves;
@@ -1083,6 +1084,11 @@ export function PublicTrackTimeline({
                             ? `Flight ${row.flightNumber}`
                             : row.vessel || 'Vessel / Flight'}
                         </p>
+                        {row.flightNumber && row.vessel ? (
+                          <p className="text-[13px]" style={{ color: C.text }}>
+                            {row.vessel}
+                          </p>
+                        ) : null}
                         {row.arrivalFlightNumber ? (
                           <p className="text-[13px] font-medium" style={{ color: C.badge }}>
                             Arrival FLT {row.arrivalFlightNumber}

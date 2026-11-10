@@ -67,9 +67,48 @@ export function emptyJobTrackingProfile(): JobTrackingProfile {
     dest_label: '',
     at_before: '',
     terminal_cutoff_at: '',
+    airline_name: '',
+    flight_number: '',
+    arrival_flight_number: '',
+    mawb_number: '',
+    hawb_number: '',
+    flight_date: '',
+    flight_status: '',
     legs: [
-      { leg_no: 1, vessel_name: '', voyage_number: '', imo: '', pol: '', pod: '' },
-      { leg_no: 2, vessel_name: '', voyage_number: '', imo: '', pol: '', pod: '' },
+      {
+        leg_no: 1,
+        vessel_name: '',
+        voyage_number: '',
+        imo: '',
+        pol: '',
+        pod: '',
+        airline_name: '',
+        flight_number: '',
+        arrival_flight_number: '',
+        mawb_number: '',
+        hawb_number: '',
+        flight_date: '',
+        flight_status: '',
+        etd: '',
+        eta: '',
+      },
+      {
+        leg_no: 2,
+        vessel_name: '',
+        voyage_number: '',
+        imo: '',
+        pol: '',
+        pod: '',
+        airline_name: '',
+        flight_number: '',
+        arrival_flight_number: '',
+        mawb_number: '',
+        hawb_number: '',
+        flight_date: '',
+        flight_status: '',
+        etd: '',
+        eta: '',
+      },
     ],
     port_of_call: [
       { role: 'ORIGIN', port_name: '', eta: '', ata: '', etd: '', atd: '', vessel_name: '', voyage_number: '' },
@@ -96,14 +135,55 @@ export function emptyJobTrackingProfile(): JobTrackingProfile {
 
 function normalizeLeg(raw: unknown, index: number): JobTrackingLegDto {
   const r = asRecord(raw) ?? {};
+  const voyageNumber =
+    str(r.voyage_number) ?? str(r.voyageNumber) ?? str(r.voyage) ?? '';
+  const explicitFlight =
+    str(r.flight_number) ??
+    str(r.flightNumber) ??
+    str(r.flight_no) ??
+    str(r.flightNo) ??
+    '';
+  const airlineName =
+    str(r.airline_name) ?? str(r.airlineName) ?? str(r.airline) ?? '';
+  const label = str(r.label) ?? '';
+  // Recover flight from voyage_number only when this leg already looks like air (airline / Flight label).
+  const flightNumber =
+    explicitFlight ||
+    (airlineName || /^flight\b/i.test(label) ? voyageNumber : '') ||
+    '';
   return {
     leg_no: num(r.leg_no) ?? num(r.legNo) ?? index + 1,
     vessel_name: str(r.vessel_name) ?? str(r.vesselName) ?? str(r.vessel) ?? '',
-    voyage_number: str(r.voyage_number) ?? str(r.voyageNumber) ?? str(r.voyage) ?? '',
+    voyage_number: voyageNumber,
     imo: str(r.imo) ?? '',
-    label: str(r.label) ?? '',
-    pol: str(r.pol) ?? str(r.origin) ?? str(r.from) ?? '',
-    pod: str(r.pod) ?? str(r.destination) ?? str(r.to) ?? '',
+    label,
+    pol:
+      str(r.pol) ??
+      str(r.origin) ??
+      str(r.from) ??
+      str(r.origin_airport) ??
+      str(r.originAirport) ??
+      '',
+    pod:
+      str(r.pod) ??
+      str(r.destination) ??
+      str(r.to) ??
+      str(r.dest_airport) ??
+      str(r.destAirport) ??
+      '',
+    airline_name: airlineName,
+    flight_number: flightNumber,
+    arrival_flight_number:
+      str(r.arrival_flight_number) ??
+      str(r.arrivalFlightNumber) ??
+      str(r.arrival_flight) ??
+      '',
+    mawb_number: str(r.mawb_number) ?? str(r.mawbNumber) ?? str(r.mawb_no) ?? '',
+    hawb_number: str(r.hawb_number) ?? str(r.hawbNumber) ?? str(r.hawb_no) ?? '',
+    flight_date: str(r.flight_date) ?? str(r.flightDate) ?? '',
+    flight_status: str(r.flight_status) ?? str(r.flightStatus) ?? '',
+    etd: str(r.etd) ?? str(r.etd_at) ?? '',
+    eta: str(r.eta) ?? str(r.eta_at) ?? '',
   };
 }
 
@@ -205,16 +285,73 @@ function normalizeQtyGwVol(raw: unknown): QtyGwVolDto {
   };
 }
 
+function emptyLeg(legNo: 1 | 2): JobTrackingLegDto {
+  return {
+    leg_no: legNo,
+    vessel_name: '',
+    voyage_number: '',
+    imo: '',
+    pol: '',
+    pod: '',
+    airline_name: '',
+    flight_number: '',
+    arrival_flight_number: '',
+    mawb_number: '',
+    hawb_number: '',
+    flight_date: '',
+    flight_status: '',
+    etd: '',
+    eta: '',
+  };
+}
+
 function ensureTwoLegs(legs: JobTrackingLegDto[]): JobTrackingLegDto[] {
   const byNo = new Map<number, JobTrackingLegDto>();
   for (const leg of legs) {
     const n = leg.leg_no ?? 0;
     if (n === 1 || n === 2) byNo.set(n, { ...leg, leg_no: n });
   }
-  return [
-    byNo.get(1) ?? { leg_no: 1, vessel_name: '', voyage_number: '', imo: '', pol: '', pod: '' },
-    byNo.get(2) ?? { leg_no: 2, vessel_name: '', voyage_number: '', imo: '', pol: '', pod: '' },
-  ];
+  return [byNo.get(1) ?? emptyLeg(1), byNo.get(2) ?? emptyLeg(2)];
+}
+
+const FLIGHT_DETAILED_KEYS = [
+  'airline_name',
+  'flight_number',
+  'arrival_flight_number',
+  'mawb_number',
+  'hawb_number',
+  'flight_date',
+  'flight_status',
+] as const;
+
+function pickFlightFromDetailed(
+  detailed: Record<string, unknown>,
+): Partial<JobTrackingProfile> {
+  const out: Partial<JobTrackingProfile> = {};
+  for (const key of FLIGHT_DETAILED_KEYS) {
+    const value = str(detailed[key]);
+    if (value) (out as Record<string, string>)[key] = value;
+  }
+  // Only treat voyage/vessel as flight/airline when detailed_data already has air keys.
+  const looksAir = Boolean(
+    out.flight_number ||
+      out.arrival_flight_number ||
+      out.mawb_number ||
+      out.hawb_number ||
+      out.airline_name ||
+      out.flight_date ||
+      out.flight_status,
+  );
+  if (looksAir && !out.flight_number) {
+    const mirrored =
+      str(detailed.voyage_number) ?? str(detailed.voyageNumber) ?? str(detailed.voyage);
+    if (mirrored) out.flight_number = mirrored;
+  }
+  if (looksAir && !out.airline_name) {
+    const airline = str(detailed.vessel_name) ?? str(detailed.vesselName);
+    if (airline) out.airline_name = airline;
+  }
+  return out;
 }
 
 function ensureOriginDestPoc(
@@ -264,6 +401,8 @@ export function normalizeJobTrackingProfile(raw: unknown): JobTrackingProfile {
 
   const detailed =
     asRecord(r.detailed_data) ?? asRecord(r.detailedData) ?? {};
+  const fromDetailed = pickFlightFromDetailed(detailed);
+  const first = legs[0] ?? emptyLeg(1);
 
   return {
     id: str(r.id),
@@ -276,6 +415,56 @@ export function normalizeJobTrackingProfile(raw: unknown): JobTrackingProfile {
     at_before: str(r.at_before) ?? str(r.atBefore) ?? '',
     terminal_cutoff_at:
       str(r.terminal_cutoff_at) ?? str(r.terminalCutoffAt) ?? '',
+    airline_name:
+      str(r.airline_name) ??
+      str(r.airlineName) ??
+      fromDetailed.airline_name ??
+      first.airline_name ??
+      '',
+    flight_number:
+      str(r.flight_number) ??
+      str(r.flightNumber) ??
+      fromDetailed.flight_number ??
+      first.flight_number ??
+      (fromDetailed.airline_name ||
+      fromDetailed.mawb_number ||
+      fromDetailed.hawb_number ||
+      first.airline_name ||
+      first.mawb_number ||
+      first.hawb_number
+        ? first.voyage_number
+        : '') ??
+      '',
+    arrival_flight_number:
+      str(r.arrival_flight_number) ??
+      str(r.arrivalFlightNumber) ??
+      fromDetailed.arrival_flight_number ??
+      first.arrival_flight_number ??
+      '',
+    mawb_number:
+      str(r.mawb_number) ??
+      str(r.mawbNumber) ??
+      fromDetailed.mawb_number ??
+      first.mawb_number ??
+      '',
+    hawb_number:
+      str(r.hawb_number) ??
+      str(r.hawbNumber) ??
+      fromDetailed.hawb_number ??
+      first.hawb_number ??
+      '',
+    flight_date:
+      str(r.flight_date) ??
+      str(r.flightDate) ??
+      fromDetailed.flight_date ??
+      first.flight_date ??
+      '',
+    flight_status:
+      str(r.flight_status) ??
+      str(r.flightStatus) ??
+      fromDetailed.flight_status ??
+      first.flight_status ??
+      '',
     legs,
     port_of_call: ensureOriginDestPoc(
       asArray(r.port_of_call ?? r.portOfCall).map(normalizePortOfCall),
@@ -312,6 +501,35 @@ export function toUpsertJobTrackingProfileDto(
   const dest = cleanStr(profile.dest_port) ?? cleanStr(profile.dest_label);
   const qty = profile.qty_gw_vol ?? {};
 
+  const firstLeg = (profile.legs ?? []).find((l) => l.leg_no === 1) ?? (profile.legs ?? [])[0];
+  const airlineName =
+    cleanStr(profile.airline_name) ?? cleanStr(firstLeg?.airline_name);
+  const flightNumber =
+    cleanStr(profile.flight_number) ?? cleanStr(firstLeg?.flight_number);
+  const arrivalFlight =
+    cleanStr(profile.arrival_flight_number) ??
+    cleanStr(firstLeg?.arrival_flight_number);
+  const mawb = cleanStr(profile.mawb_number) ?? cleanStr(firstLeg?.mawb_number);
+  const hawb = cleanStr(profile.hawb_number) ?? cleanStr(firstLeg?.hawb_number);
+  const flightDate =
+    cleanStr(profile.flight_date) ?? cleanStr(firstLeg?.flight_date);
+  const flightStatus =
+    cleanStr(profile.flight_status) ?? cleanStr(firstLeg?.flight_status);
+
+  const detailed: Record<string, unknown> = {
+    ...(profile.detailed_data && typeof profile.detailed_data === 'object'
+      ? profile.detailed_data
+      : {}),
+  };
+  // Mirror flight into detailed_data so tracking can read it even if leg extras are stripped.
+  if (airlineName) detailed.airline_name = airlineName;
+  if (flightNumber) detailed.flight_number = flightNumber;
+  if (arrivalFlight) detailed.arrival_flight_number = arrivalFlight;
+  if (mawb) detailed.mawb_number = mawb;
+  if (hawb) detailed.hawb_number = hawb;
+  if (flightDate) detailed.flight_date = flightDate;
+  if (flightStatus) detailed.flight_status = flightStatus;
+
   return {
     bl_number: cleanStr(profile.bl_number) ?? null,
     origin_port: origin ?? null,
@@ -320,15 +538,42 @@ export function toUpsertJobTrackingProfileDto(
     dest_label: dest ?? null,
     at_before: cleanStr(profile.at_before) ?? null,
     terminal_cutoff_at: cleanStr(profile.terminal_cutoff_at) ?? null,
-    legs: (profile.legs ?? []).map((leg, i) => ({
-      leg_no: leg.leg_no ?? i + 1,
-      vessel_name: cleanStr(leg.vessel_name),
-      voyage_number: cleanStr(leg.voyage_number),
-      imo: cleanStr(leg.imo),
-      label: cleanStr(leg.label),
-      pol: cleanStr(leg.pol),
-      pod: cleanStr(leg.pod),
-    })),
+    airline_name: airlineName ?? null,
+    flight_number: flightNumber ?? null,
+    arrival_flight_number: arrivalFlight ?? null,
+    mawb_number: mawb ?? null,
+    hawb_number: hawb ?? null,
+    flight_date: flightDate ?? null,
+    flight_status: flightStatus ?? null,
+    legs: (profile.legs ?? []).map((leg, i) => {
+      const legFlight =
+        cleanStr(leg.flight_number) || (i === 0 ? flightNumber : undefined);
+      const legAirline =
+        cleanStr(leg.airline_name) || (i === 0 ? airlineName : undefined);
+      return {
+        leg_no: leg.leg_no ?? i + 1,
+        // Documented sea fields — for air, also mirror flight into voyage_number so
+        // OpenAPI-strict BE still stores a usable flight identifier.
+        vessel_name: cleanStr(leg.vessel_name) || legAirline,
+        voyage_number: cleanStr(leg.voyage_number) || legFlight,
+        imo: cleanStr(leg.imo),
+        label: cleanStr(leg.label) || (legFlight ? `Flight ${legFlight}` : undefined),
+        pol: cleanStr(leg.pol),
+        pod: cleanStr(leg.pod),
+        airline_name: legAirline,
+        flight_number: legFlight,
+        arrival_flight_number:
+          cleanStr(leg.arrival_flight_number) ||
+          (i === 0 ? arrivalFlight : undefined),
+        mawb_number: cleanStr(leg.mawb_number) || (i === 0 ? mawb : undefined),
+        hawb_number: cleanStr(leg.hawb_number) || (i === 0 ? hawb : undefined),
+        flight_date: cleanStr(leg.flight_date) || (i === 0 ? flightDate : undefined),
+        flight_status:
+          cleanStr(leg.flight_status) || (i === 0 ? flightStatus : undefined),
+        etd: cleanStr(leg.etd),
+        eta: cleanStr(leg.eta),
+      };
+    }),
     port_of_call: (profile.port_of_call ?? []).map((row) => ({
       role: cleanStr(row.role),
       port_name: cleanStr(row.port_name),
@@ -337,8 +582,8 @@ export function toUpsertJobTrackingProfileDto(
       ata: cleanStr(row.ata) ?? null,
       etd: cleanStr(row.etd) ?? null,
       atd: cleanStr(row.atd) ?? null,
-      vessel_name: cleanStr(row.vessel_name),
-      voyage_number: cleanStr(row.voyage_number),
+      vessel_name: cleanStr(row.vessel_name) || airlineName,
+      voyage_number: cleanStr(row.voyage_number) || flightNumber,
       note: cleanStr(row.note),
     })),
     container_events: (profile.container_events ?? []).map((row) => ({
@@ -369,10 +614,7 @@ export function toUpsertJobTrackingProfileDto(
       customs_inspection_status: cleanStr(row.customs_inspection_status),
       customs_inspection_time: cleanStr(row.customs_inspection_time) ?? null,
     })),
-    detailed_data:
-      profile.detailed_data && typeof profile.detailed_data === 'object'
-        ? profile.detailed_data
-        : {},
+    detailed_data: detailed,
     pre_manifest: (profile.pre_manifest ?? []).map((row) => ({
       sub_customs_no: cleanStr(row.sub_customs_no),
       status: cleanStr(row.status),
@@ -448,12 +690,86 @@ export function seedTrackingProfileFromJob(
     };
   }
 
+  const airlineName =
+    cleanStr(profile.airline_name) ||
+    cleanStr(legs[0].airline_name) ||
+    cleanStr(legs[0].vessel_name) ||
+    cleanStr((air as { airline_name?: string; airline?: string } | undefined)?.airline_name) ||
+    cleanStr((air as { airline?: string } | undefined)?.airline) ||
+    cleanStr(j.vessel_name) ||
+    '';
+  const flightNumber =
+    cleanStr(profile.flight_number) ||
+    cleanStr(legs[0].flight_number) ||
+    cleanStr(legs[0].voyage_number) ||
+    cleanStr(air?.flight_number) ||
+    cleanStr(j.flight_number) ||
+    '';
+  const arrivalFlight =
+    cleanStr(profile.arrival_flight_number) ||
+    cleanStr(legs[0].arrival_flight_number) ||
+    cleanStr((air as { arrival_flight_number?: string } | undefined)?.arrival_flight_number) ||
+    '';
+  const mawb =
+    cleanStr(profile.mawb_number) ||
+    cleanStr(legs[0].mawb_number) ||
+    cleanStr(air?.mawb_number) ||
+    cleanStr(j.mawb_number) ||
+    '';
+  const hawb =
+    cleanStr(profile.hawb_number) ||
+    cleanStr(legs[0].hawb_number) ||
+    cleanStr(air?.hawb_number) ||
+    cleanStr(j.hawb_number) ||
+    '';
+  const flightDate =
+    cleanStr(profile.flight_date) ||
+    cleanStr(legs[0].flight_date) ||
+    cleanStr(air?.flight_date) ||
+    '';
+  const flightStatus =
+    cleanStr(profile.flight_status) ||
+    cleanStr(legs[0].flight_status) ||
+    cleanStr(air?.flight_status) ||
+    cleanStr(j.flight_status) ||
+    '';
+
+  if (flightNumber || mawb || hawb || airlineName) {
+    legs[0] = {
+      ...legs[0],
+      airline_name: cleanStr(legs[0].airline_name) || airlineName,
+      vessel_name: cleanStr(legs[0].vessel_name) || airlineName,
+      flight_number: cleanStr(legs[0].flight_number) || flightNumber,
+      arrival_flight_number: cleanStr(legs[0].arrival_flight_number) || arrivalFlight,
+      mawb_number: cleanStr(legs[0].mawb_number) || mawb,
+      hawb_number: cleanStr(legs[0].hawb_number) || hawb,
+      flight_date: cleanStr(legs[0].flight_date) || flightDate,
+      flight_status: cleanStr(legs[0].flight_status) || flightStatus,
+      voyage_number: cleanStr(legs[0].voyage_number) || flightNumber,
+      pol: cleanStr(legs[0].pol) || origin,
+      pod: cleanStr(legs[0].pod) || dest,
+      etd: cleanStr(legs[0].etd) || cleanStr(j.etd) || flightDate,
+      eta: cleanStr(legs[0].eta) || cleanStr(j.eta) || '',
+      label: cleanStr(legs[0].label) || (flightNumber ? `Flight ${flightNumber}` : ''),
+    };
+  }
+
   const poc = ensureOriginDestPoc(profile.port_of_call ?? []).map((row) => {
     if (row.role === 'ORIGIN' && !cleanStr(row.port_name)) {
-      return { ...row, port_name: origin, etd: cleanStr(row.etd) || cleanStr(j.etd) || '' };
+      return {
+        ...row,
+        port_name: origin,
+        etd: cleanStr(row.etd) || cleanStr(j.etd) || flightDate || '',
+        voyage_number: cleanStr(row.voyage_number) || flightNumber,
+      };
     }
     if (row.role === 'DEST' && !cleanStr(row.port_name)) {
-      return { ...row, port_name: dest, eta: cleanStr(row.eta) || cleanStr(j.eta) || '' };
+      return {
+        ...row,
+        port_name: dest,
+        eta: cleanStr(row.eta) || cleanStr(j.eta) || '',
+        voyage_number: cleanStr(row.voyage_number) || arrivalFlight || flightNumber,
+      };
     }
     return row;
   });
@@ -481,9 +797,15 @@ export function seedTrackingProfileFromJob(
     bl_number: bl,
     hbl_number: j.hbl_number ?? sea?.hbl_number,
     mbl_number: j.mbl_number ?? sea?.mbl_number,
-    hawb_number: j.hawb_number ?? air?.hawb_number,
-    vessel_name: j.vessel_name,
-    voyage_number: j.voyage_number,
+    hawb_number: hawb || j.hawb_number || air?.hawb_number,
+    mawb_number: mawb || air?.mawb_number,
+    airline_name: airlineName,
+    flight_number: flightNumber,
+    arrival_flight_number: arrivalFlight,
+    flight_date: flightDate,
+    flight_status: flightStatus,
+    vessel_name: airlineName || j.vessel_name,
+    voyage_number: flightNumber || j.voyage_number,
     primary_container_number: j.primary_container_number,
     shipper_name: j.shipper_name,
     consignee_name: j.consignee_name,
@@ -502,6 +824,13 @@ export function seedTrackingProfileFromJob(
     origin_label: origin,
     dest_port: dest,
     dest_label: dest,
+    airline_name: airlineName || profile.airline_name || '',
+    flight_number: flightNumber || profile.flight_number || '',
+    arrival_flight_number: arrivalFlight || profile.arrival_flight_number || '',
+    mawb_number: mawb || profile.mawb_number || '',
+    hawb_number: hawb || profile.hawb_number || '',
+    flight_date: flightDate || profile.flight_date || '',
+    flight_status: flightStatus || profile.flight_status || '',
     legs,
     port_of_call: poc,
     qty_gw_vol: qty,
