@@ -1146,15 +1146,10 @@ export interface UpsertJobCustomsRefDto {
   customs_status?: string;
   filed_at?: string;
   cleared_at?: string;
-  /** Customs hold flag (inspection / exam hold). */
   on_hold?: boolean;
-  /** When cargo was placed on customs hold. */
   held_at?: string | null;
-  /** Customs inspection date/time. */
   inspection_at?: string | null;
-  /** Inspection / exam notes. */
   inspection_notes?: string | null;
-  /** Customs release date/time. */
   released_at?: string | null;
   remarks?: string;
 }
