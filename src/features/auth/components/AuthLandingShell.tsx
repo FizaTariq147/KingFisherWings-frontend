@@ -91,11 +91,15 @@ export function AuthLandingShell({
     params.set('ref', ref)
     if (defaultTenant) params.set('tenant_slug', defaultTenant)
     const url = `${window.location.origin}/track?${params.toString()}`
-    const opened = window.open(url, '_blank', 'noopener,noreferrer')
-    if (!opened) {
-      // Popup blocked — fall back to same-tab full-page track.
-      window.location.assign(url)
+    // Open only in a new tab — never navigate the login page away.
+    // Do not pass "noopener" as a window feature: browsers then return null even
+    // when the tab opens, which previously triggered a same-tab fallback.
+    const opened = window.open(url, '_blank')
+    if (opened) {
+      opened.opener = null
+      return
     }
+    setError('Pop-up blocked. Allow pop-ups for this site to open Track in a new tab.')
   }
 
   return (
