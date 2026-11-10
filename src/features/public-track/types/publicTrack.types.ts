@@ -1,3 +1,5 @@
+import type { LiveTrackingCard } from './liveTracking.types';
+
 export type PublicTrackLegCode = 'POL' | 'PTS' | 'POD' | 'ORIGIN' | 'DEST' | string;
 
 export interface PublicTrackMilestone {
@@ -197,6 +199,8 @@ export interface PublicTrackResult {
   /** Live vessel/flight position from tracking payload when present. */
   currentLat?: number;
   currentLng?: number;
+  /** Live flight/vessel card from `live_tracking` or */tracking/live. */
+  liveTracking?: LiveTrackingCard;
   jobType?: string;
   partyName?: string;
   /** B/L from route / profile. */

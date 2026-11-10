@@ -26,6 +26,7 @@ export const jobKeys = {
   pnl: (id: string) => [...jobKeys.all, 'pnl', id] as const,
   milestones: (id: string) => [...jobKeys.all, 'milestones', id] as const,
   tracking: (id: string) => [...jobKeys.all, 'tracking', id] as const,
+  trackingLive: (id: string) => [...jobKeys.all, 'tracking-live', id] as const,
   trackingProfile: (id: string) => [...jobKeys.all, 'tracking-profile', id] as const,
   notes: (id: string) => [...jobKeys.all, 'notes', id] as const,
   documents: (id: string) => [...jobKeys.all, 'documents', id] as const,
@@ -470,6 +471,19 @@ export function useJobTracking(
     // Keep map + timeline live while the Track & Trace tab is open.
     refetchInterval: enabled ? 30_000 : false,
     refetchOnWindowFocus: true,
+  });
+}
+
+/** GET /jobs/:id/tracking/live — live vessel/flight card. */
+export function useJobTrackingLive(id: string, enabled = false) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  return useQuery({
+    queryKey: jobKeys.trackingLive(id),
+    queryFn: () => jobService.getTrackingLive(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled,
+    refetchInterval: enabled ? 60_000 : false,
+    staleTime: 30_000,
+    retry: 1,
   });
 }
 

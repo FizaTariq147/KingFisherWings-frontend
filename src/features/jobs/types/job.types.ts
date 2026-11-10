@@ -1792,6 +1792,27 @@ export interface PatchShowAllDto {
   carrier_code?: string | null;
   customer_name?: string | null;
   customer_code?: string | null;
+  /** Air / MAWB — same fields as PUT /jobs/:id/detail/mawb (clear with null or ""). */
+  flight_no?: string | null;
+  flight_number?: string | null;
+  flight_status?: string | null;
+  flight_date?: string | null;
+  arrival_flight_number?: string | null;
+  airline_name?: string | null;
+  mawb_no?: string | null;
+  mawb_number?: string | null;
+  hawb_no?: string | null;
+  hawb_number?: string | null;
+  /** Air shipment / cargo date (distinct from job_date when both present). */
+  shipment_date?: string | null;
+  pallet_count?: number | null;
+  air_pallet?: AirPalletLineDto[] | null;
+  /** Alias of volume_cbm for MAWB dimensions. */
+  dimensions?: number | null;
+  /** Alias of gross_weight for MAWB weight kg. */
+  weight?: number | null;
+  /** Nested MAWB bag — BE also accepts `{ mawb: { flight_no, mawb_no, … } }`. */
+  mawb?: UpdateAirMawbDto | null;
 }
 
 export interface JobEdiTypeOption {

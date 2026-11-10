@@ -22,6 +22,8 @@ export interface ShipmentActions {
   can_awb?: boolean;
   can_booking_form?: boolean;
   can_hbl_document?: boolean;
+  /** Soft-delete via DELETE /shipments/:id (shipments.delete). */
+  can_delete?: boolean;
   /** EDI action path segments when provided by backend. */
   allowed_edi_actions?: string[];
   /** Permitted status values when provided by backend. */

@@ -19,6 +19,7 @@ import type {
   PublicTrackMilestone,
   PublicTrackResult,
 } from '../types/publicTrack.types';
+import { LiveTrackingCard } from './LiveTrackingCard';
 import {
   TRACK_TONE_COLORS,
   trackMilestoneTone,
@@ -686,6 +687,12 @@ export function PublicTrackTimeline({
             </Button>
           </div>
         </div>
+
+        {result.liveTracking ? (
+          <div className="mt-4">
+            <LiveTrackingCard card={result.liveTracking} className="px-3 py-2.5 shadow-none" />
+          </div>
+        ) : null}
 
         {/* POL → POD progress */}
         <div className="mt-5">

@@ -5,6 +5,7 @@ export const SHIPMENTS_VIEW_PERMISSION: PermissionKey = 'shipments.view';
 export const SHIPMENTS_CREATE_PERMISSION: PermissionKey = 'shipments.create';
 export const SHIPMENTS_UPDATE_PERMISSION: PermissionKey = 'shipments.update';
 export const SHIPMENTS_GENERATE_PERMISSION: PermissionKey = 'shipments.generate';
+export const SHIPMENTS_DELETE_PERMISSION: PermissionKey = 'shipments.delete';
 
 /** Legacy alias some JWTs may still carry after older syncs. */
 export const SHIPMENTS_MANAGE_PERMISSION: PermissionKey = 'shipments.manage';
@@ -37,6 +38,13 @@ export function hasShipmentsGenerate(permissions: readonly string[]): boolean {
   );
 }
 
+export function hasShipmentsDelete(permissions: readonly string[]): boolean {
+  return (
+    permissions.includes(SHIPMENTS_DELETE_PERMISSION) ||
+    permissions.includes(SHIPMENTS_MANAGE_PERMISSION)
+  );
+}
+
 /** Map Nest guard strings to short FE messaging (no Sync lecture banner). */
 export function formatShipmentsPermissionError(message: string): string {
   const text = String(message ?? '').trim();
@@ -52,6 +60,9 @@ export function formatShipmentsPermissionError(message: string): string {
   }
   if (/shipments\.generate/i.test(text)) {
     return 'Missing permission: shipments.generate';
+  }
+  if (/shipments\.delete/i.test(text)) {
+    return 'Missing permission: shipments.delete';
   }
   return text;
 }

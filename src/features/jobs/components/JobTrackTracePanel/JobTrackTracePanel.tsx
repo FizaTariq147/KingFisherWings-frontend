@@ -1,16 +1,18 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
 import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground';
 import { TrackOverlayFrame } from '@/features/public-track/components/TrackOverlayFrame';
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
-import { useJobTracking } from '../../hooks/useJobs';
+import { normalizeLiveTracking } from '@/features/public-track/utils/normalizeLiveTracking';
+import { useJobTracking, useJobTrackingLive } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { JobTrackingProfileEditor } from '../JobTrackingProfileEditor';
 
 /**
  * Dedicated Track & Trace tab body. Mounted only while the tab is active,
  * so GET /jobs/:id/tracking runs on open (action button or tab strip).
+ * Also polls GET /jobs/:id/tracking/live for the live vessel/flight card.
  */
 export function JobTrackTracePanel({
   jobId,
@@ -30,11 +32,17 @@ export function JobTrackTracePanel({
     },
     Boolean(jobId),
   );
+  const liveQuery = useJobTrackingLive(jobId, Boolean(jobId));
 
-  const trackResult = toTrackResult(
-    trackingQuery.data?.data ?? trackingQuery.data,
-    jobNumber || jobId,
-  );
+  const trackResult = useMemo(() => {
+    const base = toTrackResult(
+      trackingQuery.data?.data ?? trackingQuery.data,
+      jobNumber || jobId,
+    );
+    if (base.liveTracking) return base;
+    const live = normalizeLiveTracking(liveQuery.data);
+    return live ? { ...base, liveTracking: live } : base;
+  }, [trackingQuery.data, liveQuery.data, jobNumber, jobId]);
 
   return (
     <div className="rounded-sm bg-white">
@@ -59,6 +67,7 @@ export function JobTrackTracePanel({
               onCancel={() => setShowProfileEditor(false)}
               onSaved={() => {
                 void trackingQuery.refetch();
+                void liveQuery.refetch();
               }}
             />
           </div>

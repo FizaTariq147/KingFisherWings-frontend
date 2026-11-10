@@ -37,10 +37,46 @@ const PATCH_KEYS: (keyof PatchShowAllDto)[] = [
   'carrier_code',
   'customer_name',
   'customer_code',
+  // Air / MAWB (PATCH show_all writes same as PUT detail/mawb)
+  'flight_no',
+  'flight_number',
+  'flight_status',
+  'flight_date',
+  'arrival_flight_number',
+  'airline_name',
+  'mawb_no',
+  'mawb_number',
+  'hawb_no',
+  'hawb_number',
+  'shipment_date',
+  'pallet_count',
+  'dimensions',
+  'weight',
 ];
 
+/** Fields BE accepts as null / "" to clear on show_all PATCH. */
+const CLEARABLE_KEYS = new Set<keyof PatchShowAllDto>([
+  'flight_no',
+  'flight_number',
+  'flight_status',
+  'flight_date',
+  'arrival_flight_number',
+  'airline_name',
+  'mawb_no',
+  'mawb_number',
+  'hawb_no',
+  'hawb_number',
+  'shipment_date',
+  'pallet_count',
+  'dimensions',
+  'weight',
+  'gross_weight',
+  'volume_cbm',
+]);
+
 const ALIASES: Record<string, keyof PatchShowAllDto> = {
-  shipment_date: 'job_date',
+  // Prefer dedicated MAWB shipment_date; sea still maps into job_date via walk fallback.
+  shipment_date: 'shipment_date',
   grossweight: 'gross_weight',
   volume: 'volume_cbm',
   cbm: 'volume_cbm',
@@ -67,6 +103,21 @@ const ALIASES: Record<string, keyof PatchShowAllDto> = {
   dest_code: 'dest_port_code',
   billing_party: 'billing_party_name',
   customer: 'customer_name',
+  flight_number: 'flight_number',
+  flightno: 'flight_no',
+  flight_no: 'flight_no',
+  mawb_number: 'mawb_number',
+  mawbno: 'mawb_no',
+  mawb_no: 'mawb_no',
+  hawb_number: 'hawb_number',
+  hawbno: 'hawb_no',
+  hawb_no: 'hawb_no',
+  arrival_flight: 'arrival_flight_number',
+  arrivalflightnumber: 'arrival_flight_number',
+  airline: 'airline_name',
+  airlinename: 'airline_name',
+  gross_weight_kg: 'gross_weight',
+  weight_kg: 'weight',
 };
 
 /** Nested party/port objects from show_all → flat PatchShowAllDto fields (compact keys). */
@@ -178,15 +229,28 @@ function collectFromRecord(
     if (
       mapped === 'pieces' ||
       mapped === 'gross_weight' ||
-      mapped === 'volume_cbm'
+      mapped === 'volume_cbm' ||
+      mapped === 'pallet_count' ||
+      mapped === 'dimensions' ||
+      mapped === 'weight'
     ) {
       const n = pickNumber(rawVal);
       if (n != null) into[mapped] = n;
       continue;
     }
-    if (mapped === 'etd' || mapped === 'eta' || mapped === 'job_date') {
+    if (
+      mapped === 'etd' ||
+      mapped === 'eta' ||
+      mapped === 'job_date' ||
+      mapped === 'flight_date' ||
+      mapped === 'shipment_date'
+    ) {
       const d = pickDate(rawVal);
-      if (d) into[mapped] = d;
+      if (d) {
+        into[mapped] = d;
+        // Sea show_all historically used shipment_date as job_date.
+        if (mapped === 'shipment_date') setIfEmpty(into, 'job_date', d);
+      }
       continue;
     }
     const s = pickString(rawVal);
@@ -244,22 +308,55 @@ export function extractPatchShowAllDefaults(
   return into;
 }
 
-/** Build a partial PATCH body — omit blank strings; keep explicit numbers/dates. */
-export function toPatchShowAllPayload(draft: PatchShowAllDto): PatchShowAllDto {
+/**
+ * Build a partial PATCH body.
+ * - Non-empty strings/numbers are sent as usual.
+ * - Cleared MAWB/air fields (and related weights) send `null` so BE can clear.
+ */
+export function toPatchShowAllPayload(
+  draft: PatchShowAllDto,
+  defaults?: PatchShowAllDto,
+): PatchShowAllDto {
   const out: PatchShowAllDto = {};
   for (const key of PATCH_KEYS) {
     const value = draft[key];
-    if (value == null) continue;
     if (typeof value === 'string') {
       const trimmed = value.trim();
-      if (!trimmed) continue;
-      out[key] = trimmed as never;
+      if (trimmed) {
+        out[key] = trimmed as never;
+        continue;
+      }
+      // Cleared previously-filled clearable field → null.
+      if (
+        CLEARABLE_KEYS.has(key) &&
+        defaults &&
+        !isPatchShowAllFieldEmpty(defaults, key)
+      ) {
+        out[key] = null as never;
+      }
+      continue;
+    }
+    if (value == null) {
+      if (
+        CLEARABLE_KEYS.has(key) &&
+        defaults &&
+        !isPatchShowAllFieldEmpty(defaults, key) &&
+        Object.prototype.hasOwnProperty.call(draft, key)
+      ) {
+        out[key] = null as never;
+      }
       continue;
     }
     if (typeof value === 'number' && Number.isFinite(value)) {
       out[key] = value as never;
     }
   }
+  // Prefer canonical MAWB keys when both aliases are filled.
+  if (out.flight_number && !out.flight_no) out.flight_no = out.flight_number;
+  if (out.mawb_number && !out.mawb_no) out.mawb_no = out.mawb_number;
+  if (out.hawb_number && !out.hawb_no) out.hawb_no = out.hawb_number;
+  if (out.dimensions != null && out.volume_cbm == null) out.volume_cbm = out.dimensions;
+  if (out.weight != null && out.gross_weight == null) out.gross_weight = out.weight;
   return out;
 }
 
@@ -280,9 +377,16 @@ export function mergeShowAllSavedOverlay(
   response?: unknown,
 ): PatchShowAllDto {
   const fromResponse = response != null ? extractPatchShowAllDefaults([response]) : {};
-  return {
+  const next: PatchShowAllDto = {
     ...previous,
     ...submitted,
     ...fromResponse,
   };
+  // Explicit nulls from clear should wipe overlay values.
+  for (const key of CLEARABLE_KEYS) {
+    if (submitted[key] === null) {
+      delete next[key];
+    }
+  }
+  return next;
 }

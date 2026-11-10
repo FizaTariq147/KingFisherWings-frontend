@@ -51,6 +51,7 @@ export type PermissionKey =
   | 'shipments.create'
   | 'shipments.update'
   | 'shipments.generate'
+  | 'shipments.delete'
   | 'shipments.manage'
   // Quote Requests Integration (website KFPP bridge)
   | 'integrations.quote_requests.view'

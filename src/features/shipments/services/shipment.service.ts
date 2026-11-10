@@ -973,6 +973,29 @@ export const shipmentService = {
     }
   },
 
+  /** GET /shipments/:id/tracking/live */
+  async trackingLive(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(SHIPMENT_API.trackingLive(id)),
+      );
+      return unwrapShipmentTabPayload(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** DELETE /shipments/:id — soft-delete (204). Requires shipments.delete. */
+  async softDelete(id: string): Promise<void> {
+    assertId(id);
+    try {
+      await withGatewayRetry(() => axiosInstance.delete(SHIPMENT_API.byId(id)));
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   async routingLegs(id: string): Promise<unknown[]> {
     assertId(id);
     try {

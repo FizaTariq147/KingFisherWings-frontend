@@ -26,6 +26,7 @@ export const shipmentKeys = {
     [...shipmentKeys.all, 'detail', id, 'tab', tab] as const,
   kpi: (id: string) => [...shipmentKeys.all, 'kpi', id] as const,
   tracking: (id: string) => [...shipmentKeys.all, 'tracking', id] as const,
+  trackingLive: (id: string) => [...shipmentKeys.all, 'tracking-live', id] as const,
   ediTypes: (id: string) => [...shipmentKeys.all, 'edi-types', id] as const,
   ediSubmissions: (id: string) =>
     [...shipmentKeys.all, 'edi-submissions', id] as const,
@@ -107,6 +108,30 @@ export function useShipmentTracking(id: string, enabled = false) {
     queryKey: shipmentKeys.tracking(id),
     queryFn: () => shipmentService.tracking(id),
     enabled: Boolean(accessToken) && isUuid(id) && enabled && canReadApi,
+    refetchInterval: enabled ? 30_000 : false,
+  });
+}
+
+/** GET /shipments/:id/tracking/live */
+export function useShipmentTrackingLive(id: string, enabled = false) {
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const { canReadApi } = useShipmentsPermissions();
+  return useQuery({
+    queryKey: shipmentKeys.trackingLive(id),
+    queryFn: () => shipmentService.trackingLive(id),
+    enabled: Boolean(accessToken) && isUuid(id) && enabled && canReadApi,
+    refetchInterval: enabled ? 60_000 : false,
+    staleTime: 30_000,
+    retry: 1,
+  });
+}
+
+/** DELETE /shipments/:id */
+export function useDeleteShipment() {
+  const invalidate = useInvalidateShipments();
+  return useMutation({
+    mutationFn: (id: string) => shipmentService.softDelete(id),
+    onSuccess: (_d, id) => invalidate(id),
   });
 }
 

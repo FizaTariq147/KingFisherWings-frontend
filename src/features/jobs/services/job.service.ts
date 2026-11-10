@@ -5392,6 +5392,19 @@ export const jobService = {
     throw new Error('Convert succeeded but no job id was returned.');
   },
 
+  /** GET /jobs/:id/tracking/live — live vessel/flight card for this job. */
+  async getTrackingLive(id: string): Promise<unknown> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.trackingLive(id)),
+      );
+      return unwrapEntity(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
   /** Empty seed for first-open GET /jobs/:id/tracking/profile. */
   emptyTrackingProfile(): JobTrackingProfile {
     return emptyJobTrackingProfile();
