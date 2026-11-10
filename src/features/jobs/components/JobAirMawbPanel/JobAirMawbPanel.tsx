@@ -21,11 +21,9 @@ type MawbForm = {
   dimensions: string;
   weight: string;
   pallet_type: string;
-  pallet_line_count: string;
   length_cm: string;
   width_cm: string;
   height_cm: string;
-  weight_kg: string;
 };
 
 type SavedMawbRow = {
@@ -40,11 +38,9 @@ type SavedMawbRow = {
   dimensions: string;
   weight: string;
   pallet_type: string;
-  pallet_line_count: string;
   length_cm: string;
   width_cm: string;
   height_cm: string;
-  weight_kg: string;
 };
 
 function emptyForm(): MawbForm {
@@ -59,11 +55,9 @@ function emptyForm(): MawbForm {
     dimensions: '',
     weight: '',
     pallet_type: '',
-    pallet_line_count: '1',
     length_cm: '',
     width_cm: '',
     height_cm: '',
-    weight_kg: '',
   };
 }
 
@@ -112,15 +106,14 @@ function payloadToForm(raw: unknown): MawbForm {
       0,
       AIR_BOOKING_FORM_LIMITS.hawb_number,
     ),
-    pallet_count: pickStr(nested.pallet_count),
+    pallet_count:
+      pickStr(nested.pallet_count) || pickStr(first?.count),
     dimensions: pickStr(nested.dimensions, nested.volume_cbm),
     weight: pickStr(nested.weight, nested.gross_weight_kg, nested.gross_weight),
     pallet_type: pickStr(first?.pallet_type),
-    pallet_line_count: pickStr(first?.count) || '1',
     length_cm: pickStr(first?.length_cm),
     width_cm: pickStr(first?.width_cm),
     height_cm: pickStr(first?.height_cm),
-    weight_kg: pickStr(first?.weight_kg),
   };
 }
 
@@ -152,11 +145,9 @@ function formToSavedRow(form: MawbForm, id?: string): SavedMawbRow {
     dimensions: form.dimensions.trim(),
     weight: form.weight.trim(),
     pallet_type: form.pallet_type.trim(),
-    pallet_line_count: form.pallet_line_count.trim() || '1',
     length_cm: form.length_cm.trim(),
     width_cm: form.width_cm.trim(),
     height_cm: form.height_cm.trim(),
-    weight_kg: form.weight_kg.trim(),
   };
 }
 
@@ -172,11 +163,9 @@ function savedRowToForm(row: SavedMawbRow): MawbForm {
     dimensions: row.dimensions,
     weight: row.weight,
     pallet_type: row.pallet_type,
-    pallet_line_count: row.pallet_line_count || '1',
     length_cm: row.length_cm,
     width_cm: row.width_cm,
     height_cm: row.height_cm,
-    weight_kg: row.weight_kg,
   };
 }
 
@@ -221,7 +210,7 @@ function buildMawbDto(form: MawbForm, clear = false): UpdateAirMawbDto {
   }
   const palletType = form.pallet_type.trim();
   if (palletType) {
-    const count = Number(form.pallet_line_count || '1');
+    const count = Number(form.pallet_count || '1');
     const line: AirPalletLineDto = {
       pallet_type: palletType.slice(0, AIR_BOOKING_FORM_LIMITS.pallet_type),
       count: Number.isFinite(count) && count > 0 ? count : 1,
@@ -229,7 +218,6 @@ function buildMawbDto(form: MawbForm, clear = false): UpdateAirMawbDto {
     if (form.length_cm.trim()) line.length_cm = Number(form.length_cm);
     if (form.width_cm.trim()) line.width_cm = Number(form.width_cm);
     if (form.height_cm.trim()) line.height_cm = Number(form.height_cm);
-    if (form.weight_kg.trim()) line.weight_kg = Number(form.weight_kg);
     dto.air_pallet = [line];
   }
   return dto;
@@ -399,12 +387,6 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
             onChange={(e) => setField('hawb_no', e.target.value)}
           />
           <Input
-            label="Air pallet count"
-            type="number"
-            value={form.pallet_count}
-            onChange={(e) => setField('pallet_count', e.target.value)}
-          />
-          <Input
             label="Dimensions / volume CBM"
             type="number"
             value={form.dimensions}
@@ -430,10 +412,10 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
             />
           </div>
           <Input
-            label="Pallet line count"
+            label="Air pallet count"
             type="number"
-            value={form.pallet_line_count}
-            onChange={(e) => setField('pallet_line_count', e.target.value)}
+            value={form.pallet_count}
+            onChange={(e) => setField('pallet_count', e.target.value)}
           />
           <Input
             label="Length cm"
@@ -452,12 +434,6 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
             type="number"
             value={form.height_cm}
             onChange={(e) => setField('height_cm', e.target.value)}
-          />
-          <Input
-            label="Pallet weight kg"
-            type="number"
-            value={form.weight_kg}
-            onChange={(e) => setField('weight_kg', e.target.value)}
           />
           <div className="flex flex-wrap gap-2 sm:col-span-2 lg:col-span-3">
             <Button type="button" disabled={pending} onClick={() => void save()}>
