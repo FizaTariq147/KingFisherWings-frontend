@@ -1,4 +1,4 @@
-import { useMemo, useState, type CSSProperties } from 'react';
+import { useEffect, useMemo, useState, type CSSProperties } from 'react';
 import {
   Anchor,
   ArrowLeft,
@@ -368,7 +368,13 @@ export function PublicTrackTimeline({
 
   const status = formatStatusLabel(result.currentStatus || result.status);
   const headerBadgeColor = headerStatusColor(result.currentStatus || result.status);
-  const metrics = useMemo(() => computeTrackMetrics(result), [result]);
+  // Tick so ATD→ETA progress advances between live refreshes.
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    const id = window.setInterval(() => setNowMs(Date.now()), 30_000);
+    return () => window.clearInterval(id);
+  }, [result.reference]);
+  const metrics = useMemo(() => computeTrackMetrics(result, nowMs), [result, nowMs]);
   const route = result.route;
   const cargoInfo = result.cargoInfo;
   const preManifest = result.preManifest ?? [];
@@ -610,7 +616,7 @@ export function PublicTrackTimeline({
 
   const originLabel = metrics.origin || 'Origin';
   const destLabel = metrics.destination || 'Destination';
-  const progressPct = metrics.progressPct > 0 ? metrics.progressPct : 35;
+  const progressPct = Math.max(0, Math.min(100, metrics.progressPct));
 
   const isOverlay = variant === 'overlay';
 
@@ -702,17 +708,22 @@ export function PublicTrackTimeline({
           </div>
           <div className="relative mt-3 h-1.5 rounded-full" style={{ backgroundColor: C.chip }}>
             <div
-              className="absolute left-0 top-0 h-1.5 rounded-full"
+              className="absolute left-0 top-0 h-1.5 rounded-full transition-[width] duration-700 ease-out"
               style={{
                 width: `${progressPct}%`,
                 background: `linear-gradient(90deg, ${C.green}, ${C.badge})`,
               }}
             />
             <span
-              className="absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border-2 border-white shadow"
+              className="absolute top-1/2 h-3.5 w-3.5 -translate-y-1/2 rounded-full border-2 border-white shadow transition-[left] duration-700 ease-out"
               style={{
-                left: `calc(${progressPct}% - 7px)`,
-                backgroundColor: C.badge,
+                left:
+                  progressPct <= 0
+                    ? '0px'
+                    : progressPct >= 100
+                      ? 'calc(100% - 14px)'
+                      : `calc(${progressPct}% - 7px)`,
+                backgroundColor: metrics.delivered ? C.green : C.badge,
               }}
             />
           </div>
