@@ -46,6 +46,7 @@ import {
   shipmentDetailTabLabel,
   toApiShipmentDetailTabKey,
 } from '../api/shipment.api';
+import { isAirwayBillJobType } from '@/features/jobs/utils/jobDetailTabs';
 import { ShipmentBookingFormPanel } from '../components/ShipmentBookingFormPanel';
 import {
   ShipmentApiPayloadView,
@@ -133,24 +134,33 @@ function FresaReadonlyField({
 }
 
 /**
- * Tab strip = keys from GET /shipments/:id/detail `tabs`, plus frontend Section files
- * (same hub pattern as quotation).
+ * Tab strip = keys from GET /shipments/:id/detail `tabs`, plus frontend Section files.
+ * Same air rule as jobs: one Containers/MAWB surface on `actual_container`
+ * (drop planned_container + dedicated mawb; label MAWB for air types).
  */
 function resolveShipmentTabs(shipment: Shipment): { key: string; label: string }[] {
   const apiTabs = shipment.tabs;
   const seen = new Set<string>();
   const tabs: { key: string; label: string }[] = [];
+  const jobType = shipment.job_type || shipment.service_type;
+  const air = isAirwayBillJobType(jobType);
+
   for (const t of apiTabs ?? []) {
     const key = toApiShipmentDetailTabKey(t.key);
     if (!key || seen.has(key)) continue;
+    // One containers tab only — planned mirrors actual; air MAWB lives on actual_container.
+    // Drop dedicated `mawb` (API often places it next to booking_form on every shipment).
+    if (key === 'planned_container' || key === 'mawb') continue;
     seen.add(key);
-    tabs.push({
-      key,
-      label: shipmentDetailTabLabel(key, t.label),
-    });
+    const apiLabel = t.label?.trim();
+    let label = shipmentDetailTabLabel(key, apiLabel);
+    if (key === 'actual_container') {
+      label = air ? 'MAWB' : 'Containers';
+    }
+    tabs.push({ key, label });
   }
   if (!seen.has('section-files') && !seen.has('section_files')) {
-    tabs.push({ key: 'section-files', label: 'Section files' });
+    tabs.push({ key: 'section_files', label: 'Section files' });
   }
   return tabs;
 }

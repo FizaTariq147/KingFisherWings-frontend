@@ -102,10 +102,33 @@ export function isShipmentShowAllTab(key: string): boolean {
 
 /**
  * Exact path segment for GET /shipments/:id/detail/:tab.
- * Uses the key from GET /shipments/:id/detail `tabs` as-is (trimmed only).
+ * Prefer the key from GET /shipments/:id/detail `tabs` as-is (trimmed + light aliases).
  */
 export function toApiShipmentDetailTabKey(tab: string): string {
-  return tab.trim();
+  const norm = tab.trim().toLowerCase().replace(/-/g, '_');
+  if (!norm) return tab.trim();
+  if (norm === 'show_all' || norm === 'showall') return 'show_all';
+  if (
+    norm === 'planned_container' ||
+    norm === 'planned_containers' ||
+    norm === 'planned_consignment'
+  ) {
+    return 'planned_container';
+  }
+  if (
+    norm === 'actual_container' ||
+    norm === 'actual_containers' ||
+    norm === 'actual_consignment'
+  ) {
+    return 'actual_container';
+  }
+  if (norm === 'mawb' || norm === 'air_mawb') return 'mawb';
+  if (norm === 'organization' || norm === 'organisation' || norm === 'party') {
+    return 'organization';
+  }
+  if (norm === 'section_files' || norm === 'sectionfiles') return 'section_files';
+  // Pass through unknown API keys unchanged (backend is source of truth).
+  return norm;
 }
 
 /** Display label: prefer API label; continuum Party for organization; else humanize key. */
@@ -117,10 +140,12 @@ export function shipmentDetailTabLabel(key: string, apiLabel?: string): string {
     return fromApi;
   }
   if (isShipmentShowAllTab(key)) return 'Show All';
-  const norm = key.trim().toLowerCase().replace(/-/g, '_');
-  if (norm === 'organization' || norm === 'organisation') return 'Party';
+  const norm = toApiShipmentDetailTabKey(key);
+  if (norm === 'organization') return 'Party';
   if (norm === 'info' || norm === 'information') return 'Info';
-  if (norm === 'section_files' || norm === 'sectionfiles') return 'Section files';
+  if (norm === 'section_files') return 'Section files';
+  if (norm === 'actual_container' || norm === 'planned_container') return 'Containers';
+  if (norm === 'mawb') return 'MAWB';
   return (fromApi && /[_-]/.test(fromApi) ? fromApi : key)
     .trim()
     .replace(/[-_]+/g, ' ')
