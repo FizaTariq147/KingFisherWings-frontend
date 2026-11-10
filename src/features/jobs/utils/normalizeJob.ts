@@ -935,6 +935,19 @@ export function normalizeJob(raw: unknown): Job | null {
       pickString(r, 'shipper_name', 'shipperName') ||
       pickRelationName(r.shipper ?? r.shipper_party ?? r.shipperParty) ||
       undefined,
+    client_id:
+      pickString(r, 'client_id', 'clientId', 'customer_id', 'customerId') ||
+      pickString(
+        asRecord(r.client ?? r.customer ?? r.client_party ?? r.clientParty) ?? {},
+        'id',
+      ) ||
+      undefined,
+    client_name:
+      pickString(r, 'client_name', 'clientName', 'customer_name', 'customerName') ||
+      pickRelationName(
+        r.client ?? r.customer ?? r.client_party ?? r.clientParty,
+      ) ||
+      undefined,
     consignee_id: pickString(r, 'consignee_id', 'consigneeId') || undefined,
     consignee_name:
       pickString(r, 'consignee_name', 'consigneeName') ||

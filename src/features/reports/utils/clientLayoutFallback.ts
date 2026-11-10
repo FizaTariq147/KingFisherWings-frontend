@@ -1,8 +1,9 @@
 /**
- * Client JSON / sample PDF fallback for catalogue Generate.
+ * Client JSON / official-sample PDF for catalogue Generate.
  *
- * Product print = backend Puppeteer packs. When a pack is ready, FE must not
- * use html2canvas shells (rough / identical layouts).
+ * Shared backend packs (one HAWB_FORM / HBL_FORM for many codes) make every
+ * format look identical. Official Fresa sample PDFs are distinct per format —
+ * prefer those whenever available.
  *
  * Disable all client fallback:
  *   VITE_REPORTS_CLIENT_LAYOUT_FALLBACK=false
@@ -17,16 +18,19 @@ export function isClientLayoutFallbackEnabled(): boolean {
 
 /**
  * When to use client layout / official-sample PDF:
- * - Pack ready (bound + active) → never (Fresa-parity pack bytes only).
- * - Pack not ready + fallback enabled → yes (browse sample or classic fallback).
+ * - Official sample available → yes (even if pack is ready) so formats stay distinct
+ * - Pack ready + no official sample → no (pack-only)
+ * - Pack not ready + fallback enabled → yes
  */
 export function allowClientLayoutGenerate(opts: {
   packReady: boolean;
   templateActive: boolean;
   entityBound?: boolean;
+  /** Distinct Fresa sample PDF exists for this catalogue code */
+  hasOfficialSample?: boolean;
 }): boolean {
   if (!isClientLayoutFallbackEnabled()) return false;
-  // Pack ready ⇒ pack-only. Do not fall back to shells even for sample browse.
+  if (opts.hasOfficialSample) return true;
   if (opts.packReady) return false;
   void opts.templateActive;
   void opts.entityBound;

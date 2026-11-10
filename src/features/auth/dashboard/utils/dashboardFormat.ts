@@ -381,8 +381,19 @@ export function shipmentStatusClass(status: JobStatus): string {
   }
 }
 
-export function jobClient(job: Pick<Job, 'shipper_name' | 'consignee_name'>): string {
-  return job.shipper_name?.trim() || job.consignee_name?.trim() || '—';
+/**
+ * Dashboard “client” under the job number — same party as job detail Client
+ * (organizations CLIENT), not shipper / consignee / billing.
+ */
+export function jobClient(
+  job: Pick<Job, 'client_name' | 'shipper_name' | 'consignee_name'>,
+  clientOverride?: string | null,
+): string {
+  const fromOverride = clientOverride?.trim();
+  if (fromOverride && fromOverride !== '—') return fromOverride;
+  const fromClient = job.client_name?.trim();
+  if (fromClient && fromClient !== '—') return fromClient;
+  return '—';
 }
 
 /**

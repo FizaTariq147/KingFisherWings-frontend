@@ -37,6 +37,7 @@ async function embedLogoImage(
 async function stampOrgChromeOnSample(
   sampleBytes: ArrayBuffer,
   chrome: ReportOrgChrome,
+  opts?: { formatLabel?: string; sampleIsFallback?: boolean },
 ): Promise<Uint8Array> {
   const doc = await PDFDocument.load(sampleBytes, { ignoreEncryption: true });
   const pages = doc.getPages();
@@ -93,6 +94,36 @@ async function stampOrgChromeOnSample(
     color: rgb(0.4, 0.4, 0.4),
   });
 
+  if (opts?.formatLabel) {
+    const label = opts.formatLabel.slice(0, 64);
+    page.drawRectangle({
+      x: pad,
+      y: height - 22,
+      width: Math.min(width - pad * 2 - boxW - 8, font.widthOfTextAtSize(label, 8) + 12),
+      height: 14,
+      color: rgb(0.06, 0.16, 0.26),
+      opacity: 0.9,
+    });
+    page.drawText(label, {
+      x: pad + 6,
+      y: height - 18,
+      size: 8,
+      font,
+      color: rgb(1, 1, 1),
+    });
+  }
+
+  if (opts?.sampleIsFallback) {
+    const note = 'No distinct Fresa CDN sample — closest draft layout + format label';
+    page.drawText(note, {
+      x: pad,
+      y: 8,
+      size: 6,
+      font: fontSm,
+      color: rgb(0.45, 0.2, 0.1),
+    });
+  }
+
   return doc.save();
 }
 
@@ -115,7 +146,10 @@ export async function generateHawbSamplePdf(
 
   let layoutBytes: Uint8Array = new Uint8Array(sampleBytes);
   if (!options.skipOrgStamp) {
-    layoutBytes = await stampOrgChromeOnSample(sampleBytes, chrome);
+    layoutBytes = await stampOrgChromeOnSample(sampleBytes, chrome, {
+      formatLabel: spec?.name || code,
+      sampleIsFallback: Boolean(spec?.sampleIsFallback),
+    });
   }
 
   let blob = new Blob([new Uint8Array(layoutBytes)], { type: 'application/pdf' });

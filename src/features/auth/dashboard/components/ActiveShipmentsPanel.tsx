@@ -24,6 +24,10 @@ import type { Job } from '@/features/jobs/types/job.types';
 import { isAirwayBillJobType } from '@/features/jobs/utils/jobDetailTabs';
 import { jobDetailPath, jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { pickJobContainerDisplay } from '@/features/jobs/utils/normalizeJobContainers';
+import {
+  pickOrgByType,
+  resolveOrgPartyDisplay,
+} from '@/features/shared/organizations/pickOrgByType';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import {
@@ -180,6 +184,38 @@ export function ActiveShipmentsPanel({
     return counts;
   }, [catalog]);
 
+  const accessToken = useAuthStore((s) => s.accessToken);
+
+  /**
+   * Client under job number = organizations CLIENT (same as job detail), not shipper.
+   * Hydrate when list payload omitted client_name.
+   */
+  const jobsNeedingClient = useMemo(
+    () =>
+      catalog
+        .filter((job) => isUuid(job.id) && !job.client_name?.trim())
+        .slice(0, 40),
+    [catalog],
+  );
+  const clientOrgQueries = useQueries({
+    queries: jobsNeedingClient.map((job) => ({
+      queryKey: [...jobKeys.organizations(job.id), 'dashboard-client'] as const,
+      queryFn: () => jobService.listOrganizations(job.id),
+      enabled: Boolean(accessToken) && isUuid(job.id),
+      staleTime: 60_000,
+    })),
+  });
+  const clientNameByJobId = useMemo(() => {
+    const map = new Map<string, string>();
+    jobsNeedingClient.forEach((job, i) => {
+      const rows = clientOrgQueries[i]?.data;
+      if (!rows) return;
+      const label = resolveOrgPartyDisplay(pickOrgByType(rows, 'CLIENT')).label;
+      if (label && label !== '—') map.set(job.id, label);
+    });
+    return map;
+  }, [jobsNeedingClient, clientOrgQueries]);
+
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return catalog.filter((job) => {
@@ -192,7 +228,7 @@ export function ActiveShipmentsPanel({
         job.containers?.find((c) => c.container_number)?.container_number;
       const hay = [
         jobDisplayNumber(job),
-        jobClient(job),
+        jobClient(job, clientNameByJobId.get(job.id)),
         jobPortCode(job.origin_port_code),
         jobPortCode(job.dest_port_code),
         job.status,
@@ -206,11 +242,10 @@ export function ActiveShipmentsPanel({
         .toLowerCase();
       return hay.includes(q);
     });
-  }, [catalog, view, chip, query, userId]);
+  }, [catalog, view, chip, query, userId, clientNameByJobId]);
 
   // Show every in-scope row (All jobs = full department set; My jobs = own only).
   const visibleRows = filtered;
-  const accessToken = useAuthStore((s) => s.accessToken);
   /** Air jobs missing AWB on list — hydrate from GET /jobs/:id/detail (cap fan-out). */
   const airJobsNeedingDetail = useMemo(
     () =>
@@ -446,7 +481,7 @@ export function ActiveShipmentsPanel({
             <tbody>
               {visibleRows.map((job, index) => {
                 const path = jobDetailPath(job);
-                const client = jobClient(job);
+                const client = jobClient(job, clientNameByJobId.get(job.id));
                 const route = routeProgressInfo(job);
                 const dept = deptForStatus(job.status);
                 const mode = jobMode(job.job_type);
