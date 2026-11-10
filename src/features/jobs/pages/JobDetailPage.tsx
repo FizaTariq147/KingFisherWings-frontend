@@ -63,8 +63,10 @@ import {
   useJobEdiSubmissions,
   useJobEdiTypes,
   useJobHouseJobs,
+  useJobOrganizations,
   useJobStatusOptions,
 } from '../hooks/useJobs';
+import { pickOrgByType } from '@/features/shared/organizations/pickOrgByType';
 import { JobTrackTracePanel } from '../components/JobTrackTracePanel';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
@@ -169,6 +171,19 @@ export default function JobDetailPage() {
   const segmentLabel = JOB_SEGMENTS[segment].label;
 
   const { data: job, isLoading, isError, error, refetch } = useJob(id);
+  const orgsQuery = useJobOrganizations(id, Boolean(id && isUuid(id)));
+  const clientOrg = useMemo(
+    () => pickOrgByType(orgsQuery.data, 'CLIENT'),
+    [orgsQuery.data],
+  );
+  const billingOrg = useMemo(
+    () => pickOrgByType(orgsQuery.data, 'BILLING_PARTY'),
+    [orgsQuery.data],
+  );
+  const shipperOrg = useMemo(
+    () => pickOrgByType(orgsQuery.data, 'SHIPPER'),
+    [orgsQuery.data],
+  );
   const { data: houseJobs = [] } = useJobHouseJobs(id, Boolean(job && !job.parent_job_id));
   const actions = useJobActions(id);
   const [ediOpen, setEdiOpen] = useState(false);
@@ -300,6 +315,7 @@ export default function JobDetailPage() {
   const {
     shipperLabel,
     consigneeLabel,
+    billingPartyLabel,
     originLabel,
     destinationLabel,
     branchLabel,
@@ -634,7 +650,11 @@ export default function JobDetailPage() {
         subtitle={
           <span className="inline-flex flex-wrap items-center gap-2">
             <OperationTypeBadge code={job.job_type} />
-            {shipperLabel && shipperLabel !== '—' ? <span>{shipperLabel}</span> : null}
+            {clientOrg?.label && clientOrg.label !== '—' ? (
+              <span>{clientOrg.label}</span>
+            ) : shipperLabel && shipperLabel !== '—' ? (
+              <span>{shipperLabel}</span>
+            ) : null}
           </span>
         }
         statusLabel={JOB_STATUS_LABELS[job.status] ?? job.status}
@@ -673,9 +693,45 @@ export default function JobDetailPage() {
             <FresaReadonlyField label="Job No" value={jobDisplayNumber(job)} />
             <FresaReadonlyField
               label="Client"
-              value={shipperLabel}
+              value={clientOrg?.label && clientOrg.label !== '—' ? clientOrg.label : '—'}
               href={
-                job.shipper_id && isUuid(job.shipper_id) ? `/parties/${job.shipper_id}` : undefined
+                clientOrg?.partyId && isUuid(clientOrg.partyId)
+                  ? `/parties/${clientOrg.partyId}`
+                  : undefined
+              }
+            />
+            <FresaReadonlyField
+              label="Shipper"
+              value={
+                shipperLabel !== '—'
+                  ? shipperLabel
+                  : shipperOrg?.label && shipperOrg.label !== '—'
+                    ? shipperOrg.label
+                    : '—'
+              }
+              href={
+                job.shipper_id && isUuid(job.shipper_id)
+                  ? `/parties/${job.shipper_id}`
+                  : shipperOrg?.partyId && isUuid(shipperOrg.partyId)
+                    ? `/parties/${shipperOrg.partyId}`
+                    : undefined
+              }
+            />
+            <FresaReadonlyField
+              label="Billing party"
+              value={
+                billingPartyLabel !== '—'
+                  ? billingPartyLabel
+                  : billingOrg?.label && billingOrg.label !== '—'
+                    ? billingOrg.label
+                    : '—'
+              }
+              href={
+                job.billing_party_id && isUuid(job.billing_party_id)
+                  ? `/parties/${job.billing_party_id}`
+                  : billingOrg?.partyId && isUuid(billingOrg.partyId)
+                    ? `/parties/${billingOrg.partyId}`
+                    : undefined
               }
             />
             <OptionalFresaField label="Consignee" value={consigneeLabel !== '—' ? consigneeLabel : undefined} />

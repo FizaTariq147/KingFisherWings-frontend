@@ -1266,7 +1266,7 @@ export interface UpsertJobTrackingProfileDto {
   dest_label?: string | null;
   at_before?: string | null;
   terminal_cutoff_at?: string | null;
-  /** Air — primary flight / AWB (also mirrored into legs + detailed_data). */
+  /** Air — primary flight / AWB (BE tracking-profile DTO should accept these). */
   airline_name?: string | null;
   flight_number?: string | null;
   arrival_flight_number?: string | null;

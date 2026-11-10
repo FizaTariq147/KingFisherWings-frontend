@@ -1,8 +1,10 @@
-import type { ReactNode } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { isNvoccJobType } from '@/features/nvocc/hooks/useNvoccJobs';
+import { pickOrgByType } from '@/features/shared/organizations/pickOrgByType';
 import { isUuid } from '@/lib/isUuid';
 import { JOB_TYPE_LABELS, JOB_STATUS_LABELS } from '../../constants/job.constants';
+import { useJobOrganizations } from '../../hooks/useJobs';
 import { useJobResolvedLabels } from '../../hooks/useJobResolvedLabels';
 import type { Job } from '../../types/job.types';
 import { jobDisplayNumber } from '../../utils/jobRoute';
@@ -68,6 +70,33 @@ function formatDate(value?: string | null): string | undefined {
 
 export function JobOverviewPanel({ job }: { job: Job }) {
   const labels = useJobResolvedLabels(job);
+  const orgsQuery = useJobOrganizations(job.id, Boolean(job.id && isUuid(job.id)));
+  const clientOrg = useMemo(
+    () => pickOrgByType(orgsQuery.data, 'CLIENT'),
+    [orgsQuery.data],
+  );
+  const billingOrg = useMemo(
+    () => pickOrgByType(orgsQuery.data, 'BILLING_PARTY'),
+    [orgsQuery.data],
+  );
+  const shipperOrg = useMemo(
+    () => pickOrgByType(orgsQuery.data, 'SHIPPER'),
+    [orgsQuery.data],
+  );
+  const clientLabel =
+    clientOrg?.label && clientOrg.label !== '—' ? clientOrg.label : undefined;
+  const shipperLabel =
+    labels.shipperLabel !== '—'
+      ? labels.shipperLabel
+      : shipperOrg?.label && shipperOrg.label !== '—'
+        ? shipperOrg.label
+        : undefined;
+  const billingLabel =
+    labels.billingPartyLabel !== '—'
+      ? labels.billingPartyLabel
+      : billingOrg?.label && billingOrg.label !== '—'
+        ? billingOrg.label
+        : undefined;
 
   const isAir = job.job_type === 'AIR_EXPORT' || job.job_type === 'AIR_IMPORT';
   const isSeaFcl =
@@ -177,9 +206,10 @@ export function JobOverviewPanel({ job }: { job: Job }) {
       </Section>
 
       <Section title="Parties">
-        <Row label="Shipper" value={labels.shipperLabel} />
+        <Row label="Client" value={clientLabel} />
+        <Row label="Shipper" value={shipperLabel} />
+        <Row label="Billing party" value={billingLabel} />
         <Row label="Consignee" value={labels.consigneeLabel} />
-        <Row label="Billing party" value={labels.billingPartyLabel} />
         <Row label="Agent" value={labels.agentLabel} />
       </Section>
 
