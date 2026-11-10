@@ -21,7 +21,7 @@ import {
   resolvePortCoordinates,
   type LatLng,
 } from '../utils/portCoordinates';
-import { computeTrackMetrics } from '../utils/trackMetrics';
+import { computeTrackMetrics, isTrackDelivered } from '../utils/trackMetrics';
 
 setWorkerUrl(maplibreWorkerUrl);
 
@@ -399,7 +399,26 @@ function buildRouteArc(waypoints: Waypoint[]): LatLng[] {
   return arc;
 }
 
-function splitRoute(arc: LatLng[], progressPct: number, livePosition?: LatLng | null) {
+function splitRoute(
+  arc: LatLng[],
+  progressPct: number,
+  livePosition?: LatLng | null,
+  opts?: { delivered?: boolean },
+) {
+  if (arc.length < 2) {
+    return { done: arc, rest: [] as LatLng[], vessel: undefined, live: false as const };
+  }
+
+  // Delivered: green route reaches destination end-point.
+  if (opts?.delivered || progressPct >= 100) {
+    return {
+      done: arc,
+      rest: [] as LatLng[],
+      vessel: arc[arc.length - 1],
+      live: false as const,
+    };
+  }
+
   if (livePosition && arc.length) {
     let bestIdx = 0;
     let bestDist = Number.POSITIVE_INFINITY;
@@ -418,13 +437,14 @@ function splitRoute(arc: LatLng[], progressPct: number, livePosition?: LatLng | 
       live: true as const,
     };
   }
-  if (arc.length < 2) {
-    return { done: arc, rest: [] as LatLng[], vessel: undefined, live: false as const };
-  }
-  const pct = Math.max(0, Math.min(100, progressPct > 0 ? progressPct : 45));
-  const idx = Math.max(1, Math.min(arc.length - 1, Math.round((pct / 100) * (arc.length - 1))));
+
+  const pct = Math.max(0, Math.min(100, progressPct));
+  const idx =
+    pct <= 0
+      ? 0
+      : Math.max(1, Math.min(arc.length - 1, Math.round((pct / 100) * (arc.length - 1))));
   return {
-    done: arc.slice(0, idx + 1),
+    done: arc.slice(0, Math.max(2, idx + 1)),
     rest: arc.slice(idx),
     vessel: arc[idx],
     live: false as const,
@@ -443,13 +463,26 @@ function shortPortLabel(raw?: string): string {
 }
 
 function useTrackMapModel(result?: PublicTrackResult | null) {
-  const metrics = result ? computeTrackMetrics(result) : null;
+  const [nowMs, setNowMs] = useState(() => Date.now());
+  useEffect(() => {
+    if (!result) return;
+    const id = window.setInterval(() => setNowMs(Date.now()), 30_000);
+    return () => window.clearInterval(id);
+  }, [result?.reference]);
+
+  const metrics = useMemo(
+    () => (result ? computeTrackMetrics(result, nowMs) : null),
+    [result, nowMs],
+  );
+  const delivered = Boolean(metrics?.delivered || (result && isTrackDelivered(result)));
   const waypoints = useMemo(() => buildLiveWaypoints(result), [result]);
   const origin = waypoints[0] ?? null;
   const dest = waypoints.length > 1 ? waypoints[waypoints.length - 1] : null;
   const arc = useMemo(() => buildRouteArc(waypoints), [waypoints]);
 
   const livePosition = useMemo(() => {
+    // After delivery, pin to destination — do not leave vessel mid-route.
+    if (delivered) return null;
     if (
       result?.currentLat != null &&
       result?.currentLng != null &&
@@ -467,11 +500,12 @@ function useTrackMapModel(result?: PublicTrackResult | null) {
       return { lat: currentLeg.lat, lng: currentLeg.lng };
     }
     return null;
-  }, [result]);
+  }, [result, delivered]);
 
   const split = useMemo(
-    () => splitRoute(arc, metrics?.progressPct ?? 0, livePosition),
-    [arc, metrics?.progressPct, livePosition],
+    () =>
+      splitRoute(arc, metrics?.progressPct ?? 0, livePosition, { delivered }),
+    [arc, metrics?.progressPct, livePosition, delivered],
   );
 
   const fitPoints = useMemo(() => {
