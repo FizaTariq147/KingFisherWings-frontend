@@ -78,7 +78,7 @@ function pickLatLng(
 
 function isAirJobType(jobType?: string | null): boolean {
   const t = String(jobType || '').toUpperCase();
-  return t === 'AIR_EXPORT' || t === 'AIR_IMPORT' || t.startsWith('AIR');
+  return t.startsWith('AIR_') || t.startsWith('AIR') || t === 'COURIER';
 }
 
 function titleCaseMove(value: string): string {
@@ -413,7 +413,12 @@ function normalizeRouteLegRow(
       r.to_airport,
     ) || undefined;
   const flightNumber =
-    pickString(r.flight_number, r.flightNumber, r.flight_no, r.flightNo) || undefined;
+    pickString(r.flight_number, r.flightNumber, r.flight_no, r.flightNo) ||
+    // Air profile may store flight in documented voyage_number when BE strips extras.
+    (airMode
+      ? pickString(r.voyage_number, r.voyageNumber, r.voyage, r.voyage_no, r.voyageNo)
+      : undefined) ||
+    undefined;
   const arrivalFlightNumber =
     pickString(
       r.arrival_flight_number,
@@ -425,9 +430,10 @@ function normalizeRouteLegRow(
     pickString(r.mawb_number, r.mawbNumber, r.mawb_no, r.mawbNo) || undefined;
   const hawbNumber =
     pickString(r.hawb_number, r.hawbNumber, r.hawb_no, r.hawbNo) || undefined;
-  // Air: do not inject vessel/voyage fallbacks — leave null and surface flight fields.
+  // Air: prefer flight fields; optional airline from vessel_name / airline_name.
   const vessel = airMode
-    ? undefined
+    ? pickString(r.airline_name, r.airlineName, r.airline, r.vessel_name, r.vesselName) ||
+      undefined
     : pickString(r.vessel_name, r.vesselName, r.vessel) || undefined;
   const voyage = airMode
     ? undefined
@@ -499,7 +505,11 @@ function normalizePortOfCall(
   const role = pickString(r.role, r.code)?.toUpperCase() || undefined;
   if (!name && !pickString(r.un_locode, r.unLocode, r.iata, r.icao) && !role) return null;
   const flightNumber =
-    pickString(r.flight_number, r.flightNumber, r.flight_no, r.flightNo) || undefined;
+    pickString(r.flight_number, r.flightNumber, r.flight_no, r.flightNo) ||
+    (airMode
+      ? pickString(r.voyage_number, r.voyageNumber, r.voyage, r.voyage_no)
+      : undefined) ||
+    undefined;
   const arrivalFlightNumber =
     pickString(
       r.arrival_flight_number,
@@ -519,7 +529,8 @@ function normalizePortOfCall(
     ata: pickString(r.ata, r.ata_at, r.actual_arrival) || undefined,
     atd: pickString(r.atd, r.atd_at, r.actual_departure) || undefined,
     vesselName: airMode
-      ? undefined
+      ? pickString(r.airline_name, r.airlineName, r.airline, r.vessel_name, r.vesselName) ||
+        undefined
       : pickString(r.vessel_name, r.vesselName, r.vessel) || undefined,
     voyageNumber: airMode
       ? undefined
@@ -1194,7 +1205,25 @@ export function normalizePublicTrack(
     asRecord(body.airDetails) ??
     asRecord(summary?.air_details) ??
     asRecord(routeRec?.air_details);
+  const detailedData =
+    asRecord(body.detailed_data) ??
+    asRecord(body.detailedData) ??
+    asRecord(summary?.detailed_data) ??
+    asRecord(summary?.detailedData);
 
+  const airlineName =
+    pickString(
+      body.airline_name,
+      body.airlineName,
+      airDetails?.airline_name,
+      airDetails?.airlineName,
+      airDetails?.airline,
+      detailedData?.airline_name,
+      detailedData?.airlineName,
+      airMode ? body.vessel_name : undefined,
+      airMode ? body.vesselName : undefined,
+      airMode ? detailedData?.vessel_name : undefined,
+    ) || undefined;
   const mawbNumber =
     pickString(
       body.mawb_number,
@@ -1202,6 +1231,8 @@ export function normalizePublicTrack(
       airDetails?.mawb_number,
       airDetails?.mawbNumber,
       airDetails?.mawb_no,
+      detailedData?.mawb_number,
+      detailedData?.mawbNumber,
     ) || undefined;
   const hawbNumber =
     pickString(
@@ -1210,6 +1241,8 @@ export function normalizePublicTrack(
       airDetails?.hawb_number,
       airDetails?.hawbNumber,
       airDetails?.hawb_no,
+      detailedData?.hawb_number,
+      detailedData?.hawbNumber,
     ) || undefined;
   const flightNumber =
     pickString(
@@ -1218,6 +1251,13 @@ export function normalizePublicTrack(
       airDetails?.flight_number,
       airDetails?.flightNumber,
       airDetails?.flight_no,
+      detailedData?.flight_number,
+      detailedData?.flightNumber,
+      // Air profile may only keep documented voyage_number / detailed mirror.
+      airMode ? body.voyage_number : undefined,
+      airMode ? body.voyageNumber : undefined,
+      airMode ? detailedData?.voyage_number : undefined,
+      airMode ? detailedData?.voyageNumber : undefined,
     ) || undefined;
   const arrivalFlightNumber =
     pickString(
@@ -1225,12 +1265,14 @@ export function normalizePublicTrack(
       body.arrivalFlightNumber,
       airDetails?.arrival_flight_number,
       airDetails?.arrivalFlightNumber,
+      detailedData?.arrival_flight_number,
+      detailedData?.arrivalFlightNumber,
     ) || undefined;
 
   if (airMode) {
-    // Prefer flight + MAWB/HAWB; do not inject vessel/voyage fallbacks for air.
+    // Prefer flight + MAWB/HAWB; map voyage→flight on milestones then clear sea fields.
     for (const m of ordered) {
-      if (!m.flightNumber && flightNumber) m.flightNumber = flightNumber;
+      if (!m.flightNumber) m.flightNumber = flightNumber || m.voyage || undefined;
       if (!m.mawbNumber && mawbNumber) m.mawbNumber = mawbNumber;
       if (!m.hawbNumber && hawbNumber) m.hawbNumber = hawbNumber;
       m.vessel = undefined;
@@ -1248,12 +1290,40 @@ export function normalizePublicTrack(
   }
 
   const route = normalizeRoute(body, origin, destination, airMode);
+  if (route && airMode) {
+    for (const leg of route.legs) {
+      if (!leg.flightNumber) {
+        leg.flightNumber = flightNumber || leg.voyage || undefined;
+      }
+      if (!leg.arrivalFlightNumber && arrivalFlightNumber) {
+        leg.arrivalFlightNumber = arrivalFlightNumber;
+      }
+      if (!leg.mawbNumber && mawbNumber) leg.mawbNumber = mawbNumber;
+      if (!leg.hawbNumber && hawbNumber) leg.hawbNumber = hawbNumber;
+      if (!leg.vessel && airlineName) leg.vessel = airlineName;
+      if (leg.voyage && leg.flightNumber === leg.voyage) leg.voyage = undefined;
+      else if (airMode) leg.voyage = undefined;
+    }
+    for (const poc of route.portOfCall ?? []) {
+      if (!poc.flightNumber) {
+        poc.flightNumber = flightNumber || poc.voyageNumber || undefined;
+      }
+      if (!poc.arrivalFlightNumber && arrivalFlightNumber) {
+        poc.arrivalFlightNumber = arrivalFlightNumber;
+      }
+      if (!poc.mawbNumber && mawbNumber) poc.mawbNumber = mawbNumber;
+      if (!poc.hawbNumber && hawbNumber) poc.hawbNumber = hawbNumber;
+      if (!poc.vesselName && airlineName) poc.vesselName = airlineName;
+      if (airMode) poc.voyageNumber = undefined;
+    }
+  }
   if (route && airMode && route.legs.length === 0 && (flightNumber || mawbNumber || hawbNumber)) {
     route.legs.push({
       id: 'air-flight',
       label: 'Flight',
       from: origin,
       to: destination,
+      vessel: airlineName,
       flightNumber,
       arrivalFlightNumber,
       mawbNumber,
@@ -1262,6 +1332,7 @@ export function normalizePublicTrack(
         pickString(
           airDetails?.flight_date,
           airDetails?.flightDate,
+          detailedData?.flight_date,
           body.etd,
           body.job_date,
         ) || undefined,

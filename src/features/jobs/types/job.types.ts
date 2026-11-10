@@ -1167,6 +1167,16 @@ export interface JobTrackingLegDto {
   label?: string;
   pol?: string;
   pod?: string;
+  /** Air legs — persisted on profile and surfaced in Track & Trace. */
+  airline_name?: string;
+  flight_number?: string;
+  arrival_flight_number?: string;
+  mawb_number?: string;
+  hawb_number?: string;
+  flight_date?: string;
+  flight_status?: string;
+  etd?: string;
+  eta?: string;
 }
 
 /** Port-of-call stop (ORIGIN / DEST / TRANSHIP / CALL). */
@@ -1256,6 +1266,14 @@ export interface UpsertJobTrackingProfileDto {
   dest_label?: string | null;
   at_before?: string | null;
   terminal_cutoff_at?: string | null;
+  /** Air — primary flight / AWB (also mirrored into legs + detailed_data). */
+  airline_name?: string | null;
+  flight_number?: string | null;
+  arrival_flight_number?: string | null;
+  mawb_number?: string | null;
+  hawb_number?: string | null;
+  flight_date?: string | null;
+  flight_status?: string | null;
   /** 1st leg = leg_no 1, 2nd leg = leg_no 2. */
   legs?: JobTrackingLegDto[];
   port_of_call?: JobTrackingPortOfCallDto[];

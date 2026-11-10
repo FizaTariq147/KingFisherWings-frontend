@@ -25,11 +25,11 @@ type Props = {
   /** Prefer dark (CARTO-like) or light OSM tiles. */
   dark?: boolean;
   className?: string;
-  /** @deprecated Visual chip removed to match reference; kept for call-site compat. */
+  /** Kept for call-site compat (unused). */
   showLiveBadge?: boolean;
   /**
    * Extra left padding when an expandable panel covers the left side
-   * so POL→POD stays visible on the right (Leaflet [top, right, bottom, left]).
+   * so POL→POD stays visible on the right ([top, right, bottom, left]).
    */
   fitPadding?: [number, number, number, number];
 };
@@ -205,10 +205,7 @@ function buildLiveWaypoints(result: PublicTrackResult | null | undefined): Waypo
 
 function buildRouteArc(waypoints: Waypoint[]): LatLng[] {
   if (waypoints.length < 2) return waypoints.map((w) => ({ lat: w.lat, lng: w.lng }));
-  // Prefer a single ocean lane between first and last port (reference look).
-  if (waypoints.length === 2) {
-    return interpolateArc(waypoints[0], waypoints[1], 80);
-  }
+  if (waypoints.length === 2) return interpolateArc(waypoints[0], waypoints[1], 80);
   const arc: LatLng[] = [];
   for (let i = 0; i < waypoints.length - 1; i += 1) {
     const segment = interpolateArc(waypoints[i], waypoints[i + 1], 32);
@@ -240,7 +237,6 @@ function splitRoute(arc: LatLng[], progressPct: number, livePosition?: LatLng | 
   if (arc.length < 2) {
     return { done: arc, rest: [] as LatLng[], vessel: undefined, live: false as const };
   }
-  // Match left-panel default (~35%) so in-transit jobs show mid-ocean like the reference.
   const pct = Math.max(0, Math.min(100, progressPct > 0 ? progressPct : 45));
   const idx = Math.max(1, Math.min(arc.length - 1, Math.round((pct / 100) * (arc.length - 1))));
   return {
@@ -263,8 +259,8 @@ function shortPortLabel(raw?: string): string {
 }
 
 /**
- * Full-bleed live map behind Track & Trace — visual match to reference:
- * green completed lane, blue dashed remaining, POL/POD pins, mid-route vessel.
+ * Full-bleed live map behind Track & Trace (free OpenStreetMap / Leaflet — no card).
+ * Green completed lane, blue dashed remaining, POL/POD pins, mid-route vessel.
  */
 export function TrackMapBackground({
   result,
@@ -307,7 +303,6 @@ export function TrackMapBackground({
   const fitPoints = useMemo(() => {
     const pts: LatLng[] = [...waypoints];
     if (split.vessel) pts.push(split.vessel);
-    // Include a few arc midpoints so the ocean lane stays in view.
     if (arc.length > 2) {
       pts.push(arc[Math.floor(arc.length * 0.35)]);
       pts.push(arc[Math.floor(arc.length * 0.65)]);
@@ -322,9 +317,10 @@ export function TrackMapBackground({
     String(waypoints.length),
   ].join('|');
 
+  // English-labeled free tiles (no Google key / no card).
   const tileUrl = dark
     ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    : 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png';
 
   const midStops = waypoints.slice(1, -1);
   const originLabel =
@@ -359,11 +355,7 @@ export function TrackMapBackground({
         scrollWheelZoom
       >
         <TileLayer
-          attribution={
-            dark
-              ? '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-              : '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          }
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
           url={tileUrl}
         />
         <ZoomControl position="bottomright" />

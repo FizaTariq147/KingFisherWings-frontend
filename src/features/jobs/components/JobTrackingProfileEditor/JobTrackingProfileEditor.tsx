@@ -16,6 +16,7 @@ import type {
   ManifestStatusRowDto,
   QtyGwVolDto,
 } from '../../types/job.types';
+import { isAirJobType } from '../../constants/job.constants';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import {
   emptyJobTrackingProfile,
@@ -122,6 +123,18 @@ function RowActions({ onRemove }: { onRemove: () => void }) {
   );
 }
 
+function ensureEditorLegs(legs: JobTrackingLegDto[] | undefined): JobTrackingLegDto[] {
+  const byNo = new Map<number, JobTrackingLegDto>();
+  for (const leg of legs ?? []) {
+    const n = leg.leg_no ?? 0;
+    if (n === 1 || n === 2) byNo.set(n, { ...leg, leg_no: n });
+  }
+  return [
+    byNo.get(1) ?? { leg_no: 1 },
+    byNo.get(2) ?? { leg_no: 2 },
+  ];
+}
+
 /**
  * Staff editor for GET|PUT /jobs/:id/tracking/profile.
  * Seeds from job on first open; saved values feed staff tracking and public /track.
@@ -196,6 +209,45 @@ export function JobTrackingProfileEditor({
   const preManifest = form.pre_manifest ?? [];
   const qty = form.qty_gw_vol ?? {};
   const detailedEntries = Object.entries(form.detailed_data ?? {});
+  const isAir = isAirJobType(jobQuery.data?.job_type);
+
+  const patchFlight = (
+    legNo: 1 | 2,
+    partial: Partial<JobTrackingLegDto> & Partial<JobTrackingProfile>,
+  ) => {
+    setForm((prev) => {
+      const nextLegs = ensureEditorLegs(prev.legs).map((leg) =>
+        leg.leg_no === legNo ? { ...leg, ...partial } : leg,
+      );
+      const first = nextLegs.find((l) => l.leg_no === 1) ?? nextLegs[0];
+      const top =
+        legNo === 1
+          ? {
+              airline_name: partial.airline_name ?? prev.airline_name ?? first?.airline_name,
+              flight_number: partial.flight_number ?? prev.flight_number ?? first?.flight_number,
+              arrival_flight_number:
+                partial.arrival_flight_number ??
+                prev.arrival_flight_number ??
+                first?.arrival_flight_number,
+              mawb_number: partial.mawb_number ?? prev.mawb_number ?? first?.mawb_number,
+              hawb_number: partial.hawb_number ?? prev.hawb_number ?? first?.hawb_number,
+              flight_date: partial.flight_date ?? prev.flight_date ?? first?.flight_date,
+              flight_status: partial.flight_status ?? prev.flight_status ?? first?.flight_status,
+            }
+          : {};
+      // Keep documented sea mirrors in sync so GET/track still resolve flight if extras are stripped.
+      const mirroredLegs = nextLegs.map((leg) =>
+        leg.leg_no === legNo
+          ? {
+              ...leg,
+              vessel_name: leg.airline_name || leg.vessel_name,
+              voyage_number: leg.flight_number || leg.voyage_number,
+            }
+          : leg,
+      );
+      return { ...prev, ...top, legs: mirroredLegs };
+    });
+  };
 
   return (
     <div className="space-y-4 text-sm">
@@ -205,8 +257,9 @@ export function JobTrackingProfileEditor({
             Edit tracking profile
           </p>
           <p className="mt-1 text-[12px] text-[#64748b]">
-            BL, ports, legs, port of call, cargo / customs / pre-manifest / qty. Seeded from the
-            job on first open; public /track uses the same shape.
+            {isAir
+              ? 'Flight / AWB, airports, port of call, cargo / customs / pre-manifest / qty. Seeded from the job API on first open; Track & Trace reads the same profile.'
+              : 'BL, ports, legs, port of call, cargo / customs / pre-manifest / qty. Seeded from the job on first open; public /track uses the same shape.'}
           </p>
         </div>
         {onCancel ? (
@@ -225,22 +278,29 @@ export function JobTrackingProfileEditor({
         <p className="text-[13px] text-red-700">{getErrorMessage(profileQuery.error)}</p>
       ) : null}
 
-      <Section title="Header / route" hint="BL number, origin & dest ports, terminal cut-off">
+      <Section
+        title="Header / route"
+        hint={
+          isAir
+            ? 'Document ref, origin & dest airports, terminal cut-off'
+            : 'BL number, origin & dest ports, terminal cut-off'
+        }
+      >
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          <Field label="BL number">
+          <Field label={isAir ? 'Document / AWB ref' : 'BL number'}>
             <TextInput
               value={form.bl_number}
               onChange={(v) => patch({ bl_number: v })}
-              placeholder="HBL / MBL / HAWB"
+              placeholder={isAir ? 'HAWB / MAWB' : 'HBL / MBL / HAWB'}
             />
           </Field>
-          <Field label="Port origin">
+          <Field label={isAir ? 'Origin airport' : 'Port origin'}>
             <TextInput
               value={form.origin_port}
               onChange={(v) => patch({ origin_port: v, origin_label: v })}
             />
           </Field>
-          <Field label="Dest port">
+          <Field label={isAir ? 'Dest airport' : 'Dest port'}>
             <TextInput
               value={form.dest_port}
               onChange={(v) => patch({ dest_port: v, dest_label: v })}
@@ -263,47 +323,194 @@ export function JobTrackingProfileEditor({
         </div>
       </Section>
 
-      <Section title="1st leg" hint="leg_no: 1 — vessel, voyage, IMO, POL, POD">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {(
-            [
-              ['Vessel name', 'vessel_name'],
-              ['Voyage', 'voyage_number'],
-              ['IMO', 'imo'],
-              ['POL', 'pol'],
-              ['POD', 'pod'],
-            ] as const
-          ).map(([label, key]) => (
-            <Field key={key} label={label}>
-              <TextInput
-                value={firstLeg[key]}
-                onChange={(v) => patchLeg(1, { [key]: v })}
-              />
-            </Field>
-          ))}
-        </div>
-      </Section>
+      {isAir ? (
+        <>
+          <Section
+            title="Flight"
+            hint="Saved on tracking profile from job air details / staff entry — shown on Track & Trace"
+          >
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <Field label="Airline">
+                <TextInput
+                  value={form.airline_name ?? firstLeg.airline_name}
+                  onChange={(v) => patchFlight(1, { airline_name: v })}
+                />
+              </Field>
+              <Field label="Flight number">
+                <TextInput
+                  value={form.flight_number ?? firstLeg.flight_number}
+                  onChange={(v) =>
+                    patchFlight(1, { flight_number: v, voyage_number: v })
+                  }
+                  placeholder="e.g. EK045"
+                />
+              </Field>
+              <Field label="Arrival flight number">
+                <TextInput
+                  value={form.arrival_flight_number ?? firstLeg.arrival_flight_number}
+                  onChange={(v) => patchFlight(1, { arrival_flight_number: v })}
+                />
+              </Field>
+              <Field label="MAWB">
+                <TextInput
+                  value={form.mawb_number ?? firstLeg.mawb_number}
+                  onChange={(v) => patchFlight(1, { mawb_number: v })}
+                />
+              </Field>
+              <Field label="HAWB">
+                <TextInput
+                  value={form.hawb_number ?? firstLeg.hawb_number}
+                  onChange={(v) => patchFlight(1, { hawb_number: v })}
+                />
+              </Field>
+              <Field label="Flight status">
+                <TextInput
+                  value={form.flight_status ?? firstLeg.flight_status}
+                  onChange={(v) => patchFlight(1, { flight_status: v })}
+                />
+              </Field>
+              <Field label="Flight date">
+                <TextInput
+                  type="date"
+                  value={String(form.flight_date ?? firstLeg.flight_date ?? '').slice(0, 10)}
+                  onChange={(v) => patchFlight(1, { flight_date: v })}
+                />
+              </Field>
+              <Field label="ETD">
+                <TextInput
+                  type="datetime-local"
+                  value={String(firstLeg.etd ?? '').slice(0, 16)}
+                  onChange={(v) => patchFlight(1, { etd: v })}
+                />
+              </Field>
+              <Field label="ETA">
+                <TextInput
+                  type="datetime-local"
+                  value={String(firstLeg.eta ?? '').slice(0, 16)}
+                  onChange={(v) => patchFlight(1, { eta: v })}
+                />
+              </Field>
+              <Field label="Origin airport (leg)">
+                <TextInput
+                  value={firstLeg.pol}
+                  onChange={(v) => patchFlight(1, { pol: v })}
+                />
+              </Field>
+              <Field label="Dest airport (leg)">
+                <TextInput
+                  value={firstLeg.pod}
+                  onChange={(v) => patchFlight(1, { pod: v })}
+                />
+              </Field>
+            </div>
+          </Section>
 
-      <Section title="2nd leg" hint="leg_no: 2 — vessel, voyage, IMO, POL, POD">
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {(
-            [
-              ['Vessel name', 'vessel_name'],
-              ['Voyage', 'voyage_number'],
-              ['IMO', 'imo'],
-              ['POL', 'pol'],
-              ['POD', 'pod'],
-            ] as const
-          ).map(([label, key]) => (
-            <Field key={key} label={label}>
-              <TextInput
-                value={secondLeg[key]}
-                onChange={(v) => patchLeg(2, { [key]: v })}
-              />
-            </Field>
-          ))}
-        </div>
-      </Section>
+          <Section
+            title="Connecting flight (optional)"
+            hint="2nd leg — connection / onward flight"
+          >
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              <Field label="Airline">
+                <TextInput
+                  value={secondLeg.airline_name}
+                  onChange={(v) => patchFlight(2, { airline_name: v })}
+                />
+              </Field>
+              <Field label="Flight number">
+                <TextInput
+                  value={secondLeg.flight_number}
+                  onChange={(v) =>
+                    patchFlight(2, { flight_number: v, voyage_number: v })
+                  }
+                />
+              </Field>
+              <Field label="Arrival flight number">
+                <TextInput
+                  value={secondLeg.arrival_flight_number}
+                  onChange={(v) => patchFlight(2, { arrival_flight_number: v })}
+                />
+              </Field>
+              <Field label="Flight date">
+                <TextInput
+                  type="date"
+                  value={String(secondLeg.flight_date ?? '').slice(0, 10)}
+                  onChange={(v) => patchFlight(2, { flight_date: v })}
+                />
+              </Field>
+              <Field label="ETD">
+                <TextInput
+                  type="datetime-local"
+                  value={String(secondLeg.etd ?? '').slice(0, 16)}
+                  onChange={(v) => patchFlight(2, { etd: v })}
+                />
+              </Field>
+              <Field label="ETA">
+                <TextInput
+                  type="datetime-local"
+                  value={String(secondLeg.eta ?? '').slice(0, 16)}
+                  onChange={(v) => patchFlight(2, { eta: v })}
+                />
+              </Field>
+              <Field label="Origin airport">
+                <TextInput
+                  value={secondLeg.pol}
+                  onChange={(v) => patchFlight(2, { pol: v })}
+                />
+              </Field>
+              <Field label="Dest airport">
+                <TextInput
+                  value={secondLeg.pod}
+                  onChange={(v) => patchFlight(2, { pod: v })}
+                />
+              </Field>
+            </div>
+          </Section>
+        </>
+      ) : (
+        <>
+          <Section title="1st leg" hint="leg_no: 1 — vessel, voyage, IMO, POL, POD">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {(
+                [
+                  ['Vessel name', 'vessel_name'],
+                  ['Voyage', 'voyage_number'],
+                  ['IMO', 'imo'],
+                  ['POL', 'pol'],
+                  ['POD', 'pod'],
+                ] as const
+              ).map(([label, key]) => (
+                <Field key={key} label={label}>
+                  <TextInput
+                    value={firstLeg[key]}
+                    onChange={(v) => patchLeg(1, { [key]: v })}
+                  />
+                </Field>
+              ))}
+            </div>
+          </Section>
+
+          <Section title="2nd leg" hint="leg_no: 2 — vessel, voyage, IMO, POL, POD">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {(
+                [
+                  ['Vessel name', 'vessel_name'],
+                  ['Voyage', 'voyage_number'],
+                  ['IMO', 'imo'],
+                  ['POL', 'pol'],
+                  ['POD', 'pod'],
+                ] as const
+              ).map(([label, key]) => (
+                <Field key={key} label={label}>
+                  <TextInput
+                    value={secondLeg[key]}
+                    onChange={(v) => patchLeg(2, { [key]: v })}
+                  />
+                </Field>
+              ))}
+            </div>
+          </Section>
+        </>
+      )}
 
       <Section
         title="Port of call"
