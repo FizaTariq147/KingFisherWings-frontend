@@ -1015,6 +1015,10 @@ export function normalizeJob(raw: unknown): Job | null {
       pickString(r, 'client_reference_type', 'clientReferenceType', 'reference_type') ||
       undefined,
     actions: normalizeJobActions(r.actions),
+    transport_mode:
+      pickString(r, 'transport_mode', 'transportMode') ||
+      pickString(asRecord(r.actions) ?? {}, 'transport_mode', 'transportMode') ||
+      undefined,
     path_hints: normalizePathHints(r.path_hints ?? r.pathHints),
     ops_continuum: (() => {
       const rec = asRecord(r.ops_continuum ?? r.opsContinuum);
@@ -1791,6 +1795,46 @@ export function normalizeDeliveryAcknowledgement(raw: unknown): DeliveryAcknowle
     actual_delivery_date:
       pickString(nested, 'actual_delivery_date', 'actualDeliveryDate') || undefined,
     attachments,
+    fields_locked: (() => {
+      const v =
+        nested.fields_locked ??
+        nested.fieldsLocked ??
+        r.fields_locked ??
+        r.fieldsLocked;
+      if (typeof v === 'boolean') return v;
+      if (v === 'true' || v === 1 || v === '1') return true;
+      if (v === 'false' || v === 0 || v === '0') return false;
+      return undefined;
+    })(),
+    can_attach_proof: (() => {
+      const v =
+        nested.can_attach_proof ??
+        nested.canAttachProof ??
+        r.can_attach_proof ??
+        r.canAttachProof;
+      if (typeof v === 'boolean') return v;
+      if (v === 'true' || v === 1 || v === '1') return true;
+      if (v === 'false' || v === 0 || v === '0') return false;
+      return undefined;
+    })(),
+    can_resend_with_proof: (() => {
+      const v =
+        nested.can_resend_with_proof ??
+        nested.canResendWithProof ??
+        r.can_resend_with_proof ??
+        r.canResendWithProof;
+      if (typeof v === 'boolean') return v;
+      if (v === 'true' || v === 1 || v === '1') return true;
+      if (v === 'false' || v === 0 || v === '0') return false;
+      return undefined;
+    })(),
+    has_proof: (() => {
+      const v = nested.has_proof ?? nested.hasProof ?? r.has_proof ?? r.hasProof;
+      if (typeof v === 'boolean') return v;
+      if (v === 'true' || v === 1 || v === '1') return true;
+      if (v === 'false' || v === 0 || v === '0') return false;
+      return Array.isArray(attachments) && attachments.length > 0 ? true : undefined;
+    })(),
     path_hints,
     raw: { ...r, ...nested },
   };

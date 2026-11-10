@@ -46,6 +46,11 @@ export function ShipmentCustomsRefsPanel({
   const [boeNumber, setBoeNumber] = useState('');
   const [customsHouse, setCustomsHouse] = useState('');
   const [customsStatus, setCustomsStatus] = useState('');
+  const [onHold, setOnHold] = useState(false);
+  const [heldAt, setHeldAt] = useState('');
+  const [inspectionAt, setInspectionAt] = useState('');
+  const [inspectionNotes, setInspectionNotes] = useState('');
+  const [releasedAt, setReleasedAt] = useState('');
   const [remarks, setRemarks] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
@@ -70,6 +75,11 @@ export function ShipmentCustomsRefsPanel({
     boe_number: boeNumber.trim() || undefined,
     customs_house: customsHouse.trim() || undefined,
     customs_status: customsStatus.trim() || undefined,
+    on_hold: onHold,
+    held_at: heldAt.trim() || null,
+    inspection_at: inspectionAt.trim() || null,
+    inspection_notes: inspectionNotes.trim() || null,
+    released_at: releasedAt.trim() || null,
     remarks: remarks.trim() || undefined,
   });
 
@@ -109,9 +119,23 @@ export function ShipmentCustomsRefsPanel({
                     <p className="font-medium text-[#0f172a]">
                       SB {sb} · BOE {boe}
                     </p>
-                    {row.customs_house || row.customs_status ? (
+                    {row.customs_house ||
+                    row.customs_status ||
+                    row.on_hold === true ||
+                    row.inspection_at ||
+                    row.released_at ? (
                       <p className="truncate text-[12px] text-[#64748b]">
-                        {[row.customs_house, row.customs_status]
+                        {[
+                          row.customs_house,
+                          row.customs_status,
+                          row.on_hold === true ? 'On hold' : null,
+                          row.inspection_at
+                            ? `Inspection ${String(row.inspection_at)}`
+                            : null,
+                          row.released_at
+                            ? `Released ${String(row.released_at)}`
+                            : null,
+                        ]
                           .filter(Boolean)
                           .map(String)
                           .join(' · ')}
@@ -146,6 +170,39 @@ export function ShipmentCustomsRefsPanel({
             value={customsStatus}
             onChange={(e) => setCustomsStatus(e.target.value)}
           />
+          <label className="flex items-center gap-2 text-[13px] sm:col-span-2">
+            <input
+              type="checkbox"
+              checked={onHold}
+              onChange={(e) => setOnHold(e.target.checked)}
+            />
+            On hold (customs)
+          </label>
+          <Input
+            label="Held at"
+            type="datetime-local"
+            value={heldAt}
+            onChange={(e) => setHeldAt(e.target.value)}
+          />
+          <Input
+            label="Inspection at"
+            type="datetime-local"
+            value={inspectionAt}
+            onChange={(e) => setInspectionAt(e.target.value)}
+          />
+          <div className="sm:col-span-2">
+            <Input
+              label="Inspection notes"
+              value={inspectionNotes}
+              onChange={(e) => setInspectionNotes(e.target.value)}
+            />
+          </div>
+          <Input
+            label="Released at"
+            type="datetime-local"
+            value={releasedAt}
+            onChange={(e) => setReleasedAt(e.target.value)}
+          />
           <div className="sm:col-span-2">
             <Input label="Remarks" value={remarks} onChange={(e) => setRemarks(e.target.value)} />
           </div>
@@ -163,6 +220,11 @@ export function ShipmentCustomsRefsPanel({
                 setBoeNumber('');
                 setCustomsHouse('');
                 setCustomsStatus('');
+                setOnHold(false);
+                setHeldAt('');
+                setInspectionAt('');
+                setInspectionNotes('');
+                setReleasedAt('');
                 setRemarks('');
               }, 'Customs ref added.')
             }

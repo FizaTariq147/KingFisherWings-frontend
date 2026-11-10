@@ -2134,23 +2134,37 @@ export const jobService = {
     }
   },
 
-  /** POST /jobs/:id/acknowledgement/send — admin written ack (+ optional file). */
+  /**
+   * POST /jobs/:id/acknowledgement/send —
+   * first send: message (+ optional file);
+   * later: file-only resend when fields are locked (proof_only).
+   */
   async sendAcknowledgement(
     id: string,
     body: SendDeliveryAcknowledgementDto = {},
   ): Promise<DeliveryAcknowledgement> {
     assertId(id);
     const message = (body.message ?? body.remarks ?? '').trim();
-    if (!message) {
+    const proofOnly = body.proof_only === true || (!message && Boolean(body.file));
+    if (!proofOnly && !message) {
       throw new Error('Enter a written acknowledgement message for the customer.');
+    }
+    if (proofOnly && !body.file) {
+      throw new Error('Attach a proof file to resend acknowledgement.');
     }
     try {
       let res;
       if (body.file) {
         const form = new FormData();
-        form.append('message', message);
-        form.append('remarks', message);
-        if (body.container_id?.trim()) form.append('container_id', body.container_id.trim());
+        if (proofOnly) {
+          form.append('proof_only', 'true');
+        } else if (message) {
+          form.append('message', message);
+          form.append('remarks', message);
+          if (body.container_id?.trim()) {
+            form.append('container_id', body.container_id.trim());
+          }
+        }
         form.append('file', body.file, body.file.name);
         res = await withGatewayRetry(() =>
           axiosInstance.post(JOB_API.acknowledgementSend(id), form),
@@ -2196,6 +2210,59 @@ export const jobService = {
         axiosInstance.post(JOB_API.acknowledgementGeneratePdf(id)),
       );
       return unwrapEntity(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /jobs/:id/acknowledgement/attachments */
+  async listAcknowledgementAttachments(id: string): Promise<unknown[]> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.acknowledgementAttachments(id)),
+      );
+      if (Array.isArray(res.data)) return res.data;
+      const unwrapped = unwrapEntity(res.data);
+      if (Array.isArray(unwrapped)) return unwrapped;
+      return unwrapList(res.data).items;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/:id/acknowledgement/attachments — proof after first send. */
+  async uploadAcknowledgementAttachment(id: string, file: File): Promise<unknown> {
+    assertId(id);
+    try {
+      const form = new FormData();
+      form.append('file', file, file.name);
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.acknowledgementAttachments(id), form, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        }),
+      );
+      return unwrapEntity(res.data) ?? res.data;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** GET /jobs/:id/acknowledgement/attachments/:attachmentId/download */
+  async downloadAcknowledgementAttachment(
+    id: string,
+    attachmentId: string,
+  ): Promise<Blob> {
+    assertId(id);
+    assertId(attachmentId);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(
+          JOB_API.acknowledgementAttachmentDownload(id, attachmentId),
+          { responseType: 'blob' },
+        ),
+      );
+      return res.data instanceof Blob ? res.data : new Blob([res.data as BlobPart]);
     } catch (error) {
       throw formatAxiosError(error);
     }

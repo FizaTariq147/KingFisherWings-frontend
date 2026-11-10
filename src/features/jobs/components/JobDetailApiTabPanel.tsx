@@ -804,6 +804,30 @@ function JobShowAllPanel({
 
   const { sections = [], arrays = [] } = query.data ?? {};
   const editSources = [savedOverlay, query.data, ...sections.map((s) => s.data)];
+  const transportEditMode = (() => {
+    const job = jobQuery.data;
+    if (!job) return 'all' as const;
+    if (job.actions?.can_edit_air_fields === true) return 'air' as const;
+    if (job.actions?.can_edit_sea_fields === true) return 'sea' as const;
+    const mode = String(job.transport_mode || '').toUpperCase();
+    if (mode.startsWith('AIR') || isAirwayBillJobType(job.job_type)) return 'air' as const;
+    if (mode.startsWith('SEA') || /SEA|NVOCC/i.test(job.job_type || '')) {
+      return 'sea' as const;
+    }
+    return 'all' as const;
+  })();
+
+  const editModal = (
+    <ShowAllEditModal
+      open={editOpen}
+      onClose={() => setEditOpen(false)}
+      title="Edit job Show All"
+      sources={editSources}
+      pending={patchShowAll.isPending}
+      onSubmit={saveShowAll}
+      transportEditMode={transportEditMode}
+    />
+  );
 
   if (!sections.length && !arrays.length && !footer) {
     return (
@@ -822,14 +846,7 @@ function JobShowAllPanel({
         <p className="text-[13px] text-[#64748b]">
           No Show All data returned from job detail APIs.
         </p>
-        <ShowAllEditModal
-          open={editOpen}
-          onClose={() => setEditOpen(false)}
-          title="Edit job Show All"
-          sources={editSources}
-          pending={patchShowAll.isPending}
-          onSubmit={saveShowAll}
-        />
+        {editModal}
       </div>
     );
   }
@@ -877,14 +894,7 @@ function JobShowAllPanel({
         </SectionCard>
       ))}
       {footer}
-      <ShowAllEditModal
-        open={editOpen}
-        onClose={() => setEditOpen(false)}
-        title="Edit job Show All"
-        sources={editSources}
-        pending={patchShowAll.isPending}
-        onSubmit={saveShowAll}
-      />
+      {editModal}
     </div>
   );
 }
