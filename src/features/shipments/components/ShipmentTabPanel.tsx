@@ -4,12 +4,14 @@ import { ErrorState } from '@/components/erp';
 import { Button } from '@/components/ui/Button';
 import { erpForm } from '@/lib/erpForm';
 import { erpTable } from '@/lib/erpTypography';
+import { JobAirMawbPanel } from '@/features/jobs/components/JobAirMawbPanel';
 import { JobContainersPanel } from '@/features/jobs/components/JobContainersPanel';
+import { isAirwayBillJobType } from '@/features/jobs/utils/jobDetailTabs';
 import { isUuid } from '@/lib/isUuid';
 import { ShowAllEditModal } from '@/features/shared/show-all/ShowAllEditModal';
 import { mergeShowAllSavedOverlay } from '@/features/shared/show-all/extractPatchShowAllDefaults';
 import type { PatchShowAllDto } from '@/features/jobs/types/job.types';
-import { isShipmentShowAllTab } from '../api/shipment.api';
+import { isShipmentShowAllTab, toApiShipmentDetailTabKey } from '../api/shipment.api';
 import {
   usePatchShipmentShowAll,
   useShipment,
@@ -646,12 +648,16 @@ function isShipmentSectionFilesTab(tabKey: string): boolean {
   return norm === 'section_files' || norm === 'sectionfiles';
 }
 
-/** Planned/Actual container tabs — containers live on the linked job (`GET /jobs/:id/containers`). */
+/**
+ * Containers / MAWB surface — same keys as jobs (`actual_container` / legacy planned / mawb).
+ * Containers/MAWB live on the linked job.
+ */
 function isShipmentContainerTab(tabKey: string): boolean {
-  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
+  const norm = toApiShipmentDetailTabKey(tabKey);
   return (
     norm === 'planned_container' ||
     norm === 'actual_container' ||
+    norm === 'mawb' ||
     norm === 'containers' ||
     norm === 'container'
   );
@@ -761,13 +767,9 @@ function ShipmentContainersTabPanel({
   const shipmentQuery = useShipment(shipmentId);
   const shipment = shipmentQuery.data;
   const jobId = shipment?.job_id?.trim() ?? '';
-  const norm = tabKey.trim().toLowerCase().replace(/-/g, '_');
-  const title =
-    norm === 'actual_container'
-      ? 'Actual containers'
-      : norm === 'planned_container'
-        ? 'Planned containers'
-        : 'Containers';
+  const norm = toApiShipmentDetailTabKey(tabKey);
+  const air = isAirwayBillJobType(shipment?.job_type || shipment?.service_type);
+  const title = air ? 'MAWB' : 'Containers';
 
   if (shipmentQuery.isLoading && !shipment) {
     return (
@@ -800,9 +802,19 @@ function ShipmentContainersTabPanel({
           {title}
         </p>
         <p className="text-[13px] text-[#64748b]">
-          Containers are managed on the linked job. Generate a job from this shipment first,
-          then use Planned / Actual Container.
+          {air
+            ? 'MAWB is managed on the linked job. Generate a job from this shipment first.'
+            : 'Containers are managed on the linked job. Generate a job from this shipment first.'}
         </p>
+      </div>
+    );
+  }
+
+  // Same as jobs: air MAWB on actual_container / mawb; sea uses actual containers only.
+  if (air || norm === 'mawb') {
+    return (
+      <div className="p-3">
+        <JobAirMawbPanel jobId={jobId} />
       </div>
     );
   }
@@ -810,9 +822,9 @@ function ShipmentContainersTabPanel({
   return (
     <div className="space-y-3 p-3">
       <p className="text-[12px] text-[#64748b]">
-        {title} · linked job containers (`GET /jobs/:id/containers`)
+        Containers · linked job (`GET /jobs/:id/containers`)
       </p>
-      <JobContainersPanel jobId={jobId} />
+      <JobContainersPanel jobId={jobId} containerKind="ACTUAL" />
     </div>
   );
 }
