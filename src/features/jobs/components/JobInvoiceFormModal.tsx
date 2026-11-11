@@ -6,6 +6,7 @@ import { Modal } from '@/components/ui/Modal';
 import { invoiceKeys } from '@/features/invoices/hooks/useInvoices';
 import { purchaseInvoiceKeys } from '@/features/purchaseInvoices/hooks/usePurchaseInvoices';
 import { PartySearchSelect } from '@/features/shared/entity-search';
+import { isUuid } from '@/lib/isUuid';
 import { jobService } from '../services/job.service';
 import type {
   JobInvoiceFormLineDto,
@@ -13,6 +14,7 @@ import type {
   JobInvoiceFormSaveDto,
 } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
+import { prepareJobInvoiceFormSave } from '../utils/prepareJobInvoiceFormSave';
 
 export type JobInvoiceFormKind = 'sale' | 'purchase';
 export type JobInvoiceFormSource = 'job' | 'quotation' | 'auto';
@@ -36,52 +38,77 @@ type Props = {
 function asSaveDto(
   raw: JobInvoiceFormPreview | null,
   source?: JobInvoiceFormSource,
+  kind: JobInvoiceFormKind = 'sale',
 ): JobInvoiceFormSaveDto {
   if (!raw || typeof raw !== 'object') {
     return {
       lines: [],
       exchange_rate: 1,
-      ...(source ? { source } : {}),
+      voucher_type: kind === 'sale' ? 'SALES_INVOICE' : 'PURCHASE_INVOICE',
+      ...(kind === 'sale' && source ? { source } : {}),
     };
   }
+  const defaultDrCr = kind === 'purchase' ? 'DR' : 'CR';
   const lines = Array.isArray(raw.lines)
     ? raw.lines.map((line) => ({
-        job_charge_id: line.job_charge_id,
-        charge_code_id: line.charge_code_id,
+        job_charge_id: isUuid(String(line.job_charge_id ?? '').trim())
+          ? String(line.job_charge_id).trim()
+          : undefined,
+        charge_code_id: isUuid(String(line.charge_code_id ?? '').trim())
+          ? String(line.charge_code_id).trim()
+          : undefined,
         description: line.description ?? '',
         shipment_no: line.shipment_no ?? '',
         unit: line.unit ?? '',
         quantity: Number(line.quantity ?? 1) || 1,
         currency_code: line.currency_code ?? raw.currency_code ?? 'AED',
         exchange_rate: Number(line.exchange_rate ?? raw.exchange_rate ?? 1) || 1,
-        dr_cr: line.dr_cr ?? 'CR',
+        dr_cr:
+          line.dr_cr === 'DR' || line.dr_cr === 'CR' ? line.dr_cr : defaultDrCr,
         amount: Number(line.amount ?? 0) || 0,
         fcy_amount: line.fcy_amount != null ? Number(line.fcy_amount) : undefined,
-        tax_rate_id: line.tax_rate_id,
-        pp_cc: line.pp_cc,
+        tax_rate_id: isUuid(String(line.tax_rate_id ?? '').trim())
+          ? String(line.tax_rate_id).trim()
+          : undefined,
+        pp_cc: line.pp_cc === 'PP' || line.pp_cc === 'CC' ? line.pp_cc : undefined,
       }))
     : [];
-  const partyId = raw.party_id ? String(raw.party_id) : undefined;
-  const costPartyId = raw.cost_party_id
-    ? String(raw.cost_party_id)
-    : partyId;
+  const partyId = isUuid(String(raw.party_id ?? '').trim())
+    ? String(raw.party_id).trim()
+    : undefined;
+  // Purchase: only use explicit cost_party_id — do not copy customer party_id as vendor.
+  const costPartyId = isUuid(String(raw.cost_party_id ?? '').trim())
+    ? String(raw.cost_party_id).trim()
+    : kind === 'purchase'
+      ? undefined
+      : partyId;
   const resolvedSource =
-    source ||
-    (raw.source === 'job' || raw.source === 'quotation' || raw.source === 'auto'
-      ? raw.source
-      : undefined);
+    kind === 'sale'
+      ? source ||
+        (raw.source === 'job' || raw.source === 'quotation' || raw.source === 'auto'
+          ? raw.source
+          : undefined)
+      : undefined;
   return {
-    charge_ids: Array.isArray(raw.charge_ids) ? raw.charge_ids.map(String) : undefined,
-    organization_id: raw.organization_id ? String(raw.organization_id) : undefined,
+    charge_ids: Array.isArray(raw.charge_ids)
+      ? raw.charge_ids.map(String).filter((id) => isUuid(id.trim()))
+      : undefined,
+    organization_id: isUuid(String(raw.organization_id ?? '').trim())
+      ? String(raw.organization_id).trim()
+      : undefined,
     party_id: partyId,
     cost_party_id: costPartyId,
     source: resolvedSource,
-    branch_id: raw.branch_id ? String(raw.branch_id) : undefined,
-    company_id: raw.company_id ? String(raw.company_id) : undefined,
+    branch_id: isUuid(String(raw.branch_id ?? '').trim())
+      ? String(raw.branch_id).trim()
+      : undefined,
+    company_id: isUuid(String(raw.company_id ?? '').trim())
+      ? String(raw.company_id).trim()
+      : undefined,
     voucher_type:
       raw.voucher_type ||
       (raw as { voucherType?: string }).voucherType ||
-      undefined,
+      (kind === 'sale' ? 'SALES_INVOICE' : 'PURCHASE_INVOICE'),
     v_date: String(raw.v_date ?? raw.invoice_date ?? '').slice(0, 10) || undefined,
     gl_date: String(raw.gl_date ?? '').slice(0, 10) || undefined,
     exchange_rate: Number(raw.exchange_rate ?? 1) || 1,
@@ -98,7 +125,9 @@ function asSaveDto(
       .slice(0, 3),
     narration: raw.narration != null ? String(raw.narration) : undefined,
     ref_no: raw.ref_no != null ? String(raw.ref_no) : undefined,
-    vendor_quote_id: raw.vendor_quote_id ? String(raw.vendor_quote_id) : undefined,
+    vendor_quote_id: isUuid(String(raw.vendor_quote_id ?? '').trim())
+      ? String(raw.vendor_quote_id).trim()
+      : undefined,
     lines,
   };
 }
@@ -168,7 +197,9 @@ export function JobInvoiceFormModal({
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [form, setForm] = useState<JobInvoiceFormSaveDto>(() => asSaveDto(null, source));
+  const [form, setForm] = useState<JobInvoiceFormSaveDto>(() =>
+    asSaveDto(null, source, kind),
+  );
   const [pdf, setPdf] = useState<File | null>(null);
   const [needsCosting, setNeedsCosting] = useState(false);
   const [costingEntry, setCostingEntry] = useState<unknown>(null);
@@ -191,7 +222,7 @@ export function JobInvoiceFormModal({
             ? await jobService.getSaleInvoiceForm(jobId, chargeIds, saleSource)
             : await jobService.getPurchaseInvoiceForm(jobId, chargeIds);
         if (cancelled) return;
-        const next = asSaveDto(preview, saleSource);
+        const next = asSaveDto(preview, saleSource, kind);
         if (!next.voucher_type) {
           next.voucher_type = kind === 'sale' ? 'SALES_INVOICE' : 'PURCHASE_INVOICE';
         }
@@ -213,6 +244,7 @@ export function JobInvoiceFormModal({
                 lines: [],
               },
               saleSource,
+              kind,
             ),
           );
           setNeedsCosting(false);
@@ -236,9 +268,9 @@ export function JobInvoiceFormModal({
     try {
       if (kind === 'purchase') {
         const vendorId = (form.cost_party_id || form.party_id || '').trim();
-        if (!vendorId) {
+        if (!vendorId || !isUuid(vendorId)) {
           setError(
-            'Vendor (cost_party_id) is required for purchase invoices. Set a vendor on cost lines or enter a party id before saving.',
+            'Vendor (cost_party_id) is required for purchase invoices. Pick a vendor party before saving.',
           );
           setSaving(false);
           return;
@@ -252,19 +284,7 @@ export function JobInvoiceFormModal({
         return;
       }
 
-      const dto: JobInvoiceFormSaveDto = {
-        ...form,
-        lines: (form.lines ?? []).filter((l) => Number(l.amount) >= 0),
-      };
-      if (kind === 'sale' && saleSource) {
-        dto.source = saleSource;
-      }
-      if (kind === 'purchase') {
-        const vendorId = (form.cost_party_id || form.party_id || '').trim();
-        dto.cost_party_id = vendorId;
-        dto.party_id = vendorId;
-        delete dto.source;
-      }
+      const dto = prepareJobInvoiceFormSave(form, kind, saleSource);
 
       if (kind === 'sale') {
         await jobService.createSaleInvoiceFromJob(jobId, dto, pdf);
@@ -585,7 +605,9 @@ export function JobInvoiceFormModal({
                           <td className="px-2 py-1">
                             <select
                               className="h-8 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-1"
-                              value={line.dr_cr || 'CR'}
+                              value={
+                                line.dr_cr || (kind === 'purchase' ? 'DR' : 'CR')
+                              }
                               onChange={(e) =>
                                 patch({
                                   lines: updateLine(form.lines ?? [], index, {
