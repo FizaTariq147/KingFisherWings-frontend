@@ -412,7 +412,7 @@ export function JobAirMawbPanel({ jobId }: JobAirMawbPanelProps) {
             />
           </div>
           <Input
-            label="Air pallet count"
+            label="No of bags / pallets"
             type="number"
             value={form.pallet_count}
             onChange={(e) => setField('pallet_count', e.target.value)}
