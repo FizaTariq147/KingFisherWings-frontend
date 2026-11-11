@@ -10,6 +10,7 @@ import { quotationKeys } from '@/features/quotations/hooks/useQuotations';
 import { shipmentService } from '@/features/shipments/services/shipment.service';
 import { shipmentKeys } from '@/features/shipments/hooks/useShipments';
 import { getServerErrorMessage } from '@/lib/validation/mapApiErrors';
+import { isUuid } from '@/lib/isUuid';
 
 export type StatusCatalogEntity =
   | 'jobs'
@@ -25,6 +26,11 @@ export type AddStatusCatalogModalProps = {
   onCreated: (code: string, label: string) => void;
   /** Open over another modal (change-status). */
   nested?: boolean;
+  /**
+   * When set for jobs, POST status-catalog with job_id / apply_to_job_id so BE
+   * applies the new status immediately.
+   */
+  applyEntityId?: string;
 };
 
 const FIELD =
@@ -48,7 +54,7 @@ async function createCatalog(
   if (entity === 'shipments') return shipmentService.createStatusCatalog(dto);
   if (entity === 'container-statuses') {
     return jobService.createContainerStatus({
-      code: dto.code,
+      code: dto.code || '',
       label: dto.label,
       is_active: dto.is_active,
       sort_order: dto.sort_order,
@@ -78,6 +84,7 @@ export function AddStatusCatalogModal({
   entity,
   onCreated,
   nested = true,
+  applyEntityId,
 }: AddStatusCatalogModalProps) {
   const qc = useQueryClient();
   const [code, setCode] = useState('');
@@ -96,6 +103,16 @@ export function AddStatusCatalogModal({
     onSuccess: async () => {
       if (entity === 'jobs') {
         await qc.invalidateQueries({ queryKey: [...jobKeys.all, 'status-options'] });
+        if (applyEntityId && isUuid(applyEntityId)) {
+          await qc.invalidateQueries({ queryKey: jobKeys.detail(applyEntityId) });
+          await qc.invalidateQueries({
+            queryKey: [...jobKeys.detail(applyEntityId), 'show-all'],
+          });
+          await qc.invalidateQueries({
+            queryKey: jobKeys.detailTab(applyEntityId, 'show_all'),
+          });
+          await qc.invalidateQueries({ queryKey: shipmentKeys.all });
+        }
       } else if (entity === 'shipments') {
         await qc.invalidateQueries({ queryKey: shipmentKeys.statusOptions });
       } else if (entity === 'container-statuses') {
@@ -118,6 +135,10 @@ export function AddStatusCatalogModal({
       label: label.trim() || normalized.replaceAll('_', ' '),
       is_active: true,
     };
+    if (entity === 'jobs' && applyEntityId && isUuid(applyEntityId)) {
+      dto.job_id = applyEntityId;
+      dto.apply_to_job_id = applyEntityId;
+    }
     try {
       const created = await create.mutateAsync(dto);
       onCreated(pickCreatedCode(created, normalized), dto.label);
@@ -160,13 +181,22 @@ export function AddStatusCatalogModal({
             disabled={create.isPending || !toCode(code || label)}
             onClick={() => void submit()}
           >
-            {create.isPending ? 'Saving…' : 'Add status'}
+            {create.isPending
+              ? 'Saving…'
+              : entity === 'jobs' && applyEntityId
+                ? 'Add & apply'
+                : 'Add status'}
           </Button>
         </div>
       }
     >
       {error ? (
         <p className="mb-2 text-[13px] text-[var(--color-danger-600)]">{error}</p>
+      ) : null}
+      {entity === 'jobs' && applyEntityId ? (
+        <p className="mb-2 text-[12px] text-[#64748b]">
+          The new status will be applied to this job immediately.
+        </p>
       ) : null}
       <label className="mb-3 block text-[13px]">
         <span className="mb-1 block text-[12px] font-medium text-[#334155]">Code</span>

@@ -245,6 +245,23 @@ export const JOB_STATUS_LABELS: Record<JobStatus, string> = {
   ON_HOLD: 'On Hold',
 };
 
+/** Prefer catalog `status_label`, then enum map, then status_code / status. */
+export function jobStatusDisplayLabel(job: {
+  status?: string | null;
+  status_code?: string | null;
+  status_label?: string | null;
+}): string {
+  const label = job.status_label?.trim();
+  if (label) return label;
+  const status = (job.status || '').trim();
+  if (status && status in JOB_STATUS_LABELS) {
+    return JOB_STATUS_LABELS[status as JobStatus];
+  }
+  const code = job.status_code?.trim();
+  if (code) return code.replaceAll('_', ' ');
+  return status || '—';
+}
+
 /** Terminal statuses that support POST /jobs/:id/reopen. */
 export const JOB_REOPENABLE_STATUSES: JobStatus[] = [
   'COMPLETED',

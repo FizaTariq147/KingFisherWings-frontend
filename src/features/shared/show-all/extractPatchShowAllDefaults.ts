@@ -1,7 +1,19 @@
-import type { PatchShowAllDto } from '@/features/jobs/types/job.types';
+import type {
+  PatchShowAllDto,
+  ShowAllTransportDto,
+  ShowAllWarehouseDto,
+} from '@/features/jobs/types/job.types';
 
 const PATCH_KEYS: (keyof PatchShowAllDto)[] = [
   'commodity',
+  'commodity_description',
+  'payable_at',
+  'freight_payable_at',
+  'chargeable_units',
+  'chargeable_unit',
+  'chargeable_weight',
+  'service_scope',
+  'service_type',
   'pieces',
   'gross_weight',
   'volume_cbm',
@@ -56,6 +68,15 @@ const PATCH_KEYS: (keyof PatchShowAllDto)[] = [
 
 /** Fields BE accepts as null / "" to clear on show_all PATCH. */
 const CLEARABLE_KEYS = new Set<keyof PatchShowAllDto>([
+  'commodity',
+  'commodity_description',
+  'payable_at',
+  'freight_payable_at',
+  'chargeable_units',
+  'chargeable_unit',
+  'chargeable_weight',
+  'service_scope',
+  'service_type',
   'flight_no',
   'flight_number',
   'flight_status',
@@ -121,7 +142,40 @@ const ALIASES: Record<string, keyof PatchShowAllDto> = {
   airlinename: 'airline_name',
   gross_weight_kg: 'gross_weight',
   weight_kg: 'weight',
+  payable_at: 'freight_payable_at',
+  freightpayableat: 'freight_payable_at',
+  chargeable_unit: 'chargeable_units',
+  chargeableunit: 'chargeable_units',
+  commoditydescription: 'commodity_description',
+  chargeableweight: 'chargeable_weight',
+  servicescope: 'service_scope',
+  servicetype: 'service_type',
+  job_type: 'service_type',
+  jobtype: 'service_type',
 };
+
+const WAREHOUSE_KEYS: (keyof ShowAllWarehouseDto)[] = [
+  'warehouse_name',
+  'warehouse_id',
+  'expected_inbound_at',
+  'expected_outbound_at',
+  'storage_days_requested',
+  'bonded',
+  'temperature_controlled',
+  'commodity',
+];
+
+const TRANSPORT_KEYS: (keyof ShowAllTransportDto)[] = [
+  'pickup_address',
+  'delivery_address',
+  'origin_city_country',
+  'destination_city_country',
+  'vehicle_number',
+  'driver_name',
+  'driver_license',
+  'trucker_id',
+  'freight_terms',
+];
 
 /** Nested party/port objects from show_all → flat PatchShowAllDto fields (compact keys). */
 const NESTED_ENTITY: Record<
@@ -215,11 +269,99 @@ function collectNestedEntity(
   return true;
 }
 
+function mergeWarehouseBag(
+  into: PatchShowAllDto,
+  raw: unknown,
+): void {
+  const rec = asRecord(raw);
+  if (!rec) return;
+  const bag: ShowAllWarehouseDto = { ...(into.warehouse ?? {}) };
+  let touched = false;
+  for (const key of WAREHOUSE_KEYS) {
+    if (!(key in rec)) continue;
+    const val = rec[key];
+    if (bag[key] != null && bag[key] !== '') continue;
+    if (key === 'storage_days_requested') {
+      const n = pickNumber(val);
+      if (n != null) {
+        bag[key] = n;
+        touched = true;
+      }
+      continue;
+    }
+    if (key === 'bonded' || key === 'temperature_controlled') {
+      if (typeof val === 'boolean') {
+        bag[key] = val;
+        touched = true;
+      } else if (val === 'true' || val === '1') {
+        bag[key] = true;
+        touched = true;
+      } else if (val === 'false' || val === '0') {
+        bag[key] = false;
+        touched = true;
+      }
+      continue;
+    }
+    if (
+      key === 'expected_inbound_at' ||
+      key === 'expected_outbound_at'
+    ) {
+      const d = pickDate(val) || pickString(val);
+      if (d) {
+        bag[key] = d;
+        touched = true;
+      }
+      continue;
+    }
+    const s = pickString(val);
+    if (s) {
+      bag[key] = s;
+      touched = true;
+    }
+  }
+  if (touched) into.warehouse = bag;
+}
+
+function mergeTransportBag(
+  into: PatchShowAllDto,
+  raw: unknown,
+): void {
+  const rec = asRecord(raw);
+  if (!rec) return;
+  const bag: ShowAllTransportDto = { ...(into.transport ?? {}) };
+  let touched = false;
+  for (const key of TRANSPORT_KEYS) {
+    if (!(key in rec)) continue;
+    if (bag[key] != null && bag[key] !== '') continue;
+    const s = pickString(rec[key]);
+    if (s) {
+      bag[key] = s;
+      touched = true;
+    }
+  }
+  if (touched) into.transport = bag;
+}
+
 function collectFromRecord(
   rec: Record<string, unknown>,
   into: PatchShowAllDto,
 ): void {
   for (const [rawKey, rawVal] of Object.entries(rec)) {
+    const compact = compactKey(rawKey);
+    if (compact === 'warehouse' || compact === 'warehousebooking' || compact === 'warehouse_booking') {
+      mergeWarehouseBag(into, rawVal);
+      continue;
+    }
+    if (
+      compact === 'transport' ||
+      compact === 'land' ||
+      compact === 'landdetails' ||
+      compact === 'transportrequest'
+    ) {
+      mergeTransportBag(into, rawVal);
+      continue;
+    }
+
     if (collectNestedEntity(rawKey, rawVal, into)) continue;
 
     const norm = normalizeKey(rawKey);
@@ -246,7 +388,10 @@ function collectFromRecord(
       mapped === 'volume_cbm' ||
       mapped === 'pallet_count' ||
       mapped === 'dimensions' ||
-      mapped === 'weight'
+      mapped === 'weight' ||
+      mapped === 'chargeable_units' ||
+      mapped === 'chargeable_unit' ||
+      mapped === 'chargeable_weight'
     ) {
       const n = pickNumber(rawVal);
       if (n != null) into[mapped] = n;
@@ -322,6 +467,55 @@ export function extractPatchShowAllDefaults(
   return into;
 }
 
+function nestBagChanged(
+  draftBag: Record<string, unknown> | null | undefined,
+  defaultsBag: Record<string, unknown> | null | undefined,
+  keys: string[],
+): Record<string, unknown> | null | undefined {
+  if (draftBag == null && defaultsBag == null) return undefined;
+  if (draftBag == null && defaultsBag != null) return null;
+  const out: Record<string, unknown> = {};
+  let touched = false;
+  for (const key of keys) {
+    const next = draftBag?.[key];
+    const prev = defaultsBag?.[key];
+    if (next === undefined) continue;
+    if (typeof next === 'string') {
+      const trimmed = next.trim();
+      if (trimmed) {
+        out[key] = trimmed;
+        touched = true;
+        continue;
+      }
+      if (prev != null && String(prev).trim()) {
+        out[key] = null;
+        touched = true;
+      }
+      continue;
+    }
+    if (typeof next === 'boolean') {
+      if (next !== prev) {
+        out[key] = next;
+        touched = true;
+      } else if (prev === undefined) {
+        out[key] = next;
+        touched = true;
+      }
+      continue;
+    }
+    if (typeof next === 'number' && Number.isFinite(next)) {
+      out[key] = next;
+      touched = true;
+      continue;
+    }
+    if (next == null && prev != null && prev !== '') {
+      out[key] = null;
+      touched = true;
+    }
+  }
+  return touched ? out : undefined;
+}
+
 /**
  * Build a partial PATCH body.
  * - Non-empty strings/numbers are sent as usual.
@@ -371,6 +565,33 @@ export function toPatchShowAllPayload(
   if (out.hawb_number && !out.hawb_no) out.hawb_no = out.hawb_number;
   if (out.dimensions != null && out.volume_cbm == null) out.volume_cbm = out.dimensions;
   if (out.weight != null && out.gross_weight == null) out.gross_weight = out.weight;
+  // Canonical commercial aliases.
+  if (out.payable_at && !out.freight_payable_at) {
+    out.freight_payable_at = out.payable_at;
+  }
+  if (out.chargeable_unit != null && out.chargeable_units == null) {
+    out.chargeable_units = out.chargeable_unit;
+  }
+  // Prefer freight_payable_at / chargeable_units on the wire.
+  delete out.payable_at;
+  delete out.chargeable_unit;
+
+  const warehouse = nestBagChanged(
+    draft.warehouse as Record<string, unknown> | undefined,
+    defaults?.warehouse as Record<string, unknown> | undefined,
+    WAREHOUSE_KEYS as string[],
+  );
+  if (warehouse !== undefined) {
+    out.warehouse = warehouse as ShowAllWarehouseDto;
+  }
+  const transport = nestBagChanged(
+    draft.transport as Record<string, unknown> | undefined,
+    defaults?.transport as Record<string, unknown> | undefined,
+    TRANSPORT_KEYS as string[],
+  );
+  if (transport !== undefined) {
+    out.transport = transport as ShowAllTransportDto;
+  }
   return out;
 }
 

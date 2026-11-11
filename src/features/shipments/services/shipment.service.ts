@@ -1167,13 +1167,31 @@ export const shipmentService = {
     }
   },
 
-  /** GET /shipments/:id/organizations (proxies to job when linked). */
+  /**
+   * GET /shipments/:id/organizations (proxies to job when linked).
+   * Preserve envelope catalogs (`organization_types`) beside `data` rows.
+   */
   async listOrganizations(id: string): Promise<unknown> {
     assertId(id);
     try {
       const res = await withGatewayRetry(() =>
         axiosInstance.get(SHIPMENT_API.organizations(id)),
       );
+      const raw = res.data;
+      if (raw && typeof raw === 'object' && !Array.isArray(raw)) {
+        const envelope = raw as Record<string, unknown>;
+        const hasCatalog =
+          envelope.organization_types != null ||
+          envelope.organizationTypes != null ||
+          envelope.org_types != null ||
+          envelope.orgTypes != null ||
+          envelope.available_org_types != null;
+        if (hasCatalog) return envelope;
+        const data = envelope.data;
+        if (data && typeof data === 'object' && !Array.isArray(data)) {
+          return data;
+        }
+      }
       return unwrapShipmentPayload(res.data) ?? res.data;
     } catch (error) {
       throw formatAxiosError(error);
