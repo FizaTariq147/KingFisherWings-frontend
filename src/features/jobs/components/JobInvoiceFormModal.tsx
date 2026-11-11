@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Modal } from '@/components/ui/Modal';
+import { invoiceKeys } from '@/features/invoices/hooks/useInvoices';
+import { purchaseInvoiceKeys } from '@/features/purchaseInvoices/hooks/usePurchaseInvoices';
 import { PartySearchSelect } from '@/features/shared/entity-search';
 import { jobService } from '../services/job.service';
 import type {
@@ -161,6 +164,7 @@ export function JobInvoiceFormModal({
   allowPdf,
   source,
 }: Props) {
+  const queryClient = useQueryClient();
   const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -264,8 +268,10 @@ export function JobInvoiceFormModal({
 
       if (kind === 'sale') {
         await jobService.createSaleInvoiceFromJob(jobId, dto, pdf);
+        void queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
       } else {
         await jobService.createPurchaseInvoiceFromJob(jobId, dto, pdf);
+        void queryClient.invalidateQueries({ queryKey: purchaseInvoiceKeys.all });
       }
       onSaved?.();
       onClose();

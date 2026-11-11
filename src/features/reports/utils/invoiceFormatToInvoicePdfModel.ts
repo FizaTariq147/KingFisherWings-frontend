@@ -288,10 +288,16 @@ export function invoiceFormatToInvoicePdfModel(
   const subtotal =
     parseMoney(data.subtotal) ??
     lines.reduce((sum, line) => sum + (line.amount ?? 0), 0);
-  const vatAmount =
-    parseMoney(data.tax) ??
-    (meta.vatRate > 0 ? Math.round(subtotal * (meta.vatRate / 100) * 100) / 100 : 0);
-  const grandTotal = parseMoney(data.total) ?? subtotal + vatAmount;
+  // When entity-bound, never invent VAT from layout vatRate — use backend tax only.
+  const vatAmount = data.entityBound
+    ? (parseMoney(data.tax) ?? 0)
+    : (parseMoney(data.tax) ??
+      (meta.vatRate > 0 ? Math.round(subtotal * (meta.vatRate / 100) * 100) / 100 : 0));
+  const grandTotal = data.entityBound
+    ? (parseMoney(data.total) ?? subtotal + vatAmount)
+    : (parseMoney(data.total) ?? subtotal + vatAmount);
+  // Discount is not invented — pass through only if present on data (else 0 for demo chrome).
+  const discountAmount = parseMoney((data as { discount?: string }).discount) ?? 0;
 
   const formatLabel = preview.name.replace(/Fresa/gi, 'KingFisher');
 
@@ -364,7 +370,7 @@ export function invoiceFormatToInvoicePdfModel(
       ? [{ description: REPORT_FIELD_NA }]
       : lines,
     subtotal,
-    discount: 0,
+    discount: discountAmount,
     taxableAmount: subtotal,
     vatAmount,
     otherCharges: 0,

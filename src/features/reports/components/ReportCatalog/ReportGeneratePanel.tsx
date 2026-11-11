@@ -362,6 +362,7 @@ export function ReportGeneratePanel({
     const officialSample = shouldPreferOfficialSamplePdf({
       code: resolved.code,
       format,
+      entityBound,
     });
     if (
       officialSample &&

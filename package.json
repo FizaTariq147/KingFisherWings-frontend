@@ -23,6 +23,7 @@
     "test:integration-report": "node scripts/integration-automation-report.mjs",
     "doctor": "npx react-doctor@latest",
     "build:invoice-ui-layouts": "node scripts/build-invoice-format-ui-layouts.mjs",
+    "refresh:report-catalog-summary": "node scripts/refresh-report-catalog-complete-summary.mjs",
     "gen:api-schema": "node scripts/generate-api-schema.mjs",
     "audit:api-coverage": "node scripts/audit-api-coverage.mjs"
   },

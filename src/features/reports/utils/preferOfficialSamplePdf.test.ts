@@ -25,4 +25,14 @@ describe('preferOfficialSamplePdf', () => {
       }),
     ).toBe(false);
   });
+
+  it('never prefers CDN sample when a live entity is bound', () => {
+    expect(
+      shouldPreferOfficialSamplePdf({
+        code: 'HAWB_DRAFT_REPORT_FORMAT_1',
+        format: 'PDF',
+        entityBound: true,
+      }),
+    ).toBe(false);
+  });
 });

@@ -7113,7 +7113,7 @@ export const FRESA_REPORT_REGISTRY: ReportTemplateMeta[] = [
     "hasClientLayout": true,
     "layoutStore": "hblFormatUiLayouts",
     "layoutBucket": "hbl",
-    "suggestedPackKey": "sea.hbl_draft"
+    "suggestedPackKey": "sea.hbl_original"
   },
   {
     "code": "FG_NOTICE_OF_DELIVERY",
@@ -8075,7 +8075,7 @@ export const FRESA_REPORT_REGISTRY: ReportTemplateMeta[] = [
     "hasClientLayout": true,
     "layoutStore": "hawbFormatUiLayouts",
     "layoutBucket": "hawb",
-    "suggestedPackKey": "air.hawb_draft"
+    "suggestedPackKey": "air.hawb_final"
   },
   {
     "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
@@ -8101,7 +8101,7 @@ export const FRESA_REPORT_REGISTRY: ReportTemplateMeta[] = [
     "hasClientLayout": true,
     "layoutStore": "hawbFormatUiLayouts",
     "layoutBucket": "hawb",
-    "suggestedPackKey": "air.hawb_draft"
+    "suggestedPackKey": "air.hawb_final"
   },
   {
     "code": "HBL_DRAFT_REPORT_FORMAT_10",

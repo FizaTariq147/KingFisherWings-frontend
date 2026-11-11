@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-21T05:35:51.211Z",
-  "source": "fresaReportRegistry.json + *FormatUiLayouts.json",
+  "generatedAt": "2026-11-11T04:57:51.777Z",
+  "source": "fresaReportRegistry.json + *FormatUiLayouts.json (refresh-report-catalog-complete-summary.mjs)",
   "apiContract": "BACKEND_REPORT_CATALOG_API.md / OpenAPI Reports — Catalog",
   "preserve": [
     "POST /invoices/:id/pdf",
@@ -12,7 +12,9 @@
     "reports": 852,
     "withClientLayout": 852,
     "layoutStores": 13,
-    "suggestedPackKeys": 26
+    "suggestedPackKeys": 28,
+    "uniqueJsonLayoutObjects": 795,
+    "note": "uniqueJsonLayoutObjects can be < reports when codes alias shared shells"
   },
   "byFamily": {
     "ops_list": 114,
@@ -29,27 +31,27 @@
     "covered_analytics": 65
   },
   "byLayoutStore": {
-    "opsListFormatUiLayouts": 108,
-    "wmsFormatUiLayouts": 61,
-    "otherReportsFormatUiLayouts": 80,
-    "accountsFormatUiLayouts": 95,
-    "arrivalNoticeFormatUiLayouts": 55,
-    "seaDocsExtraFormatUiLayouts": 43,
-    "commercialExtraFormatUiLayouts": 37,
-    "deliveryOrderFormatUiLayouts": 41,
-    "hblFormatUiLayouts": 122,
-    "hawbFormatUiLayouts": 30,
+    "hblFormatUiLayouts": 113,
+    "hawbFormatUiLayouts": 5,
     "invoiceFormatUiLayouts": 82,
-    "leftoverFormatUiLayouts": 83,
-    "quotationFormatUiLayouts": 15
+    "accountsFormatUiLayouts": 95,
+    "wmsFormatUiLayouts": 61,
+    "arrivalNoticeFormatUiLayouts": 31,
+    "deliveryOrderFormatUiLayouts": 42,
+    "opsListFormatUiLayouts": 108,
+    "otherReportsFormatUiLayouts": 80,
+    "quotationFormatUiLayouts": 15,
+    "commercialExtraFormatUiLayouts": 37,
+    "seaDocsExtraFormatUiLayouts": 43,
+    "leftoverFormatUiLayouts": 83
   },
   "bySuggestedPackKey": {
     "ops.list_generic": 113,
     "wms.asn": 41,
-    "air.hawb_draft": 32,
+    "air.hawb_draft": 30,
     "quotation.shell": 18,
     "finance.gl_listing": 51,
-    "sea.hbl_draft": 158,
+    "sea.hbl_draft": 157,
     "sea.arrival_notice": 51,
     "sea.booking_confirmation": 17,
     "air.arrival_notice": 2,
@@ -59,6 +61,8 @@
     "commercial.debit_note": 11,
     "air.delivery_order": 16,
     "sea.delivery_order": 29,
+    "sea.hbl_original": 1,
+    "air.hawb_final": 2,
     "commercial.invoice_tax_india_1": 1,
     "commercial.invoice_generic": 162,
     "finance.journal_voucher": 12,
@@ -10554,7 +10558,7 @@
         "signatureRow",
         "colorfulFooter"
       ],
-      "suggestedPackKey": "sea.hbl_draft",
+      "suggestedPackKey": "sea.hbl_original",
       "pendingRendererKey": "pending.FG_HBL_ORIGINAL_FORMAT_87"
     },
     {
@@ -12037,7 +12041,7 @@
         "signatureRow",
         "colorfulFooter"
       ],
-      "suggestedPackKey": "air.hawb_draft",
+      "suggestedPackKey": "air.hawb_final",
       "pendingRendererKey": "pending.HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1"
     },
     {
@@ -12077,7 +12081,7 @@
         "signatureRow",
         "colorfulFooter"
       ],
-      "suggestedPackKey": "air.hawb_draft",
+      "suggestedPackKey": "air.hawb_final",
       "pendingRendererKey": "pending.HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2"
     },
     {

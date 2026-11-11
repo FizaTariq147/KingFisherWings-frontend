@@ -1,0 +1,193 @@
+{
+  "generatedAt": "2026-11-11T05:30:00.000Z",
+  "phase": 7,
+  "scope": "Freightnest Document Fidelity and Live PDF Verification",
+  "evidenceOnly": true,
+  "productionReady": false,
+  "productionReadyReason": "Live html2canvas PDF page screenshots and browser print-CSS PDF comparison were not executed; Node vitest covers markup/mapping only.",
+  "testRun": {
+    "command": "npx vitest run src/features/reports/qa",
+    "files": [
+      "src/features/reports/qa/phase6Regression.test.ts",
+      "src/features/reports/qa/phase7DocumentFidelity.test.ts",
+      "src/features/reports/qa/phase7FinancialValidation.test.ts"
+    ],
+    "passed": 21,
+    "failed": 0,
+    "status": "verified_unit"
+  },
+  "buckets": {
+    "verified": [
+      {
+        "id": "entity_bound_hawb_no_cdn_sample",
+        "reportId": "HAWB_DRAFT_REPORT_FORMAT_1",
+        "check": "entityBound Generate must not prefer CDN sample",
+        "status": "pass",
+        "evidence": "shouldPreferOfficialSamplePdf({ entityBound: true }) === false"
+      },
+      {
+        "id": "entity_bound_generate_no_sample_substitute",
+        "reportId": "HAWB_DRAFT_REPORT_FORMAT_1",
+        "check": "entity-bound path skips official sample preference",
+        "status": "pass",
+        "evidence": "preferOfficialSamplePdf gate; unbound browse still true"
+      },
+      {
+        "id": "arrival_format_11_alias",
+        "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_11",
+        "check": "Format-11+ resolves to intended Format-1 Jasper shell",
+        "status": "pass",
+        "evidence": "getArrivalNoticeFormatUiLayout aliases to ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER; paper matches",
+        "affectedFile": "src/features/reports/data/arrivalNoticeFormatUiLayouts.ts"
+      },
+      {
+        "id": "no_invented_ledger_balances",
+        "reportId": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT",
+        "check": "No invented opening/closing balances",
+        "status": "pass",
+        "evidence": "openingBalance/closingBalance undefined when fixture omits them"
+      },
+      {
+        "id": "no_invented_delivery_instructions",
+        "reportId": "DELIVERY_ORDER_REPORT_FORMAT_10",
+        "check": "No invented delivery instructions from commodity",
+        "status": "pass",
+        "evidence": "deliveryInstructions undefined when only commodity supplied"
+      },
+      {
+        "id": "no_invented_vat_entity_bound",
+        "reportId": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+        "check": "No invented VAT for entity-bound invoices",
+        "status": "pass",
+        "evidence": "vatAmount === 0 when tax omitted and entityBound"
+      },
+      {
+        "id": "original_final_pack_hints",
+        "reportId": "HBL/HAWB originals",
+        "check": "Correct original/final pack hints",
+        "status": "pass",
+        "evidence": "preferredHblHawbPackKeyHint regression assertions"
+      },
+      {
+        "id": "purchase_invoice_enrichment",
+        "reportId": "PURCHASE_INVOICE_REPORT_FORMAT_1",
+        "check": "Purchase invoice template enrichment",
+        "status": "pass",
+        "evidence": "templateFamily purchase_invoice; templateType invoice.purchase"
+      },
+      {
+        "id": "mawb_distinct_from_hawb",
+        "reportId": "MAWB_DRAFT_REPORT_FORMAT",
+        "check": "MAWB template distinct from HAWB",
+        "status": "pass",
+        "evidence": "data-report-template mawb.standard vs hawb.*; consolidator / MAWB NUMBER chrome"
+      },
+      {
+        "id": "purchase_quote_voucher_faces",
+        "reportId": "PURCHASE_INVOICE_REPORT_FORMAT_1,QUOTATION_REPORT_FORMAT_1,PAYMENT_VOUCHER_REPORT_FORMAT_1,RECEIPT_VOUCHER_REPORT_FORMAT_1",
+        "check": "Document-specific layouts (not generic invoice clones)",
+        "status": "pass",
+        "evidence": "purchase_invoice.ap / quotation.offer / voucher.payment|receipt markers"
+      },
+      {
+        "id": "financial_pass_through",
+        "reportId": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+        "check": "Subtotal/tax/discount/total/currency pass-through",
+        "status": "pass",
+        "evidence": "phase7FinancialValidation.test.ts"
+      },
+      {
+        "id": "arrival_print_css_html_structure",
+        "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+        "check": "Print-CSS pilot HTML has @page A4 + repeating thead",
+        "status": "pass",
+        "evidence": "buildArrivalNoticePrintHtml unit assertions (not printed PDF)"
+      }
+    ],
+    "blocked": [
+      {
+        "id": "live_html2canvas_pdf_matrix",
+        "reportIds": [
+          "HBL_DRAFT_REPORT_FORMAT_11",
+          "HAWB_DRAFT_REPORT_FORMAT_1",
+          "MAWB_DRAFT_REPORT_FORMAT",
+          "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+          "PURCHASE_INVOICE_REPORT_FORMAT_1",
+          "QUOTATION_REPORT_FORMAT_1",
+          "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+          "DELIVERY_ORDER_REPORT_FORMAT_10",
+          "CARGO_MANIFEST_REPORT_FORMAT",
+          "PAYMENT_VOUCHER_REPORT_FORMAT_1",
+          "RECEIPT_VOUCHER_REPORT_FORMAT_1",
+          "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT",
+          "PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE",
+          "DAILY_STATUS_REPORT_FORMAT_1"
+        ],
+        "check": "Generate PDF via html2canvas and capture page screenshots",
+        "status": "blocked",
+        "reason": "No browser automation harness in this Phase 7 Node vitest pass",
+        "severity": "high",
+        "proposedCorrection": "Run Playwright/manual catalog Generate per fixture; store per-page PNG under qa/artifacts/; fill visual checklist in PHASE7_LIVE_PDF_TEST_RESULTS.md"
+      },
+      {
+        "id": "arrival_print_css_vs_html2canvas_visual",
+        "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+        "check": "Side-by-side printed print-CSS PDF vs html2canvas PDF",
+        "status": "blocked",
+        "reason": "Pilot HTML verified only; no print-to-PDF artifact",
+        "severity": "medium",
+        "proposedCorrection": "Browser-print pilot HTML and compare footer/header/table-header behavior to html2canvas capture"
+      },
+      {
+        "id": "live_backend_financial_reconcile",
+        "reportId": "entity-bound invoices/ledgers",
+        "check": "Compare report totals to live backend entity values",
+        "status": "blocked",
+        "reason": "Sanitized fixtures only; no staging API fetch",
+        "severity": "high",
+        "proposedCorrection": "Capture sanitized real responses into fixtures; assert mapper output equals source JSON fields"
+      }
+    ],
+    "untested": [
+      {
+        "id": "fresa_cdn_mawb_pixel_parity",
+        "reportId": "MAWB_DRAFT_REPORT_FORMAT",
+        "check": "Pixel/Fresa sample parity for MAWB",
+        "status": "untested",
+        "reason": "No verified distinct Fresa MAWB sample claimed in mapping notes"
+      },
+      {
+        "id": "nonzero_discount_entity_path",
+        "reportId": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+        "check": "Non-zero discount pass-through",
+        "status": "untested",
+        "reason": "Fixture discount is 0.00; API must supply discount"
+      },
+      {
+        "id": "font_logo_missing_under_cdn_failure",
+        "reportId": "*",
+        "check": "Missing fonts / logos under failed asset load",
+        "status": "untested",
+        "reason": "Requires live PDF screenshots with intentional asset failure"
+      }
+    ]
+  },
+  "failures": [
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_11",
+      "affectedFile": "src/features/reports/data/arrivalNoticeFormatUiLayouts.ts",
+      "issue": "Phase 6 alias target ARRIVAL_NOTICE_REPORT_FORMAT_1 does not exist in arrival JSON store; getArrivalNoticeFormatUiLayout returned undefined",
+      "evidence": "vitest failure before fix; store key is ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+      "severity": "high",
+      "proposedCorrection": "Resolve Format-N / bare FORMAT_1 to Jasper Format-1 shell",
+      "status": "fixed_in_phase7",
+      "introducedByRecentModernization": false
+    }
+  ],
+  "deliverables": [
+    "src/features/reports/qa/PHASE7_DOCUMENT_FIDELITY.md",
+    "src/features/reports/qa/PHASE7_LIVE_PDF_TEST_RESULTS.md",
+    "src/features/reports/qa/PHASE7_FINANCIAL_VALIDATION.md",
+    "src/features/reports/qa/PHASE7_REGRESSION_RESULTS.json"
+  ]
+}
