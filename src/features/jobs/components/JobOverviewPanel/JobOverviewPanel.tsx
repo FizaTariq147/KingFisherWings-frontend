@@ -78,6 +78,10 @@ export function JobOverviewPanel({ job }: { job: Job }) {
     () => pickOrgByType(orgsQuery.data, 'CLIENT'),
     [orgsQuery.data],
   );
+  const customerOrg = useMemo(
+    () => pickOrgByType(orgsQuery.data, 'CUSTOMER'),
+    [orgsQuery.data],
+  );
   const billingOrg = useMemo(
     () => pickOrgByType(orgsQuery.data, 'BILLING_PARTY'),
     [orgsQuery.data],
@@ -87,6 +91,7 @@ export function JobOverviewPanel({ job }: { job: Job }) {
     [orgsQuery.data],
   );
   const clientLabel = resolveOrgPartyDisplay(clientOrg).label;
+  const customerLabel = resolveOrgPartyDisplay(customerOrg).label;
   const shipperLabel = resolveOrgPartyDisplay(
     shipperOrg,
     labels.shipperLabel,
@@ -210,6 +215,12 @@ export function JobOverviewPanel({ job }: { job: Job }) {
           label="Client"
           value={clientLabel !== '—' ? clientLabel : undefined}
         />
+        {customerOrg ? (
+          <Row
+            label="Customer"
+            value={customerLabel !== '—' ? customerLabel : undefined}
+          />
+        ) : null}
         <Row
           label="Shipper"
           value={shipperLabel !== '—' ? shipperLabel : undefined}

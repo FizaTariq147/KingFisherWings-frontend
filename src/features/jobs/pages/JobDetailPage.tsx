@@ -179,6 +179,11 @@ export default function JobDetailPage() {
     () => pickOrgByType(orgsQuery.data, 'CLIENT'),
     [orgsQuery.data],
   );
+  /** Deal customer — distinct from commercial CLIENT; only when BE linked CUSTOMER. */
+  const customerOrg = useMemo(
+    () => pickOrgByType(orgsQuery.data, 'CUSTOMER'),
+    [orgsQuery.data],
+  );
   const billingOrg = useMemo(
     () => pickOrgByType(orgsQuery.data, 'BILLING_PARTY'),
     [orgsQuery.data],
@@ -337,10 +342,14 @@ export default function JobDetailPage() {
     },
   );
 
-  // Parties tab orgs are source of truth — job.shipper_id often holds the commercial client.
+  // Parties tab orgs are source of truth — CLIENT ≠ CUSTOMER (deal customer).
   const clientDisplay = useMemo(
     () => resolveOrgPartyDisplay(clientOrg),
     [clientOrg],
+  );
+  const customerDisplay = useMemo(
+    () => resolveOrgPartyDisplay(customerOrg),
+    [customerOrg],
   );
   const shipperDisplay = useMemo(
     () => resolveOrgPartyDisplay(shipperOrg, shipperLabel, job?.shipper_id),
@@ -714,6 +723,13 @@ export default function JobDetailPage() {
               value={clientDisplay.label}
               href={clientDisplay.href}
             />
+            {customerOrg ? (
+              <FresaReadonlyField
+                label="Customer"
+                value={customerDisplay.label}
+                href={customerDisplay.href}
+              />
+            ) : null}
             <FresaReadonlyField
               label="Shipper"
               value={shipperDisplay.label}

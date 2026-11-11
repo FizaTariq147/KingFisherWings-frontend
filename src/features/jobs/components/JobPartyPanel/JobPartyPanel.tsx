@@ -12,17 +12,19 @@ import { useJobTabResourceMutations } from '../../hooks/useJobTabResources';
 import type { Job } from '../../types/job.types';
 import { usePartyTypeCatalog } from '@/features/parties/hooks/useParties';
 import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTypeOptions';
-import { JOB_ORG_TYPES, JOB_PARTY_ROLES } from '@/features/shared/organizations/orgTypes';
+import { JOB_PARTY_ROLES } from '@/features/shared/organizations/orgTypes';
 import {
   normalizeOrganizationRows,
   orgPartyLabel,
 } from '@/features/shared/organizations/orgDisplay';
 import { PartyOrgSearchField } from '@/features/shared/organizations/PartyOrgSearchField';
+import {
+  orgTypeLabel,
+  resolveOrgTypeOptions,
+} from '@/features/shared/organizations/resolveOrgTypeOptions';
 import { JobSearchSelect } from '@/features/shared/entity-search';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 
-/** Matches AddJobOrganizationDto.org_type (includes Vendor). */
-const ORG_TYPES = JOB_ORG_TYPES;
 const PARTY_ROLES = JOB_PARTY_ROLES;
 
 const REFERENCE_TYPES = [
@@ -70,7 +72,7 @@ export function JobPartyPanel({
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  // Party-type catalog for "create party" only — Org type stays JOB_ORG_TYPES (roles).
+  // Party-type catalog for "create party" only — separate from org roles.
   const typesQuery = usePartyTypeCatalog(true);
   const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
   const rows = useMemo(() => {
@@ -78,6 +80,11 @@ export function JobPartyPanel({
     if (fromOrgs.length) return fromOrgs;
     return normalizeOrganizationRows(tabQuery.data);
   }, [orgsQuery.data, tabQuery.data]);
+  // Prefer backend org_types catalog; CLIENT and CUSTOMER stay separate.
+  const orgTypeOptions = useMemo(
+    () => resolveOrgTypeOptions(orgsQuery.data, tabQuery.data),
+    [orgsQuery.data, tabQuery.data],
+  );
 
   const run = async (fn: () => Promise<unknown>, success: string) => {
     setError(null);
@@ -167,7 +174,7 @@ export function JobPartyPanel({
                 >
                   <div className="min-w-0">
                     <p className="text-[11px] font-semibold uppercase tracking-wide text-[#64748b]">
-                      {label.orgType.replaceAll('_', ' ')}
+                      {orgTypeLabel(label.orgType)}
                     </p>
                     <p className="truncate font-medium text-[#0f172a]">
                       {label.primary}
@@ -206,15 +213,24 @@ export function JobPartyPanel({
             <span className="mb-1 block text-[12px] font-medium text-[#334155]">Org type</span>
             <select
               className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
-              value={orgType}
+              value={
+                orgTypeOptions.some((o) => o.code === orgType)
+                  ? orgType
+                  : orgTypeOptions[0]?.code || orgType
+              }
               onChange={(e) => setOrgType(e.target.value)}
             >
-              {ORG_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {t.replaceAll('_', ' ')}
+              {orgTypeOptions.map((opt) => (
+                <option key={opt.code} value={opt.code}>
+                  {opt.label}
                 </option>
               ))}
             </select>
+            {orgTypeOptions.some((o) => o.fromBackend) ? (
+              <span className="mt-0.5 block text-[10px] text-[#94a3b8]">
+                Types from organizations API · Client and Customer are separate
+              </span>
+            ) : null}
           </label>
           <PartyOrgSearchField
             jobId={job.id}
@@ -396,7 +412,7 @@ export function JobPartyPanel({
             >
               {PARTY_ROLES.map((r) => (
                 <option key={r} value={r}>
-                  {r.replaceAll('_', ' ')}
+                  {orgTypeLabel(r)}
                 </option>
               ))}
             </select>
