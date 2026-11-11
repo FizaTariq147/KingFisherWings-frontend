@@ -24,6 +24,7 @@ import { parseCatalogFamiliesParam } from '../utils/moduleCatalogFamily';
 import { hasReportEntityContext } from '../utils/reportParameterUtils';
 import { templateCompatibleWithEntityContext } from '../utils/reportContextCompatibility';
 import { isClientLayoutFallbackEnabled } from '../utils/clientLayoutFallback';
+import { hasCatalogLayoutPdf } from '../utils/generateCatalogLayoutPdf';
 import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
 import { FresaSamplePageTable } from '../components/ReportCatalog/FresaSamplePageTable';
 import {
@@ -995,9 +996,11 @@ export default function ReportCatalogPage() {
   const hasAccountsLayout = isAccountsSelected && hasAccountsFormatUiLayout(selectedCode);
   const hasWmsLayout = isWmsSelected && hasWmsFormatUiLayout(selectedCode);
   const hasArrivalNoticeLayout =
-    isArrivalNoticeSelected && hasArrivalNoticeFormatUiLayout(selectedCode);
+    isArrivalNoticeSelected &&
+    (hasArrivalNoticeFormatUiLayout(selectedCode) || hasCatalogLayoutPdf(selectedCode));
   const hasDeliveryOrderLayout =
-    isDeliveryOrderSelected && hasDeliveryOrderFormatUiLayout(selectedCode);
+    isDeliveryOrderSelected &&
+    (hasDeliveryOrderFormatUiLayout(selectedCode) || hasCatalogLayoutPdf(selectedCode));
   // HAWB preview uses official sample PDF (not JSON shell as primary).
   const hasHawbLayout = isHawbSelected && Boolean(getHawbFormatSpec(selectedCode));
   // HBL preview uses sample-PDF / classic family path (not JSON shell layouts).

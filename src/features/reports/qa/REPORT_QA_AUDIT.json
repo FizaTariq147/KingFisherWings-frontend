@@ -1,0 +1,714 @@
+{
+  "generatedAt": "2026-11-11T05:10:12.575Z",
+  "phase": 6,
+  "scope": "Freightnest Reporting Production QA and Fresa Fidelity Audit",
+  "evidenceOnly": true,
+  "inventory": {
+    "registryReports": 852,
+    "uniqueJsonLayoutObjects": 795,
+    "layoutStores": {
+      "hblFormatUiLayouts": 113,
+      "hawbFormatUiLayouts": 5,
+      "invoiceFormatUiLayouts": 82,
+      "accountsFormatUiLayouts": 95,
+      "wmsFormatUiLayouts": 61,
+      "arrivalNoticeFormatUiLayouts": 31,
+      "deliveryOrderFormatUiLayouts": 42,
+      "opsListFormatUiLayouts": 108,
+      "otherReportsFormatUiLayouts": 80,
+      "quotationFormatUiLayouts": 15,
+      "commercialExtraFormatUiLayouts": 37,
+      "seaDocsExtraFormatUiLayouts": 43,
+      "leftoverFormatUiLayouts": 83
+    },
+    "missingExactJsonObjects": 63,
+    "orphanJsonObjectsNotInRegistry": 6,
+    "orphanCodes": [
+      {
+        "code": "FG_HBL_FORMAT_10",
+        "store": "hblFormatUiLayouts"
+      },
+      {
+        "code": "FG_HBL_FORMAT_14",
+        "store": "hblFormatUiLayouts"
+      },
+      {
+        "code": "FG_HBL_FORMAT_16",
+        "store": "hblFormatUiLayouts"
+      },
+      {
+        "code": "FG_HBL_FORMAT_20",
+        "store": "hblFormatUiLayouts"
+      },
+      {
+        "code": "CARGO_ARRIVAL_NOTICE_REPORT_FORMAT_1",
+        "store": "arrivalNoticeFormatUiLayouts"
+      },
+      {
+        "code": "DELIVERY_ORDER_REPORT_FORMAT_1",
+        "store": "deliveryOrderFormatUiLayouts"
+      }
+    ],
+    "intentionalSharingNote": "HBL Format-N extras alias to Format-11 / FG shells via hblFormatUiLayouts.ts; HAWB extras alias via hawbFormatUiLayouts.ts + sample CDN fallback. Not counted as errors when intentional.",
+    "packAllowListCoverage": {
+      "registryPackKeys": 26,
+      "packsMissingFromAllowList": [],
+      "allowListKeysUnusedByRegistry": [
+        "sea.hbl_original",
+        "air.hawb_final",
+        "commercial.invoice_shell",
+        "wms.asn_location",
+        "wms.asn_summary"
+      ]
+    }
+  },
+  "failures": [
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_11",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_12",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_13",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_14",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_15",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_16",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_17",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_18",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_19",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_20",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_21",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_22",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_23",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_24",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_25",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_26",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_27",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_28",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_29",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_30",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_31",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_32",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_33",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_34",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "ARRIVAL_NOTICE_REPORT_FORMAT_35",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "hasClientLayout true and layoutStore set but no JSON object and no getter alias (unlike HBL/HAWB)",
+      "severity": "high",
+      "recommendedCorrection": "Add arrivalNoticeFormatUiLayouts alias fallback (Format-11+ → Format-1) or unique JSON; or set hasClientLayout false until covered",
+      "category": "false_coverage_claim",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_10",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_11",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_12",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_13",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_14",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_15",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_16",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_17",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_18",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_19",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_20",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_21",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_22",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_23",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_24",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_25",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_26",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_27",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_3",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_4",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_5",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_6",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_7",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_8",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_DRAFT_REPORT_FORMAT_9",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_21",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_22",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_24",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_28",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_30",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_31",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_32",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_34",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_35",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_37",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_38",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_39",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "No unique JSON object; intentional shared-shell alias via getter (HBL/HAWB)",
+      "severity": "info",
+      "recommendedCorrection": "Keep intentional sharing; document in QA. Prefer template-v2/sample for distinctness",
+      "category": "intentional_layout_sharing",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "HAWB_* (entity-bound generate)",
+      "filePath": "src/features/reports/utils/generateCatalogLayoutPdf.ts",
+      "issue": "Official sample PDF preferred even when entityBound=true — reference sample can replace live transaction data for HAWB",
+      "severity": "critical",
+      "recommendedCorrection": "Skip CDN sample when entityBound; use template-v2 or pack with live mapped fields",
+      "category": "sample_replaces_live_data",
+      "introducedByRecentModernization": true
+    },
+    {
+      "reportId": "HBL/HAWB ORIGINAL packs",
+      "filePath": "src/features/reports/data/fresaReportRegistry.json",
+      "issue": "3 original/pre-printed codes still suggest *_draft packs (FG_HBL_ORIGINAL_FORMAT_87, HAWB_ORIGINAL_PRE_PRINTED_*)",
+      "severity": "medium",
+      "recommendedCorrection": "Update suggestedPackKey to sea.hbl_original / air.hawb_final (FE refine already prefers live original/final when exposed)",
+      "category": "original_final_pack_mismatch",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "purchase_invoice family",
+      "filePath": "src/features/reports/registry/enrichReportMeta.ts",
+      "issue": "templateTypeFor does not handle purchase_invoice (falls through to other.*); InvoiceTemplateDocument purchase mode is color/subtitle only",
+      "severity": "medium",
+      "recommendedCorrection": "Return invoice.purchase for purchase_invoice; keep structural distinctness as follow-up (not a rewrite)",
+      "category": "enrichment_bug",
+      "introducedByRecentModernization": true
+    },
+    {
+      "reportId": "DELIVERY_ORDER_*",
+      "filePath": "src/features/reports/mappings/fromCatalogPdfData.ts",
+      "issue": "deliveryInstructions mapped from data.commodity — misuses cargo commodity as delivery instructions",
+      "severity": "medium",
+      "recommendedCorrection": "Leave deliveryInstructions undefined unless a real API field exists; do not invent",
+      "category": "mapping_defect",
+      "introducedByRecentModernization": true
+    },
+    {
+      "reportId": "ledger / financial_statement",
+      "filePath": "src/features/reports/mappings/fromCatalogPdfData.ts",
+      "issue": "openingBalance/closingBalance inferred from table cell heuristics; resolveCatalogContextPdfData has no debit/credit/opening/closing fields",
+      "severity": "high",
+      "recommendedCorrection": "Only display balances when API provides them; otherwise show N/A when entityBound — do not invent running balance math on FE",
+      "category": "financial_correctness",
+      "introducedByRecentModernization": true
+    },
+    {
+      "reportId": "invoiceFormatToInvoicePdfModel",
+      "filePath": "src/features/reports/utils/invoiceFormatToInvoicePdfModel.ts",
+      "issue": "discount hardcoded to 0; VAT may be recomputed from vatRate when tax missing — can diverge from backend totals",
+      "severity": "high",
+      "recommendedCorrection": "Pass through backend discount/tax/total only; never recompute tax when entityBound without backend tax",
+      "category": "financial_correctness",
+      "introducedByRecentModernization": false
+    },
+    {
+      "reportId": "MAWB_*",
+      "filePath": "src/features/reports/engines/preview/renderTemplateV2Pdf.ts",
+      "issue": "mawb family renders HawbTemplateDocument — MAWB not visually distinct from HAWB",
+      "severity": "medium",
+      "recommendedCorrection": "Add MawbTemplateDocument or explicit MAWB chrome variant (follow-up; not Phase-6 rewrite)",
+      "category": "visual_collapse",
+      "introducedByRecentModernization": true
+    },
+    {
+      "reportId": "quotation / purchase_invoice / voucher",
+      "filePath": "src/features/reports/templates/",
+      "issue": "Template-v2 quotation/purchase/voucher share commercial invoice ChargesTable DNA (title/color differences only for purchase)",
+      "severity": "medium",
+      "recommendedCorrection": "Tracked as known visual debt; do not mass-rewrite in Phase 6 — prioritize DO/manifest/HAWB sample path which are distinct",
+      "category": "visual_collapse",
+      "introducedByRecentModernization": true
+    }
+  ],
+  "summary": {
+    "critical": 1,
+    "high": 27,
+    "medium": 5,
+    "info": 38,
+    "productionReady": false,
+    "productionReadyReason": "Critical: HAWB entity-bound generate can emit CDN sample instead of live data; financial mappings incomplete for discount/balances; arrival Format-11+ false coverage without alias"
+  }
+}

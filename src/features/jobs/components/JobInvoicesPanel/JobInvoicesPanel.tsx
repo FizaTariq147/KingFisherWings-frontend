@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -9,6 +9,9 @@ import { InvoiceStatusBadge } from '@/features/invoices/components/InvoiceStatus
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import { invoiceDisplayNumber } from '@/features/invoices/utils/normalizeInvoice';
 import type { Invoice } from '@/features/invoices/types/invoice.types';
+import { PURCHASE_INVOICE_ROUTE_PREFIX } from '@/features/purchaseInvoices/api/purchaseInvoice.api';
+import { usePurchaseInvoices } from '@/features/purchaseInvoices/hooks/usePurchaseInvoices';
+import { purchaseInvoiceDisplayNumber } from '@/features/purchaseInvoices/utils/normalizePurchaseInvoice';
 import type { Job } from '@/features/jobs/types/job.types';
 import { isUuid } from '@/lib/isUuid';
 import {
@@ -24,6 +27,17 @@ interface JobInvoicesPanelProps {
   highlightInvoiceId?: string;
 }
 
+type JobInvoiceRow = {
+  kind: 'sale' | 'purchase';
+  id: string;
+  label: string;
+  status: string;
+  currency_code?: string;
+  total_amount?: number;
+  linesCount?: number;
+  job_id?: string;
+};
+
 export function JobInvoicesPanel({
   jobId,
   job,
@@ -31,6 +45,18 @@ export function JobInvoicesPanel({
 }: JobInvoicesPanelProps) {
   const enabled = isUuid(jobId);
   const { data, isLoading, isFetching, isError, error, refetch } = useInvoices({
+    job_id: enabled ? jobId : undefined,
+    page: 1,
+    limit: 20,
+  });
+  const {
+    data: purchaseData,
+    isLoading: purchaseLoading,
+    isFetching: purchaseFetching,
+    isError: purchaseError,
+    error: purchaseErr,
+    refetch: refetchPurchase,
+  } = usePurchaseInvoices({
     job_id: enabled ? jobId : undefined,
     page: 1,
     limit: 20,
@@ -46,16 +72,41 @@ export function JobInvoicesPanel({
   const shipperId = job?.shipper_id || job?.billing_party_id;
 
   const invoicesFromJob = data?.invoices ?? [];
-  const merged = (() => {
+  const purchaseFromJob = purchaseData?.purchaseInvoices ?? [];
+
+  const salesMerged = useMemo(() => {
     const map = new Map<string, Invoice>();
     for (const inv of [...invoicesFromJob, ...extraInvoices]) {
       if (inv?.id && isUuid(inv.id)) map.set(inv.id, inv);
     }
-    if (highlightInvoiceId && isUuid(highlightInvoiceId) && !map.has(highlightInvoiceId)) {
-      // Placeholder until refetch — keep highlight visible after create.
-    }
     return Array.from(map.values());
-  })();
+  }, [invoicesFromJob, extraInvoices]);
+
+  const rows: JobInvoiceRow[] = useMemo(() => {
+    const saleRows: JobInvoiceRow[] = salesMerged.map((inv) => ({
+      kind: 'sale',
+      id: inv.id,
+      label: invoiceDisplayNumber(inv),
+      status: String(inv.status ?? ''),
+      currency_code: inv.currency_code,
+      total_amount: inv.total_amount,
+      linesCount: inv.lines?.length,
+      job_id: inv.job_id,
+    }));
+    const purchaseRows: JobInvoiceRow[] = purchaseFromJob
+      .filter((inv) => isUuid(inv.id))
+      .map((inv) => ({
+        kind: 'purchase' as const,
+        id: inv.id,
+        label: purchaseInvoiceDisplayNumber(inv),
+        status: String(inv.status ?? ''),
+        currency_code: inv.currency_code,
+        total_amount: inv.total_amount,
+        linesCount: inv.lines?.length,
+        job_id: inv.job_id,
+      }));
+    return [...saleRows, ...purchaseRows];
+  }, [salesMerged, purchaseFromJob]);
 
   const linkInvoice = useCallback(
     async (invoiceId: string) => {
@@ -126,6 +177,16 @@ export function JobInvoicesPanel({
     setSaleFormSource(source);
   };
 
+  const refreshAll = () => {
+    void recoverOrphanInvoices();
+    void refetch();
+    void refetchPurchase();
+  };
+
+  const listLoading = (isLoading || purchaseLoading) && rows.length === 0;
+  const listError = (isError || purchaseError) && rows.length === 0;
+  const listFetching = isFetching || purchaseFetching;
+
   return (
     <Card>
       <CardHeader className="flex flex-row items-center justify-between gap-2">
@@ -155,22 +216,19 @@ export function JobInvoicesPanel({
             type="button"
             variant="secondary"
             size="sm"
-            disabled={!enabled || isFetching || busy}
-            onClick={() => {
-              void recoverOrphanInvoices();
-              void refetch();
-            }}
+            disabled={!enabled || listFetching || busy}
+            onClick={refreshAll}
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${isFetching ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${listFetching ? 'animate-spin' : ''}`} />
             Refresh
           </Button>
         </div>
       </CardHeader>
       <div className="space-y-3 px-4 pb-4">
         <p className="text-xs text-[var(--color-neutral-500)]">
-          Customer invoices linked to this job. Generate from quotation uses quotation revenue
-          lines; generate from job uses costing sale amounts only (no silent quotation fallback).
-          Auto-created invoices from booking Mark complete also appear here.
+          Sales and purchase invoices linked to this job. Generate from quotation uses quotation
+          revenue lines; generate from job uses costing sale amounts only. Purchase invoices from
+          the Costing tab also appear here.
         </p>
         {actionMsg ? (
           <p className="text-sm text-[var(--color-success-700)]">{actionMsg}</p>
@@ -180,13 +238,15 @@ export function JobInvoicesPanel({
         ) : null}
         {!enabled ? (
           <p className="text-sm text-[var(--color-neutral-400)]">Invalid job id.</p>
-        ) : isLoading && merged.length === 0 ? (
+        ) : listLoading ? (
           <p className="text-sm text-[var(--color-neutral-400)]">Loading invoices…</p>
-        ) : isError && merged.length === 0 ? (
+        ) : listError ? (
           <p className="text-sm text-[var(--color-danger-600)]">
-            {error instanceof Error ? error.message : 'Could not load invoices.'}
+            {(error instanceof Error ? error.message : null) ||
+              (purchaseErr instanceof Error ? purchaseErr.message : null) ||
+              'Could not load invoices.'}
           </p>
-        ) : merged.length === 0 ? (
+        ) : rows.length === 0 ? (
           <div className="space-y-2">
             <p className="text-sm text-[var(--color-neutral-400)]">
               No invoices for this job yet.
@@ -211,23 +271,32 @@ export function JobInvoicesPanel({
           </div>
         ) : (
           <ul className="divide-y divide-[var(--color-neutral-100)] rounded-md border border-[var(--color-neutral-200)]">
-            {merged.map((inv) => {
+            {rows.map((inv) => {
               const highlighted =
                 highlightInvoiceId && isUuid(highlightInvoiceId) && inv.id === highlightInvoiceId;
+              const href =
+                inv.kind === 'purchase'
+                  ? `${PURCHASE_INVOICE_ROUTE_PREFIX}/${inv.id}`
+                  : `${INVOICE_ROUTE_PREFIX}/${inv.id}`;
               return (
                 <li
-                  key={inv.id}
+                  key={`${inv.kind}-${inv.id}`}
                   className={`flex flex-wrap items-center justify-between gap-2 px-3 py-2.5 text-sm ${
                     highlighted ? 'bg-emerald-50' : 'bg-white'
                   }`}
                 >
                   <div className="min-w-0 space-y-0.5">
-                    <Link
-                      to={`${INVOICE_ROUTE_PREFIX}/${inv.id}`}
-                      className="font-medium text-[var(--color-primary-600)] underline"
-                    >
-                      {invoiceDisplayNumber(inv)}
-                    </Link>
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Link
+                        to={href}
+                        className="font-medium text-[var(--color-primary-600)] underline"
+                      >
+                        {inv.label}
+                      </Link>
+                      <span className="rounded-sm bg-[var(--color-neutral-100)] px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-[var(--color-neutral-600)]">
+                        {inv.kind === 'purchase' ? 'Purchase' : 'Sales'}
+                      </span>
+                    </div>
                     <div className="flex flex-wrap items-center gap-2 text-xs text-[var(--color-neutral-500)]">
                       <InvoiceStatusBadge status={inv.status} />
                       {inv.currency_code && inv.total_amount != null ? (
@@ -239,18 +308,18 @@ export function JobInvoicesPanel({
                           })}
                         </span>
                       ) : null}
-                      {inv.lines?.length ? (
+                      {inv.linesCount ? (
                         <span>
-                          {inv.lines.length} line{inv.lines.length === 1 ? '' : 's'}
+                          {inv.linesCount} line{inv.linesCount === 1 ? '' : 's'}
                         </span>
                       ) : null}
-                      {!inv.job_id ? (
+                      {inv.kind === 'sale' && !inv.job_id ? (
                         <span className="text-amber-700">Not linked to job yet</span>
                       ) : null}
                     </div>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
-                    {!inv.job_id || inv.job_id !== jobId ? (
+                    {inv.kind === 'sale' && (!inv.job_id || inv.job_id !== jobId) ? (
                       <Button
                         type="button"
                         variant="secondary"
@@ -273,7 +342,7 @@ export function JobInvoicesPanel({
                       </Button>
                     ) : null}
                     <Link
-                      to={`${INVOICE_ROUTE_PREFIX}/${inv.id}`}
+                      to={href}
                       className="text-xs font-medium text-[var(--color-primary-600)] underline"
                     >
                       Open
@@ -301,6 +370,7 @@ export function JobInvoicesPanel({
             );
             setActionError(null);
             void refetch();
+            void refetchPurchase();
             void recoverOrphanInvoices();
           }}
         />

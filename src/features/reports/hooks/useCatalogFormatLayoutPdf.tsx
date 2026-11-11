@@ -3,12 +3,14 @@ import { PdfViewerModal } from '@/features/files/components/PdfViewerModal';
 import { usePdfViewer } from '@/features/files/hooks/usePdfViewer';
 import type { InvoiceFormatPreview } from '../types/invoiceFormatPreview.types';
 import { generateInvoiceFormatLayoutPdf } from '../utils/generateInvoiceFormatLayoutPdf';
+import { generateCatalogLayoutPdf } from '../utils/generateCatalogLayoutPdf';
 import {
   catalogContextCacheKey,
   resolveCatalogContextPdfData,
 } from '../utils/resolveCatalogContextPdfData';
 import type { ReportContextIds } from '../utils/reportParameterUtils';
 import { resolveReportOrgChrome } from '../utils/resolveReportOrgChrome';
+import { supportsTemplateV2 } from '../engines/preview/renderTemplateV2Pdf';
 
 type UseCatalogFormatLayoutPdfArgs = {
   autoOpen?: boolean;
@@ -65,18 +67,26 @@ export function useCatalogFormatLayoutPdf({
               (contextKey ? 'live record' : null);
             setBoundLabel(label ? `Bound to ${label}` : null);
           }
-          return generateInvoiceFormatLayoutPdf(
-            preview,
-            {
-              ...data,
-              companyName: data.companyName || orgChrome.company,
-              companyAddress: data.companyAddress || orgChrome.address,
-              companyWeb: data.companyWeb || orgChrome.web,
-              companyPhone: data.companyPhone || orgChrome.phone,
-              companyEmail: data.companyEmail || orgChrome.email,
-            },
-            { chrome: orgChrome, logoUrl: orgChrome.logoUrl },
-          );
+          const merged = {
+            ...data,
+            companyName: data.companyName || orgChrome.company,
+            companyAddress: data.companyAddress || orgChrome.address,
+            companyWeb: data.companyWeb || orgChrome.web,
+            companyPhone: data.companyPhone || orgChrome.phone,
+            companyEmail: data.companyEmail || orgChrome.email,
+          };
+          // Specialized template-v2 documents before generic JSON charge-table DNA.
+          if (supportsTemplateV2(previewCode)) {
+            const generated = await generateCatalogLayoutPdf(previewCode, merged, {
+              logoUrl: orgChrome.logoUrl,
+              preferTemplateV2: true,
+            });
+            if (generated) return generated.blob;
+          }
+          return generateInvoiceFormatLayoutPdf(preview, merged, {
+            chrome: orgChrome,
+            logoUrl: orgChrome.logoUrl,
+          });
         },
         { fileName, title: title || preview.name },
       )

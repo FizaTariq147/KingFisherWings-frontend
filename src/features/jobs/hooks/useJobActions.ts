@@ -1,4 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { invoiceKeys } from '@/features/invoices/hooks/useInvoices';
+import { purchaseInvoiceKeys } from '@/features/purchaseInvoices/hooks/usePurchaseInvoices';
 import { jobService } from '../services/job.service';
 import type {
   ChangeJobStatusDto,
@@ -241,7 +243,10 @@ export function useJobActions(jobId: string) {
       dto?: CreateJobInvoiceFromCostingDto | JobInvoiceFormSaveDto;
       file?: File | null;
     } = {}) => jobService.createSaleInvoiceFromJob(id, dto, file),
-    onSuccess: () => invalidate(id),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: invoiceKeys.all });
+    },
   });
   const createPurchaseInvoiceFromJob = useMutation({
     mutationFn: ({
@@ -251,7 +256,10 @@ export function useJobActions(jobId: string) {
       dto?: CreateJobInvoiceFromCostingDto | JobInvoiceFormSaveDto;
       file?: File | null;
     } = {}) => jobService.createPurchaseInvoiceFromJob(id, dto, file),
-    onSuccess: () => invalidate(id),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: purchaseInvoiceKeys.all });
+    },
   });
   const generateBulkPurchaseInvoice = useMutation({
     mutationFn: (dto: CreateJobInvoiceFromCostingDto = {}) =>
@@ -261,6 +269,7 @@ export function useJobActions(jobId: string) {
       void queryClient.invalidateQueries({
         queryKey: jobKeys.purchaseBulkPreview(id),
       });
+      void queryClient.invalidateQueries({ queryKey: purchaseInvoiceKeys.all });
     },
   });
   const generateJobEdi = useMutation({

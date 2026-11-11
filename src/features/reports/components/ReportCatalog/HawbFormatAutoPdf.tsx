@@ -19,8 +19,9 @@ type Props = {
 };
 
 /**
- * HAWB catalogue preview: always prefer official Fresa sample PDF (distinct per
- * format). Shared JSON hawbAwbShell / backend HAWB_FORM only as last resort.
+ * HAWB catalogue preview: official Fresa sample when browsing (unbound).
+ * Entity-bound uses template-v2 with live mapped fields — samples must not
+ * replace transaction data (Phase 6 QA).
  */
 export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
   const spec = getHawbFormatSpec(code);
@@ -52,17 +53,25 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
               data.shipmentNumber ||
               data.referenceNo ||
               (contextKey ? 'live record' : null);
-            setBoundLabel(label ? `sample format · bound to ${label}` : 'official Fresa sample');
+            setBoundLabel(
+              data.entityBound
+                ? `live template · ${label || 'bound'}`
+                : label
+                  ? `sample format · ${label}`
+                  : 'official Fresa sample',
+            );
           }
 
-          try {
-            const { blob } = await generateHawbSamplePdf(spec.code, {
-              chrome: orgChrome,
-              appendCustomerTerms: true,
-            });
-            return blob;
-          } catch {
-            /* fall through */
+          if (!data.entityBound) {
+            try {
+              const { blob } = await generateHawbSamplePdf(spec.code, {
+                chrome: orgChrome,
+                appendCustomerTerms: true,
+              });
+              return blob;
+            } catch {
+              /* fall through */
+            }
           }
 
           const generated = await generateCatalogLayoutPdf(
@@ -75,11 +84,13 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
               companyPhone: data.companyPhone || orgChrome.phone,
               companyEmail: data.companyEmail || orgChrome.email,
             },
-            { logoUrl: orgChrome.logoUrl },
+            { logoUrl: orgChrome.logoUrl, preferTemplateV2: true },
           );
           if (!generated) {
             throw new Error(
-              'Could not load official HAWB sample PDF. Check /fresa-sample proxy, or this format has no distinct Fresa sample.',
+              data.entityBound
+                ? 'No HAWB live template for this format.'
+                : 'Could not load official HAWB sample PDF. Check /fresa-sample proxy, or this format has no distinct Fresa sample.',
             );
           }
           return generated.blob;

@@ -11,8 +11,12 @@
 export const REPORT_LAYOUT_FREEZE = {
   /** Stop adding new scraped JSON layouts for production generate. */
   freezeClientJsonLayouts: true,
-  /** Taxonomy + suggestedPackKey only — not a render engine. */
-  registryRole: 'taxonomy' as const,
+  /**
+   * Legacy JSON stays read-mostly. New visual work goes to
+   * `templates/*` + `registry/` enrichment (template-v2), not new scraped JSON.
+   */
+  registryRole: 'taxonomy_plus_enrichment' as const,
+  templateV2Path: 'src/features/reports/templates',
   completeCatalogPath: 'src/features/reports/data/fresaReportCatalogComplete.json',
 } as const;
 
