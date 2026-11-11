@@ -10,7 +10,7 @@ import {
 } from '../../hooks/useJobs';
 import { useJobTabResourceMutations } from '../../hooks/useJobTabResources';
 import type { Job } from '../../types/job.types';
-import { usePartyTypes } from '@/features/parties/hooks/useParties';
+import { usePartyTypeCatalog } from '@/features/parties/hooks/useParties';
 import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTypeOptions';
 import { JOB_ORG_TYPES, JOB_PARTY_ROLES } from '@/features/shared/organizations/orgTypes';
 import {
@@ -70,7 +70,8 @@ export function JobPartyPanel({
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const typesQuery = usePartyTypes(true);
+  // Party-type catalog for "create party" only — Org type stays JOB_ORG_TYPES (roles).
+  const typesQuery = usePartyTypeCatalog(true);
   const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
   const rows = useMemo(() => {
     const fromOrgs = normalizeOrganizationRows(orgsQuery.data);

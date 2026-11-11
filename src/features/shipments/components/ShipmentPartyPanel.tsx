@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { isUuid } from '@/lib/isUuid';
-import { usePartyTypes } from '@/features/parties/hooks/useParties';
+import { usePartyTypeCatalog } from '@/features/parties/hooks/useParties';
 import { resolvePartyTypeOptions } from '@/features/parties/utils/resolvePartyTypeOptions';
 import { JOB_ORG_TYPES } from '@/features/shared/organizations/orgTypes';
 import {
@@ -49,7 +49,7 @@ export function ShipmentPartyPanel({
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const typesQuery = usePartyTypes(true);
+  const typesQuery = usePartyTypeCatalog(true);
   const partyTypeOptions = resolvePartyTypeOptions(typesQuery.data);
   const rows = useMemo(() => {
     const fromOrgs = normalizeOrganizationRows(orgsQuery.data);

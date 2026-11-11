@@ -429,20 +429,25 @@ export function PublicTrackTimeline({
           l.mawbNumber ||
           l.hawbNumber,
       )
-      .map((l, i): VesselFlightRow => ({
-        id: l.id || `leg-${i}`,
-        vessel: l.vessel,
-        voyage: l.voyage,
-        flightNumber: l.flightNumber,
-        arrivalFlightNumber: l.arrivalFlightNumber,
-        mawbNumber: l.mawbNumber,
-        hawbNumber: l.hawbNumber,
-        imo: l.imo,
-        label: l.label || [l.from, l.to].filter(Boolean).join(' → '),
-        etd: l.etd,
-        eta: l.eta,
-        air: isAir || Boolean(l.flightNumber || l.mawbNumber || l.hawbNumber),
-      }));
+      .map((l, i): VesselFlightRow => {
+        const air =
+          isAir &&
+          Boolean(l.flightNumber || l.mawbNumber || l.hawbNumber || l.arrivalFlightNumber);
+        return {
+          id: l.id || `leg-${i}`,
+          vessel: l.vessel,
+          voyage: l.voyage,
+          flightNumber: air ? l.flightNumber : undefined,
+          arrivalFlightNumber: air ? l.arrivalFlightNumber : undefined,
+          mawbNumber: air ? l.mawbNumber : undefined,
+          hawbNumber: air ? l.hawbNumber : undefined,
+          imo: l.imo,
+          label: l.label || [l.from, l.to].filter(Boolean).join(' → '),
+          etd: l.etd,
+          eta: l.eta,
+          air,
+        };
+      });
     if (fromLegs.length) return fromLegs;
 
     if (
@@ -467,20 +472,23 @@ export function PublicTrackTimeline({
 
     const fromPoc = (route?.portOfCall ?? [])
       .filter((p) => p.vesselName || p.voyageNumber || p.flightNumber)
-      .map((p, i): VesselFlightRow => ({
-        id: p.id || `poc-v-${i}`,
-        vessel: p.vesselName,
-        voyage: p.voyageNumber,
-        flightNumber: p.flightNumber,
-        arrivalFlightNumber: p.arrivalFlightNumber,
-        mawbNumber: p.mawbNumber,
-        hawbNumber: p.hawbNumber,
-        imo: undefined,
-        label: [p.role, p.name].filter(Boolean).join(' · '),
-        etd: p.etd,
-        eta: p.eta,
-        air: isAir || Boolean(p.flightNumber),
-      }));
+      .map((p, i): VesselFlightRow => {
+        const air = isAir && Boolean(p.flightNumber || p.mawbNumber || p.hawbNumber);
+        return {
+          id: p.id || `poc-v-${i}`,
+          vessel: p.vesselName,
+          voyage: p.voyageNumber,
+          flightNumber: air ? p.flightNumber : undefined,
+          arrivalFlightNumber: air ? p.arrivalFlightNumber : undefined,
+          mawbNumber: air ? p.mawbNumber : undefined,
+          hawbNumber: air ? p.hawbNumber : undefined,
+          imo: undefined,
+          label: [p.role, p.name].filter(Boolean).join(' · '),
+          etd: p.etd,
+          eta: p.eta,
+          air,
+        };
+      });
     if (fromPoc.length) return fromPoc;
     const seen = new Set<string>();
     const fromMoves: VesselFlightRow[] = [];
@@ -489,18 +497,19 @@ export function PublicTrackTimeline({
       const key = `${m.vessel ?? ''}|${m.voyage ?? ''}|${m.flightNumber ?? ''}`;
       if (seen.has(key)) continue;
       seen.add(key);
+      const air = isAir && Boolean(m.flightNumber || m.mawbNumber || m.hawbNumber);
       fromMoves.push({
         id: m.id,
         vessel: m.vessel,
         voyage: m.voyage,
-        flightNumber: m.flightNumber,
-        mawbNumber: m.mawbNumber,
-        hawbNumber: m.hawbNumber,
+        flightNumber: air ? m.flightNumber : undefined,
+        mawbNumber: air ? m.mawbNumber : undefined,
+        hawbNumber: air ? m.hawbNumber : undefined,
         imo: undefined,
         label: m.location || m.move || m.label,
         etd: undefined,
         eta: undefined,
-        air: isAir || Boolean(m.flightNumber),
+        air,
       });
     }
     return fromMoves;
@@ -961,7 +970,7 @@ export function PublicTrackTimeline({
                               {m.description || m.summary}
                             </p>
                           ) : null}
-                          {m.flightNumber || m.mawbNumber || m.hawbNumber ? (
+                          {isAir && (m.flightNumber || m.mawbNumber || m.hawbNumber) ? (
                             <p className="mt-1 text-[12px]" style={{ color: C.text }}>
                               {[
                                 m.flightNumber ? `FLT ${m.flightNumber}` : null,
@@ -1091,18 +1100,18 @@ export function PublicTrackTimeline({
                     style={{ borderColor: C.border }}
                   >
                     <div className="flex items-start gap-3">
-                      {row.air || row.flightNumber ? (
+                      {row.air ? (
                         <Plane className="mt-0.5 h-5 w-5 shrink-0" style={{ color: C.badge }} />
                       ) : (
                         <Ship className="mt-0.5 h-5 w-5 shrink-0" style={{ color: C.badge }} />
                       )}
                       <div className="min-w-0">
                         <p className="text-[15px] font-bold" style={{ color: C.navy }}>
-                          {row.flightNumber
+                          {row.air && row.flightNumber
                             ? `Flight ${row.flightNumber}`
-                            : row.vessel || 'Vessel / Flight'}
+                            : row.vessel || (row.air ? 'Flight' : 'Vessel')}
                         </p>
-                        {row.flightNumber && row.vessel ? (
+                        {row.air && row.flightNumber && row.vessel ? (
                           <p className="text-[13px]" style={{ color: C.text }}>
                             {row.vessel}
                           </p>

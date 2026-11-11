@@ -25,8 +25,10 @@ function isCatalogItem(value: unknown): value is PartyTypeCatalogItem {
 }
 
 /**
- * Merge API GET /parties/types with local catalog. Always keeps VENDOR.
- * Prefer API catalog labels when available; unknown codes are still shown.
+ * Build party-type select options from GET /parties/types.
+ * When the API returns types, use those present/active codes only (plus VENDOR).
+ * Do not also append the full local PARTY_TYPES catalog on top of the API list.
+ * Local PARTY_TYPES is fallback only when the API list is empty.
  */
 export function resolvePartyTypeOptions(
   apiTypes?: Array<string | PartyTypeCatalogItem> | null,
@@ -34,17 +36,22 @@ export function resolvePartyTypeOptions(
   const labelByCode = new Map<string, string>();
   const metaByCode = new Map<string, Pick<PartyTypeOption, 'id' | 'is_system' | 'is_active'>>();
   const codes = new Set<string>();
+  let apiProvided = false;
 
   for (const entry of apiTypes ?? []) {
     if (typeof entry === 'string') {
       const code = normalizeCode(entry);
       if (!code) continue;
+      apiProvided = true;
       codes.add(code);
       continue;
     }
     if (!isCatalogItem(entry)) continue;
     const code = normalizeCode(entry.code);
     if (!code) continue;
+    // Skip soft-deactivated catalog rows when API sends the flag.
+    if (entry.is_active === false) continue;
+    apiProvided = true;
     codes.add(code);
     if (entry.label?.trim()) labelByCode.set(code, entry.label.trim());
     metaByCode.set(code, {
@@ -54,7 +61,9 @@ export function resolvePartyTypeOptions(
     });
   }
 
-  for (const t of PARTY_TYPES) codes.add(t);
+  if (!apiProvided) {
+    for (const t of PARTY_TYPES) codes.add(t);
+  }
   codes.add('VENDOR');
 
   const preferred = PARTY_TYPES.filter((t) => codes.has(t));
