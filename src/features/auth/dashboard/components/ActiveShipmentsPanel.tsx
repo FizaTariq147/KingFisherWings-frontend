@@ -559,7 +559,6 @@ export function ActiveShipmentsPanel({
                           >
                             {jobDisplayNumber(job)}
                           </Link>
-                          <p className="truncate text-[11px] text-[var(--color-neutral-500)]">{client}</p>
                           {visibleHints.length > 0 ? (
                             <p className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-[10px]">
                               {visibleHints.map((hint) => (
@@ -610,17 +609,17 @@ export function ActiveShipmentsPanel({
                       </div>
                     </td>
                     <td className="px-3 py-3 align-top">
-                      <p className="max-w-[140px] truncate text-[11px] text-[var(--color-neutral-700)]">
+                      <p className="min-w-[120px] max-w-[200px] whitespace-normal break-words text-[11px] text-[var(--color-neutral-700)]">
                         {client}
                       </p>
                     </td>
                     <td className="px-3 py-3 align-top">
-                      <p className="max-w-[140px] truncate text-[11px] text-[var(--color-neutral-700)]">
+                      <p className="min-w-[120px] max-w-[200px] whitespace-normal break-words text-[11px] text-[var(--color-neutral-700)]">
                         {shipper}
                       </p>
                     </td>
                     <td className="px-3 py-3 align-top">
-                      <p className="max-w-[140px] truncate text-[11px] text-[var(--color-neutral-700)]">
+                      <p className="min-w-[120px] max-w-[200px] whitespace-normal break-words text-[11px] text-[var(--color-neutral-700)]">
                         {consignee}
                       </p>
                     </td>
