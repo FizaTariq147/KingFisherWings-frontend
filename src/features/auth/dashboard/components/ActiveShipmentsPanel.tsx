@@ -462,18 +462,23 @@ export function ActiveShipmentsPanel({
         </div>
       ) : (
         <div className="overflow-x-auto">
-          <table className="w-full min-w-[1280px] text-left">
+          <table className="w-full min-w-[1480px] text-left">
             <thead className="bg-[var(--color-neutral-50)]">
               <tr className="text-[10px] font-semibold uppercase tracking-wide text-[var(--color-neutral-400)]">
                 <th className="w-10 px-4 py-2.5" />
                 <th className="px-3 py-2.5 font-semibold">Job</th>
                 <th className="px-3 py-2.5 font-semibold">Route</th>
                 <th className="px-3 py-2.5 font-semibold">Mode</th>
+                <th className="px-3 py-2.5 font-semibold">Client</th>
+                <th className="px-3 py-2.5 font-semibold">Shipper</th>
+                <th className="px-3 py-2.5 font-semibold">Consignee</th>
                 <th className="px-3 py-2.5 font-semibold">MAWB / HAWB</th>
                 <th className="px-3 py-2.5 font-semibold">Container</th>
                 <th className="px-3 py-2.5 font-semibold">Container status</th>
                 <th className="px-3 py-2.5 font-semibold">With dept</th>
+                <th className="px-3 py-2.5 font-semibold">ETD</th>
                 <th className="px-3 py-2.5 font-semibold">ETA</th>
+                <th className="px-3 py-2.5 font-semibold">Commodity</th>
                 <th className="px-3 py-2.5 font-semibold">Job status</th>
                 <th className="w-10 px-3 py-2.5" />
               </tr>
@@ -489,7 +494,14 @@ export function ActiveShipmentsPanel({
                 const hints = jobMetaHints(job);
                 const visibleHints = hints.slice(0, 2);
                 const extraHints = hints.length - visibleHints.length;
+                const etd = formatShortDate(job.etd || job.sea_fcl_details?.etd);
                 const eta = formatShortDate(job.eta || job.sea_fcl_details?.eta);
+                const shipper = job.shipper_name?.trim() || '—';
+                const consignee = job.consignee_name?.trim() || '—';
+                const commodity =
+                  job.commodity?.trim() ||
+                  job.commodity_description?.trim() ||
+                  '—';
                 const hydratedContainers =
                   job.containers?.length
                     ? job.containers
@@ -598,6 +610,21 @@ export function ActiveShipmentsPanel({
                       </div>
                     </td>
                     <td className="px-3 py-3 align-top">
+                      <p className="max-w-[140px] truncate text-[11px] text-[var(--color-neutral-700)]">
+                        {client}
+                      </p>
+                    </td>
+                    <td className="px-3 py-3 align-top">
+                      <p className="max-w-[140px] truncate text-[11px] text-[var(--color-neutral-700)]">
+                        {shipper}
+                      </p>
+                    </td>
+                    <td className="px-3 py-3 align-top">
+                      <p className="max-w-[140px] truncate text-[11px] text-[var(--color-neutral-700)]">
+                        {consignee}
+                      </p>
+                    </td>
+                    <td className="px-3 py-3 align-top">
                       {awb.mawb || awb.hawb ? (
                         <div className="min-w-[110px] space-y-0.5">
                           {awb.mawb ? (
@@ -655,7 +682,17 @@ export function ActiveShipmentsPanel({
                         {durationInDept(job.updated_at || job.created_at)}
                       </p>
                     </td>
-                    <td className="px-3 py-3 align-top text-sm text-[var(--color-neutral-700)]">{eta}</td>
+                    <td className="px-3 py-3 align-top text-sm text-[var(--color-neutral-700)]">
+                      {etd || '—'}
+                    </td>
+                    <td className="px-3 py-3 align-top text-sm text-[var(--color-neutral-700)]">
+                      {eta || '—'}
+                    </td>
+                    <td className="px-3 py-3 align-top">
+                      <p className="max-w-[160px] truncate text-[11px] text-[var(--color-neutral-700)]">
+                        {commodity}
+                      </p>
+                    </td>
                     <td className="px-3 py-3 align-top">
                       <span
                         className={cn(

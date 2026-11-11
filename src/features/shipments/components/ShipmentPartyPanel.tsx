@@ -166,7 +166,7 @@ export function ShipmentPartyPanel({
             </select>
             {orgTypeOptions.some((o) => o.fromBackend) ? (
               <span className="mt-0.5 block text-[10px] text-[#94a3b8]">
-                Types from organizations API · Client and Customer are separate
+            
               </span>
             ) : null}
           </label>
