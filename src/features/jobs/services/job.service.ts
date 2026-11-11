@@ -4574,10 +4574,18 @@ export const jobService = {
     return request(() => axiosInstance.post(JOB_API.dimensionsUploadPaste(id), body));
   },
 
-  /** GET /jobs/:id/organizations */
-  async listOrganizations(id: string): Promise<unknown[]> {
+  /**
+   * GET /jobs/:id/organizations — full envelope when present so org_types /
+   * available_org_types catalogs are preserved for the Party tab dropdown.
+   */
+  async listOrganizations(id: string): Promise<unknown> {
     assertId(id);
     const res = await withGatewayRetry(() => axiosInstance.get(JOB_API.organizations(id)));
+    const unwrapped = unwrapEntity(res.data) ?? res.data;
+    if (unwrapped && typeof unwrapped === 'object' && !Array.isArray(unwrapped)) {
+      return unwrapped;
+    }
+    if (Array.isArray(unwrapped)) return unwrapped;
     return unwrapList(res.data).items;
   },
 
