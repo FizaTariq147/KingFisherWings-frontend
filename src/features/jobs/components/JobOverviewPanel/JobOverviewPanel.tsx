@@ -190,6 +190,11 @@ export function JobOverviewPanel({ job }: { job: Job }) {
           hideWhenEmpty
         />
         <Row label="Service scope" value={job.service_scope} hideWhenEmpty />
+        <Row
+          label="Freight payable at"
+          value={humanValue(job.freight_payable_at)}
+          hideWhenEmpty
+        />
         <Row label="Freight terms" value={freightTerms} hideWhenEmpty />
         <Row
           label="Commodity description"
@@ -247,6 +252,7 @@ export function JobOverviewPanel({ job }: { job: Job }) {
         <Row label="Pieces" value={job.pieces} />
         <Row label="Gross weight" value={job.gross_weight} />
         <Row label="Chargeable weight" value={job.chargeable_weight} />
+        <Row label="Chargeable units" value={job.chargeable_units} />
         <Row label="Volume (CBM)" value={job.volume_cbm} />
         <Row label="Container type" value={labels.containerTypeLabel} />
         <Row label="Container count" value={job.container_count} />

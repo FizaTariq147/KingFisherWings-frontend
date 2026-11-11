@@ -527,7 +527,15 @@ export default function ShipmentDetailPage() {
             <p className={`${appType.pageSubtitle} mt-1`}>
               <span className="inline-flex flex-wrap items-center gap-2">
                 <OperationTypeBadge code={jobType} />
-                <StatusBadge status={shipment.status} />
+                <StatusBadge
+                  status={shipment.status}
+                  label={
+                    typeof shipment.status_label === 'string' &&
+                    shipment.status_label.trim()
+                      ? shipment.status_label
+                      : undefined
+                  }
+                />
                 {shipment.bl_status ? (
                   <StatusBadge status={shipment.bl_status} label={`BL: ${shipment.bl_status}`} />
                 ) : null}
@@ -643,7 +651,19 @@ export default function ShipmentDetailPage() {
           <FresaReadonlyField label="Client" value={labels.customerLabel} />
           <FresaReadonlyField label="Department" value={labels.departmentLabel} />
           <FresaReadonlyField label="Branch" value={labels.branchLabel} />
-          <FresaReadonlyField label="Status" value={shipment.status} />
+          <FresaReadonlyField
+            label="Status"
+            value={
+              (typeof shipment.status_label === 'string' &&
+              shipment.status_label.trim()
+                ? shipment.status_label
+                : undefined) ||
+              shipment.status ||
+              (typeof shipment.status_code === 'string'
+                ? shipment.status_code
+                : undefined)
+            }
+          />
           <FresaReadonlyField label="BL Status" value={shipment.bl_status} />
           <FresaReadonlyField label="POL" value={labels.originLabel} />
           <FresaReadonlyField label="POD" value={labels.destLabel} />

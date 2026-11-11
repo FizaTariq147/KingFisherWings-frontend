@@ -49,6 +49,7 @@ import {
   JOB_STATUS_LABELS,
   JOB_STATUSES,
   JOB_SEGMENTS,
+  jobStatusDisplayLabel,
   type JobSegmentKey,
   type JobStatus,
 } from '../constants/job.constants';
@@ -684,7 +685,7 @@ export default function JobDetailPage() {
             ) : null}
           </span>
         }
-        statusLabel={JOB_STATUS_LABELS[job.status] ?? job.status}
+        statusLabel={jobStatusDisplayLabel(job)}
         statusTone={statusTone(job.status)}
         tabs={tabs}
         defaultTab={defaultTab}
@@ -750,7 +751,7 @@ export default function JobDetailPage() {
               }
             />
             <OptionalFresaField label="Branch" value={branchLabel !== '—' ? branchLabel : undefined} />
-            <FresaReadonlyField label="Status" value={JOB_STATUS_LABELS[job.status] ?? job.status} />
+            <FresaReadonlyField label="Status" value={jobStatusDisplayLabel(job)} />
             {enquiryHref ? (
               <FresaReadonlyField
                 label="Enquiry No"
@@ -1001,7 +1002,9 @@ export default function JobDetailPage() {
                 leftIcon={<RefreshCw />}
                 disabled={pending || actions.changeStatus.isPending}
                 onClick={() => {
-                  setChangeStatusValue(job.status || 'IN_PROGRESS');
+                  setChangeStatusValue(
+                    job.status_code || job.status || 'BOOKING_CONFIRMED',
+                  );
                   setChangeStatusReason('');
                   setChangeStatusOpen(true);
                 }}
@@ -1373,6 +1376,7 @@ export default function JobDetailPage() {
         open={addStatusOpen}
         nested
         entity="jobs"
+        applyEntityId={job.id}
         onClose={() => setAddStatusOpen(false)}
         onCreated={(code) => {
           setChangeStatusValue(code);

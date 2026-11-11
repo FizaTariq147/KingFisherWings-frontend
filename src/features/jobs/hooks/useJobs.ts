@@ -146,6 +146,9 @@ export function usePatchJobShowAll(id: string) {
         queryKey: [...jobKeys.detail(id), 'show-all'],
       });
       void queryClient.invalidateQueries({ queryKey: jobKeys.detailTab(id, 'show_all') });
+      // BE fans commercial header fields out to linked shipments.
+      void queryClient.invalidateQueries({ queryKey: jobKeys.jobShipments(id) });
+      void queryClient.invalidateQueries({ queryKey: ['tenant', 'shipments'] });
     },
   });
 }

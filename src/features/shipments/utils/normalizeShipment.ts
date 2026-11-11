@@ -267,6 +267,8 @@ export function normalizeShipment(raw: unknown): Shipment | null {
       str(r.shipmentNo),
     reference: str(r.reference),
     status: str(r.status),
+    status_code: str(r.status_code) ?? str(r.statusCode),
+    status_label: str(r.status_label) ?? str(r.statusLabel),
     bl_status: str(r.bl_status) ?? str(r.blStatus),
     job_type: str(r.job_type) ?? str(r.jobType) ?? str(r.service_type) ?? str(r.serviceType),
     service_type: str(r.service_type) ?? str(r.serviceType) ?? str(r.job_type),
@@ -340,6 +342,21 @@ export function normalizeShipment(raw: unknown): Shipment | null {
     place_of_delivery: str(r.place_of_delivery) ?? str(r.placeOfDelivery),
     cargo_details: str(r.cargo_details) ?? str(r.cargoDetails),
     commodity: str(r.commodity),
+    commodity_description:
+      str(r.commodity_description) ?? str(r.commodityDescription),
+    freight_payable_at:
+      str(r.freight_payable_at) ??
+      str(r.freightPayableAt) ??
+      str(r.payable_at) ??
+      str(r.payableAt),
+    chargeable_units: num(
+      r.chargeable_units ?? r.chargeableUnits ?? r.chargeable_unit ?? r.chargeableUnit,
+    ),
+    chargeable_weight: num(r.chargeable_weight ?? r.chargeableWeight),
+    gross_weight: num(r.gross_weight ?? r.grossWeight),
+    volume_cbm: num(r.volume_cbm ?? r.volumeCbm),
+    pieces: num(r.pieces),
+    service_scope: str(r.service_scope) ?? str(r.serviceScope),
     container_count: num(r.container_count ?? r.containerCount),
     container_type_id: str(r.container_type_id) ?? str(r.containerTypeId),
     incoterms: str(r.incoterms) ?? str(r.incoterm),

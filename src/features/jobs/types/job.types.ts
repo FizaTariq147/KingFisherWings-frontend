@@ -942,11 +942,16 @@ export interface ChangeJobStatusDto {
 
 /** Tenant-admin status catalog create/update body. */
 export interface UpsertStatusCatalogDto {
-  code: string;
+  code?: string;
   label: string;
   maps_to_system_status?: string;
   is_active?: boolean;
+  is_terminal?: boolean;
   sort_order?: number;
+  /** When set, BE applies the new custom status to this job immediately. */
+  job_id?: string;
+  /** Alias of job_id accepted by POST /jobs/status-catalog. */
+  apply_to_job_id?: string;
 }
 
 export interface ReopenJobDto {
@@ -984,6 +989,7 @@ export interface PatchJobHoldDto {
 export interface UpsertJobPartyReferenceDto {
   party_role?:
     | 'CLIENT'
+    | 'CUSTOMER'
     | 'SHIPPER'
     | 'CONSIGNEE'
     | 'NOTIFY'
@@ -1385,6 +1391,8 @@ export interface Job {
   status: JobStatus;
   /** Catalog code when custom statuses are enabled (maps to `status` enum). */
   status_code?: string;
+  /** Catalog / custom display label from show_all / header (prefer over enum map). */
+  status_label?: string;
   company_id?: string;
   branch_id?: string;
   department_id?: string;
@@ -1427,6 +1435,10 @@ export interface Job {
   commodity?: string;
   /** Dimension tab — commodity description (PATCH /jobs/:id/dimensions). */
   commodity_description?: string;
+  /** Freight payable at (show_all / commercial header). */
+  freight_payable_at?: string;
+  /** Chargeable units (distinct from chargeable_weight). */
+  chargeable_units?: number;
   hs_code?: string;
   gross_weight?: number;
   chargeable_weight?: number;
@@ -1769,9 +1781,51 @@ export interface GenerateJobEdiDto {
   company_codes?: string[];
 }
 
+/** Nested warehouse bag on PATCH/GET show_all (WAREHOUSE jobs / booking form). */
+export interface ShowAllWarehouseDto {
+  warehouse_name?: string | null;
+  warehouse_id?: string | null;
+  expected_inbound_at?: string | null;
+  expected_outbound_at?: string | null;
+  storage_days_requested?: number | null;
+  bonded?: boolean | null;
+  temperature_controlled?: boolean | null;
+  commodity?: string | null;
+}
+
+/** Nested land / transport bag on PATCH/GET show_all (LAND / ROAD_FREIGHT). */
+export interface ShowAllTransportDto {
+  pickup_address?: string | null;
+  delivery_address?: string | null;
+  origin_city_country?: string | null;
+  destination_city_country?: string | null;
+  vehicle_number?: string | null;
+  driver_name?: string | null;
+  driver_license?: string | null;
+  trucker_id?: string | null;
+  freight_terms?: string | null;
+}
+
 /** PATCH /jobs/:id/detail/show_all · /shipments/:id/detail/show_all */
 export interface PatchShowAllDto {
   commodity?: string | null;
+  /** Longer commodity text; syncs commodity when commodity omitted. */
+  commodity_description?: string | null;
+  /** Alias of freight_payable_at. */
+  payable_at?: string | null;
+  freight_payable_at?: string | null;
+  chargeable_units?: number | null;
+  /** Alias of chargeable_units. */
+  chargeable_unit?: number | null;
+  chargeable_weight?: number | null;
+  service_scope?: JobServiceScope | string | null;
+  /**
+   * Read alias of job_type on GET. On PATCH ignored unless equal to current job_type
+   * (no mode switch).
+   */
+  service_type?: string | null;
+  warehouse?: ShowAllWarehouseDto | null;
+  transport?: ShowAllTransportDto | null;
   pieces?: number | null;
   gross_weight?: number | null;
   volume_cbm?: number | null;

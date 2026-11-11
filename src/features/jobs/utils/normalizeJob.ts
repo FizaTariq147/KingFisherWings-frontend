@@ -868,6 +868,7 @@ export function normalizeJob(raw: unknown): Job | null {
       return rawStatus as JobStatus;
     })(),
     status_code: pickString(r, 'status_code', 'statusCode') || undefined,
+    status_label: pickString(r, 'status_label', 'statusLabel') || undefined,
     company_id: pickString(r, 'company_id', 'companyId') || undefined,
     branch_id: pickString(r, 'branch_id', 'branchId') || undefined,
     department_id: pickString(r, 'department_id', 'departmentId') || undefined,
@@ -1006,6 +1007,12 @@ export function normalizeJob(raw: unknown): Job | null {
     commodity: pickString(r, 'commodity') || undefined,
     commodity_description:
       pickString(r, 'commodity_description', 'commodityDescription') || undefined,
+    freight_payable_at:
+      pickString(r, 'freight_payable_at', 'freightPayableAt', 'payable_at', 'payableAt') ||
+      undefined,
+    chargeable_units: num(
+      r.chargeable_units ?? r.chargeableUnits ?? r.chargeable_unit ?? r.chargeableUnit,
+    ),
     hs_code: pickString(r, 'hs_code', 'hsCode') || undefined,
     job_date: pickString(r, 'job_date', 'jobDate') || undefined,
     client_reference_no:

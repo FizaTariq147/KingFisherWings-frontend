@@ -58,7 +58,11 @@ export function useJobActions(jobId: string) {
   });
   const changeStatus = useMutation({
     mutationFn: (dto: ChangeJobStatusDto) => jobService.changeStatus(id, dto),
-    onSuccess: () => invalidate(id),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: jobKeys.jobShipments(id) });
+      void queryClient.invalidateQueries({ queryKey: ['tenant', 'shipments'] });
+    },
   });
   const reopen = useMutation({
     mutationFn: (dto?: ReopenJobDto) => jobService.reopen(id, dto ?? {}),
@@ -627,6 +631,7 @@ export function useJobActions(jobId: string) {
 /** List action-menu mutations (id passed per call). */
 export function useJobLifecycleMutations() {
   const invalidate = useInvalidateJobs();
+  const queryClient = useQueryClient();
 
   return {
     cancel: useMutation({
@@ -640,7 +645,11 @@ export function useJobLifecycleMutations() {
     changeStatus: useMutation({
       mutationFn: ({ id, dto }: { id: string; dto: ChangeJobStatusDto }) =>
         jobService.changeStatus(id, dto),
-      onSuccess: (_d, { id }) => invalidate(id),
+      onSuccess: (_d, { id }) => {
+        invalidate(id);
+        void queryClient.invalidateQueries({ queryKey: jobKeys.jobShipments(id) });
+        void queryClient.invalidateQueries({ queryKey: ['tenant', 'shipments'] });
+      },
     }),
     reopen: useMutation({
       mutationFn: ({ id, dto }: { id: string; dto?: ReopenJobDto }) =>

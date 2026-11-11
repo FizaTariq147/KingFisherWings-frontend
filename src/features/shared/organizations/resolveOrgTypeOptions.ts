@@ -6,6 +6,8 @@ export type OrgTypeOption = {
   label: string;
   /** True when the code came from a backend catalog / linked row (not only the local fallback). */
   fromBackend?: boolean;
+  /** From GET organization_types catalog objects `{ code, label, is_system }`. */
+  is_system?: boolean;
 };
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -42,6 +44,7 @@ function pushCode(
   rawCode: unknown,
   rawLabel?: unknown,
   fromBackend = false,
+  isSystem?: boolean,
 ) {
   const code = normalizeCode(rawCode);
   if (!code) return;
@@ -52,13 +55,22 @@ function pushCode(
       ? rawLabel.trim()
       : orgTypeLabel(code)) || code;
   if (!existing) {
-    map.set(code, { code, label, fromBackend });
+    map.set(code, {
+      code,
+      label,
+      fromBackend,
+      ...(isSystem != null ? { is_system: isSystem } : {}),
+    });
     return;
   }
   map.set(code, {
     code,
     label: existing.label || label,
     fromBackend: existing.fromBackend || fromBackend,
+    is_system:
+      existing.is_system === true || isSystem === true
+        ? true
+        : existing.is_system ?? isSystem,
   });
 }
 
@@ -84,7 +96,13 @@ export function extractOrgTypeCatalog(raw: unknown): OrgTypeOption[] {
           rec.type ??
           rec.name;
         const label = rec.label ?? rec.title ?? rec.display_name ?? rec.displayName;
-        if (code != null) pushCode(map, code, label, true);
+        const isSystem =
+          typeof rec.is_system === 'boolean'
+            ? rec.is_system
+            : typeof rec.isSystem === 'boolean'
+              ? rec.isSystem
+              : undefined;
+        if (code != null) pushCode(map, code, label, true, isSystem);
       }
       return;
     }
@@ -142,8 +160,14 @@ export function resolveOrgTypeOptions(
     for (const code of JOB_ORG_TYPES) {
       pushCode(map, code, orgTypeLabel(code), false);
     }
-    // Support Deal Customer as its own org role when BE starts sending/accepting it.
-    pushCode(map, 'CUSTOMER', orgTypeLabel('CUSTOMER'), false);
+  } else {
+    // Prefer API catalog, but always keep CLIENT ≠ CUSTOMER linkable for explicit Party rows
+    // (CUSTOMER is never auto-seeded from create FKs — only via POST organizations).
+    for (const code of ['CLIENT', 'CUSTOMER'] as const) {
+      if (!map.has(code)) {
+        pushCode(map, code, orgTypeLabel(code), true, true);
+      }
+    }
   }
 
   const preferred = [
