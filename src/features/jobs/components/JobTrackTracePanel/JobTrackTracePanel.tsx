@@ -5,7 +5,7 @@ import { TrackMapBackground } from '@/features/public-track/components/TrackMapB
 import { TrackOverlayFrame } from '@/features/public-track/components/TrackOverlayFrame';
 import { toTrackResult } from '@/features/public-track/utils/toTrackResult';
 import { normalizeLiveTracking } from '@/features/public-track/utils/normalizeLiveTracking';
-import { useJobTracking, useJobTrackingLive } from '../../hooks/useJobs';
+import { useJob, useJobTracking, useJobTrackingLive } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import { JobTrackingProfileEditor } from '../JobTrackingProfileEditor';
 
@@ -24,6 +24,7 @@ export function JobTrackTracePanel({
   shipmentId?: string;
 }) {
   const [showProfileEditor, setShowProfileEditor] = useState(false);
+  const jobQuery = useJob(jobId);
   const trackingQuery = useJobTracking(
     {
       jobId,
@@ -35,14 +36,22 @@ export function JobTrackTracePanel({
   const liveQuery = useJobTrackingLive(jobId, Boolean(jobId));
 
   const trackResult = useMemo(() => {
-    const base = toTrackResult(
-      trackingQuery.data?.data ?? trackingQuery.data,
-      jobNumber || jobId,
-    );
+    const raw = trackingQuery.data?.data ?? trackingQuery.data;
+    const withJobType =
+      raw && typeof raw === 'object' && !Array.isArray(raw)
+        ? {
+            ...(raw as Record<string, unknown>),
+            job_type:
+              (raw as { job_type?: string; jobType?: string }).job_type ||
+              (raw as { jobType?: string }).jobType ||
+              jobQuery.data?.job_type,
+          }
+        : raw;
+    const base = toTrackResult(withJobType, jobNumber || jobId);
     if (base.liveTracking) return base;
     const live = normalizeLiveTracking(liveQuery.data);
     return live ? { ...base, liveTracking: live } : base;
-  }, [trackingQuery.data, liveQuery.data, jobNumber, jobId]);
+  }, [trackingQuery.data, liveQuery.data, jobNumber, jobId, jobQuery.data?.job_type]);
 
   return (
     <div className="rounded-sm bg-white">

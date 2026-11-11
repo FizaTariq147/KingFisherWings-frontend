@@ -1317,6 +1317,45 @@ export function normalizePublicTrack(
       if (!poc.vesselName && airlineName) poc.vesselName = airlineName;
       if (airMode) poc.voyageNumber = undefined;
     }
+  } else if (route && !airMode) {
+    // Sea / NVOCC: strip spurious flight_* that were mirrored from voyage/vessel.
+    for (const leg of route.legs) {
+      if (leg.flightNumber && !leg.voyage) leg.voyage = leg.flightNumber;
+      if (
+        leg.flightNumber &&
+        (leg.voyage === leg.flightNumber || leg.vessel || leg.imo)
+      ) {
+        leg.flightNumber = undefined;
+        leg.arrivalFlightNumber = undefined;
+        leg.mawbNumber = undefined;
+        leg.hawbNumber = undefined;
+      }
+      if (leg.label && /^flight\b/i.test(leg.label)) {
+        leg.label =
+          leg.legNo === 1
+            ? '1st leg'
+            : leg.legNo === 2
+              ? '2nd leg'
+              : leg.legNo != null
+                ? `Leg ${leg.legNo}`
+                : [leg.from, leg.to].filter(Boolean).join(' → ') || undefined;
+      }
+    }
+    for (const poc of route.portOfCall ?? []) {
+      if (poc.flightNumber && !poc.voyageNumber) poc.voyageNumber = poc.flightNumber;
+      poc.flightNumber = undefined;
+      poc.arrivalFlightNumber = undefined;
+      poc.mawbNumber = undefined;
+      poc.hawbNumber = undefined;
+    }
+    for (const m of ordered) {
+      if (m.flightNumber && !m.voyage) m.voyage = m.flightNumber;
+      if (m.flightNumber && (m.voyage === m.flightNumber || m.vessel)) {
+        m.flightNumber = undefined;
+      }
+      m.mawbNumber = undefined;
+      m.hawbNumber = undefined;
+    }
   }
   if (route && airMode && route.legs.length === 0 && (flightNumber || mawbNumber || hawbNumber)) {
     route.legs.push({

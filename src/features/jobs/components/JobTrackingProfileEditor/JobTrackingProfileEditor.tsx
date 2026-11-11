@@ -192,7 +192,11 @@ export function JobTrackingProfileEditor({
     setError(null);
     setMsg(null);
     try {
-      await upsert.mutateAsync(toUpsertJobTrackingProfileDto(form));
+      await upsert.mutateAsync(
+        toUpsertJobTrackingProfileDto(form, {
+          jobType: jobQuery.data?.job_type,
+        }),
+      );
       setMsg('Tracking profile saved.');
       onSaved?.();
     } catch (err) {
