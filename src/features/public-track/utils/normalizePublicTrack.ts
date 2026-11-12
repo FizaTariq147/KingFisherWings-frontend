@@ -1206,6 +1206,16 @@ export function normalizePublicTrack(
     asRecord(body.airDetails) ??
     asRecord(summary?.air_details) ??
     asRecord(routeRec?.air_details);
+  const seaFclDetails =
+    asRecord(body.sea_fcl_details) ??
+    asRecord(body.seaFclDetails) ??
+    asRecord(summary?.sea_fcl_details) ??
+    asRecord(summary?.seaFclDetails);
+  const seaLclDetails =
+    asRecord(body.sea_lcl_details) ??
+    asRecord(body.seaLclDetails) ??
+    asRecord(summary?.sea_lcl_details) ??
+    asRecord(summary?.seaLclDetails);
   const detailedData =
     asRecord(body.detailed_data) ??
     asRecord(body.detailedData) ??
@@ -1390,14 +1400,40 @@ export function normalizePublicTrack(
   const preManifest = normalizePreManifest(body);
   const qtyGwVol = normalizeQtyGwVol(body);
 
+  const plannedEtd =
+    pickString(
+      body.etd,
+      body.ETD,
+      summary?.etd,
+      seaFclDetails?.etd,
+      seaLclDetails?.etd,
+      airMode
+        ? airDetails?.flight_date ?? airDetails?.flightDate
+        : undefined,
+      detailedData?.etd,
+      detailedData?.ETD,
+      detailedData?.flight_date,
+      detailedData?.flightDate,
+    ) || undefined;
+
   const expectedDelivery =
     pickString(
       body.expected_delivery,
+      body.expectedDelivery,
       airMode
         ? airDetails?.actual_eta ?? airDetails?.actualEta ?? airDetails?.flight_date
         : undefined,
       body.eta,
+      body.ETA,
       summary?.eta,
+      seaFclDetails?.eta,
+      seaLclDetails?.eta,
+      seaFclDetails?.actual_eta,
+      seaFclDetails?.actualEta,
+      detailedData?.eta,
+      detailedData?.ETA,
+      detailedData?.expected_delivery,
+      detailedData?.expectedDelivery,
     ) || undefined;
 
   const vesselRec =
@@ -1443,6 +1479,7 @@ export function normalizePublicTrack(
         root.current_status,
       ) || undefined,
     progress,
+    etd: plannedEtd,
     expectedDelivery,
     origin,
     destination,

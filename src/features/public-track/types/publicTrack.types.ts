@@ -193,6 +193,8 @@ export interface PublicTrackResult {
   status?: string;
   currentStatus?: string;
   progress?: number;
+  /** Planned ETD from tracking body / job schedule (footer + metrics). */
+  etd?: string;
   expectedDelivery?: string;
   origin?: string;
   destination?: string;

@@ -303,13 +303,28 @@ function FormFieldsFromPayload({
     const lower = key.toLowerCase();
 
     if (lower.endsWith('_id') || lower.endsWith('_uuid')) {
+      const base = key.replace(/(_id|_uuid)$/i, '');
       const named = siblingNameLabel(key, rec);
       if (named) {
-        const base = key.replace(/(_id|_uuid)$/i, '');
         skip.add(`${base}_name`);
         skip.add(`${base}_label`);
         skip.add(`${base}_code`);
         rows.push({ key, label: humanizeFieldLabel(base), value: named });
+      } else {
+        // Ops codes (e.g. line_code) with only an id sibling — still show the code.
+        const codeRaw = rec[`${base}_code`];
+        if (
+          typeof codeRaw === 'string' &&
+          codeRaw.trim() &&
+          !isUuid(codeRaw.trim())
+        ) {
+          skip.add(`${base}_code`);
+          rows.push({
+            key: `${base}_code`,
+            label: humanizeFieldLabel(`${base}_code`),
+            value: codeRaw.trim(),
+          });
+        }
       }
       continue;
     }
@@ -763,6 +778,144 @@ function SectionCard({ title, children }: { title: string; children: ReactNode }
   );
 }
 
+/** Non-empty PatchShowAllDto values (incl. nested warehouse/transport/mawb) for read view. */
+function showAllOverlayRecord(overlay: PatchShowAllDto): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(overlay)) {
+    if (value == null) continue;
+    if (key === 'warehouse' || key === 'transport' || key === 'mawb') {
+      if (typeof value === 'object' && !Array.isArray(value)) {
+        const nested = showAllOverlayRecord(value as PatchShowAllDto);
+        if (Object.keys(nested).length) out[key] = nested;
+      }
+      continue;
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed) out[key] = trimmed;
+      continue;
+    }
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      out[key] = value;
+      continue;
+    }
+    if (typeof value === 'boolean') out[key] = value;
+  }
+  return out;
+}
+
+function setIfPresent(
+  out: Record<string, unknown>,
+  key: string,
+  value: unknown,
+): void {
+  if (value == null) return;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (trimmed) out[key] = trimmed;
+    return;
+  }
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    out[key] = value;
+  }
+}
+
+/** Job header / mode-detail fallbacks when show_all GET omits saved fields. */
+function showAllJobOpsFallback(job?: Job | null): Record<string, unknown> {
+  if (!job) return {};
+  const out: Record<string, unknown> = {};
+  const sea = job.sea_fcl_details;
+  const seaLcl = job.sea_lcl_details;
+  const air = job.air_details;
+  const land = job.land_details;
+
+  setIfPresent(out, 'commodity', job.commodity);
+  setIfPresent(out, 'commodity_description', job.commodity_description);
+  setIfPresent(out, 'pieces', job.pieces);
+  setIfPresent(out, 'gross_weight', job.gross_weight);
+  setIfPresent(out, 'chargeable_weight', job.chargeable_weight);
+  setIfPresent(out, 'chargeable_units', job.chargeable_units);
+  setIfPresent(out, 'volume_cbm', job.volume_cbm);
+  setIfPresent(out, 'freight_payable_at', job.freight_payable_at);
+  setIfPresent(out, 'service_scope', job.service_scope);
+  setIfPresent(out, 'service_type', job.job_type);
+  setIfPresent(out, 'job_date', job.job_date);
+  setIfPresent(out, 'etd', job.etd || sea?.etd || seaLcl?.etd);
+  setIfPresent(out, 'eta', job.eta || sea?.eta || seaLcl?.eta);
+  setIfPresent(
+    out,
+    'mbl_number',
+    sea?.mbl_number || seaLcl?.mbl_number,
+  );
+  setIfPresent(
+    out,
+    'hbl_number',
+    sea?.hbl_number || seaLcl?.hbl_number,
+  );
+  setIfPresent(out, 'bl_number', job.bl_number);
+  setIfPresent(out, 'rotation_number', job.rotation_number);
+  setIfPresent(out, 'location_terminal', job.location_terminal);
+  setIfPresent(out, 'container_number', job.primary_container_number);
+  setIfPresent(
+    out,
+    'container_status',
+    job.primary_container_status || job.primary_container_status_code,
+  );
+  setIfPresent(
+    out,
+    'vessel_name',
+    job.vessel_name || sea?.vessel_name || seaLcl?.vessel_name,
+  );
+  setIfPresent(out, 'vessel_number', job.vessel_number);
+  setIfPresent(
+    out,
+    'voyage_number',
+    job.voyage_number || sea?.voyage_number || seaLcl?.voyage_number,
+  );
+  setIfPresent(out, 'line_code', job.line_code || job.line_no);
+  setIfPresent(out, 'line_no', job.line_no || job.line_code);
+  setIfPresent(out, 'company_code', job.company_code || job.edi_company_code);
+  setIfPresent(out, 'origin_port_code', job.origin_port_code);
+  setIfPresent(out, 'dest_port_code', job.dest_port_code);
+  setIfPresent(out, 'shipper_name', job.shipper_name);
+  setIfPresent(out, 'consignee_name', job.consignee_name);
+  setIfPresent(out, 'billing_party_name', job.billing_party_name);
+  setIfPresent(out, 'agent_name', job.agent_name);
+  setIfPresent(out, 'customer_name', job.client_name);
+  setIfPresent(out, 'flight_no', air?.flight_number);
+  setIfPresent(out, 'flight_number', air?.flight_number);
+  setIfPresent(out, 'flight_status', air?.flight_status);
+  setIfPresent(out, 'flight_date', air?.flight_date);
+  setIfPresent(out, 'mawb_no', air?.mawb_number);
+  setIfPresent(out, 'mawb_number', air?.mawb_number);
+  setIfPresent(out, 'hawb_no', air?.hawb_number);
+  setIfPresent(out, 'hawb_number', air?.hawb_number);
+  setIfPresent(out, 'shipment_date', air?.shipment_date);
+
+  const transport: Record<string, unknown> = {};
+  setIfPresent(transport, 'vehicle_number', land?.vehicle_number);
+  setIfPresent(transport, 'driver_name', land?.driver_name);
+  setIfPresent(transport, 'driver_license', land?.driver_license);
+  setIfPresent(transport, 'origin_city_country', land?.origin_city_country);
+  setIfPresent(
+    transport,
+    'destination_city_country',
+    land?.destination_city_country,
+  );
+  setIfPresent(transport, 'freight_terms', land?.freight_terms);
+  if (Object.keys(transport).length) out.transport = transport;
+
+  return out;
+}
+
+function isShowAllSectionKey(key: string): boolean {
+  return (
+    isJobShowAllTab(key) ||
+    /show.?all/i.test(key) ||
+    key.startsWith('api-show')
+  );
+}
+
 function JobShowAllPanel({
   jobId,
   siblingTabKeys,
@@ -782,7 +935,7 @@ function JobShowAllPanel({
   const saveShowAll = async (dto: PatchShowAllDto) => {
     const refreshed = await patchShowAll.mutateAsync(dto);
     setSavedOverlay((prev) => mergeShowAllSavedOverlay(prev, dto, refreshed));
-    await query.refetch();
+    await Promise.all([query.refetch(), jobQuery.refetch()]);
   };
 
   if (query.isLoading) {
@@ -803,7 +956,28 @@ function JobShowAllPanel({
   }
 
   const { sections = [], arrays = [] } = query.data ?? {};
-  const editSources = [savedOverlay, query.data, ...sections.map((s) => s.data)];
+  const opsFallback = showAllJobOpsFallback(jobQuery.data);
+  const overlayRecord = showAllOverlayRecord(savedOverlay);
+  const apiShowAllSection = sections.find((s) => isShowAllSectionKey(s.key));
+  /** One merged card: job fallback < API show_all < just-saved overlay (all modal fields). */
+  const mergedShowAllData: Record<string, unknown> = {
+    ...opsFallback,
+    ...(apiShowAllSection?.data ?? {}),
+    ...overlayRecord,
+  };
+  const hasMergedShowAll = Object.keys(mergedShowAllData).length > 0;
+  const otherSections = sections.filter(
+    (section) =>
+      !isPartyTypesSection(section.key, section.title) &&
+      !isShowAllSectionKey(section.key),
+  );
+  const editSources = [
+    savedOverlay,
+    opsFallback,
+    mergedShowAllData,
+    query.data,
+    ...sections.map((s) => s.data),
+  ];
   const transportEditMode = (() => {
     const job = jobQuery.data;
     if (!job) return 'all' as const;
@@ -829,7 +1003,12 @@ function JobShowAllPanel({
     />
   );
 
-  if (!sections.length && !arrays.length && !footer) {
+  if (
+    !hasMergedShowAll &&
+    !otherSections.length &&
+    !arrays.length &&
+    !footer
+  ) {
     return (
       <div className="space-y-3">
         <div className="flex justify-end">
@@ -864,9 +1043,12 @@ function JobShowAllPanel({
           Edit Show All
         </Button>
       </div>
-      {sections
-        .filter((section) => !isPartyTypesSection(section.key, section.title))
-        .map((section) => {
+      {hasMergedShowAll ? (
+        <SectionCard title="Show All">
+          <FormFieldsFromPayload data={mergedShowAllData} />
+        </SectionCard>
+      ) : null}
+      {otherSections.map((section) => {
         const sectionKey = normalizeJobDetailTabKey(section.key);
         const isDepartment =
           sectionKey === 'department' || sectionKey === 'departments';

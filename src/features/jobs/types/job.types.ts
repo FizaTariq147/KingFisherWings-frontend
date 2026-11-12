@@ -1476,6 +1476,8 @@ export interface Job {
   /** Tenant catalog code mirrored alongside enum when known. */
   primary_container_status_code?: string;
   edi_company_code?: string;
+  /** Depot / terminal / location from show_all. */
+  location_terminal?: string;
   vessel_name?: string;
   vessel_number?: string;
   voyage_number?: string;
