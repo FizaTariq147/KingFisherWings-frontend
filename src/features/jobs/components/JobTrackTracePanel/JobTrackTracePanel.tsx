@@ -36,22 +36,55 @@ export function JobTrackTracePanel({
   const liveQuery = useJobTrackingLive(jobId, Boolean(jobId));
 
   const trackResult = useMemo(() => {
+    const job = jobQuery.data;
     const raw = trackingQuery.data?.data ?? trackingQuery.data;
-    const withJobType =
+    const withJobSchedule =
       raw && typeof raw === 'object' && !Array.isArray(raw)
         ? {
             ...(raw as Record<string, unknown>),
             job_type:
               (raw as { job_type?: string; jobType?: string }).job_type ||
               (raw as { jobType?: string }).jobType ||
-              jobQuery.data?.job_type,
+              job?.job_type,
+            // Fall back to job / mode schedule when tracking route has no dates.
+            etd:
+              (raw as { etd?: string }).etd ||
+              job?.etd ||
+              job?.sea_fcl_details?.etd ||
+              job?.sea_lcl_details?.etd ||
+              job?.air_details?.flight_date,
+            eta:
+              (raw as { eta?: string }).eta ||
+              job?.eta ||
+              job?.sea_fcl_details?.eta ||
+              job?.sea_lcl_details?.eta,
           }
         : raw;
-    const base = toTrackResult(withJobType, jobNumber || jobId);
-    if (base.liveTracking) return base;
+    const base = toTrackResult(withJobSchedule, jobNumber || jobId);
+    const withSchedule = {
+      ...base,
+      etd:
+        base.etd ||
+        job?.etd ||
+        job?.sea_fcl_details?.etd ||
+        job?.sea_lcl_details?.etd ||
+        job?.air_details?.flight_date,
+      expectedDelivery:
+        base.expectedDelivery ||
+        job?.eta ||
+        job?.sea_fcl_details?.eta ||
+        job?.sea_lcl_details?.eta,
+    };
+    if (withSchedule.liveTracking) return withSchedule;
     const live = normalizeLiveTracking(liveQuery.data);
-    return live ? { ...base, liveTracking: live } : base;
-  }, [trackingQuery.data, liveQuery.data, jobNumber, jobId, jobQuery.data?.job_type]);
+    return live ? { ...withSchedule, liveTracking: live } : withSchedule;
+  }, [
+    trackingQuery.data,
+    liveQuery.data,
+    jobNumber,
+    jobId,
+    jobQuery.data,
+  ]);
 
   return (
     <div className="rounded-sm bg-white">

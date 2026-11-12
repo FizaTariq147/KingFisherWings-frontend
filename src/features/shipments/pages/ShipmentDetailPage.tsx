@@ -270,13 +270,29 @@ export default function ShipmentDetailPage() {
     : defaultTabKey;
 
   const trackResult = useMemo(() => {
+    const raw = trackingQuery.data;
+    const withSchedule =
+      raw && typeof raw === 'object' && !Array.isArray(raw)
+        ? {
+            ...(raw as Record<string, unknown>),
+            etd: (raw as { etd?: string }).etd || shipment?.etd,
+            eta: (raw as { eta?: string }).eta || shipment?.eta,
+          }
+        : raw;
     const base = toTrackResult(
-      trackingQuery.data,
+      withSchedule,
       (shipment ? shipmentDisplayNumber(shipment) : '') || id,
     );
-    if (base.liveTracking) return base;
+    const merged = {
+      ...base,
+      etd: base.etd || (typeof shipment?.etd === 'string' ? shipment.etd : undefined),
+      expectedDelivery:
+        base.expectedDelivery ||
+        (typeof shipment?.eta === 'string' ? shipment.eta : undefined),
+    };
+    if (merged.liveTracking) return merged;
     const live = normalizeLiveTracking(trackingLiveQuery.data);
-    return live ? { ...base, liveTracking: live } : base;
+    return live ? { ...merged, liveTracking: live } : merged;
   }, [trackingQuery.data, trackingLiveQuery.data, shipment, id]);
 
   useEffect(() => {

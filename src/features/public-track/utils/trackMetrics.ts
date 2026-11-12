@@ -37,11 +37,25 @@ export function deriveTrackAtd(result: PublicTrackResult): string | undefined {
   );
 }
 
+function detailedScheduleField(
+  result: PublicTrackResult,
+  ...keys: string[]
+): string | undefined {
+  const data = result.cargoInfo?.detailedData;
+  if (!data) return undefined;
+  for (const key of keys) {
+    const v = data[key];
+    if (typeof v === 'string' && v.trim()) return v.trim();
+  }
+  return undefined;
+}
+
 export function deriveTrackEta(result: PublicTrackResult): string | undefined {
   return (
     result.expectedDelivery ||
     result.route?.portOfCall.find((p) => p.eta && !p.ata)?.eta ||
-    result.route?.legs.find((l) => l.eta)?.eta
+    result.route?.legs.find((l) => l.eta)?.eta ||
+    detailedScheduleField(result, 'eta', 'ETA', 'expected_delivery', 'expectedDelivery')
   );
 }
 
@@ -55,7 +69,9 @@ export function deriveTrackEtd(result: PublicTrackResult): string | undefined {
     result.route?.portOfCall.find((p) => p.etd && !p.atd)?.etd ||
     result.route?.firstLeg?.etd ||
     result.route?.legs.find((l) => l.etd)?.etd ||
-    result.route?.atBefore
+    result.route?.atBefore ||
+    result.etd ||
+    detailedScheduleField(result, 'etd', 'ETD', 'flight_date', 'flightDate')
   );
 }
 

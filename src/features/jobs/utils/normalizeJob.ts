@@ -1069,6 +1069,14 @@ export function normalizeJob(raw: unknown): Job | null {
       pickString(seaLcl ?? {}, 'mbl_number', 'mblNumber', 'hbl_number', 'hblNumber') ||
       undefined,
     rotation_number: pickString(r, 'rotation_number', 'rotationNumber') || undefined,
+    location_terminal:
+      pickString(
+        r,
+        'location_terminal',
+        'locationTerminal',
+        'terminal',
+        'location',
+      ) || undefined,
     primary_container_number:
       pickString(
         r,
