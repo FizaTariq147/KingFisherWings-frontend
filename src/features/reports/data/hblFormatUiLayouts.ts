@@ -25,8 +25,20 @@ function resolveLayoutCode(code: string): string {
   return needle;
 }
 
+/**
+ * Canonical HBL JSON shell for `code`, or undefined when this store has no layout.
+ * Aliased Format-N codes resolve to Format-11 / FG shells (not unique designs).
+ */
+export function resolveHblLayoutSourceCode(code: string): string | undefined {
+  const needle = code.trim().toUpperCase();
+  if (!needle) return undefined;
+  const resolved = resolveLayoutCode(needle);
+  return byCode.has(resolved) ? resolved : undefined;
+}
+
 export function getHblFormatUiLayout(code: string): InvoiceFormatUiLayout | undefined {
-  return byCode.get(resolveLayoutCode(code));
+  const source = resolveHblLayoutSourceCode(code);
+  return source ? byCode.get(source) : undefined;
 }
 
 export function hasHblFormatUiLayout(code: string): boolean {

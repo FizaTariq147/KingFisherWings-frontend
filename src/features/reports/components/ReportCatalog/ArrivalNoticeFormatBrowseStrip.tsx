@@ -1,4 +1,5 @@
 import { listArrivalNoticeFormats } from '../../constants/arrivalNoticeFormatCatalog';
+import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
 
@@ -8,6 +9,7 @@ type ArrivalNoticeFormatBrowseStripProps = {
   visible: boolean;
   searchQuery?: string;
   allowedCodes?: ReadonlySet<string> | null;
+  distinctLayoutsOnly?: boolean;
 };
 
 /** Arrival Notice — Fresa sample-report-formats. */
@@ -17,6 +19,7 @@ export function ArrivalNoticeFormatBrowseStrip({
   visible,
   searchQuery = '',
   allowedCodes = null,
+  distinctLayoutsOnly = false,
 }: ArrivalNoticeFormatBrowseStripProps) {
   if (!visible) return null;
 
@@ -25,6 +28,7 @@ export function ArrivalNoticeFormatBrowseStrip({
     searchQuery,
     allowedCodes,
     selectedCode,
+    distinctLayoutsOnly,
   });
 
   return (
@@ -42,6 +46,7 @@ export function ArrivalNoticeFormatBrowseStrip({
           index={row.sortOrder - 1 || i}
           badge={`#${row.sortOrder}`}
           name={row.name}
+          sharedHint={catalogSharedLayoutHint(row.code)}
           onClick={() => onSelect(row.code)}
         />
       ))}

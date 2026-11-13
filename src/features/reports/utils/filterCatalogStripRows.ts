@@ -1,3 +1,4 @@
+import { isDistinctLayoutCode } from '../data/sharedLayoutSource';
 import {
   isReportSearchActive,
   reportCatalogRowMatchesSearch,
@@ -9,6 +10,7 @@ type StripRow = { code: string; name: string };
 
 /**
  * Apply Family/Context code allow-list + live search to a format browse strip.
+ * Optional `distinctLayoutsOnly` hides Format-N codes that alias a shared JSON shell.
  */
 export function filterCatalogStripRows<T extends StripRow>(
   rows: readonly T[],
@@ -16,19 +18,27 @@ export function filterCatalogStripRows<T extends StripRow>(
     searchQuery?: string;
     allowedCodes?: ReadonlySet<string> | null;
     selectedCode?: string;
+    distinctLayoutsOnly?: boolean;
     toSearchable?: (row: T) => ReportSearchableRow;
   } = {},
 ): { items: T[]; scopedTotal: number; filterActive: boolean } {
   const searchQuery = options.searchQuery ?? '';
   const selected = (options.selectedCode ?? '').trim().toUpperCase();
   const allowed = options.allowedCodes;
+  const distinctOnly = Boolean(options.distinctLayoutsOnly);
 
-  const scoped = !allowed
-    ? [...rows]
-    : rows.filter((row) => {
-        const code = row.code.toUpperCase();
-        return allowed.has(code) || (selected !== '' && code === selected);
-      });
+  const scoped = rows.filter((row) => {
+    const code = row.code.toUpperCase();
+    if (allowed && !(allowed.has(code) || (selected !== '' && code === selected))) {
+      return false;
+    }
+    if (distinctOnly && !isDistinctLayoutCode(code)) {
+      // Keep selection visible even when it is a shared-shell alias.
+      if (selected !== '' && code === selected) return true;
+      return false;
+    }
+    return true;
+  });
 
   const qActive = isReportSearchActive(searchQuery);
   const toSearchable =
@@ -45,7 +55,7 @@ export function filterCatalogStripRows<T extends StripRow>(
   return {
     items,
     scopedTotal: scoped.length,
-    filterActive: qActive || Boolean(allowed),
+    filterActive: qActive || Boolean(allowed) || distinctOnly,
   };
 }
 

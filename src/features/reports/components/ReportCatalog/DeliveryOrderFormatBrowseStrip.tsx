@@ -1,4 +1,5 @@
 import { listDeliveryOrderFormats } from '../../constants/deliveryOrderFormatCatalog';
+import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
 
@@ -8,6 +9,7 @@ type DeliveryOrderFormatBrowseStripProps = {
   visible: boolean;
   searchQuery?: string;
   allowedCodes?: ReadonlySet<string> | null;
+  distinctLayoutsOnly?: boolean;
 };
 
 /** Delivery order — Fresa sample-report-formats. */
@@ -17,6 +19,7 @@ export function DeliveryOrderFormatBrowseStrip({
   visible,
   searchQuery = '',
   allowedCodes = null,
+  distinctLayoutsOnly = false,
 }: DeliveryOrderFormatBrowseStripProps) {
   if (!visible) return null;
 
@@ -25,6 +28,7 @@ export function DeliveryOrderFormatBrowseStrip({
     searchQuery,
     allowedCodes,
     selectedCode,
+    distinctLayoutsOnly,
   });
 
   return (
@@ -42,6 +46,7 @@ export function DeliveryOrderFormatBrowseStrip({
           index={row.sortOrder - 1 || i}
           badge={`#${row.sortOrder}`}
           name={row.name}
+          sharedHint={catalogSharedLayoutHint(row.code)}
           onClick={() => onSelect(row.code)}
         />
       ))}

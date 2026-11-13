@@ -332,6 +332,14 @@ function normalizeChargeSide(
   };
 }
 
+/** Prefer per-side counts; never mirror line attachment_count onto both sale and cost. */
+function resolveSideAttachmentCount(
+  sideView: JobCharge['sale'] | undefined,
+  rootSideCount: number | undefined,
+): number | undefined {
+  return sideView?.attachment_count ?? rootSideCount;
+}
+
 export function normalizeJobCharge(raw: unknown): JobCharge | null {
   const r = asRecord(raw);
   if (!r) return null;
@@ -346,6 +354,34 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
   const cost = asRecord(r.cost);
   const saleView = normalizeChargeSide(sale, 'sale');
   const costView = normalizeChargeSide(cost, 'cost');
+  const saleAttachRoot = num(
+    r.sale_attachment_count ??
+      r.saleAttachmentCount ??
+      r.sale_attachments_count ??
+      r.saleAttachmentsCount,
+  );
+  const costAttachRoot = num(
+    r.cost_attachment_count ??
+      r.costAttachmentCount ??
+      r.cost_attachments_count ??
+      r.costAttachmentsCount,
+  );
+  const saleWithAttach: JobCharge['sale'] | undefined = saleView
+    ? {
+        ...saleView,
+        attachment_count: resolveSideAttachmentCount(saleView, saleAttachRoot),
+      }
+    : saleAttachRoot != null
+      ? { attachment_count: saleAttachRoot }
+      : undefined;
+  const costWithAttach: JobCharge['cost'] | undefined = costView
+    ? {
+        ...costView,
+        attachment_count: resolveSideAttachmentCount(costView, costAttachRoot),
+      }
+    : costAttachRoot != null
+      ? { attachment_count: costAttachRoot }
+      : undefined;
   const unitFromSides =
     num(sale?.unit_price ?? sale?.unitPrice ?? sale?.amount) ??
     num(cost?.unit_price ?? cost?.unitPrice ?? cost?.amount);
@@ -406,14 +442,14 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
     ),
     party_id:
       pickString(r, 'party_id', 'partyId') ||
-      saleView?.bill_to ||
-      costView?.vendor ||
+      saleWithAttach?.bill_to ||
+      costWithAttach?.vendor ||
       undefined,
     party_name:
       pickString(r, 'party_name', 'partyName') ||
       pickString(party ?? {}, 'name', 'party_name') ||
-      saleView?.bill_to_name ||
-      costView?.vendor_name ||
+      saleWithAttach?.bill_to_name ||
+      costWithAttach?.vendor_name ||
       undefined,
     line_total:
       num(r.line_total ?? r.lineTotal) ?? saleAmt ?? costAmt,
@@ -434,28 +470,31 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
       pickString(chargeSec ?? {}, 'remarks') ||
       undefined,
     sale_tax_amount:
-      num(r.sale_tax_amount ?? r.saleTaxAmount) ?? saleView?.tax_amount,
+      num(r.sale_tax_amount ?? r.saleTaxAmount) ?? saleWithAttach?.tax_amount,
     cost_tax_amount:
-      num(r.cost_tax_amount ?? r.costTaxAmount) ?? costView?.tax_amount,
-    sale_dr_cr: pickString(r, 'sale_dr_cr', 'saleDrCr') || saleView?.dr_cr || undefined,
-    cost_dr_cr: pickString(r, 'cost_dr_cr', 'costDrCr') || costView?.dr_cr || undefined,
+      num(r.cost_tax_amount ?? r.costTaxAmount) ?? costWithAttach?.tax_amount,
+    sale_dr_cr:
+      pickString(r, 'sale_dr_cr', 'saleDrCr') || saleWithAttach?.dr_cr || undefined,
+    cost_dr_cr:
+      pickString(r, 'cost_dr_cr', 'costDrCr') || costWithAttach?.dr_cr || undefined,
     gross_profit:
       num(r.gross_profit ?? r.grossProfit ?? r.gp) ??
       (saleAmt != null && costAmt != null ? saleAmt - costAmt : undefined),
     prorated_status:
       pickString(r, 'prorated_status', 'proratedStatus', 'prorate_status') || undefined,
+    /** Line total only — do not use for both sale/cost paperclip badges. */
     attachment_count: num(r.attachment_count ?? r.attachmentCount) ?? undefined,
     history_count: num(r.history_count ?? r.historyCount) ?? undefined,
     sale_voucher_no:
       pickString(r, 'sale_voucher_no', 'saleVoucherNo') ||
-      saleView?.voucher_no ||
+      saleWithAttach?.voucher_no ||
       undefined,
     cost_voucher_no:
       pickString(r, 'cost_voucher_no', 'costVoucherNo') ||
-      costView?.voucher_no ||
+      costWithAttach?.voucher_no ||
       undefined,
-    sale: saleView,
-    cost: costView,
+    sale: saleWithAttach,
+    cost: costWithAttach,
   };
 }
 

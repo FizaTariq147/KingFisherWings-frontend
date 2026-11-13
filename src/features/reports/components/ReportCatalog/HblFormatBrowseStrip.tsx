@@ -1,4 +1,5 @@
 import { listHblFormats } from '../../constants/hblFormatCatalog';
+import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
 
@@ -8,6 +9,7 @@ type Props = {
   visible: boolean;
   searchQuery?: string;
   allowedCodes?: ReadonlySet<string> | null;
+  distinctLayoutsOnly?: boolean;
 };
 
 /** HBL — Fresa sample-report-formats. */
@@ -17,6 +19,7 @@ export function HblFormatBrowseStrip({
   visible,
   searchQuery = '',
   allowedCodes = null,
+  distinctLayoutsOnly = false,
 }: Props) {
   if (!visible) return null;
 
@@ -25,6 +28,7 @@ export function HblFormatBrowseStrip({
     searchQuery,
     allowedCodes,
     selectedCode,
+    distinctLayoutsOnly,
   });
 
   return (
@@ -42,6 +46,7 @@ export function HblFormatBrowseStrip({
           index={row.sortOrder - 1 || i}
           badge={`#${row.sortOrder}`}
           name={row.name}
+          sharedHint={catalogSharedLayoutHint(row.code)}
           onClick={() => onSelect(row.code)}
         />
       ))}

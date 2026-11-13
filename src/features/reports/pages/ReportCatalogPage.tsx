@@ -84,6 +84,9 @@ import {
   listAllRegisteredFormatCatalogEntries,
   resolveAnyFormatUiLayout,
 } from '../data/resolveAnyFormatUiLayout';
+import { isDistinctLayoutCode } from '../data/sharedLayoutSource';
+import { catalogSharedLayoutHint } from '../utils/catalogSharedLayoutHint';
+import { getReportEnrichment } from '../registry';
 import {
   isAccountsFormatCode,
   listAccountsFormats,
@@ -181,6 +184,8 @@ export default function ReportCatalogPage() {
   );
   /** `fresa` = Sea/Air/Accounts/My Reports table; `strips` = advanced family strips. */
   const catalogView = searchParams.get('view') === 'strips' ? 'strips' : 'fresa';
+  /** Hide Format-N codes that alias a shared JSON shell (not unique Fresa designs). */
+  const distinctLayoutsOnly = searchParams.get('layouts') === 'distinct';
   const fresaFocusColumn = useMemo((): FresaPageColumnId | null => {
     if (family === 'all') return null;
     return fresaColumnForFamily(family);
@@ -285,7 +290,8 @@ export default function ReportCatalogPage() {
         value === '' ||
         (key === 'page' && value === '1') ||
         (key === 'family' && value === 'all') ||
-        (key === 'context' && value === 'all')
+        (key === 'context' && value === 'all') ||
+        (key === 'layouts' && value === 'all')
       ) {
         next.delete(key);
       } else {
@@ -436,6 +442,13 @@ export default function ReportCatalogPage() {
       ) {
         return;
       }
+      if (
+        distinctLayoutsOnly &&
+        !isDistinctLayoutCode(entry.code) &&
+        entry.code.toUpperCase() !== selectedCode.toUpperCase()
+      ) {
+        return;
+      }
       const live = liveByCode.get(entry.code.toUpperCase());
       if (live) {
         rows.push(live);
@@ -471,6 +484,8 @@ export default function ReportCatalogPage() {
     enabledModules,
     registeredLayoutEntries,
     reportContext,
+    distinctLayoutsOnly,
+    selectedCode,
   ]);
   const metaTotal = items.length;
   const completeReportTotal = useMemo(
@@ -1206,6 +1221,28 @@ export default function ReportCatalogPage() {
                 ))}
               </select>
             </div>
+            <div className="min-w-[11rem] space-y-1">
+              <label
+                className="text-xs font-medium text-[var(--color-neutral-500)]"
+                htmlFor="layouts"
+              >
+                Layouts
+              </label>
+              <select
+                id="layouts"
+                className="h-10 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm shadow-sm outline-none transition focus:border-[var(--color-secondary)]"
+                value={distinctLayoutsOnly ? 'distinct' : 'all'}
+                onChange={(e) =>
+                  patchParams({
+                    layouts: e.target.value === 'distinct' ? 'distinct' : null,
+                    page: '1',
+                  })
+                }
+              >
+                <option value="all">All registry codes</option>
+                <option value="distinct">Distinct layouts only</option>
+              </select>
+            </div>
           </div>
         </div>
       </div>
@@ -1271,6 +1308,7 @@ export default function ReportCatalogPage() {
             onSelect={selectArrivalNoticeFormatCode}
             searchQuery={searchQuery}
             allowedCodes={allowedCodes}
+            distinctLayoutsOnly={distinctLayoutsOnly}
           />
 
           <DeliveryOrderFormatBrowseStrip
@@ -1279,6 +1317,7 @@ export default function ReportCatalogPage() {
             onSelect={selectDeliveryOrderFormatCode}
             searchQuery={searchQuery}
             allowedCodes={allowedCodes}
+            distinctLayoutsOnly={distinctLayoutsOnly}
           />
 
           <HawbFormatBrowseStrip
@@ -1287,6 +1326,7 @@ export default function ReportCatalogPage() {
             onSelect={selectHawbFormatCode}
             searchQuery={searchQuery}
             allowedCodes={allowedCodes}
+            distinctLayoutsOnly={distinctLayoutsOnly}
           />
 
           <HblFormatBrowseStrip
@@ -1295,6 +1335,7 @@ export default function ReportCatalogPage() {
             onSelect={selectHblFormatCode}
             searchQuery={searchQuery}
             allowedCodes={allowedCodes}
+            distinctLayoutsOnly={distinctLayoutsOnly}
           />
 
           <OtherReportsFormatBrowseStrip
@@ -1408,9 +1449,26 @@ export default function ReportCatalogPage() {
       {selected ? (
         <div className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--color-neutral-200)] bg-white px-4 py-2.5">
-            <p className="min-w-0 truncate text-sm font-medium text-[var(--color-neutral-800)]">
-              {selected.name}
-            </p>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-medium text-[var(--color-neutral-800)]">
+                {selected.name}
+              </p>
+              {(() => {
+                const sharedHint = catalogSharedLayoutHint(selected.code);
+                const enrichment = getReportEnrichment(selected.code);
+                if (!sharedHint && enrichment?.implementationStatus !== 'shared_shell') {
+                  return null;
+                }
+                return (
+                  <p className="mt-0.5 text-[11px] text-[var(--color-neutral-500)]">
+                    {sharedHint || 'Shared JSON shell — not a unique Fresa design'}
+                    {enrichment?.layoutSourceCode
+                      ? ` · source ${enrichment.layoutSourceCode}`
+                      : ''}
+                  </p>
+                );
+              })()}
+            </div>
             <div className="flex shrink-0 flex-wrap items-center gap-2">
               {(() => {
                 const live = getOperationsReportByFormatCode(selected.code);
