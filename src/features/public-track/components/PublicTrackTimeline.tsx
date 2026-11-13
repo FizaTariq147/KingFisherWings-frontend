@@ -352,6 +352,7 @@ export function PublicTrackTimeline({
   className,
   pdfSource,
   variant = 'panel',
+  progressBar,
 }: {
   result: PublicTrackResult;
   onNewSearch?: () => void;
@@ -361,6 +362,11 @@ export function PublicTrackTimeline({
   variant?: 'overlay' | 'panel';
   /** @deprecated Ignored. */
   compact?: boolean;
+  /**
+   * Match Active Shipments grid route bar (pct + solid color).
+   * When set, overrides computed track progress for the POL→POD bar only.
+   */
+  progressBar?: { pct: number; color: string };
 }) {
   const [showPrevious, setShowPrevious] = useState(true);
   const [pdfPending, setPdfPending] = useState(false);
@@ -625,7 +631,16 @@ export function PublicTrackTimeline({
 
   const originLabel = metrics.origin || 'Origin';
   const destLabel = metrics.destination || 'Destination';
-  const progressPct = Math.max(0, Math.min(100, metrics.progressPct));
+  const progressPct = Math.max(
+    0,
+    Math.min(
+      100,
+      progressBar?.pct != null ? Number(progressBar.pct) : metrics.progressPct,
+    ),
+  );
+  const progressFillColor =
+    progressBar?.color?.trim() ||
+    (metrics.delivered ? C.green : undefined);
 
   const isOverlay = variant === 'overlay';
 
@@ -720,7 +735,9 @@ export function PublicTrackTimeline({
               className="absolute left-0 top-0 h-1.5 rounded-full transition-[width] duration-700 ease-out"
               style={{
                 width: `${progressPct}%`,
-                background: `linear-gradient(90deg, ${C.green}, ${C.badge})`,
+                background: progressFillColor
+                  ? progressFillColor
+                  : `linear-gradient(90deg, ${C.green}, ${C.badge})`,
               }}
             />
             <span
@@ -732,7 +749,8 @@ export function PublicTrackTimeline({
                     : progressPct >= 100
                       ? 'calc(100% - 14px)'
                       : `calc(${progressPct}% - 7px)`,
-                backgroundColor: metrics.delivered ? C.green : C.badge,
+                backgroundColor:
+                  progressFillColor || (metrics.delivered ? C.green : C.badge),
               }}
             />
           </div>

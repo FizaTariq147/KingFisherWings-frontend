@@ -43,7 +43,7 @@ export default function TransportRequestsPage() {
       <div>
         <h2 className={appType.pageTitle}>Transport requests</h2>
         <p className="text-sm text-[var(--color-neutral-500)]">
-          Tenant transport board — assign trucker, pickup, transit, delivery, cost, and PDF.
+          Tenant transport board assign trucker, pickup, transit, delivery, cost, and PDF.
         </p>
       </div>
       {error ? <p className="text-sm text-[var(--color-danger-600)]">{error}</p> : null}
