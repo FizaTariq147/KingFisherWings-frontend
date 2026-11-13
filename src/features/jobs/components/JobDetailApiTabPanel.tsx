@@ -938,6 +938,55 @@ function JobShowAllPanel({
     await Promise.all([query.refetch(), jobQuery.refetch()]);
   };
 
+  const { sections = [], arrays = [] } = query.data ?? {};
+  const opsFallback = useMemo(
+    () => showAllJobOpsFallback(jobQuery.data),
+    [jobQuery.data],
+  );
+  const overlayRecord = useMemo(
+    () => showAllOverlayRecord(savedOverlay),
+    [savedOverlay],
+  );
+  const apiShowAllSection = sections.find((s) => isShowAllSectionKey(s.key));
+  /** One merged card: job fallback < API show_all < just-saved overlay (all modal fields). */
+  const mergedShowAllData = useMemo(
+    () => ({
+      ...opsFallback,
+      ...(apiShowAllSection?.data ?? {}),
+      ...overlayRecord,
+    }),
+    [opsFallback, apiShowAllSection?.data, overlayRecord],
+  );
+  const hasMergedShowAll = Object.keys(mergedShowAllData).length > 0;
+  const otherSections = sections.filter(
+    (section) =>
+      !isPartyTypesSection(section.key, section.title) &&
+      !isShowAllSectionKey(section.key),
+  );
+  // Hooks must run before any conditional return (React #310).
+  const editSources = useMemo(
+    () => [
+      savedOverlay,
+      opsFallback,
+      mergedShowAllData,
+      query.data,
+      ...sections.map((s) => s.data),
+    ],
+    [savedOverlay, opsFallback, mergedShowAllData, query.data, sections],
+  );
+  const transportEditMode = useMemo(() => {
+    const job = jobQuery.data;
+    if (!job) return 'all' as const;
+    if (job.actions?.can_edit_air_fields === true) return 'air' as const;
+    if (job.actions?.can_edit_sea_fields === true) return 'sea' as const;
+    const mode = String(job.transport_mode || '').toUpperCase();
+    if (mode.startsWith('AIR') || isAirwayBillJobType(job.job_type)) return 'air' as const;
+    if (mode.startsWith('SEA') || /SEA|NVOCC/i.test(job.job_type || '')) {
+      return 'sea' as const;
+    }
+    return 'all' as const;
+  }, [jobQuery.data]);
+
   if (query.isLoading) {
     return (
       <div className="space-y-3">
@@ -954,45 +1003,6 @@ function JobShowAllPanel({
       </div>
     );
   }
-
-  const { sections = [], arrays = [] } = query.data ?? {};
-  const opsFallback = showAllJobOpsFallback(jobQuery.data);
-  const overlayRecord = showAllOverlayRecord(savedOverlay);
-  const apiShowAllSection = sections.find((s) => isShowAllSectionKey(s.key));
-  /** One merged card: job fallback < API show_all < just-saved overlay (all modal fields). */
-  const mergedShowAllData: Record<string, unknown> = {
-    ...opsFallback,
-    ...(apiShowAllSection?.data ?? {}),
-    ...overlayRecord,
-  };
-  const hasMergedShowAll = Object.keys(mergedShowAllData).length > 0;
-  const otherSections = sections.filter(
-    (section) =>
-      !isPartyTypesSection(section.key, section.title) &&
-      !isShowAllSectionKey(section.key),
-  );
-  const editSources = useMemo(
-    () => [
-      savedOverlay,
-      opsFallback,
-      mergedShowAllData,
-      query.data,
-      ...sections.map((s) => s.data),
-    ],
-    [savedOverlay, opsFallback, mergedShowAllData, query.data, sections],
-  );
-  const transportEditMode = (() => {
-    const job = jobQuery.data;
-    if (!job) return 'all' as const;
-    if (job.actions?.can_edit_air_fields === true) return 'air' as const;
-    if (job.actions?.can_edit_sea_fields === true) return 'sea' as const;
-    const mode = String(job.transport_mode || '').toUpperCase();
-    if (mode.startsWith('AIR') || isAirwayBillJobType(job.job_type)) return 'air' as const;
-    if (mode.startsWith('SEA') || /SEA|NVOCC/i.test(job.job_type || '')) {
-      return 'sea' as const;
-    }
-    return 'all' as const;
-  })();
 
   const editModal = (
     <ShowAllEditModal
