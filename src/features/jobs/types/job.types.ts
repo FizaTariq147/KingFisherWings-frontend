@@ -1862,20 +1862,41 @@ export interface PatchShowAllDto {
   company_code?: string | null;
   origin_port_name?: string | null;
   origin_port_code?: string | null;
+  origin_port_id?: string | null;
   dest_port_name?: string | null;
   dest_port_code?: string | null;
+  dest_port_id?: string | null;
   shipper_name?: string | null;
   shipper_code?: string | null;
+  shipper_id?: string | null;
   consignee_name?: string | null;
   consignee_code?: string | null;
+  consignee_id?: string | null;
   billing_party_name?: string | null;
   billing_party_code?: string | null;
+  billing_party_id?: string | null;
   agent_name?: string | null;
   agent_code?: string | null;
+  agent_id?: string | null;
   carrier_name?: string | null;
   carrier_code?: string | null;
+  carrier_id?: string | null;
   customer_name?: string | null;
   customer_code?: string | null;
+  customer_id?: string | null;
+  /**
+   * Nested party/port bags from show_all GET — BE reads `.id` when flat *_id omitted.
+   * Prefer flat *_id / *_name / *_code on PATCH; nested kept for round-trip.
+   */
+  origin_port?: { id?: string; name?: string; code?: string } | null;
+  dest_port?: { id?: string; name?: string; code?: string } | null;
+  destination_port?: { id?: string; name?: string; code?: string } | null;
+  shipper?: { id?: string; name?: string; code?: string } | null;
+  consignee?: { id?: string; name?: string; code?: string } | null;
+  billing_party?: { id?: string; name?: string; code?: string } | null;
+  agent?: { id?: string; name?: string; code?: string } | null;
+  carrier?: { id?: string; name?: string; code?: string } | null;
+  customer?: { id?: string; name?: string; code?: string } | null;
   /** Air / MAWB — same fields as PUT /jobs/:id/detail/mawb (clear with null or ""). */
   flight_no?: string | null;
   flight_number?: string | null;
@@ -1887,7 +1908,10 @@ export interface PatchShowAllDto {
   mawb_number?: string | null;
   hawb_no?: string | null;
   hawb_number?: string | null;
-  /** Air shipment / cargo date (distinct from job_date when both present). */
+  /**
+   * Shared date alias: air cargo date, or shipment show_all date (not air-only).
+   * Sea jobs may also echo this; BE maps without tripping air-only gate.
+   */
   shipment_date?: string | null;
   pallet_count?: number | null;
   air_pallet?: AirPalletLineDto[] | null;
