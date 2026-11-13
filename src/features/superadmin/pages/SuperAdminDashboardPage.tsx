@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { appType } from '@/lib/erpTypography';
-import { Building2, Briefcase } from 'lucide-react';
+import { Building2, Briefcase, Activity } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { usePlatformOnboardingStore } from '@/features/platform/store/platformOnboardingStore';
@@ -54,7 +54,7 @@ export default function SuperAdminDashboardPage() {
         isLoading={isLoading}
       />
 
-      <AppAnimatedGrid className="grid gap-4 sm:grid-cols-2">
+      <AppAnimatedGrid className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <AppAnimatedGridItem>
           <Card className="flex flex-col gap-4 p-4">
             <div className="flex items-center gap-3">
@@ -91,6 +91,28 @@ export default function SuperAdminDashboardPage() {
             </div>
             <Button variant="secondary" onClick={() => navigate('/superadmin/tenants')}>
               Manage Tenants
+            </Button>
+          </Card>
+        </AppAnimatedGridItem>
+
+        <AppAnimatedGridItem>
+          <Card className="flex flex-col gap-4 p-4">
+            <div className="flex items-center gap-3">
+              <div
+                className="w-10 h-10 rounded-lg flex items-center justify-center shrink-0"
+                style={{ background: 'var(--color-primary-50)' }}
+              >
+                <Activity size={18} style={{ color: 'var(--color-primary-600)' }} aria-hidden="true" />
+              </div>
+              <div>
+                <p className="text-sm font-medium text-[var(--color-neutral-800)]">Tech Logs</p>
+                <p className="text-xs text-[var(--color-neutral-400)]">
+                  Activity feed and issue triage across tenants
+                </p>
+              </div>
+            </div>
+            <Button variant="secondary" onClick={() => navigate('/superadmin/tech-logs')}>
+              Open Tech Logs
             </Button>
           </Card>
         </AppAnimatedGridItem>

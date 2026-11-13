@@ -30,6 +30,7 @@ import {
   Layers,
   Package,
   Link2,
+  Activity,
   type LucideIcon,
 } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
@@ -180,6 +181,7 @@ const SIDEBAR_ICON_STYLES: Record<string, NavIconStyle> = {
   '/superadmin/tenants': navStyle('#4ADE80'),
   '/superadmin/billing': navStyle('#F59E0B'),
   '/superadmin/billing/plans': navStyle('#EAB308'),
+  '/superadmin/tech-logs': navStyle('#DC2626'),
   '/settings/billing': navStyle('#10B981'),
 };
 
@@ -683,6 +685,13 @@ const SUPER_ADMIN_NAV_ITEMS: NavItem[] = [
   { label: 'Tenants', path: '/superadmin/tenants', Icon: Building2, permission: null },
   { label: 'Billing', path: '/superadmin/billing', Icon: CreditCard, permission: null, activePrefix: '/superadmin/billing' },
   { label: 'Billing Plans', path: '/superadmin/billing/plans', Icon: Layers, permission: null },
+  {
+    label: 'Tech Logs',
+    path: '/superadmin/tech-logs',
+    Icon: Activity,
+    permission: null,
+    activePrefix: '/superadmin/tech-logs',
+  },
 ];
 
 interface SidebarProps {

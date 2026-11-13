@@ -9,6 +9,7 @@ import {
   Layers,
   FileText,
   Activity,
+  AlertTriangle,
   Settings,
   ScrollText,
 } from 'lucide-react';
@@ -19,7 +20,8 @@ const NAV_ITEMS = [
   { to: '/superadmin/billing', label: 'Billing', icon: CreditCard, enabled: true },
   { to: '/superadmin/billing/plans', label: 'Billing Plans', icon: Layers, enabled: true },
   { to: '/superadmin/billing/invoices', label: 'Platform Invoices', icon: FileText, enabled: true },
-  { to: '/superadmin/monitoring', label: 'Monitoring', icon: Activity, enabled: false },
+  { to: '/superadmin/tech-logs', label: 'Tech Logs', icon: Activity, enabled: true },
+  { to: '/superadmin/monitoring', label: 'Monitoring', icon: AlertTriangle, enabled: false },
   { to: '/superadmin/settings', label: 'Settings', icon: Settings, enabled: false },
   { to: '/superadmin/audit-log', label: 'Audit Log', icon: ScrollText, enabled: false },
 ];

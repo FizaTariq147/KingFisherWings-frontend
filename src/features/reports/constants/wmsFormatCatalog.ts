@@ -1,9 +1,11 @@
 /**
  * WMS Advance Shipping Note formats from Fresa sample PDFs (2020/03).
+ * Official URLs: data/fresaOfficialSampleCatalogue.ts (wms_asn section).
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
 import { listWmsFormatUiLayouts } from '../data/wmsFormatUiLayouts';
 import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
+import { getFresaOfficialSampleByCode } from '../data/fresaOfficialSampleCatalogue';
 
 export type WmsFormatKind = string;
 
@@ -12,7 +14,11 @@ export type WmsFormatSpec = {
   name: string;
   kind: WmsFormatKind;
   sortOrder: number;
+  samplePdfUrl?: string;
+  sampleIsFallback?: boolean;
 };
+
+const WMS_BASE = 'https://fresatechnologies.com/wp-content/uploads/2020/03/';
 
 export const WMS_FORMAT_CATALOG: WmsFormatSpec[] = [
   {
@@ -20,30 +26,35 @@ export const WMS_FORMAT_CATALOG: WmsFormatSpec[] = [
     name: 'Advance Shipping Note Format-1',
     kind: 'asn_format_1',
     sortOrder: 1,
+    samplePdfUrl: `${WMS_BASE}ADVANCE-SHIPPING-NOTE-FORMAT1.pdf`,
   },
   {
     code: 'ADVANCE_SHIPPING_NOTE',
     name: 'Advance Shipping Note',
     kind: 'asn_standard',
     sortOrder: 2,
+    samplePdfUrl: `${WMS_BASE}ADVANCE_SHIPPING_NOTE.pdf`,
   },
   {
     code: 'ADVANCE_SHIPPING_NOTE_LOCATION_WISE',
     name: 'Advance Shipping Note Location Wise',
     kind: 'asn_location_wise',
     sortOrder: 3,
+    samplePdfUrl: `${WMS_BASE}ADVANCE_SHIPPING_NOTE_LOCATION_WISE.pdf`,
   },
   {
     code: 'ADVANCE_SHIPPING_NOTE_LOCATION_WISE_2',
     name: 'Advance Shipping Note Location Wise-2',
     kind: 'asn_location_wise_2',
     sortOrder: 4,
+    samplePdfUrl: `${WMS_BASE}ADVANCE_SHIPPING_NOTE_LOCATION_WISE_.pdf`,
   },
   {
     code: 'ADVANCE_SHIPPING_NOTE_SUMMARY',
     name: 'Advance Shipping Note Summary',
     kind: 'asn_summary',
     sortOrder: 5,
+    samplePdfUrl: `${WMS_BASE}ADVANCE_SHIPPING_NOTE_SUMMARY.pdf`,
   },
 ];
 
@@ -62,11 +73,16 @@ function buildAllWmsFormats(): WmsFormatSpec[] {
   listWmsFormatUiLayouts().forEach((layout, i) => {
     const key = layout.code.toUpperCase();
     const existing = by.get(key);
+    const official = getFresaOfficialSampleByCode(layout.code);
     by.set(key, {
       code: layout.code,
       name: layout.name || existing?.name || layout.code,
       kind: existing?.kind || `wms_${layout.formatNumber || i + 1}`,
       sortOrder: existing?.sortOrder ?? layout.formatNumber ?? 2000 + i,
+      samplePdfUrl:
+        existing?.samplePdfUrl ||
+        (official?.samplePdfUrl || undefined),
+      sampleIsFallback: existing?.sampleIsFallback,
     });
   });
   return [...by.values()].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name));
@@ -94,4 +110,9 @@ export function resolveWmsFormatDisplayName(code: string, fallbackName: string):
 
 export function wmsFormatsMatchSearch(searchQuery: string): boolean {
   return catalogRowsMatchSearch(listWmsFormats(), searchQuery);
+}
+
+export function hasWmsSamplePdf(code: string): boolean {
+  const spec = getWmsFormatSpec(code);
+  return Boolean((spec?.samplePdfUrl || '').trim() && !spec?.sampleIsFallback);
 }

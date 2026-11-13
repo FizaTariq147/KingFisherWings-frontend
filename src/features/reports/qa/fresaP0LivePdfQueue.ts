@@ -5,6 +5,9 @@
  */
 import { listHblFormats } from '../constants/hblFormatCatalog';
 import { listHawbFormats } from '../constants/hawbFormatCatalog';
+import { listDeliveryOrderFormats, hasDeliveryOrderSamplePdf } from '../constants/deliveryOrderFormatCatalog';
+import { listWmsFormats, hasWmsSamplePdf } from '../constants/wmsFormatCatalog';
+import { listUrlVerifiedFresaSamples } from '../data/fresaOfficialSampleCatalogue';
 import { listReportRegistryV2 } from '../registry';
 
 export type FresaP0QueueEntry = {
@@ -15,12 +18,13 @@ export type FresaP0QueueEntry = {
   samplePdfUrl?: string | null;
 };
 
-/** HBL/HAWB codes with a distinct CDN sample (not sampleIsFallback). */
+/** HBL/HAWB/DO/WMS codes with a distinct CDN sample (not sampleIsFallback). */
 export function listP0VerifiedSampleCodes(): FresaP0QueueEntry[] {
-  const rows: FresaP0QueueEntry[] = [];
+  const byCode = new Map<string, FresaP0QueueEntry>();
+
   for (const h of listHblFormats()) {
     if ((h.samplePdfUrl || '').trim()) {
-      rows.push({
+      byCode.set(h.code.toUpperCase(), {
         code: h.code,
         reason: 'verified_sample',
         family: 'hbl',
@@ -30,7 +34,7 @@ export function listP0VerifiedSampleCodes(): FresaP0QueueEntry[] {
   }
   for (const h of listHawbFormats()) {
     if ((h.samplePdfUrl || '').trim() && !h.sampleIsFallback) {
-      rows.push({
+      byCode.set(h.code.toUpperCase(), {
         code: h.code,
         reason: 'verified_sample',
         family: 'hawb',
@@ -38,7 +42,41 @@ export function listP0VerifiedSampleCodes(): FresaP0QueueEntry[] {
       });
     }
   }
-  return rows;
+  for (const row of listDeliveryOrderFormats()) {
+    if (hasDeliveryOrderSamplePdf(row.code)) {
+      byCode.set(row.code.toUpperCase(), {
+        code: row.code,
+        reason: 'verified_sample',
+        family: 'delivery_order',
+        samplePdfUrl: row.samplePdfUrl,
+      });
+    }
+  }
+  for (const row of listWmsFormats()) {
+    if (hasWmsSamplePdf(row.code)) {
+      byCode.set(row.code.toUpperCase(), {
+        code: row.code,
+        reason: 'verified_sample',
+        family: 'wms',
+        samplePdfUrl: row.samplePdfUrl,
+      });
+    }
+  }
+  // Ensure official catalogue url_verified rows are present even if catalog mapping drifts.
+  for (const row of listUrlVerifiedFresaSamples()) {
+    if (!row.freightnestCode || !row.samplePdfUrl) continue;
+    const key = row.freightnestCode.toUpperCase();
+    if (!byCode.has(key)) {
+      byCode.set(key, {
+        code: row.freightnestCode,
+        reason: 'verified_sample',
+        family: row.section,
+        samplePdfUrl: row.samplePdfUrl,
+      });
+    }
+  }
+
+  return [...byCode.values()];
 }
 
 /**
@@ -54,11 +92,11 @@ export function listP0PackBoundCodes(): FresaP0QueueEntry[] {
     if (e.isSharedLayout) continue;
     if (!entry.suggestedPackKey) continue;
     if (!packFamilies.has(e.templateFamily)) continue;
-    // Prefer codes that are pack-bound or still template_v2 but have a pack hint.
     if (
       e.implementationStatus === 'pack_bound' ||
       e.implementationStatus === 'template_v2' ||
-      e.implementationStatus === 'json_legacy'
+      e.implementationStatus === 'json_legacy' ||
+      e.implementationStatus === 'sample_only'
     ) {
       rows.push({
         code: entry.code,

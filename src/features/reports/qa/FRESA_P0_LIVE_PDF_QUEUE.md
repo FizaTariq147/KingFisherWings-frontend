@@ -8,7 +8,7 @@
 
 | Bucket | Criteria |
 |--------|----------|
-| `verified_sample` | HBL/HAWB with distinct CDN `samplePdfUrl` (excludes `sampleIsFallback`) |
+| `verified_sample` | HBL/HAWB/DO/WMS with distinct CDN `samplePdfUrl` (excludes `sampleIsFallback`); plus `fresaOfficialSampleCatalogue` `url_verified` rows |
 | `pack_bound` | Arrival notice, delivery order, commercial invoice registry rows with `suggestedPackKey`, **not** `isSharedLayout` / `shared_shell` |
 
 ## Excluded (do not run live PDF for fidelity claims)
