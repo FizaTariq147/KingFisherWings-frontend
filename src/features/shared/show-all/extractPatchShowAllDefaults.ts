@@ -77,6 +77,37 @@ const CLEARABLE_KEYS = new Set<keyof PatchShowAllDto>([
   'chargeable_weight',
   'service_scope',
   'service_type',
+  'pieces',
+  'etd',
+  'eta',
+  'job_date',
+  'mbl_number',
+  'hbl_number',
+  'bl_number',
+  'rotation_number',
+  'vessel_name',
+  'vessel_number',
+  'voyage_number',
+  'line_code',
+  'line_no',
+  'location_terminal',
+  'company_code',
+  'origin_port_name',
+  'origin_port_code',
+  'dest_port_name',
+  'dest_port_code',
+  'shipper_name',
+  'shipper_code',
+  'consignee_name',
+  'consignee_code',
+  'billing_party_name',
+  'billing_party_code',
+  'agent_name',
+  'agent_code',
+  'carrier_name',
+  'carrier_code',
+  'customer_name',
+  'customer_code',
   'flight_no',
   'flight_number',
   'flight_status',
@@ -526,12 +557,29 @@ export function toPatchShowAllPayload(
   defaults?: PatchShowAllDto,
 ): PatchShowAllDto {
   const out: PatchShowAllDto = {};
+  const numericKeys = new Set<keyof PatchShowAllDto>([
+    'pieces',
+    'gross_weight',
+    'volume_cbm',
+    'chargeable_units',
+    'chargeable_unit',
+    'chargeable_weight',
+    'pallet_count',
+    'dimensions',
+    'weight',
+  ]);
   for (const key of PATCH_KEYS) {
     const value = draft[key];
     if (typeof value === 'string') {
       const trimmed = value.trim();
       if (trimmed) {
-        out[key] = trimmed as never;
+        if (numericKeys.has(key)) {
+          const n = Number(trimmed);
+          if (Number.isFinite(n)) out[key] = n as never;
+          else out[key] = trimmed as never;
+        } else {
+          out[key] = trimmed as never;
+        }
         continue;
       }
       // Cleared previously-filled clearable field → null.

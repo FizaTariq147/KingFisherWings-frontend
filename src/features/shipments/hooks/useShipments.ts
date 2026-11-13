@@ -1,4 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { jobKeys } from '@/features/jobs/hooks/useJobs';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { shipmentService } from '../services/shipment.service';
@@ -160,6 +161,30 @@ export function usePatchShipmentShowAll(id: string) {
       void queryClient.invalidateQueries({
         queryKey: shipmentKeys.detailTab(id, 'show_all'),
       });
+      // Keep linked job Show All / detail in sync with shipment commercial fields.
+      const cached = queryClient.getQueriesData<{ job_id?: string }>({
+        queryKey: shipmentKeys.detail(id),
+      });
+      const jobIds = new Set<string>();
+      for (const [, row] of cached) {
+        const jobId = row?.job_id?.trim();
+        if (jobId && isUuid(jobId)) jobIds.add(jobId);
+      }
+      for (const jobId of jobIds) {
+        void queryClient.invalidateQueries({ queryKey: jobKeys.detail(jobId) });
+        void queryClient.invalidateQueries({
+          queryKey: [...jobKeys.detail(jobId), 'show-all'],
+        });
+        void queryClient.invalidateQueries({
+          queryKey: jobKeys.detailTab(jobId, 'show_all'),
+        });
+        void queryClient.invalidateQueries({
+          queryKey: jobKeys.jobShipments(jobId),
+        });
+      }
+      if (!jobIds.size) {
+        void queryClient.invalidateQueries({ queryKey: jobKeys.all });
+      }
     },
   });
 }

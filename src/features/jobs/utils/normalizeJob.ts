@@ -721,6 +721,58 @@ export function normalizeMilestones(raw: unknown): JobMilestone[] {
   return raw.map(normalizeMilestone).filter((m): m is JobMilestone => Boolean(m));
 }
 
+function milestoneCacheKey(m: Pick<JobMilestone, 'id' | 'milestone' | 'milestone_key'>): string {
+  return String(m.milestone_key || m.milestone || m.id)
+    .trim()
+    .toUpperCase();
+}
+
+/**
+ * Soft-merge milestone lists so custom rows seeded after POST are not wiped when
+ * GET omits them (or a remount refetch races the optimistic cache).
+ * First list wins on conflicting keys; later lists only fill missing keys.
+ */
+export function mergeMilestoneLists(
+  ...lists: Array<JobMilestone[] | undefined | null>
+): JobMilestone[] {
+  const byKey = new Map<string, JobMilestone>();
+  for (const list of lists) {
+    if (!Array.isArray(list)) continue;
+    for (const m of list) {
+      const key = milestoneCacheKey(m);
+      if (!key) continue;
+      const prev = byKey.get(key);
+      if (!prev) {
+        byKey.set(key, m);
+        continue;
+      }
+      // Same key: keep first identity, fill any empty fields from later copies.
+      byKey.set(key, {
+        id: prev.id || m.id,
+        milestone: prev.milestone || m.milestone,
+        milestone_key: prev.milestone_key || m.milestone_key,
+        description: prev.description || m.description,
+        notes: prev.notes || m.notes,
+        planned_date: prev.planned_date || m.planned_date,
+        actual_date: prev.actual_date || m.actual_date,
+        completed_at: prev.completed_at || m.completed_at,
+        is_completed:
+          prev.is_completed === false || m.is_completed === false
+            ? Boolean(prev.actual_date || prev.completed_at || m.actual_date || m.completed_at)
+            : Boolean(
+                prev.is_completed ||
+                  m.is_completed ||
+                  prev.actual_date ||
+                  prev.completed_at ||
+                  m.actual_date ||
+                  m.completed_at,
+              ),
+      });
+    }
+  }
+  return [...byKey.values()];
+}
+
 function normalizeNote(raw: unknown): JobNote | null {
   const r = asRecord(raw);
   if (!r || !r.id) return null;

@@ -971,13 +971,16 @@ function JobShowAllPanel({
       !isPartyTypesSection(section.key, section.title) &&
       !isShowAllSectionKey(section.key),
   );
-  const editSources = [
-    savedOverlay,
-    opsFallback,
-    mergedShowAllData,
-    query.data,
-    ...sections.map((s) => s.data),
-  ];
+  const editSources = useMemo(
+    () => [
+      savedOverlay,
+      opsFallback,
+      mergedShowAllData,
+      query.data,
+      ...sections.map((s) => s.data),
+    ],
+    [savedOverlay, opsFallback, mergedShowAllData, query.data, sections],
+  );
   const transportEditMode = (() => {
     const job = jobQuery.data;
     if (!job) return 'all' as const;

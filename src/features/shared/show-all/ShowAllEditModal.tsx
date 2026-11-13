@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Save } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -364,12 +364,39 @@ export function ShowAllEditModal({
   const [draft, setDraft] = useState<PatchShowAllDto>({});
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [formError, setFormError] = useState<string | null>(null);
+  /**
+   * Seed draft once per open. Parent Show All sources refresh often (refetch /
+   * overlay); resetting draft on every defaults change wiped newly typed values
+   * so Save sent an empty/stale payload.
+   */
+  const seededOpenRef = useRef(false);
+  const draftTouchedRef = useRef(false);
+  const hadDefaultsOnSeedRef = useRef(false);
 
   useEffect(() => {
-    if (!open) return;
-    setDraft({ ...defaults });
-    setFieldErrors({});
-    setFormError(null);
+    if (!open) {
+      seededOpenRef.current = false;
+      draftTouchedRef.current = false;
+      hadDefaultsOnSeedRef.current = false;
+      return;
+    }
+    if (!seededOpenRef.current) {
+      setDraft({ ...defaults });
+      setFieldErrors({});
+      setFormError(null);
+      seededOpenRef.current = true;
+      hadDefaultsOnSeedRef.current = Object.keys(defaults).length > 0;
+      return;
+    }
+    // Async defaults arrived after open; apply once if user has not typed yet.
+    if (
+      !hadDefaultsOnSeedRef.current &&
+      !draftTouchedRef.current &&
+      Object.keys(defaults).length > 0
+    ) {
+      setDraft({ ...defaults });
+      hadDefaultsOnSeedRef.current = true;
+    }
   }, [open, defaults]);
 
   const groups = useMemo(() => {
@@ -386,6 +413,7 @@ export function ShowAllEditModal({
   if (!open) return null;
 
   const setField = (key: keyof PatchShowAllDto, raw: string, kind: FieldKind) => {
+    draftTouchedRef.current = true;
     setFieldErrors((prev) => {
       if (!prev[key]) return prev;
       const next = { ...prev };
@@ -410,6 +438,7 @@ export function ShowAllEditModal({
     raw: string,
     kind: FieldKind,
   ) => {
+    draftTouchedRef.current = true;
     const errKey = `${nested}.${nestedKey}`;
     setFieldErrors((prev) => {
       if (!prev[errKey]) return prev;

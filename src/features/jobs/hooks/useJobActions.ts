@@ -765,52 +765,26 @@ export function useJobNoteMutations(jobId: string) {
   };
 }
 
-function milestoneCacheKey(m: Pick<JobMilestone, 'id' | 'milestone' | 'milestone_key'>): string {
-  return String(m.milestone_key || m.milestone || m.id)
-    .trim()
-    .toUpperCase();
-}
-
-/** Merge GET rows with locally seeded customs so a lagging list does not drop new rows. */
-function mergeMilestoneCache(
-  ...lists: Array<JobMilestone[] | undefined | null>
-): JobMilestone[] {
-  const byKey = new Map<string, JobMilestone>();
-  for (const list of lists) {
-    if (!Array.isArray(list)) continue;
-    for (const m of list) {
-      const key = milestoneCacheKey(m);
-      if (!key || byKey.has(key)) continue;
-      byKey.set(key, m);
-    }
-  }
-  return [...byKey.values()];
-}
-
 export function useJobMilestoneMutations(jobId: string) {
   const queryClient = useQueryClient();
-  const invalidate = useInvalidateJobs();
   return {
     create: useMutation({
       mutationFn: (dto: CreateCustomMilestoneDto) => jobService.createMilestone(jobId, dto),
-      onSuccess: (created) => {
+      onSuccess: async (created) => {
+        const { mergeMilestoneLists } = await import('../utils/normalizeJob');
         // Seed immediately — custom rows often lag or are omitted on the next GET.
         queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) =>
-          mergeMilestoneCache([created], prev),
+          mergeMilestoneLists([created], prev),
         );
-        // Do NOT invalidate jobKeys.all / milestones here: that refetch replaces the
-        // cache and makes the custom milestone flash then vanish.
-        void queryClient.invalidateQueries({ queryKey: jobKeys.detail(jobId) });
-        void jobService.listMilestones(jobId).then(
-          (list) => {
-            queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) =>
-              mergeMilestoneCache(list, prev, [created]),
-            );
-          },
-          () => {
-            /* keep seeded row */
-          },
-        );
+        // Soft-refresh list without wiping seeded customs (queryFn also soft-merges).
+        try {
+          const list = await jobService.listMilestones(jobId);
+          queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) =>
+            mergeMilestoneLists(list, prev, [created]),
+          );
+        } catch {
+          /* keep seeded row */
+        }
       },
     }),
     update: useMutation({
@@ -822,9 +796,44 @@ export function useJobMilestoneMutations(jobId: string) {
         milestoneKey: string;
         dto: UpdateJobMilestoneDto;
       }) => jobService.updateMilestone(jobId, milestoneKey, dto),
-      onSuccess: () => {
-        invalidate(jobId);
-        void queryClient.invalidateQueries({ queryKey: jobKeys.milestones(jobId) });
+      onSuccess: async (_result, vars) => {
+        const { mergeMilestoneLists } = await import('../utils/normalizeJob');
+        const key = vars.milestoneKey.trim().toUpperCase();
+        // Optimistically apply PATCH fields so complete/description stick even if GET lags.
+        queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) => {
+          const rows = Array.isArray(prev) ? prev : [];
+          const next = rows.map((m) => {
+            const rowKey = String(m.milestone_key || m.milestone || m.id)
+              .trim()
+              .toUpperCase();
+            if (rowKey !== key) return m;
+            return {
+              ...m,
+              ...(vars.dto.description != null
+                ? { description: vars.dto.description }
+                : {}),
+              ...(vars.dto.notes != null ? { notes: vars.dto.notes } : {}),
+              ...(vars.dto.planned_date != null
+                ? { planned_date: vars.dto.planned_date }
+                : {}),
+              ...(vars.dto.actual_date != null
+                ? { actual_date: vars.dto.actual_date, is_completed: true }
+                : {}),
+              ...(vars.dto.completed_at != null
+                ? { completed_at: vars.dto.completed_at, is_completed: true }
+                : {}),
+            };
+          });
+          return next;
+        });
+        try {
+          const list = await jobService.listMilestones(jobId);
+          queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) =>
+            mergeMilestoneLists(list, prev),
+          );
+        } catch {
+          /* keep optimistic row */
+        }
       },
     }),
   };

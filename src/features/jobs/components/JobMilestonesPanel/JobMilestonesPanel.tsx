@@ -30,7 +30,7 @@ function milestoneActionKey(m: JobMilestone): string {
 }
 
 export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
-  const { data: milestones = [], refetch, isFetching } = useJobMilestones(jobId);
+  const { data: milestones = [], isFetching } = useJobMilestones(jobId);
   const mutations = useJobMilestoneMutations(jobId);
   const validation = useInlineValidation();
   const [name, setName] = useState('');
@@ -51,7 +51,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
         milestoneKey,
         dto: { description: nextDescription },
       });
-      await refetch();
+      // Cache soft-merges — do not refetch() (wipes customs when GET omits them).
       setSuccess('Description saved.');
     } catch (err) {
       setError(getErrorMessage(err));
@@ -79,7 +79,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
           description: nextDescription.trim() || undefined,
         },
       });
-      await refetch();
+      // Cache soft-merges — do not refetch() (wipes customs when GET omits them).
       setSuccess('Milestone marked complete.');
     } catch (err) {
       setError(getErrorMessage(err));
@@ -187,7 +187,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
                         [m.id]: event.target.value,
                       }))
                     }
-                    maxLength={2000}
+                    maxLength={4000}
                     rows={2}
                     placeholder="Add a customer-facing update..."
                     className="w-full rounded-md border border-[var(--color-neutral-200)] bg-transparent px-3 py-2 text-sm"
@@ -245,7 +245,7 @@ export function JobMilestonesPanel({ jobId }: JobMilestonesPanelProps) {
             <textarea
               value={description}
               onChange={(event) => setDescription(event.target.value)}
-              maxLength={2000}
+              maxLength={4000}
               rows={2}
               placeholder="Customer-visible note for this milestone"
               disabled={mutations.create.isPending}

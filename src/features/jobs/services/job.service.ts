@@ -5194,9 +5194,42 @@ export const jobService = {
         axiosInstance.post(JOB_API.milestones(id), body, { skipErrorToast: true }),
       );
       const raw = unwrapEntity(res.data) ?? res.data;
-      const normalized = normalizeMilestone(raw);
-      if (normalized) return normalized;
-      // 201 with empty body — still treat as success using the submitted name.
+      const rec =
+        raw && typeof raw === 'object' && !Array.isArray(raw)
+          ? (raw as Record<string, unknown>)
+          : null;
+      const candidates: unknown[] = [
+        raw,
+        rec?.milestone,
+        rec?.custom_milestone,
+        rec?.customMilestone,
+        rec?.item,
+        rec?.data,
+      ];
+      if (Array.isArray(rec?.milestones) && rec.milestones.length) {
+        const match = rec.milestones.find((row) => {
+          const n = normalizeMilestone(row);
+          if (!n) return false;
+          const blob = `${n.milestone} ${n.milestone_key ?? ''}`.toUpperCase();
+          return blob.includes(name.toUpperCase()) || name.toUpperCase().includes(
+            String(n.milestone_key || n.milestone).toUpperCase(),
+          );
+        });
+        if (match) candidates.unshift(match);
+      }
+      for (const candidate of candidates) {
+        const normalized = normalizeMilestone(candidate);
+        if (normalized) {
+          return {
+            ...normalized,
+            description: normalized.description || body.description,
+            notes: normalized.notes || body.notes,
+            planned_date: normalized.planned_date || body.planned_date,
+            actual_date: normalized.actual_date || body.actual_date,
+          };
+        }
+      }
+      // 201 with empty / unrecognized body — still treat as success using submitted name.
       return {
         id: name,
         milestone: name,
