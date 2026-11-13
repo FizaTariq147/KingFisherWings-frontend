@@ -1042,7 +1042,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   };
 
   const bumpSideAttachCount = (chargeId: string, side: 'SALE' | 'COST') => {
-    const line = (chargesQuery.data ?? []).find((c) => c.id === chargeId);
+    const line = charges.find((c) => c.id === chargeId);
     const fromApi =
       side === 'SALE'
         ? line?.sale?.attachment_count
