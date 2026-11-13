@@ -526,9 +526,9 @@ export function ShowAllEditModal({
       }
     >
       <p className="mb-3 text-[13px] text-[var(--color-neutral-600)]">
-        Saved values stay filled when you reopen. Clearing Air / MAWB, commercial, or
-        container status sends null so the server clears them (reopen shows —); other blank
-        fields are left unchanged. Incomplete fields are highlighted.
+        Only changed fields are saved. Clearing Air / MAWB, commercial, or container status
+        sends null so the server clears them (reopen shows —); other blank fields are left
+        unchanged. Incomplete fields are highlighted.
       </p>
       {formError ? (
         <p className="mb-3 text-sm text-[var(--color-danger-600)]">{formError}</p>

@@ -1,6 +1,6 @@
 import type { PatchShowAllDto } from '@/features/jobs/types/job.types';
 
-/** Sea / NVOCC-only show_all keys (rejected on air PATCH). */
+/** Sea / NVOCC-only show_all keys (rejected on air PATCH when real values). */
 export const SHOW_ALL_SEA_KEYS = [
   'mbl_number',
   'hbl_number',
@@ -15,7 +15,11 @@ export const SHOW_ALL_SEA_KEYS = [
   'line_no',
 ] as const satisfies readonly (keyof PatchShowAllDto)[];
 
-/** Air-only show_all keys (rejected on sea/NVOCC PATCH). */
+/**
+ * Air / MAWB-only show_all keys for PATCH.
+ * Shared aliases (shipment_date, weight, dimensions) stay out — BE maps them
+ * for sea/shipments without tripping the air-only gate.
+ */
 export const SHOW_ALL_AIR_KEYS = [
   'airline_name',
   'flight_no',
@@ -27,15 +31,30 @@ export const SHOW_ALL_AIR_KEYS = [
   'mawb_number',
   'hawb_no',
   'hawb_number',
-  'shipment_date',
   'pallet_count',
-  'dimensions',
-  'weight',
   'air_pallet',
   'mawb',
 ] as const satisfies readonly (keyof PatchShowAllDto)[];
 
+/**
+ * Extra keys hidden on sea edit UI (still allowed on the wire as shared aliases).
+ * Sea editors use job_date / gross_weight / volume_cbm instead.
+ */
+const SHOW_ALL_AIR_UI_EXTRA = [
+  'shipment_date',
+  'weight',
+  'dimensions',
+] as const satisfies readonly (keyof PatchShowAllDto)[];
+
 export type ShowAllTransportEditMode = 'air' | 'sea' | 'all';
+
+function isEmptyPatchValue(value: unknown): boolean {
+  if (value == null) return true;
+  if (typeof value === 'string') return !value.trim();
+  if (Array.isArray(value)) return value.length === 0;
+  if (typeof value === 'object') return Object.keys(value as object).length === 0;
+  return false;
+}
 
 export function showAllFieldAllowed(
   key: keyof PatchShowAllDto,
@@ -45,16 +64,31 @@ export function showAllFieldAllowed(
   if (mode === 'air') {
     return !(SHOW_ALL_SEA_KEYS as readonly string[]).includes(key);
   }
-  return !(SHOW_ALL_AIR_KEYS as readonly string[]).includes(key);
+  return !(
+    (SHOW_ALL_AIR_KEYS as readonly string[]).includes(key) ||
+    (SHOW_ALL_AIR_UI_EXTRA as readonly string[]).includes(key)
+  );
 }
 
-/** Strip transport fields the mode must not PATCH. */
+/**
+ * Strip opposite-mode fields the mode must not PATCH.
+ * Empty null/"" echoes are dropped (BE ignores them; FE should not send).
+ * Shared aliases like shipment_date are kept on sea payloads.
+ */
 export function filterShowAllPayloadForTransport(
   dto: PatchShowAllDto,
   mode: ShowAllTransportEditMode,
 ): PatchShowAllDto {
-  if (mode === 'all') return dto;
   const out: PatchShowAllDto = { ...dto };
+  if (mode === 'all') {
+    for (const key of [
+      ...(SHOW_ALL_SEA_KEYS as readonly (keyof PatchShowAllDto)[]),
+      ...(SHOW_ALL_AIR_KEYS as readonly (keyof PatchShowAllDto)[]),
+    ]) {
+      if (isEmptyPatchValue(out[key])) delete out[key];
+    }
+    return out;
+  }
   const ban =
     mode === 'air'
       ? (SHOW_ALL_SEA_KEYS as readonly (keyof PatchShowAllDto)[])

@@ -35,20 +35,28 @@ const PATCH_KEYS: (keyof PatchShowAllDto)[] = [
   'company_code',
   'origin_port_name',
   'origin_port_code',
+  'origin_port_id',
   'dest_port_name',
   'dest_port_code',
+  'dest_port_id',
   'shipper_name',
   'shipper_code',
+  'shipper_id',
   'consignee_name',
   'consignee_code',
+  'consignee_id',
   'billing_party_name',
   'billing_party_code',
+  'billing_party_id',
   'agent_name',
   'agent_code',
+  'agent_id',
   'carrier_name',
   'carrier_code',
+  'carrier_id',
   'customer_name',
   'customer_code',
+  'customer_id',
   // Air / MAWB (PATCH show_all writes same as PUT detail/mawb)
   'flight_no',
   'flight_number',
@@ -60,6 +68,7 @@ const PATCH_KEYS: (keyof PatchShowAllDto)[] = [
   'mawb_number',
   'hawb_no',
   'hawb_number',
+  // Shared date alias (sea shipment show_all + air cargo date)
   'shipment_date',
   'pallet_count',
   'dimensions',
@@ -94,20 +103,28 @@ const CLEARABLE_KEYS = new Set<keyof PatchShowAllDto>([
   'company_code',
   'origin_port_name',
   'origin_port_code',
+  'origin_port_id',
   'dest_port_name',
   'dest_port_code',
+  'dest_port_id',
   'shipper_name',
   'shipper_code',
+  'shipper_id',
   'consignee_name',
   'consignee_code',
+  'consignee_id',
   'billing_party_name',
   'billing_party_code',
+  'billing_party_id',
   'agent_name',
   'agent_code',
+  'agent_id',
   'carrier_name',
   'carrier_code',
+  'carrier_id',
   'customer_name',
   'customer_code',
+  'customer_id',
   'flight_no',
   'flight_number',
   'flight_status',
@@ -130,7 +147,7 @@ const CLEARABLE_KEYS = new Set<keyof PatchShowAllDto>([
 ]);
 
 const ALIASES: Record<string, keyof PatchShowAllDto> = {
-  // Prefer dedicated MAWB shipment_date; sea still maps into job_date via walk fallback.
+  // Shared shipment_date (not air-only); also mirrors job_date for sea reads.
   shipment_date: 'shipment_date',
   grossweight: 'gross_weight',
   volume: 'volume_cbm',
@@ -152,10 +169,13 @@ const ALIASES: Record<string, keyof PatchShowAllDto> = {
   facility: 'location_terminal',
   origin_name: 'origin_port_name',
   origin_code: 'origin_port_code',
+  origin_port_id: 'origin_port_id',
   destination_port_name: 'dest_port_name',
   destination_port_code: 'dest_port_code',
   dest_name: 'dest_port_name',
   dest_code: 'dest_port_code',
+  dest_port_id: 'dest_port_id',
+  destination_port_id: 'dest_port_id',
   billing_party: 'billing_party_name',
   customer: 'customer_name',
   flight_number: 'flight_number',
@@ -175,8 +195,10 @@ const ALIASES: Record<string, keyof PatchShowAllDto> = {
   weight_kg: 'weight',
   payable_at: 'freight_payable_at',
   freightpayableat: 'freight_payable_at',
+  payableat: 'freight_payable_at',
   chargeable_unit: 'chargeable_units',
   chargeableunit: 'chargeable_units',
+  chargeableunits: 'chargeable_units',
   commoditydescription: 'commodity_description',
   chargeableweight: 'chargeable_weight',
   servicescope: 'service_scope',
@@ -196,6 +218,17 @@ const WAREHOUSE_KEYS: (keyof ShowAllWarehouseDto)[] = [
   'commodity',
 ];
 
+/** Flat root aliases BE accepts when FE does not nest under `warehouse`. */
+const FLAT_WAREHOUSE_ROOT_KEYS = new Set<string>([
+  'warehouse_name',
+  'warehouse_id',
+  'expected_inbound_at',
+  'expected_outbound_at',
+  'storage_days_requested',
+  'bonded',
+  'temperature_controlled',
+]);
+
 const TRANSPORT_KEYS: (keyof ShowAllTransportDto)[] = [
   'pickup_address',
   'delivery_address',
@@ -208,23 +241,141 @@ const TRANSPORT_KEYS: (keyof ShowAllTransportDto)[] = [
   'freight_terms',
 ];
 
+const FLAT_TRANSPORT_ROOT_KEYS = new Set<string>(TRANSPORT_KEYS as string[]);
+
 /** Nested party/port objects from show_all → flat PatchShowAllDto fields (compact keys). */
 const NESTED_ENTITY: Record<
   string,
-  { name: keyof PatchShowAllDto; code: keyof PatchShowAllDto }
+  {
+    name: keyof PatchShowAllDto;
+    code: keyof PatchShowAllDto;
+    id: keyof PatchShowAllDto;
+    nested?: keyof PatchShowAllDto;
+  }
 > = {
-  originport: { name: 'origin_port_name', code: 'origin_port_code' },
-  pol: { name: 'origin_port_name', code: 'origin_port_code' },
-  destport: { name: 'dest_port_name', code: 'dest_port_code' },
-  destinationport: { name: 'dest_port_name', code: 'dest_port_code' },
-  pod: { name: 'dest_port_name', code: 'dest_port_code' },
-  shipper: { name: 'shipper_name', code: 'shipper_code' },
-  consignee: { name: 'consignee_name', code: 'consignee_code' },
-  billingparty: { name: 'billing_party_name', code: 'billing_party_code' },
-  agent: { name: 'agent_name', code: 'agent_code' },
-  carrier: { name: 'carrier_name', code: 'carrier_code' },
-  customer: { name: 'customer_name', code: 'customer_code' },
+  originport: {
+    name: 'origin_port_name',
+    code: 'origin_port_code',
+    id: 'origin_port_id',
+    nested: 'origin_port',
+  },
+  pol: {
+    name: 'origin_port_name',
+    code: 'origin_port_code',
+    id: 'origin_port_id',
+    nested: 'origin_port',
+  },
+  destport: {
+    name: 'dest_port_name',
+    code: 'dest_port_code',
+    id: 'dest_port_id',
+    nested: 'dest_port',
+  },
+  destinationport: {
+    name: 'dest_port_name',
+    code: 'dest_port_code',
+    id: 'dest_port_id',
+    nested: 'destination_port',
+  },
+  pod: {
+    name: 'dest_port_name',
+    code: 'dest_port_code',
+    id: 'dest_port_id',
+    nested: 'dest_port',
+  },
+  shipper: {
+    name: 'shipper_name',
+    code: 'shipper_code',
+    id: 'shipper_id',
+    nested: 'shipper',
+  },
+  consignee: {
+    name: 'consignee_name',
+    code: 'consignee_code',
+    id: 'consignee_id',
+    nested: 'consignee',
+  },
+  billingparty: {
+    name: 'billing_party_name',
+    code: 'billing_party_code',
+    id: 'billing_party_id',
+    nested: 'billing_party',
+  },
+  agent: {
+    name: 'agent_name',
+    code: 'agent_code',
+    id: 'agent_id',
+    nested: 'agent',
+  },
+  carrier: {
+    name: 'carrier_name',
+    code: 'carrier_code',
+    id: 'carrier_id',
+    nested: 'carrier',
+  },
+  customer: {
+    name: 'customer_name',
+    code: 'customer_code',
+    id: 'customer_id',
+    nested: 'customer',
+  },
 };
+
+const PARTY_PORT_NESTED: {
+  id: keyof PatchShowAllDto;
+  name: keyof PatchShowAllDto;
+  code: keyof PatchShowAllDto;
+  nested: keyof PatchShowAllDto;
+}[] = [
+  {
+    id: 'origin_port_id',
+    name: 'origin_port_name',
+    code: 'origin_port_code',
+    nested: 'origin_port',
+  },
+  {
+    id: 'dest_port_id',
+    name: 'dest_port_name',
+    code: 'dest_port_code',
+    nested: 'dest_port',
+  },
+  {
+    id: 'shipper_id',
+    name: 'shipper_name',
+    code: 'shipper_code',
+    nested: 'shipper',
+  },
+  {
+    id: 'consignee_id',
+    name: 'consignee_name',
+    code: 'consignee_code',
+    nested: 'consignee',
+  },
+  {
+    id: 'billing_party_id',
+    name: 'billing_party_name',
+    code: 'billing_party_code',
+    nested: 'billing_party',
+  },
+  {
+    id: 'agent_id',
+    name: 'agent_name',
+    code: 'agent_code',
+    nested: 'agent',
+  },
+  {
+    id: 'carrier_id',
+    name: 'carrier_name',
+    code: 'carrier_code',
+    nested: 'carrier',
+  },
+  {
+    id: 'customer_id',
+    name: 'customer_name',
+    code: 'customer_code',
+    nested: 'customer',
+  },
+];
 
 function compactKey(key: string): string {
   return normalizeKey(key).replace(/_/g, '');
@@ -235,8 +386,13 @@ function asRecord(value: unknown): Record<string, unknown> | null {
   return value as Record<string, unknown>;
 }
 
+/** snake_case + camelCase → snake_case (payableAt → payable_at). */
 function normalizeKey(key: string): string {
-  return key.trim().toLowerCase().replace(/[-.\s]+/g, '_');
+  return key
+    .trim()
+    .replace(/([a-z0-9])([A-Z])/g, '$1_$2')
+    .toLowerCase()
+    .replace(/[-.\s]+/g, '_');
 }
 
 function pickString(value: unknown): string | undefined {
@@ -269,6 +425,18 @@ function setIfEmpty(
   into[key] = value as never;
 }
 
+function samePatchValue(a: unknown, b: unknown): boolean {
+  if (a == null && b == null) return true;
+  if (a == null || b == null) return false;
+  if (typeof a === 'number' || typeof b === 'number') {
+    const na = typeof a === 'number' ? a : Number(a);
+    const nb = typeof b === 'number' ? b : Number(b);
+    return Number.isFinite(na) && Number.isFinite(nb) && na === nb;
+  }
+  if (typeof a === 'boolean' || typeof b === 'boolean') return a === b;
+  return String(a).trim() === String(b).trim();
+}
+
 function collectNestedEntity(
   key: string,
   value: unknown,
@@ -295,22 +463,38 @@ function collectNestedEntity(
     pickString(rec.party_code) ||
     pickString(rec.unlocode) ||
     pickString(rec.iata);
+  const id =
+    pickString(rec.id) ||
+    pickString(rec.uuid) ||
+    pickString(rec.port_id) ||
+    pickString(rec.party_id);
   setIfEmpty(into, mapping.name, name);
   setIfEmpty(into, mapping.code, code);
+  setIfEmpty(into, mapping.id, id);
+  if (mapping.nested && (id || name || code)) {
+    const existing = asRecord(into[mapping.nested]) ?? {};
+    into[mapping.nested] = {
+      ...existing,
+      ...(id ? { id } : {}),
+      ...(name ? { name } : {}),
+      ...(code ? { code } : {}),
+    } as never;
+  }
   return true;
 }
 
-function mergeWarehouseBag(
-  into: PatchShowAllDto,
-  raw: unknown,
-): void {
+function mergeWarehouseBag(into: PatchShowAllDto, raw: unknown): void {
   const rec = asRecord(raw);
   if (!rec) return;
   const bag: ShowAllWarehouseDto = { ...(into.warehouse ?? {}) };
   let touched = false;
   for (const key of WAREHOUSE_KEYS) {
-    if (!(key in rec)) continue;
-    const val = rec[key];
+    // Accept camelCase inside nested bag too.
+    const rawVal =
+      rec[key] ??
+      rec[key.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase())];
+    if (rawVal === undefined) continue;
+    const val = rawVal;
     if (bag[key] != null && bag[key] !== '') continue;
     if (key === 'storage_days_requested') {
       const n = pickNumber(val);
@@ -333,10 +517,7 @@ function mergeWarehouseBag(
       }
       continue;
     }
-    if (
-      key === 'expected_inbound_at' ||
-      key === 'expected_outbound_at'
-    ) {
+    if (key === 'expected_inbound_at' || key === 'expected_outbound_at') {
       const d = pickDate(val) || pickString(val);
       if (d) {
         bag[key] = d;
@@ -353,18 +534,18 @@ function mergeWarehouseBag(
   if (touched) into.warehouse = bag;
 }
 
-function mergeTransportBag(
-  into: PatchShowAllDto,
-  raw: unknown,
-): void {
+function mergeTransportBag(into: PatchShowAllDto, raw: unknown): void {
   const rec = asRecord(raw);
   if (!rec) return;
   const bag: ShowAllTransportDto = { ...(into.transport ?? {}) };
   let touched = false;
   for (const key of TRANSPORT_KEYS) {
-    if (!(key in rec)) continue;
+    const rawVal =
+      rec[key] ??
+      rec[key.replace(/_([a-z])/g, (_, c: string) => c.toUpperCase())];
+    if (rawVal === undefined) continue;
     if (bag[key] != null && bag[key] !== '') continue;
-    const s = pickString(rec[key]);
+    const s = pickString(rawVal);
     if (s) {
       bag[key] = s;
       touched = true;
@@ -379,7 +560,11 @@ function collectFromRecord(
 ): void {
   for (const [rawKey, rawVal] of Object.entries(rec)) {
     const compact = compactKey(rawKey);
-    if (compact === 'warehouse' || compact === 'warehousebooking' || compact === 'warehouse_booking') {
+    if (
+      compact === 'warehouse' ||
+      compact === 'warehousebooking' ||
+      compact === 'warehouse_booking'
+    ) {
       mergeWarehouseBag(into, rawVal);
       continue;
     }
@@ -396,10 +581,21 @@ function collectFromRecord(
     if (collectNestedEntity(rawKey, rawVal, into)) continue;
 
     const norm = normalizeKey(rawKey);
+
+    // Flat warehouse / transport root aliases → nested bags (BE whitelist).
+    if (FLAT_WAREHOUSE_ROOT_KEYS.has(norm)) {
+      mergeWarehouseBag(into, { [norm]: rawVal });
+      continue;
+    }
+    if (FLAT_TRANSPORT_ROOT_KEYS.has(norm)) {
+      mergeTransportBag(into, { [norm]: rawVal });
+      continue;
+    }
+
     const mapped =
       (PATCH_KEYS.includes(norm as keyof PatchShowAllDto)
         ? (norm as keyof PatchShowAllDto)
-        : ALIASES[norm]) ?? undefined;
+        : ALIASES[norm] ?? ALIASES[compact]) ?? undefined;
     if (!mapped) continue;
     // First source wins — including intentional clears (null / "") so a removed
     // container_status is not resurrected from a stale sibling tab payload.
@@ -425,7 +621,7 @@ function collectFromRecord(
       mapped === 'chargeable_weight'
     ) {
       const n = pickNumber(rawVal);
-      if (n != null) into[mapped] = n;
+      if (n != null) into[mapped] = n as never;
       continue;
     }
     if (
@@ -437,14 +633,14 @@ function collectFromRecord(
     ) {
       const d = pickDate(rawVal);
       if (d) {
-        into[mapped] = d;
+        into[mapped] = d as never;
         // Sea show_all historically used shipment_date as job_date.
         if (mapped === 'shipment_date') setIfEmpty(into, 'job_date', d);
       }
       continue;
     }
     const s = pickString(rawVal);
-    if (s) into[mapped] = s;
+    if (s) into[mapped] = s as never;
   }
 }
 
@@ -514,8 +710,10 @@ function nestBagChanged(
     if (typeof next === 'string') {
       const trimmed = next.trim();
       if (trimmed) {
-        out[key] = trimmed;
-        touched = true;
+        if (!samePatchValue(trimmed, prev)) {
+          out[key] = trimmed;
+          touched = true;
+        }
         continue;
       }
       if (prev != null && String(prev).trim()) {
@@ -535,8 +733,10 @@ function nestBagChanged(
       continue;
     }
     if (typeof next === 'number' && Number.isFinite(next)) {
-      out[key] = next;
-      touched = true;
+      if (!samePatchValue(next, prev)) {
+        out[key] = next;
+        touched = true;
+      }
       continue;
     }
     if (next == null && prev != null && prev !== '') {
@@ -548,9 +748,11 @@ function nestBagChanged(
 }
 
 /**
- * Build a partial PATCH body.
- * - Non-empty strings/numbers are sent as usual.
- * - Cleared MAWB/air fields (and related weights) send `null` so BE can clear.
+ * Build a partial PATCH body for a normal save.
+ * - Only dirty (changed vs defaults) real values are sent — avoids null/"" echoes
+ *   that used to trip cross-mode guards.
+ * - Cleared clearable fields send `null`.
+ * - Party/port ids are included; nested bags accompany flat ids when present.
  */
 export function toPatchShowAllPayload(
   draft: PatchShowAllDto,
@@ -570,19 +772,21 @@ export function toPatchShowAllPayload(
   ]);
   for (const key of PATCH_KEYS) {
     const value = draft[key];
+    const prev = defaults?.[key];
     if (typeof value === 'string') {
       const trimmed = value.trim();
       if (trimmed) {
-        if (numericKeys.has(key)) {
-          const n = Number(trimmed);
-          if (Number.isFinite(n)) out[key] = n as never;
-          else out[key] = trimmed as never;
-        } else {
-          out[key] = trimmed as never;
+        const next = numericKeys.has(key)
+          ? Number.isFinite(Number(trimmed))
+            ? Number(trimmed)
+            : trimmed
+          : trimmed;
+        if (!defaults || !samePatchValue(next, prev)) {
+          out[key] = next as never;
         }
         continue;
       }
-      // Cleared previously-filled clearable field → null.
+      // Cleared previously-filled clearable field → null (real clear, not echo).
       if (
         CLEARABLE_KEYS.has(key) &&
         defaults &&
@@ -604,7 +808,9 @@ export function toPatchShowAllPayload(
       continue;
     }
     if (typeof value === 'number' && Number.isFinite(value)) {
-      out[key] = value as never;
+      if (!defaults || !samePatchValue(value, prev)) {
+        out[key] = value as never;
+      }
     }
   }
   // Prefer canonical MAWB keys when both aliases are filled.
@@ -623,6 +829,27 @@ export function toPatchShowAllPayload(
   // Prefer freight_payable_at / chargeable_units on the wire.
   delete out.payable_at;
   delete out.chargeable_unit;
+
+  // When FE only has nested party/port objects, BE still reads .id — emit both.
+  for (const group of PARTY_PORT_NESTED) {
+    const idChanged = Object.prototype.hasOwnProperty.call(out, group.id);
+    const nameChanged = Object.prototype.hasOwnProperty.call(out, group.name);
+    const codeChanged = Object.prototype.hasOwnProperty.call(out, group.code);
+    if (!idChanged && !nameChanged && !codeChanged) continue;
+    const id = pickString(out[group.id] ?? draft[group.id] ?? defaults?.[group.id]);
+    const name = pickString(
+      out[group.name] ?? draft[group.name] ?? defaults?.[group.name],
+    );
+    const code = pickString(
+      out[group.code] ?? draft[group.code] ?? defaults?.[group.code],
+    );
+    if (!id && !name && !code) continue;
+    out[group.nested] = {
+      ...(id ? { id } : {}),
+      ...(name ? { name } : {}),
+      ...(code ? { code } : {}),
+    } as never;
+  }
 
   const warehouse = nestBagChanged(
     draft.warehouse as Record<string, unknown> | undefined,
