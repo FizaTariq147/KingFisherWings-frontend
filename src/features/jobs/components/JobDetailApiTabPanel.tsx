@@ -931,11 +931,14 @@ function JobShowAllPanel({
   const patchShowAll = usePatchJobShowAll(jobId);
   const [editOpen, setEditOpen] = useState(false);
   const [savedOverlay, setSavedOverlay] = useState<PatchShowAllDto>({});
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   const saveShowAll = async (dto: PatchShowAllDto) => {
     const refreshed = await patchShowAll.mutateAsync(dto);
     setSavedOverlay((prev) => mergeShowAllSavedOverlay(prev, dto, refreshed));
     await Promise.all([query.refetch(), jobQuery.refetch()]);
+    setSaveMsg('Show All changes saved.');
+    window.setTimeout(() => setSaveMsg(null), 5000);
   };
 
   const { sections = [], arrays = [] } = query.data ?? {};
@@ -1004,6 +1007,11 @@ function JobShowAllPanel({
     );
   }
 
+  const openEditShowAll = () => {
+    setSaveMsg(null);
+    setEditOpen(true);
+  };
+
   const editModal = (
     <ShowAllEditModal
       open={editOpen}
@@ -1016,6 +1024,27 @@ function JobShowAllPanel({
     />
   );
 
+  const showAllToolbar = (
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      {saveMsg ? (
+        <p className="text-[13px] font-medium text-[var(--color-success-700)]">
+          {saveMsg}
+        </p>
+      ) : (
+        <span />
+      )}
+      <Button
+        type="button"
+        size="sm"
+        variant="secondary"
+        leftIcon={<Pencil className="h-3.5 w-3.5" />}
+        onClick={openEditShowAll}
+      >
+        Edit Show All
+      </Button>
+    </div>
+  );
+
   if (
     !hasMergedShowAll &&
     !otherSections.length &&
@@ -1024,17 +1053,7 @@ function JobShowAllPanel({
   ) {
     return (
       <div className="space-y-3">
-        <div className="flex justify-end">
-          <Button
-            type="button"
-            size="sm"
-            variant="secondary"
-            leftIcon={<Pencil className="h-3.5 w-3.5" />}
-            onClick={() => setEditOpen(true)}
-          >
-            Edit Show All
-          </Button>
-        </div>
+        {showAllToolbar}
         <p className="text-[13px] text-[#64748b]">
           No Show All data returned from job detail APIs.
         </p>
@@ -1045,17 +1064,7 @@ function JobShowAllPanel({
 
   return (
     <div className="space-y-3">
-      <div className="flex justify-end">
-        <Button
-          type="button"
-          size="sm"
-          variant="secondary"
-          leftIcon={<Pencil className="h-3.5 w-3.5" />}
-          onClick={() => setEditOpen(true)}
-        >
-          Edit Show All
-        </Button>
-      </div>
+      {showAllToolbar}
       {hasMergedShowAll ? (
         <SectionCard title="Show All">
           <FormFieldsFromPayload data={mergedShowAllData} />

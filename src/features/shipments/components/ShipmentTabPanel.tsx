@@ -641,6 +641,7 @@ function ShipmentShowAllPanel({
   const patchShowAll = usePatchShipmentShowAll(shipmentId);
   const [editOpen, setEditOpen] = useState(false);
   const [savedOverlay, setSavedOverlay] = useState<PatchShowAllDto>({});
+  const [saveMsg, setSaveMsg] = useState<string | null>(null);
 
   const transportEditMode = (() => {
     const s = shipmentQuery.data;
@@ -654,6 +655,8 @@ function ShipmentShowAllPanel({
     const refreshed = await patchShowAll.mutateAsync(dto);
     setSavedOverlay((prev) => mergeShowAllSavedOverlay(prev, dto, refreshed));
     await Promise.all([query.refetch(), shipmentQuery.refetch()]);
+    setSaveMsg('Show All changes saved.');
+    window.setTimeout(() => setSaveMsg(null), 5000);
   };
 
   if (query.isLoading) {
@@ -701,6 +704,11 @@ function ShipmentShowAllPanel({
       !isShipmentShowAllSectionKey(section.key),
   );
 
+  const openEditShowAll = () => {
+    setSaveMsg(null);
+    setEditOpen(true);
+  };
+
   const editModal = (
     <ShowAllEditModal
       open={editOpen}
@@ -719,6 +727,27 @@ function ShipmentShowAllPanel({
     />
   );
 
+  const showAllToolbar = (
+    <div className="flex flex-wrap items-center justify-between gap-2">
+      {saveMsg ? (
+        <p className="text-[13px] font-medium text-[var(--color-success-700)]">
+          {saveMsg}
+        </p>
+      ) : (
+        <span />
+      )}
+      <Button
+        type="button"
+        size="sm"
+        variant="secondary"
+        leftIcon={<Pencil className="h-3.5 w-3.5" />}
+        onClick={openEditShowAll}
+      >
+        Edit Show All
+      </Button>
+    </div>
+  );
+
   if (
     !hasMergedShowAll &&
     !otherSections.length &&
@@ -727,17 +756,7 @@ function ShipmentShowAllPanel({
   ) {
     return (
       <div className="space-y-3 p-3">
-        <div className="flex justify-end">
-          <Button
-            type="button"
-            size="sm"
-            variant="secondary"
-            leftIcon={<Pencil className="h-3.5 w-3.5" />}
-            onClick={() => setEditOpen(true)}
-          >
-            Edit Show All
-          </Button>
-        </div>
+        {showAllToolbar}
         <p className="text-center text-[13px] text-[#64748b]">
           No Show All data returned from shipment APIs.
         </p>
@@ -748,17 +767,7 @@ function ShipmentShowAllPanel({
 
   return (
     <div className="space-y-3 p-3">
-      <div className="flex justify-end">
-        <Button
-          type="button"
-          size="sm"
-          variant="secondary"
-          leftIcon={<Pencil className="h-3.5 w-3.5" />}
-          onClick={() => setEditOpen(true)}
-        >
-          Edit Show All
-        </Button>
-      </div>
+      {showAllToolbar}
       {hasMergedShowAll ? (
         <SectionCard title="Show All">
           <ShipmentApiPayloadView
