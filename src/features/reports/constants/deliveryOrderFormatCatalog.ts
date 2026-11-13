@@ -71,7 +71,7 @@ export const DELIVERY_ORDER_FORMAT_CATALOG: DeliveryOrderFormatSpec[] = [
     kind: 'delivery_confirmation',
     sortOrder: 1,
     family: 'sea_docs',
-    samplePdfUrl: `${FRESA_REPORT_FORMAT_UPLOAD_BASE}delivery-confirmation-report-format.pdf`,
+    samplePdfUrl: `${FRESA_DELIVERY_ORDER_SAMPLE_BASE}delivery_confirmation_rpm_ref_153.pdf`,
   },
   {
     code: 'DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT',
@@ -175,7 +175,7 @@ export const DELIVERY_ORDER_FORMAT_CATALOG: DeliveryOrderFormatSpec[] = [
     kind: 'fg_delivery_order_air',
     sortOrder: 14,
     family: 'air_docs',
-    samplePdfUrl: `${FRESA_REPORT_FORMAT_UPLOAD_BASE}delivery-order-air-jasper-report-format.pdf`,
+    samplePdfUrl: `${FRESA_DELIVERY_ORDER_SAMPLE_BASE}fg_delivery_order_air_rpm_ref_377.pdf`,
   },
   {
     code: 'FG_DELIVERY_ORDER_AIR_FORMAT_1',
@@ -375,7 +375,7 @@ export const DELIVERY_ORDER_FORMAT_CATALOG: DeliveryOrderFormatSpec[] = [
     kind: 'proof_of_delivery',
     sortOrder: 39,
     family: 'sea_docs',
-    samplePdfUrl: `${FRESA_REPORT_FORMAT_UPLOAD_BASE}proof-of-delivery-report-format.pdf`,
+    samplePdfUrl: `${FRESA_DELIVERY_ORDER_SAMPLE_BASE}proof_of_delivery_rpm_ref_275.pdf`,
   },
   {
     code: 'FG_PROOF_OF_DELIVERY',
@@ -443,4 +443,13 @@ export function resolveDeliveryOrderFormatDisplayName(code: string, fallbackName
 /** True when search tokens match at least one Delivery Order catalog row. */
 export function deliveryOrderFormatsMatchSearch(searchQuery: string): boolean {
   return catalogRowsMatchSearch(listDeliveryOrderFormats(), searchQuery);
+}
+
+/** Distinct official Fresa sample (not a bare base URL placeholder). */
+export function hasDeliveryOrderSamplePdf(code: string): boolean {
+  const url = (getDeliveryOrderFormatSpec(code)?.samplePdfUrl || '').trim();
+  if (!url) return false;
+  if (url === FRESA_REPORT_FORMAT_UPLOAD_BASE) return false;
+  if (!url.toLowerCase().endsWith('.pdf')) return false;
+  return true;
 }

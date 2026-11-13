@@ -6,6 +6,12 @@ import { generateHblFamilyClassicPdf } from '@/features/shared/bl-draft/generate
 import { generateHblSamplePdf, hasHblSamplePdf } from './generateHblSamplePdf';
 import { generateHawbSamplePdf, hasHawbSamplePdf } from './generateHawbSamplePdf';
 import {
+  generateCatalogOfficialSamplePdf,
+  hasDoOrWmsOfficialSamplePdf,
+} from './generateCatalogOfficialSamplePdf';
+import { isDeliveryOrderFormatCode } from '../constants/deliveryOrderFormatCatalog';
+import { isWmsFormatCode } from '../constants/wmsFormatCatalog';
+import {
   generateInvoiceFormatLayoutPdf,
   type InvoiceFormatPdfData,
 } from './generateInvoiceFormatLayoutPdf';
@@ -144,6 +150,29 @@ export async function generateCatalogLayoutPdf(
     } catch {
       const v2 = await tryTemplateV2(code, data, options);
       if (v2) return v2;
+    }
+  }
+
+  // DO / WMS verified Fresa samples — browse-only (same entityBound gate).
+  if (
+    !data.entityBound &&
+    hasDoOrWmsOfficialSamplePdf(code) &&
+    (isDeliveryOrderFormatCode(code) || isWmsFormatCode(code))
+  ) {
+    try {
+      const { blob, samplePdfUrl } = await generateCatalogOfficialSamplePdf(code, {
+        appendCustomerTerms: options.appendCustomerTerms,
+      });
+      return {
+        blob,
+        preview: {
+          ...enrichmentPreviewMeta(code),
+          samplePdfUrl,
+          layoutKind: 'generic',
+        },
+      };
+    } catch {
+      // Fall through to template-v2 / JSON.
     }
   }
 

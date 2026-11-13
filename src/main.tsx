@@ -9,6 +9,7 @@ import { SessionExpiryWatcher } from './components/auth/SessionExpiryWatcher'
 import { ToastHost } from './components/toast'
 import { queryClient } from './lib/queryClient'
 import { installAlertToastBridge } from './lib/toastNotify'
+import { installClientErrorReporter } from './features/tech-logs/utils/reportClientError'
 import { router } from './router'
 import { store } from './store'
 import { AuthProvider } from './context/AuthContext'
@@ -17,6 +18,7 @@ import './styles/brand-tokens.css'
 import './index.css'
 
 installAlertToastBridge()
+installClientErrorReporter()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

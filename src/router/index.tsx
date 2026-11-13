@@ -243,6 +243,8 @@ import PlatformBillingInvoiceDetailPage from '../features/platform-billing/pages
 import PlatformBillingPaymentsPage from '../features/platform-billing/pages/PlatformBillingPaymentsPage'
 import PlatformBillingPaymentDetailPage from '../features/platform-billing/pages/PlatformBillingPaymentDetailPage'
 import PlatformBillingWebhooksPage from '../features/platform-billing/pages/PlatformBillingWebhooksPage'
+import TechLogsPage from '../features/tech-logs/pages/TechLogsPage'
+import TechIssueDetailPage from '../features/tech-logs/pages/TechIssueDetailPage'
 import StripeSettingsPage from '../features/online-payments/pages/StripeSettingsPage'
 import OnlinePaymentsPage from '../features/online-payments/pages/OnlinePaymentsPage'
 import OnlinePaymentDetailPage from '../features/online-payments/pages/OnlinePaymentDetailPage'
@@ -371,6 +373,8 @@ export const router = createBrowserRouter([
           { path: 'billing/payments', element: <PlatformBillingPaymentsPage /> },
           { path: 'billing/payments/:id', element: <PlatformBillingPaymentDetailPage /> },
           { path: 'billing/webhooks', element: <PlatformBillingWebhooksPage /> },
+          { path: 'tech-logs', element: <TechLogsPage /> },
+          { path: 'tech-logs/issues/:id', element: <TechIssueDetailPage /> },
           // Super Admin cannot access tenant user management — Tenant Admin owns that in ERP.
         ],
       },

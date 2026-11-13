@@ -1,6 +1,12 @@
 import type { ReportTemplateMeta } from '../types/reportCatalog.types';
 import { getHblFormatSpec } from '../constants/hblFormatCatalog';
 import { getHawbFormatSpec } from '../constants/hawbFormatCatalog';
+import {
+  getDeliveryOrderFormatSpec,
+  hasDeliveryOrderSamplePdf,
+} from '../constants/deliveryOrderFormatCatalog';
+import { getWmsFormatSpec, hasWmsSamplePdf } from '../constants/wmsFormatCatalog';
+import { getFresaOfficialSampleByCode } from '../data/fresaOfficialSampleCatalogue';
 import { getSharedLayoutSource } from '../data/sharedLayoutSource';
 import {
   assertNoFalseFresaClaim,
@@ -96,12 +102,27 @@ function templateTypeFor(meta: ReportTemplateMeta, family: ReportTemplateFamily)
   return `other.${meta.family}`;
 }
 
-function sourceFor(meta: ReportTemplateMeta, family: ReportTemplateFamily): ReportSource {
-  const hbl = getHblFormatSpec(meta.code);
-  const hawb = getHawbFormatSpec(meta.code);
-  if (hbl?.samplePdfUrl || (hawb?.samplePdfUrl && !hawb.sampleIsFallback)) {
-    return 'fresa_public';
+function distinctSampleUrl(code: string): string | null {
+  const official = getFresaOfficialSampleByCode(code);
+  if (official?.verificationStatus === 'url_verified' && official.samplePdfUrl) {
+    return official.samplePdfUrl;
   }
+  const hbl = getHblFormatSpec(code);
+  if (hbl?.samplePdfUrl) return hbl.samplePdfUrl;
+  const hawb = getHawbFormatSpec(code);
+  if (hawb?.samplePdfUrl && !hawb.sampleIsFallback) return hawb.samplePdfUrl;
+  if (hasDeliveryOrderSamplePdf(code)) {
+    return getDeliveryOrderFormatSpec(code)?.samplePdfUrl || null;
+  }
+  if (hasWmsSamplePdf(code)) {
+    return getWmsFormatSpec(code)?.samplePdfUrl || null;
+  }
+  return null;
+}
+
+function sourceFor(meta: ReportTemplateMeta, family: ReportTemplateFamily): ReportSource {
+  const hawb = getHawbFormatSpec(meta.code);
+  if (distinctSampleUrl(meta.code)) return 'fresa_public';
   if (hawb?.sampleIsFallback) return 'internal_requirement';
   if (meta.existingPath) return 'freightnest_module';
   if (meta.suggestedPackKey) return 'backend_api';
@@ -113,10 +134,8 @@ function verificationFor(
   meta: ReportTemplateMeta,
   family: ReportTemplateFamily,
 ): ReportVerificationStatus {
-  const hbl = getHblFormatSpec(meta.code);
   const hawb = getHawbFormatSpec(meta.code);
-  if (hbl?.samplePdfUrl) return 'verified_sample';
-  if (hawb?.samplePdfUrl && !hawb.sampleIsFallback) return 'verified_sample';
+  if (distinctSampleUrl(meta.code)) return 'verified_sample';
   if (meta.gapStatus === 'covered_analytics') return 'verified_docs';
   if (family === 'hawb' && hawb?.sampleIsFallback) return 'internal_design';
   if (!meta.hasClientLayout && meta.gapStatus === 'covered_document_pdf') return 'unverified';
@@ -145,10 +164,8 @@ function implementationFor(
   shared: ReturnType<typeof getSharedLayoutSource>,
 ): ReportImplementationStatus {
   if (meta.gapStatus === 'covered_analytics') return 'analytics_only';
-  const hbl = getHblFormatSpec(meta.code);
-  const hawb = getHawbFormatSpec(meta.code);
   // Distinct CDN sample wins over shared-shell honesty for verified samples.
-  if (hbl?.samplePdfUrl || (hawb?.samplePdfUrl && !hawb.sampleIsFallback)) {
+  if (distinctSampleUrl(meta.code)) {
     return 'sample_only';
   }
   // Aliased JSON shells are not unique client layouts / not Fresa designs.
@@ -197,10 +214,9 @@ function dataMappingKeyFor(family: ReportTemplateFamily): string {
 /** Build enrichment metadata for one registry row (validated). */
 export function enrichReportMeta(meta: ReportTemplateMeta): ReportRegistryEnrichment {
   const templateFamily = classifyTemplateFamily(meta);
-  const hbl = getHblFormatSpec(meta.code);
   const hawb = getHawbFormatSpec(meta.code);
   const shared = getSharedLayoutSource(meta.code);
-  const sampleUrl = hbl?.samplePdfUrl || hawb?.samplePdfUrl || null;
+  const sampleUrl = distinctSampleUrl(meta.code);
   const verificationStatus = verificationFor(meta, templateFamily);
   const implementationStatus = implementationFor(meta, templateFamily, shared);
 

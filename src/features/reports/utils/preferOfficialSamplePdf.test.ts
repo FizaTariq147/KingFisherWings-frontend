@@ -5,10 +5,12 @@ import {
 } from './preferOfficialSamplePdf';
 
 describe('preferOfficialSamplePdf', () => {
-  it('detects verified HAWB sample formats', () => {
+  it('detects verified HAWB / DO / WMS sample formats', () => {
     expect(hasOfficialSamplePdf('HAWB_DRAFT_REPORT_FORMAT_1')).toBe(true);
     expect(hasOfficialSamplePdf('HAWB_DRAFT_REPORT_FORMAT_2')).toBe(true);
     expect(hasOfficialSamplePdf('HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1')).toBe(true);
+    expect(hasOfficialSamplePdf('DELIVERY_ORDER_REPORT_FORMAT_17')).toBe(true);
+    expect(hasOfficialSamplePdf('ADVANCE_SHIPPING_NOTE')).toBe(true);
   });
 
   it('prefers sample PDF over shared pack for catalogue generate', () => {
