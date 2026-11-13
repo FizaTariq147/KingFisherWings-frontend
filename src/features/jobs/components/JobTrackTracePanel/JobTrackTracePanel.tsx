@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import { Button } from '@/components/ui/Button';
+import { routeProgressInfo } from '@/features/auth/dashboard/utils/dashboardFormat';
 import { PublicTrackTimeline } from '@/features/public-track/components/PublicTrackTimeline';
 import { TrackMapBackground } from '@/features/public-track/components/TrackMapBackground';
 import { TrackOverlayFrame } from '@/features/public-track/components/TrackOverlayFrame';
@@ -86,6 +87,14 @@ export function JobTrackTracePanel({
     jobQuery.data,
   ]);
 
+  /** Same pct + color as dashboard Active Shipments route bar. */
+  const progressBar = useMemo(() => {
+    const job = jobQuery.data;
+    if (!job) return undefined;
+    const route = routeProgressInfo(job);
+    return { pct: route.pct, color: route.barColor };
+  }, [jobQuery.data]);
+
   return (
     <div className="rounded-sm bg-white">
       <div className="flex items-center justify-between gap-2 border-b border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] px-3 py-2">
@@ -129,6 +138,7 @@ export function JobTrackTracePanel({
                 className="h-full min-h-0 shadow-2xl"
                 result={trackResult}
                 pdfSource={{ kind: 'job', jobId }}
+                progressBar={progressBar}
               />
             </TrackOverlayFrame>
           </div>

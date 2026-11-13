@@ -147,11 +147,17 @@ export function ActiveShipmentsPanel({
   const [chip, setChip] = useState<ShipmentStatusChip>('all');
   const [query, setQuery] = useState('');
   const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [page, setPage] = useState(1);
+  const PAGE_SIZE = 10;
 
   // Keep staff on All jobs when the dashboard mounts with that default (not My jobs).
   useEffect(() => {
     setView(defaultView);
   }, [defaultView]);
+
+  useEffect(() => {
+    setPage(1);
+  }, [view, chip, query, defaultView]);
 
   // Same set as Total jobs / job_count — include completed & cancelled (do not drop).
   const catalog = jobs;
@@ -244,8 +250,16 @@ export function ActiveShipmentsPanel({
     });
   }, [catalog, view, chip, query, userId, clientNameByJobId]);
 
-  // Show every in-scope row (All jobs = full department set; My jobs = own only).
-  const visibleRows = filtered;
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  const safePage = Math.min(page, totalPages);
+  useEffect(() => {
+    if (page !== safePage) setPage(safePage);
+  }, [page, safePage]);
+  // Paginate filtered rows — 10 jobs per page.
+  const visibleRows = useMemo(
+    () => filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
+    [filtered, safePage],
+  );
   /** Air jobs missing AWB on list — hydrate from GET /jobs/:id/detail (cap fan-out). */
   const airJobsNeedingDetail = useMemo(
     () =>
@@ -442,6 +456,9 @@ export function ActiveShipmentsPanel({
           })}
           <span className="ml-auto text-[11px] text-[var(--color-neutral-400)]">
             {filtered.length} shipment{filtered.length === 1 ? '' : 's'}
+            {filtered.length > PAGE_SIZE
+              ? ` · page ${safePage}/${totalPages}`
+              : ''}
           </span>
         </div>
       </div>
@@ -718,6 +735,33 @@ export function ActiveShipmentsPanel({
           </table>
         </div>
       )}
+
+      {!isLoading && !isError && filtered.length > PAGE_SIZE ? (
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[var(--color-neutral-100)] px-5 py-3">
+          <p className="text-[11px] text-[var(--color-neutral-500)]">
+            Showing {(safePage - 1) * PAGE_SIZE + 1}–
+            {Math.min(safePage * PAGE_SIZE, filtered.length)} of {filtered.length}
+          </p>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              disabled={safePage <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="rounded-md border border-[var(--color-neutral-200)] px-2.5 py-1 text-[11px] font-medium text-[var(--color-neutral-700)] disabled:cursor-not-allowed disabled:opacity-40 hover:bg-[var(--color-neutral-50)]"
+            >
+              Previous
+            </button>
+            <button
+              type="button"
+              disabled={safePage >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              className="rounded-md border border-[var(--color-neutral-200)] px-2.5 py-1 text-[11px] font-medium text-[var(--color-neutral-700)] disabled:cursor-not-allowed disabled:opacity-40 hover:bg-[var(--color-neutral-50)]"
+            >
+              Next
+            </button>
+          </div>
+        </div>
+      ) : null}
     </DashCard>
   );
 }
