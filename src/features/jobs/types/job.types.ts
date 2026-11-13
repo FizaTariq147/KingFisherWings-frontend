@@ -672,7 +672,7 @@ export interface JobChargeSideView {
   gross_profit?: number;
   /** From JobCostingSaleSideResponseDto / CostSide — drives Edit column. */
   editable?: boolean;
-  /** Per-side attachment count when API returns it; else use line attachment_count. */
+  /** Per-side attachment count (sale vs cost). Do not fall back to line total. */
   attachment_count?: number;
   voucher_no?: string;
 }
@@ -709,7 +709,7 @@ export interface JobCharge {
   cost_dr_cr?: string;
   gross_profit?: number;
   prorated_status?: string;
-  /** JobCostingGridLineDto.attachment_count */
+  /** Line-level total only — not for sale/cost paperclip badges. */
   attachment_count?: number;
   /** JobCostingGridLineDto.history_count — revision lines */
   history_count?: number;

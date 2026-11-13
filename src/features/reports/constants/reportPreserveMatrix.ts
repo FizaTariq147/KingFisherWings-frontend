@@ -68,3 +68,29 @@ export const REPORT_PRESERVE_MATRIX = {
 
 /** Primary product generate path for catalogue formats. */
 export const REPORT_PRODUCT_GENERATE_PATH = 'POST /reports/generate' as const;
+
+/**
+ * Product generate priority for catalogue formats (Fresa fidelity).
+ * Do not expand JSON shell aliases to invent unique Format-N designs.
+ *
+ * 1. Browse / unbound + official CDN sample → sample stamp (HBL/HAWB)
+ * 2. Entity-bound + pack ready → POST /reports/generate (Puppeteer pack)
+ * 3. Entity-bound + no pack → template-v2 (no Fresa-identical claim)
+ * 4. JSON layout → Dev/offline fallback only (clientLayoutFallback)
+ *
+ * Entity-bound must never substitute a CDN sample for live data.
+ */
+export const REPORT_GENERATE_PRIORITY = [
+  'sample_browse',
+  'backend_pack',
+  'template_v2',
+  'json_fallback',
+] as const;
+
+export const REPORT_SHARED_SHELL_POLICY = {
+  /** Aliased Format-N codes share one JSON shell — not Fresa unique designs. */
+  aliasesAreCoverageNotFidelity: true,
+  /** Do not add new *FormatUiLayouts.json rows to “cover” missing Format-N. */
+  forbidNewJsonAliasesForCoverage: true,
+  honestyFields: ['layoutSourceCode', 'isSharedLayout', 'implementationStatus:shared_shell'],
+} as const;

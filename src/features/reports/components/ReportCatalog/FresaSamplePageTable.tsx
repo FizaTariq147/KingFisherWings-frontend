@@ -6,6 +6,7 @@ import {
 } from '../../constants/fresaPageColumns';
 import { FRESA_UI } from '../../constants/fresaInvoiceColors';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
+import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 
 function compareByName(a: ReportTemplate, b: ReportTemplate): number {
   const na = parseInvoiceFormatNumber(a.code);
@@ -212,11 +213,12 @@ function FormatLink({
   compact?: boolean;
 }) {
   const formatNo = parseInvoiceFormatNumber(template.code);
+  const sharedHint = catalogSharedLayoutHint(template.code);
   return (
     <button
       type="button"
       onClick={() => onSelect(template)}
-      title={template.code}
+      title={sharedHint ? `${template.code} — ${sharedHint}` : template.code}
       className={[
         'w-full text-left transition',
         compact ? 'rounded px-1.5 py-1' : 'px-3 py-2.5',
@@ -233,6 +235,9 @@ function FormatLink({
         )}
         {template.name}
       </span>
+      {sharedHint ? (
+        <span className="mt-0.5 block text-[9px] font-medium text-[#64748b]">{sharedHint}</span>
+      ) : null}
     </button>
   );
 }

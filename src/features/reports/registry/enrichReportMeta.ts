@@ -1,6 +1,7 @@
 import type { ReportTemplateMeta } from '../types/reportCatalog.types';
 import { getHblFormatSpec } from '../constants/hblFormatCatalog';
 import { getHawbFormatSpec } from '../constants/hawbFormatCatalog';
+import { getSharedLayoutSource } from '../data/sharedLayoutSource';
 import {
   assertNoFalseFresaClaim,
   reportRegistryEnrichmentSchema,
@@ -141,12 +142,19 @@ const TEMPLATE_V2_FAMILIES = new Set([
 function implementationFor(
   meta: ReportTemplateMeta,
   family: ReportTemplateFamily,
+  shared: ReturnType<typeof getSharedLayoutSource>,
 ): ReportImplementationStatus {
   if (meta.gapStatus === 'covered_analytics') return 'analytics_only';
   const hbl = getHblFormatSpec(meta.code);
   const hawb = getHawbFormatSpec(meta.code);
+  // Distinct CDN sample wins over shared-shell honesty for verified samples.
   if (hbl?.samplePdfUrl || (hawb?.samplePdfUrl && !hawb.sampleIsFallback)) {
     return 'sample_only';
+  }
+  // Aliased JSON shells are not unique client layouts / not Fresa designs.
+  if (shared?.isSharedLayout) return 'shared_shell';
+  if (meta.suggestedPackKey && !meta.hasClientLayout && !TEMPLATE_V2_FAMILIES.has(family)) {
+    return 'pack_bound';
   }
   if (TEMPLATE_V2_FAMILIES.has(family)) return 'template_v2';
   if (meta.hasClientLayout) return 'json_legacy';
@@ -191,8 +199,10 @@ export function enrichReportMeta(meta: ReportTemplateMeta): ReportRegistryEnrich
   const templateFamily = classifyTemplateFamily(meta);
   const hbl = getHblFormatSpec(meta.code);
   const hawb = getHawbFormatSpec(meta.code);
+  const shared = getSharedLayoutSource(meta.code);
   const sampleUrl = hbl?.samplePdfUrl || hawb?.samplePdfUrl || null;
   const verificationStatus = verificationFor(meta, templateFamily);
+  const implementationStatus = implementationFor(meta, templateFamily, shared);
 
   const row: ReportRegistryEnrichment = {
     code: meta.code,
@@ -202,23 +212,33 @@ export function enrichReportMeta(meta: ReportTemplateMeta): ReportRegistryEnrich
     category: meta.family,
     source: sourceFor(meta, templateFamily),
     verificationStatus,
-    implementationStatus: implementationFor(meta, templateFamily),
+    implementationStatus,
     reference: sampleUrl
       ? {
           samplePdfUrl: sampleUrl,
           notes: hawb?.sampleIsFallback
             ? 'Closest Fresa CDN sample; no distinct public file for this code'
-            : undefined,
+            : shared?.isSharedLayout
+              ? `Shared JSON shell (${shared.layoutSourceCode}); not a unique Fresa design`
+              : undefined,
         }
-      : undefined,
+      : shared?.isSharedLayout
+        ? {
+            notes: `Shares JSON layout with ${shared.layoutSourceCode} — not a unique Fresa format`,
+          }
+        : undefined,
     page:
       templateFamily === 'cargo_manifest' || templateFamily === 'ops_list'
         ? pageLandscapeA4()
         : pagePortraitA4(),
     dataMappingKey: dataMappingKeyFor(templateFamily),
     rendererKeyHint: meta.suggestedPackKey,
+    layoutSourceCode: shared?.layoutSourceCode ?? null,
+    isSharedLayout: Boolean(shared?.isSharedLayout),
+    // Shared shells never claim Fresa exact match even if docs mention the code.
     claimsFresaExactMatch:
-      verificationStatus === 'verified_sample' || verificationStatus === 'verified_docs',
+      !shared?.isSharedLayout &&
+      (verificationStatus === 'verified_sample' || verificationStatus === 'verified_docs'),
   };
 
   const parsed = reportRegistryEnrichmentSchema.parse(row);

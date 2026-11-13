@@ -49,6 +49,8 @@ export const reportImplementationStatusSchema = z.enum([
   'json_legacy',
   'template_v2',
   'pack_bound',
+  /** Registry code reuses another JSON shell — not a unique Fresa design. */
+  'shared_shell',
   'analytics_only',
   'missing',
 ]);
@@ -81,6 +83,10 @@ export const reportRegistryEnrichmentSchema = z.object({
   page: reportPageSchema,
   dataMappingKey: z.string().min(1),
   rendererKeyHint: z.string().optional(),
+  /** Canonical JSON layout code when this report aliases a shared shell. */
+  layoutSourceCode: z.string().min(1).optional().nullable(),
+  /** True when `code` is not the canonical JSON shell (Format-N alias). */
+  isSharedLayout: z.boolean().default(false),
   /** Never true unless verificationStatus is verified_sample or verified_docs. */
   claimsFresaExactMatch: z.boolean().default(false),
 });

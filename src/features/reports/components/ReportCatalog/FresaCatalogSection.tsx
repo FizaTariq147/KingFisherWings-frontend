@@ -141,6 +141,8 @@ type FresaFormatCardProps = {
   badge: string;
   name: string;
   title?: string;
+  /** Shown when this Format-N reuses another JSON shell (not a unique Fresa design). */
+  sharedHint?: string | null;
   onClick: () => void;
 };
 
@@ -150,6 +152,7 @@ export function FresaFormatCard({
   badge,
   name,
   title,
+  sharedHint,
   onClick,
 }: FresaFormatCardProps) {
   const n = FRESA_CARD_TONES.length;
@@ -159,7 +162,7 @@ export function FresaFormatCard({
     <button
       type="button"
       onClick={onClick}
-      title={title || name}
+      title={title || (sharedHint ? `${name} — ${sharedHint}` : name)}
       className={[
         'relative min-w-[8.75rem] max-w-[11rem] shrink-0 overflow-hidden rounded-lg border px-2.5 py-2.5 text-left transition',
         tone.bg,
@@ -176,6 +179,11 @@ export function FresaFormatCard({
       <p className="mt-0.5 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[#0F172A]">
         {name}
       </p>
+      {sharedHint ? (
+        <p className="mt-1 line-clamp-2 pl-1.5 text-[9px] font-medium leading-snug text-[#64748b]">
+          {sharedHint}
+        </p>
+      ) : null}
     </button>
   );
 }

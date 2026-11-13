@@ -2846,7 +2846,7 @@ export const jobService = {
           Array.isArray((data as { attachments?: unknown }).attachments) &&
           (data as { attachments: unknown[] }).attachments) ||
         [];
-      return list
+      const mapped = list
         .map((row) => {
           if (!row || typeof row !== 'object') return null;
           const r = row as Record<string, unknown>;
@@ -2858,6 +2858,9 @@ export const jobService = {
               resolveJobDocumentFileUrl({ s3_key, file_name }, undefined) || s3_key;
           }
           if (!file_name && !file_url && !s3_key) return null;
+          const rowSide = String(r.side ?? r.Side ?? '')
+            .trim()
+            .toUpperCase();
           return {
             id: typeof r.id === 'string' ? r.id : undefined,
             file_name: file_name || 'attachment',
@@ -2867,10 +2870,25 @@ export const jobService = {
               ? Number(r.file_size ?? r.fileSize)
               : undefined,
             mime_type: typeof r.mime_type === 'string' ? r.mime_type : undefined,
+            side: (rowSide || undefined) as JobChargeAttachment['side'],
+            purpose:
+              typeof r.purpose === 'string'
+                ? (r.purpose as JobChargeAttachment['purpose'])
+                : undefined,
             created_at: typeof r.created_at === 'string' ? r.created_at : undefined,
           } satisfies JobChargeAttachment;
         })
         .filter((x): x is JobChargeAttachment => Boolean(x));
+
+      // Guard against BE returning mixed sides: never leak SALE↔COST in the UI.
+      const requested = String(side).toUpperCase();
+      if (requested !== 'SALE' && requested !== 'COST') return mapped;
+      const hasExplicitSide = mapped.some((row) => {
+        const s = String(row.side || '').toUpperCase();
+        return s === 'SALE' || s === 'COST' || s === 'CHARGE';
+      });
+      if (!hasExplicitSide) return mapped;
+      return mapped.filter((row) => String(row.side || '').toUpperCase() === requested);
     } catch (error) {
       throw formatAxiosError(error);
     }

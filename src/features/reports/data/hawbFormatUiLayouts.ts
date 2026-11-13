@@ -17,8 +17,18 @@ function resolveLayoutCode(code: string): string {
   return needle;
 }
 
+/** Canonical HAWB JSON shell, or undefined when this store has no layout. */
+export function resolveHawbLayoutSourceCode(code: string): string | undefined {
+  const needle = code.trim().toUpperCase();
+  if (!needle) return undefined;
+  const resolved = resolveLayoutCode(needle);
+  return byCode.has(resolved) ? resolved : undefined;
+}
+
 export function getHawbFormatUiLayout(code: string): InvoiceFormatUiLayout | undefined {
-  const resolved = byCode.get(resolveLayoutCode(code));
+  const source = resolveHawbLayoutSourceCode(code);
+  if (!source) return undefined;
+  const resolved = byCode.get(source);
   if (!resolved) return undefined;
   const needle = code.trim().toUpperCase();
   if (needle === resolved.code.toUpperCase()) return resolved;

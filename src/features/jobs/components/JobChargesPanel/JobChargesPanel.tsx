@@ -1,4 +1,10 @@
-import { useMemo, useState, type CSSProperties, type ReactNode } from 'react';
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type CSSProperties,
+  type ReactNode,
+} from 'react';
 import { Link } from 'react-router-dom';
 import {
   Calculator,
@@ -878,12 +884,40 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const [attachDownloadCustomer, setAttachDownloadCustomer] = useState(false);
   const [attachDownloadVendor, setAttachDownloadVendor] = useState(false);
   const [attachModalOpen, setAttachModalOpen] = useState(false);
+  /** Per-side paperclip badges — never mirror line attachment_count onto both sides. */
+  const [sideAttachCounts, setSideAttachCounts] = useState<
+    Record<string, { SALE?: number; COST?: number }>
+  >({});
   const attachListQuery = useJobChargeAttachments(
     job.id,
     attachChargeId,
     attachModalOpen && isUuid(attachChargeId),
     attachSide === 'CHARGE' ? 'CHARGE' : attachSide,
   );
+
+  useEffect(() => {
+    if (!attachModalOpen || !isUuid(attachChargeId)) return;
+    if (attachSide !== 'SALE' && attachSide !== 'COST') return;
+    if (!attachListQuery.isSuccess) return;
+    const n = attachListQuery.data?.length ?? 0;
+    setSideAttachCounts((prev) => {
+      const cur = prev[attachChargeId]?.[attachSide];
+      if (cur === n) return prev;
+      return {
+        ...prev,
+        [attachChargeId]: {
+          ...prev[attachChargeId],
+          [attachSide]: n,
+        },
+      };
+    });
+  }, [
+    attachModalOpen,
+    attachChargeId,
+    attachSide,
+    attachListQuery.isSuccess,
+    attachListQuery.data,
+  ]);
   const [sideEdit, setSideEdit] = useState<{
     chargeId: string;
     side: 'SALE' | 'COST';
@@ -1007,6 +1041,24 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     return `${side} attachment uploaded.`;
   };
 
+  const bumpSideAttachCount = (chargeId: string, side: 'SALE' | 'COST') => {
+    const line = (chargesQuery.data ?? []).find((c) => c.id === chargeId);
+    const fromApi =
+      side === 'SALE'
+        ? line?.sale?.attachment_count
+        : line?.cost?.attachment_count;
+    setSideAttachCounts((prev) => {
+      const base = prev[chargeId]?.[side] ?? fromApi ?? 0;
+      return {
+        ...prev,
+        [chargeId]: {
+          ...prev[chargeId],
+          [side]: base + 1,
+        },
+      };
+    });
+  };
+
   const submitChargeAttachment = async () => {
     const chargeId = attachChargeId.trim();
     if (!isUuid(chargeId)) {
@@ -1030,6 +1082,9 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           purpose: attachPurpose,
           ...visibility,
         });
+        if (attachSide === 'SALE' || attachSide === 'COST') {
+          bumpSideAttachCount(chargeId, attachSide);
+        }
         setMsg(attachmentSuccessMessage(attachSide, result));
         setAttachPickFile(null);
         setAttachModalOpen(false);
@@ -1057,6 +1112,9 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           ...visibility,
         },
       });
+      if (attachSide === 'SALE' || attachSide === 'COST') {
+        bumpSideAttachCount(chargeId, attachSide);
+      }
       setMsg(attachmentSuccessMessage(attachSide, result));
       setAttachModalOpen(false);
       onChanged?.();
@@ -1930,10 +1988,15 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                       : undefined);
                   const saleEditable = c.sale?.editable !== false;
                   const costEditable = c.cost?.editable !== false;
+                  // Per-side only — shared line attachment_count must not paint both badges.
                   const saleAtt =
-                    c.sale?.attachment_count ?? c.attachment_count ?? 0;
+                    sideAttachCounts[c.id]?.SALE ??
+                    c.sale?.attachment_count ??
+                    0;
                   const costAtt =
-                    c.cost?.attachment_count ?? c.attachment_count ?? 0;
+                    sideAttachCounts[c.id]?.COST ??
+                    c.cost?.attachment_count ??
+                    0;
                   const linesCount = c.history_count;
                   return (
                   <tr key={c.id} className={erpTable.row}>

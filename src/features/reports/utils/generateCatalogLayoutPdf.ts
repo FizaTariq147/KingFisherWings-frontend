@@ -19,8 +19,13 @@ import { getReportEnrichment } from '../registry';
  * Client layout PDF for catalogue codes when backend pack is unavailable.
  * Never replaces POST /invoices|quotations/:id/pdf.
  *
- * Order: official sample (HBL/HAWB) → template-v2 specialized React docs →
- * classic HBL family → legacy JSON html2canvas layouts.
+ * Product priority (see REPORT_GENERATE_PRIORITY / FRESA_FIDELITY_STRATEGY.md):
+ * 1. sample_browse — unbound + official CDN sample (HBL/HAWB)
+ * 2. backend_pack — entity-bound pack via POST /reports/generate (caller / Generate panel)
+ * 3. template_v2 — specialized React docs (no Fresa-identical claim)
+ * 4. json_fallback — legacy JSON html2canvas (Dev/offline)
+ *
+ * Do not expand JSON shell aliases to invent unique Format-N designs.
  */
 export type GenerateCatalogLayoutPdfOptions = {
   appendCustomerTerms?: boolean;

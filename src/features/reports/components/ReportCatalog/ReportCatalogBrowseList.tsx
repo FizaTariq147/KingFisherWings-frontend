@@ -2,6 +2,7 @@ import type { ReportTemplate } from '../../types/reportCatalog.types';
 import { reportFamilyLabel } from '../../types/reportCatalog.types';
 import { REPORT_TEMPLATE_FAMILY_ENUM } from '../../api/reportCatalog.api';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
+import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 
 /** Invoice formats by Format-N; everything else A–Z by name. */
 function compareCatalogItems(a: ReportTemplate, b: ReportTemplate): number {
@@ -174,12 +175,13 @@ export function ReportCatalogBrowseList({
             <div className="-mx-0.5 flex flex-wrap gap-2.5 pb-1">
               {section.items.map((t, index) => {
                 const active = selectedCode === t.code;
+                const sharedHint = catalogSharedLayoutHint(t.code);
                 return (
                   <button
                     key={`${t.id}-${t.code}`}
                     type="button"
                     onClick={() => onSelect(t)}
-                    title={t.name}
+                    title={sharedHint ? `${t.name} — ${sharedHint}` : t.name}
                     className={[
                       'relative min-w-[8.25rem] max-w-[10rem] shrink-0 overflow-hidden rounded-lg border px-2.5 py-2.5 text-left transition',
                       tone.bg,
@@ -201,6 +203,11 @@ export function ReportCatalogBrowseList({
                     <p className="mt-0.5 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[var(--color-neutral-800)]">
                       {t.name}
                     </p>
+                    {sharedHint ? (
+                      <p className="mt-1 line-clamp-2 pl-1.5 text-[9px] font-medium leading-snug text-[var(--color-neutral-500)]">
+                        {sharedHint}
+                      </p>
+                    ) : null}
                   </button>
                 );
               })}

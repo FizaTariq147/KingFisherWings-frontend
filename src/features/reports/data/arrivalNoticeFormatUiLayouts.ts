@@ -33,10 +33,20 @@ function resolveArrivalLayoutCode(code: string): string {
   return needle;
 }
 
+/** Canonical Arrival Notice JSON shell, or undefined when this store has no layout. */
+export function resolveArrivalLayoutSourceCode(code: string): string | undefined {
+  const needle = code.trim().toUpperCase();
+  if (!needle) return undefined;
+  const resolved = resolveArrivalLayoutCode(needle);
+  return byCode.has(resolved) ? resolved : undefined;
+}
+
 export function getArrivalNoticeFormatUiLayout(code: string): InvoiceFormatUiLayout | undefined {
   const needle = code.trim().toUpperCase();
   if (!needle) return undefined;
-  const resolved = byCode.get(resolveArrivalLayoutCode(needle));
+  const source = resolveArrivalLayoutSourceCode(needle);
+  if (!source) return undefined;
+  const resolved = byCode.get(source);
   if (!resolved) return undefined;
   if (resolved.code.toUpperCase() === needle) return resolved;
   return {
