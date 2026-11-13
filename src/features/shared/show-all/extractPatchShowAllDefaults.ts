@@ -830,24 +830,44 @@ export function toPatchShowAllPayload(
   delete out.payable_at;
   delete out.chargeable_unit;
 
-  // When FE only has nested party/port objects, BE still reads .id — emit both.
+  /**
+   * Party/port: if name/code changed, do NOT echo the old *_id (or nested.id).
+   * Stale id used to win on PATCH and ignore the new name; BE now re-resolves,
+   * and FE must stop sending the mismatched id so resolve-by-name can run.
+   */
   for (const group of PARTY_PORT_NESTED) {
     const idChanged = Object.prototype.hasOwnProperty.call(out, group.id);
     const nameChanged = Object.prototype.hasOwnProperty.call(out, group.name);
     const codeChanged = Object.prototype.hasOwnProperty.call(out, group.code);
     if (!idChanged && !nameChanged && !codeChanged) continue;
-    const id = pickString(out[group.id] ?? draft[group.id] ?? defaults?.[group.id]);
-    const name = pickString(
-      out[group.name] ?? draft[group.name] ?? defaults?.[group.name],
-    );
-    const code = pickString(
-      out[group.code] ?? draft[group.code] ?? defaults?.[group.code],
-    );
-    if (!id && !name && !code) continue;
+
+    const name = pickString(out[group.name] ?? draft[group.name]);
+    const code = pickString(out[group.code] ?? draft[group.code]);
+    const defaultName = pickString(defaults?.[group.name]);
+    const defaultCode = pickString(defaults?.[group.code]);
+    const lookupChanged =
+      (nameChanged && !samePatchValue(name, defaultName)) ||
+      (codeChanged && !samePatchValue(code, defaultCode));
+
+    let id: string | undefined;
+    if (idChanged) {
+      id = pickString(out[group.id]);
+    } else if (!lookupChanged) {
+      // Unchanged name/code — keep id only when it was explicitly in the dirty set.
+      id = undefined;
+    } else {
+      // Name/code edited: drop stale id so BE resolves from name/code.
+      delete out[group.id];
+      id = undefined;
+    }
+
+    const nestedName = pickString(out[group.name]) ?? (lookupChanged ? name : undefined);
+    const nestedCode = pickString(out[group.code]) ?? (lookupChanged ? code : undefined);
+    if (!id && !nestedName && !nestedCode) continue;
     out[group.nested] = {
       ...(id ? { id } : {}),
-      ...(name ? { name } : {}),
-      ...(code ? { code } : {}),
+      ...(nestedName ? { name: nestedName } : {}),
+      ...(nestedCode ? { code: nestedCode } : {}),
     } as never;
   }
 

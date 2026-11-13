@@ -500,7 +500,7 @@ export function ShowAllEditModal({
         if (!pending) onClose();
       }}
       title={title}
-      size="full"
+      size="screen"
       footer={
         <div className="flex justify-end gap-2">
           <Button
@@ -533,7 +533,7 @@ export function ShowAllEditModal({
       {formError ? (
         <p className="mb-3 text-sm text-[var(--color-danger-600)]">{formError}</p>
       ) : null}
-      <div className="max-h-[min(70vh,36rem)] space-y-4 overflow-y-auto pr-1">
+      <div className="space-y-4 pr-1">
         {groups.map(([group, fields]) => (
           <section key={group} className="space-y-2">
             <h4 className="text-[12px] font-semibold uppercase tracking-wide text-[var(--fresa-header-text,#0A2942)]">
