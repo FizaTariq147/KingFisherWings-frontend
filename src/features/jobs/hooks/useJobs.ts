@@ -146,9 +146,28 @@ export function usePatchJobShowAll(id: string) {
         queryKey: [...jobKeys.detail(id), 'show-all'],
       });
       void queryClient.invalidateQueries({ queryKey: jobKeys.detailTab(id, 'show_all') });
-      // BE fans commercial header fields out to linked shipments.
+      // BE fans commercial header fields out to linked shipments — refresh shipment UI.
       void queryClient.invalidateQueries({ queryKey: jobKeys.jobShipments(id) });
+      void queryClient.invalidateQueries({ queryKey: jobKeys.detailTab(id, 'shipments') });
       void queryClient.invalidateQueries({ queryKey: ['tenant', 'shipments'] });
+      // Prefer invalidating the continuum-linked shipment when known on job detail cache.
+      const jobCached = queryClient.getQueriesData<{ shipment_id?: string }>({
+        queryKey: jobKeys.detail(id),
+      });
+      for (const [, row] of jobCached) {
+        const shipmentId = row?.shipment_id?.trim();
+        if (shipmentId && isUuid(shipmentId)) {
+          void queryClient.invalidateQueries({
+            queryKey: ['tenant', 'shipments', 'detail', shipmentId],
+          });
+          void queryClient.invalidateQueries({
+            queryKey: ['tenant', 'shipments', 'detail', shipmentId, 'show-all'],
+          });
+          void queryClient.invalidateQueries({
+            queryKey: ['tenant', 'shipments', 'detail', shipmentId, 'tab', 'show_all'],
+          });
+        }
+      }
     },
   });
 }
@@ -432,10 +451,20 @@ export function useJobPnl(id: string, enabled = true) {
 
 export function useJobMilestones(id: string, enabled = true) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const queryClient = useQueryClient();
   return useQuery({
     queryKey: jobKeys.milestones(id),
-    queryFn: () => jobService.listMilestones(id),
+    queryFn: async () => {
+      const list = await jobService.listMilestones(id);
+      const prev = queryClient.getQueryData<import('../types/job.types').JobMilestone[]>(
+        jobKeys.milestones(id),
+      );
+      const { mergeMilestoneLists } = await import('../utils/normalizeJob');
+      // GET first (fresh system rows), then keep any seeded customs omitted by GET.
+      return mergeMilestoneLists(list, prev);
+    },
     enabled: Boolean(accessToken) && isUuid(id) && enabled,
+    staleTime: 15_000,
   });
 }
 

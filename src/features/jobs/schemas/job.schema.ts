@@ -237,19 +237,19 @@ export const createJobNoteSchema = z.object({
 export const updateJobNoteSchema = createJobNoteSchema.partial();
 
 export const createJobMilestoneSchema = z.object({
-  milestone: requiredText({ min: 1, max: 100 }),
-  planned_date: optionalTextUndef({ max: 32 }),
-  actual_date: optionalTextUndef({ max: 32 }),
-  description: optionalTextUndef({ max: 2000 }),
-  notes: optionalTextUndef({ max: 2000 }),
+  milestone: requiredText({ min: 1, max: 200 }),
+  planned_date: optionalTextUndef({ max: 64 }),
+  actual_date: optionalTextUndef({ max: 64 }),
+  description: optionalTextUndef({ max: 4000 }),
+  notes: optionalTextUndef({ max: 4000 }),
 });
 
 export const updateJobMilestoneSchema = z.object({
-  actual_date: optionalTextUndef({ max: 32 }),
-  planned_date: optionalTextUndef({ max: 32 }),
-  completed_at: optionalTextUndef({ max: 32 }),
-  description: optionalTextUndef({ max: 2000 }),
-  notes: optionalTextUndef({ max: 2000 }),
+  actual_date: optionalTextUndef({ max: 64 }),
+  planned_date: optionalTextUndef({ max: 64 }),
+  completed_at: optionalTextUndef({ max: 64 }),
+  description: optionalTextUndef({ max: 4000 }),
+  notes: optionalTextUndef({ max: 4000 }),
 });
 
 export const createJobCargoSchema = z.object({

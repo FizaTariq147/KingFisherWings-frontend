@@ -473,6 +473,159 @@ function SectionCard({
   );
 }
 
+/** Non-empty overlay values (incl. nested bags) for shipment Show All read view. */
+function shipmentShowAllOverlayRecord(
+  overlay: PatchShowAllDto,
+): Record<string, unknown> {
+  const out: Record<string, unknown> = {};
+  for (const [key, value] of Object.entries(overlay)) {
+    if (value == null) continue;
+    if (key === 'warehouse' || key === 'transport' || key === 'mawb') {
+      if (typeof value === 'object' && !Array.isArray(value)) {
+        const nested = shipmentShowAllOverlayRecord(value as PatchShowAllDto);
+        if (Object.keys(nested).length) out[key] = nested;
+      }
+      continue;
+    }
+    if (typeof value === 'string') {
+      const trimmed = value.trim();
+      if (trimmed) out[key] = trimmed;
+      continue;
+    }
+    if (typeof value === 'number' && Number.isFinite(value)) {
+      out[key] = value;
+      continue;
+    }
+    if (typeof value === 'boolean') out[key] = value;
+  }
+  return out;
+}
+
+function setShipmentShowField(
+  out: Record<string, unknown>,
+  key: string,
+  value: unknown,
+): void {
+  if (value == null) return;
+  if (typeof value === 'string') {
+    const trimmed = value.trim();
+    if (trimmed) out[key] = trimmed;
+    return;
+  }
+  if (typeof value === 'number' && Number.isFinite(value)) out[key] = value;
+}
+
+/** Shipment header fallbacks when show_all GET omits commercial fields. */
+function shipmentShowAllFallback(
+  shipment?: Record<string, unknown> | null,
+): Record<string, unknown> {
+  if (!shipment) return {};
+  const out: Record<string, unknown> = {};
+  const pick = (...keys: string[]) => {
+    for (const k of keys) {
+      const v = shipment[k];
+      if (typeof v === 'string' && v.trim()) return v.trim();
+      if (typeof v === 'number' && Number.isFinite(v)) return v;
+    }
+    return undefined;
+  };
+  setShipmentShowField(out, 'commodity', pick('commodity'));
+  setShipmentShowField(
+    out,
+    'commodity_description',
+    pick('commodity_description', 'commodityDescription'),
+  );
+  setShipmentShowField(out, 'pieces', pick('pieces'));
+  setShipmentShowField(out, 'gross_weight', pick('gross_weight', 'grossWeight'));
+  setShipmentShowField(
+    out,
+    'chargeable_weight',
+    pick('chargeable_weight', 'chargeableWeight'),
+  );
+  setShipmentShowField(
+    out,
+    'chargeable_units',
+    pick('chargeable_units', 'chargeableUnits'),
+  );
+  setShipmentShowField(out, 'volume_cbm', pick('volume_cbm', 'volumeCbm'));
+  setShipmentShowField(
+    out,
+    'freight_payable_at',
+    pick('freight_payable_at', 'freightPayableAt', 'payable_at'),
+  );
+  setShipmentShowField(out, 'service_scope', pick('service_scope', 'serviceScope'));
+  setShipmentShowField(
+    out,
+    'service_type',
+    pick('service_type', 'serviceType', 'job_type', 'jobType'),
+  );
+  setShipmentShowField(out, 'etd', pick('etd'));
+  setShipmentShowField(out, 'eta', pick('eta'));
+  setShipmentShowField(out, 'job_date', pick('shipment_date', 'shipmentDate', 'job_date'));
+  setShipmentShowField(out, 'mbl_number', pick('mbl_number', 'mblNumber'));
+  setShipmentShowField(out, 'hbl_number', pick('hbl_number', 'hblNumber'));
+  setShipmentShowField(out, 'bl_number', pick('bl_number', 'blNumber'));
+  setShipmentShowField(
+    out,
+    'rotation_number',
+    pick('rotation_number', 'rotationNumber'),
+  );
+  setShipmentShowField(
+    out,
+    'location_terminal',
+    pick('location_terminal', 'locationTerminal', 'terminal', 'location'),
+  );
+  setShipmentShowField(
+    out,
+    'container_number',
+    pick('container_number', 'containerNumber'),
+  );
+  setShipmentShowField(
+    out,
+    'container_status',
+    pick('container_status', 'containerStatus'),
+  );
+  setShipmentShowField(out, 'vessel_name', pick('vessel_name', 'vesselName'));
+  setShipmentShowField(out, 'voyage_number', pick('voyage_number', 'voyageNumber'));
+  setShipmentShowField(out, 'line_code', pick('line_code', 'lineCode', 'line_no'));
+  setShipmentShowField(
+    out,
+    'company_code',
+    pick('company_code', 'companyCode', 'edi_company_code'),
+  );
+  setShipmentShowField(
+    out,
+    'origin_port_name',
+    pick('origin_port_name', 'originPortName'),
+  );
+  setShipmentShowField(
+    out,
+    'origin_port_code',
+    pick('origin_port_code', 'originPortCode', 'pol'),
+  );
+  setShipmentShowField(
+    out,
+    'dest_port_name',
+    pick('dest_port_name', 'destPortName'),
+  );
+  setShipmentShowField(
+    out,
+    'dest_port_code',
+    pick('dest_port_code', 'destPortCode', 'pod'),
+  );
+  setShipmentShowField(out, 'customer_name', pick('customer_name', 'customerName', 'party_name'));
+  setShipmentShowField(out, 'carrier_name', pick('carrier_name', 'carrierName'));
+  return out;
+}
+
+function isShipmentShowAllSectionKey(key: string): boolean {
+  return (
+    isShipmentShowAllTab(key) ||
+    /show.?all/i.test(key) ||
+    key.startsWith('api-show')
+  );
+}
+
 function ShipmentShowAllPanel({
   shipmentId,
   siblingTabKeys,
@@ -500,7 +653,7 @@ function ShipmentShowAllPanel({
   const saveShowAll = async (dto: PatchShowAllDto) => {
     const refreshed = await patchShowAll.mutateAsync(dto);
     setSavedOverlay((prev) => mergeShowAllSavedOverlay(prev, dto, refreshed));
-    await query.refetch();
+    await Promise.all([query.refetch(), shipmentQuery.refetch()]);
   };
 
   if (query.isLoading) {
@@ -532,20 +685,46 @@ function ShipmentShowAllPanel({
   }
 
   const { sections = [], arrays = [] } = query.data ?? {};
+  const shipmentRec = asRecord(shipmentQuery.data);
+  const opsFallback = shipmentShowAllFallback(shipmentRec);
+  const overlayRecord = shipmentShowAllOverlayRecord(savedOverlay);
+  const apiShowAllSection = sections.find((s) => isShipmentShowAllSectionKey(s.key));
+  const mergedShowAllData: Record<string, unknown> = {
+    ...opsFallback,
+    ...(apiShowAllSection?.data ?? {}),
+    ...overlayRecord,
+  };
+  const hasMergedShowAll = Object.keys(mergedShowAllData).length > 0;
+  const otherSections = sections.filter(
+    (section) =>
+      !isPartyTypesSection(section.key, section.title) &&
+      !isShipmentShowAllSectionKey(section.key),
+  );
 
   const editModal = (
     <ShowAllEditModal
       open={editOpen}
       onClose={() => setEditOpen(false)}
       title="Edit shipment Show All"
-      sources={[savedOverlay, query.data, ...sections.map((s) => s.data)]}
+      sources={[
+        savedOverlay,
+        opsFallback,
+        mergedShowAllData,
+        query.data,
+        ...sections.map((s) => s.data),
+      ]}
       pending={patchShowAll.isPending}
       onSubmit={saveShowAll}
       transportEditMode={transportEditMode}
     />
   );
 
-  if (!sections.length && !arrays.length && !footer) {
+  if (
+    !hasMergedShowAll &&
+    !otherSections.length &&
+    !arrays.length &&
+    !footer
+  ) {
     return (
       <div className="space-y-3 p-3">
         <div className="flex justify-end">
@@ -580,9 +759,15 @@ function ShipmentShowAllPanel({
           Edit Show All
         </Button>
       </div>
-      {sections
-        .filter((section) => !isPartyTypesSection(section.key, section.title))
-        .map((section) => {
+      {hasMergedShowAll ? (
+        <SectionCard title="Show All">
+          <ShipmentApiPayloadView
+            data={mergedShowAllData}
+            emptyMessage="No fields for this section."
+          />
+        </SectionCard>
+      ) : null}
+      {otherSections.map((section) => {
         const isDepartment = isShipmentDepartmentTab(section.key);
         return (
           <SectionCard key={section.key} title={section.title}>
