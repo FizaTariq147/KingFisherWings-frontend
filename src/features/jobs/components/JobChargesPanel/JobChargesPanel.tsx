@@ -505,16 +505,56 @@ interface JobChargesPanelProps {
   onChanged?: () => void;
 }
 
-/** Survives panel remount after attachment upload / job invalidate. */
+/** Survives panel remount + full page refresh (session). Never mirror SALE↔COST. */
 type SideAttachCounts = Record<string, { SALE?: number; COST?: number }>;
 const SIDE_ATTACH_COUNTS_BY_JOB = new Map<string, SideAttachCounts>();
+const SIDE_ATTACH_STORAGE_PREFIX = 'kf:jobSideAttachCounts:';
+
+function cloneSideAttachCounts(src: SideAttachCounts): SideAttachCounts {
+  const out: SideAttachCounts = {};
+  for (const [chargeId, sides] of Object.entries(src)) {
+    if (!sides) continue;
+    out[chargeId] = { ...sides };
+  }
+  return out;
+}
 
 function readSideAttachCounts(jobId: string): SideAttachCounts {
-  return { ...(SIDE_ATTACH_COUNTS_BY_JOB.get(jobId) ?? {}) };
+  const mem = SIDE_ATTACH_COUNTS_BY_JOB.get(jobId);
+  if (mem) return cloneSideAttachCounts(mem);
+  try {
+    const raw = sessionStorage.getItem(`${SIDE_ATTACH_STORAGE_PREFIX}${jobId}`);
+    if (!raw) return {};
+    const parsed = JSON.parse(raw) as SideAttachCounts;
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    const cloned = cloneSideAttachCounts(parsed);
+    SIDE_ATTACH_COUNTS_BY_JOB.set(jobId, cloned);
+    return cloneSideAttachCounts(cloned);
+  } catch {
+    return {};
+  }
 }
 
 function writeSideAttachCounts(jobId: string, next: SideAttachCounts) {
-  SIDE_ATTACH_COUNTS_BY_JOB.set(jobId, next);
+  const cloned = cloneSideAttachCounts(next);
+  SIDE_ATTACH_COUNTS_BY_JOB.set(jobId, cloned);
+  try {
+    sessionStorage.setItem(
+      `${SIDE_ATTACH_STORAGE_PREFIX}${jobId}`,
+      JSON.stringify(cloned),
+    );
+  } catch {
+    /* private mode / quota — memory map still works for remounts */
+  }
+}
+
+function mergeSideAttachCount(
+  prev: number | undefined,
+  incoming: number | undefined,
+): number | undefined {
+  if (incoming == null || !Number.isFinite(incoming) || incoming < 0) return prev;
+  if (prev == null) return incoming;
+  return Math.max(prev, incoming);
 }
 
 export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
@@ -916,10 +956,34 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   ) => {
     setSideAttachCounts((prev) => {
       const next = updater(prev);
-      writeSideAttachCounts(job.id, next);
+      if (next !== prev) writeSideAttachCounts(job.id, next);
       return next;
     });
   };
+
+  // Merge per-side counts from costing grid API when present (never lower a local count).
+  useEffect(() => {
+    if (!charges.length) return;
+    updateSideAttachCounts((prev) => {
+      let changed = false;
+      const next = cloneSideAttachCounts(prev);
+      for (const c of charges) {
+        const saleApi = c.sale?.attachment_count;
+        const costApi = c.cost?.attachment_count;
+        const sale = mergeSideAttachCount(next[c.id]?.SALE, saleApi);
+        const cost = mergeSideAttachCount(next[c.id]?.COST, costApi);
+        if (sale === next[c.id]?.SALE && cost === next[c.id]?.COST) continue;
+        changed = true;
+        next[c.id] = {
+          ...next[c.id],
+          ...(sale != null ? { SALE: sale } : {}),
+          ...(cost != null ? { COST: cost } : {}),
+        };
+      }
+      return changed ? next : prev;
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync when charge rows change
+  }, [charges]);
 
   useEffect(() => {
     if (!attachModalOpen || !isUuid(attachChargeId)) return;
