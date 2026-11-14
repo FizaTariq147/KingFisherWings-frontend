@@ -42,6 +42,33 @@ function listLabel(row: TransportRequestRow, hydratedJob?: string): string {
   return req;
 }
 
+const COST_STORAGE_PREFIX = 'kf:transportRequestCost:';
+
+function readSavedCost(requestId: string): string {
+  try {
+    return sessionStorage.getItem(`${COST_STORAGE_PREFIX}${requestId}`) ?? '';
+  } catch {
+    return '';
+  }
+}
+
+function writeSavedCost(requestId: string, value: number) {
+  try {
+    sessionStorage.setItem(`${COST_STORAGE_PREFIX}${requestId}`, String(value));
+  } catch {
+    /* private mode / quota */
+  }
+}
+
+/** Prefer API cost on the row; fall back to last amount recorded in this browser session. */
+function resolveSavedCostAmount(row?: TransportRequestRow | null): string {
+  if (!row?.id) return '';
+  if (row.cost_amount != null && Number.isFinite(row.cost_amount)) {
+    return String(row.cost_amount);
+  }
+  return readSavedCost(row.id);
+}
+
 export default function TransportRequestsPage() {
   const qc = useQueryClient();
   const list = useQuery({
@@ -111,7 +138,6 @@ export default function TransportRequestsPage() {
     onSuccess: () => {
       setError(null);
       setMessage('Saved.');
-      setAmount('');
       void qc.invalidateQueries({ queryKey: ['transport-requests'] });
     },
     onError: (err: unknown) => {
@@ -130,9 +156,9 @@ export default function TransportRequestsPage() {
   const current = rows.find((row) => row.id === selected) ?? rows[0];
   const currentId = current?.id;
 
-  // Cost / trucker inputs are per-request — clear when switching the selected row.
+  // Cost / trucker inputs are per-request — load that row's saved cost when switching.
   useEffect(() => {
-    setAmount('');
+    setAmount(resolveSavedCostAmount(current));
     setTruckerId(
       current?.trucker_id && isUuid(String(current.trucker_id))
         ? String(current.trucker_id)
@@ -140,7 +166,7 @@ export default function TransportRequestsPage() {
     );
     setMessage(null);
     setError(null);
-  }, [currentId, current?.trucker_id]);
+  }, [currentId, current?.trucker_id, current?.cost_amount]);
 
   const currentJobMeta = current?.job_id ? jobMetaById[current.job_id] : undefined;
   const currentJobLabel = current
@@ -330,16 +356,27 @@ export default function TransportRequestsPage() {
                   Queue PDF
                 </Button>
               </div>
-              <Input label="Cost amount" value={amount} onChange={(e) => setAmount(e.target.value)} />
+              <Input
+                label="Cost amount"
+                value={amount}
+                onChange={(e) => setAmount(e.target.value)}
+                placeholder={
+                  resolveSavedCostAmount(current) ? undefined : 'Enter cost for this request'
+                }
+              />
               <Button
                 type="button"
                 variant="secondary"
-                disabled={!amount.trim() || run.isPending}
-                onClick={() =>
-                  run.mutate(() =>
-                    transportService.recordCost(current.id, { amount: Number(amount) }),
-                  )
-                }
+                disabled={!amount.trim() || run.isPending || !Number.isFinite(Number(amount))}
+                onClick={() => {
+                  const n = Number(amount);
+                  if (!Number.isFinite(n)) return;
+                  run.mutate(async () => {
+                    await transportService.recordCost(current.id, { amount: n });
+                    writeSavedCost(current.id, n);
+                    setAmount(String(n));
+                  });
+                }}
               >
                 Record cost
               </Button>
