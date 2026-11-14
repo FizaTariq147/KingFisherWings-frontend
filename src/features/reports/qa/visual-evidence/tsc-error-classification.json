@@ -1,0 +1,341 @@
+{
+  "generatedAt": "2026-11-14T05:16:23.017Z",
+  "method": "Parse tsc -b output; mark reports/bl-draft paths; intersect with git diff HEAD for branding/HAWB touch set. Files not in branding diff are classified as likely pre-existing (not introduced by this change set). BlFamily logo symbol errors checked explicitly.",
+  "totalErrors": 243,
+  "reportsRelatedCount": 33,
+  "brandingDiffReportsErrors": [],
+  "blFamilyLogoErrorsRemaining": [],
+  "blFamilyLogoFixedConfirmed": true,
+  "reportsRelated": [
+    {
+      "file": "src/features/reports/components/ReportCatalog/AccountsFormatAutoPdf.tsx",
+      "line": 36,
+      "col": 26,
+      "code": "TS6133",
+      "msg": "'boundLabel' is declared but its value is never read.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/components/ReportCatalog/WmsFormatAutoPdf.tsx",
+      "line": 34,
+      "col": 26,
+      "code": "TS6133",
+      "msg": "'boundLabel' is declared but its value is never read.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/constants/deliveryOrderFormatCatalog.ts",
+      "line": 407,
+      "col": 7,
+      "code": "TS2322",
+      "msg": "Type 'DeliveryOrderFormatKind | `delivery_${number}`' is not assignable to type 'DeliveryOrderFormatKind'.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/constants/otherReportsFormatCatalog.ts",
+      "line": 490,
+      "col": 3,
+      "code": "TS2741",
+      "msg": "Property 'samplePdfUrl' is missing in type '{ code: string; name: string; kind: string; sortOrder: number; family: \"ops_list\"; contexts: (\"job\" | \"list\")[]; }' but required in type 'OtherReportsFormatSpec'.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/constants/otherReportsFormatCatalog.ts",
+      "line": 498,
+      "col": 3,
+      "code": "TS2741",
+      "msg": "Property 'samplePdfUrl' is missing in type '{ code: string; name: string; kind: string; sortOrder: number; family: \"ops_list\"; contexts: (\"job\" | \"list\")[]; }' but required in type 'OtherReportsFormatSpec'.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/constants/otherReportsFormatCatalog.ts",
+      "line": 506,
+      "col": 3,
+      "code": "TS2741",
+      "msg": "Property 'samplePdfUrl' is missing in type '{ code: string; name: string; kind: string; sortOrder: number; family: \"ops_list\"; contexts: (\"job\" | \"list\")[]; }' but required in type 'OtherReportsFormatSpec'.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/engines/pdf/captureReactDocumentPdf.ts",
+      "line": 68,
+      "col": 25,
+      "code": "TS2554",
+      "msg": "Expected 2 arguments, but got 1.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/Formats6to10.tsx",
+      "line": 1,
+      "col": 43,
+      "code": "TS2307",
+      "msg": "Cannot find module '../../../types/invoiceFormatPreview.types' or its corresponding type declarations.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/Formats6to10.tsx",
+      "line": 2,
+      "col": 26,
+      "code": "TS2307",
+      "msg": "Cannot find module '../../../constants/fresaInvoiceColors' or its corresponding type declarations.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/Formats6to10.tsx",
+      "line": 3,
+      "col": 35,
+      "code": "TS2307",
+      "msg": "Cannot find module './shared' or its corresponding type declarations.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/Formats6to10.tsx",
+      "line": 4,
+      "col": 35,
+      "code": "TS2307",
+      "msg": "Cannot find module './InvoiceUserFooter' or its corresponding type declarations.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/Formats6to10.tsx",
+      "line": 5,
+      "col": 49,
+      "code": "TS2307",
+      "msg": "Cannot find module './TcBrandChrome' or its corresponding type declarations.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 1,
+      "col": 43,
+      "code": "TS2307",
+      "msg": "Cannot find module '../../../types/invoiceFormatPreview.types' or its corresponding type declarations.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 2,
+      "col": 74,
+      "code": "TS2307",
+      "msg": "Cannot find module './shared' or its corresponding type declarations.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 3,
+      "col": 35,
+      "code": "TS2307",
+      "msg": "Cannot find module './InvoiceUserFooter' or its corresponding type declarations.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 632,
+      "col": 25,
+      "code": "TS7006",
+      "msg": "Parameter 'line' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 632,
+      "col": 31,
+      "code": "TS7006",
+      "msg": "Parameter 'i' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 761,
+      "col": 28,
+      "code": "TS7006",
+      "msg": "Parameter 'l' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 761,
+      "col": 31,
+      "code": "TS7006",
+      "msg": "Parameter 'i' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 825,
+      "col": 28,
+      "code": "TS7006",
+      "msg": "Parameter 'l' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 825,
+      "col": 31,
+      "code": "TS7006",
+      "msg": "Parameter 'i' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 919,
+      "col": 28,
+      "code": "TS7006",
+      "msg": "Parameter 'l' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 919,
+      "col": 31,
+      "code": "TS7006",
+      "msg": "Parameter 'i' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 1019,
+      "col": 28,
+      "code": "TS7006",
+      "msg": "Parameter 'l' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 1019,
+      "col": 31,
+      "code": "TS7006",
+      "msg": "Parameter 'i' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 1180,
+      "col": 28,
+      "code": "TS7006",
+      "msg": "Parameter 'l' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 1180,
+      "col": 31,
+      "code": "TS7006",
+      "msg": "Parameter 'i' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 1315,
+      "col": 28,
+      "code": "TS7006",
+      "msg": "Parameter 'l' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 1315,
+      "col": 31,
+      "code": "TS7006",
+      "msg": "Parameter 'i' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 1424,
+      "col": 28,
+      "code": "TS7006",
+      "msg": "Parameter 'l' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/legacy/invoiceLayouts/layouts.tsx",
+      "line": 1424,
+      "col": 31,
+      "code": "TS7006",
+      "msg": "Parameter 'i' implicitly has an 'any' type.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/mappings/fromCatalogPdfData.ts",
+      "line": 83,
+      "col": 9,
+      "code": "TS6133",
+      "msg": "'enrichment' is declared but its value is never read.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    },
+    {
+      "file": "src/features/reports/qa/fixtures/sanitizedCatalogPdfFixtures.ts",
+      "line": 35,
+      "col": 3,
+      "code": "TS2353",
+      "msg": "Object literal may only specify known properties, and 'discount' does not exist in type 'InvoiceFormatPdfData'.",
+      "reportsRelated": true,
+      "inBrandingDiff": false,
+      "classification": "reports_module_not_in_branding_diff_likely_preexisting"
+    }
+  ]
+}

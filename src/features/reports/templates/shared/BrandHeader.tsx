@@ -41,9 +41,9 @@ export function BrandHeader({
           />
         ) : null}
         <div>
-          <div style={{ fontSize: 16, fontWeight: 700, color: accent }}>
-            {companyName || 'KingFisher Wings'}
-          </div>
+          {companyName ? (
+            <div style={{ fontSize: 16, fontWeight: 700, color: accent }}>{companyName}</div>
+          ) : null}
           {companyAddress ? (
             <div style={{ fontSize: 10, color: colors.muted, whiteSpace: 'pre-line' }}>
               {companyAddress}

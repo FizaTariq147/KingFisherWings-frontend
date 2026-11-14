@@ -23,6 +23,7 @@ import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache'
 import { useVendorAuthStore } from '@/features/vendor-auth/store/vendorAuthStore'
 import { clearVendorQueryCache } from '@/features/vendor-shared/clearVendorQueryCache'
+import { queryClient } from '@/lib/queryClient'
 
 export type Product =
   | 'KingFisher Tech Global'
@@ -394,6 +395,9 @@ function hardSignOutToLogin(redirectPath = '/login'): void {
  */
 export function softSignOutToLogin(opts?: { reason?: 'idle' }): void {
   wipePersistedErpAuth()
+  // Drop tenant-scoped React Query cache so the next login cannot reuse prior
+  // organization branding (logo/name) after idle soft logout (no full reload).
+  void queryClient.removeQueries({ queryKey: ['tenant'] })
   const path = opts?.reason === 'idle' ? '/login?reason=idle' : '/login'
   appNavigate(path)
 }

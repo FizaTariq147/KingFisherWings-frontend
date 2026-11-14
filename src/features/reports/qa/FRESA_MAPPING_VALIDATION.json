@@ -1,0 +1,921 @@
+{
+  "generatedAt": "2026-11-13T11:27:51.937Z",
+  "phase": 2,
+  "counts": {
+    "mappedChecked": 361,
+    "expectedMapped": 361,
+    "issues": 68,
+    "duplicateCodeBindings": 7,
+    "ambiguousMappings": 55,
+    "unmapped": 45
+  },
+  "note": "Issues are reported only — mappings were NOT auto-changed.",
+  "duplicateMappings": [
+    {
+      "freightnestCode": "ARRIVAL_CONFIRMATION",
+      "referenceIds": [
+        "FRESA-REF-0014",
+        "FRESA-REF-0295"
+      ],
+      "count": 2,
+      "type": "multiple_references_for_one_report"
+    },
+    {
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT",
+      "referenceIds": [
+        "FRESA-REF-0030",
+        "FRESA-REF-0304"
+      ],
+      "count": 2,
+      "type": "multiple_references_for_one_report"
+    },
+    {
+      "freightnestCode": "DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT",
+      "referenceIds": [
+        "FRESA-REF-0046",
+        "FRESA-REF-0425"
+      ],
+      "count": 2,
+      "type": "multiple_references_for_one_report"
+    },
+    {
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM",
+      "referenceIds": [
+        "FRESA-REF-0112",
+        "FRESA-REF-0314"
+      ],
+      "count": 2,
+      "type": "multiple_references_for_one_report"
+    },
+    {
+      "freightnestCode": "ARRIVAL_INFORMATION",
+      "referenceIds": [
+        "FRESA-REF-0297",
+        "FRESA-REF-0298"
+      ],
+      "count": 2,
+      "type": "multiple_references_for_one_report"
+    },
+    {
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+      "referenceIds": [
+        "FRESA-REF-0312",
+        "FRESA-REF-0313"
+      ],
+      "count": 2,
+      "type": "multiple_references_for_one_report"
+    },
+    {
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "referenceIds": [
+        "FRESA-REF-0317",
+        "FRESA-REF-0323",
+        "FRESA-REF-0324",
+        "FRESA-REF-0325",
+        "FRESA-REF-0326",
+        "FRESA-REF-0327",
+        "FRESA-REF-0330",
+        "FRESA-REF-0331",
+        "FRESA-REF-0332",
+        "FRESA-REF-0333",
+        "FRESA-REF-0334",
+        "FRESA-REF-0335",
+        "FRESA-REF-0336",
+        "FRESA-REF-0337",
+        "FRESA-REF-0338",
+        "FRESA-REF-0339",
+        "FRESA-REF-0340",
+        "FRESA-REF-0341",
+        "FRESA-REF-0342",
+        "FRESA-REF-0343",
+        "FRESA-REF-0344",
+        "FRESA-REF-0345",
+        "FRESA-REF-0346",
+        "FRESA-REF-0347",
+        "FRESA-REF-0348",
+        "FRESA-REF-0349",
+        "FRESA-REF-0350",
+        "FRESA-REF-0351",
+        "FRESA-REF-0352",
+        "FRESA-REF-0353",
+        "FRESA-REF-0354",
+        "FRESA-REF-0355",
+        "FRESA-REF-0356",
+        "FRESA-REF-0357",
+        "FRESA-REF-0358",
+        "FRESA-REF-0359",
+        "FRESA-REF-0360",
+        "FRESA-REF-0361",
+        "FRESA-REF-0362",
+        "FRESA-REF-0363",
+        "FRESA-REF-0364",
+        "FRESA-REF-0365",
+        "FRESA-REF-0366",
+        "FRESA-REF-0367",
+        "FRESA-REF-0369",
+        "FRESA-REF-0370",
+        "FRESA-REF-0371",
+        "FRESA-REF-0372",
+        "FRESA-REF-0373",
+        "FRESA-REF-0374",
+        "FRESA-REF-0375",
+        "FRESA-REF-0376"
+      ],
+      "count": 52,
+      "type": "multiple_references_for_one_report"
+    }
+  ],
+  "issues": [
+    {
+      "severity": "high",
+      "type": "possible_incorrect_mapping",
+      "referenceId": "FRESA-REF-0090",
+      "fresaName": "Job House Record List Report Format-1",
+      "freightnestCode": "JOB_HOUSE_RECORD_LIST_REPORT_FORMAT_1",
+      "detail": "Name is Job House Record but linked PDF may be MAWB — verify before use"
+    },
+    {
+      "severity": "medium",
+      "type": "family_mismatch",
+      "referenceId": "FRESA-REF-0139",
+      "fresaName": "Created Quotations List Report Format",
+      "freightnestCode": "CREATED_QUOTATIONS_LIST_REPORT_FORMAT",
+      "detail": "Name family \"Shipping documents\" vs code family \"Operational reports\""
+    },
+    {
+      "severity": "medium",
+      "type": "family_mismatch",
+      "referenceId": "FRESA-REF-0181",
+      "fresaName": "Bank Cash Book Summary List Report Format",
+      "freightnestCode": "BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT",
+      "detail": "Name family \"Financial statements\" vs code family \"Operational reports\""
+    },
+    {
+      "severity": "medium",
+      "type": "family_mismatch",
+      "referenceId": "FRESA-REF-0183",
+      "fresaName": "GL Listing Sort By Customer Code Voucher Report Format",
+      "freightnestCode": "GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT",
+      "detail": "Name family \"Financial statements\" vs code family \"Accounting vouchers\""
+    },
+    {
+      "severity": "medium",
+      "type": "family_mismatch",
+      "referenceId": "FRESA-REF-0185",
+      "fresaName": "GL Report Currency Wise Voucher Report Format",
+      "freightnestCode": "GL_REPORT_CURRENCY_WISE_VOUCHER_REPORT_FORMAT",
+      "detail": "Name family \"Financial statements\" vs code family \"Accounting vouchers\""
+    },
+    {
+      "severity": "medium",
+      "type": "family_mismatch",
+      "referenceId": "FRESA-REF-0187",
+      "fresaName": "GL Report Voucher Report Format",
+      "freightnestCode": "GL_REPORT_VOUCHER_REPORT_FORMAT",
+      "detail": "Name family \"Financial statements\" vs code family \"Accounting vouchers\""
+    },
+    {
+      "severity": "medium",
+      "type": "multiple_references_for_one_report",
+      "freightnestCode": "ARRIVAL_CONFIRMATION",
+      "referenceIds": [
+        "FRESA-REF-0014",
+        "FRESA-REF-0295"
+      ],
+      "detail": "2 catalogue references map to the same FreightNest code"
+    },
+    {
+      "severity": "medium",
+      "type": "multiple_references_for_one_report",
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT",
+      "referenceIds": [
+        "FRESA-REF-0030",
+        "FRESA-REF-0304"
+      ],
+      "detail": "2 catalogue references map to the same FreightNest code"
+    },
+    {
+      "severity": "medium",
+      "type": "multiple_references_for_one_report",
+      "freightnestCode": "DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT",
+      "referenceIds": [
+        "FRESA-REF-0046",
+        "FRESA-REF-0425"
+      ],
+      "detail": "2 catalogue references map to the same FreightNest code"
+    },
+    {
+      "severity": "medium",
+      "type": "multiple_references_for_one_report",
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM",
+      "referenceIds": [
+        "FRESA-REF-0112",
+        "FRESA-REF-0314"
+      ],
+      "detail": "2 catalogue references map to the same FreightNest code"
+    },
+    {
+      "severity": "medium",
+      "type": "multiple_references_for_one_report",
+      "freightnestCode": "ARRIVAL_INFORMATION",
+      "referenceIds": [
+        "FRESA-REF-0297",
+        "FRESA-REF-0298"
+      ],
+      "detail": "2 catalogue references map to the same FreightNest code"
+    },
+    {
+      "severity": "medium",
+      "type": "multiple_references_for_one_report",
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+      "referenceIds": [
+        "FRESA-REF-0312",
+        "FRESA-REF-0313"
+      ],
+      "detail": "2 catalogue references map to the same FreightNest code"
+    },
+    {
+      "severity": "medium",
+      "type": "multiple_references_for_one_report",
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "referenceIds": [
+        "FRESA-REF-0317",
+        "FRESA-REF-0323",
+        "FRESA-REF-0324",
+        "FRESA-REF-0325",
+        "FRESA-REF-0326",
+        "FRESA-REF-0327",
+        "FRESA-REF-0330",
+        "FRESA-REF-0331",
+        "FRESA-REF-0332",
+        "FRESA-REF-0333",
+        "FRESA-REF-0334",
+        "FRESA-REF-0335",
+        "FRESA-REF-0336",
+        "FRESA-REF-0337",
+        "FRESA-REF-0338",
+        "FRESA-REF-0339",
+        "FRESA-REF-0340",
+        "FRESA-REF-0341",
+        "FRESA-REF-0342",
+        "FRESA-REF-0343",
+        "FRESA-REF-0344",
+        "FRESA-REF-0345",
+        "FRESA-REF-0346",
+        "FRESA-REF-0347",
+        "FRESA-REF-0348",
+        "FRESA-REF-0349",
+        "FRESA-REF-0350",
+        "FRESA-REF-0351",
+        "FRESA-REF-0352",
+        "FRESA-REF-0353",
+        "FRESA-REF-0354",
+        "FRESA-REF-0355",
+        "FRESA-REF-0356",
+        "FRESA-REF-0357",
+        "FRESA-REF-0358",
+        "FRESA-REF-0359",
+        "FRESA-REF-0360",
+        "FRESA-REF-0361",
+        "FRESA-REF-0362",
+        "FRESA-REF-0363",
+        "FRESA-REF-0364",
+        "FRESA-REF-0365",
+        "FRESA-REF-0366",
+        "FRESA-REF-0367",
+        "FRESA-REF-0369",
+        "FRESA-REF-0370",
+        "FRESA-REF-0371",
+        "FRESA-REF-0372",
+        "FRESA-REF-0373",
+        "FRESA-REF-0374",
+        "FRESA-REF-0375",
+        "FRESA-REF-0376"
+      ],
+      "detail": "52 catalogue references map to the same FreightNest code"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0121",
+      "fresaName": "Advance Shipping Note Location Wise- 1",
+      "candidateCodes": [
+        "ADVANCE_SHIPPING_NOTE",
+        "ADVANCE_SHIPPING_NOTE_LOCATION_WISE",
+        "ADVANCE_SHIPPING_NOTE_LOCATION_WISE_2"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0222",
+      "fresaName": "Land Freight/ Transportation Invoice",
+      "candidateCodes": [
+        "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+        "LEFTOVER_LAND_FREIGHT_TRANSPORTATION_INVOICE_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0227",
+      "fresaName": "Simple Invoice",
+      "candidateCodes": [
+        "INVOICE_REPORT_FORMAT_24",
+        "INVOICE_REPORT_FORMAT_25",
+        "INVOICE_REPORT_FORMAT_26",
+        "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+        "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0235",
+      "fresaName": "Standard Invoice",
+      "candidateCodes": [
+        "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+        "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+        "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+        "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+        "INVOICE_REPORT_FORMAT_27"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0267",
+      "fresaName": "Standard Invoice FCY",
+      "candidateCodes": [
+        "INVOICE_REPORT_FORMAT_44",
+        "INVOICE_REPORT_FORMAT_45",
+        "INVOICE_REPORT_FORMAT_46",
+        "LEFTOVER_STANDARD_INVOICE_FCY_FORMAT2",
+        "LEFTOVER_STANDARD_INVOICE_FCY_WITH_QRIRN_JASPER"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0271",
+      "fresaName": "Standard Invoice USA",
+      "candidateCodes": [
+        "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+        "INVOICE_REPORT_FORMAT_48",
+        "INVOICE_REPORT_FORMAT_51",
+        "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+        "LEFTOVER_STANDARD_INVOICE_USA_FORMAT_2"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0276",
+      "fresaName": "Summary Invoice",
+      "candidateCodes": [
+        "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+        "INVOICE_REPORT_FORMAT_53"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0293",
+      "fresaName": "Warehouse Invoice",
+      "candidateCodes": [
+        "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+        "INVOICE_REPORT_FORMAT_69",
+        "INVOICE_REPORT_FORMAT_70",
+        "LEFTOVER_WAREHOUSE_INVOICE_INDIA_FORMAT"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0303",
+      "fresaName": "Cargo Arrival Notice – Air",
+      "candidateCodes": [
+        "CARGO_ARRIVAL_NOTICE_AIR_REPORT_FORMAT",
+        "CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0305",
+      "fresaName": "Cargo Arrival Notice – Jasper",
+      "candidateCodes": [
+        "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_2_CARGO_ARRIVAL_NOTICE_JASPER"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0307",
+      "fresaName": "Cargo Arrival Notice – Sea",
+      "candidateCodes": [
+        "ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+        "ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0319",
+      "fresaName": "HBL Draft- Jasper format 10",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0320",
+      "fresaName": "HBL Draft – Jasper format 13",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0321",
+      "fresaName": "HBL Draft – Jasper format 14",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0322",
+      "fresaName": "HBL Draft- Jasper format 16",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0329",
+      "fresaName": "HBL Original – format 33",
+      "candidateCodes": [
+        "FG_HBL_ORIGINAL_FORMAT_87"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0377",
+      "fresaName": "HBL Draft – Jasper format 100",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0378",
+      "fresaName": "HBL Draft – Jasper Format 101",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0379",
+      "fresaName": "HBL Draft – Jasper Format 102",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0380",
+      "fresaName": "HBL Draft – Jasper format 107",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0381",
+      "fresaName": "HBL Draft- Jasper format 109",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0382",
+      "fresaName": "HBL Draft – Jasper format 114",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0383",
+      "fresaName": "HBL Draft – Jasper format 116",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0384",
+      "fresaName": "HBL Draft – Jasper format 117",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0385",
+      "fresaName": "HBL Draft – Jasper format 118",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0386",
+      "fresaName": "HBL Draft – Jasper format 120",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0387",
+      "fresaName": "HBL Draft – Jasper format 122",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0388",
+      "fresaName": "HBL Draft – Jasper format 127",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0389",
+      "fresaName": "HBL Draft – Jasper format 128",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0390",
+      "fresaName": "HBL Draft – Jasper format 129",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0391",
+      "fresaName": "HBL Draft – Jasper format 130",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0392",
+      "fresaName": "HBL Draft – Jasper format 132",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0393",
+      "fresaName": "HBL Draft – Jasper format 134",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0394",
+      "fresaName": "HBL Draft – Jasper format 135",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0395",
+      "fresaName": "HBL Draft – Jasper format 136",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0396",
+      "fresaName": "HBL Draft- Jasper format 137",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0397",
+      "fresaName": "HBL Draft- Jasper format 138",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0398",
+      "fresaName": "HBL Draft – Jasper format 139",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0399",
+      "fresaName": "HBL Draft – Jasper format 140",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0400",
+      "fresaName": "HBL Draft – Jasper format 141",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0401",
+      "fresaName": "HBL Draft – Jasper format 142",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0402",
+      "fresaName": "HBL Draft – Jasper format 143",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0403",
+      "fresaName": "HBL Draft – Jasper format 144",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0404",
+      "fresaName": "HBL Draft – Jasper format 145",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0405",
+      "fresaName": "HBL Draft – Jasper format 146",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0406",
+      "fresaName": "HBL Draft – Jasper format 147",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0407",
+      "fresaName": "HBL Draft – Jasper format 148",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0408",
+      "fresaName": "HBL Draft – Jasper format 149",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0409",
+      "fresaName": "HBL Draft – Jasper format 151",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0410",
+      "fresaName": "HBL Draft- Jasper format 172",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0411",
+      "fresaName": "HBL Draft- Jasper format 171",
+      "candidateCodes": [
+        "LEFTOVER_HBL_DRAFT_JASPER",
+        "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0413",
+      "fresaName": "Consignment Delivery Note",
+      "candidateCodes": [
+        "FG_CONSIGNMENT_DELIVERY_NOTE",
+        "FG_CONSIGNMENT_DELIVERY_NOTE_FORMAT_1"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0417",
+      "fresaName": "Delivery Confirmation",
+      "candidateCodes": [
+        "DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT",
+        "DELIVERY_CONFIRMATION_REPORT_FORMAT"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0422",
+      "fresaName": "Delivery Order – Format 17",
+      "candidateCodes": [
+        "FG_DELIVERY_ORDER_FORMAT_16",
+        "FG_DELIVERY_ORDER_FORMAT_8"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    },
+    {
+      "severity": "medium",
+      "type": "ambiguous_name",
+      "referenceId": "FRESA-REF-0450",
+      "fresaName": "Proof of Delivery",
+      "candidateCodes": [
+        "FG_PROOF_OF_DELIVERY",
+        "PROOF_OF_DELIVERY_REPORT_FORMAT",
+        "PROOF_OF_DELIVERY_RPM_SAMPLE"
+      ],
+      "detail": "Do not auto-resolve; needs human approval"
+    }
+  ]
+}

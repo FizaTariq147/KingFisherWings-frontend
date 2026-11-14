@@ -38,10 +38,17 @@ export const REPORT_BRANDING = {
   layoutLogoToken: 'kingfisher' as const,
 } as const;
 
-/** Resolve logo URL for client layout PDFs (tenant/org → KF asset). */
+/**
+ * Resolve registered organization logo URL for client layout PDFs.
+ * Returns undefined when no org logo is registered — do not substitute a
+ * product placeholder as if it were the tenant logo.
+ */
 export function resolveReportLogoUrl(tenantLogoUrl?: string | null): string | undefined {
-  // Lazy import avoided — keep this module light; mirror branding resolver.
   const fromTenant = String(tenantLogoUrl ?? '').trim();
-  if (fromTenant) return fromTenant;
+  return fromTenant || undefined;
+}
+
+/** Product asset for non-report UI only — not a registered-company substitute. */
+export function resolveProductFallbackLogoUrl(): string | undefined {
   return REPORT_BRANDING.defaultLogoUrl || undefined;
 }

@@ -9,15 +9,19 @@ import type {
 import { organizationKeys } from './useOrganizationProfile';
 
 export const bankAccountKeys = {
-  all: [...organizationKeys.all, 'bank-accounts'] as const,
-  list: (params: BankAccountListParams) => [...bankAccountKeys.all, 'list', params] as const,
-  detail: (id: string) => [...bankAccountKeys.all, 'detail', id] as const,
+  all: (tenantId?: string | null) =>
+    [...organizationKeys.all(tenantId), 'bank-accounts'] as const,
+  list: (tenantId: string | null | undefined, params: BankAccountListParams) =>
+    [...bankAccountKeys.all(tenantId), 'list', params] as const,
+  detail: (tenantId: string | null | undefined, id: string) =>
+    [...bankAccountKeys.all(tenantId), 'detail', id] as const,
 };
 
 export function useBankAccounts(params: BankAccountListParams) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   return useQuery({
-    queryKey: bankAccountKeys.list(params),
+    queryKey: bankAccountKeys.list(tenantId, params),
     queryFn: () => organizationService.listBankAccounts(params),
     enabled: Boolean(accessToken),
     placeholderData: keepPreviousData,
@@ -27,8 +31,9 @@ export function useBankAccounts(params: BankAccountListParams) {
 
 export function useBankAccount(id: string) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   return useQuery({
-    queryKey: bankAccountKeys.detail(id),
+    queryKey: bankAccountKeys.detail(tenantId, id),
     queryFn: () => organizationService.getBankAccount(id),
     enabled: Boolean(accessToken) && isUuid(id),
   });
@@ -36,10 +41,11 @@ export function useBankAccount(id: string) {
 
 function useInvalidateBankAccounts() {
   const queryClient = useQueryClient();
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   return (detailId?: string) => {
-    queryClient.invalidateQueries({ queryKey: bankAccountKeys.all });
+    queryClient.invalidateQueries({ queryKey: bankAccountKeys.all(tenantId) });
     if (detailId) {
-      queryClient.invalidateQueries({ queryKey: bankAccountKeys.detail(detailId) });
+      queryClient.invalidateQueries({ queryKey: bankAccountKeys.detail(tenantId, detailId) });
     }
   };
 }
@@ -54,12 +60,13 @@ export function useCreateBankAccount() {
 
 export function useUpdateBankAccount(id: string) {
   const queryClient = useQueryClient();
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   return useMutation({
     mutationFn: (values: Partial<BankAccountFormValues>) =>
       organizationService.updateBankAccount(id, values),
     onSuccess: (account) => {
-      queryClient.invalidateQueries({ queryKey: bankAccountKeys.all });
-      queryClient.setQueryData(bankAccountKeys.detail(id), account);
+      queryClient.invalidateQueries({ queryKey: bankAccountKeys.all(tenantId) });
+      queryClient.setQueryData(bankAccountKeys.detail(tenantId, id), account);
     },
   });
 }

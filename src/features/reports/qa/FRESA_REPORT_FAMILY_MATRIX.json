@@ -1,0 +1,4324 @@
+{
+  "generatedAt": "2026-11-13T11:27:51.938Z",
+  "phase": 2,
+  "totalEntries": 461,
+  "families": [
+    {
+      "family": "Invoices",
+      "count": 121,
+      "withPdf": 27,
+      "mapped": 114,
+      "sampleReferenceIds": [
+        "FRESA-REF-0003",
+        "FRESA-REF-0007",
+        "FRESA-REF-0011",
+        "FRESA-REF-0012",
+        "FRESA-REF-0015"
+      ]
+    },
+    {
+      "family": "HBL",
+      "count": 115,
+      "withPdf": 19,
+      "mapped": 73,
+      "sampleReferenceIds": [
+        "FRESA-REF-0001",
+        "FRESA-REF-0005",
+        "FRESA-REF-0009",
+        "FRESA-REF-0013",
+        "FRESA-REF-0017"
+      ]
+    },
+    {
+      "family": "Delivery orders",
+      "count": 54,
+      "withPdf": 43,
+      "mapped": 17,
+      "sampleReferenceIds": [
+        "FRESA-REF-0046",
+        "FRESA-REF-0060",
+        "FRESA-REF-0149",
+        "FRESA-REF-0163",
+        "FRESA-REF-0412"
+      ]
+    },
+    {
+      "family": "Operational reports",
+      "count": 49,
+      "withPdf": 14,
+      "mapped": 48,
+      "sampleReferenceIds": [
+        "FRESA-REF-0004",
+        "FRESA-REF-0008",
+        "FRESA-REF-0016",
+        "FRESA-REF-0020",
+        "FRESA-REF-0024"
+      ]
+    },
+    {
+      "family": "Arrival notices",
+      "count": 39,
+      "withPdf": 13,
+      "mapped": 27,
+      "sampleReferenceIds": [
+        "FRESA-REF-0014",
+        "FRESA-REF-0026",
+        "FRESA-REF-0030",
+        "FRESA-REF-0052",
+        "FRESA-REF-0077"
+      ]
+    },
+    {
+      "family": "Financial statements",
+      "count": 24,
+      "withPdf": 23,
+      "mapped": 24,
+      "sampleReferenceIds": [
+        "FRESA-REF-0054",
+        "FRESA-REF-0058",
+        "FRESA-REF-0110",
+        "FRESA-REF-0114",
+        "FRESA-REF-0118"
+      ]
+    },
+    {
+      "family": "Shipping documents",
+      "count": 21,
+      "withPdf": 20,
+      "mapped": 21,
+      "sampleReferenceIds": [
+        "FRESA-REF-0131",
+        "FRESA-REF-0134",
+        "FRESA-REF-0139",
+        "FRESA-REF-0152",
+        "FRESA-REF-0157"
+      ]
+    },
+    {
+      "family": "Cargo manifests",
+      "count": 12,
+      "withPdf": 11,
+      "mapped": 12,
+      "sampleReferenceIds": [
+        "FRESA-REF-0034",
+        "FRESA-REF-0036",
+        "FRESA-REF-0038",
+        "FRESA-REF-0042",
+        "FRESA-REF-0050"
+      ]
+    },
+    {
+      "family": "Accounting vouchers",
+      "count": 8,
+      "withPdf": 8,
+      "mapped": 8,
+      "sampleReferenceIds": [
+        "FRESA-REF-0087",
+        "FRESA-REF-0091",
+        "FRESA-REF-0095",
+        "FRESA-REF-0099",
+        "FRESA-REF-0103"
+      ]
+    },
+    {
+      "family": "Air freight documents",
+      "count": 6,
+      "withPdf": 6,
+      "mapped": 6,
+      "sampleReferenceIds": [
+        "FRESA-REF-0002",
+        "FRESA-REF-0006",
+        "FRESA-REF-0010",
+        "FRESA-REF-0018",
+        "FRESA-REF-0022"
+      ]
+    },
+    {
+      "family": "HAWB",
+      "count": 5,
+      "withPdf": 5,
+      "mapped": 5,
+      "sampleReferenceIds": [
+        "FRESA-REF-0062",
+        "FRESA-REF-0066",
+        "FRESA-REF-0070",
+        "FRESA-REF-0074",
+        "FRESA-REF-0078"
+      ]
+    },
+    {
+      "family": "Warehouse reports",
+      "count": 5,
+      "withPdf": 5,
+      "mapped": 4,
+      "sampleReferenceIds": [
+        "FRESA-REF-0109",
+        "FRESA-REF-0113",
+        "FRESA-REF-0117",
+        "FRESA-REF-0121",
+        "FRESA-REF-0125"
+      ]
+    },
+    {
+      "family": "MAWB",
+      "count": 2,
+      "withPdf": 2,
+      "mapped": 2,
+      "sampleReferenceIds": [
+        "FRESA-REF-0086",
+        "FRESA-REF-0094"
+      ]
+    }
+  ],
+  "entries": [
+    {
+      "referenceId": "FRESA-REF-0001",
+      "fresaName": "HBL Draft Report Format Jasper",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0002",
+      "fresaName": "Air Quotation Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Air freight documents",
+      "hasPdf": true,
+      "freightnestCode": "AIR_QUOTATION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0003",
+      "fresaName": "Invoice Report Format-1 Tax Invoice India",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0004",
+      "fresaName": "Container List Based On Cargo Unpack Date List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "CONTAINER_LIST_BASED_ON_CARGO_UNPACK_DATE_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0005",
+      "fresaName": "HBL Draft Report Format-2",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0006",
+      "fresaName": "Air Quotation With Airline Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Air freight documents",
+      "hasPdf": true,
+      "freightnestCode": "AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0007",
+      "fresaName": "Invoice Report Format-2 Tax Invoice India",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0008",
+      "fresaName": "Container Summary Based On Carrier List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "CONTAINER_SUMMARY_BASED_ON_CARRIER_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0009",
+      "fresaName": "HBL Draft Report Format-4",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_4",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0010",
+      "fresaName": "Air Freight ATD Confirmation Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Air freight documents",
+      "hasPdf": true,
+      "freightnestCode": "AIR_FREIGHT_ATD_CONFIRMATION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0011",
+      "fresaName": "Invoice Report Format-3 Summary Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0012",
+      "fresaName": "Created Invoice List Report Format",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "CREATED_INVOICE_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0013",
+      "fresaName": "HBL Draft Report Format-5",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_5",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0014",
+      "fresaName": "Arrival Confirmation Report Format",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_CONFIRMATION",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0015",
+      "fresaName": "Invoice Report Format-4 Standard Tax Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0016",
+      "fresaName": "Daily Status Report Format 1 (DSR) List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "DAILY_STATUS_REPORT_FORMAT_1_DSR_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0017",
+      "fresaName": "HBL Draft Report Format-6",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_6",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0018",
+      "fresaName": "Barcode AWB Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Air freight documents",
+      "hasPdf": true,
+      "freightnestCode": "BARCODE_AWB_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0019",
+      "fresaName": "Invoice Report Format-5 Tax Invoice India",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0020",
+      "fresaName": "Export Shipments Departed But Not Confirmed On Board List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "EXPORT_SHIPMENTS_DEPARTED_BUT_NOT_CONFIRMED_ON_BOARD_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0021",
+      "fresaName": "HBL Draft Report Format-7",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_7",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0022",
+      "fresaName": "Booking Confirmation Air Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Air freight documents",
+      "hasPdf": true,
+      "freightnestCode": "BOOKING_CONFIRMATION_AIR_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0023",
+      "fresaName": "Invoice Report Format-6 Simple Invoice (India)",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0024",
+      "fresaName": "Job ATA Is Updated And Cargo Unpack Date Is Not Entered List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "JOB_ATA_IS_UPDATED_AND_CARGO_UNPACK_DATE_IS_NOT_ENTERED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0025",
+      "fresaName": "HBL Draft Report Format-8",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_8",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0026",
+      "fresaName": "Cargo Arrival Notice Air Report Format",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_AIR_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0027",
+      "fresaName": "Invoice Report Format-7 Simple Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0028",
+      "fresaName": "Job Ata Not Updated List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "JOB_ATA_NOT_UPDATED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0029",
+      "fresaName": "HBL Draft Report Format-9",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_9",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0030",
+      "fresaName": "Cargo Arrival Notice Air Without Charges Report Format",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0031",
+      "fresaName": "Invoice Report Format-8 Standard Invoice Arabic",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0032",
+      "fresaName": "Job Not Closed list Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "JOB_NOT_CLOSED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0033",
+      "fresaName": "HBL Draft Report Format-10",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_10",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0034",
+      "fresaName": "Cargo Manifest Air House Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "CARGO_MANIFEST_AIR_HOUSE_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0035",
+      "fresaName": "Invoice Report Format-9 Standard Invoice USA",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0036",
+      "fresaName": "Manifest Not Sent To Agent Report Format",
+      "catalogueSection": "Uncategorized (page table)",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": false,
+      "freightnestCode": "MANIFEST_NOT_SENT_TO_AGENT_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0037",
+      "fresaName": "HBL Draft Report Format-11",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_11",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0038",
+      "fresaName": "Cargo Manifest Air Jasper Report format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0039",
+      "fresaName": "Invoice Report Format-10 Standard Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0040",
+      "fresaName": "Pending Jobs Atd Updated But Container Loading Date Not Updated List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "PENDING_JOBS_ATD_UPDATED_BUT_CONTAINER_LOADING_DATE_NOT_UPDATED_LIST_REPORT_FORM",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0041",
+      "fresaName": "HBL Draft Report Format-12",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_12",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0042",
+      "fresaName": "Cargo Manifest Air LC Jasper Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0043",
+      "fresaName": "Invoice Report Format-11 Standard Invoice Land",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0044",
+      "fresaName": "Pending Shipment For Cargo Delivery Do Issued List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "PENDING_SHIPMENT_FOR_CARGO_DELIVERY_DO_ISSUED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0045",
+      "fresaName": "HBL Draft Report Format-13",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_13",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0046",
+      "fresaName": "Delivery Order AIR Jasper Report Format",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0047",
+      "fresaName": "Invoice Report Format-12 Standard Invoice Preprinted",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0048",
+      "fresaName": "Pending Shipments For Draft BL List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "PENDING_SHIPMENTS_FOR_DRAFT_BL_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0049",
+      "fresaName": "HBL Draft Report Format-14",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_14",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0050",
+      "fresaName": "Shipment Freight Manifest Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0051",
+      "fresaName": "Invoice Report Format-13 Standard Invoice USA",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0052",
+      "fresaName": "Pending Shipments For Cargo Arrival Notice List Report Format",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "PENDING_SHIPMENTS_FOR_CARGO_ARRIVAL_NOTICE_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0053",
+      "fresaName": "HBL Draft Report Format-15",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_15",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0054",
+      "fresaName": "Air Shipment Profit And Loss Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0055",
+      "fresaName": "Invoice Report Format-14 Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_14_INVOICE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0056",
+      "fresaName": "pending Shipments For Cargo Delivery List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "PENDING_SHIPMENTS_FOR_CARGO_DELIVERY_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0057",
+      "fresaName": "HBL Draft Report Format-16",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_16",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0058",
+      "fresaName": "Air Shipment Profit And Loss Report Format-1",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0059",
+      "fresaName": "Invoice Report Format-15 Invoice FCY",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0060",
+      "fresaName": "Pending Shipments For Delivery Order List Report Format",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": "PENDING_SHIPMENTS_FOR_DELIVERY_ORDER_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0061",
+      "fresaName": "HBL Draft Report Format-17",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_17",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0062",
+      "fresaName": "HAWB Draft Report Format",
+      "catalogueSection": "HAWB",
+      "visualFamily": "HAWB",
+      "hasPdf": true,
+      "freightnestCode": "HAWB_DRAFT_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0063",
+      "fresaName": "Invoice Report Format-16 Standard Tax Invoice Preprinted",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0064",
+      "fresaName": "Activity Completed Jobs List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0065",
+      "fresaName": "HBL Draft Report Format-18",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_18",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0066",
+      "fresaName": "HAWB Draft Report Format-1",
+      "catalogueSection": "HAWB",
+      "visualFamily": "HAWB",
+      "hasPdf": true,
+      "freightnestCode": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0067",
+      "fresaName": "Invoice Report Format-17 Invoice Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0068",
+      "fresaName": "Shipments With No Invoices List",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENTS_WITH_NO_INVOICES_LIST",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0069",
+      "fresaName": "HBL Draft Report Format-19",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_19",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0070",
+      "fresaName": "HAWB Draft Report Format-2",
+      "catalogueSection": "HAWB",
+      "visualFamily": "HAWB",
+      "hasPdf": true,
+      "freightnestCode": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0071",
+      "fresaName": "Invoice Report Format-18 Land Freight Transportation Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0072",
+      "fresaName": "Shipments With No Purchase Invoices List",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0073",
+      "fresaName": "HBL Draft Report Format-20",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": true,
+      "freightnestCode": "HBL_DRAFT_REPORT_FORMAT_20",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0074",
+      "fresaName": "HAWB Original Pre Printed Report Format-1",
+      "catalogueSection": "HAWB",
+      "visualFamily": "HAWB",
+      "hasPdf": true,
+      "freightnestCode": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0075",
+      "fresaName": "Invoice Report Format-19 Debit Note Vietnam",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0076",
+      "fresaName": "Prepaid Shipment With No Prepaid Charges List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "PREPAID_SHIPMENT_WITH_NO_PREPAID_CHARGES_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0077",
+      "fresaName": "Arrival Notice Report Format-1 Cargo Arrival Notice Jasper",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0078",
+      "fresaName": "HAWB Original Pre Printed Report Format-2",
+      "catalogueSection": "HAWB",
+      "visualFamily": "HAWB",
+      "hasPdf": true,
+      "freightnestCode": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0079",
+      "fresaName": "Invoice Report Format-20 Tax Invoice India",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0080",
+      "fresaName": "Salesperson Nomination Report List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "SALESPERSON_NOMINATION_REPORT_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0081",
+      "fresaName": "Arrival Notice Report Format-2 Cargo Arrival Notice Jasper",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_2_CARGO_ARRIVAL_NOTICE_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0082",
+      "fresaName": "Job House Record List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "JOB_HOUSE_RECORD_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0083",
+      "fresaName": "Invoice Report Format-21 Warehouse Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0084",
+      "fresaName": "Shipment Is Not Linked With Job List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENT_IS_NOT_LINKED_WITH_JOB_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0085",
+      "fresaName": "Arrival Notice Report Format-3 Arrival Notice USA",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0086",
+      "fresaName": "MAWB Draft Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "MAWB",
+      "hasPdf": true,
+      "freightnestCode": "MAWB_DRAFT_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0087",
+      "fresaName": "Journal Voucher Report Format-1",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Accounting vouchers",
+      "hasPdf": true,
+      "freightnestCode": "JOURNAL_VOUCHER_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0088",
+      "fresaName": "Shipments List IMCO List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENTS_LIST_IMCO_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0089",
+      "fresaName": "Arrival Notice Report Format-4 Arrival Notice USA",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0090",
+      "fresaName": "Job House Record List Report Format-1",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "JOB_HOUSE_RECORD_LIST_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0091",
+      "fresaName": "Journal Voucher Report Format-2",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Accounting vouchers",
+      "hasPdf": true,
+      "freightnestCode": "JOURNAL_VOUCHER_REPORT_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0092",
+      "fresaName": "Shipment Status Report List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENT_STATUS_REPORT_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0093",
+      "fresaName": "Arrival Notice Report Format-5 Cargo Arrival Notice SEA",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0094",
+      "fresaName": "MAWB Original Preprinted KC Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "MAWB",
+      "hasPdf": true,
+      "freightnestCode": "MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0095",
+      "fresaName": "Payment Voucher Report Format-1",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Accounting vouchers",
+      "hasPdf": true,
+      "freightnestCode": "PAYMENT_VOUCHER_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0096",
+      "fresaName": "Shipments With No HBL Number Entered List Report Format",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENTS_WITH_NO_HBL_NUMBER_ENTERED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0097",
+      "fresaName": "Arrival Notice Report Format-6 Cargo Arrival Notice SEA",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0098",
+      "fresaName": "Pre Alert Air Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Air freight documents",
+      "hasPdf": true,
+      "freightnestCode": "PRE_ALERT_AIR_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0099",
+      "fresaName": "Payment Voucher Report Format-2",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Accounting vouchers",
+      "hasPdf": true,
+      "freightnestCode": "PAYMENT_VOUCHER_REPORT_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0100",
+      "fresaName": "Shipments With No Job Number Mapped List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENTS_WITH_NO_JOB_NUMBER_MAPPED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0101",
+      "fresaName": "Arrival Notice Report Format-7 Cargo Arrival Notice SEA",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0102",
+      "fresaName": "Proforma Invoice All Charges Report Format",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0103",
+      "fresaName": "Payment Voucher Report Format-3",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Accounting vouchers",
+      "hasPdf": true,
+      "freightnestCode": "PAYMENT_VOUCHER_REPORT_FORMAT_3",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0104",
+      "fresaName": "Shipment With No Job CS List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENT_WITH_NO_JOB_CS_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0105",
+      "fresaName": "Arrival Notice Report Format-8 Cargo Arrival Notice SEA Without Charges",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0106",
+      "fresaName": "Payment Voucher Report Format-4 Vietnam",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Accounting vouchers",
+      "hasPdf": true,
+      "freightnestCode": "PAYMENT_VOUCHER_REPORT_FORMAT_4_VIETNAM",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0107",
+      "fresaName": "Agent Nomination Shipments List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "AGENT_NOMINATION_SHIPMENTS_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0108",
+      "fresaName": "Arrival Notice Report Format-9 Cargo Arrival Notice SEA Without Charges",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0109",
+      "fresaName": "Advance Shipping Note Format-1",
+      "catalogueSection": "WMS – ASN",
+      "visualFamily": "Warehouse reports",
+      "hasPdf": true,
+      "freightnestCode": "ADVANCE_SHIPPING_NOTE_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0110",
+      "fresaName": "Profit and Loss Report Format-1 Landscape",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0111",
+      "fresaName": "Bill Of Lading Is Not Issued List Report Format",
+      "catalogueSection": "HBL",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "BILL_OF_LADING_IS_NOT_ISSUED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0112",
+      "fresaName": "Arrival Notice Report Format-10 SEA Arrival Notice FCL Vietnam",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": true,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0113",
+      "fresaName": "Advance Shipping Note",
+      "catalogueSection": "WMS – ASN",
+      "visualFamily": "Warehouse reports",
+      "hasPdf": true,
+      "freightnestCode": "ADVANCE_SHIPPING_NOTE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0114",
+      "fresaName": "Profit and Loss Report Format-2 Jasper",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "PROFIT_AND_LOSS_REPORT_FORMAT_2_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0115",
+      "fresaName": "Cancelled Job List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "CANCELLED_JOB_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0116",
+      "fresaName": "Cargo Manifest Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "CARGO_MANIFEST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0117",
+      "fresaName": "Advance Shipping Note Location Wise",
+      "catalogueSection": "WMS – ASN",
+      "visualFamily": "Warehouse reports",
+      "hasPdf": true,
+      "freightnestCode": "ADVANCE_SHIPPING_NOTE_LOCATION_WISE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0118",
+      "fresaName": "Profit and Loss Report Format-3 Summary Periodwise",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0119",
+      "fresaName": "Cargo Arrival Notice Sent Shipments List Report Format",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_SENT_SHIPMENTS_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0120",
+      "fresaName": "Container Load Plan Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "CONTAINER_LOAD_PLAN_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0121",
+      "fresaName": "Advance Shipping Note Location Wise- 1",
+      "catalogueSection": "WMS – ASN",
+      "visualFamily": "Warehouse reports",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0122",
+      "fresaName": "Purchase Invoice Report Format-1",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "PURCHASE_INVOICE_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0123",
+      "fresaName": "Cash Collection Report List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "CASH_COLLECTION_REPORT_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0124",
+      "fresaName": "Freight Manifest For Groupage Imports LCL Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0125",
+      "fresaName": "Advance Shipping Note Location Summary",
+      "catalogueSection": "WMS – ASN",
+      "visualFamily": "Warehouse reports",
+      "hasPdf": true,
+      "freightnestCode": "ADVANCE_SHIPPING_NOTE_LOCATION_SUMMARY",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0126",
+      "fresaName": "Purchase Invoice Report Format-2",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "PURCHASE_INVOICE_REPORT_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0127",
+      "fresaName": "Cheque Collection Report List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "CHEQUE_COLLECTION_REPORT_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0128",
+      "fresaName": "Transhipment List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0129",
+      "fresaName": "Receipt Voucher Report Format-1",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Accounting vouchers",
+      "hasPdf": true,
+      "freightnestCode": "RECEIPT_VOUCHER_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0130",
+      "fresaName": "Client Lost Report For Last N Days List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "CLIENT_LOST_REPORT_FOR_LAST_N_DAYS_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0131",
+      "fresaName": "Booking Confirmation Report Format-1 Booking Confirmation",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "BOOKING_CONFIRMATION_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0132",
+      "fresaName": "Receipt Voucher Report Format-2",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Accounting vouchers",
+      "hasPdf": true,
+      "freightnestCode": "RECEIPT_VOUCHER_REPORT_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0133",
+      "fresaName": "Closed Job List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "CLOSED_JOB_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0134",
+      "fresaName": "Booking Confirmation Report Format-2 Booking Confirmation",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "BOOKING_CONFIRMATION_REPORT_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0135",
+      "fresaName": "Trial Balance Report Format-1 Trial Balance Summary",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0136",
+      "fresaName": "Collect Shipment With No Collect Charges List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "COLLECT_SHIPMENT_WITH_NO_COLLECT_CHARGES_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0137",
+      "fresaName": "Cargo Receipt Note For Export CFS Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "CARGO_RECEIPT_NOTE_FOR_EXPORT_CFS_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0138",
+      "fresaName": "Trial Balance Report Format-2 Trial Balance Summary",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "TRIAL_BALANCE_REPORT_FORMAT_2_TRIAL_BALANCE_SUMMARY",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0139",
+      "fresaName": "Created Quotations List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": false,
+      "freightnestCode": "CREATED_QUOTATIONS_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0140",
+      "fresaName": "Container Outturn Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "CONTAINER_OUTTURN_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0141",
+      "fresaName": "Trial Balance Report Format-3 Trial Balance Summary BranchWise",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "TRIAL_BALANCE_REPORT_FORMAT_3_TRIAL_BALANCE_SUMMARY_BRANCHWISE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0142",
+      "fresaName": "Do Issued Shipment List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "DO_ISSUED_SHIPMENT_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0143",
+      "fresaName": "Container Unload Plan Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "CONTAINER_UNLOAD_PLAN_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0144",
+      "fresaName": "Trial Balance Report Format-4 Trial Balance Summary Extended",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0145",
+      "fresaName": "Export Cargo Ready But Not Stuffed List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "EXPORT_CARGO_READY_BUT_NOT_STUFFED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0146",
+      "fresaName": "Freight Manifest LCL Exports Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0147",
+      "fresaName": "Trial Balance Report Format-5 Trial Balance Summary Extended",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "TRIAL_BALANCE_REPORT_FORMAT_5_TRIAL_BALANCE_SUMMARY_EXTENDED",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0148",
+      "fresaName": "Job ATA Updated Arrival Notice Not Sent List Report Format",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "JOB_ATA_UPDATED_ARRIVAL_NOTICE_NOT_SENT_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0149",
+      "fresaName": "Proof Of Delivery Report Format",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "PROOF_OF_DELIVERY_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0150",
+      "fresaName": "Trial Balance Report Format-6 Trial Balance Summary Extended BranchWise",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "TRIAL_BALANCE_REPORT_FORMAT_6_TRIAL_BALANCE_SUMMARY_EXTENDED_BRANCHWISE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0151",
+      "fresaName": "MRN Number Not Entered Job List Dubai Report Format",
+      "catalogueSection": "Uncategorized (page table)",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "MRN_NUMBER_NOT_ENTERED_JOB_LIST_DUBAI_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0152",
+      "fresaName": "Sailing Confirmation Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "SAILING_CONFIRMATION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0153",
+      "fresaName": "Outstanding Letter Report Format-1 Outstanding Letter",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "OUTSTANDING_LETTER_REPORT_FORMAT_1_OUTSTANDING_LETTER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0154",
+      "fresaName": "Shipments With No cost Charges List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENTS_WITH_NO_COST_CHARGES_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0155",
+      "fresaName": "Outstanding Letter Report Format-2 Outstanding Letter Jasper",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0156",
+      "fresaName": "Shipments With No Invoices list Report Format",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENTS_WITH_NO_INVOICES_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0157",
+      "fresaName": "Consol IGM Filling Letter Jasper Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "CONSOL_IGM_FILLING_LETTER_JASPER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0158",
+      "fresaName": "Outstanding Letter Report Format-3 Outstanding Letter With Aging",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0159",
+      "fresaName": "Shipments With No Purchase Invoices List Report Format",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0160",
+      "fresaName": "Container Movement Facilitation Cell Note Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "CONTAINER_MOVEMENT_FACILITATION_CELL_NOTE_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0161",
+      "fresaName": "Outstanding Letter Report Format-4 Outstanding Letter With BL Details",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0162",
+      "fresaName": "Shipments With No Salesperson Entered List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "SHIPMENTS_WITH_NO_SALESPERSON_ENTERED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0163",
+      "fresaName": "Delivery Confirmation Report Format",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "DELIVERY_CONFIRMATION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0164",
+      "fresaName": "Outstanding Letter Report Format-5 Outstanding Letter With Invoices",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0165",
+      "fresaName": "Uncollected Cargo For Agent Routed List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "UNCOLLECTED_CARGO_FOR_AGENT_ROUTED_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0166",
+      "fresaName": "Exchange Letter To Carrier Agent Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0167",
+      "fresaName": "Proforma Invoice Report Format-1 Proforma Invoice All Charges",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0168",
+      "fresaName": "Import Cargo Manifest Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "IMPORT_CARGO_MANIFEST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0169",
+      "fresaName": "Proforma Invoice Report Format-2 Proforma Invoice All Charges",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": true,
+      "freightnestCode": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0170",
+      "fresaName": "Import Tally Sheet Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "IMPORT_TALLY_SHEET_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0171",
+      "fresaName": "Payment Request List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "PAYMENT_REQUEST_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0172",
+      "fresaName": "Job Houses Record List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "JOB_HOUSES_RECORD_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0173",
+      "fresaName": "AP Aging Summary Report Format",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "AP_AGING_SUMMARY_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0174",
+      "fresaName": "Letter OF Guarantee Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "LETTER_OF_GUARANTEE_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0175",
+      "fresaName": "AR Aging Summary Report Format",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "AR_AGING_SUMMARY_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0176",
+      "fresaName": "Rider Sheet For Export Manifest Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Cargo manifests",
+      "hasPdf": true,
+      "freightnestCode": "RIDER_SHEET_FOR_EXPORT_MANIFEST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0177",
+      "fresaName": "AP Outstanding Statement Report Format",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "AP_OUTSTANDING_STATEMENT_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0178",
+      "fresaName": "Shipment Profit And Loss Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0179",
+      "fresaName": "AR Job Not Invoice Report Format",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "AR_JOB_NOT_INVOICE_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0180",
+      "fresaName": "Shipment Status Confirmation Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "SHIPMENT_STATUS_CONFIRMATION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0181",
+      "fresaName": "Bank Cash Book Summary List Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Financial statements",
+      "hasPdf": false,
+      "freightnestCode": "BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0182",
+      "fresaName": "Truck Cargo Pickup Request Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0183",
+      "fresaName": "GL Listing Sort By Customer Code Voucher Report Format",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0184",
+      "fresaName": "Carting Confirmation Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "CARTING_CONFIRMATION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0185",
+      "fresaName": "GL Report Currency Wise Voucher Report Format",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "GL_REPORT_CURRENCY_WISE_VOUCHER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0186",
+      "fresaName": "Container VGM Form Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "CONTAINER_VGM_FORM_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0187",
+      "fresaName": "GL Report Voucher Report Format",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "GL_REPORT_VOUCHER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0188",
+      "fresaName": "FCL Quotation Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "FCL_QUOTATION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0189",
+      "fresaName": "Statement Of Accounts Report Format",
+      "catalogueSection": "Accounts other Formats",
+      "visualFamily": "Financial statements",
+      "hasPdf": true,
+      "freightnestCode": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0190",
+      "fresaName": "FCR Document Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "FCR_DOCUMENT_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0191",
+      "fresaName": "Import Security Filling Jasper AMS Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "IMPORT_SECURITY_FILLING_JASPER_AMS_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0192",
+      "fresaName": "ISF Filing Document Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "ISF_FILING_DOCUMENT_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0193",
+      "fresaName": "Loading Confirmation Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "LOADING_CONFIRMATION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0194",
+      "fresaName": "Pickup Confirmation Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "PICKUP_CONFIRMATION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0195",
+      "fresaName": "Pre Alert to Client Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "PRE_ALERT_TO_CLIENT_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0196",
+      "fresaName": "Prealert USA Jasper Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "PREALERT_USA_JASPER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0197",
+      "fresaName": "Shipping Instruction Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "SHIPPING_INSTRUCTION_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0198",
+      "fresaName": "Stuffing Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "STUFFING_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0199",
+      "fresaName": "Stuffing Report Jasper Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0200",
+      "fresaName": "Surrendered Letter Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Shipping documents",
+      "hasPdf": true,
+      "freightnestCode": "SURRENDERED_LETTER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0201",
+      "fresaName": "Terminal Departure Report (TDR) Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0202",
+      "fresaName": "Daily Status Report Format-1",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "DAILY_STATUS_REPORT_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0203",
+      "fresaName": "Daily Status Report Format-2",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "DAILY_STATUS_REPORT_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0204",
+      "fresaName": "Job Card Report Format",
+      "catalogueSection": "Other Reports",
+      "visualFamily": "Operational reports",
+      "hasPdf": true,
+      "freightnestCode": "JOB_CARD_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0205",
+      "fresaName": "Job List Summary Report Format",
+      "catalogueSection": "Uncategorized (page table)",
+      "visualFamily": "Operational reports",
+      "hasPdf": false,
+      "freightnestCode": "JOB_LIST_SUMMARY_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0206",
+      "fresaName": "Invoice Format12 – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT12_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0207",
+      "fresaName": "Invoice Format14 – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT14_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0208",
+      "fresaName": "Invoice Format8 with QR/IRN – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT8_WITH_QRIRN_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0209",
+      "fresaName": "Invoice Format9 with QR/IRN – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT9_WITH_QRIRN_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0210",
+      "fresaName": "Invoice Singapore – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_SINGAPORE_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0211",
+      "fresaName": "Invoice format1 – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT1_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0212",
+      "fresaName": "Invoice format15 – Jasper Preprinted",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT15_JASPER_PREPRINTED",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0213",
+      "fresaName": "Invoice format15 – Jasper Standard",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT15_JASPER_STANDARD",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0214",
+      "fresaName": "Invoice format2 FCY- Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT2_FCY_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0215",
+      "fresaName": "Invoice format3 – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT3_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0216",
+      "fresaName": "Invoice format3 FCY with QR/IRN – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT3_FCY_WITH_QRIRN_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0217",
+      "fresaName": "Invoice format4 FCY- Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT4_FCY_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0218",
+      "fresaName": "Invoice format5 – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT5_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0219",
+      "fresaName": "Invoice format6",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT6",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0220",
+      "fresaName": "Invoice format7 – Jasper India",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT7_JASPER_INDIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0221",
+      "fresaName": "Invoice format7 – Jasper USA",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_INVOICE_FORMAT7_JASPER_USA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0222",
+      "fresaName": "Land Freight/ Transportation Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0223",
+      "fresaName": "Land Freight/ Transportation Invoice Format 1",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_LAND_FREIGHT_TRANSPORTATION_INVOICE_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0224",
+      "fresaName": "Overseas Debit Note (Export Invoice) – Jasper Format2",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_OVERSEAS_DEBIT_NOTE_EXPORT_INVOICE_JASPER_FORMAT2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0225",
+      "fresaName": "Proforma Invoice format 1",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_PROFORMA_INVOICE_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0226",
+      "fresaName": "Saudi TAX Invoice – Arabic Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_SAUDI_TAX_INVOICE_ARABIC_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0227",
+      "fresaName": "Simple Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0228",
+      "fresaName": "Simple Invoice – India",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_SIMPLE_INVOICE_INDIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0229",
+      "fresaName": "Simple Invoice – India Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_SIMPLE_INVOICE_INDIA_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0230",
+      "fresaName": "Simple Invoice – India with O/S",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_SIMPLE_INVOICE_INDIA_WITH_OS",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0231",
+      "fresaName": "Simple Invoice – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_SIMPLE_INVOICE_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0232",
+      "fresaName": "Simple Invoice – US Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_SIMPLE_INVOICE_US_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0233",
+      "fresaName": "Simple Invoice with O/S",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_SIMPLE_INVOICE_WITH_OS",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0234",
+      "fresaName": "Simple Invoice(VAT)",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_SIMPLE_INVOICEVAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0235",
+      "fresaName": "Standard Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0236",
+      "fresaName": "Standard Invoice – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0237",
+      "fresaName": "Standard Invoice – Jasper Format4",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT4",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0238",
+      "fresaName": "Standard Invoice – Jasper Tanzania",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_TANZANIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0239",
+      "fresaName": "Standard Invoice – Jasper format10",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT10",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0240",
+      "fresaName": "Standard Invoice – Jasper format12 Letterhead",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT12_LETTERHEAD",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0241",
+      "fresaName": "Standard Invoice – Jasper format13",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT13",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0242",
+      "fresaName": "Standard Invoice – Jasper format14 QR code",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT14_QR_CODE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0243",
+      "fresaName": "Standard Invoice – Jasper format15",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT15",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0244",
+      "fresaName": "Standard Invoice – Jasper format16",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT16",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0245",
+      "fresaName": "Standard Invoice – Jasper format17 (With Holding Tax)",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT17_WITH_HOLDING_TAX",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0246",
+      "fresaName": "Standard Invoice – Jasper format18",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT18",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0247",
+      "fresaName": "Standard Invoice – Jasper format19",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT19",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0248",
+      "fresaName": "Standard Invoice – Jasper format20 – UAE Local Currency",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT20_UAE_LOCAL_CURRENCY",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0249",
+      "fresaName": "Standard Invoice – Jasper format21 (With Holding Tax)",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT21_WITH_HOLDING_TAX",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0250",
+      "fresaName": "Standard Invoice – Jasper format22",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT22",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0251",
+      "fresaName": "Standard Invoice – Jasper format3",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT3",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0252",
+      "fresaName": "Standard Invoice – Jasper format5",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT5",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0253",
+      "fresaName": "Standard Invoice – Jasper format6",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT6",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0254",
+      "fresaName": "Standard Invoice – Jasper format9",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT9",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0255",
+      "fresaName": "Standard Invoice -Land",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_LAND",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0256",
+      "fresaName": "Standard Invoice 3 Decimal",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_3_DECIMAL",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0257",
+      "fresaName": "Standard Invoice Arabic – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0258",
+      "fresaName": "Standard Invoice Arabic – Jasper Format1",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER_FORMAT1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0259",
+      "fresaName": "Standard Invoice Arabic – Jasper Format1 With Letter head",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER_FORMAT1_WITH_LETTER_HEAD",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0260",
+      "fresaName": "Standard Invoice Arabic Oman – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_ARABIC_OMAN_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0261",
+      "fresaName": "Standard Invoice Arabic with QR code – Jasper Format2",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0262",
+      "fresaName": "Standard Invoice Arabic with QR code – Jasper Format3",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT3",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0263",
+      "fresaName": "Standard Invoice Arabic with QR code – Jasper Format4",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT4",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0264",
+      "fresaName": "Standard Invoice Arabic with QR code – Jasper Format5",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT5",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0265",
+      "fresaName": "Standard Invoice Arabic with QR code – Jasper Format7",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT7",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0266",
+      "fresaName": "Standard Invoice Courier – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_COURIER_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0267",
+      "fresaName": "Standard Invoice FCY",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0268",
+      "fresaName": "Standard Invoice FCY Format2",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_FCY_FORMAT2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0269",
+      "fresaName": "Standard Invoice FCY with QR/IRN – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_FCY_WITH_QRIRN_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0270",
+      "fresaName": "Standard Invoice Kampala",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "INVOICE_REPORT_FORMAT_47",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0271",
+      "fresaName": "Standard Invoice USA",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0272",
+      "fresaName": "Standard Invoice cum Arrival Notice – Jasper format16",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_CUM_ARRIVAL_NOTICE_JASPER_FORMAT16",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0273",
+      "fresaName": "Standard Invoice-Malaysia",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_MALAYSIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0274",
+      "fresaName": "Standard Invoice-USA Format 2",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_INVOICE_USA_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0275",
+      "fresaName": "Standard Tax Invoice – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_STANDARD_TAX_INVOICE_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0276",
+      "fresaName": "Summary Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0277",
+      "fresaName": "TAX Invoice – India",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0278",
+      "fresaName": "TAX Invoice – India (Reimbursement Bill)",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA_REIMBURSEMENT_BILL",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0279",
+      "fresaName": "TAX Invoice – India Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0280",
+      "fresaName": "TAX Invoice – India Jasper Format1",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA_JASPER_FORMAT1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0281",
+      "fresaName": "TAX Invoice – India format1",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA_FORMAT1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0282",
+      "fresaName": "TAX Invoice – India format2",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA_FORMAT2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0283",
+      "fresaName": "TAX Invoice – India format2 Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA_FORMAT2_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0284",
+      "fresaName": "TAX Invoice – India format6 Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA_FORMAT6_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0285",
+      "fresaName": "TAX Invoice – India format7 Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA_FORMAT7_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0286",
+      "fresaName": "TAX Invoice – India format8 Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_INDIA_FORMAT8_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0287",
+      "fresaName": "TAX Invoice with QR – India format3 Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_WITH_QR_INDIA_FORMAT3_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0288",
+      "fresaName": "TAX Invoice with QR/IRN – India format4 Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_WITH_QRIRN_INDIA_FORMAT4_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0289",
+      "fresaName": "TAX Invoice with QR/IRN – India format5 Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_WITH_QRIRN_INDIA_FORMAT5_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0290",
+      "fresaName": "Tax Invoice Malaysia – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_MALAYSIA_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0291",
+      "fresaName": "Tax Invoice Singapore – Jasper",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_TAX_INVOICE_SINGAPORE_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0292",
+      "fresaName": "Vietnam Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_VIETNAM_INVOICE",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0293",
+      "fresaName": "Warehouse Invoice",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0294",
+      "fresaName": "Warehouse Invoice – India Format",
+      "catalogueSection": "Invoice Formats",
+      "visualFamily": "Invoices",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_WAREHOUSE_INVOICE_INDIA_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0295",
+      "fresaName": "Arrival Confirmation",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "ARRIVAL_CONFIRMATION",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0296",
+      "fresaName": "Arrival Confirmation Format1",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0297",
+      "fresaName": "Arrival Information",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "ARRIVAL_INFORMATION",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0298",
+      "fresaName": "Arrival Information – Jasper",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "ARRIVAL_INFORMATION",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0299",
+      "fresaName": "Arrival Notice USA – Jasper",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0300",
+      "fresaName": "Arrival Notice USA – Jasper format 2",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0301",
+      "fresaName": "Arrival Notice USA – Jasper format 2 without charges",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0302",
+      "fresaName": "Arrival Notice USA – Jasper format 3",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0303",
+      "fresaName": "Cargo Arrival Notice – Air",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0304",
+      "fresaName": "Cargo Arrival Notice – Air Without Charges",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0305",
+      "fresaName": "Cargo Arrival Notice – Jasper",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0306",
+      "fresaName": "Cargo Arrival Notice – Jasper format 1",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0307",
+      "fresaName": "Cargo Arrival Notice – Sea",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0308",
+      "fresaName": "Cargo Arrival Notice – Sea – Jasper",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0309",
+      "fresaName": "Cargo Arrival Notice – Sea Format 2",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_SEA_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0310",
+      "fresaName": "Cargo Arrival Notice – Sea Format 3",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0311",
+      "fresaName": "Cargo Arrival Notice – Sea Format1",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0312",
+      "fresaName": "Cargo Arrival Notice – Sea Without Charges",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0313",
+      "fresaName": "Cargo Arrival Notice – Sea Without Charges Format1",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0314",
+      "fresaName": "Sea Arrival Notice FCL Vietnam",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0315",
+      "fresaName": "Sea Arrival Notice LCL Vietnam",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": "SEA_ARRIVAL_NOTICE_LCL_VIETNAM",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0316",
+      "fresaName": "cargo arrival notice sea format3 Jasper",
+      "catalogueSection": "Arrival Notice",
+      "visualFamily": "Arrival notices",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0317",
+      "fresaName": "HBL Draft- Jasper",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0318",
+      "fresaName": "HBL Draft- Jasper format 1",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0319",
+      "fresaName": "HBL Draft- Jasper format 10",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0320",
+      "fresaName": "HBL Draft – Jasper format 13",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0321",
+      "fresaName": "HBL Draft – Jasper format 14",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0322",
+      "fresaName": "HBL Draft- Jasper format 16",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0323",
+      "fresaName": "HBL Draft- Jasper format 20",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0324",
+      "fresaName": "HBL Draft- Jasper format 23",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0325",
+      "fresaName": "HBL Draft- Jasper format 25",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0326",
+      "fresaName": "HBL Draft- Jasper format 26",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0327",
+      "fresaName": "HBL Draft- Jasper format 27",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0328",
+      "fresaName": "HBL Draft- format 29",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0329",
+      "fresaName": "HBL Original – format 33",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0330",
+      "fresaName": "HBL Draft- Jasper format 36",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0331",
+      "fresaName": "HBL Draft- Jasper format 40",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0332",
+      "fresaName": "HBL Draft- Jasper format 41",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0333",
+      "fresaName": "HBL Draft- Jasper format 42",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0334",
+      "fresaName": "HBL Draft- Jasper format 43 SGSIN",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0335",
+      "fresaName": "HBL Draft- Jasper format 44",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0336",
+      "fresaName": "HBL Draft- Jasper format 45",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0337",
+      "fresaName": "HBL Draft- Jasper format 46",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0338",
+      "fresaName": "HBL Draft- Jasper format 47",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0339",
+      "fresaName": "HBL Draft- Jasper format 48",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0340",
+      "fresaName": "HBL Draft- Jasper format 49",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0341",
+      "fresaName": "HBL Draft- Jasper format 50",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0342",
+      "fresaName": "HBL Draft- Jasper format 51",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0343",
+      "fresaName": "HBL Draft- Jasper format 52",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0344",
+      "fresaName": "HBL Draft- Jasper format 53",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0345",
+      "fresaName": "HBL Draft- Jasper format 54",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0346",
+      "fresaName": "HBL Draft- Jasper format 55",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0347",
+      "fresaName": "HBL Draft- Jasper format 56",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0348",
+      "fresaName": "HBL Draft- Jasper format 59",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0349",
+      "fresaName": "HBL Draft- Jasper format 60",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0350",
+      "fresaName": "HBL Draft- Jasper format 61",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0351",
+      "fresaName": "HBL Draft- Jasper format 63",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0352",
+      "fresaName": "HBL Draft- Jasper format 64",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0353",
+      "fresaName": "HBL Draft- Jasper format 65",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0354",
+      "fresaName": "HBL Draft – Jasper format 67",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0355",
+      "fresaName": "HBL Draft – Jasper format 66",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0356",
+      "fresaName": "HBL Draft – Jasper format 68",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0357",
+      "fresaName": "HBL Draft – Jasper format 69",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0358",
+      "fresaName": "HBL Draft – Jasper format 70",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0359",
+      "fresaName": "HBL Draft – Jasper format 72",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0360",
+      "fresaName": "HBL Draft – Jasper format 73",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0361",
+      "fresaName": "HBL Draft – Jasper format 75",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0362",
+      "fresaName": "HBL Draft – Jasper format 77",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0363",
+      "fresaName": "HBL Draft – Jasper format 83",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0364",
+      "fresaName": "HBL Draft – Jasper format 84",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0365",
+      "fresaName": "HBL Draft – Jasper format 85",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0366",
+      "fresaName": "HBL Draft – Jasper format 86",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0367",
+      "fresaName": "HBL Draft – Jasper format 87",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0368",
+      "fresaName": "HBL Original- Jasper format 87",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0369",
+      "fresaName": "HBL Draft – Jasper format 88",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0370",
+      "fresaName": "HBL Draft – Jasper format 89",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0371",
+      "fresaName": "HBL Draft – Jasper format 90",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0372",
+      "fresaName": "HBL Draft – Jasper format 92",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0373",
+      "fresaName": "HBL Draft – Jasper format 95",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0374",
+      "fresaName": "HBL Draft – Jasper format 96",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0375",
+      "fresaName": "HBL Draft – Jasper format 97",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0376",
+      "fresaName": "HBL Draft – Jasper format 99",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": "LEFTOVER_HBL_DRAFT_JASPER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0377",
+      "fresaName": "HBL Draft – Jasper format 100",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0378",
+      "fresaName": "HBL Draft – Jasper Format 101",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0379",
+      "fresaName": "HBL Draft – Jasper Format 102",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0380",
+      "fresaName": "HBL Draft – Jasper format 107",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0381",
+      "fresaName": "HBL Draft- Jasper format 109",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0382",
+      "fresaName": "HBL Draft – Jasper format 114",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0383",
+      "fresaName": "HBL Draft – Jasper format 116",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0384",
+      "fresaName": "HBL Draft – Jasper format 117",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0385",
+      "fresaName": "HBL Draft – Jasper format 118",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0386",
+      "fresaName": "HBL Draft – Jasper format 120",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0387",
+      "fresaName": "HBL Draft – Jasper format 122",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0388",
+      "fresaName": "HBL Draft – Jasper format 127",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0389",
+      "fresaName": "HBL Draft – Jasper format 128",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0390",
+      "fresaName": "HBL Draft – Jasper format 129",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0391",
+      "fresaName": "HBL Draft – Jasper format 130",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0392",
+      "fresaName": "HBL Draft – Jasper format 132",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0393",
+      "fresaName": "HBL Draft – Jasper format 134",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0394",
+      "fresaName": "HBL Draft – Jasper format 135",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0395",
+      "fresaName": "HBL Draft – Jasper format 136",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0396",
+      "fresaName": "HBL Draft- Jasper format 137",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0397",
+      "fresaName": "HBL Draft- Jasper format 138",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0398",
+      "fresaName": "HBL Draft – Jasper format 139",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0399",
+      "fresaName": "HBL Draft – Jasper format 140",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0400",
+      "fresaName": "HBL Draft – Jasper format 141",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0401",
+      "fresaName": "HBL Draft – Jasper format 142",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0402",
+      "fresaName": "HBL Draft – Jasper format 143",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0403",
+      "fresaName": "HBL Draft – Jasper format 144",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0404",
+      "fresaName": "HBL Draft – Jasper format 145",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0405",
+      "fresaName": "HBL Draft – Jasper format 146",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0406",
+      "fresaName": "HBL Draft – Jasper format 147",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0407",
+      "fresaName": "HBL Draft – Jasper format 148",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0408",
+      "fresaName": "HBL Draft – Jasper format 149",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0409",
+      "fresaName": "HBL Draft – Jasper format 151",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0410",
+      "fresaName": "HBL Draft- Jasper format 172",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0411",
+      "fresaName": "HBL Draft- Jasper format 171",
+      "catalogueSection": "HBL",
+      "visualFamily": "HBL",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0412",
+      "fresaName": "Collection/Delivery Note -Jasper UK",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0413",
+      "fresaName": "Consignment Delivery Note",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0414",
+      "fresaName": "Consignment Delivery Note Format1",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0415",
+      "fresaName": "D.O FCL Vietnam",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0416",
+      "fresaName": "D.O LCL Vietnam without Stamp",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0417",
+      "fresaName": "Delivery Confirmation",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0418",
+      "fresaName": "Delivery Confirmation – OSA",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0419",
+      "fresaName": "Delivery NOC Letter Jasper",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0420",
+      "fresaName": "Delivery Note Format 1 -Jasper",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0421",
+      "fresaName": "Delivery Note Jasper",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0422",
+      "fresaName": "Delivery Order – Format 17",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0423",
+      "fresaName": "Delivery Order – Format16",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0424",
+      "fresaName": "Delivery Order Abu Dhabi – Jasper",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0425",
+      "fresaName": "Delivery Order Air Jasper",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0426",
+      "fresaName": "Delivery Order Air Jasper – Format1",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0427",
+      "fresaName": "Delivery Order Air Jasper – Format2",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0428",
+      "fresaName": "Delivery Order Jasper (SEA) – Format 8",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0429",
+      "fresaName": "Delivery Order Jasper – Courier",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0430",
+      "fresaName": "Delivery Order Jasper – Format 10",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0431",
+      "fresaName": "Delivery Order Jasper – Format 3",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0432",
+      "fresaName": "Delivery Order Jasper – Format 5",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0433",
+      "fresaName": "Delivery Order Jasper – Format 6",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0434",
+      "fresaName": "Delivery Order Jasper – Format 7",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0435",
+      "fresaName": "Delivery Order Jasper – Format 8",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0436",
+      "fresaName": "Delivery Order Jasper – Format 9",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0437",
+      "fresaName": "Delivery Order Jasper – Format13 USA",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0438",
+      "fresaName": "Delivery Order Jasper – Format14 USA",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0439",
+      "fresaName": "Delivery Order Jasper – Format15",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0440",
+      "fresaName": "Delivery Order Jasper – Format16 US",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0441",
+      "fresaName": "Delivery Order Jasper – Format18",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0442",
+      "fresaName": "Delivery Order Sea Jasper – Format1",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": false,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0443",
+      "fresaName": "Delivery Order USA – Jasper format 2",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0444",
+      "fresaName": "Delivery Order USA Air Jasper",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0445",
+      "fresaName": "Delivery Order for Trucker",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "FG_DELIVERY_ORDER_FOR_TRUCKER",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0446",
+      "fresaName": "E-Delivery Order Jasper",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0447",
+      "fresaName": "Electronic Delivery Order Jasper – Format 1",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0448",
+      "fresaName": "Export Delivery Order Jasper",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0449",
+      "fresaName": "Notice of Delivery – Jasper",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0450",
+      "fresaName": "Proof of Delivery",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "ambiguous"
+    },
+    {
+      "referenceId": "FRESA-REF-0451",
+      "fresaName": "Proof of Delivery Jasper Arabic",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": null,
+      "mappingStatus": "unmapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0452",
+      "fresaName": "Consignment Delivery Note Format 1",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "FG_CONSIGNMENT_DELIVERY_NOTE_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0453",
+      "fresaName": "Delivery Order Format 16",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "DELIVERY_ORDER_REPORT_FORMAT_16",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0454",
+      "fresaName": "Delivery Order Air Jasper Format 1",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "FG_DELIVERY_ORDER_AIR_FORMAT_1",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0455",
+      "fresaName": "Delivery Order Air Jasper Format 2",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "FG_DELIVERY_ORDER_AIR_FORMAT_2",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0456",
+      "fresaName": "Delivery Order Jasper Format 13 USA",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "DELIVERY_ORDER_REPORT_FORMAT_13",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0457",
+      "fresaName": "Delivery Order Jasper Format 14 USA",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "DELIVERY_ORDER_REPORT_FORMAT_14",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0458",
+      "fresaName": "Delivery Order Jasper Format 15",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "DELIVERY_ORDER_REPORT_FORMAT_15",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0459",
+      "fresaName": "Delivery Order Jasper Format 16 US",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "FG_DELIVERY_ORDER_FORMAT_16",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0460",
+      "fresaName": "Delivery Order Jasper Format 18",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "DELIVERY_ORDER_REPORT_FORMAT_18",
+      "mappingStatus": "mapped"
+    },
+    {
+      "referenceId": "FRESA-REF-0461",
+      "fresaName": "Delivery Order Sea Jasper Format 1",
+      "catalogueSection": "Delivery order",
+      "visualFamily": "Delivery orders",
+      "hasPdf": true,
+      "freightnestCode": "FG_DELIVERY_ORDER_SEA_FORMAT_1",
+      "mappingStatus": "mapped"
+    }
+  ]
+}

@@ -5,16 +5,20 @@ import type { NumberFormatFormValues } from '../types/organization.types';
 import { organizationKeys } from './useOrganizationProfile';
 
 export const numberFormatKeys = {
-  all: [...organizationKeys.all, 'number-formats'] as const,
-  list: () => [...numberFormatKeys.all, 'list'] as const,
-  detail: (documentType: string) => [...numberFormatKeys.all, 'detail', documentType] as const,
-  preview: (documentType: string) => [...numberFormatKeys.all, 'preview', documentType] as const,
+  all: (tenantId?: string | null) =>
+    [...organizationKeys.all(tenantId), 'number-formats'] as const,
+  list: (tenantId?: string | null) => [...numberFormatKeys.all(tenantId), 'list'] as const,
+  detail: (tenantId: string | null | undefined, documentType: string) =>
+    [...numberFormatKeys.all(tenantId), 'detail', documentType] as const,
+  preview: (tenantId: string | null | undefined, documentType: string) =>
+    [...numberFormatKeys.all(tenantId), 'preview', documentType] as const,
 };
 
 export function useNumberFormats() {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   return useQuery({
-    queryKey: numberFormatKeys.list(),
+    queryKey: numberFormatKeys.list(tenantId),
     queryFn: () => organizationService.listNumberFormats(),
     enabled: Boolean(accessToken),
     staleTime: 30_000,
@@ -23,8 +27,9 @@ export function useNumberFormats() {
 
 export function useNumberFormat(documentType: string) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   return useQuery({
-    queryKey: numberFormatKeys.detail(documentType),
+    queryKey: numberFormatKeys.detail(tenantId, documentType),
     queryFn: () => organizationService.getNumberFormat(documentType),
     enabled: Boolean(accessToken) && Boolean(documentType),
   });
@@ -32,8 +37,9 @@ export function useNumberFormat(documentType: string) {
 
 export function useNumberFormatPreview(documentType: string, enabled = true) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   return useQuery({
-    queryKey: numberFormatKeys.preview(documentType),
+    queryKey: numberFormatKeys.preview(tenantId, documentType),
     queryFn: () => organizationService.previewNumberFormat(documentType),
     enabled: Boolean(accessToken) && Boolean(documentType) && enabled,
   });
@@ -41,11 +47,16 @@ export function useNumberFormatPreview(documentType: string, enabled = true) {
 
 function useInvalidateNumberFormats() {
   const queryClient = useQueryClient();
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   return (documentType?: string) => {
-    queryClient.invalidateQueries({ queryKey: numberFormatKeys.all });
+    queryClient.invalidateQueries({ queryKey: numberFormatKeys.all(tenantId) });
     if (documentType) {
-      queryClient.invalidateQueries({ queryKey: numberFormatKeys.detail(documentType) });
-      queryClient.invalidateQueries({ queryKey: numberFormatKeys.preview(documentType) });
+      queryClient.invalidateQueries({
+        queryKey: numberFormatKeys.detail(tenantId, documentType),
+      });
+      queryClient.invalidateQueries({
+        queryKey: numberFormatKeys.preview(tenantId, documentType),
+      });
     }
   };
 }

@@ -69,16 +69,18 @@ export async function stampOrgChromeOnSamplePdf(
     cursorY -= logo.height + 4;
   }
 
-  const name = (chrome.company || 'KingFisher Wings').slice(0, 42);
-  const nameSize = 7;
-  const nameWidth = font.widthOfTextAtSize(name, nameSize);
-  page.drawText(name, {
-    x: x + Math.max(4, (boxW - nameWidth) / 2),
-    y: Math.max(y + 4, cursorY - nameSize),
-    size: nameSize,
-    font,
-    color: rgb(0.06, 0.16, 0.26),
-  });
+  const name = (chrome.company || '').trim().slice(0, 42);
+  if (name) {
+    const nameSize = 7;
+    const nameWidth = font.widthOfTextAtSize(name, nameSize);
+    page.drawText(name, {
+      x: x + Math.max(4, (boxW - nameWidth) / 2),
+      y: Math.max(y + 4, cursorY - nameSize),
+      size: nameSize,
+      font,
+      color: rgb(0.06, 0.16, 0.26),
+    });
+  }
   page.drawText('Issued via Freightnest', {
     x: x + 6,
     y: y + 3,

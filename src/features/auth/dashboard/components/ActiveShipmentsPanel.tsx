@@ -260,6 +260,38 @@ export function ActiveShipmentsPanel({
     () => filtered.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE),
     [filtered, safePage],
   );
+
+  /**
+   * Exact Shipper = organizations SHIPPER (same as job detail).
+   * job.shipper_name is often the commercial client — do not trust it alone.
+   */
+  const visibleOrgJobs = useMemo(
+    () => visibleRows.filter((job) => isUuid(job.id)),
+    [visibleRows],
+  );
+  const visibleOrgQueries = useQueries({
+    queries: visibleOrgJobs.map((job) => ({
+      queryKey: [...jobKeys.organizations(job.id), 'dashboard-shipper'] as const,
+      queryFn: () => jobService.listOrganizations(job.id),
+      enabled: Boolean(accessToken) && isUuid(job.id),
+      staleTime: 60_000,
+    })),
+  });
+  const shipperNameByJobId = useMemo(() => {
+    const map = new Map<string, string>();
+    visibleOrgJobs.forEach((job, i) => {
+      const rows = visibleOrgQueries[i]?.data;
+      if (!rows) return;
+      const label = resolveOrgPartyDisplay(
+        pickOrgByType(rows, 'SHIPPER'),
+        job.shipper_name,
+        job.shipper_id,
+      ).label;
+      if (label && label !== '—') map.set(job.id, label);
+    });
+    return map;
+  }, [visibleOrgJobs, visibleOrgQueries]);
+
   /** Air jobs missing AWB on list — hydrate from GET /jobs/:id/detail (cap fan-out). */
   const airJobsNeedingDetail = useMemo(
     () =>
@@ -513,7 +545,10 @@ export function ActiveShipmentsPanel({
                 const extraHints = hints.length - visibleHints.length;
                 const etd = formatShortDate(job.etd || job.sea_fcl_details?.etd);
                 const eta = formatShortDate(job.eta || job.sea_fcl_details?.eta);
-                const shipper = job.shipper_name?.trim() || '—';
+                const shipper =
+                  shipperNameByJobId.get(job.id) ||
+                  job.shipper_name?.trim() ||
+                  '—';
                 const consignee = job.consignee_name?.trim() || '—';
                 const commodity =
                   job.commodity?.trim() ||

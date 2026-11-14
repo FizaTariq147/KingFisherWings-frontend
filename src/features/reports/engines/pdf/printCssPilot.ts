@@ -84,7 +84,7 @@ export function buildArrivalNoticePrintHtml(model: ArrivalNoticeViewModel): stri
 <body>
   <article class="an-pilot-root" data-pdf-pilot="arrival_notice">
     <header>
-      <div style="font-size:14px;font-weight:700;color:#0e7490">${escapeHtml(model.companyName || 'KingFisher Wings')}</div>
+      <div style="font-size:14px;font-weight:700;color:#0e7490">${escapeHtml(model.companyName || '')}</div>
       <div style="font-size:10px;color:#475569">${escapeHtml(model.companyAddress || '')}</div>
       <h1>${escapeHtml(model.formatName)}</h1>
       <div style="font-size:9px;color:#64748b">${escapeHtml(model.formatCode)}</div>
