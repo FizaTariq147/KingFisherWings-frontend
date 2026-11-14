@@ -14,6 +14,9 @@ export type TransportRequestRow = Record<string, unknown> & {
   request_number?: string;
   trucker_id?: string;
   trucker_name?: string;
+  /** Last recorded transport cost amount when API returns it. */
+  cost_amount?: number;
+  currency_code?: string;
 };
 
 function pickStr(...values: unknown[]): string | undefined {
@@ -21,6 +24,26 @@ function pickStr(...values: unknown[]): string | undefined {
     if (value == null) continue;
     const s = String(value).trim();
     if (s) return s;
+  }
+  return undefined;
+}
+
+function pickNum(...values: unknown[]): number | undefined {
+  for (const value of values) {
+    if (value == null || value === '') continue;
+    if (typeof value === 'object' && !Array.isArray(value)) {
+      const nested = value as Record<string, unknown>;
+      const fromNested = pickNum(
+        nested.amount,
+        nested.cost_amount,
+        nested.costAmount,
+        nested.value,
+      );
+      if (fromNested != null) return fromNested;
+      continue;
+    }
+    const n = Number(value);
+    if (Number.isFinite(n)) return n;
   }
   return undefined;
 }
@@ -85,6 +108,21 @@ function asRows(data: unknown): TransportRequestRow[] {
           trucker?.display_name,
           trucker?.displayName,
         ),
+        cost_amount: pickNum(
+          row.cost_amount,
+          row.costAmount,
+          row.recorded_cost,
+          row.recordedCost,
+          row.amount,
+          row.cost,
+          row.transport_cost,
+          row.transportCost,
+        ),
+        currency_code: pickStr(
+          row.currency_code,
+          row.currencyCode,
+          row.currency,
+        )?.toUpperCase(),
       };
     })
     .filter((row) => row.id);
