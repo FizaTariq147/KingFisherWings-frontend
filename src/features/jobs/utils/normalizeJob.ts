@@ -326,7 +326,8 @@ function normalizeChargeSide(
         ? undefined
         : bool(raw.editable ?? raw.Editable, true),
     attachment_count:
-      num(raw.attachment_count ?? raw.attachmentCount) ?? undefined,
+      num(raw.attachment_count ?? raw.attachmentCount ?? raw.attachments_count) ??
+      (Array.isArray(raw.attachments) ? raw.attachments.length : undefined),
     voucher_no:
       pickString(raw, 'voucher_no', 'voucherNo', 'voucher_number') || undefined,
   };
@@ -338,6 +339,32 @@ function resolveSideAttachmentCount(
   rootSideCount: number | undefined,
 ): number | undefined {
   return sideView?.attachment_count ?? rootSideCount;
+}
+
+function sideAttachCountFromRecord(
+  side: Record<string, unknown> | null,
+  root: Record<string, unknown>,
+  prefixes: string[],
+): number | undefined {
+  const fromSide = side
+    ? num(
+        side.attachment_count ??
+          side.attachmentCount ??
+          side.attachments_count ??
+          side.attachmentsCount,
+      ) ?? (Array.isArray(side.attachments) ? side.attachments.length : undefined)
+    : undefined;
+  if (fromSide != null) return fromSide;
+  for (const prefix of prefixes) {
+    const n = num(
+      root[`${prefix}_attachment_count`] ??
+        root[`${prefix}AttachmentCount`] ??
+        root[`${prefix}_attachments_count`] ??
+        root[`${prefix}AttachmentsCount`],
+    );
+    if (n != null) return n;
+  }
+  return undefined;
 }
 
 export function normalizeJobCharge(raw: unknown): JobCharge | null {
@@ -354,18 +381,8 @@ export function normalizeJobCharge(raw: unknown): JobCharge | null {
   const cost = asRecord(r.cost);
   const saleView = normalizeChargeSide(sale, 'sale');
   const costView = normalizeChargeSide(cost, 'cost');
-  const saleAttachRoot = num(
-    r.sale_attachment_count ??
-      r.saleAttachmentCount ??
-      r.sale_attachments_count ??
-      r.saleAttachmentsCount,
-  );
-  const costAttachRoot = num(
-    r.cost_attachment_count ??
-      r.costAttachmentCount ??
-      r.cost_attachments_count ??
-      r.costAttachmentsCount,
-  );
+  const saleAttachRoot = sideAttachCountFromRecord(sale, r, ['sale']);
+  const costAttachRoot = sideAttachCountFromRecord(cost, r, ['cost']);
   const saleWithAttach: JobCharge['sale'] | undefined = saleView
     ? {
         ...saleView,

@@ -2881,14 +2881,21 @@ export const jobService = {
         .filter((x): x is JobChargeAttachment => Boolean(x));
 
       // Guard against BE returning mixed sides: never leak SALE↔COST in the UI.
+      // Only filter when rows carry an explicit SALE/COST tag. Legacy CHARGE / blank
+      // sides are kept for the requested side (BE already scoped the query).
       const requested = String(side).toUpperCase();
       if (requested !== 'SALE' && requested !== 'COST') return mapped;
-      const hasExplicitSide = mapped.some((row) => {
+      const hasSaleOrCostTag = mapped.some((row) => {
         const s = String(row.side || '').toUpperCase();
-        return s === 'SALE' || s === 'COST' || s === 'CHARGE';
+        return s === 'SALE' || s === 'COST';
       });
-      if (!hasExplicitSide) return mapped;
-      return mapped.filter((row) => String(row.side || '').toUpperCase() === requested);
+      if (!hasSaleOrCostTag) return mapped;
+      return mapped.filter((row) => {
+        const s = String(row.side || '').toUpperCase();
+        // Untagged / CHARGE rows stay with the side the API was queried for.
+        if (!s || s === 'CHARGE') return true;
+        return s === requested;
+      });
     } catch (error) {
       throw formatAxiosError(error);
     }
