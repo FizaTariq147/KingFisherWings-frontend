@@ -353,27 +353,105 @@ function looksLikeBareStatus(value?: string): boolean {
   );
 }
 
-function pickNarrative(r: Record<string, unknown>): string | undefined {
-  for (const key of [
-    'description',
-    'narration',
-    'remarks',
-    'memo',
-    'particulars',
-    'particular',
-    'notes',
-    'note',
-    'details',
-    'comment',
-    'line_description',
-    'transaction_description',
-    'statement_description',
-  ]) {
-    const value = str(r[key]);
+/** Only coerce primitives — avoid String(object) → "[object Object]". */
+function strPrimitive(value: unknown): string | undefined {
+  if (value == null) return undefined;
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    const s = String(value).trim();
+    return s || undefined;
+  }
+  return undefined;
+}
+
+const NARRATIVE_KEYS = [
+  'description',
+  'charge_description',
+  'chargeDescription',
+  'narration',
+  'remarks',
+  'memo',
+  'particulars',
+  'particular',
+  'notes',
+  'note',
+  'details',
+  'detail',
+  'text',
+  'comment',
+  'line_description',
+  'lineDescription',
+  'transaction_description',
+  'transactionDescription',
+  'statement_description',
+  'statementDescription',
+  'voucher_narration',
+  'voucherNarration',
+  'gl_description',
+  'glDescription',
+] as const;
+
+const CHARGE_LABEL_KEYS = [
+  'charge_name',
+  'chargeName',
+  'charge_code_name',
+  'chargeCodeName',
+  'charge_code',
+  'chargeCode',
+  'name',
+] as const;
+
+function narrativeFromRecord(
+  r: Record<string, unknown>,
+  opts: { includeChargeLabels?: boolean } = {},
+): string | undefined {
+  for (const key of NARRATIVE_KEYS) {
+    const value = strPrimitive(r[key]);
     // Skip when API stuffed status into description (e.g. "POSTED").
     if (value && !looksLikeBareStatus(value)) return value;
   }
+  if (opts.includeChargeLabels) {
+    for (const key of CHARGE_LABEL_KEYS) {
+      const value = strPrimitive(r[key]);
+      if (value && !looksLikeBareStatus(value) && !isLikelyUuid(value)) return value;
+    }
+  }
+  const nested =
+    asRecord(r.charge) ??
+    asRecord(r.charge_code_ref) ??
+    asRecord(r.chargeCodeRef) ??
+    asRecord(r.charge_master) ??
+    asRecord(r.chargeMaster);
+  if (nested) {
+    const fromNested = narrativeFromRecord(nested, { includeChargeLabels: true });
+    if (fromNested) return fromNested;
+  }
   return undefined;
+}
+
+function narrativeFromLineItems(r: Record<string, unknown>): string | undefined {
+  for (const key of ['lines', 'line_items', 'lineItems', 'items', 'charges', 'invoice_lines', 'invoiceLines']) {
+    const list = r[key];
+    if (!Array.isArray(list) || !list.length) continue;
+    const parts: string[] = [];
+    for (const item of list) {
+      const row = asRecord(item);
+      if (!row) continue;
+      const d = narrativeFromRecord(row, { includeChargeLabels: true });
+      if (d && !parts.includes(d)) parts.push(d);
+    }
+    if (parts.length) return parts.join(', ');
+  }
+  return undefined;
+}
+
+function pickNarrative(r: Record<string, unknown>): string | undefined {
+  // Nested `charge` labels are still resolved inside narrativeFromRecord;
+  // do not treat root `name` (often party/invoice title) as narration.
+  return narrativeFromRecord(r, { includeChargeLabels: false }) ?? narrativeFromLineItems(r);
+}
+
+function pickPendingChargeDescription(r: Record<string, unknown>): string | undefined {
+  return narrativeFromRecord(r, { includeChargeLabels: true });
 }
 
 function isCreditNoteType(type?: string): boolean {
@@ -631,11 +709,7 @@ export function normalizePendingJobCharge(raw: unknown): PendingJobChargeLine | 
     charge_id,
     job_id: str(r.job_id) ?? str(r.jobId),
     job_number: str(r.job_number) ?? str(r.jobNumber),
-    description:
-      str(r.description) ??
-      str(r.charge_description) ??
-      str(r.charge_name) ??
-      str(r.name),
+    description: pickPendingChargeDescription(r),
     side,
     amount,
     sale_amount: sale_amount || undefined,
