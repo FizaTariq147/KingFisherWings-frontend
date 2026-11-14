@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { appType } from '@/lib/erpTypography';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -101,6 +101,7 @@ export default function TransportRequestsPage() {
     onSuccess: () => {
       setError(null);
       setMessage('Saved.');
+      setAmount('');
       void qc.invalidateQueries({ queryKey: ['transport-requests'] });
     },
     onError: (err: unknown) => {
@@ -117,6 +118,20 @@ export default function TransportRequestsPage() {
   }, [list.data, statusFilter]);
 
   const current = rows.find((row) => row.id === selected) ?? rows[0];
+  const currentId = current?.id;
+
+  // Cost / trucker inputs are per-request — clear when switching the selected row.
+  useEffect(() => {
+    setAmount('');
+    setTruckerId(
+      current?.trucker_id && isUuid(String(current.trucker_id))
+        ? String(current.trucker_id)
+        : '',
+    );
+    setMessage(null);
+    setError(null);
+  }, [currentId, current?.trucker_id]);
+
   const currentJobLabel = current
     ? jobDisplayName(
         current,
