@@ -1,7 +1,18 @@
 import { axiosInstance } from '@/lib/axios';
-import { TRANSPORT_API } from '../api/transport.api';
+import {
+  TRANSPORT_API,
+  type TransportRequestListParams,
+} from '../api/transport.api';
 
-export type TransportRequestRow = Record<string, unknown> & { id: string };
+export type TransportRequestRow = Record<string, unknown> & {
+  id: string;
+  job_id?: string;
+  job_number?: string;
+  status?: string;
+  request_type?: string;
+  reference?: string;
+  request_number?: string;
+};
 
 function unwrap(data: unknown): unknown {
   if (data && typeof data === 'object' && 'data' in (data as object)) {
@@ -16,16 +27,54 @@ function asRows(data: unknown): TransportRequestRow[] {
     ? value
     : value && typeof value === 'object' && Array.isArray((value as { items?: unknown }).items)
       ? (value as { items: unknown[] }).items
-      : [];
+      : value &&
+          typeof value === 'object' &&
+          Array.isArray((value as { rows?: unknown }).rows)
+        ? (value as { rows: unknown[] }).rows
+        : [];
   return list
     .filter((row): row is Record<string, unknown> => Boolean(row) && typeof row === 'object')
-    .map((row) => ({ ...row, id: String(row.id ?? '') }))
+    .map((row) => {
+      const job =
+        row.job && typeof row.job === 'object' && !Array.isArray(row.job)
+          ? (row.job as Record<string, unknown>)
+          : null;
+      return {
+        ...row,
+        id: String(row.id ?? ''),
+        job_id: String(row.job_id ?? row.jobId ?? job?.id ?? '').trim() || undefined,
+        job_number:
+          String(
+            row.job_number ??
+              row.jobNumber ??
+              job?.job_number ??
+              job?.jobNumber ??
+              '',
+          ).trim() || undefined,
+        status: String(row.status ?? '').trim() || undefined,
+        request_type: String(
+          row.request_type ?? row.requestType ?? '',
+        ).trim() || undefined,
+        reference: String(row.reference ?? row.request_number ?? row.requestNumber ?? '')
+          .trim() || undefined,
+        request_number: String(row.request_number ?? row.requestNumber ?? '')
+          .trim() || undefined,
+      };
+    })
     .filter((row) => row.id);
 }
 
 export const transportService = {
-  async list(): Promise<TransportRequestRow[]> {
-    const res = await axiosInstance.get(TRANSPORT_API.list);
+  async list(params: TransportRequestListParams = {}): Promise<TransportRequestRow[]> {
+    const query: Record<string, string | number> = {};
+    if (params.page != null) query.page = params.page;
+    if (params.limit != null) query.limit = params.limit;
+    if (params.status?.trim()) query.status = params.status.trim();
+    if (params.trucker_id?.trim()) query.trucker_id = params.trucker_id.trim();
+    if (params.job_id?.trim()) query.job_id = params.job_id.trim();
+    if (params.from_date?.trim()) query.from_date = params.from_date.trim();
+    if (params.to_date?.trim()) query.to_date = params.to_date.trim();
+    const res = await axiosInstance.get(TRANSPORT_API.list, { params: query });
     return asRows(res.data);
   },
 
@@ -33,7 +82,8 @@ export const transportService = {
     const res = await axiosInstance.get(TRANSPORT_API.byId(id));
     const value = unwrap(res.data);
     const row = (value && typeof value === 'object' ? value : {}) as Record<string, unknown>;
-    return { ...row, id: String(row.id ?? id) };
+    const rows = asRows([row]);
+    return rows[0] ?? { ...row, id: String(row.id ?? id) };
   },
 
   async assign(

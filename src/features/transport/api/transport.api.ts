@@ -1,3 +1,13 @@
+export type TransportRequestListParams = {
+  page?: number;
+  limit?: number;
+  status?: string;
+  trucker_id?: string;
+  job_id?: string;
+  from_date?: string;
+  to_date?: string;
+};
+
 export const TRANSPORT_API = {
   list: '/transport-requests',
   byId: (id: string) => `/transport-requests/${encodeURIComponent(id)}`,
