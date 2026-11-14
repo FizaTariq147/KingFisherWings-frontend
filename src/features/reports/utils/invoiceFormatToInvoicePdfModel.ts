@@ -23,6 +23,8 @@ export type InvoiceFormatPdfData = {
   companyWeb?: string;
   companyPhone?: string;
   companyEmail?: string;
+  /** Registered organization logo URL from org profile (never invent a placeholder). */
+  logoUrl?: string;
   invoiceNumber?: string;
   quotationNumber?: string;
   jobNumber?: string;

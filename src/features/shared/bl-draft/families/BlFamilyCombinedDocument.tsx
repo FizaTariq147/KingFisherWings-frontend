@@ -1,4 +1,3 @@
-import logo from '@/assets/logo.png';
 import type { BlDraftClassicModel } from '../BlDraftClassicDocument';
 import {
   BrandHeader,
@@ -22,7 +21,7 @@ export function BlFamilyCombinedDocument({ model }: { model: BlDraftClassicModel
     >
       <BrandHeader
         model={model}
-        logoSrc={logo}
+        logoSrc={model.logoUrl}
         title="Bill of Lading FOR COMBINED TRANSPORT OR PORT TO PORT SHIPMENT"
       />
       <div className="grid grid-cols-2">
@@ -37,7 +36,13 @@ export function BlFamilyCombinedDocument({ model }: { model: BlDraftClassicModel
       <div className="grid grid-cols-2">
         <PartyBox title="CONSIGNEE OR ORDER" lines={model.consigneeLines} className="border-t-0" />
         <div className={`${cell} border-l-0 border-t-0 text-center`}>
-          <img src={logo} alt="" className="mx-auto h-10 object-contain" />
+          {model.logoUrl ? (
+            <img
+              src={model.logoUrl}
+              alt=""
+              className="mx-auto h-10 max-w-[140px] object-contain"
+            />
+          ) : null}
           <p className="mt-1 text-[10px] font-bold uppercase">{model.companyName}</p>
           {model.agentLines.slice(0, 3).map((l) => (
             <p key={l} className="text-[8px]">

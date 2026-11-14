@@ -258,17 +258,19 @@ function Block({
                     padding: '6px 10px 8px 0',
                   }}
                 >
-                  <img
-                    src={brandLogoSrc(branding)}
-                    alt={branding.company}
-                    style={{
-                      height: 42,
-                      width: 'auto',
-                      maxWidth: '100%',
-                      objectFit: 'contain',
-                      display: 'block',
-                    }}
-                  />
+                  {brandLogoSrc(branding) ? (
+                    <img
+                      src={brandLogoSrc(branding)}
+                      alt={branding.company || ''}
+                      style={{
+                        height: 42,
+                        width: 'auto',
+                        maxWidth: '100%',
+                        objectFit: 'contain',
+                        display: 'block',
+                      }}
+                    />
+                  ) : null}
                 </td>
                 <td
                   style={{
@@ -488,11 +490,13 @@ function Block({
             className="flex items-center justify-between px-4 py-3"
             style={{ backgroundColor: theme.primary }}
           >
-            <img
-              src={brandLogoSrc(branding)}
-              alt={branding.company}
-              className="h-8 w-auto brightness-0 invert"
-            />
+            {brandLogoSrc(branding) ? (
+              <img
+                src={brandLogoSrc(branding)}
+                alt={branding.company || ''}
+                className="h-8 w-auto brightness-0 invert"
+              />
+            ) : null}
             <div className="text-end text-white">
               <p
                 className="text-[8px] font-semibold uppercase tracking-[0.12em]"
@@ -1391,18 +1395,21 @@ function ArabicHeader({
             Tax Invoice
           </p>
         </div>
-        <img
-          src={brandLogoSrc(branding)}
-          alt={branding.company}
-          className="h-10 w-auto object-contain"
-        />
+        {brandLogoSrc(branding) ? (
+          <img
+            src={brandLogoSrc(branding)}
+            alt={branding.company || ''}
+            className="h-10 w-auto object-contain"
+          />
+        ) : null}
         <div className="text-end">
           <TcBrandTagline className="mb-0.5" text="DOCUMENT" color={theme.orange} />
           <p className="text-sm font-bold" style={{ color: theme.primary }}>
             INVOICE TAX
           </p>
           <p className="text-[7px]" style={{ color: theme.gray }}>
-            Format-{layout.formatNumber} · {branding.company}
+            Format-{layout.formatNumber}
+            {branding.company ? ` · ${branding.company}` : ''}
           </p>
         </div>
       </div>

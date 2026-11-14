@@ -61,16 +61,21 @@ export function BrandHeader({
 }: {
   model: BlDraftClassicModel;
   title: string;
-  logoSrc: string;
+  logoSrc?: string;
 }) {
+  const src = (logoSrc || model.logoUrl || '').trim();
   return (
     <div className="flex items-start justify-between gap-3 border border-[#1a1a1a] border-b-0 px-3 py-2">
       <div className="flex min-w-0 items-start gap-2">
-        <img src={logoSrc} alt="" className="h-12 w-auto object-contain" />
+        {src ? (
+          <img src={src} alt="" className="h-12 w-auto max-w-[120px] object-contain" />
+        ) : null}
         <div className="min-w-0 pt-0.5">
-          <p className="text-[12px] font-bold uppercase leading-tight text-[#0A2942]">
-            {model.companyName || 'KingFisher Wings'}
-          </p>
+          {model.companyName ? (
+            <p className="text-[12px] font-bold uppercase leading-tight text-[#0A2942]">
+              {model.companyName}
+            </p>
+          ) : null}
           <p className="text-[8px] text-[#555]">House Bill of Lading</p>
         </div>
       </div>
@@ -95,9 +100,9 @@ export function FreightClosing({ model }: { model: BlDraftClassicModel }) {
       <div className="mt-4 grid grid-cols-2 gap-4">
         <div>
           <p className="text-[9px] font-bold">Signed on behalf of the Carrier</p>
-          <p className="mt-3 text-[11px] font-bold uppercase">
-            {model.companyName || 'KingFisher Wings'}
-          </p>
+          {model.companyName ? (
+            <p className="mt-3 text-[11px] font-bold uppercase">{model.companyName}</p>
+          ) : null}
           <p className="mt-3 text-[9px] font-bold">AS AGENT FOR THE CARRIER</p>
           <p className="text-[12px] font-bold uppercase">{model.carrierName || '—'}</p>
         </div>

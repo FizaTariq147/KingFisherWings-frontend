@@ -2,12 +2,15 @@
  * HAWB formats from Fresa official report-format PDFs (IATA Air Waybill shells).
  * https://fresatechnologies.com/sample-report-formats/
  *
- * Only five distinct sample PDFs exist on the Fresa CDN. Extra draft Format-3…N
- * codes share the base draft sample (stamped) until Fresa publishes more files.
+ * Official user-facing catalogue = exactly five distinct CDN PDFs.
+ * Extra registry HAWB_* codes remain resolvable for historical deep-links but are
+ * NOT listed by listHawbFormats().
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
-import { listHawbFormatUiLayouts } from '../data/hawbFormatUiLayouts';
-import { FRESA_REPORT_REGISTRY } from '../data/fresaReportRegistry';
+import {
+  OFFICIAL_HAWB_FORMAT_CODES,
+  isOfficialHawbFormatCode,
+} from '../utils/officialFormatGovernance';
 
 export const FRESA_HAWB_REPORT_FORMAT_BASE =
   'https://fresatechnologies.com/wp-content/uploads/report-formats/';
@@ -23,6 +26,8 @@ export type HawbFormatSpec = {
   samplePdfUrl: string;
   /** True when CDN has no distinct file for this code — closest sample is used. */
   sampleIsFallback?: boolean;
+  /** Official Fresa catalogue entry (user-facing). */
+  officialVerified?: boolean;
 };
 
 const SAMPLE = {
@@ -33,7 +38,7 @@ const SAMPLE = {
   original2: `${FRESA_HAWB_REPORT_FORMAT_BASE}hawb-original-pre-printed-report-format-2.pdf`,
 } as const;
 
-/** Five verified Fresa HAWB formats (distinct CDN PDFs). */
+/** Five verified Fresa HAWB formats (distinct CDN PDFs) — sole user-facing catalogue. */
 export const HAWB_FORMAT_CATALOG: HawbFormatSpec[] = [
   {
     code: 'HAWB_DRAFT_REPORT_FORMAT',
@@ -42,6 +47,7 @@ export const HAWB_FORMAT_CATALOG: HawbFormatSpec[] = [
     sortOrder: 1,
     family: 'air_docs',
     samplePdfUrl: SAMPLE.draft,
+    officialVerified: true,
   },
   {
     code: 'HAWB_DRAFT_REPORT_FORMAT_1',
@@ -50,6 +56,7 @@ export const HAWB_FORMAT_CATALOG: HawbFormatSpec[] = [
     sortOrder: 2,
     family: 'air_docs',
     samplePdfUrl: SAMPLE.draft1,
+    officialVerified: true,
   },
   {
     code: 'HAWB_DRAFT_REPORT_FORMAT_2',
@@ -58,6 +65,7 @@ export const HAWB_FORMAT_CATALOG: HawbFormatSpec[] = [
     sortOrder: 3,
     family: 'air_docs',
     samplePdfUrl: SAMPLE.draft2,
+    officialVerified: true,
   },
   {
     code: 'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1',
@@ -66,6 +74,7 @@ export const HAWB_FORMAT_CATALOG: HawbFormatSpec[] = [
     sortOrder: 4,
     family: 'air_docs',
     samplePdfUrl: SAMPLE.original1,
+    officialVerified: true,
   },
   {
     code: 'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2',
@@ -74,13 +83,13 @@ export const HAWB_FORMAT_CATALOG: HawbFormatSpec[] = [
     sortOrder: 5,
     family: 'air_docs',
     samplePdfUrl: SAMPLE.original2,
+    officialVerified: true,
   },
 ];
 
 function draftSampleForIndex(n: number): { url: string; fallback: boolean } {
   if (n === 1) return { url: SAMPLE.draft1, fallback: false };
   if (n === 2) return { url: SAMPLE.draft2, fallback: false };
-  // Format-3…N: no CDN file — reuse base draft and stamp the format label.
   return { url: SAMPLE.draft, fallback: true };
 }
 
@@ -104,6 +113,7 @@ function hawbSpecFromCode(code: string, sortOrder: number): HawbFormatSpec {
       sortOrder,
       family: 'air_docs',
       samplePdfUrl: SAMPLE.draft,
+      officialVerified: true,
     };
   }
   if (draftN) {
@@ -117,6 +127,7 @@ function hawbSpecFromCode(code: string, sortOrder: number): HawbFormatSpec {
       family: 'air_docs',
       samplePdfUrl: sample.url,
       sampleIsFallback: sample.fallback || undefined,
+      officialVerified: isOfficialHawbFormatCode(upper),
     };
   }
   if (originalN) {
@@ -135,6 +146,7 @@ function hawbSpecFromCode(code: string, sortOrder: number): HawbFormatSpec {
       family: 'air_docs',
       samplePdfUrl: sample.url,
       sampleIsFallback: sample.fallback || undefined,
+      officialVerified: isOfficialHawbFormatCode(upper),
     };
   }
   return {
@@ -145,56 +157,18 @@ function hawbSpecFromCode(code: string, sortOrder: number): HawbFormatSpec {
     family: 'air_docs',
     samplePdfUrl: SAMPLE.draft,
     sampleIsFallback: true,
+    officialVerified: false,
   };
 }
 
-const VERIFIED_BY_CODE = new Map(
+const OFFICIAL_BY_CODE = new Map(
   HAWB_FORMAT_CATALOG.map((r) => [r.code.toUpperCase(), r]),
 );
-
-const ALL_HAWB_FORMATS: HawbFormatSpec[] = (() => {
-  const by = new Map<string, HawbFormatSpec>();
-
-  for (const row of HAWB_FORMAT_CATALOG) {
-    by.set(row.code.toUpperCase(), row);
-  }
-
-  let order = HAWB_FORMAT_CATALOG.length + 1;
-  for (const entry of FRESA_REPORT_REGISTRY) {
-    const code = String(entry.code || '').trim().toUpperCase();
-    if (!code.startsWith('HAWB_')) continue;
-    if (by.has(code)) continue;
-    by.set(code, hawbSpecFromCode(code, order++));
-  }
-
-  listHawbFormatUiLayouts().forEach((layout) => {
-    const key = layout.code.toUpperCase();
-    const existing = by.get(key);
-    if (existing) {
-      by.set(key, {
-        ...existing,
-        name: layout.name || existing.name,
-        sortOrder: existing.sortOrder || layout.formatNumber || existing.sortOrder,
-      });
-      return;
-    }
-    const verified = VERIFIED_BY_CODE.get(key);
-    if (verified) {
-      by.set(key, verified);
-      return;
-    }
-    by.set(key, hawbSpecFromCode(key, layout.formatNumber || order++));
-  });
-
-  return [...by.values()];
-})();
-
-const byCode = new Map(ALL_HAWB_FORMATS.map((row) => [row.code.toUpperCase(), row]));
 
 export function isHawbFormatCode(code: string): boolean {
   const needle = code.trim().toUpperCase();
   if (!needle) return false;
-  if (byCode.has(needle)) return true;
+  if (OFFICIAL_BY_CODE.has(needle)) return true;
   return /^HAWB_(DRAFT_REPORT_FORMAT|ORIGINAL_PRE_PRINTED_REPORT_FORMAT)(_\d+)?$/i.test(
     needle,
   );
@@ -202,14 +176,25 @@ export function isHawbFormatCode(code: string): boolean {
 
 export function getHawbFormatSpec(code: string): HawbFormatSpec | undefined {
   const needle = code.trim().toUpperCase();
-  const hit = byCode.get(needle);
-  if (hit) return hit;
+  const official = OFFICIAL_BY_CODE.get(needle);
+  if (official) return official;
   if (isHawbFormatCode(needle)) return hawbSpecFromCode(needle, 999);
   return undefined;
 }
 
+/**
+ * User-facing HAWB catalogue — exactly the five official Fresa entries.
+ * Does not invent Format-3…N as official formats.
+ */
 export function listHawbFormats(): HawbFormatSpec[] {
-  return ALL_HAWB_FORMATS.slice().sort((a, b) => a.sortOrder - b.sortOrder || a.code.localeCompare(b.code));
+  return HAWB_FORMAT_CATALOG.slice().sort(
+    (a, b) => a.sortOrder - b.sortOrder || a.code.localeCompare(b.code),
+  );
+}
+
+/** Official code list (stable order). */
+export function listOfficialHawbFormatCodes(): readonly string[] {
+  return OFFICIAL_HAWB_FORMAT_CODES;
 }
 
 export function resolveHawbFormatDisplayName(code: string, fallbackName: string): string {

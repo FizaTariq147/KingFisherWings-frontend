@@ -1,0 +1,69 @@
+{
+  "generatedAt": "2026-11-14T04:48:36.653Z",
+  "method": "pdfjs text fingerprint of local Fresa reference PDFs (not screenshots)",
+  "note": "Generated client PDFs require browser runtime; reference PDFs prove official HAWB/HBL layouts are structurally distinct.",
+  "uniqueFingerprints": 5,
+  "of": 6,
+  "rows": [
+    {
+      "file": "hawb-draft-report-format.pdf",
+      "pageCount": 1,
+      "widthPt": 595,
+      "heightPt": 845,
+      "textLength": 2931,
+      "textFingerprint": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS 1,250.00 100 18-FEB-19 CHENNAI FRESA DEMO ",
+      "hasHouseAirWaybill": true,
+      "hasBillOfLading": false
+    },
+    {
+      "file": "hawb-draft-report-format-1.pdf",
+      "pageCount": 9,
+      "widthPt": 595,
+      "heightPt": 842,
+      "textLength": 2613,
+      "textFingerprint": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS 1,250.00 100 18-FEB-19 CHENNAI HAWB NO. MA",
+      "hasHouseAirWaybill": true,
+      "hasBillOfLading": false
+    },
+    {
+      "file": "hawb-draft-report-format-2.pdf",
+      "pageCount": 1,
+      "widthPt": 595,
+      "heightPt": 845,
+      "textLength": 3011,
+      "textFingerprint": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS DIMS IN CM 1,250.00 100 18-FEB-19 CHENNAI ",
+      "hasHouseAirWaybill": true,
+      "hasBillOfLading": false
+    },
+    {
+      "file": "hawb-original-pre-printed-report-format-1.pdf",
+      "pageCount": 1,
+      "widthPt": 737,
+      "heightPt": 923,
+      "textLength": 655,
+      "textFingerprint": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS 18-FEB-19 CHENNAI FRESA DEMO DUBAI UAE LLC",
+      "hasHouseAirWaybill": false,
+      "hasBillOfLading": false
+    },
+    {
+      "file": "hawb-original-pre-printed-report-format-2.pdf",
+      "pageCount": 1,
+      "widthPt": 595,
+      "heightPt": 845,
+      "textLength": 622,
+      "textFingerprint": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS DIMS IN CM 1,250.00 100 18-FEB-19 CHENNAI ",
+      "hasHouseAirWaybill": false,
+      "hasBillOfLading": false
+    },
+    {
+      "file": "hbl-draft-report-fomat-jasper.pdf",
+      "pageCount": 1,
+      "widthPt": 595,
+      "heightPt": 842,
+      "textLength": 2543,
+      "textFingerprint": "BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\" Shipper Consignee Bill of Lading No. F/Agent Name & Ref. Notify Party Place of Receipt Port of Loading Job No. Vessel/Voyage No. Port of Discharge Place of Delivery No.of Bills of La",
+      "hasHouseAirWaybill": false,
+      "hasBillOfLading": true
+    }
+  ]
+}

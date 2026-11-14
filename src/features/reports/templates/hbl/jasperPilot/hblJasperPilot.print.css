@@ -1,0 +1,42 @@
+/**
+ * Document / print CSS for HBL Jasper pilot only.
+ * Kept separate from application UI chrome (catalogue, modals, buttons).
+ */
+
+.hbl-jasper-pilot-sheet {
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+.hbl-jasper-pilot-sheet [data-hbl-jasper-section='partiesAndBlNumber'] > div:first-child > div + div {
+  border-top: none !important;
+}
+
+.hbl-jasper-pilot-sheet [data-hbl-jasper-section='routingRow1'] > div > div,
+.hbl-jasper-pilot-sheet [data-hbl-jasper-section='routingRow2'] > div > div {
+  border-top-width: 1px;
+}
+
+.hbl-jasper-pilot-sheet [data-hbl-jasper-section='routingRow1'] > div + div > div,
+.hbl-jasper-pilot-sheet [data-hbl-jasper-section='routingRow2'] > div + div > div {
+  border-left: none !important;
+}
+
+.hbl-jasper-pilot-sheet [data-hbl-jasper-section='routingRow2'] > div > div {
+  border-top: none !important;
+}
+
+.hbl-jasper-pilot-footer {
+  page-break-inside: avoid;
+}
+
+@media print {
+  .hbl-jasper-pilot-preview-chrome {
+    display: none !important;
+  }
+
+  .hbl-jasper-pilot-sheet {
+    box-shadow: none !important;
+    max-width: none !important;
+  }
+}

@@ -1,4 +1,3 @@
-import { DEFAULT_PDF_BRANDING } from '../constants/invoicePreviewBranding';
 import { REPORT_BRANDING } from '../constants/reportBranding.constants';
 import type { InvoiceFormatUiLayout } from '../types/invoiceFormatUiLayout.types';
 import { applyPriorityFresaParity } from './applyPriorityFresaParity';
@@ -10,42 +9,52 @@ export type SharedLayoutChrome = {
   phone?: string;
   email?: string;
   footerLine?: string;
-  /** Registered org logo URL; falls back to KF default asset in the renderer. */
+  /** Registered org logo URL only — empty when unavailable. */
   logoUrl?: string;
 };
 
-/** Default KingFisher chrome — same across all catalogue formats. */
+/**
+ * Empty chrome — used when organization profile is unavailable.
+ * Do not invent company name, address, phone, email, or logo.
+ */
 export const SHARED_LAYOUT_CHROME: SharedLayoutChrome = {
-  company: DEFAULT_PDF_BRANDING.companyName,
-  address: 'Dubai, United Arab Emirates',
-  web: 'www.kingfisherwingsgroup.com',
-  phone: '+971 55 5355 286',
-  email: 'inquiry@kingfishertec.com',
-  footerLine: DEFAULT_PDF_BRANDING.footerLine,
-  logoUrl: REPORT_BRANDING.defaultLogoUrl || undefined,
+  company: '',
+  address: '',
+  web: '',
+  phone: '',
+  email: '',
+  footerLine: '',
+  logoUrl: undefined,
 };
 
 /**
- * Runtime override: registered company name / logo (or KF defaults).
- * Restores Fresa sample theme colors (same navy/orange/red/cyan as Fresa PDFs).
- * Body blocks + demo/dummy field data stay as in the Fresa sample JSON.
- * Header/footer chrome is always tenant/KF-branded — never Fresa company identity.
+ * Runtime override: registered company name / logo from organization profile.
+ * Restores Fresa sample theme colors (layout/colors stay Fresa-parity).
+ * Header/footer chrome is tenant-branded when profile data exists — never Fresa identity,
+ * and never fabricated KingFisher contact details when the profile is empty.
  */
 export function applySharedLayoutChrome(
   layout: InvoiceFormatUiLayout,
   chrome: SharedLayoutChrome = SHARED_LAYOUT_CHROME,
 ): InvoiceFormatUiLayout {
   const withParity = applyPriorityFresaParity(layout);
+  const company = (chrome.company || '').trim();
+  const address = (chrome.address || '').trim();
+  const web = (chrome.web || '').trim();
+  const phone = (chrome.phone || '').trim() || undefined;
+  const email = (chrome.email || '').trim() || undefined;
+  const logoUrl = chrome.logoUrl?.trim() || undefined;
+
   return {
     ...withParity,
     branding: {
-      company: chrome.company || SHARED_LAYOUT_CHROME.company,
-      address: chrome.address || SHARED_LAYOUT_CHROME.address,
-      web: chrome.web || SHARED_LAYOUT_CHROME.web,
-      phone: chrome.phone || SHARED_LAYOUT_CHROME.phone,
-      email: chrome.email || SHARED_LAYOUT_CHROME.email,
+      company,
+      address,
+      web,
+      phone,
+      email,
       logo: REPORT_BRANDING.layoutLogoToken,
-      logoUrl: chrome.logoUrl?.trim() || SHARED_LAYOUT_CHROME.logoUrl,
+      logoUrl,
     },
   };
 }

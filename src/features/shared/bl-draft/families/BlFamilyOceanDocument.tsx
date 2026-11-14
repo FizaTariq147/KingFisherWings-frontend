@@ -1,4 +1,3 @@
-import logo from '@/assets/logo.png';
 import type { BlDraftClassicModel } from '../BlDraftClassicDocument';
 import {
   BrandHeader,
@@ -20,7 +19,7 @@ export function BlFamilyOceanDocument({ model }: { model: BlDraftClassicModel })
       className="relative mx-auto w-full max-w-[794px] bg-white text-[#111]"
       style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}
     >
-      <BrandHeader model={model} logoSrc={logo} title="BILL OF LADING" />
+      <BrandHeader model={model} logoSrc={model.logoUrl} title="BILL OF LADING" />
       <div className="grid grid-cols-2">
         <div className={`${cell}`}>
           <p className="text-[8px] font-bold uppercase">Shipper</p>
@@ -37,7 +36,13 @@ export function BlFamilyOceanDocument({ model }: { model: BlDraftClassicModel })
       <div className="grid grid-cols-2">
         <PartyBox title="Consignee" lines={model.consigneeLines} className="border-t-0" />
         <div className={`${cell} border-l-0 border-t-0 text-center`}>
-          <img src={logo} alt="" className="mx-auto h-10 object-contain" />
+          {model.logoUrl ? (
+            <img
+              src={model.logoUrl}
+              alt=""
+              className="mx-auto h-10 max-w-[140px] object-contain"
+            />
+          ) : null}
           <p className="mt-1 text-[10px] font-bold uppercase">{model.companyName}</p>
           {model.agentLines.slice(0, 2).map((l) => (
             <p key={l} className="text-[8px]">

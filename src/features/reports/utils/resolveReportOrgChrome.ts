@@ -8,47 +8,43 @@ import {
 
 /**
  * Org chrome for catalogue / pack reports.
- * Company identity comes from GET /organization/profile; layout/colors stay Fresa-parity.
+ * Company identity comes from GET /organization/profile only.
+ * Missing fields stay empty — never invent address/phone/email/logo.
  */
 export type ReportOrgChrome = SharedLayoutChrome & {
   logoUrl: string;
+  /** True when GET /organization/profile succeeded. */
+  profileLoaded: boolean;
   /** Raw profile fields for backend pack injection. */
   packFields: Partial<Record<(typeof REPORT_BRANDING.orgFields)[number], string>>;
 };
-
-function defaultLogoUrl(): string {
-  return REPORT_BRANDING.defaultLogoUrl || '/kingfisher-logo.png';
-}
 
 function buildAddress(profile: OrganizationProfile): string {
   const parts = [profile.address?.trim(), profile.city?.trim(), profile.country_code?.trim()].filter(
     Boolean,
   );
-  if (parts.length) return parts.join(', ');
-  return SHARED_LAYOUT_CHROME.address;
+  return parts.join(', ');
 }
 
 function profileToChrome(profile: OrganizationProfile): ReportOrgChrome {
-  const company =
-    profile.display_name?.trim() || profile.name?.trim() || SHARED_LAYOUT_CHROME.company;
-  const logoUrl = resolveReportLogoUrl(profile.logo_url) || defaultLogoUrl();
-  const website = profile.website?.trim();
-  const web = website
-    ? website.replace(/^https?:\/\//i, '').replace(/\/$/, '')
-    : SHARED_LAYOUT_CHROME.web;
+  const company = profile.display_name?.trim() || profile.name?.trim() || '';
+  const logoUrl = resolveReportLogoUrl(profile.logo_url) || '';
+  const website = profile.website?.trim() || '';
+  const web = website ? website.replace(/^https?:\/\//i, '').replace(/\/$/, '') : '';
 
   return {
     company,
     address: buildAddress(profile),
     web,
-    phone: profile.phone?.trim() || SHARED_LAYOUT_CHROME.phone,
-    email: profile.email?.trim() || SHARED_LAYOUT_CHROME.email,
-    footerLine: SHARED_LAYOUT_CHROME.footerLine,
+    phone: profile.phone?.trim() || '',
+    email: profile.email?.trim() || '',
+    footerLine: company ? `${company}` : '',
     logoUrl,
+    profileLoaded: true,
     packFields: {
-      legal_name: profile.name?.trim() || company,
-      trade_name: profile.display_name?.trim() || company,
-      address: buildAddress(profile),
+      legal_name: profile.name?.trim() || company || undefined,
+      trade_name: profile.display_name?.trim() || company || undefined,
+      address: buildAddress(profile) || undefined,
       phone: profile.phone?.trim() || undefined,
       email: profile.email?.trim() || undefined,
       web: website || undefined,
@@ -65,15 +61,9 @@ export function chromeFromOrganizationProfile(
   if (!profile) {
     return {
       ...SHARED_LAYOUT_CHROME,
-      logoUrl: defaultLogoUrl(),
-      packFields: {
-        legal_name: SHARED_LAYOUT_CHROME.company,
-        trade_name: SHARED_LAYOUT_CHROME.company,
-        address: SHARED_LAYOUT_CHROME.address,
-        phone: SHARED_LAYOUT_CHROME.phone,
-        email: SHARED_LAYOUT_CHROME.email,
-        web: SHARED_LAYOUT_CHROME.web,
-      },
+      logoUrl: '',
+      profileLoaded: false,
+      packFields: {},
     };
   }
   return profileToChrome(profile);
@@ -81,7 +71,7 @@ export function chromeFromOrganizationProfile(
 
 /**
  * Async resolve for off-screen PDF capture / pack generate (no React Query).
- * Falls back to KingFisher defaults when org profile is unavailable.
+ * Falls back to empty chrome when org profile is unavailable (documented gap).
  */
 export async function resolveReportOrgChrome(): Promise<ReportOrgChrome> {
   try {
@@ -107,7 +97,7 @@ export function orgChromeToPackParameters(chrome: ReportOrgChrome): Record<strin
       web: chrome.web,
       phone: chrome.phone,
       email: chrome.email,
-      logo_url: chrome.logoUrl,
+      logo_url: chrome.logoUrl || undefined,
     },
   };
 }

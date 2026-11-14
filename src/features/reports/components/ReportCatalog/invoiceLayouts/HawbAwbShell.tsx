@@ -238,19 +238,23 @@ export function HawbAwbShell({
                   <p style={label}>
                     {isAirWaybillTitle ? 'Non Negotiable · Issued by' : 'Not Negotiable'}
                   </p>
-                  <img
-                    src={brandLogoSrc(branding)}
-                    alt={branding.company}
-                    style={{
-                      height: 28,
-                      width: 'auto',
-                      maxWidth: 110,
-                      objectFit: 'contain',
-                      display: 'block',
-                      marginTop: 4,
-                    }}
-                  />
-                  <p style={{ ...body, fontWeight: 700 }}>{branding.company}</p>
+                  {brandLogoSrc(branding) ? (
+                    <img
+                      src={brandLogoSrc(branding)}
+                      alt={branding.company || ''}
+                      style={{
+                        height: 28,
+                        width: 'auto',
+                        maxWidth: 110,
+                        objectFit: 'contain',
+                        display: 'block',
+                        marginTop: 4,
+                      }}
+                    />
+                  ) : null}
+                  {branding.company ? (
+                    <p style={{ ...body, fontWeight: 700 }}>{branding.company}</p>
+                  ) : null}
                   <p style={body}>{branding.address}</p>
                   {branding.phone ? <p style={body}>PHONE: {branding.phone}</p> : null}
                 </div>

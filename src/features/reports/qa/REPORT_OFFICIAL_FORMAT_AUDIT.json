@@ -1,0 +1,407 @@
+{
+  "generatedAt": "2026-11-14T04:32:16.375Z",
+  "sourceUrl": "https://fresatechnologies.com/sample-report-formats/",
+  "officialInventory": {
+    "totalEntries": 461,
+    "bySection": {
+      "HBL": 116,
+      "Other Reports": 90,
+      "Invoice Formats": 122,
+      "Arrival Notice": 38,
+      "Uncategorized (page table)": 3,
+      "Delivery order": 54,
+      "HAWB": 5,
+      "Accounts other Formats": 28,
+      "WMS – ASN": 5
+    },
+    "summary": {
+      "withDirectPdfUrl": 196,
+      "urlVerifiedLocal": 190,
+      "broken": 0,
+      "ambiguous": 6,
+      "duplicateUrl": 0,
+      "mapped": 361,
+      "unmapped": 45
+    }
+  },
+  "localCounts": {
+    "registryTotal": 852,
+    "hawbLayouts": 5,
+    "hblLayouts": 113,
+    "invoiceLayouts": 82,
+    "hawbLocalDistinct": 30,
+    "officialHawbDistinct": 5
+  },
+  "familyMatrixNote": null,
+  "familyCounts": {
+    "Other Reports": {
+      "localRegistry": 258,
+      "mapped": 97,
+      "verified": 53,
+      "unverified": 161
+    },
+    "Accounts other Formats": {
+      "localRegistry": 66,
+      "mapped": 22,
+      "verified": 17,
+      "unverified": 44
+    },
+    "Invoice Formats": {
+      "localRegistry": 199,
+      "mapped": 114,
+      "verified": 25,
+      "unverified": 85
+    },
+    "Arrival Notice": {
+      "localRegistry": 55,
+      "mapped": 20,
+      "verified": 10,
+      "unverified": 35
+    },
+    "Manifests": {
+      "localRegistry": 30,
+      "mapped": 10,
+      "verified": 9,
+      "unverified": 20
+    },
+    "Delivery order": {
+      "localRegistry": 37,
+      "mapped": 12,
+      "verified": 10,
+      "unverified": 25
+    },
+    "HBL": {
+      "localRegistry": 125,
+      "mapped": 22,
+      "verified": 18,
+      "unverified": 103
+    },
+    "HAWB": {
+      "localRegistry": 30,
+      "mapped": 5,
+      "verified": 4,
+      "unverified": 25
+    },
+    "MAWB": {
+      "localRegistry": 17,
+      "mapped": 2,
+      "verified": 1,
+      "unverified": 15
+    },
+    "WMS – ASN": {
+      "localRegistry": 35,
+      "mapped": 0,
+      "verified": 0,
+      "unverified": 35
+    }
+  },
+  "hawbDiscrepancy": {
+    "officialFresaHawbCodes": [
+      "HAWB_DRAFT_REPORT_FORMAT",
+      "HAWB_DRAFT_REPORT_FORMAT_1",
+      "HAWB_DRAFT_REPORT_FORMAT_2",
+      "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2"
+    ],
+    "localHawbCodes": [
+      "HAWB_DRAFT_REPORT_FORMAT",
+      "HAWB_DRAFT_REPORT_FORMAT_1",
+      "HAWB_DRAFT_REPORT_FORMAT_10",
+      "HAWB_DRAFT_REPORT_FORMAT_11",
+      "HAWB_DRAFT_REPORT_FORMAT_12",
+      "HAWB_DRAFT_REPORT_FORMAT_13",
+      "HAWB_DRAFT_REPORT_FORMAT_14",
+      "HAWB_DRAFT_REPORT_FORMAT_15",
+      "HAWB_DRAFT_REPORT_FORMAT_16",
+      "HAWB_DRAFT_REPORT_FORMAT_17",
+      "HAWB_DRAFT_REPORT_FORMAT_18",
+      "HAWB_DRAFT_REPORT_FORMAT_19",
+      "HAWB_DRAFT_REPORT_FORMAT_2",
+      "HAWB_DRAFT_REPORT_FORMAT_20",
+      "HAWB_DRAFT_REPORT_FORMAT_21",
+      "HAWB_DRAFT_REPORT_FORMAT_22",
+      "HAWB_DRAFT_REPORT_FORMAT_23",
+      "HAWB_DRAFT_REPORT_FORMAT_24",
+      "HAWB_DRAFT_REPORT_FORMAT_25",
+      "HAWB_DRAFT_REPORT_FORMAT_26",
+      "HAWB_DRAFT_REPORT_FORMAT_27",
+      "HAWB_DRAFT_REPORT_FORMAT_3",
+      "HAWB_DRAFT_REPORT_FORMAT_4",
+      "HAWB_DRAFT_REPORT_FORMAT_5",
+      "HAWB_DRAFT_REPORT_FORMAT_6",
+      "HAWB_DRAFT_REPORT_FORMAT_7",
+      "HAWB_DRAFT_REPORT_FORMAT_8",
+      "HAWB_DRAFT_REPORT_FORMAT_9",
+      "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2"
+    ],
+    "note": "Official catalogue lists 4 numbered HAWB drafts/originals (+ base draft = 5 CDN PDFs). Shipment Freight Manifest is NOT HAWB.",
+    "rows": [
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT",
+        "family": "HAWB",
+        "officialCatalogueMatch": true,
+        "status": "official_verified",
+        "reason": "Mapped + valid local PDF",
+        "referenceId": "FRESA-REF-0062",
+        "fresaName": "HAWB Draft Report Format",
+        "recommendedAction": "keep_and_use"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_1",
+        "family": "HAWB",
+        "officialCatalogueMatch": true,
+        "status": "official_verified",
+        "reason": "Mapped + valid local PDF",
+        "referenceId": "FRESA-REF-0066",
+        "fresaName": "HAWB Draft Report Format-1",
+        "recommendedAction": "keep_and_use"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_10",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_11",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_12",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_13",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_14",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_15",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_16",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_17",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_18",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_19",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_2",
+        "family": "HAWB",
+        "officialCatalogueMatch": true,
+        "status": "official_verified",
+        "reason": "Mapped + valid local PDF",
+        "referenceId": "FRESA-REF-0070",
+        "fresaName": "HAWB Draft Report Format-2",
+        "recommendedAction": "keep_and_use"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_20",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_21",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_22",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_23",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_24",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_25",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_26",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_27",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_3",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_4",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_5",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_6",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_7",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_8",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_DRAFT_REPORT_FORMAT_9",
+        "family": "HAWB",
+        "officialCatalogueMatch": false,
+        "status": "unverified",
+        "reason": "HAWB code not in official 5-entry Fresa HAWB set; sample likely shared fallback",
+        "recommendedAction": "hide_from_user_catalogue_preserve_code"
+      },
+      {
+        "reportCode": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+        "family": "HAWB",
+        "officialCatalogueMatch": true,
+        "status": "official_reference_unavailable",
+        "reason": "Reference PDF classified as blank/stub",
+        "referenceId": "FRESA-REF-0074",
+        "recommendedAction": "keep_mark_reference_unavailable"
+      },
+      {
+        "reportCode": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+        "family": "HAWB",
+        "officialCatalogueMatch": true,
+        "status": "official_verified",
+        "reason": "Mapped + valid local PDF",
+        "referenceId": "FRESA-REF-0078",
+        "fresaName": "HAWB Original Pre Printed Report Format-2",
+        "recommendedAction": "keep_and_use"
+      }
+    ]
+  },
+  "duplicateSampleUrls": {
+    "count": 0,
+    "top": []
+  },
+  "officialMappedMissingFromRegistry": {
+    "count": 0,
+    "sample": []
+  },
+  "classificationLegend": [
+    "official_verified",
+    "official_reference_unavailable",
+    "ambiguous",
+    "unverified",
+    "duplicate",
+    "unsupported"
+  ]
+}

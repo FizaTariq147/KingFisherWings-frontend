@@ -87,6 +87,7 @@ import {
 import { isDistinctLayoutCode } from '../data/sharedLayoutSource';
 import { catalogSharedLayoutHint } from '../utils/catalogSharedLayoutHint';
 import { getReportEnrichment } from '../registry';
+import { shouldExposeHawbInPrimaryCatalogue } from '../utils/officialFormatGovernance';
 import {
   isAccountsFormatCode,
   listAccountsFormats,
@@ -395,7 +396,15 @@ export default function ReportCatalogPage() {
     !backendUnavailable &&
     !liveBrowse.data?.fromLocalRegistry;
 
-  const registeredLayoutEntries = useMemo(() => listAllRegisteredFormatCatalogEntries(), []);
+  const registeredLayoutEntries = useMemo(
+    () =>
+      listAllRegisteredFormatCatalogEntries().filter((entry) => {
+        // HAWB user-facing catalogue = official 5 only (extras stay resolvable by deep-link).
+        if (!/^HAWB_/i.test(entry.code)) return true;
+        return shouldExposeHawbInPrimaryCatalogue(entry.code);
+      }),
+    [],
+  );
 
   /**
    * Catalogue list = permanent JSON layouts only (registered reports).

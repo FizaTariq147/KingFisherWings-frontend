@@ -251,7 +251,8 @@ export function buildBlDraftClassicModel(
       contextData.invoiceDate,
     ) || '—';
   const rows = containerRowsFromPreview(preview, commodity, freight);
-  const companyName = contextData.companyName?.trim() || 'KingFisher Wings';
+  const companyName = contextData.companyName?.trim() || '';
+  const logoUrl = contextData.logoUrl?.trim() || '';
   const agentLines = [
     contextData.companyAddress,
     contextData.companyPhone ? `Tel: ${contextData.companyPhone}` : '',
@@ -285,6 +286,7 @@ export function buildBlDraftClassicModel(
       pickString(preview.carrier_name, preview.carrierName, preview.carrier, preview.shipping_line) ||
       '—',
     companyName,
+    logoUrl,
   };
 }
 

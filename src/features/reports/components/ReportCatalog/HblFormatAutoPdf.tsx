@@ -11,6 +11,11 @@ import {
 import { generateHblSamplePdf } from '../../utils/generateHblSamplePdf';
 import { generateHblFamilyClassicPdf } from '@/features/shared/bl-draft/generateHblFamilyClassicPdf';
 import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
+import {
+  generateHblJasperPilotPdf,
+  HblJasperPilotPreview,
+  isHblJasperPilotCode,
+} from '../../templates/hbl/jasperPilot';
 
 type Props = {
   code: string;
@@ -19,24 +24,104 @@ type Props = {
 };
 
 /**
- * HBL catalogue preview: official Fresa sample PDF (stamped) when browsing;
- * classic family print doc when a live entity context is bound.
- * Does not use hblBlShell / JSON html2canvas layouts.
+ * HBL catalogue preview.
+ * Jasper pilot (`HBL_DRAFT_REPORT_FORMAT_JASPER`): config-driven live composition + PDF.
+ * Other HBL codes: official Fresa sample when browsing; classic family on sample failure.
  */
 export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
   const spec = getHblFormatSpec(code);
   const viewer = usePdfViewer();
   const [error, setError] = useState<string | null>(null);
   const [boundLabel, setBoundLabel] = useState<string | null>(null);
+  const [pilotData, setPilotData] = useState<Awaited<
+    ReturnType<typeof resolveCatalogContextPdfData>
+  > | null>(null);
+  const [pilotLoading, setPilotLoading] = useState(false);
   const openedFor = useRef<string | null>(null);
   const contextKey = catalogContextCacheKey(context);
+  const isJasperPilot = isHblJasperPilotCode(code);
 
   useEffect(() => {
     if (!autoOpen || !spec) return;
+
+    let cancelled = false;
+
+    if (isJasperPilot) {
+      void (async () => {
+        if (!cancelled) {
+          setError(null);
+          setPilotLoading(true);
+        }
+        try {
+          const [data, orgChrome] = await Promise.all([
+            resolveCatalogContextPdfData(context, { formatCode: spec.code }),
+            resolveReportOrgChrome(),
+          ]);
+          if (cancelled) return;
+          const merged = {
+            ...data,
+            companyName: data.companyName || orgChrome.company,
+            companyAddress: data.companyAddress || orgChrome.address,
+            companyWeb: data.companyWeb || orgChrome.web,
+            companyPhone: data.companyPhone || orgChrome.phone,
+            companyEmail: data.companyEmail || orgChrome.email,
+            logoUrl: data.logoUrl || orgChrome.logoUrl,
+          };
+          setPilotData(merged);
+          setBoundLabel(
+            data.entityBound
+              ? `Jasper pilot · bound to ${data.jobNumber || data.shipmentNumber || data.referenceNo || 'live record'}`
+              : 'Jasper pilot · A4 canvas (empty until a job/shipment is bound)',
+          );
+
+          // Also open PDF modal for print/download parity with other formats.
+          const key = `${spec.code}:pilot:${contextKey}`;
+          if (openedFor.current !== key) {
+            await viewer.loadPreview(
+              async () => {
+                try {
+                  const { blob } = await generateHblJasperPilotPdf(merged, {
+                    appendCustomerTerms: true,
+                    showPlaceholders: !merged.entityBound,
+                  });
+                  return blob;
+                } catch {
+                  // Preserve sample fallback until pilot PDF is verified.
+                  const { blob } = await generateHblSamplePdf(spec.code, {
+                    chrome: orgChrome,
+                    appendCustomerTerms: true,
+                  });
+                  if (!cancelled) {
+                    setBoundLabel('official Fresa Jasper sample (pilot PDF fallback)');
+                  }
+                  return blob;
+                }
+              },
+              {
+                fileName: formatPdfFilename(`HBL-Jasper-${spec.code}`, 'hbl-format'),
+                title: spec.name,
+              },
+            );
+            if (!cancelled) openedFor.current = key;
+          }
+        } catch (err: unknown) {
+          if (!cancelled) {
+            setError(err instanceof Error ? err.message : 'Could not open HBL Jasper pilot.');
+            openedFor.current = null;
+          }
+        } finally {
+          if (!cancelled) setPilotLoading(false);
+        }
+      })();
+
+      return () => {
+        cancelled = true;
+      };
+    }
+
     const key = `${spec.code}:${contextKey}`;
     if (openedFor.current === key) return;
 
-    let cancelled = false;
     setError(null);
     setBoundLabel(null);
 
@@ -81,6 +166,7 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
                 companyWeb: data.companyWeb || orgChrome.web,
                 companyPhone: data.companyPhone || orgChrome.phone,
                 companyEmail: data.companyEmail || orgChrome.email,
+                logoUrl: data.logoUrl || orgChrome.logoUrl,
               },
               { appendCustomerTerms: true },
             );
@@ -110,7 +196,7 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
       openedFor.current = null;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps -- open once per code / context
-  }, [autoOpen, spec?.code, contextKey]);
+  }, [autoOpen, spec?.code, contextKey, isJasperPilot]);
 
   if (!spec) return null;
 
@@ -126,6 +212,15 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
           {error}
         </p>
       ) : null}
+
+      {isJasperPilot ? (
+        <HblJasperPilotPreview
+          data={pilotData || {}}
+          loading={pilotLoading}
+          error={error}
+        />
+      ) : null}
+
       <PdfViewerModal
         open={viewer.open}
         onClose={viewer.close}

@@ -68,6 +68,7 @@ export function ArrivalNoticeFormatAutoPdf({ code, context, autoOpen = true }: P
               companyWeb: data.companyWeb || orgChrome.web,
               companyPhone: data.companyPhone || orgChrome.phone,
               companyEmail: data.companyEmail || orgChrome.email,
+              logoUrl: data.logoUrl || orgChrome.logoUrl,
             },
             { logoUrl: orgChrome.logoUrl, preferTemplateV2: true },
           );

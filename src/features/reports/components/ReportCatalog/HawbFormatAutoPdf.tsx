@@ -74,6 +74,7 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             }
           }
 
+          // Official HAWB: prefer distinct hawbAwbShell JSON layouts (not color-only v2).
           const generated = await generateCatalogLayoutPdf(
             spec.code,
             {
@@ -83,8 +84,9 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
               companyWeb: data.companyWeb || orgChrome.web,
               companyPhone: data.companyPhone || orgChrome.phone,
               companyEmail: data.companyEmail || orgChrome.email,
+              logoUrl: data.logoUrl || orgChrome.logoUrl,
             },
-            { logoUrl: orgChrome.logoUrl, preferTemplateV2: true },
+            { logoUrl: orgChrome.logoUrl, preferTemplateV2: false },
           );
           if (!generated) {
             throw new Error(

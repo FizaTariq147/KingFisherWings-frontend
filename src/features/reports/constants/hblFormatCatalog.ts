@@ -5,6 +5,7 @@
  */
 import { catalogRowsMatchSearch } from '../utils/reportCatalogSearch';
 import { listHblFormatUiLayouts } from '../data/hblFormatUiLayouts';
+import { HBL_JASPER_PILOT_CONFIG } from '../templates/hbl/jasperPilot/hblJasperPilot.config';
 import { REMAINING_FORMAT_CATALOG } from './remainingFormatCatalog.generated.ts';
 import { HBL_OFFICIAL_CATALOG } from './hblOfficialCatalog.generated.ts';
 
@@ -55,8 +56,22 @@ const HBL_EXTRA: HblFormatSpec[] = REMAINING_FORMAT_CATALOG.filter(
     samplePdfUrl: '',
   }));
 
+/** Phase-3 pilot — marketing-page Jasper (FRESA-REF-0001), not FG_HBL_HKG. */
+const HBL_JASPER_PILOT_SPEC: HblFormatSpec = {
+  code: HBL_JASPER_PILOT_CONFIG.code,
+  name: HBL_JASPER_PILOT_CONFIG.name,
+  kind: 'hbl_jasper_pilot',
+  sortOrder: 0,
+  family: 'sea_docs',
+  hblFamily: 'jasper',
+  variant: 'jasper',
+  samplePdfUrl: HBL_JASPER_PILOT_CONFIG.samplePdfUrl,
+};
+
 const ALL_HBL_FORMATS: HblFormatSpec[] = (() => {
   const by = new Map<string, HblFormatSpec>();
+  // Pilot first so catalogue + AutoPdf resolve the correct Jasper reference URL.
+  by.set(HBL_JASPER_PILOT_SPEC.code.toUpperCase(), HBL_JASPER_PILOT_SPEC);
   // Official 113 first (canonical names/URLs/order).
   for (const row of HBL_FORMAT_CATALOG) by.set(row.code.toUpperCase(), row);
   for (const row of HBL_EXTRA) {

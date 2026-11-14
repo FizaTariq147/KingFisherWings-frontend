@@ -1,0 +1,172 @@
+{
+  "reportCode": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+  "referenceId": "FRESA-REF-0001",
+  "auditedAt": "2026-11-13T11:48:00.000Z",
+  "dataContract": "InvoiceFormatPdfData via resolveCatalogContextPdfData + buildBlDraftClassicModel",
+  "endpoints": {
+    "invented": false,
+    "used": [
+      "jobService.getById",
+      "shipmentService (via catalogue context)",
+      "partyService.getById",
+      "fetchTenantCompanyOptions / resolveReportOrgChrome"
+    ],
+    "notes": "No new API routes. Pilot reuses existing catalogue context resolver."
+  },
+  "fabricationPolicy": "Missing values render blank. Classic builder defaults (DRAFT BL no., PREPAID freight, 1(ONE) originals, em-dash) are stripped unless preview payload supplies them.",
+  "fields": [
+    {
+      "section": "branding",
+      "uiLabel": "Company name / logo",
+      "configFieldId": "companyName",
+      "sources": ["InvoiceFormatPdfData.companyName", "resolveReportOrgChrome.company"],
+      "status": "mapped"
+    },
+    {
+      "section": "documentTitle",
+      "uiLabel": "Bill of Lading not negotiable unless consigned To Order",
+      "configFieldId": "documentTitle",
+      "sources": ["HBL_JASPER_PILOT_CONFIG.documentTitle"],
+      "status": "static_from_reference"
+    },
+    {
+      "section": "partiesAndBlNumber",
+      "uiLabel": "Bill of Lading No.",
+      "configFieldId": "blNumber",
+      "sources": [
+        "preview.bl_number|hbl_number",
+        "InvoiceFormatPdfData.referenceNo|shipmentNumber|jobNumber"
+      ],
+      "status": "mapped"
+    },
+    {
+      "section": "partiesAndBlNumber",
+      "uiLabel": "Shipper",
+      "configFieldId": "shipper",
+      "sources": ["InvoiceFormatPdfData.shipperLines", "partyService shipper"],
+      "status": "mapped"
+    },
+    {
+      "section": "partiesAndBlNumber",
+      "uiLabel": "Consignee",
+      "configFieldId": "consignee",
+      "sources": ["InvoiceFormatPdfData.consigneeLines", "partyService consignee"],
+      "status": "mapped"
+    },
+    {
+      "section": "partiesAndBlNumber",
+      "uiLabel": "Notify Party",
+      "configFieldId": "notify",
+      "sources": [
+        "InvoiceFormatPdfData.notifyLines",
+        "preview.notify*",
+        "falls back to consignee when classic builder provides it"
+      ],
+      "status": "mapped_with_contract_fallback"
+    },
+    {
+      "section": "partiesAndBlNumber",
+      "uiLabel": "F/Agent Name & Ref.",
+      "configFieldId": "agentName",
+      "sources": ["company chrome"],
+      "status": "mapped"
+    },
+    {
+      "section": "routingRow1",
+      "uiLabel": "Place of Receipt",
+      "configFieldId": "placeOfReceipt",
+      "sources": ["preview.place_of_receipt", "InvoiceFormatPdfData.pol"],
+      "status": "mapped"
+    },
+    {
+      "section": "routingRow1",
+      "uiLabel": "Port of Loading",
+      "configFieldId": "portOfLoading",
+      "sources": ["preview.port_of_loading", "InvoiceFormatPdfData.pol"],
+      "status": "mapped"
+    },
+    {
+      "section": "routingRow1",
+      "uiLabel": "Job No.",
+      "configFieldId": "jobNo",
+      "sources": ["InvoiceFormatPdfData.jobNumber"],
+      "status": "mapped"
+    },
+    {
+      "section": "routingRow1",
+      "uiLabel": "Pre-carriage by",
+      "configFieldId": "preCarriage",
+      "sources": ["preview.pre_carriage|preCarriage"],
+      "status": "mapped_when_present"
+    },
+    {
+      "section": "routingRow2",
+      "uiLabel": "Vessel / Voyage No.",
+      "configFieldId": "vesselVoyage",
+      "sources": ["InvoiceFormatPdfData.vesselFlight", "preview.vessel|voyage"],
+      "status": "mapped"
+    },
+    {
+      "section": "routingRow2",
+      "uiLabel": "Port of Discharge",
+      "configFieldId": "portOfDischarge",
+      "sources": ["InvoiceFormatPdfData.pod"],
+      "status": "mapped"
+    },
+    {
+      "section": "routingRow2",
+      "uiLabel": "Place of Delivery",
+      "configFieldId": "placeOfDelivery",
+      "sources": ["preview.place_of_delivery", "InvoiceFormatPdfData.pod"],
+      "status": "mapped"
+    },
+    {
+      "section": "routingRow2",
+      "uiLabel": "No. of Bills of Lading",
+      "configFieldId": "numberOfBls",
+      "sources": ["preview.number_of_bls|originals"],
+      "status": "mapped_when_present"
+    },
+    {
+      "section": "cargoTable",
+      "uiLabel": "Container / Seal / Marks / Pkgs / Description / Weight / Measurement",
+      "configFieldId": "containerMarks|packages|description|grossWeight|measurement",
+      "sources": [
+        "preview container rows",
+        "InvoiceFormatPdfData.commodity (description-only row when no containers)"
+      ],
+      "status": "mapped"
+    },
+    {
+      "section": "freightDetails",
+      "uiLabel": "Freight Details",
+      "configFieldId": "freightDetails",
+      "sources": ["preview.freight_terms|freight"],
+      "status": "mapped_when_present_no_default_prepaid"
+    },
+    {
+      "section": "termsAndSignature",
+      "uiLabel": "Received clause / signature / onboard / place&date / carrier",
+      "configFieldId": "receivedClause|signature|onboardDate|placeAndDateOfIssue|carrierName",
+      "sources": [
+        "static clause from reference",
+        "company chrome",
+        "preview.onboard_date|etd",
+        "preview.carrier_name|InvoiceFormatPdfData.vesselFlight carrier segment"
+      ],
+      "status": "mapped"
+    },
+    {
+      "section": "footer",
+      "uiLabel": "Page numbering",
+      "configFieldId": "pageNumber",
+      "sources": ["pilot model.pageLabel = 1 / 1"],
+      "status": "mapped"
+    }
+  ],
+  "unsupportedOnReferenceOrContract": [
+    "Invented charge line items without preview/API freight",
+    "Demo FG_HBL_HKG sample cargo when entityBound",
+    "Alternate HBL format shells (combined/multimodal/mt/ocean)"
+  ]
+}

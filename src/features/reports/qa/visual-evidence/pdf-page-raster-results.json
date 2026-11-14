@@ -1,0 +1,61 @@
+{
+  "generatedAt": "2026-11-14T05:24:22.916Z",
+  "results": [
+    {
+      "pdfRel": "src/features/reports/qa/visual-evidence/branding/company1-hbl-jasper.pdf",
+      "ok": true,
+      "png": "src/features/reports/qa/visual-evidence/branding/company1-hbl-jasper-page1.png",
+      "width": 1190,
+      "height": 1684,
+      "pages": 2
+    },
+    {
+      "pdfRel": "src/features/reports/qa/visual-evidence/branding/company1-hawb-draft.pdf",
+      "ok": true,
+      "png": "src/features/reports/qa/visual-evidence/branding/company1-hawb-draft-page1.png",
+      "width": 1190,
+      "height": 1690,
+      "pages": 2
+    },
+    {
+      "pdfRel": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format.pdf",
+      "ok": true,
+      "png": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format-page1.png",
+      "width": 1190,
+      "height": 1690,
+      "pages": 2
+    },
+    {
+      "pdfRel": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format_1.pdf",
+      "ok": true,
+      "png": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format_1-page1.png",
+      "width": 1190,
+      "height": 1684,
+      "pages": 10
+    },
+    {
+      "pdfRel": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format_2.pdf",
+      "ok": true,
+      "png": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format_2-page1.png",
+      "width": 1190,
+      "height": 1690,
+      "pages": 2
+    },
+    {
+      "pdfRel": "src/features/reports/qa/visual-evidence/hawb/hawb_original_pre_printed_report_format_1.pdf",
+      "ok": true,
+      "png": "src/features/reports/qa/visual-evidence/hawb/hawb_original_pre_printed_report_format_1-page1.png",
+      "width": 1474,
+      "height": 1846,
+      "pages": 2
+    },
+    {
+      "pdfRel": "src/features/reports/qa/visual-evidence/hawb/hawb_original_pre_printed_report_format_2.pdf",
+      "ok": true,
+      "png": "src/features/reports/qa/visual-evidence/hawb/hawb_original_pre_printed_report_format_2-page1.png",
+      "width": 1190,
+      "height": 1690,
+      "pages": 2
+    }
+  ]
+}

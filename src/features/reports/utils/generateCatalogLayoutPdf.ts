@@ -3,6 +3,11 @@ import { isHblFormatCode, getHblFormatSpec } from '../constants/hblFormatCatalog
 import { isHawbFormatCode, getHawbFormatSpec } from '../constants/hawbFormatCatalog';
 import { resolveAnyFormatUiLayout } from '../data/resolveAnyFormatUiLayout';
 import { generateHblFamilyClassicPdf } from '@/features/shared/bl-draft/generateHblFamilyClassicPdf';
+import {
+  generateHblJasperPilotPdf,
+  isHblJasperPilotCode,
+} from '../templates/hbl/jasperPilot';
+import { isOfficialHawbFormatCode } from './officialFormatGovernance';
 import { generateHblSamplePdf, hasHblSamplePdf } from './generateHblSamplePdf';
 import { generateHawbSamplePdf, hasHawbSamplePdf } from './generateHawbSamplePdf';
 import {
@@ -110,6 +115,26 @@ export async function generateCatalogLayoutPdf(
   data: InvoiceFormatPdfData = {},
   options: GenerateCatalogLayoutPdfOptions = {},
 ): Promise<{ blob: Blob; preview: InvoiceFormatPreview } | null> {
+  // Phase-3 Jasper pilot — config-driven composition; sample retained as fallback only.
+  if (isHblJasperPilotCode(code)) {
+    try {
+      const { blob } = await generateHblJasperPilotPdf(data, {
+        appendCustomerTerms: options.appendCustomerTerms,
+        showPlaceholders: !data.entityBound,
+      });
+      return { blob, preview: hblPreviewMeta(code) };
+    } catch (pilotErr) {
+      try {
+        const { blob } = await generateHblSamplePdf(code, {
+          appendCustomerTerms: options.appendCustomerTerms,
+        });
+        return { blob, preview: hblPreviewMeta(code) };
+      } catch {
+        throw pilotErr;
+      }
+    }
+  }
+
   if (isHblFormatCode(code) && hasHblSamplePdf(code)) {
     const mode =
       options.hblMode ||
@@ -176,13 +201,21 @@ export async function generateCatalogLayoutPdf(
     }
   }
 
+  const layoutEarly = resolveAnyFormatUiLayout(code);
+  // Official HAWB with hawbAwbShell JSON — skip early template-v2 so distinct shells render.
+  const skipEarlyV2ForOfficialHawbJson =
+    isOfficialHawbFormatCode(code) && Boolean(layoutEarly) && !options.preferTemplateV2;
+
   // Specialized family templates before generic JSON charge-table DNA.
-  if (options.preferTemplateV2 || supportsTemplateV2(code)) {
+  if (
+    (options.preferTemplateV2 || supportsTemplateV2(code)) &&
+    !skipEarlyV2ForOfficialHawbJson
+  ) {
     const v2 = await tryTemplateV2(code, data, options);
     if (v2) return v2;
   }
 
-  const layout = resolveAnyFormatUiLayout(code);
+  const layout = layoutEarly;
   if (!layout) {
     // Arrival extras etc. with enrichment but no JSON — last chance template-v2
     return tryTemplateV2(code, data, options);
@@ -202,9 +235,16 @@ export async function generateCatalogLayoutPdf(
   };
 
   // Prefer template-v2 for families that must not look like generic invoices.
+  // Official HAWB codes have structurally distinct hawbAwbShell JSON layouts
+  // (draft / draft1 / draft2 / original1 / original2) — prefer those over color-only v2.
   const enrichment = getReportEnrichment(code);
+  const hawbUsesDistinctJsonShell =
+    enrichment?.templateFamily === 'hawb' &&
+    isOfficialHawbFormatCode(code) &&
+    Boolean(layout);
   const preferV2Family =
     enrichment &&
+    !hawbUsesDistinctJsonShell &&
     (enrichment.templateFamily === 'arrival_notice' ||
       enrichment.templateFamily === 'delivery_order' ||
       enrichment.templateFamily === 'cargo_manifest' ||
@@ -222,7 +262,7 @@ export async function generateCatalogLayoutPdf(
 
   const blob = await generateInvoiceFormatLayoutPdf(preview, data, {
     appendCustomerTerms: options.appendCustomerTerms,
-    logoUrl: options.logoUrl,
+    logoUrl: options.logoUrl || data.logoUrl,
   });
   return { blob, preview };
 }

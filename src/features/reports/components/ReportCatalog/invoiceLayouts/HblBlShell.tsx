@@ -152,12 +152,13 @@ export function HblBlShell({
       </p>
     ));
 
+  const logoSrc = brandLogoSrc(branding);
   const identityCell = (
     <td colSpan={2} style={{ ...cell, textAlign: 'center' }}>
-      {embedLogo ? (
+      {embedLogo && logoSrc ? (
         <img
-          src={brandLogoSrc(branding)}
-          alt={branding.company}
+          src={logoSrc}
+          alt={branding.company || ''}
           style={{
             height: 34,
             width: 'auto',

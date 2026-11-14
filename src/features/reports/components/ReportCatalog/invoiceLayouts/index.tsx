@@ -43,6 +43,7 @@ export function InvoiceFormatLayoutByKind({
     web: data?.companyWeb?.trim() || SHARED_LAYOUT_CHROME.web,
     phone: data?.companyPhone?.trim() || SHARED_LAYOUT_CHROME.phone,
     email: data?.companyEmail?.trim() || SHARED_LAYOUT_CHROME.email,
+    logoUrl: data?.logoUrl?.trim() || SHARED_LAYOUT_CHROME.logoUrl,
   };
   const layout = applySharedLayoutChrome(merged, resolvedChrome);
   return <JsonInvoiceLayoutRenderer layout={layout} />;

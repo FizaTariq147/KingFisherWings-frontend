@@ -1,4 +1,3 @@
-import logo from '@/assets/logo.png';
 import type { BlDraftClassicModel } from '../BlDraftClassicDocument';
 import {
   BrandHeader,
@@ -21,7 +20,7 @@ export function BlFamilyJasperDocument({ model }: { model: BlDraftClassicModel }
     >
       <BrandHeader
         model={model}
-        logoSrc={logo}
+        logoSrc={model.logoUrl}
         title={'Bill of Lading not negotiable unless consigned "To Order"'}
       />
       <div className="grid grid-cols-[1.35fr_1fr_0.55fr]">

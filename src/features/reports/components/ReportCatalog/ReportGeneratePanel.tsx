@@ -288,6 +288,7 @@ export function ReportGeneratePanel({
           companyWeb: data.companyWeb || orgChrome.web,
           companyPhone: data.companyPhone || orgChrome.phone,
           companyEmail: data.companyEmail || orgChrome.email,
+          logoUrl: data.logoUrl || orgChrome.logoUrl,
         };
 
         if (isInvoiceFormatPdf) {

@@ -1,0 +1,207 @@
+{
+  "generatedAt": "2026-11-14T05:21:11.297Z",
+  "baseURL": "http://localhost:5173",
+  "dualCompany": {
+    "status": "partial_single_company_only",
+    "reason": "Only one authorized E2E tenant is configured (.env.e2e). No E2E_TENANT_SLUG_2 / E2E_STAFF_EMAIL_2 / E2E_STAFF_PASSWORD_2 for a second registered company. Dual-company isolation was not executed. Do not fabricate a second company.",
+    "companiesAttempted": [
+      {
+        "tenantSlug": "demo-trade-house",
+        "profileHttpStatus": 200,
+        "profileLoaded": true,
+        "companyName": "KingFisher Logistic Solutions LLC",
+        "logoUrlPresent": true,
+        "logoUrlHost": "cdn.demo-trade.ae"
+      }
+    ]
+  },
+  "branding": [
+    {
+      "kind": "hbl_jasper",
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "opened": true,
+      "screenshot": "src/features/reports/qa/visual-evidence/branding/company1-hbl-jasper-preview.png",
+      "pdf": "src/features/reports/qa/visual-evidence/branding/company1-hbl-jasper.pdf",
+      "error": null,
+      "fingerprint": {
+        "pageCount": 2,
+        "widthPt": 595,
+        "heightPt": 842,
+        "textLength": 0,
+        "textSnippet": "",
+        "textLower": ""
+      },
+      "brandingChecks": {
+        "companyNameExpected": "KingFisher Logistic Solutions LLC",
+        "companyNameFoundInPdfText": false,
+        "logoUrlExpected": "https://cdn.demo-trade.ae/logo.png",
+        "suspiciousFresaProductBranding": false,
+        "note": "Sample/demo party text may still contain FRESA DEMO fixture strings from official sample PDFs; product branding stamp should use registered org."
+      },
+      "companyName": "KingFisher Logistic Solutions LLC",
+      "logoUrl": "https://cdn.demo-trade.ae/logo.png"
+    },
+    {
+      "kind": "hawb_draft",
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "opened": true,
+      "screenshot": "src/features/reports/qa/visual-evidence/branding/company1-hawb-draft-preview.png",
+      "pdf": "src/features/reports/qa/visual-evidence/branding/company1-hawb-draft.pdf",
+      "error": null,
+      "fingerprint": {
+        "pageCount": 2,
+        "widthPt": 595,
+        "heightPt": 845,
+        "textLength": 3013,
+        "textSnippet": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS 1,250.00 100 18-FEB-19 CHENNAI FRESA DEMO INDIA PVT LTD 17623456882 0.00 EK9876EK9",
+        "textLower": "babu sector ptltd 144/78b gkm towers muthusamy street, near a2b signal, neelankarai chennai tamilnadu india chennai, india ctn 1-20 total : (100) packages only 100 1,250.00 1,250.00 stc: paper cups 1,250.00 100 18-feb-19 chennai fresa demo india pvt ltd 17623456882 0.00 ek9876ek9876 20-feb-19 176|maa|23456882 0.00 0.00 inr dubai international airport, shipper's name and address consignee's name and address al naser trading company llc 30 al makthoom building near mubarak centre round about al nabha sharjah united arab emirates issuing carrier' agent name and city fresa demo dubai uae llc airport of departure(addr.of first carrier) and requested routing to by first carrier to by by to routing and destination handling information airport of destination requested flight/date house air waybill copies 1,2 and 3 of this air waybill are originals and have the same validity it is agreed that the goods described herein are accepted in apparent good order and condition (except as noted) for carriage subject to the conditions of contract on the reverse hereof. all goods may be carried by any other means including road or any other carrier unless specific contrary instructions are given hereon by the shipper, a shipper agrees that the shipment may be carried via intermediate stopping places which the carrier deems appropriate. the shipper’s attention is drawn to th notice concerning carrier’s limitation of liability. shipper may increase such limitation of liability by declaring a higher value for carriage and paying a supplemental charge if required. accounting information currency other declared value for carriage declared value for customs amount of insurance insurance - if carrier offers insurance, and such insurance is requested in accordance with the conditions hereof, indicate amount to be insured in figures in box marked 'amount of insurance'. n.v.d. as per inv nil kg lb gross weight no.of pieces k chargeable weight rate total nature and quality of goods (incl. dimensions or volume) other charges shipper certifies that the particulars on the face hereof are correct and that insofar as any part of the consignment contains dangerous goods, such part is properly described by name and is in proper condition for carriage by air according to the applicable dangerous goods regulations. signature of shipper or his agent executed on(date) at(place) signature of issuing carrier or its agent prepaid weight charge collect valuation charge tax total other charges due agent total other charges due carrier total prepaid total collect wt ek9876 pp pp dxb ctn - 1-20 emirates ram 176-23456882 emirates non negotiable issued by agent's iata code account no. commodity rate class charge s 0.00 currency conversion rates cc charges in dest. currency for carriers use only at destination charges at destination total collect charges shipper's account number consignee's account number freight prepaid chgs code kingfisher logistic solutions llc issued via freightnest hawb draft report format"
+      },
+      "brandingChecks": {
+        "companyNameExpected": "KingFisher Logistic Solutions LLC",
+        "companyNameFoundInPdfText": true,
+        "logoUrlExpected": "https://cdn.demo-trade.ae/logo.png"
+      },
+      "companyName": "KingFisher Logistic Solutions LLC",
+      "logoUrl": "https://cdn.demo-trade.ae/logo.png"
+    }
+  ],
+  "hawb": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "opened": true,
+      "screenshot": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format-preview.png",
+      "pdf": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format.pdf",
+      "error": null,
+      "fingerprint": {
+        "pageCount": 2,
+        "widthPt": 595,
+        "heightPt": 845,
+        "textLength": 3013,
+        "textSnippet": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS 1,250.00 100 18-FEB-19 CHENNAI FRESA DEMO INDIA PVT LTD 17623456882 0.00 EK9876EK9",
+        "textLower": "babu sector ptltd 144/78b gkm towers muthusamy street, near a2b signal, neelankarai chennai tamilnadu india chennai, india ctn 1-20 total : (100) packages only 100 1,250.00 1,250.00 stc: paper cups 1,250.00 100 18-feb-19 chennai fresa demo india pvt ltd 17623456882 0.00 ek9876ek9876 20-feb-19 176|maa|23456882 0.00 0.00 inr dubai international airport, shipper's name and address consignee's name and address al naser trading company llc 30 al makthoom building near mubarak centre round about al nabha sharjah united arab emirates issuing carrier' agent name and city fresa demo dubai uae llc airport of departure(addr.of first carrier) and requested routing to by first carrier to by by to routing and destination handling information airport of destination requested flight/date house air waybill copies 1,2 and 3 of this air waybill are originals and have the same validity it is agreed that the goods described herein are accepted in apparent good order and condition (except as noted) for carriage subject to the conditions of contract on the reverse hereof. all goods may be carried by any other means including road or any other carrier unless specific contrary instructions are given hereon by the shipper, a shipper agrees that the shipment may be carried via intermediate stopping places which the carrier deems appropriate. the shipper’s attention is drawn to th notice concerning carrier’s limitation of liability. shipper may increase such limitation of liability by declaring a higher value for carriage and paying a supplemental charge if required. accounting information currency other declared value for carriage declared value for customs amount of insurance insurance - if carrier offers insurance, and such insurance is requested in accordance with the conditions hereof, indicate amount to be insured in figures in box marked 'amount of insurance'. n.v.d. as per inv nil kg lb gross weight no.of pieces k chargeable weight rate total nature and quality of goods (incl. dimensions or volume) other charges shipper certifies that the particulars on the face hereof are correct and that insofar as any part of the consignment contains dangerous goods, such part is properly described by name and is in proper condition for carriage by air according to the applicable dangerous goods regulations. signature of shipper or his agent executed on(date) at(place) signature of issuing carrier or its agent prepaid weight charge collect valuation charge tax total other charges due agent total other charges due carrier total prepaid total collect wt ek9876 pp pp dxb ctn - 1-20 emirates ram 176-23456882 emirates non negotiable issued by agent's iata code account no. commodity rate class charge s 0.00 currency conversion rates cc charges in dest. currency for carriers use only at destination charges at destination total collect charges shipper's account number consignee's account number freight prepaid chgs code kingfisher logistic solutions llc issued via freightnest hawb draft report format"
+      },
+      "brandingChecks": {
+        "companyNameExpected": "KingFisher Logistic Solutions LLC",
+        "companyNameFoundInPdfText": true
+      },
+      "officialName": "HAWB Draft Report Format",
+      "expectedVariant": "draft"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "opened": true,
+      "screenshot": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format_1-preview.png",
+      "pdf": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format_1.pdf",
+      "error": null,
+      "fingerprint": {
+        "pageCount": 10,
+        "widthPt": 595,
+        "heightPt": 842,
+        "textLength": 2697,
+        "textSnippet": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS 1,250.00 100 18-FEB-19 CHENNAI HAWB NO. MAA/DXB/1900014 AS ARRANGED EK9876EK9876 2",
+        "textLower": "babu sector ptltd 144/78b gkm towers muthusamy street, near a2b signal, neelankarai chennai tamilnadu india chennai, india ctn 1-20 total : (100) packages only 100 1,250.00 1,250.00 stc: paper cups 1,250.00 100 18-feb-19 chennai hawb no. maa/dxb/1900014 as arranged ek9876ek9876 20- mawb no. 176-23456882 as arranged as arranged inr hawb no. maa/dxb/1900014 dubai international airport, freight prepaid shipper's name and address consignee's name and address al naser trading company llc 30 al makthoom building near mubarak centre round about al nabha sharjah united arab emirates notify party al naser trading company llc 30 al makthoom building near mubarak centre round about al nabha sharjah united arab emirates airport of departure(addr.of first carrier) and requested routing to by first carrier to by by to routing and destination handling information airport of destination requested flight/date house air waybill copies marked original 1,2,3 and 4 are originals and have the same validity it is agreed that the goods described herein are accepted in apparent good order and condition (except as noted) for carriage subject to the conditions of contract on the reverse hereof. the shipper's attention is drawn to the notice concerning carriers limitation of liability. shipper may increase such limitation of liability by declaring a higer value ofr carriage and paying a supplemental charge if required. job no.: cae190028 mawb no. 176-23456882 hawb no. maa/dxb/1900014 fresa demo dubai uae llc phone: 04-2339876 dimensions or volume currency other declared value for carriage declared value for customs ppd coll coll ppd agent: fresa demo india pvt ltd amount of insurance insurance-if shipper requests insurance in accordance with conditions on reverse hereof, indicate amount to be insured in figures in box marked amount of insurance. n.v.d. as per inv nil kg lb gross weight no.of pieces rcp k chargeable weight rate charge description and marks other charges shipper certifies that particulars on the face hereof are correct and that insofar as any part of the consignment contains restricted articles, such part is properly described by name and is in proper condition for carriage by air according to the international air transport association's restricted articles regulations. signature of shipper or his agent executed on(date) at(place) signature of issuing carrier or its agent prepaid weight charge collect valuation charge tax total other charges due agent total other charges due carrier total prepaid total collect wt ek9876 pp pp dxb ctn - 1-20 as agent for the carrier, emirates ram kingfisher logistic solutions llc issued via freightnest hawb draft report format-1"
+      },
+      "brandingChecks": {
+        "companyNameExpected": "KingFisher Logistic Solutions LLC",
+        "companyNameFoundInPdfText": true
+      },
+      "officialName": "HAWB Draft Report Format-1",
+      "expectedVariant": "draft1"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "opened": true,
+      "screenshot": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format_2-preview.png",
+      "pdf": "src/features/reports/qa/visual-evidence/hawb/hawb_draft_report_format_2.pdf",
+      "error": null,
+      "fingerprint": {
+        "pageCount": 2,
+        "widthPt": 595,
+        "heightPt": 845,
+        "textLength": 3095,
+        "textSnippet": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS DIMS IN CM 1,250.00 100 18-FEB-19 CHENNAI FRESA DEMO INDIA PVT LTD 0.00 0.00 0.00 ",
+        "textLower": "babu sector ptltd 144/78b gkm towers muthusamy street, near a2b signal, neelankarai chennai tamilnadu india chennai, india ctn 1-20 total : (100) packages only 100 1,250.00 1,250.00 stc: paper cups dims in cm 1,250.00 100 18-feb-19 chennai fresa demo india pvt ltd 0.00 0.00 0.00 inr dubai international airport, shippers name and address consignee's name and address al naser trading company llc 30 al makthoom building near mubarak centre round about al nabha sharjah united arab emirates issuing carrier' agent name and city fresa demo dubai uae llc airport of departure(addr.of first carrier) and requested routing to by first carrier to by by to routing and destination handling information airport of destination air waybill copies 1,2 and 3 of this air way bill are originals and have the same validity it is agreed that the goods described herein are accepted in apparent good order and condition (except as noted) for carriage subject to the conditions of contract on the reverse hereof. all goods may be carried by any other means including road or any other carrier unless specific contrary instructions are given hereon by the shipper, a shipper agrees that the shipment may be carried via intermediate stopping places which the carrier deems appropriate. the shipper’s attention is drawn to th notice concerning carrier’s limitation of liability. shipper may increase such limitation of liability by declaring a higher value for carriage and paying a supplemental charge if required. accounting information currency other declared value for carriage declared value for customs amount of insurance insurance - if carrier offers insurance, and such insurance is requested in accordance with the conditions hereof, indicate amount to be insured in figures in box marked 'amount of insurance'. n.v.d. n.c.v nil kg lb gross weight no.of pieces k chargeable weight rate total nature and quality of goods (incl. dimensions or volume) other charges shipper certifies that the particulars on the face hereof are correct and that insofar as any part of the consignment contains dangerous goods, such part is properly described by name and is in proper condition for carriage by air according to the applicable dangerous goods regulations. executed on (date) at (place) signature of issuing carrier or its agent prepaid weight charge collect valuation charge tax total other charges due agent total other charges due carrier total prepaid total collect wt/val ek9876 pp pp dxb ctn - 1-20 fresa demo dubai uae llc fresa demo india pvt ltd mumbai india non negotiable issued by agent's iata code account no. commodity item no. rate class charge s 0.00 currency conversion rates cc charges in dest. currency for carrier's use only at destination charges at destination total collect charges freight prepaid chgs code master awb no. : 17623456882 maa/dxb/1900014 hawb no. flight / date flight / date for carrier use only ek9876ek9876 20-feb-19 signature of shipper or his agent maa/dxb/1900014 hawb no. extra copy kingfisher logistic solutions llc issued via freightnest hawb draft report format-2"
+      },
+      "brandingChecks": {
+        "companyNameExpected": "KingFisher Logistic Solutions LLC",
+        "companyNameFoundInPdfText": true
+      },
+      "officialName": "HAWB Draft Report Format-2",
+      "expectedVariant": "draft2"
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "opened": true,
+      "screenshot": "src/features/reports/qa/visual-evidence/hawb/hawb_original_pre_printed_report_format_1-preview.png",
+      "pdf": "src/features/reports/qa/visual-evidence/hawb/hawb_original_pre_printed_report_format_1.pdf",
+      "error": null,
+      "fingerprint": {
+        "pageCount": 2,
+        "widthPt": 737,
+        "heightPt": 923,
+        "textLength": 754,
+        "textSnippet": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS 18-FEB-19 CHENNAI FRESA DEMO DUBAI UAE LLC EK9876EK9876 20- 176-23456882 MAA/DXB/1",
+        "textLower": "babu sector ptltd 144/78b gkm towers muthusamy street, near a2b signal, neelankarai chennai tamilnadu india chennai, india ctn 1-20 total : (100) packages only 100 1,250.00 1,250.00 stc: paper cups 18-feb-19 chennai fresa demo dubai uae llc ek9876ek9876 20- 176-23456882 maa/dxb/1900014 dubai international freight prepaid al naser trading company llc 30 al makthoom building near mubarak centre round about al nabha sharjah united arab emirates fresa demo dubai uae llc maa/dxb/1900014 fresa demo dubai uae llc phone: 04-2339876 nil k maa/dxb/1900014 ctn - 1-20 as agent for the carrier, emirates ram 0.00 0.00 0.00 ek9876 inr dxb n.v.d. as per inv pp pp kingfisher logistic solutions llc issued via freightnest hawb original pre printed report format-1"
+      },
+      "brandingChecks": {
+        "companyNameExpected": "KingFisher Logistic Solutions LLC",
+        "companyNameFoundInPdfText": true
+      },
+      "officialName": "HAWB Original Pre Printed Report Format-1",
+      "expectedVariant": "original1"
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "opened": true,
+      "screenshot": "src/features/reports/qa/visual-evidence/hawb/hawb_original_pre_printed_report_format_2-preview.png",
+      "pdf": "src/features/reports/qa/visual-evidence/hawb/hawb_original_pre_printed_report_format_2.pdf",
+      "error": null,
+      "fingerprint": {
+        "pageCount": 2,
+        "widthPt": 595,
+        "heightPt": 845,
+        "textLength": 721,
+        "textSnippet": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS DIMS IN CM 1,250.00 100 18-FEB-19 CHENNAI FRESA DEMO INDIA PVT LTD 0.00 0.00 0.00 ",
+        "textLower": "babu sector ptltd 144/78b gkm towers muthusamy street, near a2b signal, neelankarai chennai tamilnadu india chennai, india ctn 1-20 total : (100) packages only 100 1,250.00 1,250.00 stc: paper cups dims in cm 1,250.00 100 18-feb-19 chennai fresa demo india pvt ltd 0.00 0.00 0.00 inr dubai international airport, al naser trading company llc 30 al makthoom building near mubarak centre round about al nabha sharjah united arab emirates fresa demo dubai uae llc n.v.d. n.c.v nil k ek9876 dxb ctn - 1-20 fresa demo dubai uae llc s 0.00 17623456882 maa/dxb/1900014 ek9876ek9876 20-feb-19 maa/dxb/1900014 pp pp freight prepaid kingfisher logistic solutions llc issued via freightnest hawb original pre printed report format-2"
+      },
+      "brandingChecks": {
+        "companyNameExpected": "KingFisher Logistic Solutions LLC",
+        "companyNameFoundInPdfText": true
+      },
+      "officialName": "HAWB Original Pre Printed Report Format-2",
+      "expectedVariant": "original2"
+    }
+  ],
+  "hawbSelector": {
+    "stripPresent": false,
+    "uniqueCodes": [],
+    "codeCount": 0,
+    "namedHits": [
+      "HAWB Draft Report Format",
+      "HAWB Draft Report Format-1",
+      "HAWB Draft Report Format-2",
+      "HAWB Original Pre Printed Report Format-1",
+      "HAWB Original Pre Printed Report Format-2"
+    ],
+    "namedCount": 5
+  },
+  "limitations": [
+    "Only one authorized E2E tenant is configured (.env.e2e). No E2E_TENANT_SLUG_2 / E2E_STAFF_EMAIL_2 / E2E_STAFF_PASSWORD_2 for a second registered company. Dual-company isolation was not executed. Do not fabricate a second company."
+  ],
+  "hawbDistinctness": {
+    "uniqueSnippets": 4,
+    "uniquePageSizes": 3,
+    "pageSizes": [
+      "595x845",
+      "595x842",
+      "595x845",
+      "737x923",
+      "595x845"
+    ]
+  },
+  "historicalFormat3": {
+    "resolvableDeepLink": true,
+    "screenshot": "src/features/reports/qa/visual-evidence/hawb/historical-format3-deep-link.png",
+    "note": "Deep-link preserved; must not appear in official selector count of 5."
+  }
+}

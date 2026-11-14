@@ -1,0 +1,43 @@
+{
+  "generatedAt": "2026-11-14T09:55:00.000Z",
+  "purpose": "Structural distinctness of official HAWB JSON shells (not browser screenshots)",
+  "officialHawbVariants": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "variant": "draft",
+      "titleMode": "HOUSE AIR WAYBILL",
+      "showNotify": false,
+      "preprinted": false
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "variant": "draft1",
+      "titleMode": "HOUSE AIR WAYBILL",
+      "showNotify": true,
+      "preprinted": false
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "variant": "draft2",
+      "titleMode": "AIR WAYBILL",
+      "showNotify": false,
+      "preprinted": false
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "variant": "original1",
+      "titleMode": "HOUSE AIR WAYBILL",
+      "showNotify": false,
+      "preprinted": true
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "variant": "original2",
+      "titleMode": "AIR WAYBILL",
+      "showNotify": false,
+      "preprinted": true
+    }
+  ],
+  "renderer": "HawbAwbShell.tsx",
+  "pipelineNote": "Official HAWB entity-bound PDF skips early template-v2 so these variants render"
+}

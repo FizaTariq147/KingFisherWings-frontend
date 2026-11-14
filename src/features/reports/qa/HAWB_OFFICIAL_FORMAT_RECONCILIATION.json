@@ -1,0 +1,66 @@
+{
+  "generatedAt": "2026-11-14T04:48:00.000Z",
+  "officialSource": "https://fresatechnologies.com/sample-report-formats/",
+  "userFacingCountAfterFix": 5,
+  "userFacingCountBeforeFix": 30,
+  "officialEntries": [
+    {
+      "officialFresaFormat": "HAWB Draft Report Format",
+      "existingLocalFormat": "HAWB_DRAFT_REPORT_FORMAT",
+      "status": "official_verified",
+      "samplePdf": "hawb-draft-report-format.pdf",
+      "jsonShellVariant": "draft",
+      "action": "keep_and_expose"
+    },
+    {
+      "officialFresaFormat": "HAWB Draft Report Format-1",
+      "existingLocalFormat": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "status": "official_verified",
+      "samplePdf": "hawb-draft-report-format-1.pdf",
+      "jsonShellVariant": "draft1",
+      "action": "keep_and_expose"
+    },
+    {
+      "officialFresaFormat": "HAWB Draft Report Format-2",
+      "existingLocalFormat": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "status": "official_verified",
+      "samplePdf": "hawb-draft-report-format-2.pdf",
+      "jsonShellVariant": "draft2",
+      "action": "keep_and_expose"
+    },
+    {
+      "officialFresaFormat": "HAWB Original Pre Printed Report Format-1",
+      "existingLocalFormat": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "status": "official_verified",
+      "samplePdf": "hawb-original-pre-printed-report-format-1.pdf",
+      "jsonShellVariant": "original1",
+      "pageSizeNote": "MediaBox ~737×923 (not A4) — preprinted form",
+      "action": "keep_and_expose"
+    },
+    {
+      "officialFresaFormat": "HAWB Original Pre Printed Report Format-2",
+      "existingLocalFormat": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "status": "official_verified",
+      "samplePdf": "hawb-original-pre-printed-report-format-2.pdf",
+      "jsonShellVariant": "original2",
+      "action": "keep_and_expose"
+    }
+  ],
+  "excludedFromUserFacing": {
+    "policy": "Preserve codes/layouts; exclude from listHawbFormats() and catalogue HAWB strip/list filter",
+    "examples": [
+      "HAWB_DRAFT_REPORT_FORMAT_3",
+      "HAWB_DRAFT_REPORT_FORMAT_4",
+      "HAWB_DRAFT_REPORT_FORMAT_15",
+      "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_3"
+    ],
+    "status": "unverified",
+    "action": "hide_from_official_selector_preserve_deep_link_resolution"
+  },
+  "notHawb": [
+    {
+      "name": "Shipment Freight Manifest Report Format",
+      "note": "Separate family — must not be counted as HAWB"
+    }
+  ]
+}

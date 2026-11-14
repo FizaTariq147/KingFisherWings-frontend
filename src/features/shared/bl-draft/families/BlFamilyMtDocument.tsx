@@ -1,4 +1,3 @@
-import logo from '@/assets/logo.png';
 import type { BlDraftClassicModel } from '../BlDraftClassicDocument';
 import {
   BrandHeader,
@@ -19,7 +18,7 @@ export function BlFamilyMtDocument({ model }: { model: BlDraftClassicModel }) {
       className="relative mx-auto w-full max-w-[794px] bg-white text-[#111]"
       style={{ fontFamily: 'Arial, Helvetica, sans-serif' }}
     >
-      <BrandHeader model={model} logoSrc={logo} title="MULTIMODAL TRANSPORT DOCUMENT" />
+      <BrandHeader model={model} logoSrc={model.logoUrl} title="MULTIMODAL TRANSPORT DOCUMENT" />
       <div className={`${cell} border-b-0 bg-[#101010] text-center text-[11px] font-bold tracking-wide text-white`}>
         MTD — Multimodal Transport Document
       </div>
@@ -39,7 +38,13 @@ export function BlFamilyMtDocument({ model }: { model: BlDraftClassicModel }) {
           className="border-t-0"
         />
         <div className={`${cell} border-l-0 border-t-0 text-center`}>
-          <img src={logo} alt="" className="mx-auto h-10 object-contain" />
+          {model.logoUrl ? (
+            <img
+              src={model.logoUrl}
+              alt=""
+              className="mx-auto h-10 max-w-[140px] object-contain"
+            />
+          ) : null}
           <p className="mt-1 text-[10px] font-bold uppercase">{model.companyName}</p>
         </div>
       </div>
