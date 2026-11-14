@@ -10,6 +10,7 @@ import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { jobService } from '@/features/jobs/services/job.service';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
+import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { isUuid } from '@/lib/isUuid';
 import { transportService, type TransportRequestRow } from '../services/transport.service';
 
@@ -55,35 +56,44 @@ export default function TransportRequestsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const jobIdsNeedingNames = useMemo(() => {
+  const allJobIds = useMemo(() => {
     const ids = new Set<string>();
     for (const row of list.data ?? []) {
-      if (row.job_id && isUuid(row.job_id) && !row.job_number) ids.add(row.job_id);
+      if (row.job_id && isUuid(row.job_id)) ids.add(row.job_id);
     }
     return [...ids].sort();
   }, [list.data]);
 
-  const jobLabelsQuery = useQuery({
-    queryKey: ['transport-requests', 'job-labels', jobIdsNeedingNames],
-    enabled: jobIdsNeedingNames.length > 0,
+  const jobMetaQuery = useQuery({
+    queryKey: ['transport-requests', 'job-meta', allJobIds],
+    enabled: allJobIds.length > 0,
     staleTime: 60_000,
     queryFn: async () => {
       const entries = await Promise.all(
-        jobIdsNeedingNames.map(async (id) => {
+        allJobIds.map(async (id) => {
           try {
             const job = await jobService.getById(id);
             const number = String(job.job_number ?? '').trim();
-            return [id, number && !isUuid(number) ? number : ''] as const;
+            return [
+              id,
+              {
+                job_number: number && !isUuid(number) ? number : '',
+                path: jobDetailPath({ id: job.id, job_type: job.job_type }),
+              },
+            ] as const;
           } catch {
-            return [id, ''] as const;
+            return [id, { job_number: '', path: '' }] as const;
           }
         }),
       );
-      return Object.fromEntries(entries) as Record<string, string>;
+      return Object.fromEntries(entries) as Record<
+        string,
+        { job_number: string; path: string }
+      >;
     },
   });
 
-  const jobLabelById = jobLabelsQuery.data ?? {};
+  const jobMetaById = jobMetaQuery.data ?? {};
 
   const truckerOptions = useMemo(
     () =>
@@ -132,12 +142,13 @@ export default function TransportRequestsPage() {
     setError(null);
   }, [currentId, current?.trucker_id]);
 
+  const currentJobMeta = current?.job_id ? jobMetaById[current.job_id] : undefined;
   const currentJobLabel = current
-    ? jobDisplayName(
-        current,
-        current.job_id ? jobLabelById[current.job_id] : undefined,
-      )
+    ? jobDisplayName(current, currentJobMeta?.job_number)
     : '';
+  const currentJobPath =
+    currentJobMeta?.path ||
+    (current?.job_id ? `/jobs/road-freight/${current.job_id}` : '');
 
   return (
     <div className="space-y-4">
@@ -188,7 +199,7 @@ export default function TransportRequestsPage() {
               </p>
             ) : null}
             {rows.map((row) => {
-              const hydrated = row.job_id ? jobLabelById[row.job_id] : undefined;
+              const hydrated = row.job_id ? jobMetaById[row.job_id]?.job_number : undefined;
               return (
                 <button
                   key={row.id}
@@ -222,13 +233,13 @@ export default function TransportRequestsPage() {
                   </span>
                   {requestDisplayName(current)}
                 </p>
-                {current.job_id ? (
+                {current.job_id && currentJobPath ? (
                   <p>
                     <span className="text-xs font-medium text-[var(--color-neutral-500)]">
                       Job{' '}
                     </span>
                     <Link
-                      to={`/jobs/${current.job_id}`}
+                      to={currentJobPath}
                       className="font-medium text-[var(--color-primary-600)] hover:underline"
                     >
                       {currentJobLabel}
