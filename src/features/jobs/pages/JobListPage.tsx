@@ -102,9 +102,12 @@ export default function JobListPage() {
     fullSegmentIfAnyAccess: true,
   });
 
+  const currentUserId = useAuthStore((s) => s.user?.id);
+
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
       segmentJobTypes: allowedSegmentTypes,
+      currentUserId,
     });
     // Department pages scope to segment job types; never org department_id.
     if (!applied.jobType?.trim()) {
@@ -115,7 +118,7 @@ export default function JobListPage() {
       isStaff: true,
       allowAdminDepartment: false,
     });
-  }, [applied, allowedSegmentTypes]);
+  }, [applied, allowedSegmentTypes, currentUserId]);
 
   const listQuery = useQuery({
     queryKey: [
@@ -215,6 +218,7 @@ export default function JobListPage() {
           department_id: undefined,
           created_by: filterParams.created_by,
           salesperson_id: filterParams.salesperson_id,
+          ops_user_id: filterParams.ops_user_id,
         },
         {
           scopeTypes: listScope,
@@ -238,6 +242,7 @@ export default function JobListPage() {
               search: filterParams.search,
               branch_id: filterParams.branch_id,
               department_id: undefined,
+              ops_user_id: filterParams.ops_user_id,
             },
             {
               scopeTypes: listScope,

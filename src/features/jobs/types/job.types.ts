@@ -52,6 +52,12 @@ export interface JobListParams {
   shipper_id?: string;
   consignee_id?: string;
   salesperson_id?: string;
+  /**
+   * Ops assignee filter (GET /jobs?ops_user_id=).
+   * After department pass, assignee lists with ops_user_id=<me> / "Assigned to me".
+   * Non-admins may only filter to themselves (BE-enforced).
+   */
+  ops_user_id?: string;
   branch_id?: string;
   company_id?: string;
   department_id?: string;
@@ -1098,9 +1104,33 @@ export interface PatchJobDepartmentDto {
   salesperson_id?: string;
 }
 
+/**
+ * POST /jobs/:id/department/pass — PassJobDepartmentDto.
+ * Provide department + branch + user via id and/or name (all three required).
+ */
+export interface PassJobDepartmentDto {
+  department_id?: string;
+  department_name?: string;
+  branch_id?: string;
+  branch_name?: string;
+  user_id?: string;
+  user_name?: string;
+  notes?: string | null;
+}
+
+/** GET /jobs/:id/detail/department (and related) — handoff fields. */
+export interface JobDepartmentTabMeta {
+  ops_user_id?: string;
+  ops_user_name?: string;
+  can_pass?: boolean;
+  path_hints?: Record<string, string> | string[];
+}
+
 /** GET /jobs/lookups/dropdowns */
 export interface JobLookupNamedOption {
   name: string;
+  /** Present when lookups return user/org UUIDs (preferred for pass). */
+  id?: string;
   code?: string;
   email?: string;
 }

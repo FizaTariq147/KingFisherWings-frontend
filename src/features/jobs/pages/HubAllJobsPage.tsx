@@ -82,6 +82,7 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
   const navigate = useNavigate();
   const location = useLocation();
   const accessToken = useAuthStore((s) => s.accessToken);
+  const currentUserId = useAuthStore((s) => s.user?.id);
   const config = variantConfig(variant);
 
   const [page, setPage] = useState(1);
@@ -154,6 +155,7 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
   const filterParams = useMemo(() => {
     const params = jobMisFilterDraftToListParams(applied, 1, {
       segmentJobTypes: undefined,
+      currentUserId,
     });
     // Hub default: BE resolves job types — do not send job_type / job_types.
     delete params.job_types;
@@ -163,7 +165,7 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
       isStaff: isStaffScoped,
       allowAdminDepartment: !isStaffScoped && Boolean(applied.departmentId?.trim()),
     });
-  }, [applied, isStaffScoped]);
+  }, [applied, isStaffScoped, currentUserId]);
 
   const categoryFilter = applied.category.trim();
   const useCategoryList = Boolean(categoryFilter) && variant !== 'documentation';
@@ -224,6 +226,7 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
           masters_only: filterParams.masters_only,
           created_by: filterParams.created_by,
           salesperson_id: filterParams.salesperson_id,
+          ops_user_id: filterParams.ops_user_id,
           department_id: filterParams.department_id,
         },
         {

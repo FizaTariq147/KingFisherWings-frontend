@@ -6,6 +6,7 @@ import type {
   ConfirmDimensionUploadDto,
   CopyJobOrganizationsDto,
   PasteDimensionUploadDto,
+  PassJobDepartmentDto,
   PatchJobDepartmentDto,
   ReplaceJobOrganizationDto,
   SyncDimensionsToCargoDto,
@@ -132,6 +133,13 @@ export function useJobTabResourceMutations(jobId: string) {
     // Department
     patchDepartment: useMutation({
       mutationFn: (dto: PatchJobDepartmentDto) => jobService.patchDepartment(id, dto),
+      onSuccess: (job) => {
+        queryClient.setQueryData(jobKeys.detail(id), job);
+        after();
+      },
+    }),
+    passDepartment: useMutation({
+      mutationFn: (dto: PassJobDepartmentDto) => jobService.passDepartment(id, dto),
       onSuccess: (job) => {
         queryClient.setQueryData(jobKeys.detail(id), job);
         after();

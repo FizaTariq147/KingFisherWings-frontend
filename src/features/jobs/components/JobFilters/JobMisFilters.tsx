@@ -13,6 +13,7 @@ import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { useUsers } from '@/features/users/hooks/useUsers';
 import { isUuid } from '@/lib/isUuid';
+import { useAuthStore } from '@/store/authStore';
 import {
   DATE_RANGE_PRESETS,
   resolveDateRangePreset,
@@ -67,6 +68,8 @@ export type JobMisFilterDraft = {
   destPortId: string;
   jobNo: string;
   createdBy: string;
+  /** When true, list with ops_user_id = current user (department pass assignee). */
+  assignedToMe: boolean;
   status: '' | JobStatus;
   category: string;
   search: string;
@@ -91,6 +94,7 @@ export function defaultJobMisFilterDraft(limit = 20): JobMisFilterDraft {
     destPortId: '',
     jobNo: '',
     createdBy: '',
+    assignedToMe: false,
     status: '',
     category: '',
     search: '',
@@ -131,9 +135,13 @@ export function jobMisDraftFromSearch(
 export function jobMisFilterDraftToListParams(
   draft: JobMisFilterDraft,
   page = 1,
-  opts?: { segmentJobTypes?: JobType[] },
+  opts?: { segmentJobTypes?: JobType[]; currentUserId?: string },
 ): JobListParams {
   const search = draft.search.trim() || draft.jobNo.trim() || undefined;
+  const opsUserId =
+    draft.assignedToMe && opts?.currentUserId && isUuid(opts.currentUserId)
+      ? opts.currentUserId
+      : undefined;
   return {
     page,
     limit: draft.rows,
@@ -149,6 +157,7 @@ export function jobMisFilterDraftToListParams(
     shipper_id: draft.shipperId || undefined,
     consignee_id: draft.consigneeId || undefined,
     salesperson_id: draft.salespersonId || undefined,
+    ops_user_id: opsUserId,
     branch_id: draft.branchId || undefined,
     department_id: draft.departmentId || undefined,
     created_by: draft.createdBy || undefined,
@@ -196,6 +205,7 @@ export function JobMisFilters({
   showOrgDepartmentFilter = true,
   showUserFilters = true,
 }: JobMisFiltersProps) {
+  const currentUserId = useAuthStore((s) => s.user?.id);
   const patch = (partial: Partial<JobMisFilterDraft>) =>
     onDraftChange({ ...draft, ...partial });
 
@@ -429,6 +439,18 @@ export function JobMisFilters({
             />
           </EnquirySheetFilterField>
         ) : null}
+
+        <EnquirySheetFilterField label="Assignee">
+          <label className="flex h-9 items-center gap-2 rounded-md border border-[var(--fresa-border,#C9D3DF)] bg-white px-3 text-[13px] text-[#334155]">
+            <input
+              type="checkbox"
+              checked={draft.assignedToMe}
+              disabled={!currentUserId || !isUuid(currentUserId)}
+              onChange={(e) => patch({ assignedToMe: e.target.checked })}
+            />
+            Assigned to me
+          </label>
+        </EnquirySheetFilterField>
 
         <EnquirySheetFilterField label="Job Status">
           <EnquirySheetSelect
