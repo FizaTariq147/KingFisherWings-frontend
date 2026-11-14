@@ -67,6 +67,8 @@ export const JOB_API = {
   dimensions: (id: string) => `/jobs/${id}/dimensions`,
   /** PATCH /jobs/:id/department — Department tab */
   department: (id: string) => `/jobs/${id}/department`,
+  /** POST /jobs/:id/department/pass — hand off dept + branch + ops assignee */
+  departmentPass: (id: string) => `/jobs/${id}/department/pass`,
   /** POST /jobs/:id/exchange-rates — Ex Rate tab */
   exchangeRates: (id: string) => `/jobs/${id}/exchange-rates`,
   exchangeRate: (id: string, rateId: string) =>

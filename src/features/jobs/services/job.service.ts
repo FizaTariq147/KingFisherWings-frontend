@@ -330,6 +330,7 @@ function buildListQuery(params: JobListParams): Record<string, string | number |
   if (params.shipper_id) query.shipper_id = params.shipper_id;
   if (params.consignee_id) query.consignee_id = params.consignee_id;
   if (params.salesperson_id) query.salesperson_id = params.salesperson_id;
+  if (params.ops_user_id?.trim()) query.ops_user_id = params.ops_user_id.trim();
   if (params.branch_id) query.branch_id = params.branch_id;
   if (params.company_id) query.company_id = params.company_id;
   if (params.department_id) query.department_id = params.department_id;
@@ -1499,13 +1500,15 @@ export const jobService = {
         );
 
         // Department lists: any creator. BE contract for staff = visible_job_types
-        // only (not created_by / ops_user). FE strips creator filters on default view.
+        // only (not created_by). Keep explicit ops_user_id ("Assigned to me").
         const deptListBase = {
           ...safeParams,
           job_types: undefined as JobListParams['job_types'],
           created_by: undefined,
           salesperson_id: undefined,
           department_id: undefined,
+          // Preserve intentional assignee filter from list params.
+          ops_user_id: String(safeParams.ops_user_id ?? '').trim() || undefined,
         };
 
         const fetchTypedPages = async (): Promise<JobListResult[]> =>
@@ -2574,10 +2577,12 @@ export const jobService = {
           const name = String(r.name ?? r.full_name ?? r.fullName ?? '').trim();
           const email = String(r.email ?? '').trim();
           const code = String(r.code ?? '').trim();
+          const id = String(r.id ?? r.user_id ?? r.userId ?? '').trim();
           const label = name || email;
           if (!label) continue;
           out.push({
             name: label,
+            ...(id ? { id } : {}),
             ...(code ? { code } : {}),
             ...(email ? { email } : {}),
           });
@@ -2640,6 +2645,46 @@ export const jobService = {
         ...(dto.department_name ? { department_name: dto.department_name } : {}),
         ...(dto.salesperson_name ? { salesperson_name: dto.salesperson_name } : {}),
       };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /**
+   * POST /jobs/:id/department/pass —
+   * Sets department_id, branch_id, ops_user_id; syncs shipments; audits + notifies.
+   */
+  async passDepartment(
+    id: string,
+    dto: import('../types/job.types').PassJobDepartmentDto,
+  ): Promise<Job> {
+    assertId(id);
+    const payload: Record<string, unknown> = {};
+    for (const key of [
+      'department_id',
+      'department_name',
+      'branch_id',
+      'branch_name',
+      'user_id',
+      'user_name',
+      'notes',
+    ] as const) {
+      const v = dto[key];
+      if (typeof v === 'string' && v.trim()) payload[key] = v.trim();
+    }
+    const hasDept = Boolean(payload.department_id || payload.department_name);
+    const hasBranch = Boolean(payload.branch_id || payload.branch_name);
+    const hasUser = Boolean(payload.user_id || payload.user_name);
+    if (!hasDept || !hasBranch || !hasUser) {
+      throw new Error('Department, branch, and assignee are required to pass the job.');
+    }
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.post(JOB_API.departmentPass(id), payload),
+      );
+      const fromBody = normalizeJob(unwrapEntity(res.data) ?? res.data);
+      if (fromBody) return fromBody;
+      return this.getById(id);
     } catch (error) {
       throw formatAxiosError(error);
     }

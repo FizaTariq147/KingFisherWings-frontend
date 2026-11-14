@@ -11,6 +11,8 @@ export const createCreditNoteSchema = z
     job_id: optionalUuid(),
     party_id: optionalUuid(),
     currency_code: z.string().trim().length(3).optional().or(z.literal('')),
+    /** Shown on AR statements (stored as Invoice.remarks). Alias of remarks. */
+    description: optionalTextUndef({ max: 2000 }),
     remarks: optionalTextUndef({ max: 2000 }),
     lines: z.array(createInvoiceLineSchema).optional(),
   })

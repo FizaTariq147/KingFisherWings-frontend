@@ -364,6 +364,8 @@ const NARRATIVE_KEYS = [
   'particular',
   'notes',
   'note',
+  'internal_notes',
+  'internalNotes',
   'details',
   'detail',
   'text',
@@ -419,6 +421,13 @@ function narrativeFromRecord(
 }
 
 function narrativeFromLineItems(r: Record<string, unknown>): string | undefined {
+  // BE may expose remarks ?? firstLine.description as a single nested object.
+  for (const key of ['first_line', 'firstLine', 'first_invoice_line', 'firstInvoiceLine']) {
+    const nested = asRecord(r[key]);
+    if (!nested) continue;
+    const d = narrativeFromRecord(nested, { includeChargeLabels: true });
+    if (d) return d;
+  }
   for (const key of ['lines', 'line_items', 'lineItems', 'items', 'charges', 'invoice_lines', 'invoiceLines']) {
     const list = r[key];
     if (!Array.isArray(list) || !list.length) continue;
@@ -435,6 +444,7 @@ function narrativeFromLineItems(r: Record<string, unknown>): string | undefined 
 }
 
 function pickNarrative(r: Record<string, unknown>): string | undefined {
+  // Prefer BE statement description (remarks ?? first line), then other narrative keys.
   // Nested `charge` labels are still resolved inside narrativeFromRecord;
   // do not treat root `name` (often party/invoice title) as narration.
   return narrativeFromRecord(r, { includeChargeLabels: false }) ?? narrativeFromLineItems(r);

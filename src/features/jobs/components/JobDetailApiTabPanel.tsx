@@ -1079,6 +1079,11 @@ function JobShowAllPanel({
             {isDepartment && jobQuery.data ? (
               <JobDepartmentPanel
                 job={jobQuery.data}
+                tabData={
+                  section.data && typeof section.data === 'object' && !Array.isArray(section.data)
+                    ? (section.data as Record<string, unknown>)
+                    : null
+                }
                 onChanged={() => {
                   void jobQuery.refetch();
                   void query.refetch();
@@ -1177,7 +1182,7 @@ function InteractiveTabBody({
     return <JobShipmentsTabPanel job={job} tabData={tabData} onChanged={onChanged} />;
   }
   if (key === 'department') {
-    return <JobDepartmentPanel job={job} onChanged={onChanged} />;
+    return <JobDepartmentPanel job={job} tabData={tabData} onChanged={onChanged} />;
   }
   if (key === 'ex_rate') {
     return <JobExchangeRatesPanel job={job} onChanged={onChanged} />;

@@ -17,6 +17,7 @@ export function staffAlignedJobListParams(
 
   if (!String(next.created_by ?? '').trim()) delete next.created_by;
   if (!String(next.salesperson_id ?? '').trim()) delete next.salesperson_id;
+  if (!String(next.ops_user_id ?? '').trim()) delete next.ops_user_id;
 
   // Staff: always omit org department_id. Admin MIS: only when explicitly selected.
   if (isStaff || !opts?.allowAdminDepartment || !String(next.department_id ?? '').trim()) {

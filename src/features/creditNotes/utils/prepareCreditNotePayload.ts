@@ -5,6 +5,7 @@ const ALLOWED_HEADER_FIELDS = new Set([
   'job_id',
   'party_id',
   'currency_code',
+  'description',
   'remarks',
 ]);
 
@@ -62,6 +63,12 @@ export function prepareCreditNotePayload(
   dto: Record<string, unknown>,
 ): Record<string, unknown> {
   const out = prepareFields(dto, ALLOWED_HEADER_FIELDS);
+  // BE persists remarks: description ?? remarks — send both when either is set.
+  const narrative = String(out.description ?? out.remarks ?? '').trim();
+  if (narrative) {
+    out.description = narrative;
+    out.remarks = narrative;
+  }
   if (Array.isArray(dto.lines)) {
     const lines: Record<string, unknown>[] = [];
     for (const line of dto.lines) {
