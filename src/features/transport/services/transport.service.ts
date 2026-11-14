@@ -12,7 +12,18 @@ export type TransportRequestRow = Record<string, unknown> & {
   request_type?: string;
   reference?: string;
   request_number?: string;
+  trucker_id?: string;
+  trucker_name?: string;
 };
+
+function pickStr(...values: unknown[]): string | undefined {
+  for (const value of values) {
+    if (value == null) continue;
+    const s = String(value).trim();
+    if (s) return s;
+  }
+  return undefined;
+}
 
 function unwrap(data: unknown): unknown {
   if (data && typeof data === 'object' && 'data' in (data as object)) {
@@ -39,26 +50,41 @@ function asRows(data: unknown): TransportRequestRow[] {
         row.job && typeof row.job === 'object' && !Array.isArray(row.job)
           ? (row.job as Record<string, unknown>)
           : null;
+      const trucker =
+        row.trucker && typeof row.trucker === 'object' && !Array.isArray(row.trucker)
+          ? (row.trucker as Record<string, unknown>)
+          : null;
+      const requestNumber = pickStr(
+        row.request_number,
+        row.requestNumber,
+        row.number,
+        row.reference,
+        row.reference_number,
+        row.referenceNumber,
+      );
       return {
         ...row,
         id: String(row.id ?? ''),
-        job_id: String(row.job_id ?? row.jobId ?? job?.id ?? '').trim() || undefined,
-        job_number:
-          String(
-            row.job_number ??
-              row.jobNumber ??
-              job?.job_number ??
-              job?.jobNumber ??
-              '',
-          ).trim() || undefined,
-        status: String(row.status ?? '').trim() || undefined,
-        request_type: String(
-          row.request_type ?? row.requestType ?? '',
-        ).trim() || undefined,
-        reference: String(row.reference ?? row.request_number ?? row.requestNumber ?? '')
-          .trim() || undefined,
-        request_number: String(row.request_number ?? row.requestNumber ?? '')
-          .trim() || undefined,
+        job_id: pickStr(row.job_id, row.jobId, job?.id),
+        job_number: pickStr(
+          row.job_number,
+          row.jobNumber,
+          job?.job_number,
+          job?.jobNumber,
+          job?.number,
+        ),
+        status: pickStr(row.status),
+        request_type: pickStr(row.request_type, row.requestType, row.type),
+        reference: pickStr(row.reference, requestNumber),
+        request_number: requestNumber,
+        trucker_id: pickStr(row.trucker_id, row.truckerId, trucker?.id),
+        trucker_name: pickStr(
+          row.trucker_name,
+          row.truckerName,
+          trucker?.name,
+          trucker?.display_name,
+          trucker?.displayName,
+        ),
       };
     })
     .filter((row) => row.id);

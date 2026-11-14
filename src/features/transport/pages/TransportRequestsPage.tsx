@@ -8,17 +8,37 @@ import { Input } from '@/components/ui/Input';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
+import { jobService } from '@/features/jobs/services/job.service';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
 import { isUuid } from '@/lib/isUuid';
 import { transportService, type TransportRequestRow } from '../services/transport.service';
 
-function label(row: TransportRequestRow): string {
-  const jobNo = row.job_number || (row.job_id ? String(row.job_id).slice(0, 8) : '');
-  const ref = row.reference || row.request_number || row.request_type || '';
-  if (jobNo && ref) return `${jobNo} — ${ref}`;
-  if (jobNo) return jobNo;
-  if (ref) return String(ref);
-  return row.id;
+function humanizeToken(value?: string): string {
+  if (!value) return '';
+  return value.replace(/_/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
+function requestDisplayName(row: TransportRequestRow): string {
+  const named =
+    row.request_number ||
+    row.reference ||
+    (row.request_type ? `${humanizeToken(row.request_type)} request` : '');
+  if (named && !isUuid(named)) return named;
+  if (row.request_type) return `${humanizeToken(row.request_type)} request`;
+  return 'Transport request';
+}
+
+function jobDisplayName(row: TransportRequestRow, hydrated?: string): string {
+  const named = row.job_number || hydrated || '';
+  if (named && !isUuid(named)) return named;
+  return 'Job';
+}
+
+function listLabel(row: TransportRequestRow, hydratedJob?: string): string {
+  const job = jobDisplayName(row, hydratedJob);
+  const req = requestDisplayName(row);
+  if (job !== 'Job') return `${job} — ${req}`;
+  return req;
 }
 
 export default function TransportRequestsPage() {
@@ -34,6 +54,36 @@ export default function TransportRequestsPage() {
   const [statusFilter, setStatusFilter] = useState('');
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const jobIdsNeedingNames = useMemo(() => {
+    const ids = new Set<string>();
+    for (const row of list.data ?? []) {
+      if (row.job_id && isUuid(row.job_id) && !row.job_number) ids.add(row.job_id);
+    }
+    return [...ids].sort();
+  }, [list.data]);
+
+  const jobLabelsQuery = useQuery({
+    queryKey: ['transport-requests', 'job-labels', jobIdsNeedingNames],
+    enabled: jobIdsNeedingNames.length > 0,
+    staleTime: 60_000,
+    queryFn: async () => {
+      const entries = await Promise.all(
+        jobIdsNeedingNames.map(async (id) => {
+          try {
+            const job = await jobService.getById(id);
+            const number = String(job.job_number ?? '').trim();
+            return [id, number && !isUuid(number) ? number : ''] as const;
+          } catch {
+            return [id, ''] as const;
+          }
+        }),
+      );
+      return Object.fromEntries(entries) as Record<string, string>;
+    },
+  });
+
+  const jobLabelById = jobLabelsQuery.data ?? {};
 
   const truckerOptions = useMemo(
     () =>
@@ -67,6 +117,12 @@ export default function TransportRequestsPage() {
   }, [list.data, statusFilter]);
 
   const current = rows.find((row) => row.id === selected) ?? rows[0];
+  const currentJobLabel = current
+    ? jobDisplayName(
+        current,
+        current.job_id ? jobLabelById[current.job_id] : undefined,
+      )
+    : '';
 
   return (
     <div className="space-y-4">
@@ -116,23 +172,26 @@ export default function TransportRequestsPage() {
                 Pass) to enqueue one here.
               </p>
             ) : null}
-            {rows.map((row) => (
-              <button
-                key={row.id}
-                type="button"
-                onClick={() => setSelected(row.id)}
-                className={`block w-full rounded-md px-3 py-2 text-left text-sm ${
-                  current?.id === row.id
-                    ? 'bg-[var(--color-primary-100)]'
-                    : 'hover:bg-[var(--color-neutral-50)]'
-                }`}
-              >
-                <span className="font-medium">{label(row)}</span>
-                <span className="ml-2 text-xs text-[var(--color-neutral-500)]">
-                  {String(row.status ?? '')}
-                </span>
-              </button>
-            ))}
+            {rows.map((row) => {
+              const hydrated = row.job_id ? jobLabelById[row.job_id] : undefined;
+              return (
+                <button
+                  key={row.id}
+                  type="button"
+                  onClick={() => setSelected(row.id)}
+                  className={`block w-full rounded-md px-3 py-2 text-left text-sm ${
+                    current?.id === row.id
+                      ? 'bg-[var(--color-primary-100)]'
+                      : 'hover:bg-[var(--color-neutral-50)]'
+                  }`}
+                >
+                  <span className="font-medium">{listLabel(row, hydrated)}</span>
+                  <span className="ml-2 text-xs text-[var(--color-neutral-500)]">
+                    {humanizeToken(row.status)}
+                  </span>
+                </button>
+              );
+            })}
           </div>
         </Card>
         {current ? (
@@ -141,20 +200,42 @@ export default function TransportRequestsPage() {
               <CardTitle>Actions</CardTitle>
             </CardHeader>
             <div className="space-y-3 px-4 pb-4">
-              <div className="space-y-1 text-xs text-[var(--color-neutral-500)]">
-                <p className="break-all">Request {current.id}</p>
+              <div className="space-y-1 text-sm text-[var(--color-neutral-700)]">
+                <p>
+                  <span className="text-xs font-medium text-[var(--color-neutral-500)]">
+                    Request{' '}
+                  </span>
+                  {requestDisplayName(current)}
+                </p>
                 {current.job_id ? (
                   <p>
-                    Job{' '}
+                    <span className="text-xs font-medium text-[var(--color-neutral-500)]">
+                      Job{' '}
+                    </span>
                     <Link
                       to={`/jobs/${current.job_id}`}
                       className="font-medium text-[var(--color-primary-600)] hover:underline"
                     >
-                      {current.job_number || current.job_id.slice(0, 8)}
+                      {currentJobLabel}
                     </Link>
                   </p>
                 ) : null}
-                {current.request_type ? <p>Type {String(current.request_type)}</p> : null}
+                {current.request_type ? (
+                  <p>
+                    <span className="text-xs font-medium text-[var(--color-neutral-500)]">
+                      Type{' '}
+                    </span>
+                    {humanizeToken(current.request_type)}
+                  </p>
+                ) : null}
+                {current.trucker_name ? (
+                  <p>
+                    <span className="text-xs font-medium text-[var(--color-neutral-500)]">
+                      Trucker{' '}
+                    </span>
+                    {current.trucker_name}
+                  </p>
+                ) : null}
               </div>
               <label className="block text-sm">
                 <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
