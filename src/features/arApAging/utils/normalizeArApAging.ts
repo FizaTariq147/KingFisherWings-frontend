@@ -444,20 +444,174 @@ function pickPendingChargeDescription(r: Record<string, unknown>): string | unde
   return narrativeFromRecord(r, { includeChargeLabels: true });
 }
 
+function humanizeToken(value?: string): string | undefined {
+  if (!value) return undefined;
+  return value.replace(/[_-]+/g, ' ').replace(/\s+/g, ' ').trim() || undefined;
+}
+
+function formatStatusLabel(status?: string): string | undefined {
+  const label = humanizeToken(status);
+  return label ? `Status ${label}` : undefined;
+}
+
 function isCreditNoteType(type?: string): boolean {
   if (!type) return false;
   return /credit.?note|cn\b/i.test(type);
 }
 
+function docKindLabel(type?: string, side: 'AR' | 'AP' = 'AR'): string | undefined {
+  if (!type) return undefined;
+  if (isCreditNoteType(type)) return 'Credit note';
+  if (/debit.?note/i.test(type)) return 'Debit note';
+  if (/receipt/i.test(type)) return 'Receipt';
+  if (/payment|allocation/i.test(type)) return side === 'AR' ? 'Receipt' : 'Payment';
+  if (/customer.?invoice|sales.?invoice|invoice|sales|purchase/i.test(type)) {
+    return side === 'AP' ? 'Purchase invoice' : 'Sales invoice';
+  }
+  return humanizeToken(type);
+}
+
+function allocationReferences(r: Record<string, unknown>): string | undefined {
+  const single = firstStr(r, [
+    'invoice_number',
+    'against_invoice',
+    'against_reference',
+    'allocated_to',
+    'allocation_reference',
+    'document_number',
+  ]);
+  if (single) return single;
+
+  const lists = [r.allocations, r.applied_to, r.applications, r.invoices];
+  const numbers: string[] = [];
+  for (const list of lists) {
+    if (!Array.isArray(list)) continue;
+    for (const item of list) {
+      const row = asRecord(item);
+      if (!row) continue;
+      const ref = firstStr(row, [
+        'invoice_number',
+        'number',
+        'document_number',
+        'reference',
+        'payment_number',
+      ]);
+      if (ref && !numbers.includes(ref)) numbers.push(ref);
+    }
+  }
+  return numbers.length ? numbers.join(', ') : undefined;
+}
+
 /**
- * Description column: exact API narrative only (description / narration / remarks /
- * charge_description / line-item descriptions). No composed type/job/paid fallbacks.
+ * Prefer exact API narrative (description / narration / remarks / charge_description /
+ * line items). If those are absent (common on CUSTOMER_INVOICE headers), compose from
+ * type + job/LPO/due/method so the Description column is never blank.
  */
 function buildStatementDescription(
   r: Record<string, unknown>,
-  _opts: { side?: 'AR' | 'AP'; kind?: 'invoice' | 'payment' | 'line' } = {},
+  opts: { side?: 'AR' | 'AP'; kind?: 'invoice' | 'payment' | 'line' } = {},
 ): string | undefined {
-  return pickNarrative(r);
+  const side = opts.side ?? 'AR';
+  const type =
+    firstStr(r, ['type', 'document_type', 'invoice_type', 'payment_type']) ??
+    (opts.kind === 'payment' ? 'PAYMENT' : opts.kind === 'invoice' ? 'INVOICE' : undefined);
+  const narrative = pickNarrative(r);
+
+  const kind =
+    opts.kind ??
+    (type && /payment|receipt|allocation/i.test(type)
+      ? 'payment'
+      : type && /invoice|credit.?note|debit.?note|sales|purchase/i.test(type)
+        ? 'invoice'
+        : 'line');
+
+  const parts: string[] = [];
+  if (narrative) {
+    parts.push(narrative);
+  } else {
+    const label =
+      docKindLabel(type, side) ??
+      (kind === 'payment' ? (side === 'AR' ? 'Receipt' : 'Payment') : undefined);
+    if (label) parts.push(label);
+  }
+
+  const lpo = firstStr(r, ['lpo_number', 'lpoNumber', 'lpo', 'po_number', 'purchase_order']);
+  if (lpo) parts.push(`LPO ${lpo}`);
+
+  const job = firstStr(r, [
+    'job_number',
+    'jobNumber',
+    'job_no',
+    'job_ref',
+    'job_reference',
+    'hawb',
+    'mawb',
+    'bl_number',
+  ]);
+  if (job) parts.push(`Job ${job}`);
+  else {
+    const jobId = firstStr(r, ['job_id', 'jobId']);
+    if (jobId && !isLikelyUuid(jobId)) parts.push(`Job ${jobId}`);
+  }
+
+  if (kind === 'invoice' || kind === 'line') {
+    const due = firstStr(r, ['due_date', 'dueDate']);
+    if (due) parts.push(`Due ${due}`);
+
+    const total = num(r.total_amount) || num(r.totalAmount) || num(r.amount);
+    const paid =
+      num(r.paid_amount) || num(r.amount_paid) || num(r.paidAmount) || num(r.paid);
+    const remaining =
+      num(r.balance_due) ||
+      num(r.outstanding_balance) ||
+      num(r.outstandingBalance) ||
+      (total > 0 && paid >= 0 ? Math.max(0, total - paid) : 0);
+    if (paid > 0) parts.push(`Paid ${paid}`);
+    if (remaining > 0) parts.push(`Remaining ${remaining}`);
+  }
+
+  if (kind === 'payment' || kind === 'line') {
+    const method = humanizeToken(
+      firstStr(r, [
+        'payment_method',
+        'paymentMethod',
+        'method',
+        'mode',
+        'payment_mode',
+        'instrument',
+      ]),
+    );
+    if (method) parts.push(method);
+
+    const bank = firstStr(r, ['bank_name', 'bankName', 'bank', 'account_name']);
+    if (bank) parts.push(bank);
+
+    const cheque = firstStr(r, [
+      'cheque_number',
+      'check_number',
+      'cheque_no',
+      'instrument_number',
+    ]);
+    if (cheque) parts.push(`Cheque ${cheque}`);
+
+    const against = allocationReferences(r);
+    if (against) parts.push(`Against ${against}`);
+  }
+
+  // Status only when we have no narrative (avoid "POSTED" as the whole description).
+  if (!narrative) {
+    const statusPart = formatStatusLabel(firstStr(r, ['status']));
+    if (statusPart) parts.push(statusPart);
+  }
+
+  const seen = new Set<string>();
+  const unique = parts.filter((part) => {
+    const key = part.toLowerCase();
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  });
+  return unique.length ? unique.join(' · ') : undefined;
 }
 
 function normalizeArPaymentStatus(raw: unknown): string | undefined {
