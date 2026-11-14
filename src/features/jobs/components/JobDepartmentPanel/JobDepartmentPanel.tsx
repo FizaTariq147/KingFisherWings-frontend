@@ -7,12 +7,18 @@ import { erpForm } from '@/lib/erpForm';
 import { isUuid } from '@/lib/isUuid';
 import { useJobLookupsDropdowns } from '../../hooks/useJobs';
 import { useJobTabResourceMutations } from '../../hooks/useJobTabResources';
+import { jobService } from '../../services/job.service';
 import type {
   Job,
   JobDepartmentTabMeta,
   JobLookupNamedOption,
 } from '../../types/job.types';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+
+/** Org department "Transport" handoffs land on /operations/transport-requests. */
+function isTransportDepartmentName(name?: string): boolean {
+  return Boolean(name && /transport/i.test(name.trim()));
+}
 
 function namedLabel(opt: JobLookupNamedOption): string {
   if (opt.code && opt.name) return `${opt.code} — ${opt.name}`;
@@ -265,7 +271,26 @@ export function JobDepartmentPanel({
           : { user_name: emp?.email || emp?.name || passUserKey.trim() }),
         ...(passNotes.trim() ? { notes: passNotes.trim() } : {}),
       });
-      setMsg('Job passed to the selected department and assignee.');
+
+      let transportNote = '';
+      if (isTransportDepartmentName(department)) {
+        try {
+          const existing = await jobService.listTransportRequests(job.id);
+          if (!existing.length) {
+            await jobService.createTransportRequest(job.id, {
+              request_type: 'PICKUP',
+              cargo_details: passNotes.trim() || undefined,
+            });
+          }
+          transportNote =
+            ' It will appear under Transport → Transport requests for trucker / pickup / transit / delivery.';
+        } catch {
+          transportNote =
+            ' Pass succeeded; create a transport request from the job if it does not yet appear on Transport requests.';
+        }
+      }
+
+      setMsg(`Job passed to the selected department and assignee.${transportNote}`);
       setPassNotes('');
       onChanged?.();
     } catch (err) {
@@ -394,7 +419,8 @@ export function JobDepartmentPanel({
           </p>
           <p className="text-[12px] text-[#64748b]">
             Sets org department + branch and assigns an ops user. Assignee lists handed-off
-            jobs with “Assigned to me” (ops_user_id).
+            jobs with “Assigned to me” (ops_user_id). Passing to <strong>Transport</strong>{' '}
+            also opens a request on Transport → Transport requests.
           </p>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <label className="block min-w-0">
