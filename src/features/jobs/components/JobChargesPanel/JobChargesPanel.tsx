@@ -505,6 +505,18 @@ interface JobChargesPanelProps {
   onChanged?: () => void;
 }
 
+/** Survives panel remount after attachment upload / job invalidate. */
+type SideAttachCounts = Record<string, { SALE?: number; COST?: number }>;
+const SIDE_ATTACH_COUNTS_BY_JOB = new Map<string, SideAttachCounts>();
+
+function readSideAttachCounts(jobId: string): SideAttachCounts {
+  return { ...(SIDE_ATTACH_COUNTS_BY_JOB.get(jobId) ?? {}) };
+}
+
+function writeSideAttachCounts(jobId: string, next: SideAttachCounts) {
+  SIDE_ATTACH_COUNTS_BY_JOB.set(jobId, next);
+}
+
 export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const [showHistory, setShowHistory] = useState(false);
   const [gridFilter, setGridFilter] = useState<GridFilter>('all');
@@ -885,9 +897,9 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const [attachDownloadVendor, setAttachDownloadVendor] = useState(false);
   const [attachModalOpen, setAttachModalOpen] = useState(false);
   /** Per-side paperclip badges — never mirror line attachment_count onto both sides. */
-  const [sideAttachCounts, setSideAttachCounts] = useState<
-    Record<string, { SALE?: number; COST?: number }>
-  >({});
+  const [sideAttachCounts, setSideAttachCounts] = useState<SideAttachCounts>(() =>
+    readSideAttachCounts(job.id),
+  );
   const attachListQuery = useJobChargeAttachments(
     job.id,
     attachChargeId,
@@ -896,12 +908,28 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   );
 
   useEffect(() => {
+    setSideAttachCounts(readSideAttachCounts(job.id));
+  }, [job.id]);
+
+  const updateSideAttachCounts = (
+    updater: (prev: SideAttachCounts) => SideAttachCounts,
+  ) => {
+    setSideAttachCounts((prev) => {
+      const next = updater(prev);
+      writeSideAttachCounts(job.id, next);
+      return next;
+    });
+  };
+
+  useEffect(() => {
     if (!attachModalOpen || !isUuid(attachChargeId)) return;
     if (attachSide !== 'SALE' && attachSide !== 'COST') return;
-    if (!attachListQuery.isSuccess) return;
+    if (!attachListQuery.isSuccess || attachListQuery.isFetching) return;
     const n = attachListQuery.data?.length ?? 0;
-    setSideAttachCounts((prev) => {
+    updateSideAttachCounts((prev) => {
       const cur = prev[attachChargeId]?.[attachSide];
+      // Never clobber a bumped local count with a transient empty refetch.
+      if (cur != null && n < cur) return prev;
       if (cur === n) return prev;
       return {
         ...prev,
@@ -916,6 +944,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     attachChargeId,
     attachSide,
     attachListQuery.isSuccess,
+    attachListQuery.isFetching,
     attachListQuery.data,
   ]);
   const [sideEdit, setSideEdit] = useState<{
@@ -1047,7 +1076,7 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
       side === 'SALE'
         ? line?.sale?.attachment_count
         : line?.cost?.attachment_count;
-    setSideAttachCounts((prev) => {
+    updateSideAttachCounts((prev) => {
       const base = prev[chargeId]?.[side] ?? fromApi ?? 0;
       return {
         ...prev,
