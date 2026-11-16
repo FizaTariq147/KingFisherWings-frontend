@@ -28,6 +28,7 @@ import type {
   ProrateToShipmentsDto,
   UpsertJobReferencesDto,
   PutJobGpumDto,
+  CreateJobReopenRequestDto,
   ReopenJobDto,
   SchedulePreAlertDto,
   SendPreAlertDto,
@@ -67,6 +68,14 @@ export function useJobActions(jobId: string) {
   const reopen = useMutation({
     mutationFn: (dto?: ReopenJobDto) => jobService.reopen(id, dto ?? {}),
     onSuccess: () => invalidate(id),
+  });
+  const createReopenRequest = useMutation({
+    mutationFn: (dto: CreateJobReopenRequestDto) =>
+      jobService.createReopenRequest(id, dto),
+    onSuccess: () => {
+      invalidate(id);
+      void queryClient.invalidateQueries({ queryKey: jobKeys.reopenRequestsRoot });
+    },
   });
   const stop = useMutation({
     mutationFn: (dto?: StopJobDto) => jobService.stop(id, dto ?? {}),
@@ -543,6 +552,7 @@ export function useJobActions(jobId: string) {
     close,
     changeStatus,
     reopen,
+    createReopenRequest,
     stop,
     resume,
     patchHold,

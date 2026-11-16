@@ -61,7 +61,17 @@ export interface JobListParams {
   ops_user_id?: string;
   branch_id?: string;
   company_id?: string;
+  /**
+   * Org department filter — admin MIS only.
+   * Staff must not send this for ACL; after dept-pass, BE uses actor User.department_id
+   * automatically so handoff jobs appear without a department_id query.
+   */
   department_id?: string;
+  /**
+   * Optional explicit “my org dept” list preset (BE uses actor User.department_id).
+   * Prefer omitting department_id for staff; use `mine` only when UI needs the preset.
+   */
+  org_department_scope?: 'mine' | string;
   created_by?: string;
   origin_port_id?: string;
   dest_port_id?: string;
@@ -879,7 +889,17 @@ export interface JobPnl {
 /** Fresa GET /jobs/:id/detail action flags. */
 export interface JobActions {
   can_change_status?: boolean;
+  /**
+   * Direct POST /jobs/:id/reopen — Tenant Admin only.
+   * Staff use can_request_reopen → reopen-requests instead.
+   */
   can_reopen?: boolean;
+  /** Staff with jobs.update may create a PENDING reopen request while CLOSED/terminal. */
+  can_request_reopen?: boolean;
+  /** Tenant Admin only — approve pending reopen request. */
+  can_approve_reopen?: boolean;
+  /** Tenant Admin only — reject pending reopen request. */
+  can_reject_reopen?: boolean;
   can_stop?: boolean;
   can_resume?: boolean;
   can_close?: boolean;
@@ -916,10 +936,77 @@ export interface JobActions {
   /** Sea ↔ air isolation (GET detail actions). */
   can_edit_air_fields?: boolean;
   can_edit_sea_fields?: boolean;
+  /**
+   * Handoff-dept limited ops surface (containers / assign trucker / port-token).
+   * Set when actor’s only path is org-dept or assignee handoff (not full ops).
+   */
+  can_view_containers?: boolean;
+  can_assign_trucker?: boolean;
+  can_port_token?: boolean;
+  /** `handoff_limited` | `full` — strip costing/show_all/finance when handoff_limited. */
+  view_mode?: 'full' | 'handoff_limited' | string;
   /** Permitted status values when provided by backend. */
   allowed_statuses?: string[];
   raw?: Record<string, unknown>;
-  [key: string]: boolean | string[] | Record<string, unknown> | undefined;
+  [key: string]: boolean | string | string[] | Record<string, unknown> | undefined;
+}
+
+export type JobReopenRequestStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+/** POST /jobs/:id/reopen-requests */
+export interface CreateJobReopenRequestDto {
+  reason: string;
+  target_status?: JobStatus | string;
+}
+
+/** POST /jobs/reopen-requests/:id/approve|reject */
+export interface ReviewJobReopenRequestDto {
+  notes?: string | null;
+  /** Required when rejecting (minLength 3). */
+  reason?: string;
+}
+
+export interface JobReopenRequestListParams {
+  status?: JobReopenRequestStatus;
+  job_id?: string;
+  page?: number;
+  limit?: number;
+}
+
+export interface JobReopenRequest {
+  id: string;
+  job_id: string;
+  tenant_id?: string;
+  requested_by?: string;
+  requested_by_name?: string;
+  reason: string;
+  target_status?: string;
+  status: JobReopenRequestStatus | string;
+  reviewed_by?: string | null;
+  reviewed_by_name?: string | null;
+  review_notes?: string | null;
+  reviewed_at?: string | null;
+  created_at?: string;
+  updated_at?: string;
+  job_number?: string;
+  job_status?: string;
+  job_type?: string;
+  job?: {
+    id: string;
+    job_number?: string;
+    status?: string;
+    job_type?: string;
+  } | null;
+}
+
+export interface JobReopenRequestListResult {
+  items: JobReopenRequest[];
+  meta?: {
+    page?: number;
+    limit?: number;
+    total?: number;
+    totalPages?: number;
+  };
 }
 
 export interface JobDetailTab {
@@ -1523,6 +1610,11 @@ export interface Job {
   updated_at?: string;
   /** From GET /jobs/:id/detail */
   actions?: JobActions;
+  /**
+   * Detail view mode — prefer actions.view_mode; mirrored at root when BE sends it.
+   * `handoff_limited` = containers + trucker + port-token only.
+   */
+  view_mode?: 'full' | 'handoff_limited' | string;
   /** AIR | SEA from detail (sea ↔ air isolation). */
   transport_mode?: string;
   /** GET /jobs/:id/detail path_hints — ops report / sync deep-links */

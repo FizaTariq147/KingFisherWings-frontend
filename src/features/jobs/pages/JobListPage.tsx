@@ -54,7 +54,8 @@ function stampJobForSegment(
 
 /**
  * Operation department job list (staff + admin) — same rules for both:
- * - ACL = job type grants for this department (not org department_id, not creator)
+ * - ACL = job type grants for this department OR org-dept handoff OR assignee
+ *   (not org department_id query — BE uses actor User.department_id)
  * - Show every job of those types created by admin or staff
  * - Staff with any grant in the segment sees the full department type set
  *   (e.g. Sea Export = FCL+LCL), matching admin department pages

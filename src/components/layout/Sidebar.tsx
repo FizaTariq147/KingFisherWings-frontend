@@ -31,6 +31,7 @@ import {
   Package,
   Link2,
   Activity,
+  RotateCcw,
   type LucideIcon,
 } from 'lucide-react';
 import { useUIStore } from '@/store/uiStore';
@@ -175,6 +176,7 @@ const SIDEBAR_ICON_STYLES: Record<string, NavIconStyle> = {
   '/organization': navStyle('#06B6D4'),
   '/parties': navStyle('#CA8A04'),
   '/admin/users': navStyle('#C026D3'),
+  '/jobs/reopen-requests': navStyle('#0D9488'),
   '/admin/integrations/quote-requests': navStyle('#7C3AED'),
   '/superadmin/dashboard': navStyle('#0284C7'),
   '/superadmin/companies': navStyle('#B45309'),
@@ -679,6 +681,16 @@ const ADMIN_QUOTE_REQUESTS_NAV_ITEM: NavItem = {
   activePrefix: '/admin/integrations/quote-requests',
 };
 
+/** Tenant Admin only — approve/reject staff reopen requests (not Branch Manager). */
+const ADMIN_REOPEN_REQUESTS_NAV_ITEM: NavItem = {
+  label: 'Reopen requests',
+  path: '/jobs/reopen-requests',
+  Icon: RotateCcw,
+  permission: null,
+  adminOnly: true,
+  activePrefix: '/jobs/reopen-requests',
+};
+
 const SUPER_ADMIN_NAV_ITEMS: NavItem[] = [
   { label: 'Platform', path: '/superadmin/dashboard', Icon: Globe, permission: null },
   { label: 'Companies', path: '/superadmin/companies', Icon: Briefcase, permission: null },
@@ -927,6 +939,7 @@ export function Sidebar({ mobile = false, onNavigate }: SidebarProps) {
               ADMIN_MASTERS_NAV_ITEM,
               ADMIN_ORGANIZATION_NAV_ITEM,
               ADMIN_USERS_NAV_ITEM,
+              ADMIN_REOPEN_REQUESTS_NAV_ITEM,
               ADMIN_QUOTE_REQUESTS_NAV_ITEM,
               ADMIN_BILLING_NAV_ITEM,
             ].map(

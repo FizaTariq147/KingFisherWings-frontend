@@ -88,10 +88,20 @@ import {
 import { useAuth } from '@/hooks/useAuth';
 import { isUuid } from '@/lib/isUuid';
 import {
+  isTenantUserManagerRole,
+  resolveAuthRoleSlug,
+  TENANT_USER_MANAGER_ROLE_SLUGS,
+} from '@/features/users/constants/userPermissions';
+import { RoadLandWorkflowPanel } from '../components/RoadLandWorkflowPanel';
+import {
   canCancelJob,
   canDeleteJob,
   canEditJob,
 } from '../utils/canDeleteJob';
+import {
+  isHandoffLimitedJob,
+  isJobHardClosed,
+} from '../utils/isHandoffLimitedJob';
 
 function statusTone(status: string): 'emerald' | 'amber' | 'rose' | 'slate' {
   if (status === 'COMPLETED' || status === 'CLOSED' || status === 'DELIVERED') {
@@ -167,7 +177,12 @@ function OptionalFresaField({
 }
 
 export default function JobDetailPage() {
-  const { user } = useAuth();
+  const { user, hasRole } = useAuth();
+  const roleSlug = resolveAuthRoleSlug(user?.role);
+  const isTenantAdmin =
+    isTenantUserManagerRole(roleSlug) ||
+    TENANT_USER_MANAGER_ROLE_SLUGS.some((s) => hasRole(s));
+  const [requestReopenMode, setRequestReopenMode] = useState(false);
   const { id = '' } = useParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -228,7 +243,9 @@ export default function JobDetailPage() {
   const resolvedShipmentId =
     job?.shipment_id && isUuid(job.shipment_id) ? job.shipment_id : undefined;
 
-  const canTracking = job?.actions?.can_tracking !== false;
+  const handoffLimited = isHandoffLimitedJob(job);
+  const canTracking =
+    !handoffLimited && job?.actions?.can_tracking !== false;
 
   const openTrackTrace = () => {
     const params = new URLSearchParams(location.search);
@@ -476,9 +493,10 @@ export default function JobDetailPage() {
         />
       ),
     }));
+    const handoff = isHandoffLimitedJob(job);
     return [
       ...apiTabs,
-      ...(canTracking
+      ...(canTracking && !handoff
         ? [
             {
               key: 'tracking',
@@ -493,17 +511,44 @@ export default function JobDetailPage() {
             },
           ]
         : []),
-      {
-        key: 'section-files',
-        label: 'Section files',
-        content: (
-          <EntitySectionFilesPanel
-            entity="jobs"
-            entityId={job.id}
-            title="Section files"
-          />
-        ),
-      },
+      ...(!handoff
+        ? [
+            {
+              key: 'section-files',
+              label: 'Section files',
+              content: (
+                <EntitySectionFilesPanel
+                  entity="jobs"
+                  entityId={job.id}
+                  title="Section files"
+                />
+              ),
+            },
+          ]
+        : []),
+      ...(handoff && job.actions?.can_assign_trucker !== false
+        ? [
+            {
+              key: 'handoff-trucker',
+              label: 'Assign trucker',
+              content: (
+                <div className="space-y-3">
+                  <RoadLandWorkflowPanel job={job} handoffLimited />
+                  <p className="text-[12px] text-[#64748B]">
+                    Or open{' '}
+                    <Link
+                      to="/operations/transport-requests"
+                      className="font-medium text-[var(--color-primary-700)] underline-offset-2 hover:underline"
+                    >
+                      Transport requests
+                    </Link>{' '}
+                    to assign a trucker on a transport request.
+                  </p>
+                </div>
+              ),
+            },
+          ]
+        : []),
     ];
   }, [
     job,
@@ -533,11 +578,17 @@ export default function JobDetailPage() {
     );
   }
 
-  const editable = canEditJob(job, user);
-  const canDelete = canDeleteJob(job, user);
+  const editable = canEditJob(job, user) && !handoffLimited;
+  const canDelete = !handoffLimited && canDeleteJob(job, user);
   const fclActions = job.actions;
-  const canChangeStatus = fclActions?.can_change_status !== false;
+  const hardClosed = isJobHardClosed(job);
+  // CLOSED: changeStatus must not leave CLOSED except via approved reopen.
+  const canChangeStatus =
+    !hardClosed &&
+    !handoffLimited &&
+    fclActions?.can_change_status !== false;
   const canStop =
+    !handoffLimited &&
     fclActions?.can_stop !== false &&
     editable &&
     job.status !== 'ON_HOLD' &&
@@ -545,29 +596,44 @@ export default function JobDetailPage() {
     job.status !== 'CLOSED' &&
     job.status !== 'CANCELLED';
   const canResume =
+    !handoffLimited &&
     job.status === 'ON_HOLD' &&
     (fclActions?.can_resume === true ||
       (fclActions?.can_resume !== false && editable));
-  const canReopen =
-    fclActions?.can_reopen === true ||
-    (fclActions?.can_reopen !== false &&
-      JOB_REOPENABLE_STATUSES.includes(job.status as JobStatus));
+  /** Direct POST /jobs/:id/reopen — Tenant Admin only (not Branch Manager). */
+  const canDirectReopen =
+    isTenantAdmin &&
+    !handoffLimited &&
+    (fclActions?.can_reopen === true ||
+      (fclActions?.can_reopen !== false &&
+        JOB_REOPENABLE_STATUSES.includes(job.status as JobStatus)));
+  /** Staff: create PENDING reopen request (jobs.update). */
+  const canRequestReopen =
+    !isTenantAdmin &&
+    !handoffLimited &&
+    JOB_REOPENABLE_STATUSES.includes(job.status as JobStatus) &&
+    (fclActions?.can_request_reopen === true ||
+      (fclActions?.can_request_reopen !== false &&
+        (fclActions?.can_reopen === true || hardClosed || job.status === 'COMPLETED' || job.status === 'CANCELLED' || job.status === 'DELIVERED')));
   const isClosedJob =
     job.status === 'COMPLETED' ||
     job.status === 'CLOSED' ||
     job.status === 'DELIVERED' ||
     Boolean((job as { is_closed?: boolean }).is_closed);
+  /** PATCH closed-overrides — allowlisted delivery fields while CLOSED (+ permission). */
   const canEditClosedDelivery =
+    !handoffLimited &&
     isClosedJob &&
     (fclActions?.can_edit_closed_delivery === true ||
-      fclActions?.can_edit_closed_delivery !== false);
+      (hardClosed && fclActions?.can_edit_closed_delivery !== false));
   // POST /jobs/:id/close → CLOSED; allowed from any non-CLOSED/CANCELLED (incl. COMPLETED).
   const canClose =
+    !handoffLimited &&
     fclActions?.can_close !== false &&
     job.status !== 'CLOSED' &&
     job.status !== 'CANCELLED';
-  const canCancel = canCancelJob(job, user);
-  const canCopy = fclActions?.can_copy !== false;
+  const canCancel = !handoffLimited && canCancelJob(job, user);
+  const canCopy = !handoffLimited && fclActions?.can_copy !== false;
   const actionPanels = resolveJobActionPanels(job, {
     houseJobsCount: houseJobs.length,
   });
@@ -702,8 +768,32 @@ export default function JobDetailPage() {
         backTo={prefix}
         backLabel={`${segmentLabel} jobs`}
         banner={
-          (actionError || costingWarningMessage || actionMessage) ? (
+          hardClosed ||
+          handoffLimited ||
+          actionError ||
+          costingWarningMessage ||
+          actionMessage ? (
             <div className="space-y-2">
+              {hardClosed ? (
+                <div
+                  role="status"
+                  className="rounded-sm border border-slate-200 bg-slate-50 px-3 py-2 text-[13px] text-slate-700"
+                >
+                  Job is closed. Mutations are locked — request reopen and wait for Tenant Admin
+                  approval
+                  {isTenantAdmin ? ' (or reopen directly / from the reopen inbox)' : ''}.
+                  Delivery-only fields may still use Closed overrides when permitted.
+                </div>
+              ) : null}
+              {handoffLimited ? (
+                <div
+                  role="status"
+                  className="rounded-sm border border-sky-200 bg-sky-50 px-3 py-2 text-[13px] text-sky-900"
+                >
+                  Limited handoff view — containers, assign trucker, and port token only. Full
+                  costing / show-all stay with ops roles that have full access.
+                </div>
+              ) : null}
               {(actionError || costingWarningMessage) && (
                 <div
                   role="alert"
@@ -1095,7 +1185,7 @@ export default function JobDetailPage() {
                 </Button>
               </>
             ) : null}
-            {canReopen ? (
+            {canDirectReopen ? (
               <Button
                 size="sm"
                 type="button"
@@ -1103,12 +1193,41 @@ export default function JobDetailPage() {
                 leftIcon={<RotateCcw />}
                 disabled={pending || actions.reopen.isPending}
                 onClick={() => {
+                  setRequestReopenMode(false);
                   setReopenStatus('IN_PROGRESS');
                   setReopenReason('');
                   setReopenOpen(true);
                 }}
               >
                 Reopen
+              </Button>
+            ) : null}
+            {canRequestReopen ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="report"
+                leftIcon={<RotateCcw />}
+                disabled={pending || actions.createReopenRequest.isPending}
+                onClick={() => {
+                  setRequestReopenMode(true);
+                  setReopenStatus('IN_PROGRESS');
+                  setReopenReason('');
+                  setReopenOpen(true);
+                }}
+              >
+                Request reopen
+              </Button>
+            ) : null}
+            {isTenantAdmin && !handoffLimited ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="secondary"
+                disabled={pending}
+                onClick={() => navigate('/jobs/reopen-requests')}
+              >
+                Reopen inbox
               </Button>
             ) : null}
             {canEditClosedDelivery ? (
@@ -1131,16 +1250,18 @@ export default function JobDetailPage() {
                 Closed overrides
               </Button>
             ) : null}
-            <Button
-              size="sm"
-              type="button"
-              variant="report"
-              leftIcon={<Radio />}
-              disabled={pending}
-              onClick={() => setEdiOpen(true)}
-            >
-              Generate EDI
-            </Button>
+            {!hardClosed && !handoffLimited ? (
+              <Button
+                size="sm"
+                type="button"
+                variant="report"
+                leftIcon={<Radio />}
+                disabled={pending}
+                onClick={() => setEdiOpen(true)}
+              >
+                Generate EDI
+              </Button>
+            ) : null}
             {canTracking ? (
               <Button
                 size="sm"
@@ -1511,7 +1632,7 @@ export default function JobDetailPage() {
         <Modal
           open
           onClose={() => !pending && setReopenOpen(false)}
-          title="Reopen job"
+          title={requestReopenMode ? 'Request job reopen' : 'Reopen job'}
           footer={
             <div className="flex justify-end gap-2">
               <Button
@@ -1528,22 +1649,47 @@ export default function JobDetailPage() {
                 size="sm"
                 variant="report"
                 leftIcon={<RotateCcw />}
-                disabled={pending}
+                disabled={
+                  pending ||
+                  (requestReopenMode && reopenReason.trim().length < 3)
+                }
                 onClick={() =>
                   void run(async () => {
+                    if (requestReopenMode) {
+                      await actions.createReopenRequest.mutateAsync({
+                        reason: reopenReason.trim(),
+                        target_status: reopenStatus || 'IN_PROGRESS',
+                      });
+                      setReopenOpen(false);
+                      return;
+                    }
                     await actions.reopen.mutateAsync({
                       status: reopenStatus,
                       ...(reopenReason.trim() ? { reason: reopenReason.trim() } : {}),
                     });
                     setReopenOpen(false);
-                  }, 'Job reopened.')
+                  }, requestReopenMode
+                    ? 'Reopen request submitted — waiting for Tenant Admin approval.'
+                    : 'Job reopened.')
                 }
               >
-                {pending ? 'Reopening…' : 'Reopen'}
+                {pending
+                  ? requestReopenMode
+                    ? 'Submitting…'
+                    : 'Reopening…'
+                  : requestReopenMode
+                    ? 'Submit request'
+                    : 'Reopen'}
               </Button>
             </div>
           }
         >
+          {requestReopenMode ? (
+            <p className="mb-3 text-[13px] text-[#475569]">
+              Job is locked while closed. A Tenant Admin must approve before edits are allowed
+              again. Branch Managers cannot approve reopen requests.
+            </p>
+          ) : null}
           <label className="mb-3 block text-[13px]">
             <span className="mb-1 block text-[12px] font-medium text-[#334155]">Target status</span>
             <select
@@ -1564,12 +1710,15 @@ export default function JobDetailPage() {
             </select>
           </label>
           <label className="block text-[13px]">
-            <span className="mb-1 block text-[12px] font-medium text-[#334155]">Reason (optional)</span>
+            <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+              {requestReopenMode ? 'Reason (required)' : 'Reason (optional)'}
+            </span>
             <input
               className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
               value={reopenReason}
               onChange={(e) => setReopenReason(e.target.value)}
-              maxLength={500}
+              maxLength={requestReopenMode ? 2000 : 500}
+              required={requestReopenMode}
             />
           </label>
         </Modal>

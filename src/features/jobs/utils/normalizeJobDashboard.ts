@@ -78,6 +78,8 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
     0;
   const completed =
     pickNumber(inner, ['completed', 'completed_count']) ?? byStatus.COMPLETED ?? 0;
+  const closed =
+    pickNumber(inner, ['closed', 'closed_count', 'closedCount']) ?? byStatus.CLOSED ?? 0;
   const inProgress =
     pickNumber(inner, ['in_progress', 'inProgress']) ?? byStatus.IN_PROGRESS ?? 0;
 
@@ -133,6 +135,7 @@ export function normalizeJobDashboardCounts(raw: unknown): JobDashboardCounts {
     delivered,
     cancelled,
     completed,
+    closed,
     inProgress,
     open: Math.max(0, open),
     ...(createdInPeriod != null ? { createdInPeriod } : {}),

@@ -193,6 +193,173 @@ function xlsxHeaders(buf) {
   return { sheetName, headers: headers.map((header) => header.trim()).filter(Boolean) };
 }
 
+function colorOf(args) {
+  const raw =
+    args && typeof args.length === 'number' && args.length >= 3 && typeof args[0] === 'number'
+      ? args
+      : args && args[0] && args[0].length >= 3
+        ? args[0]
+        : null;
+  if (!raw) {
+    const gray = typeof args === 'number' ? args : args && typeof args[0] === 'number' ? args[0] : 0;
+    const v = Math.round((gray <= 1 ? gray : gray / 255) * 255);
+    return [v, v, v];
+  }
+  const scale = raw[0] <= 1 && raw[1] <= 1 && raw[2] <= 1 ? 255 : 1;
+  return [0, 1, 2].map((index) => Math.round(raw[index] * scale));
+}
+
+function nearWhite(color) {
+  return color[0] > 245 && color[1] > 245 && color[2] > 245;
+}
+
+function identityCtm() {
+  return [1, 0, 0, 1, 0, 0];
+}
+
+/** PDF cm: new CTM = current × matrix (matrix applies to the point first). */
+function multiplyCtm(ctm, matrix) {
+  const [a0, b0, c0, d0, e0, f0] = ctm;
+  const [a, b, c, d, e, f] = matrix;
+  return [
+    a0 * a + c0 * b,
+    b0 * a + d0 * b,
+    a0 * c + c0 * d,
+    b0 * c + d0 * d,
+    a0 * e + c0 * f + e0,
+    b0 * e + d0 * f + f0,
+  ];
+}
+
+function mapPoint(ctm, x, y) {
+  return [ctm[0] * x + ctm[2] * y + ctm[4], ctm[1] * x + ctm[3] * y + ctm[5]];
+}
+
+function ctmScale(ctm) {
+  const sx = Math.hypot(ctm[0], ctm[1]);
+  const sy = Math.hypot(ctm[2], ctm[3]);
+  return (sx + sy) / 2 || 1;
+}
+
+function matrixOf(args) {
+  const raw = args && args.length === 6 ? args : args && args[0] && args[0].length === 6 ? args[0] : null;
+  if (!raw) return null;
+  return [0, 1, 2, 3, 4, 5].map((index) => Number(raw[index]) || 0);
+}
+
+function pushBox(rects, lines, minX, minY, maxX, maxY) {
+  const width = maxX - minX;
+  const height = maxY - minY;
+  if (width > 2 && height > 2) rects.push([minX, minY, width, height]);
+  else if (width > 4 && height >= 0.15 && height <= 2.5) {
+    lines.push([minX, minY + height / 2, maxX, minY + height / 2, height]);
+  } else if (height > 4 && width >= 0.15 && width <= 2.5) {
+    lines.push([minX + width / 2, minY, minX + width / 2, maxY, width]);
+  }
+}
+
+/**
+ * Turn a constructPath into page-space boxes and rules.
+ * Jasper paths are in the current CTM (often scaled and Y-flipped), not page points.
+ */
+function shapesFromPath(ops, nums, ctm) {
+  const rects = [];
+  const lines = [];
+  let j = 0;
+  let x = 0;
+  let y = 0;
+  let startX = 0;
+  let startY = 0;
+  let points = [];
+
+  function commit(closed) {
+    if (points.length < 2) {
+      points = [];
+      return;
+    }
+    const mapped = points.map((point) => mapPoint(ctm, point[0], point[1]));
+    if (closed) mapped.push(mapped[0]);
+    const xs = mapped.map((point) => point[0]);
+    const ys = mapped.map((point) => point[1]);
+    const minX = Math.min(...xs);
+    const maxX = Math.max(...xs);
+    const minY = Math.min(...ys);
+    const maxY = Math.max(...ys);
+    const axis = mapped.every((point, index) => {
+      if (index === 0) return true;
+      const prev = mapped[index - 1];
+      return Math.abs(point[0] - prev[0]) < 0.8 || Math.abs(point[1] - prev[1]) < 0.8;
+    });
+    if (closed && axis && mapped.length >= 4 && mapped.length <= 8) {
+      pushBox(rects, lines, minX, minY, maxX, maxY);
+    } else if (axis) {
+      for (let index = 1; index < mapped.length; index += 1) {
+        const prev = mapped[index - 1];
+        const point = mapped[index];
+        if (Math.hypot(point[0] - prev[0], point[1] - prev[1]) < 2) continue;
+        lines.push([prev[0], prev[1], point[0], point[1]]);
+      }
+    }
+    points = [];
+  }
+
+  for (const op of ops) {
+    if (op === 19) {
+      commit(false);
+      const rx = nums[j++];
+      const ry = nums[j++];
+      const width = nums[j++];
+      const height = nums[j++];
+      const corners = [
+        mapPoint(ctm, rx, ry),
+        mapPoint(ctm, rx + width, ry),
+        mapPoint(ctm, rx, ry + height),
+        mapPoint(ctm, rx + width, ry + height),
+      ];
+      pushBox(
+        rects,
+        lines,
+        Math.min(...corners.map((point) => point[0])),
+        Math.min(...corners.map((point) => point[1])),
+        Math.max(...corners.map((point) => point[0])),
+        Math.max(...corners.map((point) => point[1])),
+      );
+    } else if (op === 13) {
+      commit(false);
+      x = nums[j++];
+      y = nums[j++];
+      startX = x;
+      startY = y;
+      points = [[x, y]];
+    } else if (op === 14) {
+      x = nums[j++];
+      y = nums[j++];
+      points.push([x, y]);
+    } else if (op === 15) {
+      j += 6;
+      x = nums[j - 2];
+      y = nums[j - 1];
+    } else if (op === 16 || op === 17) {
+      j += 4;
+      x = nums[j - 2];
+      y = nums[j - 1];
+    } else if (op === 18) {
+      commit(true);
+      x = startX;
+      y = startY;
+    }
+  }
+  commit(false);
+  return { rects, lines };
+}
+
+function paintKind(fn) {
+  if (fn === 20 || fn === 21) return 'stroke';
+  if (fn === 22 || fn === 23) return 'fill';
+  if (fn === 24 || fn === 25 || fn === 26 || fn === 27) return 'both';
+  return null;
+}
+
 async function measurePdf(buf) {
   const doc = await getDocument({ data: new Uint8Array(buf), useSystemFonts: true }).promise;
   const pageCount = doc.numPages;
@@ -206,26 +373,78 @@ async function measurePdf(buf) {
       widthPt = round(viewport.width);
       heightPt = round(viewport.height);
     }
+    const pageArea = viewport.width * viewport.height;
     const rects = [];
     const lines = [];
+    const seenLines = new Set();
     const op = await page.getOperatorList();
-    let cx = 0;
-    let cy = 0;
+    let stroke = [20, 20, 24];
+    let fill = [255, 255, 255];
+    let lineWidth = 0.6;
+    let ctm = identityCtm();
+    const ctmStack = [];
+    const hitsPage = (x1, y1, x2, y2) => {
+      const minX = Math.min(x1, x2);
+      const maxX = Math.max(x1, x2);
+      const minY = Math.min(y1, y2);
+      const maxY = Math.max(y1, y2);
+      return maxX >= -8 && minX <= viewport.width + 8 && maxY >= -8 && minY <= viewport.height + 8;
+    };
     for (let i = 0; i < op.fnArray.length; i += 1) {
       const fn = op.fnArray[i];
       const args = op.argsArray[i];
-      if (fn === 19 && args && rects.length < 220) {
-        const [x, y, w, h] = args;
-        if (Math.abs(w) > 1 && Math.abs(h) > 1 && Math.abs(w) < viewport.width && Math.abs(h) < viewport.height) {
-          rects.push([round(x), round(y), round(Math.abs(w)), round(Math.abs(h))]);
+      if (fn === 2) lineWidth = Number(Array.isArray(args) ? args[0] : args) || 0.6;
+      else if (fn === 10) ctmStack.push(ctm);
+      else if (fn === 11) ctm = ctmStack.pop() || identityCtm();
+      else if (fn === 12) {
+        const matrix = matrixOf(args);
+        if (matrix) ctm = multiplyCtm(ctm, matrix);
+      } else if (fn === 58) stroke = colorOf(args);
+      else if (fn === 59) fill = colorOf(args);
+      else if (fn === 56 || fn === 57) {
+        const gray = colorOf(args);
+        if (fn === 56) stroke = gray;
+        else fill = gray;
+      } else if (fn === 91 && args && args[0] && args[1]) {
+        let next = i + 1;
+        while (next < op.fnArray.length && ![20, 21, 22, 23, 24, 25, 26, 27, 28, 29].includes(op.fnArray[next])) {
+          next += 1;
         }
-      } else if (fn === 13 && args) {
-        cx = args[0];
-        cy = args[1];
-      } else if (fn === 14 && args && lines.length < 180) {
-        lines.push([round(cx), round(cy), round(args[0]), round(args[1])]);
-        cx = args[0];
-        cy = args[1];
+        const kind = paintKind(op.fnArray[next]);
+        if (!kind || op.fnArray[next] === 29) continue;
+        const shapes = shapesFromPath(args[0], args[1], ctm);
+        const scale = ctmScale(ctm);
+        const doFill = kind === 'fill' || kind === 'both';
+        const doStroke = kind === 'stroke' || kind === 'both';
+        for (const [x, y, w, h] of shapes.rects) {
+          if (rects.length >= 520) break;
+          if (w * h > pageArea * 0.9) continue;
+          if (!hitsPage(x, y, x + w, y + h)) continue;
+          const chunkyBlack = fill[0] < 40 && fill[1] < 40 && fill[2] < 40 && Math.min(w, h) > 3.5;
+          if (doFill && !nearWhite(fill) && !chunkyBlack) {
+            rects.push([round(x), round(y), round(w), round(h), fill[0], fill[1], fill[2], 1]);
+          }
+          if (doStroke) rects.push([round(x), round(y), round(w), round(h), stroke[0], stroke[1], stroke[2], 0]);
+        }
+        const ruleColor = doFill && !nearWhite(fill) ? fill : stroke;
+        const strokeThickness = Math.max(0.35, Math.min((lineWidth || 0.6) * scale, 2.2));
+        for (const [x1, y1, x2, y2, hairline] of shapes.lines) {
+          if (lines.length >= 900) break;
+          if (!hitsPage(x1, y1, x2, y2)) continue;
+          const key = [round(x1), round(y1), round(x2), round(y2)].join(',');
+          if (seenLines.has(key)) continue;
+          seenLines.add(key);
+          lines.push([
+            round(x1),
+            round(y1),
+            round(x2),
+            round(y2),
+            ruleColor[0],
+            ruleColor[1],
+            ruleColor[2],
+            round(hairline || strokeThickness),
+          ]);
+        }
       }
     }
     const texts = [];
@@ -233,13 +452,16 @@ async function measurePdf(buf) {
     for (const item of content.items) {
       if (!item || !item.str || !item.str.trim()) continue;
       if (/fresa/i.test(item.str)) continue;
-      if (texts.length >= 260) break;
+      if (texts.length >= 420) break;
       const transform = item.transform || [8, 0, 0, 8, 0, 0];
+      const size = round(Math.abs(transform[3]) || Math.abs(transform[0]) || 8);
+      const bold = /bold/i.test(item.fontName || '') || size >= 12 ? 1 : 0;
       texts.push([
         item.str.trim().replace(/\s+/g, ' ').slice(0, 120),
         round(transform[4]),
         round(transform[5]),
-        round(Math.abs(transform[3]) || Math.abs(transform[0]) || 8),
+        size,
+        bold,
       ]);
     }
     pages.push({ rects, lines, texts });

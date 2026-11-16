@@ -53,6 +53,14 @@ export const JOB_API = {
   trackingPdf: (id: string) => `/jobs/${id}/tracking/pdf`,
   changeStatus: (id: string) => `/jobs/${id}/change-status`,
   reopen: (id: string) => `/jobs/${id}/reopen`,
+  /** Staff: request reopen of closed/terminal job (Tenant Admin decides). */
+  reopenRequestsForJob: (id: string) => `/jobs/${id}/reopen-requests`,
+  /** Tenant Admin inbox — GET /jobs/reopen-requests */
+  reopenRequests: '/jobs/reopen-requests',
+  approveReopenRequest: (requestId: string) =>
+    `/jobs/reopen-requests/${encodeURIComponent(requestId)}/approve`,
+  rejectReopenRequest: (requestId: string) =>
+    `/jobs/reopen-requests/${encodeURIComponent(requestId)}/reject`,
   stop: (id: string) => `/jobs/${id}/stop`,
   resume: (id: string) => `/jobs/${id}/resume`,
   hold: (id: string) => `/jobs/${id}/hold`,
