@@ -27,6 +27,11 @@ export interface DebitNoteLine {
   line_total?: number;
 }
 
+export interface DebitNoteActions {
+  can_edit?: boolean;
+  can_download?: boolean;
+}
+
 export interface DebitNote {
   id: string;
   invoice_number?: string;
@@ -62,10 +67,25 @@ export interface DebitNote {
   /** Customer / staff payment-proof file on the debit note itself. */
   has_attachment?: boolean;
   attachment_name?: string;
+  actions?: DebitNoteActions;
+  pdf_url?: string;
 }
+
+/** PATCH /debit-notes/:id — header fields while DRAFT. */
+export type UpdateDebitNoteDto = Partial<
+  Pick<
+    CreateDebitNoteFormValues,
+    'credited_invoice_id' | 'job_id' | 'party_id' | 'currency_code' | 'description' | 'remarks'
+  >
+>;
 
 export type CreateDebitNoteDto = CreateDebitNoteFormValues;
 export type CreateDebitNoteLineDto = CreateDebitNoteLineFormValues;
+
+export interface DebitNotePdfInfo {
+  pdf_url?: string;
+  customer_pdf_url?: string;
+}
 
 export interface DebitNoteListParams {
   page?: number;

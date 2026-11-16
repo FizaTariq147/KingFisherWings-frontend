@@ -5,4 +5,6 @@ export const CREDIT_NOTE_API = {
   create: '/credit-notes',
   byId: (id: string) => `/credit-notes/${id}`,
   post: (id: string) => `/credit-notes/${id}/post`,
+  /** POST — server PDF (DRAFT | POSTED | SENT | PARTIALLY_PAID | PAID). */
+  pdf: (id: string) => `/credit-notes/${id}/pdf`,
 } as const;

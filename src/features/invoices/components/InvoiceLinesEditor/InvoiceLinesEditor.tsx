@@ -48,7 +48,7 @@ export function InvoiceLinesEditor({ invoiceId, lines, editable }: InvoiceLinesE
       description: '',
       quantity: 1,
       unit_price: 0,
-      is_taxable: true,
+      is_taxable: false,
       sort_order: lines.length,
     },
   });
@@ -68,7 +68,7 @@ export function InvoiceLinesEditor({ invoiceId, lines, editable }: InvoiceLinesE
       description: '',
       quantity: 1,
       unit_price: 0,
-      is_taxable: true,
+      is_taxable: false,
       sort_order: lines.length,
     });
   };
@@ -83,7 +83,7 @@ export function InvoiceLinesEditor({ invoiceId, lines, editable }: InvoiceLinesE
       unit_price: line.unit_price,
       charge_code_id: line.charge_code_id,
       tax_rate_id: line.tax_rate_id,
-      is_taxable: line.is_taxable ?? true,
+      is_taxable: line.is_taxable ?? false,
       sort_order: line.sort_order ?? 0,
     });
   };

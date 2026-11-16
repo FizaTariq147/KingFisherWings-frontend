@@ -256,6 +256,7 @@ const JOB_BY_CATEGORY_SET = new Set([
   'delivered',
   'cancelled',
   'completed',
+  'closed',
   'in_progress',
 ]);
 
@@ -266,6 +267,7 @@ const STATUS_BY_JOB_CATEGORY: Partial<
   in_progress: 'IN_PROGRESS',
   delivered: 'DELIVERED',
   completed: 'COMPLETED',
+  closed: 'CLOSED',
   cancelled: 'CANCELLED',
 };
 
@@ -2432,7 +2434,7 @@ export const jobService = {
     }
   },
 
-  /** POST /jobs/:id/reopen — from COMPLETED / CANCELLED / DELIVERED. */
+  /** POST /jobs/:id/reopen — from COMPLETED / CLOSED / CANCELLED / DELIVERED. */
   async reopen(id: string, dto: ReopenJobDto = {}): Promise<Job> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.reopen(id), dto), normalizeJob);

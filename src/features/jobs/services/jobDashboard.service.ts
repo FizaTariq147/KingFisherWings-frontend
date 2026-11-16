@@ -8,7 +8,7 @@ import type { Job } from '../types/job.types';
 import { jobDisplayNumber } from '../utils/jobRoute';
 import { jobService } from './job.service';
 
-const CLOSED_STATUSES: JobStatus[] = ['COMPLETED', 'CANCELLED'];
+const CLOSED_STATUSES: JobStatus[] = ['COMPLETED', 'CLOSED', 'CANCELLED'];
 
 const AIR_EXPORT_TYPES: JobType[] = ['AIR_EXPORT'];
 const SEA_EXPORT_TYPES: JobType[] = ['SEA_FCL_EXPORT', 'SEA_LCL_EXPORT'];

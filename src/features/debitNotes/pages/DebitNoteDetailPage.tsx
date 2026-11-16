@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
+import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Modal } from '@/components/ui/Modal';
 import {
   Table,
   TableBody,
@@ -16,13 +18,19 @@ import {
   INVOICE_TYPE_LABELS,
   type InvoiceType,
 } from '@/features/invoices/constants/invoice.constants';
+import { resolvePdfUrl } from '@/features/invoices/utils/normalizeInvoicePdf';
 import { useJob } from '@/features/jobs/hooks/useJobs';
 import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import { DEBIT_NOTE_ROUTE_PREFIX } from '../api/debitNote.api';
 import { DebitNoteAttachmentPanel } from '../components/DebitNoteAttachmentPanel';
-import { useDebitNote, usePostDebitNote } from '../hooks/useDebitNotes';
+import {
+  useDebitNote,
+  useGenerateDebitNotePdf,
+  usePostDebitNote,
+  useUpdateDebitNote,
+} from '../hooks/useDebitNotes';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { debitNoteDisplayNumber } from '../utils/normalizeDebitNote';
 
@@ -41,9 +49,13 @@ export default function DebitNoteDetailPage() {
   const { data: debitNote, isLoading, isError, error, refetch } = useDebitNote(id);
   const { data: linkedJob } = useJob(debitNote?.job_id || '');
   const post = usePostDebitNote(id);
+  const update = useUpdateDebitNote(id);
+  const generatePdf = useGenerateDebitNotePdf(id);
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editRemarks, setEditRemarks] = useState('');
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -62,6 +74,10 @@ export default function DebitNoteDetailPage() {
   }
 
   const canPost = debitNote.status === 'DRAFT';
+  const canEdit = debitNote.actions?.can_edit !== false && debitNote.status === 'DRAFT';
+  const canDownload =
+    debitNote.actions?.can_download !== false &&
+    ['DRAFT', 'POSTED', 'SENT', 'PARTIALLY_PAID', 'PAID'].includes(debitNote.status);
   const lines = debitNote.lines ?? [];
 
   const run = async (fn: () => Promise<unknown>, successMsg?: string) => {
@@ -86,6 +102,33 @@ export default function DebitNoteDetailPage() {
             label: 'Post',
             onClick: () => void run(() => post.mutateAsync(), 'Debit note posted.'),
             variant: 'primary' as const,
+          },
+        ]
+      : []),
+    ...(canEdit
+      ? [
+          {
+            label: 'Edit',
+            onClick: () => {
+              setEditRemarks(debitNote.remarks || '');
+              setEditOpen(true);
+            },
+            variant: 'secondary' as const,
+          },
+        ]
+      : []),
+    ...(canDownload
+      ? [
+          {
+            label: 'Download PDF',
+            onClick: () =>
+              void run(async () => {
+                const info = await generatePdf.mutateAsync();
+                const url = resolvePdfUrl(info.pdf_url || info.customer_pdf_url);
+                if (url) window.open(url, '_blank', 'noopener,noreferrer');
+                else throw new Error('PDF generated but no download URL was returned.');
+              }, 'PDF ready.'),
+            variant: 'secondary' as const,
           },
         ]
       : []),
@@ -271,6 +314,46 @@ export default function DebitNoteDetailPage() {
           },
         ]}
       />
+
+      <Modal
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        title="Edit debit note"
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="secondary" onClick={() => setEditOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              disabled={pending || update.isPending}
+              onClick={() =>
+                void run(async () => {
+                  await update.mutateAsync({
+                    remarks: editRemarks.trim() || undefined,
+                    description: editRemarks.trim() || undefined,
+                  });
+                  setEditOpen(false);
+                }, 'Debit note updated.')
+              }
+            >
+              Save
+            </Button>
+          </div>
+        }
+      >
+        <label className="block text-sm">
+          <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+            Remarks
+          </span>
+          <textarea
+            className="min-h-[96px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+            value={editRemarks}
+            onChange={(e) => setEditRemarks(e.target.value)}
+            maxLength={2000}
+          />
+        </label>
+      </Modal>
     </>
   );
 }

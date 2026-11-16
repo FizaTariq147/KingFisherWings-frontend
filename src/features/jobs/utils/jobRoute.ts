@@ -82,5 +82,5 @@ export function jobRefLabel(opts: {
 }
 
 export function jobEditable(status: string): boolean {
-  return status !== 'COMPLETED' && status !== 'CANCELLED';
+  return status !== 'COMPLETED' && status !== 'CLOSED' && status !== 'CANCELLED';
 }

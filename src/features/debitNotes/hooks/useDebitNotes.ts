@@ -5,6 +5,7 @@ import { debitNoteService } from '../services/debitNote.service';
 import type {
   CreateDebitNoteDto,
   DebitNoteListParams,
+  UpdateDebitNoteDto,
 } from '../types/debitNote.types';
 
 export const debitNoteKeys = {
@@ -55,6 +56,22 @@ export function usePostDebitNote(id: string) {
   const invalidate = useInvalidateDebitNotes();
   return useMutation({
     mutationFn: () => debitNoteService.post(id),
+    onSuccess: () => invalidate(id),
+  });
+}
+
+export function useUpdateDebitNote(id: string) {
+  const invalidate = useInvalidateDebitNotes();
+  return useMutation({
+    mutationFn: (dto: UpdateDebitNoteDto) => debitNoteService.update(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+}
+
+export function useGenerateDebitNotePdf(id: string) {
+  const invalidate = useInvalidateDebitNotes();
+  return useMutation({
+    mutationFn: () => debitNoteService.generatePdf(id),
     onSuccess: () => invalidate(id),
   });
 }

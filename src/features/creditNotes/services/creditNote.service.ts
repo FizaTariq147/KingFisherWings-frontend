@@ -6,6 +6,7 @@ import { CREDIT_NOTE_API } from '../api/creditNote.api';
 import { enrichCreditNotesDisplay } from '../utils/enrichCreditNoteDisplay';
 import {
   normalizeCreditNote,
+  normalizeCreditNotePdfInfo,
   normalizeCreditNotes,
 } from '../utils/normalizeCreditNote';
 import { prepareCreditNotePayload } from '../utils/prepareCreditNotePayload';
@@ -14,7 +15,9 @@ import type {
   CreditNote,
   CreditNoteListParams,
   CreditNoteListResult,
+  CreditNotePdfInfo,
   PaginationMeta,
+  UpdateCreditNoteDto,
 } from '../types/creditNote.types';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -155,6 +158,51 @@ export const creditNoteService = {
       const creditNote = normalizeCreditNote(unwrapEntity(res.data));
       if (!creditNote) throw new Error('Post succeeded but no credit note was returned.');
       return creditNote;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PATCH /credit-notes/:id — DRAFT only. */
+  async update(id: string, dto: UpdateCreditNoteDto): Promise<CreditNote> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch<unknown>(
+          CREDIT_NOTE_API.byId(id),
+          prepareCreditNotePayload(dto as Record<string, unknown>),
+        ),
+      );
+      const creditNote = normalizeCreditNote(unwrapEntity(res.data));
+      if (!creditNote) throw new Error('Update succeeded but no credit note was returned.');
+      return creditNote;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /credit-notes/:id/pdf */
+  async generatePdf(id: string): Promise<CreditNotePdfInfo> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.request<unknown>({
+          method: 'POST',
+          url: CREDIT_NOTE_API.pdf(id),
+          withCredentials: false,
+          data: undefined,
+          transformRequest: [
+            (_data, headers) => {
+              if (headers && typeof headers === 'object') {
+                delete (headers as Record<string, unknown>)['Content-Type'];
+                delete (headers as Record<string, unknown>)['content-type'];
+              }
+              return undefined;
+            },
+          ],
+        }),
+      );
+      return normalizeCreditNotePdfInfo(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }

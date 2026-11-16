@@ -31,6 +31,7 @@ export const JOB_BY_CATEGORIES = [
   'delivered',
   'cancelled',
   'completed',
+  'closed',
   'in_progress',
 ] as const;
 

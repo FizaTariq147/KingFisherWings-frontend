@@ -225,7 +225,7 @@ export function formatPayloadToInvoicePdfModel(
       pick(payload, 'jobRef', 'job_ref', 'job_number') ??
       fallbacks?.jobRef,
     currencyCode: currency,
-    vatRate: readNumber(payload.vat_rate ?? payload.vatRate) ?? 5,
+    vatRate: readNumber(payload.vat_rate ?? payload.vatRate) ?? 0,
     copyLabel: meta.copyLabel || pick(payload, 'copy_label', 'copyLabel') || 'ORIGINAL',
     documentTitle: meta.documentTitle,
     documentSubtitle: meta.documentSubtitle,

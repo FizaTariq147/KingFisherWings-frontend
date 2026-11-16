@@ -234,7 +234,7 @@ export function invoiceToPdfModel(
 ): InvoicePdfModel {
   const { party, job, company, attn, shipment: shipmentOverride } = enrichment;
   const contact = primaryContact(party);
-  const vatRate = invoice.vat_rate != null ? Number(invoice.vat_rate) : 5;
+  const vatRate = invoice.vat_rate != null ? Number(invoice.vat_rate) : 0;
   const subtotal = invoice.subtotal ?? 0;
   const vatAmount = invoice.tax_total ?? 0;
   const grand = invoice.total_amount ?? subtotal + vatAmount;
@@ -333,7 +333,7 @@ export function portalInvoiceToPdfModel(
       ? Number(detail.vatRate)
       : subtotal > 0 && vatAmount > 0
         ? Math.round((vatAmount / subtotal) * 1000) / 10
-        : 5;
+        : 0;
 
   return {
     invoiceNumber: detail.number,

@@ -406,7 +406,7 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   const companyWeb = safePdfText(model.company?.website || 'www.kingfisherwingsgroup.com');
   const copyLabel = safePdfText(model.copyLabel || 'ORIGINAL');
   const vatPct =
-    model.vatRate != null && Number.isFinite(model.vatRate) ? Number(model.vatRate) : 5;
+    model.vatRate != null && Number.isFinite(model.vatRate) ? Number(model.vatRate) : 0;
 
   let page = doc.addPage([PAGE_W, PAGE_H]);
   let y = PAGE_H;

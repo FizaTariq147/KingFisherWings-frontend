@@ -30,10 +30,13 @@ export function JobActionMenu({
   const { user } = useAuth();
   const editable = canEditJob(job, user);
   const canDelete = canDeleteJob(job, user);
+  // Close → CLOSED; allowed from any non-CLOSED/CANCELLED (incl. COMPLETED).
   const canClose =
     job.actions?.can_close === false
       ? false
-      : editable && job.status !== 'ENQUIRY';
+      : job.status !== 'CLOSED' &&
+        job.status !== 'CANCELLED' &&
+        job.status !== 'ENQUIRY';
   const canCancel = canCancelJob(job, user);
 
   return (

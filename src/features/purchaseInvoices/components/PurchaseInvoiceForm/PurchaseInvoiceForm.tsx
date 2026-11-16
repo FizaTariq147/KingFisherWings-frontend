@@ -382,7 +382,7 @@ export function PurchaseInvoiceForm({
               description: '',
               quantity: 1,
               unit_price: 0,
-              is_taxable: true,
+              is_taxable: false,
               sort_order: fields.length,
             })
           }
@@ -658,7 +658,7 @@ export function PurchaseInvoiceForm({
                   description: '',
                   quantity: 1,
                   unit_price: 0,
-                  is_taxable: true,
+                  is_taxable: false,
                   sort_order: fields.length,
                 })
               }

@@ -94,7 +94,9 @@ import {
 } from '../utils/canDeleteJob';
 
 function statusTone(status: string): 'emerald' | 'amber' | 'rose' | 'slate' {
-  if (status === 'COMPLETED' || status === 'DELIVERED') return 'emerald';
+  if (status === 'COMPLETED' || status === 'CLOSED' || status === 'DELIVERED') {
+    return 'emerald';
+  }
   if (status === 'CANCELLED') return 'rose';
   if (status === 'IN_PROGRESS' || status === 'DOCS_PENDING') return 'amber';
   return 'slate';
@@ -540,6 +542,7 @@ export default function JobDetailPage() {
     editable &&
     job.status !== 'ON_HOLD' &&
     job.status !== 'COMPLETED' &&
+    job.status !== 'CLOSED' &&
     job.status !== 'CANCELLED';
   const canResume =
     job.status === 'ON_HOLD' &&
@@ -551,13 +554,18 @@ export default function JobDetailPage() {
       JOB_REOPENABLE_STATUSES.includes(job.status as JobStatus));
   const isClosedJob =
     job.status === 'COMPLETED' ||
+    job.status === 'CLOSED' ||
     job.status === 'DELIVERED' ||
     Boolean((job as { is_closed?: boolean }).is_closed);
   const canEditClosedDelivery =
     isClosedJob &&
     (fclActions?.can_edit_closed_delivery === true ||
       fclActions?.can_edit_closed_delivery !== false);
-  const canClose = fclActions?.can_close !== false && editable;
+  // POST /jobs/:id/close → CLOSED; allowed from any non-CLOSED/CANCELLED (incl. COMPLETED).
+  const canClose =
+    fclActions?.can_close !== false &&
+    job.status !== 'CLOSED' &&
+    job.status !== 'CANCELLED';
   const canCancel = canCancelJob(job, user);
   const canCopy = fclActions?.can_copy !== false;
   const actionPanels = resolveJobActionPanels(job, {
@@ -1544,7 +1552,10 @@ export default function JobDetailPage() {
               onChange={(e) => setReopenStatus(e.target.value)}
             >
               {statusCatalog
-                .filter((o) => !['COMPLETED', 'CANCELLED', 'DELIVERED'].includes(o.value))
+                .filter(
+                  (o) =>
+                    !['COMPLETED', 'CLOSED', 'CANCELLED', 'DELIVERED'].includes(o.value),
+                )
                 .map((opt) => (
                   <option key={opt.value} value={opt.value}>
                     {opt.label}

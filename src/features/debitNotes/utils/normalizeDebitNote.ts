@@ -5,7 +5,20 @@ import {
   type DebitNoteInvoiceType,
   type DebitNoteStatus,
 } from '../constants/debitNote.constants';
-import type { DebitNote, DebitNoteLine } from '../types/debitNote.types';
+import type {
+  DebitNote,
+  DebitNoteActions,
+  DebitNoteLine,
+  DebitNotePdfInfo,
+} from '../types/debitNote.types';
+
+const PDF_DOWNLOAD_STATUSES = new Set([
+  'DRAFT',
+  'POSTED',
+  'SENT',
+  'PARTIALLY_PAID',
+  'PAID',
+]);
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -46,6 +59,24 @@ function normalizeType(value: unknown): DebitNoteInvoiceType | string | undefine
     : raw;
 }
 
+function pickActions(
+  r: Record<string, unknown>,
+  status: DebitNote['status'],
+): DebitNoteActions | undefined {
+  const raw = asRecord(r.actions);
+  const canEdit =
+    bool(raw?.can_edit) ?? bool(raw?.canEdit) ?? (status === 'DRAFT' ? true : undefined);
+  const canDownload =
+    bool(raw?.can_download) ??
+    bool(raw?.canDownload) ??
+    (PDF_DOWNLOAD_STATUSES.has(status) ? true : undefined);
+  if (canEdit == null && canDownload == null) return undefined;
+  return {
+    ...(canEdit != null ? { can_edit: canEdit } : {}),
+    ...(canDownload != null ? { can_download: canDownload } : {}),
+  };
+}
+
 export function normalizeDebitNoteLine(raw: unknown): DebitNoteLine | null {
   const r = asRecord(raw);
   if (!r) return null;
@@ -60,7 +91,7 @@ export function normalizeDebitNoteLine(raw: unknown): DebitNoteLine | null {
     charge_code_id: str(r.charge_code_id),
     charge_code: str(r.charge_code) ?? str(r.charge_code_code),
     tax_rate_id: str(r.tax_rate_id),
-    is_taxable: bool(r.is_taxable) ?? true,
+    is_taxable: bool(r.is_taxable) ?? false,
     sort_order: num(r.sort_order) ?? 0,
     tax_amount: num(r.tax_amount),
     line_total: num(r.line_total) ?? num(r.amount) ?? num(r.total),
@@ -157,6 +188,8 @@ export function normalizeDebitNote(raw: unknown): DebitNote | null {
       str(asRecord(r.attachment)?.file_name) ??
       str(asRecord(r.attachment)?.name) ??
       str(asRecord(r.file)?.name),
+    actions: pickActions(r, normalizeStatus(r.status)),
+    pdf_url: str(r.pdf_url) ?? str(r.pdfUrl),
   };
 }
 
@@ -171,4 +204,16 @@ export function debitNoteDisplayNumber(dn: DebitNote): string {
     humanCode(dn.invoice_number) ||
     dn.id.slice(0, 8).toUpperCase()
   );
+}
+
+export function normalizeDebitNotePdfInfo(raw: unknown): DebitNotePdfInfo {
+  const root = asRecord(raw) ?? {};
+  const data = asRecord(root.data) ?? root;
+  const pdf_url =
+    str(data.pdf_url) ??
+    str(data.customer_pdf_url) ??
+    str(data.url) ??
+    str(data.download_url) ??
+    str(data.file_url);
+  return { pdf_url, customer_pdf_url: pdf_url };
 }

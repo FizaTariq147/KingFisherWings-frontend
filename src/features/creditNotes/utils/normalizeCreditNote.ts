@@ -5,7 +5,38 @@ import {
   type CreditNoteInvoiceType,
   type CreditNoteStatus,
 } from '../constants/creditNote.constants';
-import type { CreditNote, CreditNoteLine } from '../types/creditNote.types';
+import type {
+  CreditNote,
+  CreditNoteActions,
+  CreditNoteLine,
+  CreditNotePdfInfo,
+} from '../types/creditNote.types';
+
+const PDF_DOWNLOAD_STATUSES = new Set([
+  'DRAFT',
+  'POSTED',
+  'SENT',
+  'PARTIALLY_PAID',
+  'PAID',
+]);
+
+function pickActions(
+  r: Record<string, unknown>,
+  status: CreditNote['status'],
+): CreditNoteActions | undefined {
+  const raw = asRecord(r.actions);
+  const canEdit =
+    bool(raw?.can_edit) ?? bool(raw?.canEdit) ?? (status === 'DRAFT' ? true : undefined);
+  const canDownload =
+    bool(raw?.can_download) ??
+    bool(raw?.canDownload) ??
+    (PDF_DOWNLOAD_STATUSES.has(status) ? true : undefined);
+  if (canEdit == null && canDownload == null) return undefined;
+  return {
+    ...(canEdit != null ? { can_edit: canEdit } : {}),
+    ...(canDownload != null ? { can_download: canDownload } : {}),
+  };
+}
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
@@ -60,7 +91,7 @@ export function normalizeCreditNoteLine(raw: unknown): CreditNoteLine | null {
     charge_code_id: str(r.charge_code_id),
     charge_code: str(r.charge_code) ?? str(r.charge_code_code),
     tax_rate_id: str(r.tax_rate_id),
-    is_taxable: bool(r.is_taxable) ?? true,
+    is_taxable: bool(r.is_taxable) ?? false,
     sort_order: num(r.sort_order) ?? 0,
     tax_amount: num(r.tax_amount),
     line_total: num(r.line_total) ?? num(r.amount) ?? num(r.total),
@@ -133,7 +164,21 @@ export function normalizeCreditNote(raw: unknown): CreditNote | null {
     updated_at: str(r.updated_at),
     created_by: str(r.created_by),
     lines: normalizeCreditNoteLines(r.lines ?? r.invoice_lines),
+    actions: pickActions(r, normalizeStatus(r.status)),
+    pdf_url: str(r.pdf_url) ?? str(r.pdfUrl),
   };
+}
+
+export function normalizeCreditNotePdfInfo(raw: unknown): CreditNotePdfInfo {
+  const root = asRecord(raw) ?? {};
+  const data = asRecord(root.data) ?? root;
+  const pdf_url =
+    str(data.pdf_url) ??
+    str(data.customer_pdf_url) ??
+    str(data.url) ??
+    str(data.download_url) ??
+    str(data.file_url);
+  return { pdf_url, customer_pdf_url: pdf_url };
 }
 
 export function normalizeCreditNotes(raw: unknown): CreditNote[] {
