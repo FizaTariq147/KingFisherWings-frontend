@@ -79,7 +79,12 @@ export function compactMoney(amount?: number): string {
     const digits = v >= 10 ? 1 : 2;
     return `${sign}$${v.toFixed(digits).replace(/\.0+$/, '')}M`;
   }
-  if (abs >= 1_000) return `${sign}$${Math.round(abs / 1_000)}k`;
+  // Keep one decimal for thousands so 237,750 → 237.8k (not rounded up to 238k).
+  if (abs >= 1_000) {
+    const v = abs / 1_000;
+    const oneDec = (Math.round(v * 10) / 10).toFixed(1).replace(/\.0$/, '');
+    return `${sign}$${oneDec}k`;
+  }
   return `${sign}$${Math.round(abs)}`;
 }
 

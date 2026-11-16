@@ -98,6 +98,11 @@ export type InvoicePdfModel = {
   balanceDue?: number;
   remarks?: string;
   company?: InvoicePdfCompany;
+  /**
+   * Quotations pass this so they keep their own native face instead of the
+   * default tax-invoice face.
+   */
+  skipNativeFresaFace?: boolean;
 };
 
 function money(value: number | undefined, digits = 2): string {
@@ -386,7 +391,28 @@ function drawMiniIcon(
  * Layout mirrors the FRESA / KingFisher tax-invoice snippet.
  * Self-contained — use skipBranding when previewing/downloading.
  */
+const NATIVE_TAX_INVOICE_CODE = 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA';
+
 export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> {
+  if (!model.skipNativeFresaFace) {
+    const { generateOfficialMeasuredPdf, isOfficialMeasuredNativeCode } = await import(
+      '@/features/reports/templates/official'
+    );
+    if (isOfficialMeasuredNativeCode(NATIVE_TAX_INVOICE_CODE)) {
+      const { blob } = await generateOfficialMeasuredPdf(NATIVE_TAX_INVOICE_CODE, {
+        companyName: model.company?.name,
+        companyPhone: model.company?.phone,
+        companyEmail: model.company?.email,
+        invoiceNumber: model.invoiceNumber,
+        jobNumber: model.jobRef,
+        shipperLines: [model.billTo.client, ...(model.billTo.addressLines || [])].filter(
+          (line): line is string => Boolean(line),
+        ),
+        entityBound: true,
+      });
+      return blob;
+    }
+  }
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);

@@ -196,6 +196,26 @@ export function quotationToInvoicePdfModel(options: QuotationPdfOptions): Invoic
  * Client-side KingFisher quotation PDF — same layout/design as the invoice PDF.
  * Self-contained header/footer — use skipBranding when previewing/downloading.
  */
+const NATIVE_QUOTATION_CODE = 'FCL_QUOTATION_REPORT_FORMAT';
+
 export async function generateQuotationPdf(options: QuotationPdfOptions): Promise<Blob> {
-  return generateInvoicePdf(quotationToInvoicePdfModel(options));
+  const model = quotationToInvoicePdfModel(options);
+  const { generateOfficialMeasuredPdf, isOfficialMeasuredNativeCode } = await import(
+    '@/features/reports/templates/official'
+  );
+  if (isOfficialMeasuredNativeCode(NATIVE_QUOTATION_CODE)) {
+    const { blob } = await generateOfficialMeasuredPdf(NATIVE_QUOTATION_CODE, {
+      companyName: model.company?.name,
+      companyPhone: model.company?.phone,
+      companyEmail: model.company?.email,
+      referenceNo: model.invoiceNumber,
+      jobNumber: model.jobRef,
+      shipperLines: [model.billTo.client, ...(model.billTo.addressLines || [])].filter(
+        (line): line is string => Boolean(line),
+      ),
+      entityBound: true,
+    });
+    return blob;
+  }
+  return generateInvoicePdf({ ...model, skipNativeFresaFace: true });
 }

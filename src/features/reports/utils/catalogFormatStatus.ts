@@ -6,6 +6,7 @@ import { getHawbFormatSpec } from '../constants/hawbFormatCatalog';
 import { getSharedLayoutSource } from '../data/sharedLayoutSource';
 import { getReportEnrichment } from '../registry/reportRegistryV2';
 import { isHblJasperPilotCode } from '../templates/hbl/jasperPilot';
+import { isOfficialMeasuredNativeCode } from '../templates/official/officialFaceRegistry';
 import {
   classifyHawbFormatStatus,
   isOfficialHawbFormatCode,
@@ -48,6 +49,15 @@ export function resolveCatalogFormatStatus(code: string): CatalogFormatStatus {
       id: 'historical_unverified',
       label: LABEL.historical_unverified,
       detail: 'No format code selected.',
+    };
+  }
+
+  if (isOfficialMeasuredNativeCode(needle)) {
+    return {
+      id: 'native_layout',
+      label: LABEL.native_layout,
+      detail:
+        'Freightnest native face measured from the Fresa sample. Generate draws our geometry with organization logo and company name.',
     };
   }
 

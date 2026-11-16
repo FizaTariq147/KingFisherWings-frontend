@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { DashSkeleton } from './DashCard';
-import { compactMoney } from '../utils/dashboardFormat';
+import { compactMoney, formatMoney } from '../utils/dashboardFormat';
 import { cn } from '@/lib/utils';
 import { dashType } from '@/lib/dashboardTypography';
 import { DashboardKpiMiniBars } from '@/lib/DashboardKpiMiniBars';
@@ -44,6 +44,7 @@ export function DashboardKpiRow({
   oldestQuoteDays,
   quoteBars,
   receivables,
+  receivablesCurrency,
   overdue30,
   agingBars,
   deliveredJobs,
@@ -70,6 +71,8 @@ export function DashboardKpiRow({
   oldestQuoteDays: number;
   quoteBars: number[];
   receivables: number;
+  /** Same currency as AR Aging (e.g. AED) so the KPI matches the report total. */
+  receivablesCurrency?: string;
   overdue30: number;
   agingBars: number[];
   deliveredJobs: number;
@@ -121,9 +124,13 @@ export function DashboardKpiRow({
       <KpiCard
         to="/gl/ar/aging"
         label="Receivables"
-        value={loadingReceivables ? null : compactMoney(receivables)}
+        value={
+          loadingReceivables
+            ? null
+            : formatMoney(receivables, receivablesCurrency)
+        }
         unit="outstanding"
-        caption={`${compactMoney(overdue30)} overdue past 30 days`}
+        caption={`${formatMoney(overdue30, receivablesCurrency)} overdue past 30 days`}
         badge={overdueShare > 0 ? `-${overdueShare}%` : null}
         bars={agingBars}
         theme={KPI_THEMES.receivables}

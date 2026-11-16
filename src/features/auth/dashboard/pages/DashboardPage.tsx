@@ -200,6 +200,7 @@ export function DashboardPage() {
           oldestQuoteDays={agingQuoteStats.oldestDays}
           quoteBars={quoteBars}
           receivables={receivables}
+          receivablesCurrency={agingTotals.currency_code}
           overdue30={
             (agingTotals.days_31_60 || 0) +
             (agingTotals.days_61_90 || 0) +
