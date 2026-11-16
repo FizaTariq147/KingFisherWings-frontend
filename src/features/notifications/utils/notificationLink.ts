@@ -5,6 +5,7 @@ import { safeInternalPath } from '@/lib/safeInternalPath';
 import type { AppNotification } from '../types/notifications.types';
 import {
   inferStaffNotificationPath,
+  isDeadEndStaffNotificationPath,
   remapStaffNotificationPath,
 } from './remapStaffNotificationPath';
 
@@ -14,6 +15,8 @@ const TYPE_ALIASES: Record<string, string> = {
   JOB_UPDATED: 'JOB',
   JOB_MILESTONE: 'JOB',
   JOB_MILESTONE_UPDATED: 'JOB',
+  MILESTONE: 'JOB',
+  MILESTONE_UPDATED: 'JOB',
   DOCUMENT: 'JOB',
   DOCUMENT_READY: 'JOB',
   VENDOR_QUOTE: 'JOB',
@@ -31,10 +34,14 @@ const TYPE_ALIASES: Record<string, string> = {
   INVOICE_OVERDUE: 'INVOICE',
   INVOICE_PAID: 'INVOICE',
   INVOICE_READY: 'INVOICE',
+  /** Customer AR payment proof → sales invoice review (not purchase invoice). */
+  PAYMENT_PROOF: 'INVOICE',
+  PAYMENT_PROOF_SUBMITTED: 'INVOICE',
+  PROOF_SUBMITTED: 'INVOICE',
+  PROOF_UPLOADED: 'INVOICE',
   PURCHASE_INVOICE: 'PURCHASE_INVOICE',
   PI: 'PURCHASE_INVOICE',
   OPEN_INVOICE: 'PURCHASE_INVOICE',
-  PAYMENT_PROOF: 'PURCHASE_INVOICE',
   PAYMENT_REQUEST: 'PAYMENT_REQUEST',
   PAYMENT: 'PAYMENT_REQUEST',
   DISPUTE: 'DISPUTE',
@@ -118,19 +125,12 @@ function metaBag(n: AppNotification): Record<string, unknown> {
 
 /** Deep-link a staff notification / alert to the matching admin screen. */
 export function notificationHref(n: AppNotification): string | null {
-  const fromApi = safeStaffHref(n.linkPath) || safeStaffHref(n.href);
-  if (fromApi) {
-    // Prefer remapped real routes even when API path was "safe" but wrong.
-    return remapStaffNotificationPath(fromApi) || fromApi;
-  }
-
-  const inferred = inferStaffNotificationPath({
-    type: n.type,
-    kind: n.kind,
-    title: n.title,
-    body: n.body,
-  });
-  if (inferred) return inferred;
+  const fromApiRaw = safeStaffHref(n.linkPath) || safeStaffHref(n.href);
+  const fromApiRemapped = fromApiRaw ? remapStaffNotificationPath(fromApiRaw) : null;
+  // Remap may return null for dead-ends (e.g. /payment-proofs/:id) — fall through.
+  const fromApi =
+    fromApiRemapped ||
+    (fromApiRaw && !isDeadEndStaffNotificationPath(fromApiRaw) ? fromApiRaw : null);
 
   const type = normalizeStaffNotificationType(n.type || n.kind);
   const meta = asRecord(n.raw) ?? {};
@@ -198,6 +198,7 @@ export function notificationHref(n: AppNotification): string | null {
     nested.employeeId,
   );
   const entityType = pickString(
+    n.entityType,
     meta.entity_type,
     meta.entityType,
     nested.entity_type,
@@ -213,66 +214,113 @@ export function notificationHref(n: AppNotification): string | null {
     nested.entityId,
   );
 
-  const jobPath = (id: string) =>
-    jobDetailPath({
-      id,
-      job_type: (jobType || 'AIR_EXPORT') as JobType,
-    });
+  const jobPath = (id: string) => {
+    // Prefer segmented path when job_type is known; otherwise bare `/jobs/:id`
+    // is resolved by JobDeepLinkPage.
+    if (jobType) {
+      return jobDetailPath({
+        id,
+        job_type: jobType as JobType,
+      });
+    }
+    return `/jobs/${encodeURIComponent(id)}`;
+  };
 
-  if (type === 'JOB') {
-    const id = jobId || entityId;
-    return id ? jobPath(id) : '/jobs/air-export';
-  }
-  if (type === 'SHIPMENT') {
-    const id = shipmentId || entityId;
-    return id ? `/operations/shipments/${id}` : '/operations/shipments';
-  }
-  if (type === 'QUOTATION') {
-    const id = quotationId || entityId;
-    return id ? `/quotations/${id}` : '/quotations/all';
-  }
-  if (type === 'ENQUIRY') {
-    const id = enquiryId || entityId;
-    return id ? `/sales/enquiries/${id}` : '/sales/enquiries';
-  }
-  if (type === 'INVOICE') {
-    const id = invoiceId || entityId;
-    return id ? `/invoices/${id}` : '/invoices';
-  }
-  if (type === 'PURCHASE_INVOICE') {
-    const id = purchaseInvoiceId || invoiceId || entityId;
-    return id ? `/purchase-invoices/${id}` : '/purchase-invoices';
-  }
-  if (type === 'PAYMENT_REQUEST') {
-    const id = paymentRequestId || entityId;
-    return id ? `/payment-requests/${id}` : '/payment-requests';
-  }
-  if (type === 'DISPUTE') return '/vendor-admin/disputes';
-  if (type === 'PARTY') {
-    const id = partyId || entityId;
-    return id ? `/parties/${id}` : '/parties';
-  }
-  if (type === 'EMPLOYEE') {
-    const id = employeeId || entityId;
-    return id ? `/hr/employee-master/${id}` : '/hr/employee-master';
-  }
-  if (type === 'TIMESHEET') return '/hr/timesheets';
-  if (type === 'LOW_STOCK') return '/warehouse/stock?tab=low-stock';
-  if (type === 'WMS') return '/warehouse/stock';
-  if (type === 'HR') {
-    if (employeeId) return `/hr/employee-master/${employeeId}`;
-    const hrInferred = inferStaffNotificationPath({
-      type: n.type,
-      kind: n.kind,
-      title: n.title,
-      body: n.body,
-    });
-    if (hrInferred) return hrInferred;
-    return '/hr/leave-request';
-  }
-  if (type === 'REPORT') return '/reports';
+  const resolvedFromType = (): string | null => {
+    if (type === 'JOB') {
+      // Milestone rows may be entityId — prefer job_id; only use entityId when it is the job.
+      const id =
+        jobId ||
+        (entityId && !entityType.includes('MILESTONE') ? entityId : '');
+      return id ? jobPath(id) : '/jobs/all';
+    }
+    if (type === 'SHIPMENT') {
+      const id = shipmentId || entityId;
+      return id ? `/operations/shipments/${id}` : '/operations/shipments';
+    }
+    if (type === 'QUOTATION') {
+      const id = quotationId || entityId;
+      return id ? `/quotations/${id}` : '/quotations/all';
+    }
+    if (type === 'ENQUIRY') {
+      const id = enquiryId || entityId;
+      return id ? `/sales/enquiries/${id}` : '/sales/enquiries';
+    }
+    if (type === 'INVOICE') {
+      // Prefer invoice_id; only treat entityId as invoice when entity is invoice-like
+      // (not a payment-proof / purchase-invoice entity).
+      const entityLooksLikeSalesInvoice =
+        Boolean(entityId) &&
+        (!entityType ||
+          (entityType.includes('INVOICE') &&
+            !entityType.includes('PURCHASE') &&
+            !entityType.includes('PROOF')));
+      const id = invoiceId || (entityLooksLikeSalesInvoice ? entityId : '');
+      return id ? `/invoices/${id}` : '/invoices';
+    }
+    if (type === 'PURCHASE_INVOICE') {
+      const id = purchaseInvoiceId || invoiceId || entityId;
+      return id ? `/purchase-invoices/${id}` : '/purchase-invoices';
+    }
+    if (type === 'PAYMENT_REQUEST') {
+      const id = paymentRequestId || entityId;
+      return id ? `/payment-requests/${id}` : '/payment-requests';
+    }
+    if (type === 'DISPUTE') return '/vendor-admin/disputes';
+    if (type === 'PARTY') {
+      const id = partyId || entityId;
+      return id ? `/parties/${id}` : '/parties';
+    }
+    if (type === 'EMPLOYEE') {
+      const id = employeeId || entityId;
+      return id ? `/hr/employee-master/${id}` : '/hr/employee-master';
+    }
+    if (type === 'TIMESHEET') return '/hr/timesheets';
+    if (type === 'LOW_STOCK') return '/warehouse/stock?tab=low-stock';
+    if (type === 'WMS') return '/warehouse/stock';
+    if (type === 'HR') {
+      if (employeeId) return `/hr/employee-master/${employeeId}`;
+      const hrInferred = inferStaffNotificationPath({
+        type: n.type,
+        kind: n.kind,
+        title: n.title,
+        body: n.body,
+      });
+      if (hrInferred) return hrInferred;
+      return '/hr/leave-request';
+    }
+    if (type === 'REPORT') return '/reports';
+    return null;
+  };
 
-  if (entityType.includes('JOB') && entityId) return jobPath(entityId);
+  // Prefer a concrete entity/type target over a vague API list path when we have ids.
+  const fromType = resolvedFromType();
+  if (fromType && (jobId || invoiceId || purchaseInvoiceId || shipmentId || quotationId || enquiryId || paymentRequestId || partyId || employeeId || entityId)) {
+    // When API already pointed at a specific good path for the same resource, keep API.
+    if (fromApi && !isDeadEndStaffNotificationPath(fromApi)) {
+      const apiLooksSpecific = /\/[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i.test(
+        fromApi,
+      );
+      if (apiLooksSpecific) return fromApi;
+    }
+    return fromType;
+  }
+
+  if (fromApi) return fromApi;
+
+  if (fromType) return fromType;
+
+  const inferred = inferStaffNotificationPath({
+    type: n.type,
+    kind: n.kind,
+    title: n.title,
+    body: n.body,
+  });
+  if (inferred) return inferred;
+
+  if (entityType.includes('JOB') && !entityType.includes('MILESTONE') && entityId) {
+    return jobPath(entityId);
+  }
   if (entityType.includes('SHIPMENT') && entityId) return `/operations/shipments/${entityId}`;
   if (entityType.includes('QUOTATION') && entityId) return `/quotations/${entityId}`;
   if (entityType.includes('ENQUIRY') && entityId) return `/sales/enquiries/${entityId}`;

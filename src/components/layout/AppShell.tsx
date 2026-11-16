@@ -47,7 +47,7 @@ export function AppShell({ title }: { title: string }) {
     return {
       title: item.title || 'Notification',
       message: item.body || item.title || undefined,
-      href: notificationHref(item) || item.linkPath || undefined,
+      href: notificationHref(item) || undefined,
     };
   }, [notificationViewer]);
 

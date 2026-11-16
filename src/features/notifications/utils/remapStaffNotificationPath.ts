@@ -1,7 +1,10 @@
 /**
  * Backend / demo notification `link_path` values often point at legacy or
- * missing routes (e.g. `/timesheets`, `/wms/low-stock`). Map them onto real
- * staff routes so Live activity / Notifications do not 404.
+ * missing routes (e.g. `/timesheets`, `/wms/low-stock`, bare `/jobs/:id`).
+ * Map them onto real staff routes so Live activity / Notifications do not 404.
+ *
+ * Returns `null` when the path is a known dead-end (caller should fall through
+ * to entity / type inference).
  */
 export function remapStaffNotificationPath(path: string | null | undefined): string | null {
   if (!path || typeof path !== 'string') return null;
@@ -46,6 +49,34 @@ export function remapStaffNotificationPath(path: string | null | undefined): str
     return pathname.replace(/^\/wms/i, '/warehouse') + q;
   }
 
+  // Payment proof API paths have no staff screen — drop so invoice entity wins.
+  if (
+    lower === '/payment-proofs' ||
+    lower === '/payment-proof' ||
+    lower.startsWith('/payment-proofs/') ||
+    lower.startsWith('/payment-proof/')
+  ) {
+    return null;
+  }
+
+  // Legacy demo segment aliases → real job list/detail prefixes
+  const legacyJobSeg: Record<string, string> = {
+    '/jobs/sea-fcl': '/jobs/sea-export',
+    '/jobs/sea-lcl': '/jobs/sea-export',
+    '/jobs/sea-fcl-import': '/jobs/sea-import',
+    '/jobs/sea-lcl-import': '/jobs/sea-import',
+    '/jobs/land': '/jobs/road-freight',
+    '/jobs/courier': '/jobs/road-freight',
+    '/jobs/freight': '/jobs/road-freight',
+  };
+  for (const [from, to] of Object.entries(legacyJobSeg)) {
+    if (lower === from) return `${to}${q}`;
+    if (lower.startsWith(`${from}/`)) {
+      return `${to}${pathname.slice(from.length)}${q}`;
+    }
+  }
+
+  // Bare `/jobs/:id` is handled by JobDeepLinkPage (resolves segment from job type).
   // Already-correct routes
   if (lower.startsWith('/hr/timesheets')) return pathname + q;
   if (lower.startsWith('/warehouse/stock')) {
@@ -54,6 +85,23 @@ export function remapStaffNotificationPath(path: string | null | undefined): str
   }
 
   return pathname + q;
+}
+
+/** True when FE has no matching screen for this path (do not navigate to it). */
+export function isDeadEndStaffNotificationPath(path: string | null | undefined): boolean {
+  if (!path || typeof path !== 'string') return true;
+  const lower = path.trim().split('?')[0].replace(/\/+$/, '').toLowerCase() || '/';
+  if (
+    lower === '/payment-proofs' ||
+    lower === '/payment-proof' ||
+    lower.startsWith('/payment-proofs/') ||
+    lower.startsWith('/payment-proof/')
+  ) {
+    return true;
+  }
+  // Portal/vendor paths are not staff screens
+  if (lower.startsWith('/portal') || lower.startsWith('/vendor')) return true;
+  return false;
 }
 
 /** Infer a staff path from notification type / title when link_path is missing or bad. */
@@ -75,6 +123,12 @@ export function inferStaffNotificationPath(opts: {
   }
   if (/\bWMS\b|WAREHOUSE_STOCK|STOCK_ON_HAND/.test(blob)) {
     return '/warehouse/stock';
+  }
+  if (/PAYMENT_PROOF|PROOF_SUBMITTED|PROOF_UPLOADED/.test(blob)) {
+    return '/invoices';
+  }
+  if (/JOB_MILESTONE|MILESTONE_UPDATED|\bMILESTONE\b/.test(blob)) {
+    return '/jobs/all';
   }
   return null;
 }

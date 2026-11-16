@@ -35,7 +35,7 @@ export default function NotificationsPage() {
   const meta = data?.meta;
 
   const handleOpen = async (
-    n: { id: string; linkPath?: string | null; href?: string | null; type?: string; kind?: string; title?: string; body?: string },
+    n: Parameters<typeof notificationHref>[0] & { id: string },
     fallbackHref: string | null,
   ) => {
     try {
@@ -46,7 +46,9 @@ export default function NotificationsPage() {
           id: n.id,
           linkPath: opened.linkPath || n.linkPath,
           href: opened.linkPath || n.href,
-        } as Parameters<typeof notificationHref>[0]) || fallbackHref;
+          entityType: opened.entityType || n.entityType,
+          entityId: opened.entityId || n.entityId,
+        }) || fallbackHref;
       if (path) navigate(path);
       else toast.info('No linked screen for this notification.', { title: 'Notifications' });
     } catch {
