@@ -1,0 +1,86 @@
+[
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT",
+    "family": "hawb",
+    "advertisedImplemented": true,
+    "catalogStatusId": "native_layout",
+    "catalogStatusLabel": "Native Layout"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+    "family": "hawb",
+    "advertisedImplemented": true,
+    "catalogStatusId": "native_layout",
+    "catalogStatusLabel": "Native Layout"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+    "family": "hawb",
+    "advertisedImplemented": true,
+    "catalogStatusId": "native_layout",
+    "catalogStatusLabel": "Native Layout"
+  },
+  {
+    "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+    "family": "hawb",
+    "advertisedImplemented": true,
+    "catalogStatusId": "native_layout",
+    "catalogStatusLabel": "Native Layout"
+  },
+  {
+    "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+    "family": "hawb",
+    "advertisedImplemented": true,
+    "catalogStatusId": "native_layout",
+    "catalogStatusLabel": "Native Layout"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+    "family": "hbl_jasper",
+    "advertisedImplemented": true,
+    "catalogStatusId": "native_layout",
+    "catalogStatusLabel": "Native Layout"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_11",
+    "family": "hbl",
+    "advertisedImplemented": false,
+    "catalogStatusId": "official_sample",
+    "catalogStatusLabel": "Official Sample"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+    "family": "invoice",
+    "advertisedImplemented": false,
+    "catalogStatusId": "historical_unverified",
+    "catalogStatusLabel": "Historical / Unverified"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+    "family": "arrival_notice",
+    "advertisedImplemented": false,
+    "catalogStatusId": "historical_unverified",
+    "catalogStatusLabel": "Historical / Unverified"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_11",
+    "family": "arrival_notice_shared",
+    "advertisedImplemented": false,
+    "catalogStatusId": "shared_layout",
+    "catalogStatusLabel": "Shared Layout"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_17",
+    "family": "delivery_order",
+    "advertisedImplemented": false,
+    "catalogStatusId": "official_sample",
+    "catalogStatusLabel": "Official Sample"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE",
+    "family": "wms_asn",
+    "advertisedImplemented": false,
+    "catalogStatusId": "official_sample",
+    "catalogStatusLabel": "Official Sample"
+  }
+]

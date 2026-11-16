@@ -1,0 +1,115 @@
+{
+  "generatedAt": "2026-11-16T08:01:46.778Z",
+  "rows": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "variant": "draft",
+      "titleMode": "HOUSE AIR WAYBILL",
+      "showNotify": false,
+      "sparseOverlay": false,
+      "preprinted": false,
+      "generated": {
+        "file": "draft-evidence.pdf",
+        "pageCount": 1,
+        "widthPt": 595,
+        "heightPt": 845
+      },
+      "reference": {
+        "file": "hawb-draft-report-format.pdf",
+        "pageCount": 1,
+        "widthPt": 595,
+        "heightPt": 845
+      },
+      "mediaBoxMatch": true,
+      "pageCountMatch": true
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "variant": "draft1",
+      "titleMode": "HOUSE AIR WAYBILL",
+      "showNotify": true,
+      "sparseOverlay": false,
+      "preprinted": false,
+      "generated": {
+        "file": "draft1-evidence.pdf",
+        "pageCount": 9,
+        "widthPt": 595,
+        "heightPt": 842
+      },
+      "reference": {
+        "file": "hawb-draft-report-format-1.pdf",
+        "pageCount": 9,
+        "widthPt": 595,
+        "heightPt": 842
+      },
+      "mediaBoxMatch": true,
+      "pageCountMatch": true
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "variant": "draft2",
+      "titleMode": "Air Waybill",
+      "showNotify": false,
+      "sparseOverlay": false,
+      "preprinted": false,
+      "generated": {
+        "file": "draft2-evidence.pdf",
+        "pageCount": 1,
+        "widthPt": 595,
+        "heightPt": 845
+      },
+      "reference": {
+        "file": "hawb-draft-report-format-2.pdf",
+        "pageCount": 1,
+        "widthPt": 595,
+        "heightPt": 845
+      },
+      "mediaBoxMatch": true,
+      "pageCountMatch": true
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "variant": "original1",
+      "titleMode": "HOUSE AIR WAYBILL",
+      "showNotify": false,
+      "sparseOverlay": true,
+      "preprinted": true,
+      "generated": {
+        "file": "original1-evidence.pdf",
+        "pageCount": 1,
+        "widthPt": 737,
+        "heightPt": 923
+      },
+      "reference": {
+        "file": "hawb-original-pre-printed-report-format-1.pdf",
+        "pageCount": 1,
+        "widthPt": 737,
+        "heightPt": 923
+      },
+      "mediaBoxMatch": true,
+      "pageCountMatch": true
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "variant": "original2",
+      "titleMode": "Air Waybill",
+      "showNotify": false,
+      "sparseOverlay": true,
+      "preprinted": true,
+      "generated": {
+        "file": "original2-evidence.pdf",
+        "pageCount": 1,
+        "widthPt": 595,
+        "heightPt": 845
+      },
+      "reference": {
+        "file": "hawb-original-pre-printed-report-format-2.pdf",
+        "pageCount": 1,
+        "widthPt": 595,
+        "heightPt": 845
+      },
+      "mediaBoxMatch": true,
+      "pageCountMatch": true
+    }
+  ]
+}

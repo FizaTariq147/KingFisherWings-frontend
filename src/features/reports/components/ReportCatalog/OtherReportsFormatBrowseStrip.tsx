@@ -1,4 +1,5 @@
 import { listOtherReportsFormats } from '../../constants/otherReportsFormatCatalog';
+import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
 
@@ -42,6 +43,7 @@ export function OtherReportsFormatBrowseStrip({
           index={row.sortOrder - 1 || i}
           badge={`#${row.sortOrder}`}
           name={row.name}
+          status={resolveCatalogFormatStatus(row.code)}
           onClick={() => onSelect(row.code)}
         />
       ))}

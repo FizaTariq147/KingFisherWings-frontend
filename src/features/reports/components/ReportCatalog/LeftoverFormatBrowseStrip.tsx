@@ -1,4 +1,5 @@
 import { listLeftoverFormats } from '../../constants/leftoverFormatCatalog';
+import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
 

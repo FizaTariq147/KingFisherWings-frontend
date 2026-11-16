@@ -15,7 +15,9 @@ export type GenerateHawbSamplePdfOptions = {
 };
 
 /**
- * Catalogue browse for HAWB: official Fresa sample PDF + org stamp + Airway T&C.
+ * Catalogue **reference browse** for HAWB: official Fresa sample PDF.
+ * Phase 3: pass `skipOrgStamp: true` so original Fresa artwork is unmodified.
+ * Never use this as the final Freightnest Generate / entity-bound document.
  */
 export async function generateHawbSamplePdf(
   code: string,

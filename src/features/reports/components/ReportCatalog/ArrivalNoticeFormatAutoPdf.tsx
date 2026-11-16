@@ -70,7 +70,13 @@ export function ArrivalNoticeFormatAutoPdf({ code, context, autoOpen = true }: P
               companyEmail: data.companyEmail || orgChrome.email,
               logoUrl: data.logoUrl || orgChrome.logoUrl,
             },
-            { logoUrl: orgChrome.logoUrl, preferTemplateV2: true },
+            {
+              logoUrl: orgChrome.logoUrl,
+              preferTemplateV2: true,
+              // Arrival notices use Freightnest template-v2 / shared shells — never Fresa samples as Generate output.
+              purpose: 'generate',
+              workflow: 'freightnest_generate',
+            },
           );
           if (!generated) throw new Error('No arrival notice template for this format.');
           return generated.blob;

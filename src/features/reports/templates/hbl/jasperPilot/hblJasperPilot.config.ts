@@ -1,4 +1,17 @@
 import type { HblJasperPilotConfig } from './hblJasperPilot.types';
+import { resolvePageGeometry, ptToMm } from '../../../engines/pdf/pageGeometry';
+
+/** Phase 1 geometry — A4 portrait MediaBox 595×842 pt (FRESA-REF-0001). */
+const JASPER_PAGE_GEOMETRY = resolvePageGeometry({
+  paper: 'A4',
+  orientation: 'portrait',
+  marginsMm: {
+    top: ptToMm(18),
+    right: ptToMm(18),
+    bottom: ptToMm(18),
+    left: ptToMm(18),
+  },
+});
 
 /**
  * Declarative layout for HBL_DRAFT_REPORT_FORMAT_JASPER.
@@ -15,11 +28,16 @@ export const HBL_JASPER_PILOT_CONFIG: HblJasperPilotConfig = {
   page: {
     paper: 'A4',
     orientation: 'portrait',
-    widthCssPx: 794,
-    heightCssPx: 1123,
-    widthPt: 595,
-    heightPt: 842,
-    marginsPt: { top: 18, right: 18, bottom: 18, left: 18 },
+    widthCssPx: JASPER_PAGE_GEOMETRY.widthCssPx,
+    heightCssPx: JASPER_PAGE_GEOMETRY.heightCssPx,
+    widthPt: JASPER_PAGE_GEOMETRY.widthPt,
+    heightPt: JASPER_PAGE_GEOMETRY.heightPt,
+    marginsPt: {
+      top: JASPER_PAGE_GEOMETRY.marginsPt.top,
+      right: JASPER_PAGE_GEOMETRY.marginsPt.right,
+      bottom: JASPER_PAGE_GEOMETRY.marginsPt.bottom,
+      left: JASPER_PAGE_GEOMETRY.marginsPt.left,
+    },
     pageBreak: 'avoid',
   },
   typography: {

@@ -1,4 +1,5 @@
 import { listSeaDocsExtraFormats } from '../../constants/seaDocsExtraFormatCatalog';
+import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
 

@@ -11,6 +11,10 @@ import { isOfficialHawbFormatCode } from './officialFormatGovernance';
 import { generateHblSamplePdf, hasHblSamplePdf } from './generateHblSamplePdf';
 import { generateHawbSamplePdf, hasHawbSamplePdf } from './generateHawbSamplePdf';
 import {
+  generateHawbOfficialPdf,
+  isHawbOfficialNativeCode,
+} from '../templates/hawb/official';
+import {
   generateCatalogOfficialSamplePdf,
   hasDoOrWmsOfficialSamplePdf,
 } from './generateCatalogOfficialSamplePdf';
@@ -25,25 +29,37 @@ import {
   supportsTemplateV2,
 } from '../engines/preview/renderTemplateV2Pdf';
 import { getReportEnrichment } from '../registry';
+import {
+  allowsFresaSamplePdf,
+  resolveReportPdfWorkflow,
+  type ReportPdfWorkflow,
+  REPORT_PDF_WORKFLOW,
+} from './reportPdfWorkflow';
 
 /**
  * Client layout PDF for catalogue codes when backend pack is unavailable.
  * Never replaces POST /invoices|quotations/:id/pdf.
  *
- * Product priority (see REPORT_GENERATE_PRIORITY / FRESA_FIDELITY_STRATEGY.md):
- * 1. sample_browse — unbound + official CDN sample (HBL/HAWB)
- * 2. backend_pack — entity-bound pack via POST /reports/generate (caller / Generate panel)
- * 3. template_v2 — specialized React docs (no Fresa-identical claim)
- * 4. json_fallback — legacy JSON html2canvas (Dev/offline)
+ * Phase 3 priority:
+ * 1. reference_browse — unbound catalogue may show unmodified Fresa CDN samples (labelled)
+ * 2. freightnest_generate — native / template-v2 / JSON only (never Fresa sample as final PDF)
+ * 3. backend_pack — entity-bound pack via POST /reports/generate (caller / Generate panel)
  *
- * Do not expand JSON shell aliases to invent unique Format-N designs.
+ * Preview/download must reuse the single Blob returned here.
  */
 export type GenerateCatalogLayoutPdfOptions = {
   appendCustomerTerms?: boolean;
   logoUrl?: string;
   hblMode?: 'sample' | 'classic';
-  /** Force template-v2 even when a JSON layout exists (pilot / QA). */
   preferTemplateV2?: boolean;
+  preferHawbOfficial?: boolean;
+  /**
+   * Phase 3 workflow. Defaults from entityBound / purpose.
+   * Generate panel must use freightnest_generate (or omit and pass entityBound / purpose:'generate').
+   */
+  workflow?: ReportPdfWorkflow;
+  /** Alias for workflow resolution when workflow omitted. */
+  purpose?: 'browse' | 'generate';
 };
 
 function hblPreviewMeta(code: string): InvoiceFormatPreview {
@@ -115,7 +131,15 @@ export async function generateCatalogLayoutPdf(
   data: InvoiceFormatPdfData = {},
   options: GenerateCatalogLayoutPdfOptions = {},
 ): Promise<{ blob: Blob; preview: InvoiceFormatPreview } | null> {
-  // Phase-3 Jasper pilot — config-driven composition; sample retained as fallback only.
+  const workflow =
+    options.workflow ??
+    resolveReportPdfWorkflow({
+      entityBound: data.entityBound,
+      purpose: options.purpose,
+    });
+  const allowSample = allowsFresaSamplePdf(workflow);
+
+  // HBL Jasper pilot — Freightnest native only (no Fresa sample fallback on generate).
   if (isHblJasperPilotCode(code)) {
     try {
       const { blob } = await generateHblJasperPilotPdf(data, {
@@ -124,62 +148,103 @@ export async function generateCatalogLayoutPdf(
       });
       return { blob, preview: hblPreviewMeta(code) };
     } catch (pilotErr) {
-      try {
-        const { blob } = await generateHblSamplePdf(code, {
-          appendCustomerTerms: options.appendCustomerTerms,
-        });
-        return { blob, preview: hblPreviewMeta(code) };
-      } catch {
-        throw pilotErr;
+      if (allowSample) {
+        try {
+          const { blob } = await generateHblSamplePdf(code, {
+            appendCustomerTerms: options.appendCustomerTerms,
+            skipOrgStamp: true,
+          });
+          return { blob, preview: hblPreviewMeta(code) };
+        } catch {
+          /* fall through */
+        }
       }
+      const classic = await generateHblFamilyClassicPdf(code, data, {
+        appendCustomerTerms: options.appendCustomerTerms,
+      }).catch(() => null);
+      if (classic) return { blob: classic.blob, preview: hblPreviewMeta(code) };
+      throw pilotErr;
     }
   }
 
-  if (isHblFormatCode(code) && hasHblSamplePdf(code)) {
-    const mode =
-      options.hblMode ||
-      (data.entityBound ? 'classic' : 'sample');
+  if (isHblFormatCode(code)) {
+    // Phase 3: sample mode only for reference_browse. Generate always classic/v2.
+    const wantSample =
+      allowSample &&
+      (options.hblMode === 'sample' || (!options.hblMode && !data.entityBound));
 
-    if (mode === 'sample') {
+    if (wantSample && hasHblSamplePdf(code)) {
       try {
         const { blob } = await generateHblSamplePdf(code, {
           appendCustomerTerms: options.appendCustomerTerms,
+          skipOrgStamp: true,
         });
         return { blob, preview: hblPreviewMeta(code) };
-      } catch (sampleErr) {
+      } catch {
         const v2 = await tryTemplateV2(code, data, options);
         if (v2) return v2;
-        if (!data.entityBound) {
-          const { blob } = await generateHblFamilyClassicPdf(code, data, {
-            appendCustomerTerms: options.appendCustomerTerms,
-          });
-          return { blob, preview: hblPreviewMeta(code) };
-        }
-        throw sampleErr;
+        const { blob } = await generateHblFamilyClassicPdf(code, data, {
+          appendCustomerTerms: options.appendCustomerTerms,
+        });
+        return { blob, preview: hblPreviewMeta(code) };
       }
     }
 
+    const v2 = await tryTemplateV2(code, data, options);
+    if (v2) return v2;
     const { blob } = await generateHblFamilyClassicPdf(code, data, {
       appendCustomerTerms: options.appendCustomerTerms,
     });
     return { blob, preview: hblPreviewMeta(code) };
   }
 
-  // CDN samples are browse-only. Entity-bound must use live mapped data (v2 / JSON).
-  if (isHawbFormatCode(code) && hasHawbSamplePdf(code) && !data.entityBound) {
+  // Official HAWB native layouts — Freightnest generate (entity-bound or preferHawbOfficial).
+  if (
+    isHawbOfficialNativeCode(code) &&
+    (data.entityBound ||
+      options.preferHawbOfficial ||
+      workflow === REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE) &&
+    !options.preferTemplateV2
+  ) {
     try {
-      const { blob } = await generateHawbSamplePdf(code, {
+      const { blob } = await generateHawbOfficialPdf(code, data, {
         appendCustomerTerms: options.appendCustomerTerms,
+        showPlaceholders: !data.entityBound,
       });
       return { blob, preview: hawbPreviewMeta(code) };
     } catch {
+      // Fall through.
+    }
+  }
+
+  // HAWB Fresa CDN sample — reference browse only (unmodified artwork).
+  if (allowSample && isHawbFormatCode(code) && hasHawbSamplePdf(code) && !data.entityBound) {
+    try {
+      const { blob } = await generateHawbSamplePdf(code, {
+        appendCustomerTerms: options.appendCustomerTerms,
+        skipOrgStamp: true,
+      });
+      return { blob, preview: hawbPreviewMeta(code) };
+    } catch {
+      if (isHawbOfficialNativeCode(code)) {
+        try {
+          const { blob } = await generateHawbOfficialPdf(code, data, {
+            appendCustomerTerms: options.appendCustomerTerms,
+            showPlaceholders: true,
+          });
+          return { blob, preview: hawbPreviewMeta(code) };
+        } catch {
+          /* continue */
+        }
+      }
       const v2 = await tryTemplateV2(code, data, options);
       if (v2) return v2;
     }
   }
 
-  // DO / WMS verified Fresa samples — browse-only (same entityBound gate).
+  // DO / WMS official samples — reference browse only.
   if (
+    allowSample &&
     !data.entityBound &&
     hasDoOrWmsOfficialSamplePdf(code) &&
     (isDeliveryOrderFormatCode(code) || isWmsFormatCode(code))
@@ -187,6 +252,7 @@ export async function generateCatalogLayoutPdf(
     try {
       const { blob, samplePdfUrl } = await generateCatalogOfficialSamplePdf(code, {
         appendCustomerTerms: options.appendCustomerTerms,
+        skipOrgStamp: true,
       });
       return {
         blob,
@@ -202,11 +268,9 @@ export async function generateCatalogLayoutPdf(
   }
 
   const layoutEarly = resolveAnyFormatUiLayout(code);
-  // Official HAWB with hawbAwbShell JSON — skip early template-v2 so distinct shells render.
   const skipEarlyV2ForOfficialHawbJson =
     isOfficialHawbFormatCode(code) && Boolean(layoutEarly) && !options.preferTemplateV2;
 
-  // Specialized family templates before generic JSON charge-table DNA.
   if (
     (options.preferTemplateV2 || supportsTemplateV2(code)) &&
     !skipEarlyV2ForOfficialHawbJson
@@ -217,7 +281,6 @@ export async function generateCatalogLayoutPdf(
 
   const layout = layoutEarly;
   if (!layout) {
-    // Arrival extras etc. with enrichment but no JSON — last chance template-v2
     return tryTemplateV2(code, data, options);
   }
 
@@ -234,9 +297,6 @@ export async function generateCatalogLayoutPdf(
     sections: [],
   };
 
-  // Prefer template-v2 for families that must not look like generic invoices.
-  // Official HAWB codes have structurally distinct hawbAwbShell JSON layouts
-  // (draft / draft1 / draft2 / original1 / original2) — prefer those over color-only v2.
   const enrichment = getReportEnrichment(code);
   const hawbUsesDistinctJsonShell =
     enrichment?.templateFamily === 'hawb' &&
@@ -270,6 +330,17 @@ export async function generateCatalogLayoutPdf(
 export function hasCatalogLayoutPdf(code: string): boolean {
   if (isHblFormatCode(code) && hasHblSamplePdf(code)) return true;
   if (isHawbFormatCode(code) && hasHawbSamplePdf(code)) return true;
+  if (isHawbOfficialNativeCode(code)) return true;
   if (supportsTemplateV2(code)) return true;
   return Boolean(resolveAnyFormatUiLayout(code));
+}
+
+/** True when Freightnest can generate without a Fresa sample PDF. */
+export function hasFreightnestGeneratePath(code: string): boolean {
+  if (isHblJasperPilotCode(code)) return true;
+  if (isHawbOfficialNativeCode(code)) return true;
+  if (supportsTemplateV2(code)) return true;
+  if (resolveAnyFormatUiLayout(code)) return true;
+  if (isHblFormatCode(code)) return true; // classic family
+  return false;
 }

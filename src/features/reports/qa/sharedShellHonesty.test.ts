@@ -60,7 +60,7 @@ describe('shared shell honesty', () => {
     );
   });
 
-  it('entity-bound Generate still blocks CDN sample preference', () => {
+  it('entity-bound / Generate block CDN sample preference; browse allows it', () => {
     expect(
       shouldPreferOfficialSamplePdf({
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
@@ -73,6 +73,15 @@ describe('shared shell honesty', () => {
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
         format: 'PDF',
         entityBound: false,
+        purpose: 'generate',
+      }),
+    ).toBe(false);
+    expect(
+      shouldPreferOfficialSamplePdf({
+        code: 'HAWB_DRAFT_REPORT_FORMAT_1',
+        format: 'PDF',
+        entityBound: false,
+        purpose: 'browse',
       }),
     ).toBe(true);
   });

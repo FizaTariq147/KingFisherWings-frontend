@@ -26,11 +26,15 @@ export function allowClientLayoutGenerate(opts: {
   packReady: boolean;
   templateActive: boolean;
   entityBound?: boolean;
-  /** Distinct Fresa sample PDF exists for this catalogue code */
+  /**
+   * @deprecated Phase 3 — official Fresa samples are reference-browse only.
+   * Kept for call-site compatibility; ignored for Generate eligibility.
+   */
   hasOfficialSample?: boolean;
 }): boolean {
   if (!isClientLayoutFallbackEnabled()) return false;
-  if (opts.hasOfficialSample) return true;
+  // Phase 3: do not treat Fresa sample availability as a Generate path.
+  void opts.hasOfficialSample;
   if (opts.packReady) return false;
   void opts.templateActive;
   void opts.entityBound;

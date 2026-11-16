@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { allowClientLayoutGenerate } from './clientLayoutFallback';
 
 describe('allowClientLayoutGenerate', () => {
-  it('prefers official sample even when pack is ready', () => {
+  it('Phase 3: official sample availability does not override pack-ready Generate', () => {
     expect(
       allowClientLayoutGenerate({
         packReady: true,
@@ -10,10 +10,10 @@ describe('allowClientLayoutGenerate', () => {
         entityBound: false,
         hasOfficialSample: true,
       }),
-    ).toBe(true);
+    ).toBe(false);
   });
 
-  it('never uses generic client shells when pack is ready and no sample', () => {
+  it('never uses generic client shells when pack is ready', () => {
     expect(
       allowClientLayoutGenerate({
         packReady: true,

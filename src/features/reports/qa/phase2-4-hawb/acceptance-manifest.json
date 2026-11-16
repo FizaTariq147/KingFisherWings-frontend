@@ -1,0 +1,604 @@
+{
+  "generatedAt": "2026-11-16T07:43:48.308Z",
+  "methodology": {
+    "dpi": 150,
+    "scale": 2.0833333333333335,
+    "pixelmatchThreshold": 0.12,
+    "productionPipeline": "generateHawbOfficialPdf via Playwright Vite harness (html2canvas + jsPDF)",
+    "referenceSource": "qa/fresa-references/pdfs",
+    "referenceRasterFallback": "pdfjs → poppler → text-layer",
+    "pdftoppm": "C:\\Users\\fizat\\AppData\\Local\\Microsoft\\WinGet\\Packages\\oschwartz10612.Poppler_Microsoft.Winget.Source_8wekyb3d8bbwe\\poppler-25.07.0\\Library\\bin\\pdftoppm.exe",
+    "note": "Separate branding/sample-data deltas from structural layout. Pixel % is composite.",
+    "phase25BrandingPreflight": "Draft/Draft-2 visual compare gated on Phase 3.1 harness org branding + no Fresa markers"
+  },
+  "brandingPreflight": {
+    "gatePass": true,
+    "orgName": "Phase31 Audit Org LLC",
+    "formats": [
+      {
+        "code": "HAWB_DRAFT_REPORT_FORMAT",
+        "variant": "draft",
+        "verdict": "PASS",
+        "reason": "org_branding_no_fresa",
+        "fresaLogoDetected": false,
+        "source": "generateHawbOfficialPdf"
+      },
+      {
+        "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+        "variant": "draft2",
+        "verdict": "PASS",
+        "reason": "org_branding_no_fresa",
+        "fresaLogoDetected": false,
+        "source": "generateHawbOfficialPdf"
+      }
+    ]
+  },
+  "formats": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "variant": "draft",
+      "pages": [
+        {
+          "page": 1,
+          "mismatchPct": 14,
+          "similarityPct": 86,
+          "inkRef": 7.3,
+          "inkGen": 9.87,
+          "refRasterEngine": "pdfjs",
+          "mediaBoxMatch": true,
+          "sideBySide": "src/features/reports/qa/phase2-4-hawb/side-by-side/draft-p1-sbs.png",
+          "diff": "src/features/reports/qa/phase2-4-hawb/diffs/draft-p1-diff.png",
+          "overlay": "src/features/reports/qa/phase2-4-hawb/overlays/draft-p1-overlay.png",
+          "refRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft-ref-p1.png",
+          "genRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft-gen-p1.png"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 1,
+        "pageCountGen": 1,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstMismatchPct": 14,
+        "productionInkGen": 9.87,
+        "referenceInkRef": 7.3,
+        "refRasterEngine": "pdfjs"
+      },
+      "differenceClasses": {
+        "structural": "compare MediaBox, section grid, page count",
+        "dynamicData": "bound fixture vs Fresa demo parties/HAWB numbers",
+        "branding": "KingFisher Wings Logistics vs FRESA DEMO (policy)",
+        "rasterization": "html2canvas / pdfjs / poppler anti-aliasing"
+      },
+      "referenceMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ]
+      },
+      "productionPdf": "src/features/reports/qa/phase2-4-hawb/production/draft-production.pdf",
+      "render": {
+        "variant": "draft",
+        "widthPt": 595,
+        "heightPt": 845,
+        "fileName": "HAWB-draft-MAA-DXB-260014.pdf"
+      }
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "variant": "draft1",
+      "pages": [
+        {
+          "page": 1,
+          "mismatchPct": 8.64,
+          "similarityPct": 91.4,
+          "inkRef": 3.79,
+          "inkGen": 6.36,
+          "refRasterEngine": "pdfjs",
+          "mediaBoxMatch": true,
+          "sideBySide": "src/features/reports/qa/phase2-4-hawb/side-by-side/draft1-p1-sbs.png",
+          "diff": "src/features/reports/qa/phase2-4-hawb/diffs/draft1-p1-diff.png",
+          "overlay": "src/features/reports/qa/phase2-4-hawb/overlays/draft1-p1-overlay.png",
+          "refRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft1-ref-p1.png",
+          "genRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft1-gen-p1.png"
+        },
+        {
+          "page": 2,
+          "mismatchPct": 8.64,
+          "similarityPct": 91.4,
+          "inkRef": 3.79,
+          "inkGen": 6.37,
+          "refRasterEngine": "pdfjs",
+          "mediaBoxMatch": true,
+          "sideBySide": "src/features/reports/qa/phase2-4-hawb/side-by-side/draft1-p2-sbs.png",
+          "diff": "src/features/reports/qa/phase2-4-hawb/diffs/draft1-p2-diff.png",
+          "overlay": "src/features/reports/qa/phase2-4-hawb/overlays/draft1-p2-overlay.png",
+          "refRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft1-ref-p2.png",
+          "genRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft1-gen-p2.png"
+        },
+        {
+          "page": 5,
+          "mismatchPct": 8.64,
+          "similarityPct": 91.4,
+          "inkRef": 3.79,
+          "inkGen": 6.37,
+          "refRasterEngine": "pdfjs",
+          "mediaBoxMatch": true,
+          "sideBySide": "src/features/reports/qa/phase2-4-hawb/side-by-side/draft1-p5-sbs.png",
+          "diff": "src/features/reports/qa/phase2-4-hawb/diffs/draft1-p5-diff.png",
+          "overlay": "src/features/reports/qa/phase2-4-hawb/overlays/draft1-p5-overlay.png",
+          "refRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft1-ref-p5.png",
+          "genRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft1-gen-p5.png"
+        },
+        {
+          "page": 9,
+          "mismatchPct": 8.65,
+          "similarityPct": 91.4,
+          "inkRef": 3.79,
+          "inkGen": 6.37,
+          "refRasterEngine": "pdfjs",
+          "mediaBoxMatch": true,
+          "sideBySide": "src/features/reports/qa/phase2-4-hawb/side-by-side/draft1-p9-sbs.png",
+          "diff": "src/features/reports/qa/phase2-4-hawb/diffs/draft1-p9-diff.png",
+          "overlay": "src/features/reports/qa/phase2-4-hawb/overlays/draft1-p9-overlay.png",
+          "refRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft1-ref-p9.png",
+          "genRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft1-gen-p9.png"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 9,
+        "pageCountGen": 9,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstMismatchPct": 8.65,
+        "productionInkGen": 6.36,
+        "referenceInkRef": 3.79,
+        "refRasterEngine": "pdfjs"
+      },
+      "differenceClasses": {
+        "structural": "compare MediaBox, section grid, page count",
+        "dynamicData": "bound fixture vs Fresa demo parties/HAWB numbers",
+        "branding": "KingFisher Wings Logistics vs FRESA DEMO (policy)",
+        "rasterization": "html2canvas / pdfjs / poppler anti-aliasing"
+      },
+      "referenceMeta": {
+        "pageCount": 9,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 842
+          },
+          {
+            "index": 2,
+            "widthPt": 595,
+            "heightPt": 842
+          },
+          {
+            "index": 3,
+            "widthPt": 595,
+            "heightPt": 842
+          },
+          {
+            "index": 4,
+            "widthPt": 595,
+            "heightPt": 842
+          },
+          {
+            "index": 5,
+            "widthPt": 595,
+            "heightPt": 842
+          },
+          {
+            "index": 6,
+            "widthPt": 595,
+            "heightPt": 842
+          },
+          {
+            "index": 7,
+            "widthPt": 595,
+            "heightPt": 842
+          },
+          {
+            "index": 8,
+            "widthPt": 595,
+            "heightPt": 842
+          },
+          {
+            "index": 9,
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 9,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 2,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 3,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 4,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 5,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 6,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 7,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 8,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 9,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          }
+        ]
+      },
+      "productionPdf": "src/features/reports/qa/phase2-4-hawb/production/draft1-production.pdf",
+      "render": {
+        "variant": "draft1",
+        "widthPt": 595,
+        "heightPt": 842,
+        "fileName": "HAWB-draft1-MAA-DXB-260014.pdf"
+      }
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "variant": "draft2",
+      "pages": [
+        {
+          "page": 1,
+          "mismatchPct": 14.99,
+          "similarityPct": 85,
+          "inkRef": 8.96,
+          "inkGen": 8.71,
+          "refRasterEngine": "pdfjs",
+          "mediaBoxMatch": true,
+          "sideBySide": "src/features/reports/qa/phase2-4-hawb/side-by-side/draft2-p1-sbs.png",
+          "diff": "src/features/reports/qa/phase2-4-hawb/diffs/draft2-p1-diff.png",
+          "overlay": "src/features/reports/qa/phase2-4-hawb/overlays/draft2-p1-overlay.png",
+          "refRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft2-ref-p1.png",
+          "genRaster": "src/features/reports/qa/phase2-4-hawb/rasters/draft2-gen-p1.png"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 1,
+        "pageCountGen": 1,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstMismatchPct": 14.99,
+        "productionInkGen": 8.71,
+        "referenceInkRef": 8.96,
+        "refRasterEngine": "pdfjs"
+      },
+      "differenceClasses": {
+        "structural": "compare MediaBox, section grid, page count",
+        "dynamicData": "bound fixture vs Fresa demo parties/HAWB numbers",
+        "branding": "KingFisher Wings Logistics vs FRESA DEMO (policy)",
+        "rasterization": "html2canvas / pdfjs / poppler anti-aliasing"
+      },
+      "referenceMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ]
+      },
+      "productionPdf": "src/features/reports/qa/phase2-4-hawb/production/draft2-production.pdf",
+      "render": {
+        "variant": "draft2",
+        "widthPt": 595,
+        "heightPt": 845,
+        "fileName": "HAWB-draft2-MAA-DXB-260014.pdf"
+      }
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "variant": "original1",
+      "pages": [
+        {
+          "page": 1,
+          "mismatchPct": 4.98,
+          "similarityPct": 95,
+          "inkRef": 1.78,
+          "inkGen": 4.3,
+          "refRasterEngine": "poppler",
+          "mediaBoxMatch": true,
+          "sideBySide": "src/features/reports/qa/phase2-4-hawb/side-by-side/original1-p1-sbs.png",
+          "diff": "src/features/reports/qa/phase2-4-hawb/diffs/original1-p1-diff.png",
+          "overlay": "src/features/reports/qa/phase2-4-hawb/overlays/original1-p1-overlay.png",
+          "refRaster": "src/features/reports/qa/phase2-4-hawb/rasters/original1-ref-p1.png",
+          "genRaster": "src/features/reports/qa/phase2-4-hawb/rasters/original1-gen-p1.png"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 1,
+        "pageCountGen": 1,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstMismatchPct": 4.98,
+        "productionInkGen": 4.3,
+        "referenceInkRef": 1.78,
+        "refRasterEngine": "poppler"
+      },
+      "differenceClasses": {
+        "structural": "compare MediaBox, section grid, page count",
+        "dynamicData": "bound fixture vs Fresa demo parties/HAWB numbers",
+        "branding": "KingFisher Wings Logistics vs FRESA DEMO (policy)",
+        "rasterization": "html2canvas / pdfjs / poppler anti-aliasing"
+      },
+      "referenceMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 737,
+            "heightPt": 923
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 737,
+            "heightPt": 923
+          }
+        ]
+      },
+      "productionPdf": "src/features/reports/qa/phase2-4-hawb/production/original1-production.pdf",
+      "render": {
+        "variant": "original1",
+        "widthPt": 737,
+        "heightPt": 923,
+        "fileName": "HAWB-original1-MAA-DXB-260014.pdf"
+      }
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "variant": "original2",
+      "pages": [
+        {
+          "page": 1,
+          "mismatchPct": 4.66,
+          "similarityPct": 95.3,
+          "inkRef": 0.71,
+          "inkGen": 5.43,
+          "refRasterEngine": "pdfjs",
+          "mediaBoxMatch": true,
+          "sideBySide": "src/features/reports/qa/phase2-4-hawb/side-by-side/original2-p1-sbs.png",
+          "diff": "src/features/reports/qa/phase2-4-hawb/diffs/original2-p1-diff.png",
+          "overlay": "src/features/reports/qa/phase2-4-hawb/overlays/original2-p1-overlay.png",
+          "refRaster": "src/features/reports/qa/phase2-4-hawb/rasters/original2-ref-p1.png",
+          "genRaster": "src/features/reports/qa/phase2-4-hawb/rasters/original2-gen-p1.png"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 1,
+        "pageCountGen": 1,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstMismatchPct": 4.66,
+        "productionInkGen": 5.43,
+        "referenceInkRef": 0.71,
+        "refRasterEngine": "pdfjs"
+      },
+      "differenceClasses": {
+        "structural": "compare MediaBox, section grid, page count",
+        "dynamicData": "bound fixture vs Fresa demo parties/HAWB numbers",
+        "branding": "KingFisher Wings Logistics vs FRESA DEMO (policy)",
+        "rasterization": "html2canvas / pdfjs / poppler anti-aliasing"
+      },
+      "referenceMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ]
+      },
+      "productionPdf": "src/features/reports/qa/phase2-4-hawb/production/original2-production.pdf",
+      "render": {
+        "variant": "original2",
+        "widthPt": 595,
+        "heightPt": 845,
+        "fileName": "HAWB-original2-MAA-DXB-260014.pdf"
+      }
+    }
+  ],
+  "originalModes": [
+    {
+      "variant": "original1",
+      "mode": "digital-underlay",
+      "showUnderlay": true,
+      "mismatchPct": 4.98,
+      "inkRef": 1.78,
+      "inkGen": 4.3,
+      "refRasterEngine": "poppler",
+      "productionPdf": "src/features/reports/qa/phase2-4-hawb/original-modes/original1-digital-underlay.pdf",
+      "sideBySide": "src/features/reports/qa/phase2-4-hawb/original-modes/original1-digital-underlay-sbs.png",
+      "note": "Digital preview with neutral underlay — expect higher ink vs sparse Fresa"
+    },
+    {
+      "variant": "original1",
+      "mode": "physical-sparse",
+      "showUnderlay": false,
+      "mismatchPct": 2.33,
+      "inkRef": 1.78,
+      "inkGen": 0.82,
+      "refRasterEngine": "poppler",
+      "productionPdf": "src/features/reports/qa/phase2-4-hawb/original-modes/original1-physical-sparse.pdf",
+      "sideBySide": "src/features/reports/qa/phase2-4-hawb/original-modes/original1-physical-sparse-sbs.png",
+      "note": "Physical stationery mode — sparse overlay only; apples-to-apples vs Fresa sparse"
+    },
+    {
+      "variant": "original2",
+      "mode": "digital-underlay",
+      "showUnderlay": true,
+      "mismatchPct": 4.66,
+      "inkRef": 0.71,
+      "inkGen": 5.43,
+      "refRasterEngine": "pdfjs",
+      "productionPdf": "src/features/reports/qa/phase2-4-hawb/original-modes/original2-digital-underlay.pdf",
+      "sideBySide": "src/features/reports/qa/phase2-4-hawb/original-modes/original2-digital-underlay-sbs.png",
+      "note": "Digital preview with neutral underlay — expect higher ink vs sparse Fresa"
+    },
+    {
+      "variant": "original2",
+      "mode": "physical-sparse",
+      "showUnderlay": false,
+      "mismatchPct": 1.49,
+      "inkRef": 0.71,
+      "inkGen": 1.02,
+      "refRasterEngine": "pdfjs",
+      "productionPdf": "src/features/reports/qa/phase2-4-hawb/original-modes/original2-physical-sparse.pdf",
+      "sideBySide": "src/features/reports/qa/phase2-4-hawb/original-modes/original2-physical-sparse-sbs.png",
+      "note": "Physical stationery mode — sparse overlay only; apples-to-apples vs Fresa sparse"
+    }
+  ],
+  "draft1CopyInvestigation": {
+    "referencePages": 9,
+    "productionPages": 9,
+    "pageCountMatch": true,
+    "referenceUniqueTextHashes": 1,
+    "productionUniqueTextHashes": 1,
+    "productionFingerprints": [
+      {
+        "page": 1,
+        "itemCount": 0,
+        "hash": "0"
+      },
+      {
+        "page": 2,
+        "itemCount": 0,
+        "hash": "0"
+      },
+      {
+        "page": 3,
+        "itemCount": 0,
+        "hash": "0"
+      },
+      {
+        "page": 4,
+        "itemCount": 0,
+        "hash": "0"
+      },
+      {
+        "page": 5,
+        "itemCount": 0,
+        "hash": "0"
+      },
+      {
+        "page": 6,
+        "itemCount": 0,
+        "hash": "0"
+      },
+      {
+        "page": 7,
+        "itemCount": 0,
+        "hash": "0"
+      },
+      {
+        "page": 8,
+        "itemCount": 0,
+        "hash": "0"
+      },
+      {
+        "page": 9,
+        "itemCount": 0,
+        "hash": "0"
+      }
+    ],
+    "referenceFingerprints": [
+      {
+        "page": 1,
+        "itemCount": 171,
+        "hash": "759dec51"
+      },
+      {
+        "page": 2,
+        "itemCount": 171,
+        "hash": "759dec51"
+      },
+      {
+        "page": 3,
+        "itemCount": 171,
+        "hash": "759dec51"
+      }
+    ],
+    "methodology": [
+      "Fresa Draft-1 is a filled nine-page HOUSE AWB sample (labels + demo data), not blank stationery.",
+      "Low pdfjs ink on some pages is form-art / font rendering — not absence of content (text items exist).",
+      "Production emits 9 intentional identical faces differing by COPY FACE n/9 banner only.",
+      "Gate acceptance on MediaBox, page count=9, notify, copy banners — not raw pixel % alone.",
+      "appendCustomerTerms=false in harness prevents unintended pagination past 9."
+    ],
+    "conclusion": "PASS copy-set semantics: nine pages, near-identical faces"
+  }
+}

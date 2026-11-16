@@ -1,11 +1,10 @@
 import { hasHblSamplePdf } from './generateHblSamplePdf';
 import { hasHawbSamplePdf } from './generateHawbSamplePdf';
 import { hasDoOrWmsOfficialSamplePdf } from './generateCatalogOfficialSamplePdf';
+import { allowsFresaSamplePdf, resolveReportPdfWorkflow } from './reportPdfWorkflow';
 
 /**
- * Catalogue codes that have a distinct official Fresa sample PDF.
- * Backend packs currently share shells, so catalogue Generate/preview must
- * prefer these samples or every format looks identical.
+ * Catalogue codes that have a distinct official Fresa sample PDF (reference browse).
  */
 export function hasOfficialSamplePdf(code: string): boolean {
   const c = code.trim();
@@ -14,16 +13,23 @@ export function hasOfficialSamplePdf(code: string): boolean {
 }
 
 /**
- * Prefer official sample over shared Puppeteer pack for catalogue PDF browse.
- * Never use CDN samples when a live entity is bound — samples must not replace
- * transaction data (Phase 6 QA: sample_replaces_live_data).
+ * Prefer official Fresa sample for **reference browse** only.
+ *
+ * Phase 3: never prefer sample PDFs for Freightnest Generate or entity-bound docs.
+ * Generate must use native / template-v2 / JSON / backend pack.
  */
 export function shouldPreferOfficialSamplePdf(opts: {
   code: string;
   format: string;
   entityBound?: boolean;
+  /** browse = catalogue reference; generate = Freightnest PDF (default). */
+  purpose?: 'browse' | 'generate';
 }): boolean {
-  if (opts.entityBound) return false;
+  const workflow = resolveReportPdfWorkflow({
+    entityBound: opts.entityBound,
+    purpose: opts.purpose ?? 'generate',
+  });
+  if (!allowsFresaSamplePdf(workflow)) return false;
   if (String(opts.format || '').toUpperCase() !== 'PDF') return false;
   return hasOfficialSamplePdf(opts.code);
 }

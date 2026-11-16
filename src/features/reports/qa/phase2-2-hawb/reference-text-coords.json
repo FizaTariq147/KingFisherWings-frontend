@@ -1,0 +1,4726 @@
+{
+  "hawb-draft-report-format.pdf": {
+    "w": 595,
+    "h": 845,
+    "pages": 1,
+    "items": [
+      {
+        "str": "BABU SECTOR PTLTD",
+        "x": 13,
+        "y": 801.5,
+        "w": 84.8,
+        "h": 8,
+        "topPct": 5.1,
+        "leftPct": 2.2
+      },
+      {
+        "str": "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL,",
+        "x": 13,
+        "y": 790.7,
+        "w": 252.7,
+        "h": 8,
+        "topPct": 6.4,
+        "leftPct": 2.2
+      },
+      {
+        "str": "NEELANKARAI CHENNAI TAMILNADU INDIA",
+        "x": 13,
+        "y": 780,
+        "w": 166.1,
+        "h": 8,
+        "topPct": 7.7,
+        "leftPct": 2.2
+      },
+      {
+        "str": "CHENNAI, INDIA",
+        "x": 13,
+        "y": 547.5,
+        "w": 61.7,
+        "h": 8,
+        "topPct": 35.2,
+        "leftPct": 2.2
+      },
+      {
+        "str": "CTN 1-20",
+        "x": 12,
+        "y": 474.5,
+        "w": 34.7,
+        "h": 8,
+        "topPct": 43.8,
+        "leftPct": 2
+      },
+      {
+        "str": "TOTAL : (100) PACKAGES ONLY",
+        "x": 12,
+        "y": 453,
+        "w": 121.2,
+        "h": 8,
+        "topPct": 46.4,
+        "leftPct": 2
+      },
+      {
+        "str": "100",
+        "x": 30.3,
+        "y": 403.5,
+        "w": 13.3,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 5.1
+      },
+      {
+        "str": "1,250.00",
+        "x": 89.9,
+        "y": 403.5,
+        "w": 31.1,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 15.1
+      },
+      {
+        "str": "1,250.00",
+        "x": 198.9,
+        "y": 403.5,
+        "w": 31.1,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 33.4
+      },
+      {
+        "str": "STC: PAPER CUPS",
+        "x": 363,
+        "y": 408.5,
+        "w": 62.9,
+        "h": 7,
+        "topPct": 51.7,
+        "leftPct": 61
+      },
+      {
+        "str": "1,250.00",
+        "x": 88.9,
+        "y": 247.8,
+        "w": 31.1,
+        "h": 8,
+        "topPct": 70.7,
+        "leftPct": 14.9
+      },
+      {
+        "str": "100",
+        "x": 30.3,
+        "y": 247.8,
+        "w": 13.3,
+        "h": 8,
+        "topPct": 70.7,
+        "leftPct": 5.1
+      },
+      {
+        "str": "18-FEB-19",
+        "x": 272.1,
+        "y": 66.9,
+        "w": 33.8,
+        "h": 7,
+        "topPct": 92.1,
+        "leftPct": 45.7
+      },
+      {
+        "str": "CHENNAI",
+        "x": 360.8,
+        "y": 66.9,
+        "w": 31.5,
+        "h": 7,
+        "topPct": 92.1,
+        "leftPct": 60.6
+      },
+      {
+        "str": "FRESA DEMO INDIA PVT LTD",
+        "x": 345.8,
+        "y": 122.2,
+        "w": 111.4,
+        "h": 8,
+        "topPct": 85.5,
+        "leftPct": 58.1
+      },
+      {
+        "str": "17623456882",
+        "x": 521.8,
+        "y": 38.3,
+        "w": 61.2,
+        "h": 10,
+        "topPct": 95.5,
+        "leftPct": 87.7
+      },
+      {
+        "str": "0.00",
+        "x": 338.4,
+        "y": 403.5,
+        "w": 15.6,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 56.9
+      },
+      {
+        "str": "EK9876EK9876 20-FEB-19",
+        "x": 181.1,
+        "y": 499.2,
+        "w": 97.8,
+        "h": 8,
+        "topPct": 40.9,
+        "leftPct": 30.4
+      },
+      {
+        "str": "176|MAA|23456882",
+        "x": 13,
+        "y": 828.1,
+        "w": 96.8,
+        "h": 11,
+        "topPct": 2,
+        "leftPct": 2.2
+      },
+      {
+        "str": "0.00",
+        "x": 65.9,
+        "y": 76.9,
+        "w": 13.6,
+        "h": 7,
+        "topPct": 90.9,
+        "leftPct": 11.1
+      },
+      {
+        "str": "0.00",
+        "x": 65.9,
+        "y": 215.9,
+        "w": 13.6,
+        "h": 7,
+        "topPct": 74.4,
+        "leftPct": 11.1
+      },
+      {
+        "str": "INR",
+        "x": 303,
+        "y": 522.5,
+        "w": 12,
+        "h": 7,
+        "topPct": 38.2,
+        "leftPct": 50.9
+      },
+      {
+        "str": "DUBAI INTERNATIONAL AIRPORT,",
+        "x": 12,
+        "y": 500.5,
+        "w": 130.5,
+        "h": 8,
+        "topPct": 40.8,
+        "leftPct": 2
+      },
+      {
+        "str": "Shipper's Name and Address",
+        "x": 13,
+        "y": 813.8,
+        "w": 103.7,
+        "h": 8,
+        "topPct": 3.7,
+        "leftPct": 2.2
+      },
+      {
+        "str": "Consignee's Name and Address",
+        "x": 13,
+        "y": 714.5,
+        "w": 114.4,
+        "h": 8,
+        "topPct": 15.4,
+        "leftPct": 2.2
+      },
+      {
+        "str": "AL NASER TRADING COMPANY LLC",
+        "x": 13,
+        "y": 701.5,
+        "w": 137.2,
+        "h": 8,
+        "topPct": 17,
+        "leftPct": 2.2
+      },
+      {
+        "str": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
+        "x": 13,
+        "y": 690.7,
+        "w": 272.7,
+        "h": 8,
+        "topPct": 18.3,
+        "leftPct": 2.2
+      },
+      {
+        "str": "AL NABHA SHARJAH UNITED ARAB EMIRATES",
+        "x": 13,
+        "y": 680,
+        "w": 178.1,
+        "h": 8,
+        "topPct": 19.5,
+        "leftPct": 2.2
+      },
+      {
+        "str": "Issuing Carrier' Agent Name and city",
+        "x": 13,
+        "y": 628.5,
+        "w": 129.9,
+        "h": 8,
+        "topPct": 25.6,
+        "leftPct": 2.2
+      },
+      {
+        "str": "FRESA DEMO DUBAI UAE LLC",
+        "x": 13,
+        "y": 617.5,
+        "w": 115,
+        "h": 8,
+        "topPct": 26.9,
+        "leftPct": 2.2
+      },
+      {
+        "str": "Airport of Departure(Addr.of first Carrier) and requested Routing",
+        "x": 12,
+        "y": 558.6,
+        "w": 169.6,
+        "h": 6,
+        "topPct": 33.9,
+        "leftPct": 2
+      },
+      {
+        "str": "to",
+        "x": 21,
+        "y": 534.6,
+        "w": 5,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 3.5
+      },
+      {
+        "str": "By first Carrier",
+        "x": 40,
+        "y": 533.6,
+        "w": 38.3,
+        "h": 6,
+        "topPct": 36.9,
+        "leftPct": 6.7
+      },
+      {
+        "str": "to",
+        "x": 186,
+        "y": 534.6,
+        "w": 5,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 31.3
+      },
+      {
+        "str": "by",
+        "x": 211,
+        "y": 534.6,
+        "w": 6.3,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 35.5
+      },
+      {
+        "str": "by",
+        "x": 261,
+        "y": 534.6,
+        "w": 6.3,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 43.9
+      },
+      {
+        "str": "to",
+        "x": 236,
+        "y": 534.6,
+        "w": 5,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 39.7
+      },
+      {
+        "str": "Routing and Destination",
+        "x": 113.7,
+        "y": 536.4,
+        "w": 42.7,
+        "h": 4,
+        "topPct": 36.5,
+        "leftPct": 19.1
+      },
+      {
+        "str": "Handling Information",
+        "x": 13,
+        "y": 486.5,
+        "w": 73.8,
+        "h": 8,
+        "topPct": 42.4,
+        "leftPct": 2.2
+      },
+      {
+        "str": "Airport of Destination",
+        "x": 51.7,
+        "y": 511.5,
+        "w": 74.6,
+        "h": 8,
+        "topPct": 39.5,
+        "leftPct": 8.7
+      },
+      {
+        "str": "Requested Flight/Date",
+        "x": 205.6,
+        "y": 512.5,
+        "w": 49.7,
+        "h": 5,
+        "topPct": 39.3,
+        "leftPct": 34.6
+      },
+      {
+        "str": "HOUSE AIR WAYBILL",
+        "x": 322,
+        "y": 801.3,
+        "w": 101,
+        "h": 10,
+        "topPct": 5.2,
+        "leftPct": 54.1
+      },
+      {
+        "str": "Copies 1,2 and 3 of this Air Waybill are originals and have the same validity",
+        "x": 295,
+        "y": 727.1,
+        "w": 200,
+        "h": 6,
+        "topPct": 14,
+        "leftPct": 49.6
+      },
+      {
+        "str": "It is agreed that the goods described herein are accepted in apparent good order and condition (except as",
+        "x": 295,
+        "y": 705.7,
+        "w": 294.7,
+        "h": 6,
+        "topPct": 16.5,
+        "leftPct": 49.6
+      },
+      {
+        "str": "noted) for carriage SUBJECT TO THE CONDITIONS OF CONTRACT ON THE REVERSE HEREOF. ALL",
+        "x": 295,
+        "y": 697.7,
+        "w": 294.2,
+        "h": 6,
+        "topPct": 17.4,
+        "leftPct": 49.6
+      },
+      {
+        "str": "GOODS",
+        "x": 295,
+        "y": 689.7,
+        "w": 22.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 49.6
+      },
+      {
+        "str": "MAY",
+        "x": 321.1,
+        "y": 689.7,
+        "w": 13,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 54
+      },
+      {
+        "str": "BE",
+        "x": 337.8,
+        "y": 689.7,
+        "w": 8,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 56.8
+      },
+      {
+        "str": "CARRIED",
+        "x": 349.5,
+        "y": 689.7,
+        "w": 27,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 58.7
+      },
+      {
+        "str": "BY",
+        "x": 380.3,
+        "y": 689.7,
+        "w": 8,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 63.9
+      },
+      {
+        "str": "ANY",
+        "x": 392,
+        "y": 689.7,
+        "w": 12.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 65.9
+      },
+      {
+        "str": "OTHER",
+        "x": 408.1,
+        "y": 689.7,
+        "w": 21,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 68.6
+      },
+      {
+        "str": "MEANS",
+        "x": 432.8,
+        "y": 689.7,
+        "w": 21.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 72.7
+      },
+      {
+        "str": "INCLUDING",
+        "x": 457.9,
+        "y": 689.7,
+        "w": 33,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 77
+      },
+      {
+        "str": "ROAD",
+        "x": 494.6,
+        "y": 689.7,
+        "w": 17.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 83.1
+      },
+      {
+        "str": "OR",
+        "x": 515.7,
+        "y": 689.7,
+        "w": 9,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 86.7
+      },
+      {
+        "str": "ANY",
+        "x": 528.4,
+        "y": 689.7,
+        "w": 12.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 88.8
+      },
+      {
+        "str": "OTHER",
+        "x": 544.5,
+        "y": 689.7,
+        "w": 21,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 91.5
+      },
+      {
+        "str": "CARRIER",
+        "x": 569.2,
+        "y": 689.7,
+        "w": 27,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 95.7
+      },
+      {
+        "str": "UNLESS",
+        "x": 295,
+        "y": 681.6,
+        "w": 24,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 49.6
+      },
+      {
+        "str": "SPECIFIC",
+        "x": 325.4,
+        "y": 681.6,
+        "w": 27.6,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 54.7
+      },
+      {
+        "str": "CONTRARY",
+        "x": 359.4,
+        "y": 681.6,
+        "w": 33.6,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 60.4
+      },
+      {
+        "str": "INSTRUCTIONS",
+        "x": 399.4,
+        "y": 681.6,
+        "w": 45,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 67.1
+      },
+      {
+        "str": "ARE",
+        "x": 450.7,
+        "y": 681.6,
+        "w": 12.3,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 75.7
+      },
+      {
+        "str": "GIVEN",
+        "x": 469.5,
+        "y": 681.6,
+        "w": 18.6,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 78.9
+      },
+      {
+        "str": "HEREON",
+        "x": 494.5,
+        "y": 681.6,
+        "w": 25.7,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 83.1
+      },
+      {
+        "str": "BY",
+        "x": 526.5,
+        "y": 681.6,
+        "w": 8,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 88.5
+      },
+      {
+        "str": "THE",
+        "x": 540.9,
+        "y": 681.6,
+        "w": 12,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 90.9
+      },
+      {
+        "str": "SHIPPER,",
+        "x": 559.3,
+        "y": 681.6,
+        "w": 28,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 94
+      },
+      {
+        "str": "A",
+        "x": 593.6,
+        "y": 681.6,
+        "w": 4,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 99.8
+      },
+      {
+        "str": "SHIPPER AGREES THAT THE SHIPMENT MAY BE CARRIED VIA INTERMEDIATE STOPPING PLACES",
+        "x": 295,
+        "y": 673.6,
+        "w": 290.3,
+        "h": 6,
+        "topPct": 20.3,
+        "leftPct": 49.6
+      },
+      {
+        "str": "WHICH",
+        "x": 295,
+        "y": 665.6,
+        "w": 20.3,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 49.6
+      },
+      {
+        "str": "THE",
+        "x": 319.8,
+        "y": 665.6,
+        "w": 12,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 53.7
+      },
+      {
+        "str": "CARRIER",
+        "x": 336.2,
+        "y": 665.6,
+        "w": 27,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 56.5
+      },
+      {
+        "str": "DEEMS",
+        "x": 367.6,
+        "y": 665.6,
+        "w": 21.3,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 61.8
+      },
+      {
+        "str": "APPROPRIATE.",
+        "x": 393.4,
+        "y": 665.6,
+        "w": 44.3,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 66.1
+      },
+      {
+        "str": "THE",
+        "x": 446.5,
+        "y": 665.6,
+        "w": 12,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 75
+      },
+      {
+        "str": "SHIPPER’S",
+        "x": 462.9,
+        "y": 665.6,
+        "w": 31.6,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 77.8
+      },
+      {
+        "str": "ATTENTION",
+        "x": 499,
+        "y": 665.6,
+        "w": 34,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 83.9
+      },
+      {
+        "str": "IS",
+        "x": 537.4,
+        "y": 665.6,
+        "w": 5.7,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 90.3
+      },
+      {
+        "str": "DRAWN",
+        "x": 547.5,
+        "y": 665.6,
+        "w": 22.7,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 92
+      },
+      {
+        "str": "TO",
+        "x": 574.6,
+        "y": 665.6,
+        "w": 8.3,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 96.6
+      },
+      {
+        "str": "TH",
+        "x": 587.4,
+        "y": 665.6,
+        "w": 8,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 98.7
+      },
+      {
+        "str": "NOTICE CONCERNING CARRIER’S LIMITATION OF LIABILITY.",
+        "x": 295,
+        "y": 657.5,
+        "w": 179.2,
+        "h": 6,
+        "topPct": 22.2,
+        "leftPct": 49.6
+      },
+      {
+        "str": "Shipper may increase such limitation of",
+        "x": 479.2,
+        "y": 657.5,
+        "w": 108.4,
+        "h": 6,
+        "topPct": 22.2,
+        "leftPct": 80.5
+      },
+      {
+        "str": "liability by declaring a higher value for carriage and paying a supplemental charge if required.",
+        "x": 295,
+        "y": 649.5,
+        "w": 248.3,
+        "h": 6,
+        "topPct": 23.1,
+        "leftPct": 49.6
+      },
+      {
+        "str": "Accounting Information",
+        "x": 295,
+        "y": 627.5,
+        "w": 81.8,
+        "h": 8,
+        "topPct": 25.7,
+        "leftPct": 49.6
+      },
+      {
+        "str": "Currency",
+        "x": 295,
+        "y": 534.6,
+        "w": 24.3,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 49.6
+      },
+      {
+        "str": "Other",
+        "x": 393.8,
+        "y": 535.5,
+        "w": 12.5,
+        "h": 5,
+        "topPct": 36.6,
+        "leftPct": 66.2
+      },
+      {
+        "str": "Declared Value for Carriage",
+        "x": 436.5,
+        "y": 534.5,
+        "w": 61.9,
+        "h": 5,
+        "topPct": 36.7,
+        "leftPct": 73.4
+      },
+      {
+        "str": "Declared Value for Customs",
+        "x": 518.3,
+        "y": 534.5,
+        "w": 62.5,
+        "h": 5,
+        "topPct": 36.7,
+        "leftPct": 87.1
+      },
+      {
+        "str": "Amount of Insurance",
+        "x": 306.8,
+        "y": 510.6,
+        "w": 55.3,
+        "h": 6,
+        "topPct": 39.6,
+        "leftPct": 51.6
+      },
+      {
+        "str": "INSURANCE - If Carrier Offers insurance, and such insurance is requested in accordance",
+        "x": 379,
+        "y": 512.2,
+        "w": 198.6,
+        "h": 5,
+        "topPct": 39.4,
+        "leftPct": 63.7
+      },
+      {
+        "str": "with the conditions hereof, indicate amount to be insured in figures in box marked 'Amount",
+        "x": 379,
+        "y": 505.5,
+        "w": 199,
+        "h": 5,
+        "topPct": 40.2,
+        "leftPct": 63.7
+      },
+      {
+        "str": "of Insurance'.",
+        "x": 379,
+        "y": 498.8,
+        "w": 29.8,
+        "h": 5,
+        "topPct": 41,
+        "leftPct": 63.7
+      },
+      {
+        "str": "N.V.D.",
+        "x": 457.2,
+        "y": 522.7,
+        "w": 20.6,
+        "h": 7,
+        "topPct": 38.1,
+        "leftPct": 76.8
+      },
+      {
+        "str": "AS PER INV",
+        "x": 529.9,
+        "y": 522.7,
+        "w": 39.2,
+        "h": 7,
+        "topPct": 38.1,
+        "leftPct": 89.1
+      },
+      {
+        "str": "NIL",
+        "x": 328.3,
+        "y": 498.8,
+        "w": 12.4,
+        "h": 8,
+        "topPct": 41,
+        "leftPct": 55.2
+      },
+      {
+        "str": "kg",
+        "x": 123,
+        "y": 432.9,
+        "w": 7.4,
+        "h": 7,
+        "topPct": 48.8,
+        "leftPct": 20.7
+      },
+      {
+        "str": "lb",
+        "x": 123,
+        "y": 423.5,
+        "w": 5.4,
+        "h": 7,
+        "topPct": 49.9,
+        "leftPct": 20.7
+      },
+      {
+        "str": "Gross",
+        "x": 82.2,
+        "y": 431.4,
+        "w": 18.7,
+        "h": 7,
+        "topPct": 48.9,
+        "leftPct": 13.8
+      },
+      {
+        "str": "Weight",
+        "x": 80.6,
+        "y": 422,
+        "w": 21.8,
+        "h": 7,
+        "topPct": 50.1,
+        "leftPct": 13.5
+      },
+      {
+        "str": "No.of",
+        "x": 28.1,
+        "y": 431.4,
+        "w": 16.7,
+        "h": 7,
+        "topPct": 48.9,
+        "leftPct": 4.7
+      },
+      {
+        "str": "Pieces",
+        "x": 26,
+        "y": 422,
+        "w": 21,
+        "h": 7,
+        "topPct": 50.1,
+        "leftPct": 4.4
+      },
+      {
+        "str": "K",
+        "x": 124,
+        "y": 403.5,
+        "w": 5.3,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 20.8
+      },
+      {
+        "str": "Chargeable",
+        "x": 196.5,
+        "y": 432.6,
+        "w": 31,
+        "h": 6,
+        "topPct": 48.8,
+        "leftPct": 33
+      },
+      {
+        "str": "Weight",
+        "x": 202.7,
+        "y": 424.6,
+        "w": 18.7,
+        "h": 6,
+        "topPct": 49.8,
+        "leftPct": 34.1
+      },
+      {
+        "str": "Rate",
+        "x": 252.1,
+        "y": 432.5,
+        "w": 14.8,
+        "h": 7,
+        "topPct": 48.8,
+        "leftPct": 42.4
+      },
+      {
+        "str": "Total",
+        "x": 313.7,
+        "y": 427.5,
+        "w": 15.5,
+        "h": 7,
+        "topPct": 49.4,
+        "leftPct": 52.7
+      },
+      {
+        "str": "Nature and Quality of Goods",
+        "x": 426.7,
+        "y": 430.9,
+        "w": 88.6,
+        "h": 7,
+        "topPct": 49,
+        "leftPct": 71.7
+      },
+      {
+        "str": "(Incl. Dimensions or Volume)",
+        "x": 426.1,
+        "y": 421.5,
+        "w": 89.8,
+        "h": 7,
+        "topPct": 50.1,
+        "leftPct": 71.6
+      },
+      {
+        "str": "Other Charges",
+        "x": 221,
+        "y": 230.5,
+        "w": 45.9,
+        "h": 7,
+        "topPct": 72.7,
+        "leftPct": 37.1
+      },
+      {
+        "str": "Shipper certifies that the particulars on the face hereof are correct and that insofar as any part of the consignment contains dangerous goods, such part is properly",
+        "x": 220,
+        "y": 158.7,
+        "w": 358.6,
+        "h": 5,
+        "topPct": 81.2,
+        "leftPct": 37
+      },
+      {
+        "str": "described by name and is in proper condition for carriage by air according to the applicable Dangerous Goods Regulations.",
+        "x": 220,
+        "y": 152,
+        "w": 271.7,
+        "h": 5,
+        "topPct": 82,
+        "leftPct": 37
+      },
+      {
+        "str": "Signature of Shipper or his Agent",
+        "x": 349,
+        "y": 109.2,
+        "w": 103,
+        "h": 7,
+        "topPct": 87.1,
+        "leftPct": 58.7
+      },
+      {
+        "str": "Executed on(Date)",
+        "x": 269.8,
+        "y": 56.6,
+        "w": 50,
+        "h": 6,
+        "topPct": 93.3,
+        "leftPct": 45.3
+      },
+      {
+        "str": "at(Place)",
+        "x": 358.2,
+        "y": 56.6,
+        "w": 24,
+        "h": 6,
+        "topPct": 93.3,
+        "leftPct": 60.2
+      },
+      {
+        "str": "Signature of Issuing Carrier or its Agent",
+        "x": 429,
+        "y": 56.6,
+        "w": 105,
+        "h": 6,
+        "topPct": 93.3,
+        "leftPct": 72.1
+      },
+      {
+        "str": "Prepaid",
+        "x": 38.4,
+        "y": 230.2,
+        "w": 24.1,
+        "h": 7,
+        "topPct": 72.8,
+        "leftPct": 6.5
+      },
+      {
+        "str": "Weight Charge",
+        "x": 93.7,
+        "y": 230.2,
+        "w": 46.7,
+        "h": 7,
+        "topPct": 72.8,
+        "leftPct": 15.7
+      },
+      {
+        "str": "Collect",
+        "x": 176.3,
+        "y": 230.2,
+        "w": 21.4,
+        "h": 7,
+        "topPct": 72.8,
+        "leftPct": 29.6
+      },
+      {
+        "str": "Valuation Charge",
+        "x": 89.5,
+        "y": 205.5,
+        "w": 54.1,
+        "h": 7,
+        "topPct": 75.7,
+        "leftPct": 15
+      },
+      {
+        "str": "Tax",
+        "x": 110.7,
+        "y": 179.5,
+        "w": 11.7,
+        "h": 7,
+        "topPct": 78.8,
+        "leftPct": 18.6
+      },
+      {
+        "str": "Total Other Charges Due Agent",
+        "x": 68.3,
+        "y": 156.5,
+        "w": 98.4,
+        "h": 7,
+        "topPct": 81.5,
+        "leftPct": 11.5
+      },
+      {
+        "str": "Total Other Charges Due Carrier",
+        "x": 66.8,
+        "y": 131.5,
+        "w": 101.5,
+        "h": 7,
+        "topPct": 84.4,
+        "leftPct": 11.2
+      },
+      {
+        "str": "Total Prepaid",
+        "x": 42.2,
+        "y": 91.5,
+        "w": 41.6,
+        "h": 7,
+        "topPct": 89.2,
+        "leftPct": 7.1
+      },
+      {
+        "str": "Total Collect",
+        "x": 148.6,
+        "y": 91.5,
+        "w": 38.9,
+        "h": 7,
+        "topPct": 89.2,
+        "leftPct": 25
+      },
+      {
+        "str": "WT",
+        "x": 359.4,
+        "y": 535.9,
+        "w": 6.2,
+        "h": 4,
+        "topPct": 36.6,
+        "leftPct": 60.4
+      },
+      {
+        "str": "EK9876",
+        "x": 40,
+        "y": 523.5,
+        "w": 24.9,
+        "h": 7,
+        "topPct": 38,
+        "leftPct": 6.7
+      },
+      {
+        "str": "PP",
+        "x": 385.8,
+        "y": 524.2,
+        "w": 9.3,
+        "h": 7,
+        "topPct": 38,
+        "leftPct": 64.8
+      },
+      {
+        "str": "PP",
+        "x": 348.8,
+        "y": 524.2,
+        "w": 9.3,
+        "h": 7,
+        "topPct": 38,
+        "leftPct": 58.6
+      },
+      {
+        "str": "DXB",
+        "x": 16.8,
+        "y": 521.9,
+        "w": 14.4,
+        "h": 7,
+        "topPct": 38.2,
+        "leftPct": 2.8
+      },
+      {
+        "str": "CTN - 1-20",
+        "x": 16,
+        "y": 373.5,
+        "w": 39.5,
+        "h": 8,
+        "topPct": 55.8,
+        "leftPct": 2.7
+      },
+      {
+        "str": "EMIRATES",
+        "x": 222,
+        "y": 90.5,
+        "w": 40.8,
+        "h": 8,
+        "topPct": 89.3,
+        "leftPct": 37.3
+      },
+      {
+        "str": "RAM",
+        "x": 492.2,
+        "y": 66.9,
+        "w": 15.5,
+        "h": 7,
+        "topPct": 92.1,
+        "leftPct": 82.7
+      },
+      {
+        "str": "176-23456882",
+        "x": 513.1,
+        "y": 828.1,
+        "w": 70.9,
+        "h": 11,
+        "topPct": 2,
+        "leftPct": 86.2
+      },
+      {
+        "str": "EMIRATES",
+        "x": 345,
+        "y": 786.3,
+        "w": 51.1,
+        "h": 10,
+        "topPct": 6.9,
+        "leftPct": 58
+      },
+      {
+        "str": "Non Negotiable",
+        "x": 297,
+        "y": 815.5,
+        "w": 55.1,
+        "h": 8,
+        "topPct": 3.5,
+        "leftPct": 49.9
+      },
+      {
+        "str": "Issued by",
+        "x": 296,
+        "y": 788.5,
+        "w": 34.2,
+        "h": 8,
+        "topPct": 6.7,
+        "leftPct": 49.7
+      },
+      {
+        "str": "Agent's IATA Code",
+        "x": 14,
+        "y": 581.5,
+        "w": 59.2,
+        "h": 7,
+        "topPct": 31.2,
+        "leftPct": 2.4
+      },
+      {
+        "str": "Account No.",
+        "x": 154,
+        "y": 581.5,
+        "w": 38.1,
+        "h": 7,
+        "topPct": 31.2,
+        "leftPct": 25.9
+      },
+      {
+        "str": "Commodity",
+        "x": 151.3,
+        "y": 426.5,
+        "w": 35.4,
+        "h": 7,
+        "topPct": 49.5,
+        "leftPct": 25.4
+      },
+      {
+        "str": "Rate Class",
+        "x": 148,
+        "y": 437.5,
+        "w": 24.4,
+        "h": 5,
+        "topPct": 48.2,
+        "leftPct": 24.9
+      },
+      {
+        "str": "Charge",
+        "x": 248,
+        "y": 422.5,
+        "w": 23,
+        "h": 7,
+        "topPct": 50,
+        "leftPct": 41.7
+      },
+      {
+        "str": "S",
+        "x": 138,
+        "y": 403.5,
+        "w": 5.3,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 23.2
+      },
+      {
+        "str": "0.00",
+        "x": 340.4,
+        "y": 246.8,
+        "w": 15.6,
+        "h": 8,
+        "topPct": 70.8,
+        "leftPct": 57.2
+      },
+      {
+        "str": "Currency Conversion Rates",
+        "x": 32.8,
+        "y": 68.5,
+        "w": 61.4,
+        "h": 5,
+        "topPct": 91.9,
+        "leftPct": 5.5
+      },
+      {
+        "str": "CC Charges in Dest. Currency",
+        "x": 133.3,
+        "y": 68.5,
+        "w": 67.5,
+        "h": 5,
+        "topPct": 91.9,
+        "leftPct": 22.4
+      },
+      {
+        "str": "For Carriers Use only",
+        "x": 39.3,
+        "y": 42.9,
+        "w": 47.5,
+        "h": 5,
+        "topPct": 94.9,
+        "leftPct": 6.6
+      },
+      {
+        "str": "at Destination",
+        "x": 47.7,
+        "y": 36.2,
+        "w": 30.6,
+        "h": 5,
+        "topPct": 95.7,
+        "leftPct": 8
+      },
+      {
+        "str": "Charges at Destination",
+        "x": 141.1,
+        "y": 43.5,
+        "w": 50.8,
+        "h": 5,
+        "topPct": 94.9,
+        "leftPct": 23.7
+      },
+      {
+        "str": "Total Collect Charges",
+        "x": 245,
+        "y": 43.5,
+        "w": 48,
+        "h": 5,
+        "topPct": 94.9,
+        "leftPct": 41.2
+      },
+      {
+        "str": "Shipper's Account Number",
+        "x": 216.9,
+        "y": 816.6,
+        "w": 71.1,
+        "h": 6,
+        "topPct": 3.4,
+        "leftPct": 36.5
+      },
+      {
+        "str": "Consignee's Account Number",
+        "x": 208.9,
+        "y": 713.6,
+        "w": 79.1,
+        "h": 6,
+        "topPct": 15.6,
+        "leftPct": 35.1
+      },
+      {
+        "str": "FREIGHT PREPAID",
+        "x": 440,
+        "y": 555.3,
+        "w": 72.4,
+        "h": 8,
+        "topPct": 34.3,
+        "leftPct": 73.9
+      },
+      {
+        "str": "CHGS",
+        "x": 329.2,
+        "y": 536.7,
+        "w": 11.5,
+        "h": 4,
+        "topPct": 36.5,
+        "leftPct": 55.3
+      },
+      {
+        "str": "Code",
+        "x": 330.2,
+        "y": 531.4,
+        "w": 9.6,
+        "h": 4,
+        "topPct": 37.1,
+        "leftPct": 55.5
+      }
+    ]
+  },
+  "hawb-draft-report-format-2.pdf": {
+    "w": 595,
+    "h": 845,
+    "pages": 1,
+    "items": [
+      {
+        "str": "BABU SECTOR PTLTD",
+        "x": 12,
+        "y": 801.5,
+        "w": 84.8,
+        "h": 8,
+        "topPct": 5.1,
+        "leftPct": 2
+      },
+      {
+        "str": "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL,",
+        "x": 12,
+        "y": 790.7,
+        "w": 252.7,
+        "h": 8,
+        "topPct": 6.4,
+        "leftPct": 2
+      },
+      {
+        "str": "NEELANKARAI CHENNAI TAMILNADU INDIA",
+        "x": 12,
+        "y": 780,
+        "w": 166.1,
+        "h": 8,
+        "topPct": 7.7,
+        "leftPct": 2
+      },
+      {
+        "str": "CHENNAI, INDIA",
+        "x": 12,
+        "y": 547.5,
+        "w": 61.7,
+        "h": 8,
+        "topPct": 35.2,
+        "leftPct": 2
+      },
+      {
+        "str": "CTN 1-20",
+        "x": 12,
+        "y": 474.5,
+        "w": 34.7,
+        "h": 8,
+        "topPct": 43.8,
+        "leftPct": 2
+      },
+      {
+        "str": "TOTAL : (100) PACKAGES ONLY",
+        "x": 12,
+        "y": 453,
+        "w": 121.2,
+        "h": 8,
+        "topPct": 46.4,
+        "leftPct": 2
+      },
+      {
+        "str": "100",
+        "x": 29.3,
+        "y": 403.5,
+        "w": 13.3,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 4.9
+      },
+      {
+        "str": "1,250.00",
+        "x": 87.9,
+        "y": 403.5,
+        "w": 31.1,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 14.8
+      },
+      {
+        "str": "1,250.00",
+        "x": 198.9,
+        "y": 403.5,
+        "w": 31.1,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 33.4
+      },
+      {
+        "str": "STC: PAPER CUPS",
+        "x": 365,
+        "y": 408.5,
+        "w": 62.9,
+        "h": 7,
+        "topPct": 51.7,
+        "leftPct": 61.3
+      },
+      {
+        "str": "DIMS IN CM",
+        "x": 365,
+        "y": 389.8,
+        "w": 39.2,
+        "h": 7,
+        "topPct": 53.9,
+        "leftPct": 61.3
+      },
+      {
+        "str": "1,250.00",
+        "x": 86.9,
+        "y": 247.8,
+        "w": 31.1,
+        "h": 8,
+        "topPct": 70.7,
+        "leftPct": 14.6
+      },
+      {
+        "str": "100",
+        "x": 29.3,
+        "y": 247.8,
+        "w": 13.3,
+        "h": 8,
+        "topPct": 70.7,
+        "leftPct": 4.9
+      },
+      {
+        "str": "18-FEB-19",
+        "x": 271.1,
+        "y": 66.9,
+        "w": 33.8,
+        "h": 7,
+        "topPct": 92.1,
+        "leftPct": 45.6
+      },
+      {
+        "str": "CHENNAI",
+        "x": 359.8,
+        "y": 66.9,
+        "w": 31.5,
+        "h": 7,
+        "topPct": 92.1,
+        "leftPct": 60.5
+      },
+      {
+        "str": "FRESA DEMO INDIA PVT LTD",
+        "x": 344.8,
+        "y": 122.2,
+        "w": 111.4,
+        "h": 8,
+        "topPct": 85.5,
+        "leftPct": 57.9
+      },
+      {
+        "str": "0.00",
+        "x": 338.4,
+        "y": 403.5,
+        "w": 15.6,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 56.9
+      },
+      {
+        "str": "0.00",
+        "x": 64.9,
+        "y": 76.9,
+        "w": 13.6,
+        "h": 7,
+        "topPct": 90.9,
+        "leftPct": 10.9
+      },
+      {
+        "str": "0.00",
+        "x": 64.9,
+        "y": 215.9,
+        "w": 13.6,
+        "h": 7,
+        "topPct": 74.4,
+        "leftPct": 10.9
+      },
+      {
+        "str": "INR",
+        "x": 302,
+        "y": 522.5,
+        "w": 12,
+        "h": 7,
+        "topPct": 38.2,
+        "leftPct": 50.8
+      },
+      {
+        "str": "DUBAI INTERNATIONAL AIRPORT,",
+        "x": 12,
+        "y": 500.5,
+        "w": 130.5,
+        "h": 8,
+        "topPct": 40.8,
+        "leftPct": 2
+      },
+      {
+        "str": "Shippers Name and Address",
+        "x": 12,
+        "y": 813.8,
+        "w": 102.2,
+        "h": 8,
+        "topPct": 3.7,
+        "leftPct": 2
+      },
+      {
+        "str": "Consignee's Name and Address",
+        "x": 12,
+        "y": 714.5,
+        "w": 114.4,
+        "h": 8,
+        "topPct": 15.4,
+        "leftPct": 2
+      },
+      {
+        "str": "AL NASER TRADING COMPANY LLC",
+        "x": 12,
+        "y": 701.5,
+        "w": 137.2,
+        "h": 8,
+        "topPct": 17,
+        "leftPct": 2
+      },
+      {
+        "str": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
+        "x": 12,
+        "y": 690.7,
+        "w": 272.7,
+        "h": 8,
+        "topPct": 18.3,
+        "leftPct": 2
+      },
+      {
+        "str": "AL NABHA SHARJAH UNITED ARAB EMIRATES",
+        "x": 12,
+        "y": 680,
+        "w": 178.1,
+        "h": 8,
+        "topPct": 19.5,
+        "leftPct": 2
+      },
+      {
+        "str": "Issuing Carrier' Agent Name and city",
+        "x": 12,
+        "y": 628.5,
+        "w": 129.9,
+        "h": 8,
+        "topPct": 25.6,
+        "leftPct": 2
+      },
+      {
+        "str": "FRESA DEMO DUBAI UAE LLC",
+        "x": 12,
+        "y": 617.5,
+        "w": 115,
+        "h": 8,
+        "topPct": 26.9,
+        "leftPct": 2
+      },
+      {
+        "str": "Airport of Departure(Addr.of first Carrier) and requested Routing",
+        "x": 12,
+        "y": 558.6,
+        "w": 169.6,
+        "h": 6,
+        "topPct": 33.9,
+        "leftPct": 2
+      },
+      {
+        "str": "To",
+        "x": 19,
+        "y": 534.6,
+        "w": 7,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 3.2
+      },
+      {
+        "str": "By First Carrier",
+        "x": 40,
+        "y": 533.6,
+        "w": 40.3,
+        "h": 6,
+        "topPct": 36.9,
+        "leftPct": 6.7
+      },
+      {
+        "str": "to",
+        "x": 186,
+        "y": 534.6,
+        "w": 5,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 31.3
+      },
+      {
+        "str": "by",
+        "x": 211,
+        "y": 534.6,
+        "w": 6.3,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 35.5
+      },
+      {
+        "str": "by",
+        "x": 261,
+        "y": 534.6,
+        "w": 6.3,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 43.9
+      },
+      {
+        "str": "to",
+        "x": 236,
+        "y": 534.6,
+        "w": 5,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 39.7
+      },
+      {
+        "str": "Routing and Destination",
+        "x": 107.7,
+        "y": 536.4,
+        "w": 42.7,
+        "h": 4,
+        "topPct": 36.5,
+        "leftPct": 18.1
+      },
+      {
+        "str": "Handling Information",
+        "x": 13,
+        "y": 486.5,
+        "w": 73.8,
+        "h": 8,
+        "topPct": 42.4,
+        "leftPct": 2.2
+      },
+      {
+        "str": "Airport of Destination",
+        "x": 50.7,
+        "y": 511.5,
+        "w": 74.6,
+        "h": 8,
+        "topPct": 39.5,
+        "leftPct": 8.5
+      },
+      {
+        "str": "Air Waybill",
+        "x": 296,
+        "y": 801.3,
+        "w": 47.2,
+        "h": 10,
+        "topPct": 5.2,
+        "leftPct": 49.7
+      },
+      {
+        "str": "Copies 1,2 and 3 of this Air Way bill are originals and have the same validity",
+        "x": 295,
+        "y": 727.1,
+        "w": 201.6,
+        "h": 6,
+        "topPct": 14,
+        "leftPct": 49.6
+      },
+      {
+        "str": "It is agreed that the goods described herein are accepted in apparent good order and condition (except as",
+        "x": 295,
+        "y": 705.7,
+        "w": 294.7,
+        "h": 6,
+        "topPct": 16.5,
+        "leftPct": 49.6
+      },
+      {
+        "str": "noted) for carriage SUBJECT TO THE CONDITIONS OF CONTRACT ON THE REVERSE HEREOF. ALL",
+        "x": 295,
+        "y": 697.7,
+        "w": 294.2,
+        "h": 6,
+        "topPct": 17.4,
+        "leftPct": 49.6
+      },
+      {
+        "str": "GOODS",
+        "x": 295,
+        "y": 689.7,
+        "w": 22.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 49.6
+      },
+      {
+        "str": "MAY",
+        "x": 321.1,
+        "y": 689.7,
+        "w": 13,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 54
+      },
+      {
+        "str": "BE",
+        "x": 337.8,
+        "y": 689.7,
+        "w": 8,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 56.8
+      },
+      {
+        "str": "CARRIED",
+        "x": 349.5,
+        "y": 689.7,
+        "w": 27,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 58.7
+      },
+      {
+        "str": "BY",
+        "x": 380.3,
+        "y": 689.7,
+        "w": 8,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 63.9
+      },
+      {
+        "str": "ANY",
+        "x": 392,
+        "y": 689.7,
+        "w": 12.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 65.9
+      },
+      {
+        "str": "OTHER",
+        "x": 408.1,
+        "y": 689.7,
+        "w": 21,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 68.6
+      },
+      {
+        "str": "MEANS",
+        "x": 432.8,
+        "y": 689.7,
+        "w": 21.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 72.7
+      },
+      {
+        "str": "INCLUDING",
+        "x": 457.9,
+        "y": 689.7,
+        "w": 33,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 77
+      },
+      {
+        "str": "ROAD",
+        "x": 494.6,
+        "y": 689.7,
+        "w": 17.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 83.1
+      },
+      {
+        "str": "OR",
+        "x": 515.7,
+        "y": 689.7,
+        "w": 9,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 86.7
+      },
+      {
+        "str": "ANY",
+        "x": 528.4,
+        "y": 689.7,
+        "w": 12.3,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 88.8
+      },
+      {
+        "str": "OTHER",
+        "x": 544.5,
+        "y": 689.7,
+        "w": 21,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 91.5
+      },
+      {
+        "str": "CARRIER",
+        "x": 569.2,
+        "y": 689.7,
+        "w": 27,
+        "h": 6,
+        "topPct": 18.4,
+        "leftPct": 95.7
+      },
+      {
+        "str": "UNLESS",
+        "x": 295,
+        "y": 681.6,
+        "w": 24,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 49.6
+      },
+      {
+        "str": "SPECIFIC",
+        "x": 325.4,
+        "y": 681.6,
+        "w": 27.6,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 54.7
+      },
+      {
+        "str": "CONTRARY",
+        "x": 359.4,
+        "y": 681.6,
+        "w": 33.6,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 60.4
+      },
+      {
+        "str": "INSTRUCTIONS",
+        "x": 399.4,
+        "y": 681.6,
+        "w": 45,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 67.1
+      },
+      {
+        "str": "ARE",
+        "x": 450.7,
+        "y": 681.6,
+        "w": 12.3,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 75.7
+      },
+      {
+        "str": "GIVEN",
+        "x": 469.5,
+        "y": 681.6,
+        "w": 18.6,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 78.9
+      },
+      {
+        "str": "HEREON",
+        "x": 494.5,
+        "y": 681.6,
+        "w": 25.7,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 83.1
+      },
+      {
+        "str": "BY",
+        "x": 526.5,
+        "y": 681.6,
+        "w": 8,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 88.5
+      },
+      {
+        "str": "THE",
+        "x": 540.9,
+        "y": 681.6,
+        "w": 12,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 90.9
+      },
+      {
+        "str": "SHIPPER,",
+        "x": 559.3,
+        "y": 681.6,
+        "w": 28,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 94
+      },
+      {
+        "str": "A",
+        "x": 593.6,
+        "y": 681.6,
+        "w": 4,
+        "h": 6,
+        "topPct": 19.3,
+        "leftPct": 99.8
+      },
+      {
+        "str": "SHIPPER AGREES THAT THE SHIPMENT MAY BE CARRIED VIA INTERMEDIATE STOPPING PLACES",
+        "x": 295,
+        "y": 673.6,
+        "w": 290.3,
+        "h": 6,
+        "topPct": 20.3,
+        "leftPct": 49.6
+      },
+      {
+        "str": "WHICH",
+        "x": 295,
+        "y": 665.6,
+        "w": 20.3,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 49.6
+      },
+      {
+        "str": "THE",
+        "x": 319.8,
+        "y": 665.6,
+        "w": 12,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 53.7
+      },
+      {
+        "str": "CARRIER",
+        "x": 336.2,
+        "y": 665.6,
+        "w": 27,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 56.5
+      },
+      {
+        "str": "DEEMS",
+        "x": 367.6,
+        "y": 665.6,
+        "w": 21.3,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 61.8
+      },
+      {
+        "str": "APPROPRIATE.",
+        "x": 393.4,
+        "y": 665.6,
+        "w": 44.3,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 66.1
+      },
+      {
+        "str": "THE",
+        "x": 446.5,
+        "y": 665.6,
+        "w": 12,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 75
+      },
+      {
+        "str": "SHIPPER’S",
+        "x": 462.9,
+        "y": 665.6,
+        "w": 31.6,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 77.8
+      },
+      {
+        "str": "ATTENTION",
+        "x": 499,
+        "y": 665.6,
+        "w": 34,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 83.9
+      },
+      {
+        "str": "IS",
+        "x": 537.4,
+        "y": 665.6,
+        "w": 5.7,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 90.3
+      },
+      {
+        "str": "DRAWN",
+        "x": 547.5,
+        "y": 665.6,
+        "w": 22.7,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 92
+      },
+      {
+        "str": "TO",
+        "x": 574.6,
+        "y": 665.6,
+        "w": 8.3,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 96.6
+      },
+      {
+        "str": "TH",
+        "x": 587.4,
+        "y": 665.6,
+        "w": 8,
+        "h": 6,
+        "topPct": 21.2,
+        "leftPct": 98.7
+      },
+      {
+        "str": "NOTICE CONCERNING CARRIER’S LIMITATION OF LIABILITY.",
+        "x": 295,
+        "y": 657.5,
+        "w": 179.2,
+        "h": 6,
+        "topPct": 22.2,
+        "leftPct": 49.6
+      },
+      {
+        "str": "Shipper may increase such limitation of",
+        "x": 479.2,
+        "y": 657.5,
+        "w": 108.4,
+        "h": 6,
+        "topPct": 22.2,
+        "leftPct": 80.5
+      },
+      {
+        "str": "liability by declaring a higher value for carriage and paying a supplemental charge if required.",
+        "x": 295,
+        "y": 649.5,
+        "w": 248.3,
+        "h": 6,
+        "topPct": 23.1,
+        "leftPct": 49.6
+      },
+      {
+        "str": "Accounting Information",
+        "x": 295,
+        "y": 627.5,
+        "w": 81.8,
+        "h": 8,
+        "topPct": 25.7,
+        "leftPct": 49.6
+      },
+      {
+        "str": "Currency",
+        "x": 295,
+        "y": 534.6,
+        "w": 24.3,
+        "h": 6,
+        "topPct": 36.7,
+        "leftPct": 49.6
+      },
+      {
+        "str": "Other",
+        "x": 392.8,
+        "y": 535.5,
+        "w": 12.5,
+        "h": 5,
+        "topPct": 36.6,
+        "leftPct": 66
+      },
+      {
+        "str": "Declared Value for Carriage",
+        "x": 435.5,
+        "y": 534.5,
+        "w": 61.9,
+        "h": 5,
+        "topPct": 36.7,
+        "leftPct": 73.2
+      },
+      {
+        "str": "Declared Value for Customs",
+        "x": 517.3,
+        "y": 534.5,
+        "w": 62.5,
+        "h": 5,
+        "topPct": 36.7,
+        "leftPct": 86.9
+      },
+      {
+        "str": "Amount of Insurance",
+        "x": 305.8,
+        "y": 511.6,
+        "w": 55.3,
+        "h": 6,
+        "topPct": 39.5,
+        "leftPct": 51.4
+      },
+      {
+        "str": "INSURANCE - If Carrier Offers insurance, and such insurance is requested in accordance",
+        "x": 379,
+        "y": 512.2,
+        "w": 198.6,
+        "h": 5,
+        "topPct": 39.4,
+        "leftPct": 63.7
+      },
+      {
+        "str": "with the conditions hereof, indicate amount to be insured in figures in box marked 'Amount",
+        "x": 379,
+        "y": 505.5,
+        "w": 199,
+        "h": 5,
+        "topPct": 40.2,
+        "leftPct": 63.7
+      },
+      {
+        "str": "of Insurance'.",
+        "x": 379,
+        "y": 498.8,
+        "w": 29.8,
+        "h": 5,
+        "topPct": 41,
+        "leftPct": 63.7
+      },
+      {
+        "str": "N.V.D.",
+        "x": 456.2,
+        "y": 522.7,
+        "w": 20.6,
+        "h": 7,
+        "topPct": 38.1,
+        "leftPct": 76.7
+      },
+      {
+        "str": "N.C.V",
+        "x": 539.2,
+        "y": 522.7,
+        "w": 18.6,
+        "h": 7,
+        "topPct": 38.1,
+        "leftPct": 90.6
+      },
+      {
+        "str": "NIL",
+        "x": 327.3,
+        "y": 498.8,
+        "w": 12.4,
+        "h": 8,
+        "topPct": 41,
+        "leftPct": 55
+      },
+      {
+        "str": "kg",
+        "x": 123,
+        "y": 432.9,
+        "w": 7.4,
+        "h": 7,
+        "topPct": 48.8,
+        "leftPct": 20.7
+      },
+      {
+        "str": "lb",
+        "x": 123,
+        "y": 423.5,
+        "w": 5.4,
+        "h": 7,
+        "topPct": 49.9,
+        "leftPct": 20.7
+      },
+      {
+        "str": "Gross",
+        "x": 81.7,
+        "y": 431.4,
+        "w": 18.7,
+        "h": 7,
+        "topPct": 48.9,
+        "leftPct": 13.7
+      },
+      {
+        "str": "Weight",
+        "x": 80.1,
+        "y": 422,
+        "w": 21.8,
+        "h": 7,
+        "topPct": 50.1,
+        "leftPct": 13.5
+      },
+      {
+        "str": "No.of",
+        "x": 27.6,
+        "y": 431.4,
+        "w": 16.7,
+        "h": 7,
+        "topPct": 48.9,
+        "leftPct": 4.6
+      },
+      {
+        "str": "Pieces",
+        "x": 25.5,
+        "y": 422,
+        "w": 21,
+        "h": 7,
+        "topPct": 50.1,
+        "leftPct": 4.3
+      },
+      {
+        "str": "K",
+        "x": 124,
+        "y": 403.5,
+        "w": 5.3,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 20.8
+      },
+      {
+        "str": "Chargeable",
+        "x": 197.5,
+        "y": 432.6,
+        "w": 31,
+        "h": 6,
+        "topPct": 48.8,
+        "leftPct": 33.2
+      },
+      {
+        "str": "Weight",
+        "x": 203.7,
+        "y": 424.6,
+        "w": 18.7,
+        "h": 6,
+        "topPct": 49.8,
+        "leftPct": 34.2
+      },
+      {
+        "str": "Rate",
+        "x": 239.1,
+        "y": 432.5,
+        "w": 14.8,
+        "h": 7,
+        "topPct": 48.8,
+        "leftPct": 40.2
+      },
+      {
+        "str": "Total",
+        "x": 314.2,
+        "y": 427.5,
+        "w": 15.5,
+        "h": 7,
+        "topPct": 49.4,
+        "leftPct": 52.8
+      },
+      {
+        "str": "Nature and Quality of Goods",
+        "x": 427.7,
+        "y": 430.9,
+        "w": 88.6,
+        "h": 7,
+        "topPct": 49,
+        "leftPct": 71.9
+      },
+      {
+        "str": "(Incl. Dimensions or Volume)",
+        "x": 427.1,
+        "y": 421.5,
+        "w": 89.8,
+        "h": 7,
+        "topPct": 50.1,
+        "leftPct": 71.8
+      },
+      {
+        "str": "Other Charges",
+        "x": 221,
+        "y": 230.5,
+        "w": 45.9,
+        "h": 7,
+        "topPct": 72.7,
+        "leftPct": 37.1
+      },
+      {
+        "str": "Shipper certifies that the particulars on the face hereof are correct and that insofar as any part of the consignment contains dangerous goods, such part is properly",
+        "x": 221,
+        "y": 158.7,
+        "w": 358.6,
+        "h": 5,
+        "topPct": 81.2,
+        "leftPct": 37.1
+      },
+      {
+        "str": "described by name and is in proper condition for carriage by air according to the applicable Dangerous Goods Regulations.",
+        "x": 221,
+        "y": 152,
+        "w": 271.7,
+        "h": 5,
+        "topPct": 82,
+        "leftPct": 37.1
+      },
+      {
+        "str": "Executed on",
+        "x": 220,
+        "y": 53.6,
+        "w": 33.3,
+        "h": 6,
+        "topPct": 93.7,
+        "leftPct": 37
+      },
+      {
+        "str": "(Date)",
+        "x": 276.6,
+        "y": 53.6,
+        "w": 16.7,
+        "h": 6,
+        "topPct": 93.7,
+        "leftPct": 46.5
+      },
+      {
+        "str": "at",
+        "x": 324.8,
+        "y": 53.6,
+        "w": 5,
+        "h": 6,
+        "topPct": 93.7,
+        "leftPct": 54.6
+      },
+      {
+        "str": "(Place)",
+        "x": 364.7,
+        "y": 53.6,
+        "w": 19,
+        "h": 6,
+        "topPct": 93.7,
+        "leftPct": 61.3
+      },
+      {
+        "str": "Signature of Issuing Carrier or its Agent",
+        "x": 448.6,
+        "y": 53.6,
+        "w": 105,
+        "h": 6,
+        "topPct": 93.7,
+        "leftPct": 75.4
+      },
+      {
+        "str": "Prepaid",
+        "x": 37.9,
+        "y": 230.2,
+        "w": 24.1,
+        "h": 7,
+        "topPct": 72.8,
+        "leftPct": 6.4
+      },
+      {
+        "str": "Weight Charge",
+        "x": 93.2,
+        "y": 230.2,
+        "w": 46.7,
+        "h": 7,
+        "topPct": 72.8,
+        "leftPct": 15.7
+      },
+      {
+        "str": "Collect",
+        "x": 175.8,
+        "y": 230.2,
+        "w": 21.4,
+        "h": 7,
+        "topPct": 72.8,
+        "leftPct": 29.5
+      },
+      {
+        "str": "Valuation Charge",
+        "x": 89,
+        "y": 205.5,
+        "w": 54.1,
+        "h": 7,
+        "topPct": 75.7,
+        "leftPct": 15
+      },
+      {
+        "str": "Tax",
+        "x": 110.2,
+        "y": 179.5,
+        "w": 11.7,
+        "h": 7,
+        "topPct": 78.8,
+        "leftPct": 18.5
+      },
+      {
+        "str": "Total Other Charges Due Agent",
+        "x": 67.8,
+        "y": 156.5,
+        "w": 98.4,
+        "h": 7,
+        "topPct": 81.5,
+        "leftPct": 11.4
+      },
+      {
+        "str": "Total Other Charges Due Carrier",
+        "x": 66.3,
+        "y": 131.5,
+        "w": 101.5,
+        "h": 7,
+        "topPct": 84.4,
+        "leftPct": 11.1
+      },
+      {
+        "str": "Total Prepaid",
+        "x": 41.7,
+        "y": 91.5,
+        "w": 41.6,
+        "h": 7,
+        "topPct": 89.2,
+        "leftPct": 7
+      },
+      {
+        "str": "Total Collect",
+        "x": 148.1,
+        "y": 91.5,
+        "w": 38.9,
+        "h": 7,
+        "topPct": 89.2,
+        "leftPct": 24.9
+      },
+      {
+        "str": "WT/VAL",
+        "x": 354.1,
+        "y": 535.9,
+        "w": 14.9,
+        "h": 4,
+        "topPct": 36.6,
+        "leftPct": 59.5
+      },
+      {
+        "str": "EK9876",
+        "x": 40,
+        "y": 523.5,
+        "w": 24.9,
+        "h": 7,
+        "topPct": 38,
+        "leftPct": 6.7
+      },
+      {
+        "str": "PP",
+        "x": 384.8,
+        "y": 524.2,
+        "w": 9.3,
+        "h": 7,
+        "topPct": 38,
+        "leftPct": 64.7
+      },
+      {
+        "str": "PP",
+        "x": 347.8,
+        "y": 524.2,
+        "w": 9.3,
+        "h": 7,
+        "topPct": 38,
+        "leftPct": 58.5
+      },
+      {
+        "str": "DXB",
+        "x": 15.8,
+        "y": 522.9,
+        "w": 14.4,
+        "h": 7,
+        "topPct": 38.1,
+        "leftPct": 2.7
+      },
+      {
+        "str": "CTN - 1-20",
+        "x": 15,
+        "y": 373.5,
+        "w": 39.5,
+        "h": 8,
+        "topPct": 55.8,
+        "leftPct": 2.5
+      },
+      {
+        "str": "FRESA DEMO DUBAI UAE LLC",
+        "x": 460.4,
+        "y": 66.6,
+        "w": 86.3,
+        "h": 6,
+        "topPct": 92.1,
+        "leftPct": 77.4
+      },
+      {
+        "str": "FRESA DEMO INDIA PVT LTD",
+        "x": 353.9,
+        "y": 772.2,
+        "w": 167.2,
+        "h": 12,
+        "topPct": 8.6,
+        "leftPct": 59.5
+      },
+      {
+        "str": "MUMBAI",
+        "x": 421.5,
+        "y": 760.4,
+        "w": 32,
+        "h": 8,
+        "topPct": 10,
+        "leftPct": 70.8
+      },
+      {
+        "str": "INDIA",
+        "x": 426.8,
+        "y": 749.7,
+        "w": 21.3,
+        "h": 8,
+        "topPct": 11.3,
+        "leftPct": 71.7
+      },
+      {
+        "str": "Non Negotiable",
+        "x": 296,
+        "y": 815.5,
+        "w": 55.1,
+        "h": 8,
+        "topPct": 3.5,
+        "leftPct": 49.7
+      },
+      {
+        "str": "Issued by",
+        "x": 296,
+        "y": 788.5,
+        "w": 34.2,
+        "h": 8,
+        "topPct": 6.7,
+        "leftPct": 49.7
+      },
+      {
+        "str": "Agent's IATA Code",
+        "x": 13,
+        "y": 581.5,
+        "w": 59.2,
+        "h": 7,
+        "topPct": 31.2,
+        "leftPct": 2.2
+      },
+      {
+        "str": "Account No.",
+        "x": 153,
+        "y": 581.5,
+        "w": 38.1,
+        "h": 7,
+        "topPct": 31.2,
+        "leftPct": 25.7
+      },
+      {
+        "str": "Commodity",
+        "x": 150.3,
+        "y": 429.5,
+        "w": 35.4,
+        "h": 7,
+        "topPct": 49.2,
+        "leftPct": 25.3
+      },
+      {
+        "str": "Item No.",
+        "x": 154.8,
+        "y": 420.1,
+        "w": 26.4,
+        "h": 7,
+        "topPct": 50.3,
+        "leftPct": 26
+      },
+      {
+        "str": "Rate Class",
+        "x": 139,
+        "y": 438.5,
+        "w": 24.4,
+        "h": 5,
+        "topPct": 48.1,
+        "leftPct": 23.4
+      },
+      {
+        "str": "Charge",
+        "x": 258.5,
+        "y": 422.5,
+        "w": 23,
+        "h": 7,
+        "topPct": 50,
+        "leftPct": 43.4
+      },
+      {
+        "str": "S",
+        "x": 140,
+        "y": 403.5,
+        "w": 5.3,
+        "h": 8,
+        "topPct": 52.2,
+        "leftPct": 23.5
+      },
+      {
+        "str": "0.00",
+        "x": 338.4,
+        "y": 246.8,
+        "w": 15.6,
+        "h": 8,
+        "topPct": 70.8,
+        "leftPct": 56.9
+      },
+      {
+        "str": "Currency Conversion Rates",
+        "x": 32.3,
+        "y": 68.5,
+        "w": 61.4,
+        "h": 5,
+        "topPct": 91.9,
+        "leftPct": 5.4
+      },
+      {
+        "str": "CC Charges in Dest. Currency",
+        "x": 132.8,
+        "y": 68.5,
+        "w": 67.5,
+        "h": 5,
+        "topPct": 91.9,
+        "leftPct": 22.3
+      },
+      {
+        "str": "For Carrier's Use only",
+        "x": 38.3,
+        "y": 42.9,
+        "w": 48.4,
+        "h": 5,
+        "topPct": 94.9,
+        "leftPct": 6.4
+      },
+      {
+        "str": "at Destination",
+        "x": 47.2,
+        "y": 36.2,
+        "w": 30.6,
+        "h": 5,
+        "topPct": 95.7,
+        "leftPct": 7.9
+      },
+      {
+        "str": "Charges at Destination",
+        "x": 140.6,
+        "y": 43.5,
+        "w": 50.8,
+        "h": 5,
+        "topPct": 94.9,
+        "leftPct": 23.6
+      },
+      {
+        "str": "Total Collect Charges",
+        "x": 244.5,
+        "y": 43.5,
+        "w": 48,
+        "h": 5,
+        "topPct": 94.9,
+        "leftPct": 41.1
+      },
+      {
+        "str": "FREIGHT PREPAID",
+        "x": 447,
+        "y": 570.3,
+        "w": 72.4,
+        "h": 8,
+        "topPct": 32.5,
+        "leftPct": 75.1
+      },
+      {
+        "str": "CHGS",
+        "x": 328.2,
+        "y": 536.7,
+        "w": 11.5,
+        "h": 4,
+        "topPct": 36.5,
+        "leftPct": 55.2
+      },
+      {
+        "str": "Code",
+        "x": 329.2,
+        "y": 531.4,
+        "w": 9.6,
+        "h": 4,
+        "topPct": 37.1,
+        "leftPct": 55.3
+      },
+      {
+        "str": "MASTER AWB No. :",
+        "x": 298.1,
+        "y": 550.9,
+        "w": 81.9,
+        "h": 9,
+        "topPct": 34.8,
+        "leftPct": 50.1
+      },
+      {
+        "str": "17623456882",
+        "x": 389,
+        "y": 550.9,
+        "w": 55,
+        "h": 9,
+        "topPct": 34.8,
+        "leftPct": 65.4
+      },
+      {
+        "str": "MAA/DXB/1900014",
+        "x": 458,
+        "y": 829.9,
+        "w": 78,
+        "h": 9,
+        "topPct": 1.8,
+        "leftPct": 77
+      },
+      {
+        "str": "HAWB NO.",
+        "x": 408.6,
+        "y": 829.9,
+        "w": 45.5,
+        "h": 9,
+        "topPct": 1.8,
+        "leftPct": 68.7
+      },
+      {
+        "str": "Flight / Date",
+        "x": 171,
+        "y": 511.6,
+        "w": 32.3,
+        "h": 6,
+        "topPct": 39.5,
+        "leftPct": 28.7
+      },
+      {
+        "str": "Flight / Date",
+        "x": 256.7,
+        "y": 511.6,
+        "w": 32.3,
+        "h": 6,
+        "topPct": 39.5,
+        "leftPct": 43.1
+      },
+      {
+        "str": "For Carrier Use Only",
+        "x": 211.6,
+        "y": 514.4,
+        "w": 36.9,
+        "h": 4,
+        "topPct": 39.1,
+        "leftPct": 35.6
+      },
+      {
+        "str": "EK9876EK9876 20-FEB-19",
+        "x": 180.1,
+        "y": 498.2,
+        "w": 97.8,
+        "h": 8,
+        "topPct": 41,
+        "leftPct": 30.3
+      },
+      {
+        "str": "Signature of Shipper or his Agent",
+        "x": 348.5,
+        "y": 102.2,
+        "w": 103,
+        "h": 7,
+        "topPct": 87.9,
+        "leftPct": 58.6
+      },
+      {
+        "str": "MAA/DXB/1900014",
+        "x": 457,
+        "y": 37.9,
+        "w": 78,
+        "h": 9,
+        "topPct": 95.5,
+        "leftPct": 76.8
+      },
+      {
+        "str": "HAWB NO.",
+        "x": 407.6,
+        "y": 37.9,
+        "w": 45.5,
+        "h": 9,
+        "topPct": 95.5,
+        "leftPct": 68.5
+      },
+      {
+        "str": "EXTRA COPY",
+        "x": 260.8,
+        "y": 22.3,
+        "w": 64.4,
+        "h": 10,
+        "topPct": 97.4,
+        "leftPct": 43.8
+      }
+    ]
+  },
+  "hawb-original-pre-printed-report-format-1.pdf": {
+    "w": 737,
+    "h": 923,
+    "pages": 1,
+    "items": [
+      {
+        "str": "BABU SECTOR PTLTD",
+        "x": 33,
+        "y": 872.7,
+        "w": 106.1,
+        "h": 10,
+        "topPct": 5.4,
+        "leftPct": 4.5
+      },
+      {
+        "str": "144/78B GKM TOWERS MUTHUSAMY STREET,",
+        "x": 33,
+        "y": 861.4,
+        "w": 221.7,
+        "h": 10,
+        "topPct": 6.7,
+        "leftPct": 4.5
+      },
+      {
+        "str": "NEAR A2B SIGNAL, NEELANKARAI CHENNAI",
+        "x": 33,
+        "y": 850,
+        "w": 212.3,
+        "h": 10,
+        "topPct": 7.9,
+        "leftPct": 4.5
+      },
+      {
+        "str": "TAMILNADU INDIA",
+        "x": 33,
+        "y": 838.7,
+        "w": 87.2,
+        "h": 10,
+        "topPct": 9.1,
+        "leftPct": 4.5
+      },
+      {
+        "str": "CHENNAI, INDIA",
+        "x": 30,
+        "y": 649.5,
+        "w": 69.5,
+        "h": 9,
+        "topPct": 29.6,
+        "leftPct": 4.1
+      },
+      {
+        "str": "CTN 1-20",
+        "x": 30,
+        "y": 571.7,
+        "w": 43.3,
+        "h": 10,
+        "topPct": 38.1,
+        "leftPct": 4.1
+      },
+      {
+        "str": "TOTAL : (100) PACKAGES ONLY",
+        "x": 30,
+        "y": 549,
+        "w": 151.7,
+        "h": 10,
+        "topPct": 40.5,
+        "leftPct": 4.1
+      },
+      {
+        "str": "100",
+        "x": 39.7,
+        "y": 483.7,
+        "w": 16.7,
+        "h": 10,
+        "topPct": 47.6,
+        "leftPct": 5.4
+      },
+      {
+        "str": "1,250.00",
+        "x": 78,
+        "y": 483.7,
+        "w": 38.9,
+        "h": 10,
+        "topPct": 47.6,
+        "leftPct": 10.6
+      },
+      {
+        "str": "1,250.00",
+        "x": 187.1,
+        "y": 483.7,
+        "w": 38.9,
+        "h": 10,
+        "topPct": 47.6,
+        "leftPct": 25.4
+      },
+      {
+        "str": "STC: PAPER CUPS",
+        "x": 369,
+        "y": 483.7,
+        "w": 90,
+        "h": 10,
+        "topPct": 47.6,
+        "leftPct": 50.1
+      },
+      {
+        "str": "18-FEB-19",
+        "x": 238,
+        "y": 156.7,
+        "w": 48.4,
+        "h": 10,
+        "topPct": 83,
+        "leftPct": 32.3
+      },
+      {
+        "str": "CHENNAI",
+        "x": 331,
+        "y": 156.7,
+        "w": 45,
+        "h": 10,
+        "topPct": 83,
+        "leftPct": 44.9
+      },
+      {
+        "str": "FRESA DEMO DUBAI UAE LLC",
+        "x": 336,
+        "y": 208.3,
+        "w": 143.9,
+        "h": 10,
+        "topPct": 77.4,
+        "leftPct": 45.6
+      },
+      {
+        "str": "EK9876EK9876 20-",
+        "x": 195,
+        "y": 596.8,
+        "w": 88.4,
+        "h": 10,
+        "topPct": 35.3,
+        "leftPct": 26.5
+      },
+      {
+        "str": "176-23456882",
+        "x": 103,
+        "y": 895.3,
+        "w": 90.3,
+        "h": 14,
+        "topPct": 3,
+        "leftPct": 14
+      },
+      {
+        "str": "MAA/DXB/1900014",
+        "x": 458,
+        "y": 895.8,
+        "w": 121.4,
+        "h": 14,
+        "topPct": 2.9,
+        "leftPct": 62.1
+      },
+      {
+        "str": "DUBAI INTERNATIONAL",
+        "x": 30,
+        "y": 596.8,
+        "w": 113.4,
+        "h": 10,
+        "topPct": 35.3,
+        "leftPct": 4.1
+      },
+      {
+        "str": "FREIGHT PREPAID",
+        "x": 450,
+        "y": 564.3,
+        "w": 90.6,
+        "h": 10,
+        "topPct": 38.9,
+        "leftPct": 61.1
+      },
+      {
+        "str": "AL NASER TRADING COMPANY LLC",
+        "x": 33,
+        "y": 789.7,
+        "w": 171.7,
+        "h": 10,
+        "topPct": 14.4,
+        "leftPct": 4.5
+      },
+      {
+        "str": "30 AL MAKTHOOM BUILDING NEAR MUBARAK",
+        "x": 33,
+        "y": 778.4,
+        "w": 220.6,
+        "h": 10,
+        "topPct": 15.7,
+        "leftPct": 4.5
+      },
+      {
+        "str": "CENTRE ROUND ABOUT AL NABHA SHARJAH",
+        "x": 33,
+        "y": 767,
+        "w": 219.5,
+        "h": 10,
+        "topPct": 16.9,
+        "leftPct": 4.5
+      },
+      {
+        "str": "UNITED ARAB EMIRATES",
+        "x": 33,
+        "y": 755.7,
+        "w": 121.1,
+        "h": 10,
+        "topPct": 18.1,
+        "leftPct": 4.5
+      },
+      {
+        "str": "FRESA DEMO DUBAI UAE LLC",
+        "x": 33,
+        "y": 699.7,
+        "w": 143.9,
+        "h": 10,
+        "topPct": 24.2,
+        "leftPct": 4.5
+      },
+      {
+        "str": "MAA/DXB/1900014",
+        "x": 368,
+        "y": 780.3,
+        "w": 86.7,
+        "h": 10,
+        "topPct": 15.5,
+        "leftPct": 49.9
+      },
+      {
+        "str": "FRESA DEMO DUBAI UAE LLC",
+        "x": 306,
+        "y": 709.3,
+        "w": 115.1,
+        "h": 8,
+        "topPct": 23.2,
+        "leftPct": 41.5
+      },
+      {
+        "str": "PHONE: 04-2339876",
+        "x": 306,
+        "y": 700.3,
+        "w": 75.6,
+        "h": 8,
+        "topPct": 24.1,
+        "leftPct": 41.5
+      },
+      {
+        "str": "NIL",
+        "x": 312,
+        "y": 596.8,
+        "w": 15.6,
+        "h": 10,
+        "topPct": 35.3,
+        "leftPct": 42.3
+      },
+      {
+        "str": "K",
+        "x": 151,
+        "y": 483.7,
+        "w": 6.7,
+        "h": 10,
+        "topPct": 47.6,
+        "leftPct": 20.5
+      },
+      {
+        "str": "MAA/DXB/1900014",
+        "x": 458,
+        "y": 99.8,
+        "w": 121.4,
+        "h": 14,
+        "topPct": 89.2,
+        "leftPct": 62.1
+      },
+      {
+        "str": "CTN - 1-20",
+        "x": 33,
+        "y": 445.5,
+        "w": 44.5,
+        "h": 9,
+        "topPct": 51.7,
+        "leftPct": 4.5
+      },
+      {
+        "str": "AS AGENT FOR THE CARRIER,",
+        "x": 227,
+        "y": 182.8,
+        "w": 119.6,
+        "h": 8,
+        "topPct": 80.2,
+        "leftPct": 30.8
+      },
+      {
+        "str": "EMIRATES",
+        "x": 227,
+        "y": 172.7,
+        "w": 41.3,
+        "h": 8,
+        "topPct": 81.3,
+        "leftPct": 30.8
+      },
+      {
+        "str": "RAM",
+        "x": 458,
+        "y": 157.5,
+        "w": 20,
+        "h": 9,
+        "topPct": 82.9,
+        "leftPct": 62.1
+      },
+      {
+        "str": "0.00",
+        "x": 72.8,
+        "y": 298,
+        "w": 19.5,
+        "h": 10,
+        "topPct": 67.7,
+        "leftPct": 9.9
+      },
+      {
+        "str": "0.00",
+        "x": 72.8,
+        "y": 174,
+        "w": 19.5,
+        "h": 10,
+        "topPct": 81.1,
+        "leftPct": 9.9
+      },
+      {
+        "str": "0.00",
+        "x": 335.5,
+        "y": 472.4,
+        "w": 19.5,
+        "h": 10,
+        "topPct": 48.8,
+        "leftPct": 45.5
+      },
+      {
+        "str": "EK9876",
+        "x": 69,
+        "y": 624.8,
+        "w": 35.6,
+        "h": 10,
+        "topPct": 32.3,
+        "leftPct": 9.4
+      },
+      {
+        "str": "INR",
+        "x": 285,
+        "y": 624.8,
+        "w": 17.2,
+        "h": 10,
+        "topPct": 32.3,
+        "leftPct": 38.7
+      },
+      {
+        "str": "DXB",
+        "x": 29,
+        "y": 624.8,
+        "w": 20.6,
+        "h": 10,
+        "topPct": 32.3,
+        "leftPct": 3.9
+      },
+      {
+        "str": "N.V.D.",
+        "x": 411.3,
+        "y": 624.8,
+        "w": 29.5,
+        "h": 10,
+        "topPct": 32.3,
+        "leftPct": 55.8
+      },
+      {
+        "str": "AS PER INV",
+        "x": 499,
+        "y": 624.8,
+        "w": 56.1,
+        "h": 10,
+        "topPct": 32.3,
+        "leftPct": 67.7
+      },
+      {
+        "str": "PP",
+        "x": 316.8,
+        "y": 624.3,
+        "w": 13.3,
+        "h": 10,
+        "topPct": 32.4,
+        "leftPct": 43
+      },
+      {
+        "str": "PP",
+        "x": 345.8,
+        "y": 624.3,
+        "w": 13.3,
+        "h": 10,
+        "topPct": 32.4,
+        "leftPct": 46.9
+      }
+    ]
+  },
+  "hawb-original-pre-printed-report-format-2.pdf": {
+    "w": 595,
+    "h": 845,
+    "pages": 1,
+    "items": [
+      {
+        "str": "BABU SECTOR PTLTD",
+        "x": 20,
+        "y": 770.5,
+        "w": 84.8,
+        "h": 8,
+        "topPct": 8.8,
+        "leftPct": 3.4
+      },
+      {
+        "str": "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL,",
+        "x": 20,
+        "y": 759.7,
+        "w": 252.7,
+        "h": 8,
+        "topPct": 10.1,
+        "leftPct": 3.4
+      },
+      {
+        "str": "NEELANKARAI CHENNAI TAMILNADU INDIA",
+        "x": 20,
+        "y": 749,
+        "w": 166.1,
+        "h": 8,
+        "topPct": 11.4,
+        "leftPct": 3.4
+      },
+      {
+        "str": "CHENNAI, INDIA",
+        "x": 20,
+        "y": 558.5,
+        "w": 61.7,
+        "h": 8,
+        "topPct": 33.9,
+        "leftPct": 3.4
+      },
+      {
+        "str": "CTN 1-20",
+        "x": 20,
+        "y": 482.5,
+        "w": 34.7,
+        "h": 8,
+        "topPct": 42.9,
+        "leftPct": 3.4
+      },
+      {
+        "str": "TOTAL : (100) PACKAGES ONLY",
+        "x": 20,
+        "y": 461,
+        "w": 121.2,
+        "h": 8,
+        "topPct": 45.4,
+        "leftPct": 3.4
+      },
+      {
+        "str": "100",
+        "x": 22.3,
+        "y": 417.5,
+        "w": 13.3,
+        "h": 8,
+        "topPct": 50.6,
+        "leftPct": 3.7
+      },
+      {
+        "str": "1,250.00",
+        "x": 58.9,
+        "y": 417.5,
+        "w": 31.1,
+        "h": 8,
+        "topPct": 50.6,
+        "leftPct": 9.9
+      },
+      {
+        "str": "1,250.00",
+        "x": 206.9,
+        "y": 417.5,
+        "w": 31.1,
+        "h": 8,
+        "topPct": 50.6,
+        "leftPct": 34.8
+      },
+      {
+        "str": "STC: PAPER CUPS",
+        "x": 432,
+        "y": 418.5,
+        "w": 62.9,
+        "h": 7,
+        "topPct": 50.5,
+        "leftPct": 72.6
+      },
+      {
+        "str": "DIMS IN CM",
+        "x": 432,
+        "y": 399.8,
+        "w": 39.2,
+        "h": 7,
+        "topPct": 52.7,
+        "leftPct": 72.6
+      },
+      {
+        "str": "1,250.00",
+        "x": 58.9,
+        "y": 272.8,
+        "w": 31.1,
+        "h": 8,
+        "topPct": 67.7,
+        "leftPct": 9.9
+      },
+      {
+        "str": "100",
+        "x": 22.3,
+        "y": 272.8,
+        "w": 13.3,
+        "h": 8,
+        "topPct": 67.7,
+        "leftPct": 3.7
+      },
+      {
+        "str": "18-FEB-19",
+        "x": 275.1,
+        "y": 91.9,
+        "w": 33.8,
+        "h": 7,
+        "topPct": 89.1,
+        "leftPct": 46.2
+      },
+      {
+        "str": "CHENNAI",
+        "x": 355.3,
+        "y": 91.9,
+        "w": 31.5,
+        "h": 7,
+        "topPct": 89.1,
+        "leftPct": 59.7
+      },
+      {
+        "str": "FRESA DEMO INDIA PVT LTD",
+        "x": 359.8,
+        "y": 151.8,
+        "w": 111.4,
+        "h": 8,
+        "topPct": 82,
+        "leftPct": 60.5
+      },
+      {
+        "str": "0.00",
+        "x": 380.4,
+        "y": 417.5,
+        "w": 15.6,
+        "h": 8,
+        "topPct": 50.6,
+        "leftPct": 63.9
+      },
+      {
+        "str": "0.00",
+        "x": 69.9,
+        "y": 106.9,
+        "w": 13.6,
+        "h": 7,
+        "topPct": 87.3,
+        "leftPct": 11.7
+      },
+      {
+        "str": "0.00",
+        "x": 69.9,
+        "y": 242.9,
+        "w": 13.6,
+        "h": 7,
+        "topPct": 71.3,
+        "leftPct": 11.7
+      },
+      {
+        "str": "INR",
+        "x": 301,
+        "y": 531.5,
+        "w": 12,
+        "h": 7,
+        "topPct": 37.1,
+        "leftPct": 50.6
+      },
+      {
+        "str": "DUBAI INTERNATIONAL AIRPORT,",
+        "x": 20,
+        "y": 507.5,
+        "w": 130.5,
+        "h": 8,
+        "topPct": 39.9,
+        "leftPct": 3.4
+      },
+      {
+        "str": "AL NASER TRADING COMPANY LLC",
+        "x": 20,
+        "y": 700.5,
+        "w": 137.2,
+        "h": 8,
+        "topPct": 17.1,
+        "leftPct": 3.4
+      },
+      {
+        "str": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND",
+        "x": 20,
+        "y": 689.7,
+        "w": 242.9,
+        "h": 8,
+        "topPct": 18.4,
+        "leftPct": 3.4
+      },
+      {
+        "str": "ABOUT AL NABHA SHARJAH UNITED ARAB EMIRATES",
+        "x": 20,
+        "y": 679,
+        "w": 207.8,
+        "h": 8,
+        "topPct": 19.6,
+        "leftPct": 3.4
+      },
+      {
+        "str": "FRESA DEMO DUBAI UAE LLC",
+        "x": 20,
+        "y": 628.5,
+        "w": 115,
+        "h": 8,
+        "topPct": 25.6,
+        "leftPct": 3.4
+      },
+      {
+        "str": "N.V.D.",
+        "x": 464.2,
+        "y": 529.7,
+        "w": 20.6,
+        "h": 7,
+        "topPct": 37.3,
+        "leftPct": 78
+      },
+      {
+        "str": "N.C.V",
+        "x": 547.2,
+        "y": 529.7,
+        "w": 18.6,
+        "h": 7,
+        "topPct": 37.3,
+        "leftPct": 92
+      },
+      {
+        "str": "NIL",
+        "x": 335.3,
+        "y": 505.8,
+        "w": 12.4,
+        "h": 8,
+        "topPct": 40.1,
+        "leftPct": 56.4
+      },
+      {
+        "str": "K",
+        "x": 100,
+        "y": 417.5,
+        "w": 5.3,
+        "h": 8,
+        "topPct": 50.6,
+        "leftPct": 16.8
+      },
+      {
+        "str": "EK9876",
+        "x": 44,
+        "y": 531.5,
+        "w": 24.9,
+        "h": 7,
+        "topPct": 37.1,
+        "leftPct": 7.4
+      },
+      {
+        "str": "DXB",
+        "x": 21,
+        "y": 530.9,
+        "w": 14.4,
+        "h": 7,
+        "topPct": 37.2,
+        "leftPct": 3.5
+      },
+      {
+        "str": "CTN - 1-20",
+        "x": 23,
+        "y": 391.5,
+        "w": 39.5,
+        "h": 8,
+        "topPct": 53.7,
+        "leftPct": 3.9
+      },
+      {
+        "str": "FRESA DEMO DUBAI UAE LLC",
+        "x": 445.5,
+        "y": 92.2,
+        "w": 115,
+        "h": 8,
+        "topPct": 89.1,
+        "leftPct": 74.9
+      },
+      {
+        "str": "S",
+        "x": 116.7,
+        "y": 417.5,
+        "w": 5.3,
+        "h": 8,
+        "topPct": 50.6,
+        "leftPct": 19.6
+      },
+      {
+        "str": "0.00",
+        "x": 379.4,
+        "y": 271.8,
+        "w": 15.6,
+        "h": 8,
+        "topPct": 67.8,
+        "leftPct": 63.8
+      },
+      {
+        "str": "17623456882",
+        "x": 419,
+        "y": 552.4,
+        "w": 55,
+        "h": 9,
+        "topPct": 34.6,
+        "leftPct": 70.4
+      },
+      {
+        "str": "MAA/DXB/1900014",
+        "x": 473,
+        "y": 803.5,
+        "w": 86.7,
+        "h": 10,
+        "topPct": 4.9,
+        "leftPct": 79.5
+      },
+      {
+        "str": "EK9876EK9876 20-FEB-19",
+        "x": 172.6,
+        "y": 505.2,
+        "w": 97.8,
+        "h": 8,
+        "topPct": 40.2,
+        "leftPct": 29
+      },
+      {
+        "str": "MAA/DXB/1900014",
+        "x": 473,
+        "y": 56.4,
+        "w": 78,
+        "h": 9,
+        "topPct": 93.3,
+        "leftPct": 79.5
+      },
+      {
+        "str": "PP",
+        "x": 380.8,
+        "y": 525.7,
+        "w": 9.3,
+        "h": 7,
+        "topPct": 37.8,
+        "leftPct": 64
+      },
+      {
+        "str": "PP",
+        "x": 343.3,
+        "y": 525.7,
+        "w": 9.3,
+        "h": 7,
+        "topPct": 37.8,
+        "leftPct": 57.7
+      },
+      {
+        "str": "FREIGHT PREPAID",
+        "x": 454,
+        "y": 582.3,
+        "w": 72.4,
+        "h": 8,
+        "topPct": 31.1,
+        "leftPct": 76.3
+      }
+    ]
+  },
+  "hawb-draft-report-format-1.pdf": {
+    "w": 595,
+    "h": 842,
+    "pages": 9,
+    "items": [
+      {
+        "str": "BABU SECTOR PTLTD",
+        "x": 23,
+        "y": 789.5,
+        "w": 95.5,
+        "h": 9,
+        "topPct": 6.2,
+        "leftPct": 3.9
+      },
+      {
+        "str": "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+        "x": 23,
+        "y": 779.3,
+        "w": 246.6,
+        "h": 9,
+        "topPct": 7.4,
+        "leftPct": 3.9
+      },
+      {
+        "str": "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+        "x": 23,
+        "y": 769.1,
+        "w": 225,
+        "h": 9,
+        "topPct": 8.7,
+        "leftPct": 3.9
+      },
+      {
+        "str": "CHENNAI, INDIA",
+        "x": 23,
+        "y": 535.5,
+        "w": 69.5,
+        "h": 9,
+        "topPct": 36.4,
+        "leftPct": 3.9
+      },
+      {
+        "str": "CTN 1-20",
+        "x": 22,
+        "y": 462.5,
+        "w": 39,
+        "h": 9,
+        "topPct": 45.1,
+        "leftPct": 3.7
+      },
+      {
+        "str": "TOTAL : (100) PACKAGES ONLY",
+        "x": 22,
+        "y": 442.1,
+        "w": 136.5,
+        "h": 9,
+        "topPct": 47.5,
+        "leftPct": 3.7
+      },
+      {
+        "str": "100",
+        "x": 42.5,
+        "y": 383.7,
+        "w": 15,
+        "h": 9,
+        "topPct": 54.4,
+        "leftPct": 7.1
+      },
+      {
+        "str": "1,250.00",
+        "x": 108,
+        "y": 383.7,
+        "w": 35,
+        "h": 9,
+        "topPct": 54.4,
+        "leftPct": 18.2
+      },
+      {
+        "str": "1,250.00",
+        "x": 185,
+        "y": 383.7,
+        "w": 35,
+        "h": 9,
+        "topPct": 54.4,
+        "leftPct": 31.1
+      },
+      {
+        "str": "STC: PAPER CUPS",
+        "x": 353,
+        "y": 399.5,
+        "w": 81,
+        "h": 9,
+        "topPct": 52.6,
+        "leftPct": 59.3
+      },
+      {
+        "str": "1,250.00",
+        "x": 108,
+        "y": 238.5,
+        "w": 35,
+        "h": 9,
+        "topPct": 71.7,
+        "leftPct": 18.2
+      },
+      {
+        "str": "100",
+        "x": 43,
+        "y": 238.5,
+        "w": 15,
+        "h": 9,
+        "topPct": 71.7,
+        "leftPct": 7.2
+      },
+      {
+        "str": "18-FEB-19",
+        "x": 259.2,
+        "y": 54.7,
+        "w": 43.5,
+        "h": 9,
+        "topPct": 93.5,
+        "leftPct": 43.6
+      },
+      {
+        "str": "CHENNAI",
+        "x": 343.3,
+        "y": 54.7,
+        "w": 40.5,
+        "h": 9,
+        "topPct": 93.5,
+        "leftPct": 57.7
+      },
+      {
+        "str": "HAWB NO. MAA/DXB/1900014",
+        "x": 392,
+        "y": 30,
+        "w": 157.1,
+        "h": 11,
+        "topPct": 96.4,
+        "leftPct": 65.9
+      },
+      {
+        "str": "AS ARRANGED",
+        "x": 281.5,
+        "y": 383.7,
+        "w": 65.5,
+        "h": 9,
+        "topPct": 54.4,
+        "leftPct": 47.3
+      },
+      {
+        "str": "EK9876EK9876 20-",
+        "x": 189.2,
+        "y": 486.7,
+        "w": 79.6,
+        "h": 9,
+        "topPct": 42.2,
+        "leftPct": 31.8
+      },
+      {
+        "str": "MAWB NO. 176-23456882",
+        "x": 23,
+        "y": 815.5,
+        "w": 132,
+        "h": 11,
+        "topPct": 3.1,
+        "leftPct": 3.9
+      },
+      {
+        "str": "AS ARRANGED",
+        "x": 44.4,
+        "y": 60.4,
+        "w": 58.2,
+        "h": 8,
+        "topPct": 92.8,
+        "leftPct": 7.5
+      },
+      {
+        "str": "AS ARRANGED",
+        "x": 46.9,
+        "y": 203.4,
+        "w": 58.2,
+        "h": 8,
+        "topPct": 75.8,
+        "leftPct": 7.9
+      },
+      {
+        "str": "INR",
+        "x": 290.6,
+        "y": 510.3,
+        "w": 13.8,
+        "h": 8,
+        "topPct": 39.4,
+        "leftPct": 48.8
+      },
+      {
+        "str": "HAWB NO. MAA/DXB/1900014",
+        "x": 415.9,
+        "y": 799,
+        "w": 157.1,
+        "h": 11,
+        "topPct": 5.1,
+        "leftPct": 69.9
+      },
+      {
+        "str": "DUBAI INTERNATIONAL AIRPORT,",
+        "x": 22,
+        "y": 488.5,
+        "w": 147,
+        "h": 9,
+        "topPct": 42,
+        "leftPct": 3.7
+      },
+      {
+        "str": "FREIGHT PREPAID",
+        "x": 390,
+        "y": 463.6,
+        "w": 81.5,
+        "h": 9,
+        "topPct": 44.9,
+        "leftPct": 65.5
+      },
+      {
+        "str": "Shipper's Name and Address",
+        "x": 23,
+        "y": 802.3,
+        "w": 103.8,
+        "h": 8,
+        "topPct": 4.7,
+        "leftPct": 3.9
+      },
+      {
+        "str": "Consignee's Name and Address",
+        "x": 23,
+        "y": 700.3,
+        "w": 114.5,
+        "h": 8,
+        "topPct": 16.8,
+        "leftPct": 3.9
+      },
+      {
+        "str": "AL NASER TRADING COMPANY LLC",
+        "x": 23,
+        "y": 689.5,
+        "w": 154.5,
+        "h": 9,
+        "topPct": 18.1,
+        "leftPct": 3.9
+      },
+      {
+        "str": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE",
+        "x": 23,
+        "y": 679.3,
+        "w": 238,
+        "h": 9,
+        "topPct": 19.3,
+        "leftPct": 3.9
+      },
+      {
+        "str": "ROUND ABOUT AL NABHA SHARJAH UNITED ARAB",
+        "x": 23,
+        "y": 669.1,
+        "w": 221,
+        "h": 9,
+        "topPct": 20.5,
+        "leftPct": 3.9
+      },
+      {
+        "str": "EMIRATES",
+        "x": 23,
+        "y": 658.9,
+        "w": 46,
+        "h": 9,
+        "topPct": 21.7,
+        "leftPct": 3.9
+      },
+      {
+        "str": "Notify Party",
+        "x": 23,
+        "y": 616.3,
+        "w": 41.3,
+        "h": 8,
+        "topPct": 26.8,
+        "leftPct": 3.9
+      },
+      {
+        "str": "AL NASER TRADING COMPANY LLC",
+        "x": 23,
+        "y": 605.5,
+        "w": 154.5,
+        "h": 9,
+        "topPct": 28.1,
+        "leftPct": 3.9
+      },
+      {
+        "str": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE",
+        "x": 23,
+        "y": 595.3,
+        "w": 238,
+        "h": 9,
+        "topPct": 29.3,
+        "leftPct": 3.9
+      },
+      {
+        "str": "ROUND ABOUT AL NABHA SHARJAH UNITED ARAB",
+        "x": 23,
+        "y": 585.1,
+        "w": 221,
+        "h": 9,
+        "topPct": 30.5,
+        "leftPct": 3.9
+      },
+      {
+        "str": "EMIRATES",
+        "x": 23,
+        "y": 574.9,
+        "w": 46,
+        "h": 9,
+        "topPct": 31.7,
+        "leftPct": 3.9
+      },
+      {
+        "str": "Airport of Departure(Addr.of first Carrier) and requested Routing",
+        "x": 22,
+        "y": 548,
+        "w": 169.7,
+        "h": 6,
+        "topPct": 34.9,
+        "leftPct": 3.7
+      },
+      {
+        "str": "to",
+        "x": 29,
+        "y": 520.9,
+        "w": 5,
+        "h": 6,
+        "topPct": 38.1,
+        "leftPct": 4.9
+      },
+      {
+        "str": "By first Carrier",
+        "x": 45,
+        "y": 521.4,
+        "w": 38.3,
+        "h": 6,
+        "topPct": 38.1,
+        "leftPct": 7.6
+      },
+      {
+        "str": "to",
+        "x": 182,
+        "y": 522,
+        "w": 5,
+        "h": 6,
+        "topPct": 38,
+        "leftPct": 30.6
+      },
+      {
+        "str": "by",
+        "x": 207,
+        "y": 522,
+        "w": 6.3,
+        "h": 6,
+        "topPct": 38,
+        "leftPct": 34.8
+      },
+      {
+        "str": "by",
+        "x": 257,
+        "y": 522,
+        "w": 6.3,
+        "h": 6,
+        "topPct": 38,
+        "leftPct": 43.2
+      },
+      {
+        "str": "to",
+        "x": 232,
+        "y": 522,
+        "w": 5,
+        "h": 6,
+        "topPct": 38,
+        "leftPct": 39
+      },
+      {
+        "str": "Routing and Destination",
+        "x": 123.7,
+        "y": 523.9,
+        "w": 42.7,
+        "h": 4,
+        "topPct": 37.8,
+        "leftPct": 20.8
+      },
+      {
+        "str": "Handling Information",
+        "x": 23,
+        "y": 474.3,
+        "w": 73.8,
+        "h": 8,
+        "topPct": 43.7,
+        "leftPct": 3.9
+      },
+      {
+        "str": "Airport of Destination",
+        "x": 61.7,
+        "y": 499.3,
+        "w": 74.7,
+        "h": 8,
+        "topPct": 40.7,
+        "leftPct": 10.4
+      },
+      {
+        "str": "Requested Flight/Date",
+        "x": 192.1,
+        "y": 500.2,
+        "w": 49.7,
+        "h": 5,
+        "topPct": 40.6,
+        "leftPct": 32.3
+      },
+      {
+        "str": "HOUSE AIR WAYBILL",
+        "x": 284,
+        "y": 798.7,
+        "w": 101.1,
+        "h": 10,
+        "topPct": 5.1,
+        "leftPct": 47.7
+      },
+      {
+        "str": "Copies marked Original 1,2,3 and 4 are originals and have the same validity",
+        "x": 282,
+        "y": 714.9,
+        "w": 201.4,
+        "h": 6,
+        "topPct": 15.1,
+        "leftPct": 47.4
+      },
+      {
+        "str": "It is agreed that the goods described herein are accepted in apparent good order and condition (except as noted) for",
+        "x": 283,
+        "y": 703.7,
+        "w": 205.4,
+        "h": 4,
+        "topPct": 16.4,
+        "leftPct": 47.6
+      },
+      {
+        "str": "carriage SUBJECT TO THE CONDITIONS OF CONTRACT ON THE REVERSE HEREOF. THE SHIPPER'S ATTENTION IS DRAWN TO THE NOTICE",
+        "x": 283,
+        "y": 699.2,
+        "w": 269.2,
+        "h": 4,
+        "topPct": 17,
+        "leftPct": 47.6
+      },
+      {
+        "str": "CONCERNING CARRIERS LIMITATION OF LIABILITY. Shipper may increase such limitation of liability by declaring a higer",
+        "x": 283,
+        "y": 694.7,
+        "w": 219.6,
+        "h": 4,
+        "topPct": 17.5,
+        "leftPct": 47.6
+      },
+      {
+        "str": "value ofr carriage and paying a supplemental charge if required.",
+        "x": 283,
+        "y": 690.1,
+        "w": 113.2,
+        "h": 4,
+        "topPct": 18,
+        "leftPct": 47.6
+      },
+      {
+        "str": "JOB NO.: CAE190028",
+        "x": 285,
+        "y": 678.6,
+        "w": 89.5,
+        "h": 9,
+        "topPct": 19.4,
+        "leftPct": 47.9
+      },
+      {
+        "str": "MAWB NO. 176-23456882",
+        "x": 285,
+        "y": 667.6,
+        "w": 107,
+        "h": 9,
+        "topPct": 20.7,
+        "leftPct": 47.9
+      },
+      {
+        "str": "HAWB NO. MAA/DXB/1900014",
+        "x": 285,
+        "y": 656.6,
+        "w": 126,
+        "h": 9,
+        "topPct": 22,
+        "leftPct": 47.9
+      },
+      {
+        "str": "FRESA DEMO DUBAI UAE LLC",
+        "x": 317,
+        "y": 646.3,
+        "w": 115.1,
+        "h": 8,
+        "topPct": 23.2,
+        "leftPct": 53.3
+      },
+      {
+        "str": "PHONE: 04-2339876",
+        "x": 317,
+        "y": 637.3,
+        "w": 75.6,
+        "h": 8,
+        "topPct": 24.3,
+        "leftPct": 53.3
+      },
+      {
+        "str": "Dimensions or Volume",
+        "x": 284,
+        "y": 616.3,
+        "w": 80.5,
+        "h": 8,
+        "topPct": 26.8,
+        "leftPct": 47.7
+      },
+      {
+        "str": "Currency",
+        "x": 283,
+        "y": 522,
+        "w": 24.3,
+        "h": 6,
+        "topPct": 38,
+        "leftPct": 47.6
+      },
+      {
+        "str": "Other",
+        "x": 363.8,
+        "y": 523.2,
+        "w": 12.5,
+        "h": 5,
+        "topPct": 37.9,
+        "leftPct": 61.1
+      },
+      {
+        "str": "Declared Value for Carriage",
+        "x": 409,
+        "y": 521.2,
+        "w": 62,
+        "h": 5,
+        "topPct": 38.1,
+        "leftPct": 68.7
+      },
+      {
+        "str": "Declared Value for Customs",
+        "x": 501.2,
+        "y": 521.2,
+        "w": 62.5,
+        "h": 5,
+        "topPct": 38.1,
+        "leftPct": 84.2
+      },
+      {
+        "str": "PPD",
+        "x": 319.4,
+        "y": 516.7,
+        "w": 8.2,
+        "h": 4,
+        "topPct": 38.6,
+        "leftPct": 53.7
+      },
+      {
+        "str": "COLL",
+        "x": 336.3,
+        "y": 516.7,
+        "w": 10.4,
+        "h": 4,
+        "topPct": 38.6,
+        "leftPct": 56.5
+      },
+      {
+        "str": "COLL",
+        "x": 374.8,
+        "y": 516.7,
+        "w": 10.4,
+        "h": 4,
+        "topPct": 38.6,
+        "leftPct": 63
+      },
+      {
+        "str": "PPD",
+        "x": 355.9,
+        "y": 516.7,
+        "w": 8.2,
+        "h": 4,
+        "topPct": 38.6,
+        "leftPct": 59.8
+      },
+      {
+        "str": "AGENT:",
+        "x": 284,
+        "y": 646.3,
+        "w": 29.8,
+        "h": 8,
+        "topPct": 23.2,
+        "leftPct": 47.7
+      },
+      {
+        "str": "FRESA DEMO INDIA PVT LTD",
+        "x": 282,
+        "y": 744.8,
+        "w": 153.4,
+        "h": 11,
+        "topPct": 11.5,
+        "leftPct": 47.4
+      },
+      {
+        "str": "Amount of Insurance",
+        "x": 294.3,
+        "y": 498.4,
+        "w": 55.4,
+        "h": 6,
+        "topPct": 40.8,
+        "leftPct": 49.5
+      },
+      {
+        "str": "INSURANCE-If shipper requests insurance in accordance with",
+        "x": 366,
+        "y": 498.8,
+        "w": 138.1,
+        "h": 5,
+        "topPct": 40.8,
+        "leftPct": 61.5
+      },
+      {
+        "str": "conditions on reverse hereof, indicate amount to be insured in",
+        "x": 366,
+        "y": 493.2,
+        "w": 136.7,
+        "h": 5,
+        "topPct": 41.4,
+        "leftPct": 61.5
+      },
+      {
+        "str": "figures in box marked amount of insurance.",
+        "x": 366,
+        "y": 487.5,
+        "w": 95.9,
+        "h": 5,
+        "topPct": 42.1,
+        "leftPct": 61.5
+      },
+      {
+        "str": "N.V.D.",
+        "x": 426.8,
+        "y": 510.1,
+        "w": 26.5,
+        "h": 9,
+        "topPct": 39.4,
+        "leftPct": 71.7
+      },
+      {
+        "str": "AS PER INV",
+        "x": 506.7,
+        "y": 510.1,
+        "w": 50.5,
+        "h": 9,
+        "topPct": 39.4,
+        "leftPct": 85.2
+      },
+      {
+        "str": "NIL",
+        "x": 315,
+        "y": 486.6,
+        "w": 14,
+        "h": 9,
+        "topPct": 42.2,
+        "leftPct": 52.9
+      },
+      {
+        "str": "kg",
+        "x": 147,
+        "y": 425.2,
+        "w": 7.4,
+        "h": 7,
+        "topPct": 49.5,
+        "leftPct": 24.7
+      },
+      {
+        "str": "lb",
+        "x": 147,
+        "y": 417.2,
+        "w": 5.4,
+        "h": 7,
+        "topPct": 50.5,
+        "leftPct": 24.7
+      },
+      {
+        "str": "Gross Weight",
+        "x": 90.3,
+        "y": 422.2,
+        "w": 42.4,
+        "h": 7,
+        "topPct": 49.9,
+        "leftPct": 15.2
+      },
+      {
+        "str": "No.of Pieces",
+        "x": 29.7,
+        "y": 424.2,
+        "w": 39.7,
+        "h": 7,
+        "topPct": 49.6,
+        "leftPct": 5
+      },
+      {
+        "str": "RCP",
+        "x": 42.1,
+        "y": 416.2,
+        "w": 14.8,
+        "h": 7,
+        "topPct": 50.6,
+        "leftPct": 7.1
+      },
+      {
+        "str": "K",
+        "x": 149,
+        "y": 383.7,
+        "w": 6,
+        "h": 9,
+        "topPct": 54.4,
+        "leftPct": 25
+      },
+      {
+        "str": "Chargeable",
+        "x": 174.4,
+        "y": 422.2,
+        "w": 36.2,
+        "h": 7,
+        "topPct": 49.9,
+        "leftPct": 29.3
+      },
+      {
+        "str": "Weight",
+        "x": 181.6,
+        "y": 414.2,
+        "w": 21.8,
+        "h": 7,
+        "topPct": 50.8,
+        "leftPct": 30.5
+      },
+      {
+        "str": "Rate",
+        "x": 244.1,
+        "y": 416.2,
+        "w": 14.8,
+        "h": 7,
+        "topPct": 50.6,
+        "leftPct": 41
+      },
+      {
+        "str": "Charge",
+        "x": 303,
+        "y": 416.2,
+        "w": 23,
+        "h": 7,
+        "topPct": 50.6,
+        "leftPct": 50.9
+      },
+      {
+        "str": "Description and Marks",
+        "x": 426.7,
+        "y": 416.2,
+        "w": 69.6,
+        "h": 7,
+        "topPct": 50.6,
+        "leftPct": 71.7
+      },
+      {
+        "str": "Other Charges",
+        "x": 231,
+        "y": 218.2,
+        "w": 45.9,
+        "h": 7,
+        "topPct": 74.1,
+        "leftPct": 38.8
+      },
+      {
+        "str": "Shipper certifies that particulars on the face hereof are correct and that insofar as any part of the consignment",
+        "x": 230,
+        "y": 147.8,
+        "w": 242.6,
+        "h": 5,
+        "topPct": 82.4,
+        "leftPct": 38.7
+      },
+      {
+        "str": "contains restricted articles, such part is properly described by name and is in proper condition for carriage by",
+        "x": 230,
+        "y": 142.2,
+        "w": 239.8,
+        "h": 5,
+        "topPct": 83.1,
+        "leftPct": 38.7
+      },
+      {
+        "str": "air according to the International Air Transport Association's Restricted Articles Regulations.",
+        "x": 230,
+        "y": 136.5,
+        "w": 203,
+        "h": 5,
+        "topPct": 83.8,
+        "leftPct": 38.7
+      },
+      {
+        "str": "Signature of Shipper or his Agent",
+        "x": 349,
+        "y": 97.1,
+        "w": 103.1,
+        "h": 7,
+        "topPct": 88.5,
+        "leftPct": 58.7
+      },
+      {
+        "str": "Executed on(Date)",
+        "x": 255.1,
+        "y": 44.4,
+        "w": 50,
+        "h": 6,
+        "topPct": 94.7,
+        "leftPct": 42.9
+      },
+      {
+        "str": "at(Place)",
+        "x": 351.7,
+        "y": 44.4,
+        "w": 24,
+        "h": 6,
+        "topPct": 94.7,
+        "leftPct": 59.1
+      },
+      {
+        "str": "Signature of Issuing Carrier or its Agent",
+        "x": 429,
+        "y": 44.4,
+        "w": 105,
+        "h": 6,
+        "topPct": 94.7,
+        "leftPct": 72.1
+      },
+      {
+        "str": "Prepaid",
+        "x": 48.4,
+        "y": 218.1,
+        "w": 24.1,
+        "h": 7,
+        "topPct": 74.1,
+        "leftPct": 8.1
+      },
+      {
+        "str": "Weight Charge",
+        "x": 103.7,
+        "y": 218.1,
+        "w": 46.7,
+        "h": 7,
+        "topPct": 74.1,
+        "leftPct": 17.4
+      },
+      {
+        "str": "Collect",
+        "x": 186.3,
+        "y": 218.1,
+        "w": 21.4,
+        "h": 7,
+        "topPct": 74.1,
+        "leftPct": 31.3
+      },
+      {
+        "str": "Valuation Charge",
+        "x": 99.5,
+        "y": 194.2,
+        "w": 54.1,
+        "h": 7,
+        "topPct": 76.9,
+        "leftPct": 16.7
+      },
+      {
+        "str": "Tax",
+        "x": 120.7,
+        "y": 168.2,
+        "w": 11.7,
+        "h": 7,
+        "topPct": 80,
+        "leftPct": 20.3
+      },
+      {
+        "str": "Total Other Charges Due Agent",
+        "x": 78.3,
+        "y": 148.2,
+        "w": 98.4,
+        "h": 7,
+        "topPct": 82.4,
+        "leftPct": 13.2
+      },
+      {
+        "str": "Total Other Charges Due Carrier",
+        "x": 76.7,
+        "y": 122.2,
+        "w": 101.5,
+        "h": 7,
+        "topPct": 85.5,
+        "leftPct": 12.9
+      },
+      {
+        "str": "Total Prepaid",
+        "x": 52.2,
+        "y": 80.2,
+        "w": 41.6,
+        "h": 7,
+        "topPct": 90.5,
+        "leftPct": 8.8
+      },
+      {
+        "str": "Total Collect",
+        "x": 158.6,
+        "y": 80.2,
+        "w": 38.9,
+        "h": 7,
+        "topPct": 90.5,
+        "leftPct": 26.7
+      },
+      {
+        "str": "WT",
+        "x": 328.9,
+        "y": 523.4,
+        "w": 6.2,
+        "h": 4,
+        "topPct": 37.8,
+        "leftPct": 55.3
+      },
+      {
+        "str": "EK9876",
+        "x": 46,
+        "y": 511.7,
+        "w": 32,
+        "h": 9,
+        "topPct": 39.2,
+        "leftPct": 7.7
+      },
+      {
+        "str": "PP",
+        "x": 353.8,
+        "y": 509.3,
+        "w": 13.3,
+        "h": 10,
+        "topPct": 39.5,
+        "leftPct": 59.5
+      },
+      {
+        "str": "PP",
+        "x": 316.8,
+        "y": 509.3,
+        "w": 13.3,
+        "h": 10,
+        "topPct": 39.5,
+        "leftPct": 53.2
+      },
+      {
+        "str": "DXB",
+        "x": 21,
+        "y": 512.7,
+        "w": 16.9,
+        "h": 8,
+        "topPct": 39.1,
+        "leftPct": 3.5
+      },
+      {
+        "str": "CTN - 1-20",
+        "x": 26,
+        "y": 364.5,
+        "w": 44.5,
+        "h": 9,
+        "topPct": 56.7,
+        "leftPct": 4.4
+      },
+      {
+        "str": "AS AGENT FOR THE CARRIER,",
+        "x": 232,
+        "y": 78.8,
+        "w": 119.6,
+        "h": 8,
+        "topPct": 90.6,
+        "leftPct": 39
+      },
+      {
+        "str": "EMIRATES",
+        "x": 232,
+        "y": 68.7,
+        "w": 41.3,
+        "h": 8,
+        "topPct": 91.8,
+        "leftPct": 39
+      },
+      {
+        "str": "RAM",
+        "x": 420,
+        "y": 54.7,
+        "w": 20,
+        "h": 9,
+        "topPct": 93.5,
+        "leftPct": 70.6
+      }
+    ]
+  }
+}
