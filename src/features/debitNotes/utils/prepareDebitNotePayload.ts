@@ -74,7 +74,11 @@ export function prepareDebitNotePayload(
     for (const line of dto.lines) {
       if (!line || typeof line !== 'object') continue;
       const prepared = prepareDebitNoteLinePayload(line as Record<string, unknown>);
-      if (prepared.description) lines.push(prepared);
+      if (!prepared.description) continue;
+      // Debit-note form has no tax controls — never default lines to taxable.
+      prepared.is_taxable = false;
+      delete prepared.tax_rate_id;
+      lines.push(prepared);
     }
     if (lines.length) out.lines = lines;
   }

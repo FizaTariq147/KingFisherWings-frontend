@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
+import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { Modal } from '@/components/ui/Modal';
 import {
   Table,
   TableBody,
@@ -16,12 +18,18 @@ import {
   INVOICE_TYPE_LABELS,
   type InvoiceType,
 } from '@/features/invoices/constants/invoice.constants';
+import { resolvePdfUrl } from '@/features/invoices/utils/normalizeInvoicePdf';
 import { useJob } from '@/features/jobs/hooks/useJobs';
 import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import { CREDIT_NOTE_ROUTE_PREFIX } from '../api/creditNote.api';
-import { useCreditNote, usePostCreditNote } from '../hooks/useCreditNotes';
+import {
+  useCreditNote,
+  useGenerateCreditNotePdf,
+  usePostCreditNote,
+  useUpdateCreditNote,
+} from '../hooks/useCreditNotes';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { creditNoteDisplayNumber } from '../utils/normalizeCreditNote';
 
@@ -40,9 +48,13 @@ export default function CreditNoteDetailPage() {
   const { data: creditNote, isLoading, isError, error, refetch } = useCreditNote(id);
   const { data: linkedJob } = useJob(creditNote?.job_id || '');
   const post = usePostCreditNote(id);
+  const update = useUpdateCreditNote(id);
+  const generatePdf = useGenerateCreditNotePdf(id);
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [editOpen, setEditOpen] = useState(false);
+  const [editRemarks, setEditRemarks] = useState('');
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -61,6 +73,10 @@ export default function CreditNoteDetailPage() {
   }
 
   const canPost = creditNote.status === 'DRAFT';
+  const canEdit = creditNote.actions?.can_edit !== false && creditNote.status === 'DRAFT';
+  const canDownload =
+    creditNote.actions?.can_download !== false &&
+    ['DRAFT', 'POSTED', 'SENT', 'PARTIALLY_PAID', 'PAID'].includes(creditNote.status);
   const lines = creditNote.lines ?? [];
 
   const run = async (fn: () => Promise<unknown>, successMsg?: string) => {
@@ -85,6 +101,33 @@ export default function CreditNoteDetailPage() {
             label: 'Post',
             onClick: () => void run(() => post.mutateAsync(), 'Credit note posted.'),
             variant: 'primary' as const,
+          },
+        ]
+      : []),
+    ...(canEdit
+      ? [
+          {
+            label: 'Edit',
+            onClick: () => {
+              setEditRemarks(creditNote.remarks || '');
+              setEditOpen(true);
+            },
+            variant: 'secondary' as const,
+          },
+        ]
+      : []),
+    ...(canDownload
+      ? [
+          {
+            label: 'Download PDF',
+            onClick: () =>
+              void run(async () => {
+                const info = await generatePdf.mutateAsync();
+                const url = resolvePdfUrl(info.pdf_url || info.customer_pdf_url);
+                if (url) window.open(url, '_blank', 'noopener,noreferrer');
+                else throw new Error('PDF generated but no download URL was returned.');
+              }, 'PDF ready.'),
+            variant: 'secondary' as const,
           },
         ]
       : []),
@@ -268,6 +311,46 @@ export default function CreditNoteDetailPage() {
           },
         ]}
       />
+
+      <Modal
+        open={editOpen}
+        onClose={() => setEditOpen(false)}
+        title="Edit credit note"
+        footer={
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="secondary" onClick={() => setEditOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              disabled={pending || update.isPending}
+              onClick={() =>
+                void run(async () => {
+                  await update.mutateAsync({
+                    remarks: editRemarks.trim() || undefined,
+                    description: editRemarks.trim() || undefined,
+                  });
+                  setEditOpen(false);
+                }, 'Credit note updated.')
+              }
+            >
+              Save
+            </Button>
+          </div>
+        }
+      >
+        <label className="block text-sm">
+          <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
+            Remarks
+          </span>
+          <textarea
+            className="min-h-[96px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
+            value={editRemarks}
+            onChange={(e) => setEditRemarks(e.target.value)}
+            maxLength={2000}
+          />
+        </label>
+      </Modal>
     </>
   );
 }

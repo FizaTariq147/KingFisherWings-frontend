@@ -11,7 +11,7 @@ const UUID_IN_TEXT_RE =
 
 export type DashboardPeriod = 'today' | 'week' | 'month';
 
-export const CLOSED_JOB_STATUSES: JobStatus[] = ['COMPLETED', 'CANCELLED'];
+export const CLOSED_JOB_STATUSES: JobStatus[] = ['COMPLETED', 'CLOSED', 'CANCELLED'];
 
 /**
  * BE `open` bucket for Active shipments grid rows.
@@ -257,6 +257,10 @@ export function shipmentStatusLabel(status: JobStatus): string {
       return 'Booked';
     case 'DELIVERED':
       return 'Delivered';
+    case 'COMPLETED':
+      return 'Completed';
+    case 'CLOSED':
+      return 'Closed';
     default:
       return status.replace(/_/g, ' ').toLowerCase().replace(/^\w/, (c) => c.toUpperCase());
   }
@@ -279,7 +283,13 @@ export function routeProgressInfo(job: Job): {
     pct = Math.round(((Date.now() - etd) / (eta - etd)) * 100);
     pct = Math.min(96, Math.max(8, pct));
   }
-  if (job.status === 'DELIVERED' || job.status === 'COMPLETED') pct = 100;
+  if (
+    job.status === 'DELIVERED' ||
+    job.status === 'COMPLETED' ||
+    job.status === 'CLOSED'
+  ) {
+    pct = 100;
+  }
   if (job.status === 'BOOKING_CONFIRMED' || job.status === 'ENQUIRY' || job.status === 'QUOTATION') {
     pct = 10;
   }
@@ -287,7 +297,13 @@ export function routeProgressInfo(job: Job): {
   let barColor = mode === 'Air' ? '#C7590F' : '#2C557A';
   if (isCustomsHold(job)) barColor = '#FF751F';
   if (isDocsPending(job)) barColor = '#C6303E';
-  if (job.status === 'DELIVERED' || job.status === 'COMPLETED') barColor = '#3BA066';
+  if (
+    job.status === 'DELIVERED' ||
+    job.status === 'COMPLETED' ||
+    job.status === 'CLOSED'
+  ) {
+    barColor = '#3BA066';
+  }
 
   let caption = 'En route';
   if (isCustomsHold(job)) {
@@ -306,6 +322,8 @@ export function routeProgressInfo(job: Job): {
     caption = 'Delivered';
   } else if (job.status === 'COMPLETED') {
     caption = 'Completed';
+  } else if (job.status === 'CLOSED') {
+    caption = 'Closed';
   } else if (Number.isFinite(eta)) {
     const days = Math.max(0, Math.ceil((eta - Date.now()) / 86_400_000));
     caption = days === 0 ? 'Arriving today' : `${days} day${days === 1 ? '' : 's'} to go`;
@@ -439,6 +457,7 @@ export function deptForStatus(status: JobStatus): string {
       return 'Sales';
     case 'DELIVERED':
     case 'COMPLETED':
+    case 'CLOSED':
       return 'Accounts';
     case 'ENQUIRY':
     case 'QUOTATION':

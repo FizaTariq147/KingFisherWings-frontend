@@ -27,6 +27,11 @@ export interface CreditNoteLine {
   line_total?: number;
 }
 
+export interface CreditNoteActions {
+  can_edit?: boolean;
+  can_download?: boolean;
+}
+
 export interface CreditNote {
   id: string;
   invoice_number?: string;
@@ -58,10 +63,25 @@ export interface CreditNote {
   updated_at?: string;
   created_by?: string;
   lines?: CreditNoteLine[];
+  actions?: CreditNoteActions;
+  pdf_url?: string;
 }
+
+/** PATCH /credit-notes/:id — header fields while DRAFT. */
+export type UpdateCreditNoteDto = Partial<
+  Pick<
+    CreateCreditNoteFormValues,
+    'credited_invoice_id' | 'job_id' | 'party_id' | 'currency_code' | 'description' | 'remarks'
+  >
+>;
 
 export type CreateCreditNoteDto = CreateCreditNoteFormValues;
 export type CreateCreditNoteLineDto = CreateCreditNoteLineFormValues;
+
+export interface CreditNotePdfInfo {
+  pdf_url?: string;
+  customer_pdf_url?: string;
+}
 
 export interface CreditNoteListParams {
   page?: number;

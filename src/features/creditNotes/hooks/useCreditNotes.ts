@@ -5,6 +5,7 @@ import { creditNoteService } from '../services/creditNote.service';
 import type {
   CreateCreditNoteDto,
   CreditNoteListParams,
+  UpdateCreditNoteDto,
 } from '../types/creditNote.types';
 
 export const creditNoteKeys = {
@@ -55,6 +56,22 @@ export function usePostCreditNote(id: string) {
   const invalidate = useInvalidateCreditNotes();
   return useMutation({
     mutationFn: () => creditNoteService.post(id),
+    onSuccess: () => invalidate(id),
+  });
+}
+
+export function useUpdateCreditNote(id: string) {
+  const invalidate = useInvalidateCreditNotes();
+  return useMutation({
+    mutationFn: (dto: UpdateCreditNoteDto) => creditNoteService.update(id, dto),
+    onSuccess: () => invalidate(id),
+  });
+}
+
+export function useGenerateCreditNotePdf(id: string) {
+  const invalidate = useInvalidateCreditNotes();
+  return useMutation({
+    mutationFn: () => creditNoteService.generatePdf(id),
     onSuccess: () => invalidate(id),
   });
 }

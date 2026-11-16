@@ -62,6 +62,7 @@ export const JOB_STATUSES = [
   'CUSTOMS_CLEARANCE',
   'DELIVERED',
   'COMPLETED',
+  'CLOSED',
   'CANCELLED',
   'ON_HOLD',
 ] as const;
@@ -241,6 +242,7 @@ export const JOB_STATUS_LABELS: Record<JobStatus, string> = {
   CUSTOMS_CLEARANCE: 'Customs Clearance',
   DELIVERED: 'Delivered',
   COMPLETED: 'Completed',
+  CLOSED: 'Closed',
   CANCELLED: 'Cancelled',
   ON_HOLD: 'On Hold',
 };
@@ -265,6 +267,14 @@ export function jobStatusDisplayLabel(job: {
 /** Terminal statuses that support POST /jobs/:id/reopen. */
 export const JOB_REOPENABLE_STATUSES: JobStatus[] = [
   'COMPLETED',
+  'CLOSED',
   'CANCELLED',
   'DELIVERED',
+];
+
+/** Terminal job statuses (not editable; close/reopen paths). */
+export const JOB_TERMINAL_STATUSES: JobStatus[] = [
+  'COMPLETED',
+  'CLOSED',
+  'CANCELLED',
 ];

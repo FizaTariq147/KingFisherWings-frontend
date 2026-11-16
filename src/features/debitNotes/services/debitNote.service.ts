@@ -8,6 +8,7 @@ import { DEBIT_NOTE_API } from '../api/debitNote.api';
 import { enrichDebitNotesDisplay } from '../utils/enrichDebitNoteDisplay';
 import {
   normalizeDebitNote,
+  normalizeDebitNotePdfInfo,
   normalizeDebitNotes,
 } from '../utils/normalizeDebitNote';
 import { prepareDebitNotePayload } from '../utils/prepareDebitNotePayload';
@@ -16,7 +17,9 @@ import type {
   DebitNote,
   DebitNoteListParams,
   DebitNoteListResult,
+  DebitNotePdfInfo,
   PaginationMeta,
+  UpdateDebitNoteDto,
 } from '../types/debitNote.types';
 
 function asRecord(value: unknown): Record<string, unknown> | null {
@@ -157,6 +160,51 @@ export const debitNoteService = {
       const debitNote = normalizeDebitNote(unwrapEntity(res.data));
       if (!debitNote) throw new Error('Post succeeded but no debit note was returned.');
       return debitNote;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** PATCH /debit-notes/:id — DRAFT only. */
+  async update(id: string, dto: UpdateDebitNoteDto): Promise<DebitNote> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch<unknown>(
+          DEBIT_NOTE_API.byId(id),
+          prepareDebitNotePayload(dto as Record<string, unknown>),
+        ),
+      );
+      const debitNote = normalizeDebitNote(unwrapEntity(res.data));
+      if (!debitNote) throw new Error('Update succeeded but no debit note was returned.');
+      return debitNote;
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /debit-notes/:id/pdf */
+  async generatePdf(id: string): Promise<DebitNotePdfInfo> {
+    assertId(id);
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.request<unknown>({
+          method: 'POST',
+          url: DEBIT_NOTE_API.pdf(id),
+          withCredentials: false,
+          data: undefined,
+          transformRequest: [
+            (_data, headers) => {
+              if (headers && typeof headers === 'object') {
+                delete (headers as Record<string, unknown>)['Content-Type'];
+                delete (headers as Record<string, unknown>)['content-type'];
+              }
+              return undefined;
+            },
+          ],
+        }),
+      );
+      return normalizeDebitNotePdfInfo(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }

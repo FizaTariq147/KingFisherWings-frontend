@@ -39,6 +39,7 @@ const STATUS_BY_CATEGORY: Partial<Record<string, JobStatus>> = {
   in_progress: 'IN_PROGRESS',
   delivered: 'DELIVERED',
   completed: 'COMPLETED',
+  closed: 'CLOSED',
   cancelled: 'CANCELLED',
 };
 
@@ -48,6 +49,7 @@ const CATEGORY_LABELS: Record<(typeof JOB_BY_CATEGORIES)[number], string> = {
   delivered: 'Delivered',
   cancelled: 'Cancelled',
   completed: 'Completed',
+  closed: 'Closed',
   in_progress: 'In progress',
 };
 

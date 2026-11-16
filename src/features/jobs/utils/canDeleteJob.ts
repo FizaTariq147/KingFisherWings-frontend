@@ -128,7 +128,10 @@ export function canDeleteJob(
   if (job.actions?.can_delete === true) return true;
   if (job.actions?.can_delete === false) return false;
 
-  const terminal = job.status === 'COMPLETED' || job.status === 'CANCELLED';
+  const terminal =
+    job.status === 'COMPLETED' ||
+    job.status === 'CLOSED' ||
+    job.status === 'CANCELLED';
   if (terminal) return true;
 
   // Staff who can create this mode (or own the job) can delete without cancel-first.

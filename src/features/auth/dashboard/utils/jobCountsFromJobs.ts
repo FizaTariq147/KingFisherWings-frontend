@@ -40,7 +40,7 @@ export function jobCountsFromJobs(jobs: readonly Job[]): DerivedJobCounts {
       cancelled += 1;
       continue;
     }
-    if (status === 'COMPLETED') {
+    if (status === 'COMPLETED' || status === 'CLOSED') {
       completed += 1;
       continue;
     }
