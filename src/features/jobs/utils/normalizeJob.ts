@@ -7,6 +7,7 @@ import type {
   JobMilestone,
   JobNote,
   JobPnl,
+  JobReopenRequest,
   JobStatusOption,
   ContainerStatusCatalogOption,
   JobAirWaybill,
@@ -1130,6 +1131,10 @@ export function normalizeJob(raw: unknown): Job | null {
       pickString(r, 'client_reference_type', 'clientReferenceType', 'reference_type') ||
       undefined,
     actions: normalizeJobActions(r.actions),
+    view_mode:
+      pickString(r, 'view_mode', 'viewMode') ||
+      pickString(asRecord(r.actions) ?? {}, 'view_mode', 'viewMode') ||
+      undefined,
     transport_mode:
       pickString(r, 'transport_mode', 'transportMode') ||
       pickString(asRecord(r.actions) ?? {}, 'transport_mode', 'transportMode') ||
@@ -1545,7 +1550,12 @@ function normalizeJobActions(raw: unknown): JobActions | undefined {
     if (typeof value === 'boolean') out[key] = value;
     else if (value === 'true' || value === 1 || value === '1') out[key] = true;
     else if (value === 'false' || value === 0 || value === '0') out[key] = false;
+    else if (typeof value === 'string' && value.trim() && key.toLowerCase().includes('view')) {
+      out[key] = value.trim();
+    }
   }
+  const viewMode = pickString(record, 'view_mode', 'viewMode');
+  if (viewMode) out.view_mode = viewMode;
   const statusList =
     record.allowed_statuses ?? record.allowedStatuses ?? record.statuses;
   if (Array.isArray(statusList)) {
@@ -1960,5 +1970,55 @@ export function normalizeDeliveryAcknowledgement(raw: unknown): DeliveryAcknowle
     })(),
     path_hints,
     raw: { ...r, ...nested },
+  };
+}
+
+/** Normalize JobReopenRequest from POST/GET reopen-requests envelopes. */
+export function normalizeJobReopenRequest(raw: unknown): JobReopenRequest | null {
+  const r = asRecord(unwrapEntity(raw)) ?? asRecord(raw);
+  if (!r) return null;
+  const id = pickString(r, 'id', 'request_id', 'requestId');
+  const jobId = pickString(r, 'job_id', 'jobId');
+  if (!id) return null;
+  const jobRec = asRecord(r.job);
+  const jobNumber =
+    pickString(r, 'job_number', 'jobNumber') ||
+    (jobRec ? pickString(jobRec, 'job_number', 'jobNumber') : '') ||
+    undefined;
+  return {
+    id,
+    job_id: jobId || (jobRec ? pickString(jobRec, 'id') : '') || '',
+    tenant_id: pickString(r, 'tenant_id', 'tenantId') || undefined,
+    requested_by: pickString(r, 'requested_by', 'requestedBy', 'requested_by_id') || undefined,
+    requested_by_name:
+      pickString(r, 'requested_by_name', 'requestedByName', 'requester_name') || undefined,
+    reason: pickString(r, 'reason') || '',
+    target_status: pickString(r, 'target_status', 'targetStatus') || 'IN_PROGRESS',
+    status: (pickString(r, 'status') || 'PENDING').toUpperCase(),
+    reviewed_by: pickString(r, 'reviewed_by', 'reviewedBy') || null,
+    reviewed_by_name: pickString(r, 'reviewed_by_name', 'reviewedByName') || null,
+    review_notes: pickString(r, 'review_notes', 'reviewNotes', 'notes') || null,
+    reviewed_at: pickString(r, 'reviewed_at', 'reviewedAt') || null,
+    created_at: pickString(r, 'created_at', 'createdAt') || undefined,
+    updated_at: pickString(r, 'updated_at', 'updatedAt') || undefined,
+    job_number: jobNumber,
+    job_status:
+      pickString(r, 'job_status', 'jobStatus') ||
+      (jobRec ? pickString(jobRec, 'status') : '') ||
+      undefined,
+    job_type:
+      pickString(r, 'job_type', 'jobType') ||
+      (jobRec ? pickString(jobRec, 'job_type', 'jobType') : '') ||
+      undefined,
+    job: jobRec
+      ? {
+          id: pickString(jobRec, 'id') || jobId,
+          job_number: pickString(jobRec, 'job_number', 'jobNumber') || undefined,
+          status: pickString(jobRec, 'status') || undefined,
+          job_type: pickString(jobRec, 'job_type', 'jobType') || undefined,
+        }
+      : jobId
+        ? { id: jobId, job_number: jobNumber }
+        : null,
   };
 }

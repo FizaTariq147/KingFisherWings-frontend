@@ -11,6 +11,8 @@
  * preflight via the Phase 3.1 harness (org branding, no Fresa sample/logo).
  *
  * Run: node scripts/phase2-4-hawb-acceptance-qa.mjs
+ * Draft-2 Playwright print (does not rewrite html2canvas evidence):
+ *   node scripts/phase2-4-hawb-acceptance-qa.mjs --playwright-draft2
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -344,6 +346,152 @@ for (const d of [
   path.join(OUT, 'original-modes'),
 ]) {
   ensureDir(d);
+}
+
+function orangePixelPct(png) {
+  let orange = 0;
+  const total = png.width * png.height;
+  for (let i = 0; i < png.data.length; i += 4) {
+    const r = png.data[i];
+    const g = png.data[i + 1];
+    const b = png.data[i + 2];
+    if (r > 220 && g > 120 && g < 200 && b < 80) orange += 1;
+  }
+  return Math.round((10000 * orange) / Math.max(1, total)) / 100;
+}
+
+async function extractPdfText(buf) {
+  const doc = await getDocument({ data: new Uint8Array(buf), useSystemFonts: true }).promise;
+  const page = await doc.getPage(1);
+  const viewport = page.getViewport({ scale: 1 });
+  const content = await page.getTextContent();
+  let overflow = 0;
+  const parts = [];
+  for (const item of content.items) {
+    if (!item.str) continue;
+    parts.push(item.str);
+    if (!item.transform) continue;
+    const x = item.transform[4];
+    const y = item.transform[5];
+    if (x < -4 || y < -4 || x > viewport.width + 4 || y > viewport.height + 4) overflow += 1;
+  }
+  await doc.destroy();
+  return { text: parts.join(' '), itemCount: parts.length, overflow };
+}
+
+/**
+ * Draft-2 Playwright print only. Writes a new folder and does not replace
+ * html2canvas evidence under phase2-4-hawb or phase2-5-hawb.
+ */
+async function runPlaywrightDraft2Compare() {
+  const outDir = path.join(root, 'src/features/reports/qa/playwright-html-hawb-draft2');
+  for (const sub of ['', 'rasters', 'diffs', 'overlays', 'side-by-side']) {
+    ensureDir(path.join(outDir, sub));
+  }
+  const pdfPath = path.join(outDir, 'draft2-playwright.pdf');
+  const cli = path.join(root, 'scripts/playwright-html-pdf/render-draft2.mts');
+  console.log('[p24] playwright Draft-2 print…');
+  const rendered = spawnSync('npx', ['--yes', 'vite-node', cli, '--out', pdfPath], {
+    cwd: root,
+    encoding: 'utf8',
+    timeout: 180000,
+    shell: true,
+  });
+  if (rendered.status !== 0 || !fs.existsSync(pdfPath)) {
+    console.error(rendered.stdout);
+    console.error(rendered.stderr);
+    throw new Error('Playwright Draft-2 render failed');
+  }
+  const genBuf = fs.readFileSync(pdfPath);
+  const refPath = path.join(REF_DIR, 'hawb-draft-report-format-2.pdf');
+  const refBuf = fs.readFileSync(refPath);
+  const refMeta = await pdfMeta(refBuf);
+  const genMeta = await pdfMeta(genBuf);
+  const text = await extractPdfText(genBuf);
+  const refR = path.join(outDir, 'rasters', 'draft2-ref-p1.png');
+  const genR = path.join(outDir, 'rasters', 'draft2-playwright-p1.png');
+  const refInfo = await rasterizeReference(refBuf, refPath, 1, refR);
+  const pop = rasterizePoppler(pdfPath, 1, genR);
+  if (!pop) await rasterizePdfjs(genBuf, 1, genR);
+  const diffPath = path.join(outDir, 'diffs', 'draft2-playwright-p1-diff.png');
+  const overlayPath = path.join(outDir, 'overlays', 'draft2-playwright-p1-overlay.png');
+  const cmp = comparePair(refR, genR, diffPath, overlayPath);
+  const sbs = path.join(outDir, 'side-by-side', 'draft2-playwright-p1-sbs.png');
+  await sideBySide(refR, genR, sbs, `Fresa ref (${refInfo.engine})`, 'Playwright HTML');
+
+  const html2canvasCandidates = [
+    path.join(root, 'src/features/reports/qa/phase2-5-hawb/production/draft2-production.pdf'),
+    path.join(root, 'src/features/reports/qa/phase2-4-hawb/production/draft2-production.pdf'),
+  ];
+  const html2canvasPath = html2canvasCandidates.find((file) => fs.existsSync(file)) || null;
+  let versusHtml2canvas = null;
+  if (html2canvasPath) {
+    const canvasBuf = fs.readFileSync(html2canvasPath);
+    const canvasMeta = await pdfMeta(canvasBuf);
+    const canvasText = await extractPdfText(canvasBuf);
+    const canvasR = path.join(outDir, 'rasters', 'draft2-html2canvas-p1.png');
+    await rasterizePdfjs(canvasBuf, 1, canvasR);
+    const canvasDiff = path.join(outDir, 'diffs', 'draft2-playwright-vs-html2canvas-diff.png');
+    const canvasOverlay = path.join(outDir, 'overlays', 'draft2-playwright-vs-html2canvas-overlay.png');
+    const canvasCmp = comparePair(canvasR, genR, canvasDiff, canvasOverlay);
+    versusHtml2canvas = {
+      sourcePdf: path.relative(root, html2canvasPath).replace(/\\/g, '/'),
+      untouched: true,
+      mediaBox: canvasMeta.pages[0],
+      textItemCount: canvasText.itemCount,
+      mismatchPctVsPlaywright: canvasCmp.mismatchPct,
+      diff: path.relative(root, canvasDiff).replace(/\\/g, '/'),
+    };
+  }
+
+  const required = ['Air Waybill', 'prepaid', 'collect', 'KingFisher'];
+  const textFold = text.text.toLowerCase();
+  const manifest = {
+    generatedAt: new Date().toISOString(),
+    pipeline: 'playwright_html page.pdf — not catalogue generate',
+    code: 'HAWB_DRAFT_REPORT_FORMAT_2',
+    pdf: path.relative(root, pdfPath).replace(/\\/g, '/'),
+    reference: 'hawb-draft-report-format-2.pdf',
+    mediaBox: {
+      reference: refMeta.pages[0],
+      playwright: genMeta.pages[0],
+      match:
+        Math.abs(genMeta.pages[0].widthPt - 595) <= 2 &&
+        Math.abs(genMeta.pages[0].heightPt - 845) <= 2,
+    },
+    pageCount: { reference: refMeta.pageCount, playwright: genMeta.pageCount },
+    text: {
+      itemCount: text.itemCount,
+      overflowItems: text.overflow,
+      hasAirWaybill: text.text.includes('Air Waybill'),
+      hasPrepaid: textFold.includes('prepaid'),
+      hasCollect: textFold.includes('collect'),
+      hasOrg: text.text.includes('KingFisher'),
+      hasFresa: /fresa/i.test(text.text),
+      missing: required.filter((label) => !textFold.includes(label.toLowerCase())),
+    },
+    raster: {
+      engine: pop ? 'poppler' : 'pdfjs',
+      refEngine: refInfo.engine,
+      mismatchPct: cmp.mismatchPct,
+      similarityPct: cmp.similarityPct,
+      inkRef: cmp.inkRef,
+      inkGen: cmp.inkGen,
+      orangePixelPct: orangePixelPct(readPng(genR)),
+      sideBySide: path.relative(root, sbs).replace(/\\/g, '/'),
+      diff: path.relative(root, diffPath).replace(/\\/g, '/'),
+    },
+    html2canvas: versusHtml2canvas,
+  };
+  const manifestPath = path.join(outDir, 'comparison.json');
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2));
+  console.log(JSON.stringify(manifest, null, 2));
+  console.log('Wrote', path.relative(root, manifestPath));
+}
+
+if (process.argv.includes('--playwright-draft2')) {
+  await runPlaywrightDraft2Compare();
+  process.exit(0);
 }
 
 // Phase 2.5: branding gate BEFORE Draft/Draft-2 visual compare (Phase 3.1 harness).

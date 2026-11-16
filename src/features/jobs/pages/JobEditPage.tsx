@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import { FormPageHeader } from '@/components/ui/FormPageHeader';
 import { useAuth } from '@/hooks/useAuth';
 import { useReturnNavigation } from '@/lib/navigation/returnNavigation';
@@ -17,9 +17,11 @@ import {
 } from '../constants/job.constants';
 import { useJob, useUpdateJob } from '../hooks/useJobs';
 import type { UpdateJobFormValues } from '../types/job.types';
+import { canEditJob } from '../utils/canDeleteJob';
 import { filterJobTypesByStaffAccess } from '../utils/filterJobTypesByStaffAccess';
 import { getErrorMessage } from '../utils/getErrorMessage';
-import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
+import { isHandoffLimitedJob, isJobHardClosed } from '../utils/isHandoffLimitedJob';
+import { jobDetailPath, jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 import { jobToFormValues } from '../utils/prepareJobPayload';
 
 export default function JobEditPage() {
@@ -77,6 +79,25 @@ export default function JobEditPage() {
       <p className="text-sm text-[var(--color-danger-600)]">
         {getErrorMessage(error) || 'Job not found.'}
       </p>
+    );
+  }
+
+  if (isJobHardClosed(job) || isHandoffLimitedJob(job) || !canEditJob(job, user)) {
+    const detailHref = jobDetailPath(job);
+    return (
+      <div className="space-y-3">
+        <FormPageHeader title="Edit job" onBack={goBack} backLabel="Back to job" />
+        <p className="text-sm text-[var(--color-danger-600)]">
+          {isJobHardClosed(job)
+            ? 'Job is closed. Request reopen and wait for Tenant Admin approval before editing.'
+            : isHandoffLimitedJob(job)
+              ? 'Handoff-limited view — full edit is not available. Use containers, assign trucker, or port token on the job detail.'
+              : 'You do not have permission to edit this job.'}
+        </p>
+        <Link to={detailHref} className="text-sm font-medium text-[var(--color-primary-700)] underline">
+          Open job detail
+        </Link>
+      </div>
     );
   }
 

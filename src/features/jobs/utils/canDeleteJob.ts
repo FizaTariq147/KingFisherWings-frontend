@@ -92,11 +92,18 @@ export function canSeeJob(
 /**
  * Edit (and close when gated by edit): trust BE `actions.can_edit` when present;
  * else writable job type + open status.
+ * CLOSED is a hard lock — all can_edit* false; use closed-overrides / reopen-request.
+ * Handoff-limited view is never full-edit (containers/trucker/port-token only).
  */
 export function canEditJob(
   job: Job,
   user?: AccessActor | null,
 ): boolean {
+  if (String(job.status ?? '').toUpperCase() === 'CLOSED') return false;
+  const viewMode = String(job.actions?.view_mode ?? job.view_mode ?? '')
+    .trim()
+    .toLowerCase();
+  if (viewMode === 'handoff_limited' || viewMode === 'handoff-limited') return false;
   if (job.actions?.can_edit === false) return false;
   if (job.actions?.can_edit === true) return jobEditable(job.status);
   if (!jobEditable(job.status)) return false;

@@ -55,6 +55,18 @@ export const reportImplementationStatusSchema = z.enum([
   'missing',
 ]);
 
+/**
+ * Optional print engine. Omitted rows keep their current generator.
+ * `playwright_html` is a Node-only pilot and is not selected by the catalogue.
+ */
+export const reportRendererSchema = z.enum([
+  'html2canvas',
+  'playwright_html',
+  'measured_pdf',
+  'json_layout',
+  'backend_pack',
+]);
+
 export const reportPageSchema = z.object({
   size: z.enum(['A4', 'Letter']),
   orientation: z.enum(['portrait', 'landscape']),
@@ -89,6 +101,8 @@ export const reportRegistryEnrichmentSchema = z.object({
   isSharedLayout: z.boolean().default(false),
   /** Never true unless verificationStatus is verified_sample or verified_docs. */
   claimsFresaExactMatch: z.boolean().default(false),
+  /** Absent means the existing generator for that code is unchanged. */
+  renderer: reportRendererSchema.optional(),
 });
 
 export type ReportDocumentType = z.infer<typeof reportDocumentTypeSchema>;
@@ -96,6 +110,7 @@ export type ReportTemplateFamily = z.infer<typeof reportTemplateFamilySchema>;
 export type ReportSource = z.infer<typeof reportSourceSchema>;
 export type ReportVerificationStatus = z.infer<typeof reportVerificationStatusSchema>;
 export type ReportImplementationStatus = z.infer<typeof reportImplementationStatusSchema>;
+export type ReportRenderer = z.infer<typeof reportRendererSchema>;
 export type ReportRegistryEnrichment = z.infer<typeof reportRegistryEnrichmentSchema>;
 
 export function assertNoFalseFresaClaim(row: ReportRegistryEnrichment): void {

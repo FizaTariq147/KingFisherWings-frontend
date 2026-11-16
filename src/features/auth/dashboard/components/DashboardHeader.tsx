@@ -6,6 +6,7 @@ import {
   CircleDot,
   Clock3,
   FileClock,
+  Lock,
   PauseCircle,
   PlayCircle,
   Receipt,
@@ -140,6 +141,14 @@ export function DashboardAlertPills({
       icon: CheckCircle2,
       tone: 'bg-[#E7F6EC] text-[#1B8A4A]',
       count: n('completed'),
+    },
+    {
+      key: 'closed',
+      label: 'Closed',
+      to: '/jobs/closed',
+      icon: Lock,
+      tone: 'bg-[#EEF2FF] text-[#3730A3]',
+      count: n('closed'),
     },
     {
       key: 'cancelled',

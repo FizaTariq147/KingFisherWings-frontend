@@ -24,6 +24,8 @@ export interface JobDashboardCounts {
   delivered: number;
   cancelled: number;
   completed: number;
+  /** Status CLOSED only (not COMPLETED). */
+  closed: number;
   inProgress: number;
   /**
    * Open-status bucket only (enquiry…on hold). Can be much smaller than jobCount.

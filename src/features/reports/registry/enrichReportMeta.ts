@@ -255,6 +255,8 @@ export function enrichReportMeta(meta: ReportTemplateMeta): ReportRegistryEnrich
     claimsFresaExactMatch:
       !shared?.isSharedLayout &&
       (verificationStatus === 'verified_sample' || verificationStatus === 'verified_docs'),
+    // Node Playwright pilot. Catalogue generate still uses html2canvas for this code.
+    ...(meta.code === 'HAWB_DRAFT_REPORT_FORMAT_2' ? { renderer: 'playwright_html' as const } : {}),
   };
 
   const parsed = reportRegistryEnrichmentSchema.parse(row);

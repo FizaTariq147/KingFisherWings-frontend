@@ -12,6 +12,7 @@ import {
   normalizeJob,
   normalizeJobCharges,
   normalizeJobPnl,
+  normalizeJobReopenRequest,
   normalizeJobs,
   normalizeAirWaybill,
   normalizeContainerStatusCatalog,
@@ -128,7 +129,12 @@ import type {
   PatchJobDimensionsDto,
   PutJobGpumDto,
   PatchJobHoldDto,
+  CreateJobReopenRequestDto,
+  JobReopenRequest,
+  JobReopenRequestListParams,
+  JobReopenRequestListResult,
   ReopenJobDto,
+  ReviewJobReopenRequestDto,
   ResumeJobDto,
   StopJobDto,
   UpsertJobPartyReferenceDto,
@@ -336,6 +342,9 @@ function buildListQuery(params: JobListParams): Record<string, string | number |
   if (params.branch_id) query.branch_id = params.branch_id;
   if (params.company_id) query.company_id = params.company_id;
   if (params.department_id) query.department_id = params.department_id;
+  if (params.org_department_scope?.trim()) {
+    query.org_department_scope = params.org_department_scope.trim();
+  }
   if (params.created_by) query.created_by = params.created_by;
   if (params.origin_port_id) query.origin_port_id = params.origin_port_id;
   if (params.dest_port_id) query.dest_port_id = params.dest_port_id;
@@ -1201,7 +1210,9 @@ export const jobService = {
   /**
    * Load jobs for Active shipments / department / hub.
    * BE: GET /jobs + dashboard-counts share buildVisibleJobsBaseWhere /
-   * resolveVisibleJobTypes. Staff list ignores org department_id; admin MIS may use it.
+   * resolveVisibleJobTypes + org-dept handoff OR ops assignee.
+   * Staff must not send org department_id (BE uses actor User.department_id);
+   * admin MIS may use department_id.
    * FE:
    * - Plain GET /jobs first — trust BE rows (same ACL as job_count)
    * - If under-delivered vs expectedTotal, recover via typed + search for probeTypes only
@@ -2434,10 +2445,99 @@ export const jobService = {
     }
   },
 
-  /** POST /jobs/:id/reopen — from COMPLETED / CLOSED / CANCELLED / DELIVERED. */
+  /**
+   * POST /jobs/:id/reopen — Tenant Admin only (staff use createReopenRequest).
+   * From COMPLETED / CLOSED / CANCELLED / DELIVERED.
+   */
   async reopen(id: string, dto: ReopenJobDto = {}): Promise<Job> {
     assertId(id);
     return request(() => axiosInstance.post(JOB_API.reopen(id), dto), normalizeJob);
+  },
+
+  /** POST /jobs/:id/reopen-requests — staff request reopen (PENDING). */
+  async createReopenRequest(
+    id: string,
+    dto: CreateJobReopenRequestDto,
+  ): Promise<JobReopenRequest> {
+    assertId(id);
+    const reason = String(dto.reason ?? '').trim();
+    if (reason.length < 3) {
+      throw new Error('Reason is required (at least 3 characters).');
+    }
+    const body: Record<string, unknown> = { reason };
+    if (dto.target_status?.trim()) body.target_status = dto.target_status.trim();
+    return request(
+      () => axiosInstance.post(JOB_API.reopenRequestsForJob(id), body),
+      normalizeJobReopenRequest,
+    );
+  },
+
+  /** GET /jobs/reopen-requests — Tenant Admin inbox. */
+  async listReopenRequests(
+    params: JobReopenRequestListParams = {},
+  ): Promise<JobReopenRequestListResult> {
+    const query: Record<string, string | number> = {
+      page: params.page ?? 1,
+      limit: params.limit ?? 50,
+    };
+    if (params.status) query.status = params.status;
+    if (params.job_id?.trim()) query.job_id = params.job_id.trim();
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.reopenRequests, { params: query }),
+      );
+      const { items, meta } = unwrapList(res.data);
+      const normalized = items
+        .map((row) => normalizeJobReopenRequest(row))
+        .filter((r): r is JobReopenRequest => Boolean(r?.id));
+      return {
+        items: normalized,
+        meta: normalizePaginationMeta(meta, normalized.length, {
+          page: params.page ?? 1,
+          limit: params.limit ?? 50,
+        }),
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** POST /jobs/reopen-requests/:requestId/approve — Tenant Admin. */
+  async approveReopenRequest(
+    requestId: string,
+    dto: ReviewJobReopenRequestDto = {},
+  ): Promise<JobReopenRequest> {
+    assertId(requestId);
+    const body: Record<string, unknown> = {};
+    if (dto.notes != null && String(dto.notes).trim()) {
+      body.notes = String(dto.notes).trim();
+    }
+    return request(
+      () => axiosInstance.post(JOB_API.approveReopenRequest(requestId), body),
+      normalizeJobReopenRequest,
+    );
+  },
+
+  /** POST /jobs/reopen-requests/:requestId/reject — Tenant Admin (reason required). */
+  async rejectReopenRequest(
+    requestId: string,
+    dto: ReviewJobReopenRequestDto,
+  ): Promise<JobReopenRequest> {
+    assertId(requestId);
+    const reason = String(dto.reason ?? dto.notes ?? '').trim();
+    if (reason.length < 3) {
+      throw new Error('Rejection reason is required (at least 3 characters).');
+    }
+    const body: Record<string, unknown> = { reason };
+    if (dto.notes != null && String(dto.notes).trim() && !dto.reason) {
+      /* reason already set from notes */
+    } else if (dto.notes != null && String(dto.notes).trim()) {
+      body.notes = String(dto.notes).trim();
+    }
+    return request(
+      () => axiosInstance.post(JOB_API.rejectReopenRequest(requestId), body),
+      normalizeJobReopenRequest,
+    );
   },
 
   /** POST /jobs/:id/stop — status → ON_HOLD. Only whitelisted DTO keys (Nest forbidNonWhitelisted). */

@@ -15,6 +15,9 @@ import type {
 export const jobKeys = {
   all: ['tenant', 'jobs'] as const,
   list: (params: JobListParams) => [...jobKeys.all, 'list', params] as const,
+  reopenRequestsRoot: [...(['tenant', 'jobs'] as const), 'reopen-requests'] as const,
+  reopenRequests: (params: Record<string, unknown>) =>
+    [...jobKeys.reopenRequestsRoot, params] as const,
   detail: (id: string) => [...jobKeys.all, 'detail', id] as const,
   detailTab: (id: string, tab: string) => [...jobKeys.all, 'detail-tab', id, tab] as const,
   statusOptions: (jobId?: string) => [...jobKeys.all, 'status-options', jobId ?? ''] as const,

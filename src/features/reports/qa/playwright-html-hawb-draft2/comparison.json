@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-11-16T11:22:58.994Z",
+  "pipeline": "playwright_html page.pdf — not catalogue generate",
+  "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+  "pdf": "src/features/reports/qa/playwright-html-hawb-draft2/draft2-playwright.pdf",
+  "reference": "hawb-draft-report-format-2.pdf",
+  "mediaBox": {
+    "reference": {
+      "index": 1,
+      "widthPt": 595,
+      "heightPt": 845
+    },
+    "playwright": {
+      "index": 1,
+      "widthPt": 595,
+      "heightPt": 845
+    },
+    "match": true
+  },
+  "pageCount": {
+    "reference": 1,
+    "playwright": 1
+  },
+  "text": {
+    "itemCount": 100,
+    "overflowItems": 0,
+    "hasAirWaybill": true,
+    "hasPrepaid": true,
+    "hasCollect": true,
+    "hasOrg": true,
+    "hasFresa": false,
+    "missing": []
+  },
+  "raster": {
+    "engine": "poppler",
+    "refEngine": "pdfjs",
+    "mismatchPct": 12.58,
+    "similarityPct": 87.4,
+    "inkRef": 8.96,
+    "inkGen": 5.24,
+    "orangePixelPct": 0,
+    "sideBySide": "src/features/reports/qa/playwright-html-hawb-draft2/side-by-side/draft2-playwright-p1-sbs.png",
+    "diff": "src/features/reports/qa/playwright-html-hawb-draft2/diffs/draft2-playwright-p1-diff.png"
+  },
+  "html2canvas": {
+    "sourcePdf": "src/features/reports/qa/phase2-5-hawb/production/draft2-production.pdf",
+    "untouched": true,
+    "mediaBox": {
+      "index": 1,
+      "widthPt": 595,
+      "heightPt": 845
+    },
+    "textItemCount": 0,
+    "mismatchPctVsPlaywright": 7.21,
+    "diff": "src/features/reports/qa/playwright-html-hawb-draft2/diffs/draft2-playwright-vs-html2canvas-diff.png"
+  }
+}

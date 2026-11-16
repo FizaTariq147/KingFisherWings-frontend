@@ -27,6 +27,18 @@ describe('official face factory', () => {
     expect(summary.byFamily.arrival_notice).toBeGreaterThan(0);
     expect(summary.byFamily.invoice).toBeGreaterThan(0);
     expect(summary.byFamily.accounts).toBeGreaterThan(0);
+    const invoice = getOfficialMeasuredFace('INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA');
+    expect(invoice).toBeTruthy();
+    const onPage = (invoice?.pages[0]?.lines || []).filter((line) => {
+      const [x1, y1, x2, y2] = line;
+      return (
+        Math.max(x1, x2) >= 0 &&
+        Math.min(x1, x2) <= (invoice?.widthPt || 0) &&
+        Math.max(y1, y2) >= 0 &&
+        Math.min(y1, y2) <= (invoice?.heightPt || 0)
+      );
+    });
+    expect(onPage.length).toBeGreaterThan(80);
   });
 
   it('locks the five HAWB faces outside the measured kit', () => {
@@ -48,12 +60,19 @@ describe('official face factory', () => {
   });
 
   it('draws one delivery-order face at the measured page size', async () => {
-    const face = listOfficialMeasuredFacesByFamily('delivery_order')[0];
+    const faces = listOfficialMeasuredFacesByFamily('delivery_order');
+    const face = [...faces].sort(
+      (a, b) =>
+        b.pages.reduce((sum, page) => sum + page.rects.length + page.lines.length, 0) -
+        a.pages.reduce((sum, page) => sum + page.rects.length + page.lines.length, 0),
+    )[0];
     const { blob } = await generateOfficialMeasuredPdf(face.code, {
       companyName: 'KingFisher Wings',
       companyAddress: 'Dubai, UAE',
     });
     expect(await generatedPageMatchesFace(blob, face)).toBe(true);
+    const rules = face.pages.reduce((sum, page) => sum + page.rects.length + page.lines.length, 0);
+    expect(rules).toBeGreaterThan(10);
     const doc = await getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise;
     const page = await doc.getPage(1);
     const content = await page.getTextContent();

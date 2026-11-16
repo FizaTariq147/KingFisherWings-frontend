@@ -76,6 +76,15 @@ export function remapStaffNotificationPath(path: string | null | undefined): str
     }
   }
 
+  // Reopen-request inbox (Tenant Admin) — BE may link /jobs/reopen-requests or nested.
+  if (
+    lower === '/jobs/reopen-requests' ||
+    lower.startsWith('/jobs/reopen-requests/') ||
+    lower === '/reopen-requests'
+  ) {
+    return `/jobs/reopen-requests${q}`;
+  }
+
   // Bare `/jobs/:id` is handled by JobDeepLinkPage (resolves segment from job type).
   // Already-correct routes
   if (lower.startsWith('/hr/timesheets')) return pathname + q;
@@ -129,6 +138,9 @@ export function inferStaffNotificationPath(opts: {
   }
   if (/JOB_MILESTONE|MILESTONE_UPDATED|\bMILESTONE\b/.test(blob)) {
     return '/jobs/all';
+  }
+  if (/REOPEN_REQUEST|JOB_REOPEN|REOPEN_APPROV|REOPEN_REJECT/.test(blob)) {
+    return '/jobs/reopen-requests';
   }
   return null;
 }

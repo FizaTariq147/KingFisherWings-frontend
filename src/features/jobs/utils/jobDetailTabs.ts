@@ -341,6 +341,19 @@ export function resolveJobActionPanels(
   opts: { houseJobsCount?: number } = {},
 ): JobActionPanelKey[] {
   const actions = job.actions as Record<string, unknown> | undefined;
+  const handoffLimited = (() => {
+    const mode = String(job.actions?.view_mode ?? job.view_mode ?? '')
+      .trim()
+      .toLowerCase();
+    return mode === 'handoff_limited' || mode === 'handoff-limited';
+  })();
+
+  // Handoff-limited: port-token only (containers live on tabs; trucker on detail panel).
+  if (handoffLimited) {
+    if (job.actions?.can_port_token === false) return [];
+    return ['port-token'];
+  }
+
   const houseCount = opts.houseJobsCount ?? 0;
   const heuristic = heuristicJobActionPanels(job, houseCount);
   const heuristicSet = new Set(heuristic);
@@ -357,14 +370,31 @@ export function resolveJobActionPanels(
   return out;
 }
 
+const HANDOFF_LIMITED_TAB_KEYS = new Set([
+  'info',
+  'actual_container',
+  'actual_containers',
+  'containers',
+  'department',
+]);
+
 /**
  * Tab strip = only keys from GET /jobs/:id/detail `tabs`.
  * Each key is passed as-is (normalized) to GET /jobs/:id/detail/:tab — no hardcoded fallback.
  * Sea ↔ air: air hides container tabs; sea/NVOCC hides mawb.
+ * Handoff-limited: info + containers only (no costing / show_all / ledger / booking).
  */
 export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
   const apiTabs = job.tabs;
   if (!apiTabs?.length) return [];
+
+  const handoffLimited = (() => {
+    const mode = String(job.actions?.view_mode ?? job.view_mode ?? '')
+      .trim()
+      .toLowerCase();
+    return mode === 'handoff_limited' || mode === 'handoff-limited';
+  })();
+  const canViewContainers = job.actions?.can_view_containers !== false;
 
   const seen = new Set<string>();
   const out: JobDetailTab[] = [];
@@ -386,12 +416,32 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
     if (key === 'planned_container') {
       continue;
     }
+    if (handoffLimited) {
+      if (!HANDOFF_LIMITED_TAB_KEYS.has(key)) continue;
+      if (
+        (key === 'actual_container' ||
+          key === 'actual_containers' ||
+          key === 'containers') &&
+        !canViewContainers
+      ) {
+        continue;
+      }
+      // Strip show_all / costing even if API mis-labels them.
+      if (isJobShowAllTab(key) || key === 'costing' || key === 'charges' || key === 'ledger') {
+        continue;
+      }
+    }
     // Sea / NVOCC: mawb tab hidden.
     if (!air && key === 'mawb') {
       continue;
     }
     // Air: container tabs hidden; map legacy actual_container → MAWB once.
-    if (air && (key === 'actual_container' || key === 'actual_containers')) {
+    // Handoff-limited keeps containers (transport), not MAWB rewrite.
+    if (
+      !handoffLimited &&
+      air &&
+      (key === 'actual_container' || key === 'actual_containers')
+    ) {
       if (seen.has('mawb')) continue;
       seen.add('mawb');
       seen.add(key);
@@ -419,8 +469,13 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
   }
 
   // FE-owned finance tab — GET /jobs/:id/ledger (not a detail/:tab envelope).
-  if (!seen.has('ledger')) {
+  if (!handoffLimited && !seen.has('ledger')) {
     out.push({ key: 'ledger', label: jobDetailTabLabel('ledger') });
+  }
+
+  // Handoff-limited with empty API tabs: ensure containers surface exists.
+  if (handoffLimited && canViewContainers && !out.some((t) => HANDOFF_LIMITED_TAB_KEYS.has(t.key))) {
+    out.push({ key: 'actual_container', label: 'Containers' });
   }
 
   return out;
@@ -436,6 +491,21 @@ export function defaultJobDetailTabKey(
 ): JobDetailTabKey | string {
   const tabs = resolveJobDetailTabs(job);
   if (!tabs.length) return '';
+  const handoffLimited = (() => {
+    const mode = String(job.actions?.view_mode ?? job.view_mode ?? '')
+      .trim()
+      .toLowerCase();
+    return mode === 'handoff_limited' || mode === 'handoff-limited';
+  })();
+  if (handoffLimited) {
+    const containers = tabs.find((t) =>
+      ['actual_container', 'actual_containers', 'containers'].includes(
+        toApiDetailTabKey(t.key),
+      ),
+    );
+    if (containers) return containers.key;
+    return tabs[0]!.key;
+  }
   if (preferBookingForm) {
     const booking = tabs.find((t) => toApiDetailTabKey(t.key) === 'booking_form');
     if (booking) return booking.key;

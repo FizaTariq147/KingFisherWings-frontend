@@ -1,8 +1,9 @@
 import HubAllJobsPage from './HubAllJobsPage';
 
 /**
- * Staff “all visible jobs” — every job (admin- or staff-created) whose job_type
- * the user can see. Matches Total jobs / job_count. Never org department_id.
+ * Staff “all visible jobs” — job_type grants OR org-dept handoff match OR
+ * ops_user_id=me (BE). Never send org department_id; server uses actor
+ * User.department_id automatically for the handoff queue.
  */
 export default function StaffAllJobsPage() {
   return (
@@ -10,7 +11,7 @@ export default function StaffAllJobsPage() {
       variant="management"
       backTo="/dashboard"
       title="My department jobs"
-      subtitle="All jobs for your granted job types (any creator) — same total as Total jobs."
+      subtitle="Jobs for your granted types, plus org-dept handoffs and jobs assigned to you — same total as Total jobs."
     />
   );
 }

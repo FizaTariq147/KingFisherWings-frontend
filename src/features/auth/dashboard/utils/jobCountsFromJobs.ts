@@ -18,6 +18,7 @@ export type DerivedJobCounts = {
   delivered: number;
   cancelled: number;
   completed: number;
+  closed: number;
   inProgress: number;
   open: number;
 };
@@ -33,6 +34,7 @@ export function jobCountsFromJobs(jobs: readonly Job[]): DerivedJobCounts {
   >;
   let cancelled = 0;
   let completed = 0;
+  let closed = 0;
 
   for (const job of jobs) {
     const status = job.status;
@@ -40,7 +42,11 @@ export function jobCountsFromJobs(jobs: readonly Job[]): DerivedJobCounts {
       cancelled += 1;
       continue;
     }
-    if (status === 'COMPLETED' || status === 'CLOSED') {
+    if (status === 'CLOSED') {
+      closed += 1;
+      continue;
+    }
+    if (status === 'COMPLETED') {
       completed += 1;
       continue;
     }
@@ -72,6 +78,7 @@ export function jobCountsFromJobs(jobs: readonly Job[]): DerivedJobCounts {
     delivered: byStatus.DELIVERED ?? 0,
     cancelled,
     completed,
+    closed,
     inProgress: byStatus.IN_PROGRESS ?? 0,
     open: active,
   };

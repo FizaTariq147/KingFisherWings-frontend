@@ -126,6 +126,8 @@ import JobDeepLinkPage from '../features/jobs/pages/JobDeepLinkPage'
 import JobEditPage from '../features/jobs/pages/JobEditPage'
 import JobBarcodeScanPage from '../features/jobs/pages/JobBarcodeScanPage'
 import JobsOnHoldPage from '../features/jobs/pages/JobsOnHoldPage'
+import JobsClosedPage from '../features/jobs/pages/JobsClosedPage'
+import JobReopenRequestsPage from '../features/jobs/pages/JobReopenRequestsPage'
 import StaffAllJobsPage from '../features/jobs/pages/StaffAllJobsPage'
 import DepartmentHubPage from '../features/jobs/pages/DepartmentHubPage'
 import CustomsClearanceHubPage from '../features/customs-clearance/pages/CustomsClearanceHubPage'
@@ -574,6 +576,15 @@ export const router = createBrowserRouter([
               { path: '/jobs/new', element: <JobCreatePage /> },
               { path: '/jobs/all', element: <StaffAllJobsPage /> },
               { path: '/jobs/on-hold', element: <JobsOnHoldPage /> },
+              { path: '/jobs/closed', element: <JobsClosedPage /> },
+              {
+                element: (
+                  <ProtectedRoute requireAnyRole={[...TENANT_USER_MANAGER_ROLE_SLUGS]} />
+                ),
+                children: [
+                  { path: '/jobs/reopen-requests', element: <JobReopenRequestsPage /> },
+                ],
+              },
               { path: '/jobs/barcode-scan', element: <JobBarcodeScanPage /> },
               { path: '/jobs/air-export', element: <JobListPage /> },
               { path: '/jobs/air-export/new', element: <JobCreatePage /> },

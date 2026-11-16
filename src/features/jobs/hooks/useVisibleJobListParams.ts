@@ -55,11 +55,12 @@ function intersectCandidates(
  *
  * --- Staff visibility (product + BE) ---
  * If staff has permission for a job type, show every job of that type whether
- * created by admin or staff. Operation department pages use the same segment
- * type sets as admin (fullSegmentIfAnyAccess). ACL is job type grants — never
- * org department_id / invented created_by.
- * GET /jobs and dashboard-counts share resolveVisibleJobTypes; same branch_id
- * and no extra filters ⇒ meta.total === job_count.
+ * created by admin or staff. After department pass, BE also includes jobs where
+ * Job.department_id = actor User.department_id OR ops_user_id = me (OR with
+ * job_type grants). FE must not send org department_id as a staff ACL filter.
+ * Operation department pages use the same segment type sets as admin
+ * (fullSegmentIfAnyAccess). GET /jobs and dashboard-counts share visibility;
+ * same branch_id and no extra filters ⇒ meta.total === job_count.
  */
 export function useVisibleJobListScope(
   opts?: {

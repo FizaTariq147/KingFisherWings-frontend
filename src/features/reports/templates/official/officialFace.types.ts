@@ -12,14 +12,14 @@ export type OfficialFaceFamily =
   | 'other'
   | 'my_reports';
 
-/** [x, y, w, h] in PDF points, origin bottom-left. */
-export type OfficialRect = [number, number, number, number];
+/** [x, y, w, h, r, g, b, kind] — kind 1 is a filled band, kind 0 is a stroked box. */
+export type OfficialRect = number[];
 
-/** [x1, y1, x2, y2] in PDF points. */
-export type OfficialLine = [number, number, number, number];
+/** [x1, y1, x2, y2, r, g, b, width] in PDF points. */
+export type OfficialLine = number[];
 
-/** [text, x, y, fontSize] in PDF points, origin bottom-left. */
-export type OfficialTextRun = [string, number, number, number];
+/** [text, x, y, fontSize, bold] in PDF points, origin bottom-left. */
+export type OfficialTextRun = [string, number, number, number, number?];
 
 export type OfficialBrandingSlot = {
   x: number;

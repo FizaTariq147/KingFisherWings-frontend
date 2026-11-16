@@ -26,6 +26,20 @@ describe('report registry v2 enrichment', () => {
     expect(e?.verificationStatus).toBe('verified_sample');
     expect(e?.templateFamily).toBe('hawb');
     expect(e?.claimsFresaExactMatch).toBe(true);
+    expect(e?.renderer).toBeUndefined();
+  });
+
+  it('assigns playwright_html only to HAWB Draft-2', () => {
+    expect(getReportEnrichment('HAWB_DRAFT_REPORT_FORMAT_2')?.renderer).toBe('playwright_html');
+    for (const code of [
+      'HAWB_DRAFT_REPORT_FORMAT',
+      'HAWB_DRAFT_REPORT_FORMAT_1',
+      'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1',
+      'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2',
+      'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA',
+    ]) {
+      expect(getReportEnrichment(code)?.renderer).toBeUndefined();
+    }
   });
 
   it('summarizes inventory', () => {

@@ -22,13 +22,28 @@ function modeForJob(job: Job): RoadLandMode | null {
 }
 
 /** ROAD_FREIGHT lifecycle (LAND-parity) — details, trucker, pickup, border, POD, booking form. */
-export function RoadLandWorkflowPanel({ job }: { job: Job }) {
+export function RoadLandWorkflowPanel({
+  job,
+  handoffLimited = false,
+}: {
+  job: Job;
+  /** Handoff-dept staff: assign trucker only (no full details / POD / border edits). */
+  handoffLimited?: boolean;
+}) {
   const mode = modeForJob(job);
   if (!mode) return null;
-  return <RoadLandWorkflowPanelInner job={job} mode={mode} />;
+  return <RoadLandWorkflowPanelInner job={job} mode={mode} handoffLimited={handoffLimited} />;
 }
 
-function RoadLandWorkflowPanelInner({ job, mode }: { job: Job; mode: RoadLandMode }) {
+function RoadLandWorkflowPanelInner({
+  job,
+  mode,
+  handoffLimited,
+}: {
+  job: Job;
+  mode: RoadLandMode;
+  handoffLimited: boolean;
+}) {
   const isRoad = mode === 'ROAD_FREIGHT';
   const details = isRoad ? job.road_freight_details : job.land_details;
   const actions = useRoadLandJobActions(job.id, mode);
@@ -107,7 +122,115 @@ function RoadLandWorkflowPanelInner({ job, mode }: { job: Job; mode: RoadLandMod
     border_declared_value: borderValue ? Number(borderValue) : undefined,
   });
 
-  const title = isRoad ? 'Road Freight workflow' : 'Land workflow';
+  const title = handoffLimited
+    ? 'Assign trucker'
+    : isRoad
+      ? 'Road Freight workflow'
+      : 'Land workflow';
+
+  const truckerFields = (
+    <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <label className="flex flex-col gap-1 text-xs">
+        <span className="text-[var(--color-neutral-600)]">Trucker</span>
+        <select
+          className="h-9 rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+          value={truckerId}
+          onChange={(e) => setTruckerId(e.target.value)}
+        >
+          <option value="">Select trucker…</option>
+          {truckers.map((t) => {
+            const id = String(t.id ?? '');
+            if (!id) return null;
+            const label = String(t.name ?? t.code ?? id);
+            return (
+              <option key={id} value={id}>
+                {label}
+              </option>
+            );
+          })}
+        </select>
+      </label>
+      <label className="flex flex-col gap-1 text-xs">
+        <span className="text-[var(--color-neutral-600)]">Vehicle type</span>
+        <select
+          className="h-9 rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
+          value={vehicleType}
+          onChange={(e) => setVehicleType(e.target.value)}
+        >
+          {VEHICLE_TYPES.map((t) => (
+            <option key={t} value={t}>
+              {t}
+            </option>
+          ))}
+        </select>
+      </label>
+      <Input
+        label="Vehicle number"
+        value={vehicleNumber}
+        onChange={(e) => setVehicleNumber(e.target.value)}
+      />
+      {isRoad ? (
+        <Input
+          label="Trailer number"
+          value={trailerNumber}
+          onChange={(e) => setTrailerNumber(e.target.value)}
+        />
+      ) : null}
+      <Input
+        label="Driver name"
+        value={driverName}
+        onChange={(e) => setDriverName(e.target.value)}
+      />
+      <Input
+        label="Driver license"
+        value={driverLicense}
+        onChange={(e) => setDriverLicense(e.target.value)}
+      />
+    </div>
+  );
+
+  if (handoffLimited) {
+    return (
+      <div className="space-y-4">
+        {err ? <p className="text-sm text-[var(--color-danger-600)]">{err}</p> : null}
+        {msg ? <p className="text-sm text-[var(--color-success-700)]">{msg}</p> : null}
+        <Card>
+          <CardHeader>
+            <CardTitle>{title}</CardTitle>
+          </CardHeader>
+          <div className="space-y-3 px-4 pb-4">
+            <p className="text-xs text-[var(--color-neutral-400)]">
+              Handoff view — assign trucker for transport. Costing and full job edits stay with
+              ops / Tenant Admin.
+            </p>
+            {truckerFields}
+            <Button
+              type="button"
+              disabled={actions.assignTrucker.isPending || !truckerId.trim()}
+              onClick={() =>
+                void run(
+                  () =>
+                    actions.assignTrucker.mutateAsync({
+                      trucker_id: truckerId.trim(),
+                      vehicle_type: vehicleType || undefined,
+                      vehicle_number: vehicleNumber.trim() || undefined,
+                      ...(isRoad
+                        ? { trailer_number: trailerNumber.trim() || undefined }
+                        : {}),
+                      driver_name: driverName.trim() || undefined,
+                      driver_license: driverLicense.trim() || undefined,
+                    }),
+                  'Trucker assigned (PICKUP_SCHEDULED).',
+                )
+              }
+            >
+              Assign trucker
+            </Button>
+          </div>
+        </Card>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -124,63 +247,8 @@ function RoadLandWorkflowPanelInner({ job, mode }: { job: Job; mode: RoadLandMod
               ? 'Road freight: assign trucker, pickup, border crossing, and POD.'
               : 'Land freight: assign trucker, pickup, border crossing, and POD.'}
           </p>
+          {truckerFields}
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-            <label className="flex flex-col gap-1 text-xs">
-              <span className="text-[var(--color-neutral-600)]">Trucker</span>
-              <select
-                className="h-9 rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
-                value={truckerId}
-                onChange={(e) => setTruckerId(e.target.value)}
-              >
-                <option value="">Select trucker…</option>
-                {truckers.map((t) => {
-                  const id = String(t.id ?? '');
-                  if (!id) return null;
-                  const label = String(t.name ?? t.code ?? id);
-                  return (
-                    <option key={id} value={id}>
-                      {label}
-                    </option>
-                  );
-                })}
-              </select>
-            </label>
-            <label className="flex flex-col gap-1 text-xs">
-              <span className="text-[var(--color-neutral-600)]">Vehicle type</span>
-              <select
-                className="h-9 rounded-md border border-[var(--color-neutral-200)] px-2 text-sm"
-                value={vehicleType}
-                onChange={(e) => setVehicleType(e.target.value)}
-              >
-                {VEHICLE_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <Input
-              label="Vehicle number"
-              value={vehicleNumber}
-              onChange={(e) => setVehicleNumber(e.target.value)}
-            />
-            {isRoad ? (
-              <Input
-                label="Trailer number"
-                value={trailerNumber}
-                onChange={(e) => setTrailerNumber(e.target.value)}
-              />
-            ) : null}
-            <Input
-              label="Driver name"
-              value={driverName}
-              onChange={(e) => setDriverName(e.target.value)}
-            />
-            <Input
-              label="Driver license"
-              value={driverLicense}
-              onChange={(e) => setDriverLicense(e.target.value)}
-            />
             <Input label="Origin city/country" value={origin} onChange={(e) => setOrigin(e.target.value)} />
             <Input
               label="Destination city/country"
