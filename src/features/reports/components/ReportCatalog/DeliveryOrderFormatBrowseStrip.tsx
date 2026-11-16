@@ -1,4 +1,5 @@
 import { listDeliveryOrderFormats } from '../../constants/deliveryOrderFormatCatalog';
+import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
@@ -47,6 +48,7 @@ export function DeliveryOrderFormatBrowseStrip({
           badge={`#${row.sortOrder}`}
           name={row.name}
           sharedHint={catalogSharedLayoutHint(row.code)}
+          status={resolveCatalogFormatStatus(row.code)}
           onClick={() => onSelect(row.code)}
         />
       ))}

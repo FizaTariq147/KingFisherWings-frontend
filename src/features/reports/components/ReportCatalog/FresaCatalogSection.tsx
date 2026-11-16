@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import { FRESA_UI } from '../../constants/fresaInvoiceColors';
+import type { CatalogFormatStatus } from '../../utils/catalogFormatStatus';
+import { FormatStatusBadge } from './FormatStatusBadge';
 
 export type FresaCatalogSectionId =
   | 'invoice'
@@ -16,70 +17,54 @@ export type FresaCatalogSectionId =
   | 'sea_extra'
   | 'leftover';
 
-/** Titles match https://fresatechnologies.com/sample-report-formats/ section naming. */
+/** Section titles for report-format catalogue families. */
 export const FRESA_CATALOG_SECTION_TITLE: Record<FresaCatalogSectionId, string> = {
   invoice: 'Invoice Formats',
-  accounts: 'Accounts other Formats',
+  accounts: 'Accounts Formats',
   arrival: 'Arrival Notice',
   hbl: 'HBL',
   hawb: 'HAWB',
-  delivery: 'Delivery order',
+  delivery: 'Delivery Order',
   wms: 'WMS – ASN',
   other: 'Other Reports',
   quotation: 'Quotations',
-  ops_list: 'Operations lists',
-  commercial_extra: 'Commercial extras',
-  sea_extra: 'Sea documents (extra)',
-  leftover: 'Additional formats',
+  ops_list: 'Operations Lists',
+  commercial_extra: 'Commercial Extras',
+  sea_extra: 'Sea Documents (Extra)',
+  leftover: 'Additional Formats',
 };
 
-const SECTION_ACCENT: Record<FresaCatalogSectionId, string> = {
-  invoice: FRESA_UI.sky,
-  accounts: FRESA_UI.navy,
-  arrival: FRESA_UI.skySoft,
-  hbl: FRESA_UI.navy,
-  hawb: FRESA_UI.sky,
-  delivery: FRESA_UI.skySoft,
-  wms: FRESA_UI.navy,
-  other: FRESA_UI.sky,
-  quotation: FRESA_UI.sky,
-  ops_list: FRESA_UI.navy,
-  commercial_extra: FRESA_UI.skySoft,
-  sea_extra: FRESA_UI.navy,
-  leftover: FRESA_UI.sky,
-};
-
-/** Sky-blue card tones cycling within Fresa palette (not random brand colors). */
+/** Freightnest catalogue card tones (enterprise slate/teal — not competitor sky palette). */
 export const FRESA_CARD_TONES = [
   {
-    bg: 'bg-[#E8F4FC]',
-    border: 'border-[#2286C8]/35',
-    accent: 'bg-[#2286C8]',
-    label: 'text-[#0F4D96]',
+    bg: 'bg-[var(--color-neutral-50)]',
+    border: 'border-[var(--color-neutral-200)]',
+    accent: 'bg-[var(--color-primary-600)]',
+    label: 'text-[var(--color-primary-800)]',
   },
   {
-    bg: 'bg-[#EEF6FF]',
-    border: 'border-[#0F4D96]/30',
-    accent: 'bg-[#0F4D96]',
-    label: 'text-[#0F4D96]',
+    bg: 'bg-white',
+    border: 'border-[var(--color-neutral-200)]',
+    accent: 'bg-[var(--color-neutral-700)]',
+    label: 'text-[var(--color-neutral-700)]',
   },
   {
-    bg: 'bg-[#F0F9FF]',
-    border: 'border-[#38BDF8]/40',
-    accent: 'bg-[#2788C9]',
-    label: 'text-[#0C4A6E]',
+    bg: 'bg-[var(--color-primary-50)]',
+    border: 'border-[var(--color-primary-200)]',
+    accent: 'bg-[var(--color-primary-700)]',
+    label: 'text-[var(--color-primary-900)]',
   },
   {
-    bg: 'bg-[#EBF0F4]',
-    border: 'border-[#0F4D96]/25',
-    accent: 'bg-[#0F4D96]',
-    label: 'text-[#0F4D96]',
+    bg: 'bg-[var(--color-neutral-50)]',
+    border: 'border-[var(--color-neutral-300)]',
+    accent: 'bg-[var(--color-neutral-800)]',
+    label: 'text-[var(--color-neutral-800)]',
   },
   {
-    bg: 'bg-[#D6EEFB]',
-    border: 'border-[#2286C8]/40',
-    accent: 'bg-[#2286C8]',
-    label: 'text-[#0F4D96]',
+    bg: 'bg-white',
+    border: 'border-[var(--color-primary-100)]',
+    accent: 'bg-[var(--color-primary-500)]',
+    label: 'text-[var(--color-primary-800)]',
   },
 ] as const;
 
@@ -92,7 +77,7 @@ type FresaCatalogSectionProps = {
 };
 
 /**
- * Shared chrome for report-catalogue format strips — Fresa sky-blue section bar.
+ * Shared chrome for report-catalogue format strips — Freightnest enterprise styling.
  */
 export function FresaCatalogSection({
   section,
@@ -102,36 +87,26 @@ export function FresaCatalogSection({
   emptyMessage = 'No formats match the current filters.',
 }: FresaCatalogSectionProps) {
   const title = FRESA_CATALOG_SECTION_TITLE[section];
-  const accent = SECTION_ACCENT[section];
 
   return (
-    <div
-      className="space-y-2.5 overflow-hidden rounded-xl border bg-white p-3.5 shadow-sm"
-      style={{ borderColor: `${accent}40` }}
+    <section
+      className="space-y-2.5 overflow-hidden rounded-lg border border-[var(--color-neutral-200)] bg-white p-3.5 shadow-sm"
+      aria-label={title}
     >
-      <div
-        className="-mx-3.5 -mt-3.5 mb-1 flex items-baseline justify-between gap-2 border-b px-3.5 py-2.5"
-        style={{
-          background: `linear-gradient(90deg, ${accent}18 0%, #F0F9FF 55%, #FFFFFF 100%)`,
-          borderColor: `${accent}33`,
-        }}
-      >
-        <h3
-          className="text-xs font-semibold uppercase tracking-[0.08em]"
-          style={{ color: accent }}
-        >
+      <div className="-mx-3.5 -mt-3.5 mb-1 flex items-baseline justify-between gap-2 border-b border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3.5 py-2.5">
+        <h3 className="text-xs font-semibold uppercase tracking-[0.06em] text-[var(--color-neutral-800)]">
           {title}
         </h3>
-        <p className="text-[10px] tabular-nums text-[#64748b]">{countLabel}</p>
+        <p className="text-[10px] tabular-nums text-[var(--color-neutral-500)]">{countLabel}</p>
       </div>
       {empty ? (
-        <p className="px-1 py-2 text-xs text-[#64748b]">{emptyMessage}</p>
+        <p className="px-1 py-2 text-xs text-[var(--color-neutral-500)]">{emptyMessage}</p>
       ) : (
         <div className="-mx-0.5 flex gap-2.5 overflow-x-auto pb-1 [scrollbar-width:thin]">
           {children}
         </div>
       )}
-    </div>
+    </section>
   );
 }
 
@@ -141,8 +116,9 @@ type FresaFormatCardProps = {
   badge: string;
   name: string;
   title?: string;
-  /** Shown when this Format-N reuses another JSON shell (not a unique Fresa design). */
+  /** Shown when this Format-N reuses another JSON shell (not a unique design). */
   sharedHint?: string | null;
+  status?: CatalogFormatStatus | null;
   onClick: () => void;
 };
 
@@ -153,35 +129,40 @@ export function FresaFormatCard({
   name,
   title,
   sharedHint,
+  status,
   onClick,
 }: FresaFormatCardProps) {
   const n = FRESA_CARD_TONES.length;
-  // JS `%` can be negative when sortOrder-1 is -1 — clamp to a valid tone.
   const tone = FRESA_CARD_TONES[((Number(index) % n) + n) % n] ?? FRESA_CARD_TONES[0]!;
+  const tip =
+    title ||
+    (status ? `${name} — ${status.label}: ${status.detail}` : sharedHint ? `${name} — ${sharedHint}` : name);
+
   return (
     <button
       type="button"
       onClick={onClick}
-      title={title || (sharedHint ? `${name} — ${sharedHint}` : name)}
+      title={tip}
       className={[
-        'relative min-w-[8.75rem] max-w-[11rem] shrink-0 overflow-hidden rounded-lg border px-2.5 py-2.5 text-left transition',
+        'relative min-w-[9.25rem] max-w-[12rem] shrink-0 overflow-hidden rounded-md border px-2.5 py-2.5 text-left transition',
         tone.bg,
         tone.border,
         active
-          ? 'shadow-md ring-2 ring-[#2286C8] ring-offset-1'
-          : 'hover:-translate-y-0.5 hover:shadow-sm',
+          ? 'shadow-md ring-2 ring-[var(--color-primary-600)] ring-offset-1'
+          : 'hover:border-[var(--color-neutral-400)] hover:shadow-sm',
       ].join(' ')}
     >
       <span className={`absolute inset-y-0 left-0 w-1 ${tone.accent}`} aria-hidden />
-      <p className={`pl-1.5 text-[10px] font-bold uppercase tracking-wide ${tone.label}`}>
-        {badge}
-      </p>
-      <p className="mt-0.5 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[#0F172A]">
+      <div className="flex items-start justify-between gap-1 pl-1.5">
+        <p className={`text-[10px] font-bold uppercase tracking-wide ${tone.label}`}>{badge}</p>
+        {status ? <FormatStatusBadge status={status} /> : null}
+      </div>
+      <p className="mt-1 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[var(--color-neutral-900)]">
         {name}
       </p>
-      {sharedHint ? (
-        <p className="mt-1 line-clamp-2 pl-1.5 text-[9px] font-medium leading-snug text-[#64748b]">
-          {sharedHint}
+      {sharedHint || status?.id === 'shared_layout' ? (
+        <p className="mt-1 line-clamp-2 pl-1.5 text-[9px] font-medium leading-snug text-amber-800">
+          {sharedHint || status?.detail}
         </p>
       ) : null}
     </button>

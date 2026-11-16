@@ -12,6 +12,11 @@ import {
 import { generateCatalogLayoutPdf, hasCatalogLayoutPdf } from '../../utils/generateCatalogLayoutPdf';
 import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
 import { supportsTemplateV2 } from '../../engines/preview/renderTemplateV2Pdf';
+import {
+  FRESA_REFERENCE_SAMPLE_LABEL,
+  REPORT_PDF_WORKFLOW,
+} from '../../utils/reportPdfWorkflow';
+import { hasOfficialSamplePdf } from '../../utils/preferOfficialSamplePdf';
 
 type Props = {
   code: string;
@@ -48,11 +53,15 @@ export function DeliveryOrderFormatAutoPdf({ code, context, autoOpen = true }: P
             resolveCatalogContextPdfData(context, { formatCode: spec.code }),
             resolveReportOrgChrome(),
           ]);
+          const unboundBrowse =
+            !data.entityBound && hasOfficialSamplePdf(spec.code);
           if (!cancelled) {
             setBoundLabel(
               data.entityBound
                 ? `delivery order · ${data.jobNumber || data.shipmentNumber || 'bound'}`
-                : 'delivery order template',
+                : unboundBrowse
+                  ? FRESA_REFERENCE_SAMPLE_LABEL
+                  : 'delivery order template',
             );
           }
           const generated = await generateCatalogLayoutPdf(
@@ -66,7 +75,16 @@ export function DeliveryOrderFormatAutoPdf({ code, context, autoOpen = true }: P
               companyEmail: data.companyEmail || orgChrome.email,
               logoUrl: data.logoUrl || orgChrome.logoUrl,
             },
-            { logoUrl: orgChrome.logoUrl, preferTemplateV2: true },
+            {
+              logoUrl: orgChrome.logoUrl,
+              preferTemplateV2: !unboundBrowse,
+              purpose: data.entityBound ? 'generate' : unboundBrowse ? 'browse' : 'generate',
+              workflow: data.entityBound
+                ? REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE
+                : unboundBrowse
+                  ? REPORT_PDF_WORKFLOW.REFERENCE_BROWSE
+                  : REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE,
+            },
           );
           if (!generated) throw new Error('No delivery order template for this format.');
           return generated.blob;

@@ -1,4 +1,5 @@
 import { listInvoiceFormatPreviews } from '../../data/invoiceFormatPreviews';
+import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
 
@@ -41,7 +42,7 @@ export function InvoiceFormatBrowseStrip({
       countLabel={
         filterActive
           ? `${items.length} of ${scopedTotal} formats`
-          : `${all.length} distinct Fresa layouts`
+          : `${all.length} formats`
       }
       empty={items.length === 0}
       emptyMessage="No Invoice formats match the current filters."
@@ -53,6 +54,7 @@ export function InvoiceFormatBrowseStrip({
           index={row.formatNumber - 1 || i}
           badge={`#${row.formatNumber}`}
           name={row.name}
+          status={resolveCatalogFormatStatus(row.code)}
           onClick={() => onSelect(row.code)}
         />
       ))}

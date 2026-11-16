@@ -1,0 +1,101 @@
+{
+  "generatedAt": "2026-11-16T07:43:48.016Z",
+  "requirement": "Before Draft/Draft-2 visual compare: registered org branding, no Fresa sample/logo in production PDF",
+  "harness": "scripts/phase3-1-branding (Phase 3.1)",
+  "orgName": "Phase31 Audit Org LLC",
+  "gatePass": true,
+  "formats": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "variant": "draft",
+      "ok": true,
+      "source": "generateHawbOfficialPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ],
+        "sha256": "8677e55d4931914f15e4b2b48704302f6d1a8ca8448e4bfa3861b8cbf732d779",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false
+      },
+      "orgBrandingVerified": true,
+      "verdict": "PASS",
+      "reason": "org_branding_no_fresa",
+      "file": "src/features/reports/qa/phase2-5-hawb/branding-preflight/draft-branded-production.pdf"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "variant": "draft2",
+      "ok": true,
+      "source": "generateHawbOfficialPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ],
+        "sha256": "f7a9a5c0a6e60978f14c6285ac8985ce77a35f2ab6f6812f8a976715626ccd74",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false
+      },
+      "orgBrandingVerified": true,
+      "verdict": "PASS",
+      "reason": "org_branding_no_fresa",
+      "file": "src/features/reports/qa/phase2-5-hawb/branding-preflight/draft2-branded-production.pdf"
+    }
+  ]
+}

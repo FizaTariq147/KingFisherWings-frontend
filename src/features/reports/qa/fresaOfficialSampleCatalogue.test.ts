@@ -73,7 +73,7 @@ describe('Fresa official sample catalogue', () => {
     expect(hasDeliveryOrderSamplePdf('DELIVERY_ORDER_REPORT_FORMAT_17')).toBe(true);
   });
 
-  it('unbound prefers official DO/WMS samples; entityBound blocks', () => {
+  it('browse prefers official DO/WMS samples; generate and entityBound block', () => {
     expect(hasOfficialSamplePdf('ADVANCE_SHIPPING_NOTE')).toBe(true);
     expect(hasOfficialSamplePdf('DELIVERY_ORDER_REPORT_FORMAT_10')).toBe(true);
     expect(
@@ -81,8 +81,17 @@ describe('Fresa official sample catalogue', () => {
         code: 'ADVANCE_SHIPPING_NOTE',
         format: 'PDF',
         entityBound: false,
+        purpose: 'browse',
       }),
     ).toBe(true);
+    expect(
+      shouldPreferOfficialSamplePdf({
+        code: 'ADVANCE_SHIPPING_NOTE',
+        format: 'PDF',
+        entityBound: false,
+        purpose: 'generate',
+      }),
+    ).toBe(false);
     expect(
       shouldPreferOfficialSamplePdf({
         code: 'DELIVERY_ORDER_REPORT_FORMAT_10',

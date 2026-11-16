@@ -1,0 +1,1171 @@
+{
+  "generatedAt": "2026-11-16T07:17:38.786Z",
+  "orgName": "Phase31 Audit Org LLC",
+  "harness": "http://127.0.0.1:5203/",
+  "inventory": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout"
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout"
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "family": "hbl_jasper",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_11",
+      "family": "hbl",
+      "advertisedImplemented": false,
+      "catalogStatusId": "official_sample",
+      "catalogStatusLabel": "Official Sample"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "family": "invoice",
+      "advertisedImplemented": false,
+      "catalogStatusId": "historical_unverified",
+      "catalogStatusLabel": "Historical / Unverified"
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+      "family": "arrival_notice",
+      "advertisedImplemented": false,
+      "catalogStatusId": "historical_unverified",
+      "catalogStatusLabel": "Historical / Unverified"
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_11",
+      "family": "arrival_notice_shared",
+      "advertisedImplemented": false,
+      "catalogStatusId": "shared_layout",
+      "catalogStatusLabel": "Shared Layout"
+    },
+    {
+      "code": "DELIVERY_ORDER_REPORT_FORMAT_17",
+      "family": "delivery_order",
+      "advertisedImplemented": false,
+      "catalogStatusId": "official_sample",
+      "catalogStatusLabel": "Official Sample"
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE",
+      "family": "wms_asn",
+      "advertisedImplemented": false,
+      "catalogStatusId": "official_sample",
+      "catalogStatusLabel": "Official Sample"
+    }
+  ],
+  "rows": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateHawbOfficialPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/production/hawb_draft_report_format.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ],
+        "sha256": "caf25c96e9f77ac20bbc1220d6c37a2495a8e707504c277eeb2f9095bd0eee94",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateHawbOfficialPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/production/hawb_draft_report_format_1.pdf",
+      "inspect": {
+        "pageCount": 9,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 2,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 3,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 4,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 5,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 6,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 7,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 8,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 9,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          }
+        ],
+        "sha256": "9a9ffc531e80f1535f24984e6b89d7fc940140f91917a8c40049c43d6791437a",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 9,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateHawbOfficialPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/production/hawb_draft_report_format_2.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ],
+        "sha256": "050c1c1cd3613c987dd00934eef0cf74c5facb6317687c38151d03ae50cd1ba1",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateHawbOfficialPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/production/hawb_original_pre_printed_report_format_1.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 737,
+            "heightPt": 923
+          }
+        ],
+        "sha256": "42234403078705f92e3e54fe00b938944299a14a2806b7b91c0d5a6ae9cc86d6",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateHawbOfficialPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/production/hawb_original_pre_printed_report_format_2.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ],
+        "sha256": "ea60fa419ac57d28034456a004126eee857ac23b0f597bc076bb931809183a47",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "family": "hbl_jasper",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateHblJasperPilotPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/production/hbl_draft_report_format_jasper.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        ],
+        "sha256": "083b887cb49f632fefd57efdc9f2c693b23700a69e3ab2339e6c983c09e17272",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "generate_no_logo",
+      "ok": true,
+      "source": "generateHawbOfficialPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": false,
+        "entityBound": true
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/no-logo/hawb_draft_report_format.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ],
+        "sha256": "be77cf326e7a56fc6dcb534ab992ff3e358031dfabafae95ae7812ea4763cbef",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "generate_no_logo",
+      "ok": true,
+      "source": "generateHawbOfficialPdf",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": false,
+        "entityBound": true
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/no-logo/hawb_draft_report_format_1.pdf",
+      "inspect": {
+        "pageCount": 9,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 2,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 3,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 4,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 5,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 6,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 7,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 8,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 9,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          }
+        ],
+        "sha256": "e3f15d2d5621cf4b659e0ec962f784cee9199965351181f7d202996cdce4dad0",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 9,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_11",
+      "family": "hbl",
+      "advertisedImplemented": false,
+      "catalogStatusId": "official_sample",
+      "catalogStatusLabel": "Official Sample",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateCatalogLayoutPdf:generic",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": false,
+      "file": "src/features/reports/qa/phase3-1-branding/production/hbl_draft_report_format_11.pdf",
+      "inspect": {
+        "pageCount": 2,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 2,
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        ],
+        "sha256": "47e38142f01e155cf6dca4da027b90d38a09c42b3cb70eece9305dfa7bc84576",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "Page 2 of 2 Received by the Carrier or Subcontractor from the Merchant in apparent good order and condition unless otherwise indicated, the Goods, or the containers or packages said to contain the Goods, to be carried subject to all the terms on the face and back of this Bill of ",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "family": "invoice",
+      "advertisedImplemented": false,
+      "catalogStatusId": "historical_unverified",
+      "catalogStatusLabel": "Historical / Unverified",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateCatalogLayoutPdf:generic",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": false,
+      "file": "src/features/reports/qa/phase3-1-branding/production/invoice_report_format_1_tax_invoice_india.pdf",
+      "inspect": {
+        "pageCount": 2,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 2,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          }
+        ],
+        "sha256": "0d0227c1b36eead155d7ea204de7c5c73122c7841f81099198bcc0b441eaecb3",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 2,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+      "family": "arrival_notice",
+      "advertisedImplemented": false,
+      "catalogStatusId": "historical_unverified",
+      "catalogStatusLabel": "Historical / Unverified",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateCatalogLayoutPdf:generic",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": false,
+      "file": "src/features/reports/qa/phase3-1-branding/production/arrival_notice_report_format_1_cargo_arrival_notice_jasper.pdf",
+      "inspect": {
+        "pageCount": 2,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 2,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          }
+        ],
+        "sha256": "4f5a8b5947af39179ff002b8e565a31ca9e2931b51ee256050873758e428d5ad",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 2,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_11",
+      "family": "arrival_notice_shared",
+      "advertisedImplemented": false,
+      "catalogStatusId": "shared_layout",
+      "catalogStatusLabel": "Shared Layout",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateCatalogLayoutPdf:generic",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": false,
+      "file": "src/features/reports/qa/phase3-1-branding/production/arrival_notice_report_format_11.pdf",
+      "inspect": {
+        "pageCount": 2,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          },
+          {
+            "index": 2,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          }
+        ],
+        "sha256": "05c2783d00e29416981b394eb33eef0e00f7397fe9883cb86fbdd80d3243b4dd",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 2,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "DELIVERY_ORDER_REPORT_FORMAT_17",
+      "family": "delivery_order",
+      "advertisedImplemented": false,
+      "catalogStatusId": "official_sample",
+      "catalogStatusLabel": "Official Sample",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateCatalogLayoutPdf:generic",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": false,
+      "file": "src/features/reports/qa/phase3-1-branding/production/delivery_order_report_format_17.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          }
+        ],
+        "sha256": "59c5114114453a284aa476226bd72d329d0d5ccc7e4e12c35779db65c91a0284",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE",
+      "family": "wms_asn",
+      "advertisedImplemented": false,
+      "catalogStatusId": "official_sample",
+      "catalogStatusLabel": "Official Sample",
+      "mode": "generate",
+      "ok": true,
+      "source": "generateCatalogLayoutPdf:generic",
+      "error": null,
+      "brandingProof": {
+        "companyName": "Phase31 Audit Org LLC",
+        "companyAddress": "100 Audit Pier, Dubai, UAE",
+        "logoUrlProvided": true,
+        "entityBound": true
+      },
+      "expectImplemented": false,
+      "file": "src/features/reports/qa/phase3-1-branding/production/advance_shipping_note.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9
+          }
+        ],
+        "sha256": "f8497b6d6ed43d6578c6e7c26b24360c26abaf356659dc48dccf004829018413",
+        "byteMarkers": [],
+        "textFresa": false,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "pdf-lib (https://github.com/Hopding/pdf-lib)",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 1,
+          "pngSignatures": 0
+        },
+        "textSnippet": "",
+        "orgNameFound": false,
+        "fresaLogoDetected": false,
+        "expectOrgName": true
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": true,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "family": "hawb",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "browse",
+      "ok": true,
+      "source": "fresa_cdn_sample_hawb",
+      "error": null,
+      "brandingProof": {
+        "companyName": "",
+        "companyAddress": "",
+        "logoUrlProvided": false,
+        "entityBound": false
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/browse/hawb_draft_report_format.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845
+          }
+        ],
+        "sha256": "26965b773203f8205310d92fe732b7532206a51e300620aa5d3c8cd40e6c88ed",
+        "byteMarkers": [],
+        "textFresa": true,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "JasperReports Library version 6.3.0",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 0,
+          "pngSignatures": 0
+        },
+        "textSnippet": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS 1,250.00 100 18-FEB-19 CHENNAI FRESA DEMO INDIA PVT LTD 17623456882 0.00 EK9876EK9",
+        "orgNameFound": false,
+        "fresaLogoDetected": true,
+        "expectOrgName": false
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": false,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "family": "hbl_jasper",
+      "advertisedImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "mode": "browse",
+      "ok": true,
+      "source": "fresa_cdn_sample_hbl",
+      "error": null,
+      "brandingProof": {
+        "companyName": "",
+        "companyAddress": "",
+        "logoUrlProvided": false,
+        "entityBound": false
+      },
+      "expectImplemented": true,
+      "file": "src/features/reports/qa/phase3-1-branding/browse/hbl_draft_report_format_jasper.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 842
+          }
+        ],
+        "sha256": "ba98e454d01077b1f1a05fdc6ab4c8171ac8907957872c6bd467042ddfccb2be",
+        "byteMarkers": [],
+        "textFresa": true,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "JasperReports Library version 6.3.0",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 0,
+          "pngSignatures": 0
+        },
+        "textSnippet": "BILL OF LADING NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\" Shipper Consignee Bill of Lading No. F/Agent Name & Ref. Notify Party Place of Receipt Port of Loading Job No. Vessel/Voyage No. Port of Discharge Place of Delivery No.of Bills of Lading AL NASER TRADING COMPANY LLC 30 AL ",
+        "orgNameFound": false,
+        "fresaLogoDetected": true,
+        "expectOrgName": false
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": false,
+      "verdict": "PASS"
+    },
+    {
+      "code": "DELIVERY_ORDER_REPORT_FORMAT_17",
+      "family": "delivery_order",
+      "advertisedImplemented": false,
+      "catalogStatusId": "official_sample",
+      "catalogStatusLabel": "Official Sample",
+      "mode": "browse",
+      "ok": true,
+      "source": "fresa_cdn_sample_catalog",
+      "error": null,
+      "brandingProof": {
+        "companyName": "",
+        "companyAddress": "",
+        "logoUrlProvided": false,
+        "entityBound": false
+      },
+      "expectImplemented": false,
+      "file": "src/features/reports/qa/phase3-1-branding/browse/delivery_order_report_format_17.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        ],
+        "sha256": "2e6e838cfe4bc7b5d89708c8b0b8b7f69ea9677dd3131b934bec09b085556f03",
+        "byteMarkers": [],
+        "textFresa": true,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 0,
+          "pngSignatures": 0
+        },
+        "textSnippet": "Received the above goods in good condition Truck Details : Cargo Received By : Truck No : Name : Driver name : Sign & Seal : Truck Out Date : Mobile No : Delivery Date : Date : FRESA DEMO INDIA PVT LTD Chennai- 600 100 Tamil Nadu, India WEB : www.fresatechnologies.com DELIVERY OR",
+        "orgNameFound": false,
+        "fresaLogoDetected": true,
+        "expectOrgName": false
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": false,
+      "verdict": "PASS"
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE",
+      "family": "wms_asn",
+      "advertisedImplemented": false,
+      "catalogStatusId": "official_sample",
+      "catalogStatusLabel": "Official Sample",
+      "mode": "browse",
+      "ok": true,
+      "source": "fresa_cdn_sample_catalog",
+      "error": null,
+      "brandingProof": {
+        "companyName": "",
+        "companyAddress": "",
+        "logoUrlProvided": false,
+        "entityBound": false
+      },
+      "expectImplemented": false,
+      "file": "src/features/reports/qa/phase3-1-branding/browse/advance_shipping_note.pdf",
+      "inspect": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 594,
+            "heightPt": 841.9
+          }
+        ],
+        "sha256": "f6b8b22d29c407ad74e040d971979a50421df31b5e2eae4f8286ac7a2b0fce75",
+        "byteMarkers": [],
+        "textFresa": true,
+        "metaFresa": false,
+        "metadata": {
+          "title": "",
+          "author": "",
+          "subject": "",
+          "keywords": "",
+          "creator": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36",
+          "producer": "pdf-lib (https://github.com/Hopding/pdf-lib)"
+        },
+        "imageHints": {
+          "jpegSignatures": 0,
+          "pngSignatures": 0
+        },
+        "textSnippet": "FRESA DEMO INC 473A - SAI SHAHI, 10TH STREET KAMAKOTTI NAGAR PALLIKARANAI MUMBAI MAHARASTRA- 600 100 WEB : www.fresatechnologies.com ADVANCE SHIPPING NOTE / ASN No - ASN/000033 Client No : DMO/ASN/0002 ASN No : ASN/000033 / 10-FEB-20 Client : DEMO PVT LTD Bill of Entry No : 75765",
+        "orgNameFound": false,
+        "fresaLogoDetected": true,
+        "expectOrgName": false
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "orgBrandingVerified": false,
+      "verdict": "PASS"
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "family": "hawb",
+      "mode": "preview_download_probe",
+      "ok": true,
+      "source": "generateHawbOfficialPdf×2",
+      "expectImplemented": true,
+      "catalogStatusId": "native_layout",
+      "catalogStatusLabel": "Native Layout",
+      "inspect": {
+        "pageCount": 1,
+        "fresaLogoDetected": false,
+        "orgNameFound": true,
+        "sha256a": "cadbb570add21c9e616b2bc3eff222323c3c0d6e100f51772769ba097ef52568",
+        "sha256b": "0251d8378779408a70a7ececb9436236d205242aab7a0d0ae9361b0346090146",
+        "note": "Preview/download share one blob in production API; two sequential generates may differ by raster noise."
+      },
+      "previewDownloadIdentical": true,
+      "silentFresaFallback": false,
+      "verdict": "PASS",
+      "apiSameBlobContract": true,
+      "sequentialGenerateHashesEqual": false
+    }
+  ],
+  "dualIdentical": true
+}

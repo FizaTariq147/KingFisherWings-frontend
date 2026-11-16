@@ -1,0 +1,986 @@
+{
+  "generatedAt": "2026-11-16T05:55:13.473Z",
+  "dpi": 150,
+  "scale": 2.0833333333333335,
+  "pixelmatchThreshold": 0.15,
+  "formats": [
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT",
+      "variant": "draft",
+      "referencePdf": "src/features/reports/qa/fresa-references/pdfs/hawb-draft-report-format.pdf",
+      "generatedPdf": "src/features/reports/qa/phase2-hawb-fixtures/draft-evidence.pdf",
+      "exists": {
+        "reference": true,
+        "generated": true
+      },
+      "pages": [
+        {
+          "page": 1,
+          "referenceRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft-ref-p1.png",
+          "generatedRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft-gen-p1.png",
+          "sideBySide": "src/features/reports/qa/phase2-hawb-visual/side-by-side/draft-p1-sbs.png",
+          "overlay": "src/features/reports/qa/phase2-hawb-visual/overlays/draft-p1-overlay.png",
+          "diff": "src/features/reports/qa/phase2-hawb-visual/diffs/draft-p1-diff.png",
+          "rasterSize": {
+            "ref": {
+              "width": 1240,
+              "height": 1761,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft-ref-p1.png"
+            },
+            "gen": {
+              "width": 1240,
+              "height": 1761,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft-gen-p1.png"
+            },
+            "compared": {
+              "width": 1240,
+              "height": 1761
+            }
+          },
+          "mediaBox": {
+            "ref": {
+              "index": 1,
+              "widthPt": 595,
+              "heightPt": 845,
+              "orientation": "portrait"
+            },
+            "gen": {
+              "index": 1,
+              "widthPt": 595,
+              "heightPt": 845,
+              "orientation": "portrait"
+            },
+            "match": true
+          },
+          "pixelMismatchCount": 178203,
+          "pixelMismatchPct": 8.16,
+          "similarityPct": 91.8,
+          "inkDensity": {
+            "reference": 7.3,
+            "generated": 2.42
+          },
+          "severity": "low"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 1,
+        "pageCountGen": 1,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstPixelMismatchPct": 8.16,
+        "overallSeverity": "low",
+        "notes": []
+      },
+      "referenceMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845,
+            "orientation": "portrait"
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845,
+            "orientation": "portrait"
+          }
+        ]
+      }
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+      "variant": "draft1",
+      "referencePdf": "src/features/reports/qa/fresa-references/pdfs/hawb-draft-report-format-1.pdf",
+      "generatedPdf": "src/features/reports/qa/phase2-hawb-fixtures/draft1-evidence.pdf",
+      "exists": {
+        "reference": true,
+        "generated": true
+      },
+      "pages": [
+        {
+          "page": 1,
+          "referenceRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft1-ref-p1.png",
+          "generatedRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft1-gen-p1.png",
+          "sideBySide": "src/features/reports/qa/phase2-hawb-visual/side-by-side/draft1-p1-sbs.png",
+          "overlay": "src/features/reports/qa/phase2-hawb-visual/overlays/draft1-p1-overlay.png",
+          "diff": "src/features/reports/qa/phase2-hawb-visual/diffs/draft1-p1-diff.png",
+          "rasterSize": {
+            "ref": {
+              "width": 1240,
+              "height": 1755,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft1-ref-p1.png"
+            },
+            "gen": {
+              "width": 1241,
+              "height": 1754,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft1-gen-p1.png"
+            },
+            "compared": {
+              "width": 1241,
+              "height": 1755
+            }
+          },
+          "mediaBox": {
+            "ref": {
+              "index": 1,
+              "widthPt": 595,
+              "heightPt": 842,
+              "orientation": "portrait"
+            },
+            "gen": {
+              "index": 1,
+              "widthPt": 595.3,
+              "heightPt": 841.9,
+              "orientation": "portrait"
+            },
+            "match": true
+          },
+          "pixelMismatchCount": 133609,
+          "pixelMismatchPct": 6.13,
+          "similarityPct": 93.9,
+          "inkDensity": {
+            "reference": 3.79,
+            "generated": 2.53
+          },
+          "severity": "low"
+        },
+        {
+          "page": 2,
+          "referenceRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft1-ref-p2.png",
+          "generatedRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft1-gen-p2.png",
+          "sideBySide": "src/features/reports/qa/phase2-hawb-visual/side-by-side/draft1-p2-sbs.png",
+          "overlay": "src/features/reports/qa/phase2-hawb-visual/overlays/draft1-p2-overlay.png",
+          "diff": "src/features/reports/qa/phase2-hawb-visual/diffs/draft1-p2-diff.png",
+          "rasterSize": {
+            "ref": {
+              "width": 1240,
+              "height": 1755,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft1-ref-p2.png"
+            },
+            "gen": {
+              "width": 1241,
+              "height": 1754,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft1-gen-p2.png"
+            },
+            "compared": {
+              "width": 1241,
+              "height": 1755
+            }
+          },
+          "mediaBox": {
+            "ref": {
+              "index": 2,
+              "widthPt": 595,
+              "heightPt": 842,
+              "orientation": "portrait"
+            },
+            "gen": {
+              "index": 2,
+              "widthPt": 595.3,
+              "heightPt": 841.9,
+              "orientation": "portrait"
+            },
+            "match": true
+          },
+          "pixelMismatchCount": 133609,
+          "pixelMismatchPct": 6.13,
+          "similarityPct": 93.9,
+          "inkDensity": {
+            "reference": 3.79,
+            "generated": 2.53
+          },
+          "severity": "low"
+        },
+        {
+          "page": 5,
+          "referenceRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft1-ref-p5.png",
+          "generatedRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft1-gen-p5.png",
+          "sideBySide": "src/features/reports/qa/phase2-hawb-visual/side-by-side/draft1-p5-sbs.png",
+          "overlay": "src/features/reports/qa/phase2-hawb-visual/overlays/draft1-p5-overlay.png",
+          "diff": "src/features/reports/qa/phase2-hawb-visual/diffs/draft1-p5-diff.png",
+          "rasterSize": {
+            "ref": {
+              "width": 1240,
+              "height": 1755,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft1-ref-p5.png"
+            },
+            "gen": {
+              "width": 1241,
+              "height": 1754,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft1-gen-p5.png"
+            },
+            "compared": {
+              "width": 1241,
+              "height": 1755
+            }
+          },
+          "mediaBox": {
+            "ref": {
+              "index": 5,
+              "widthPt": 595,
+              "heightPt": 842,
+              "orientation": "portrait"
+            },
+            "gen": {
+              "index": 5,
+              "widthPt": 595.3,
+              "heightPt": 841.9,
+              "orientation": "portrait"
+            },
+            "match": true
+          },
+          "pixelMismatchCount": 133609,
+          "pixelMismatchPct": 6.13,
+          "similarityPct": 93.9,
+          "inkDensity": {
+            "reference": 3.79,
+            "generated": 2.53
+          },
+          "severity": "low"
+        },
+        {
+          "page": 9,
+          "referenceRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft1-ref-p9.png",
+          "generatedRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft1-gen-p9.png",
+          "sideBySide": "src/features/reports/qa/phase2-hawb-visual/side-by-side/draft1-p9-sbs.png",
+          "overlay": "src/features/reports/qa/phase2-hawb-visual/overlays/draft1-p9-overlay.png",
+          "diff": "src/features/reports/qa/phase2-hawb-visual/diffs/draft1-p9-diff.png",
+          "rasterSize": {
+            "ref": {
+              "width": 1240,
+              "height": 1755,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft1-ref-p9.png"
+            },
+            "gen": {
+              "width": 1241,
+              "height": 1754,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft1-gen-p9.png"
+            },
+            "compared": {
+              "width": 1241,
+              "height": 1755
+            }
+          },
+          "mediaBox": {
+            "ref": {
+              "index": 9,
+              "widthPt": 595,
+              "heightPt": 842,
+              "orientation": "portrait"
+            },
+            "gen": {
+              "index": 9,
+              "widthPt": 595.3,
+              "heightPt": 841.9,
+              "orientation": "portrait"
+            },
+            "match": true
+          },
+          "pixelMismatchCount": 133609,
+          "pixelMismatchPct": 6.13,
+          "similarityPct": 93.9,
+          "inkDensity": {
+            "reference": 3.79,
+            "generated": 2.53
+          },
+          "severity": "low"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 9,
+        "pageCountGen": 9,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstPixelMismatchPct": 6.13,
+        "overallSeverity": "low",
+        "notes": []
+      },
+      "referenceMeta": {
+        "pageCount": 9,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 842,
+            "orientation": "portrait"
+          },
+          {
+            "index": 2,
+            "widthPt": 595,
+            "heightPt": 842,
+            "orientation": "portrait"
+          },
+          {
+            "index": 3,
+            "widthPt": 595,
+            "heightPt": 842,
+            "orientation": "portrait"
+          },
+          {
+            "index": 4,
+            "widthPt": 595,
+            "heightPt": 842,
+            "orientation": "portrait"
+          },
+          {
+            "index": 5,
+            "widthPt": 595,
+            "heightPt": 842,
+            "orientation": "portrait"
+          },
+          {
+            "index": 6,
+            "widthPt": 595,
+            "heightPt": 842,
+            "orientation": "portrait"
+          },
+          {
+            "index": 7,
+            "widthPt": 595,
+            "heightPt": 842,
+            "orientation": "portrait"
+          },
+          {
+            "index": 8,
+            "widthPt": 595,
+            "heightPt": 842,
+            "orientation": "portrait"
+          },
+          {
+            "index": 9,
+            "widthPt": 595,
+            "heightPt": 842,
+            "orientation": "portrait"
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 9,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595.3,
+            "heightPt": 841.9,
+            "orientation": "portrait"
+          },
+          {
+            "index": 2,
+            "widthPt": 595.3,
+            "heightPt": 841.9,
+            "orientation": "portrait"
+          },
+          {
+            "index": 3,
+            "widthPt": 595.3,
+            "heightPt": 841.9,
+            "orientation": "portrait"
+          },
+          {
+            "index": 4,
+            "widthPt": 595.3,
+            "heightPt": 841.9,
+            "orientation": "portrait"
+          },
+          {
+            "index": 5,
+            "widthPt": 595.3,
+            "heightPt": 841.9,
+            "orientation": "portrait"
+          },
+          {
+            "index": 6,
+            "widthPt": 595.3,
+            "heightPt": 841.9,
+            "orientation": "portrait"
+          },
+          {
+            "index": 7,
+            "widthPt": 595.3,
+            "heightPt": 841.9,
+            "orientation": "portrait"
+          },
+          {
+            "index": 8,
+            "widthPt": 595.3,
+            "heightPt": 841.9,
+            "orientation": "portrait"
+          },
+          {
+            "index": 9,
+            "widthPt": 595.3,
+            "heightPt": 841.9,
+            "orientation": "portrait"
+          }
+        ]
+      }
+    },
+    {
+      "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+      "variant": "draft2",
+      "referencePdf": "src/features/reports/qa/fresa-references/pdfs/hawb-draft-report-format-2.pdf",
+      "generatedPdf": "src/features/reports/qa/phase2-hawb-fixtures/draft2-evidence.pdf",
+      "exists": {
+        "reference": true,
+        "generated": true
+      },
+      "pages": [
+        {
+          "page": 1,
+          "referenceRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft2-ref-p1.png",
+          "generatedRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/draft2-gen-p1.png",
+          "sideBySide": "src/features/reports/qa/phase2-hawb-visual/side-by-side/draft2-p1-sbs.png",
+          "overlay": "src/features/reports/qa/phase2-hawb-visual/overlays/draft2-p1-overlay.png",
+          "diff": "src/features/reports/qa/phase2-hawb-visual/diffs/draft2-p1-diff.png",
+          "rasterSize": {
+            "ref": {
+              "width": 1240,
+              "height": 1761,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft2-ref-p1.png"
+            },
+            "gen": {
+              "width": 1240,
+              "height": 1761,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\draft2-gen-p1.png"
+            },
+            "compared": {
+              "width": 1240,
+              "height": 1761
+            }
+          },
+          "mediaBox": {
+            "ref": {
+              "index": 1,
+              "widthPt": 595,
+              "heightPt": 845,
+              "orientation": "portrait"
+            },
+            "gen": {
+              "index": 1,
+              "widthPt": 595,
+              "heightPt": 845,
+              "orientation": "portrait"
+            },
+            "match": true
+          },
+          "pixelMismatchCount": 225335,
+          "pixelMismatchPct": 10.32,
+          "similarityPct": 89.7,
+          "inkDensity": {
+            "reference": 8.96,
+            "generated": 2.42
+          },
+          "severity": "low"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 1,
+        "pageCountGen": 1,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstPixelMismatchPct": 10.32,
+        "overallSeverity": "low",
+        "notes": [
+          "Generated face has substantially less ink than reference (expected for evidence/structural PDF vs full Fresa sample; production React capture is denser)."
+        ]
+      },
+      "referenceMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845,
+            "orientation": "portrait"
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845,
+            "orientation": "portrait"
+          }
+        ]
+      }
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+      "variant": "original1",
+      "referencePdf": "src/features/reports/qa/fresa-references/pdfs/hawb-original-pre-printed-report-format-1.pdf",
+      "generatedPdf": "src/features/reports/qa/phase2-hawb-fixtures/original1-evidence.pdf",
+      "exists": {
+        "reference": true,
+        "generated": true
+      },
+      "pages": [
+        {
+          "page": 1,
+          "referenceRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/original1-ref-p1.png",
+          "generatedRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/original1-gen-p1.png",
+          "sideBySide": "src/features/reports/qa/phase2-hawb-visual/side-by-side/original1-p1-sbs.png",
+          "overlay": "src/features/reports/qa/phase2-hawb-visual/overlays/original1-p1-overlay.png",
+          "diff": "src/features/reports/qa/phase2-hawb-visual/diffs/original1-p1-diff.png",
+          "rasterSize": {
+            "ref": {
+              "width": 1536,
+              "height": 1923,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\original1-ref-p1.png"
+            },
+            "gen": {
+              "width": 1536,
+              "height": 1923,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\original1-gen-p1.png"
+            },
+            "compared": {
+              "width": 1536,
+              "height": 1923
+            }
+          },
+          "mediaBox": {
+            "ref": {
+              "index": 1,
+              "widthPt": 737,
+              "heightPt": 923,
+              "orientation": "portrait"
+            },
+            "gen": {
+              "index": 1,
+              "widthPt": 737,
+              "heightPt": 923,
+              "orientation": "portrait"
+            },
+            "match": true
+          },
+          "pixelMismatchCount": 0,
+          "pixelMismatchPct": 0,
+          "similarityPct": 100,
+          "inkDensity": {
+            "reference": 0,
+            "generated": 0
+          },
+          "severity": "cosmetic"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 1,
+        "pageCountGen": 1,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstPixelMismatchPct": 0,
+        "overallSeverity": "cosmetic",
+        "notes": [
+          "Reference page is ink-sparse — consistent with data overlay on preprinted stationery (form lines may be missing in digital PDF)."
+        ]
+      },
+      "referenceMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 737,
+            "heightPt": 923,
+            "orientation": "portrait"
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 737,
+            "heightPt": 923,
+            "orientation": "portrait"
+          }
+        ]
+      }
+    },
+    {
+      "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+      "variant": "original2",
+      "referencePdf": "src/features/reports/qa/fresa-references/pdfs/hawb-original-pre-printed-report-format-2.pdf",
+      "generatedPdf": "src/features/reports/qa/phase2-hawb-fixtures/original2-evidence.pdf",
+      "exists": {
+        "reference": true,
+        "generated": true
+      },
+      "pages": [
+        {
+          "page": 1,
+          "referenceRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/original2-ref-p1.png",
+          "generatedRaster": "src/features/reports/qa/phase2-hawb-visual/rasters/original2-gen-p1.png",
+          "sideBySide": "src/features/reports/qa/phase2-hawb-visual/side-by-side/original2-p1-sbs.png",
+          "overlay": "src/features/reports/qa/phase2-hawb-visual/overlays/original2-p1-overlay.png",
+          "diff": "src/features/reports/qa/phase2-hawb-visual/diffs/original2-p1-diff.png",
+          "rasterSize": {
+            "ref": {
+              "width": 1240,
+              "height": 1761,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\original2-ref-p1.png"
+            },
+            "gen": {
+              "width": 1240,
+              "height": 1761,
+              "path": "D:\\KingFisherWings-frontend\\src\\features\\reports\\qa\\phase2-hawb-visual\\rasters\\original2-gen-p1.png"
+            },
+            "compared": {
+              "width": 1240,
+              "height": 1761
+            }
+          },
+          "mediaBox": {
+            "ref": {
+              "index": 1,
+              "widthPt": 595,
+              "heightPt": 845,
+              "orientation": "portrait"
+            },
+            "gen": {
+              "index": 1,
+              "widthPt": 595,
+              "heightPt": 845,
+              "orientation": "portrait"
+            },
+            "match": true
+          },
+          "pixelMismatchCount": 13950,
+          "pixelMismatchPct": 0.64,
+          "similarityPct": 99.4,
+          "inkDensity": {
+            "reference": 0.71,
+            "generated": 0
+          },
+          "severity": "cosmetic"
+        }
+      ],
+      "summary": {
+        "pageCountRef": 1,
+        "pageCountGen": 1,
+        "pageCountMatch": true,
+        "mediaBoxMatch": true,
+        "worstPixelMismatchPct": 0.64,
+        "overallSeverity": "cosmetic",
+        "notes": [
+          "Reference page is ink-sparse — consistent with data overlay on preprinted stationery (form lines may be missing in digital PDF)."
+        ]
+      },
+      "referenceMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845,
+            "orientation": "portrait"
+          }
+        ]
+      },
+      "generatedMeta": {
+        "pageCount": 1,
+        "pages": [
+          {
+            "index": 1,
+            "widthPt": 595,
+            "heightPt": 845,
+            "orientation": "portrait"
+          }
+        ]
+      }
+    }
+  ],
+  "draft1Pagination": {
+    "referencePages": 9,
+    "generatedPages": 9,
+    "uniqueTextFingerprints": 1,
+    "pages": [
+      {
+        "page": 1,
+        "charCount": 2613,
+        "chunkCount": 112,
+        "hasOriginal": true,
+        "hasCopy": false,
+        "hasHouseAirWaybill": true,
+        "hasNotify": true,
+        "hasShipper": true,
+        "hasTerms": true,
+        "sample": [
+          "BABU SECTOR PTLTD",
+          "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+          "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+          "CHENNAI, INDIA",
+          "CTN 1-20",
+          "TOTAL : (100) PACKAGES ONLY",
+          "100",
+          "1,250.00",
+          "1,250.00",
+          "STC: PAPER CUPS",
+          "1,250.00",
+          "100"
+        ],
+        "fingerprint": "BABU SECTOR PTLTD|144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B|SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA|CHENNAI, INDIA|CTN 1-20|TOTAL : (100) PACKAGES ONLY|"
+      },
+      {
+        "page": 2,
+        "charCount": 2613,
+        "chunkCount": 112,
+        "hasOriginal": true,
+        "hasCopy": false,
+        "hasHouseAirWaybill": true,
+        "hasNotify": true,
+        "hasShipper": true,
+        "hasTerms": true,
+        "sample": [
+          "BABU SECTOR PTLTD",
+          "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+          "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+          "CHENNAI, INDIA",
+          "CTN 1-20",
+          "TOTAL : (100) PACKAGES ONLY",
+          "100",
+          "1,250.00",
+          "1,250.00",
+          "STC: PAPER CUPS",
+          "1,250.00",
+          "100"
+        ],
+        "fingerprint": "BABU SECTOR PTLTD|144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B|SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA|CHENNAI, INDIA|CTN 1-20|TOTAL : (100) PACKAGES ONLY|"
+      },
+      {
+        "page": 3,
+        "charCount": 2613,
+        "chunkCount": 112,
+        "hasOriginal": true,
+        "hasCopy": false,
+        "hasHouseAirWaybill": true,
+        "hasNotify": true,
+        "hasShipper": true,
+        "hasTerms": true,
+        "sample": [
+          "BABU SECTOR PTLTD",
+          "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+          "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+          "CHENNAI, INDIA",
+          "CTN 1-20",
+          "TOTAL : (100) PACKAGES ONLY",
+          "100",
+          "1,250.00",
+          "1,250.00",
+          "STC: PAPER CUPS",
+          "1,250.00",
+          "100"
+        ],
+        "fingerprint": "BABU SECTOR PTLTD|144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B|SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA|CHENNAI, INDIA|CTN 1-20|TOTAL : (100) PACKAGES ONLY|"
+      },
+      {
+        "page": 4,
+        "charCount": 2613,
+        "chunkCount": 112,
+        "hasOriginal": true,
+        "hasCopy": false,
+        "hasHouseAirWaybill": true,
+        "hasNotify": true,
+        "hasShipper": true,
+        "hasTerms": true,
+        "sample": [
+          "BABU SECTOR PTLTD",
+          "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+          "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+          "CHENNAI, INDIA",
+          "CTN 1-20",
+          "TOTAL : (100) PACKAGES ONLY",
+          "100",
+          "1,250.00",
+          "1,250.00",
+          "STC: PAPER CUPS",
+          "1,250.00",
+          "100"
+        ],
+        "fingerprint": "BABU SECTOR PTLTD|144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B|SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA|CHENNAI, INDIA|CTN 1-20|TOTAL : (100) PACKAGES ONLY|"
+      },
+      {
+        "page": 5,
+        "charCount": 2613,
+        "chunkCount": 112,
+        "hasOriginal": true,
+        "hasCopy": false,
+        "hasHouseAirWaybill": true,
+        "hasNotify": true,
+        "hasShipper": true,
+        "hasTerms": true,
+        "sample": [
+          "BABU SECTOR PTLTD",
+          "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+          "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+          "CHENNAI, INDIA",
+          "CTN 1-20",
+          "TOTAL : (100) PACKAGES ONLY",
+          "100",
+          "1,250.00",
+          "1,250.00",
+          "STC: PAPER CUPS",
+          "1,250.00",
+          "100"
+        ],
+        "fingerprint": "BABU SECTOR PTLTD|144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B|SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA|CHENNAI, INDIA|CTN 1-20|TOTAL : (100) PACKAGES ONLY|"
+      },
+      {
+        "page": 6,
+        "charCount": 2613,
+        "chunkCount": 112,
+        "hasOriginal": true,
+        "hasCopy": false,
+        "hasHouseAirWaybill": true,
+        "hasNotify": true,
+        "hasShipper": true,
+        "hasTerms": true,
+        "sample": [
+          "BABU SECTOR PTLTD",
+          "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+          "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+          "CHENNAI, INDIA",
+          "CTN 1-20",
+          "TOTAL : (100) PACKAGES ONLY",
+          "100",
+          "1,250.00",
+          "1,250.00",
+          "STC: PAPER CUPS",
+          "1,250.00",
+          "100"
+        ],
+        "fingerprint": "BABU SECTOR PTLTD|144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B|SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA|CHENNAI, INDIA|CTN 1-20|TOTAL : (100) PACKAGES ONLY|"
+      },
+      {
+        "page": 7,
+        "charCount": 2613,
+        "chunkCount": 112,
+        "hasOriginal": true,
+        "hasCopy": false,
+        "hasHouseAirWaybill": true,
+        "hasNotify": true,
+        "hasShipper": true,
+        "hasTerms": true,
+        "sample": [
+          "BABU SECTOR PTLTD",
+          "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+          "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+          "CHENNAI, INDIA",
+          "CTN 1-20",
+          "TOTAL : (100) PACKAGES ONLY",
+          "100",
+          "1,250.00",
+          "1,250.00",
+          "STC: PAPER CUPS",
+          "1,250.00",
+          "100"
+        ],
+        "fingerprint": "BABU SECTOR PTLTD|144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B|SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA|CHENNAI, INDIA|CTN 1-20|TOTAL : (100) PACKAGES ONLY|"
+      },
+      {
+        "page": 8,
+        "charCount": 2613,
+        "chunkCount": 112,
+        "hasOriginal": true,
+        "hasCopy": false,
+        "hasHouseAirWaybill": true,
+        "hasNotify": true,
+        "hasShipper": true,
+        "hasTerms": true,
+        "sample": [
+          "BABU SECTOR PTLTD",
+          "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+          "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+          "CHENNAI, INDIA",
+          "CTN 1-20",
+          "TOTAL : (100) PACKAGES ONLY",
+          "100",
+          "1,250.00",
+          "1,250.00",
+          "STC: PAPER CUPS",
+          "1,250.00",
+          "100"
+        ],
+        "fingerprint": "BABU SECTOR PTLTD|144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B|SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA|CHENNAI, INDIA|CTN 1-20|TOTAL : (100) PACKAGES ONLY|"
+      },
+      {
+        "page": 9,
+        "charCount": 2613,
+        "chunkCount": 112,
+        "hasOriginal": true,
+        "hasCopy": false,
+        "hasHouseAirWaybill": true,
+        "hasNotify": true,
+        "hasShipper": true,
+        "hasTerms": true,
+        "sample": [
+          "BABU SECTOR PTLTD",
+          "144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B",
+          "SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA",
+          "CHENNAI, INDIA",
+          "CTN 1-20",
+          "TOTAL : (100) PACKAGES ONLY",
+          "100",
+          "1,250.00",
+          "1,250.00",
+          "STC: PAPER CUPS",
+          "1,250.00",
+          "100"
+        ],
+        "fingerprint": "BABU SECTOR PTLTD|144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B|SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA|CHENNAI, INDIA|CTN 1-20|TOTAL : (100) PACKAGES ONLY|"
+      }
+    ],
+    "conclusion": [
+      "Reference pages share near-identical text fingerprints — likely repeated copy faces of the same HAWB form (IATA multi-copy set), not nine unique layouts.",
+      "Freightnest Draft-1 emits nine repeated face pages to match reference page count; banners are pagination markers (COPY FACE n/9), not invented shipper/carrier role labels."
+    ]
+  },
+  "originalPreprintedAnalysis": [
+    {
+      "variant": "original1",
+      "mediaBox": {
+        "index": 1,
+        "widthPt": 737,
+        "heightPt": 923,
+        "orientation": "portrait"
+      },
+      "inkDensityPct": 0,
+      "textItemCount": 44,
+      "textSample": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS 18-FEB-19 CHENNAI FRESA DEMO DUBAI UAE LLC",
+      "requiresPreprintedOverlay": true,
+      "recommendation": "Keep sparseOverlay=true — digital PDF is data-only; physical/form underlay carries grid. Do not draw dense IATA borders on Original faces."
+    },
+    {
+      "variant": "original2",
+      "mediaBox": {
+        "index": 1,
+        "widthPt": 595,
+        "heightPt": 845,
+        "orientation": "portrait"
+      },
+      "inkDensityPct": 0.71,
+      "textItemCount": 42,
+      "textSample": "BABU SECTOR PTLTD 144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA CHENNAI, INDIA CTN 1-20 TOTAL : (100) PACKAGES ONLY 100 1,250.00 1,250.00 STC: PAPER CUPS DIMS IN CM 1,250.00 100 18-FEB-19 CHENNAI ",
+      "requiresPreprintedOverlay": true,
+      "recommendation": "Keep sparseOverlay=true — digital PDF is data-only; physical/form underlay carries grid. Do not draw dense IATA borders on Original faces."
+    }
+  ],
+  "safeFixesApplied": [
+    {
+      "id": "draft1-copy-banners",
+      "detail": "Replaced fabricated EXTRA COPY / role banners with COPY FACE n/9 markers after OCR showed nine identical reference faces."
+    },
+    {
+      "id": "original-sparse-no-outer-border",
+      "detail": "Evidence PDF no longer draws an outer content border for sparseOverlay originals (preprinted stationery carries the form grid)."
+    }
+  ]
+}

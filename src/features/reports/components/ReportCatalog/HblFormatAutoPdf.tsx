@@ -16,6 +16,10 @@ import {
   HblJasperPilotPreview,
   isHblJasperPilotCode,
 } from '../../templates/hbl/jasperPilot';
+import { catalogPreviewSourceLabel } from '../../utils/catalogFormatStatus';
+import { getSharedLayoutSource } from '../../data/sharedLayoutSource';
+import { FRESA_REFERENCE_SAMPLE_LABEL } from '../../utils/reportPdfWorkflow';
+import { generateCatalogLayoutPdf } from '../../utils/generateCatalogLayoutPdf';
 
 type Props = {
   code: string;
@@ -24,9 +28,10 @@ type Props = {
 };
 
 /**
- * HBL catalogue preview.
- * Jasper pilot (`HBL_DRAFT_REPORT_FORMAT_JASPER`): config-driven live composition + PDF.
- * Other HBL codes: official Fresa sample when browsing; classic family on sample failure.
+ * HBL catalogue preview (Phase 3).
+ * Jasper pilot: Freightnest native composition only.
+ * Unbound browse: unmodified Fresa reference sample (labelled).
+ * Entity-bound: classic / native — never a Fresa sample as the final PDF.
  */
 export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
   const spec = getHblFormatSpec(code);
@@ -68,11 +73,19 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             logoUrl: data.logoUrl || orgChrome.logoUrl,
           };
           setPilotData(merged);
-          setBoundLabel(
-            data.entityBound
-              ? `Jasper pilot · bound to ${data.jobNumber || data.shipmentNumber || data.referenceNo || 'live record'}`
-              : 'Jasper pilot · A4 canvas (empty until a job/shipment is bound)',
-          );
+          {
+            const source = catalogPreviewSourceLabel({
+              entityBound: data.entityBound,
+              isNativePilot: true,
+            });
+            const record =
+              data.jobNumber || data.shipmentNumber || data.referenceNo || null;
+            setBoundLabel(
+              data.entityBound
+                ? `${source.label} · bound to ${record || 'live record'}`
+                : `${source.label} · A4 canvas (empty until a job/shipment is bound)`,
+            );
+          }
 
           // Also open PDF modal for print/download parity with other formats.
           const key = `${spec.code}:pilot:${contextKey}`;
@@ -86,13 +99,14 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
                   });
                   return blob;
                 } catch {
-                  // Preserve sample fallback until pilot PDF is verified.
-                  const { blob } = await generateHblSamplePdf(spec.code, {
-                    chrome: orgChrome,
-                    appendCustomerTerms: true,
-                  });
+                  // Phase 3: no Fresa sample fallback for Freightnest generate.
+                  const { blob } = await generateHblFamilyClassicPdf(
+                    spec.code,
+                    merged,
+                    { appendCustomerTerms: true },
+                  );
                   if (!cancelled) {
-                    setBoundLabel('official Fresa Jasper sample (pilot PDF fallback)');
+                    setBoundLabel('Native Layout · classic HBL fallback (Freightnest generate)');
                   }
                   return blob;
                 }
@@ -133,43 +147,61 @@ export function HblFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             resolveReportOrgChrome(),
           ]);
           if (!cancelled) {
+            const shared = getSharedLayoutSource(spec.code);
+            const source = catalogPreviewSourceLabel({
+              entityBound: data.entityBound,
+              preferOfficialSample: !data.entityBound,
+              isSharedLayout: Boolean(shared?.isSharedLayout),
+            });
             const label =
               data.jobNumber ||
               data.shipmentNumber ||
               data.referenceNo ||
               (contextKey ? 'live record' : null);
-            setBoundLabel(label ? `bound to ${label}` : 'official Fresa sample');
+            setBoundLabel(`${source.label}${label ? ` · ${label}` : ''} — ${source.detail}`);
           }
 
-          // Prefer official Fresa sample so formats stay visually distinct.
-          // Classic family is only for sample-fetch failure (shared packs look identical).
+          const merged = {
+            ...data,
+            companyName: data.companyName || orgChrome.company,
+            companyAddress: data.companyAddress || orgChrome.address,
+            companyWeb: data.companyWeb || orgChrome.web,
+            companyPhone: data.companyPhone || orgChrome.phone,
+            companyEmail: data.companyEmail || orgChrome.email,
+            logoUrl: data.logoUrl || orgChrome.logoUrl,
+          };
+
+          // Phase 3: entity-bound → Freightnest generate only.
+          if (data.entityBound) {
+            const generated = await generateCatalogLayoutPdf(spec.code, merged, {
+              logoUrl: orgChrome.logoUrl,
+              purpose: 'generate',
+              workflow: 'freightnest_generate',
+              hblMode: 'classic',
+            });
+            if (!generated) {
+              const { blob } = await generateHblFamilyClassicPdf(spec.code, merged, {
+                appendCustomerTerms: true,
+              });
+              return blob;
+            }
+            return generated.blob;
+          }
+
+          // Unbound browse: unmodified Fresa reference sample.
           try {
             const { blob } = await generateHblSamplePdf(spec.code, {
-              chrome: orgChrome,
-              appendCustomerTerms: true,
+              skipOrgStamp: true,
+              appendCustomerTerms: false,
             });
             if (!cancelled) {
-              setBoundLabel(
-                data.entityBound
-                  ? `official Fresa sample · record ${data.jobNumber || data.shipmentNumber || 'bound'}`
-                  : 'official Fresa sample',
-              );
+              setBoundLabel(FRESA_REFERENCE_SAMPLE_LABEL);
             }
             return blob;
           } catch {
-            const { blob } = await generateHblFamilyClassicPdf(
-              spec.code,
-              {
-                ...data,
-                companyName: data.companyName || orgChrome.company,
-                companyAddress: data.companyAddress || orgChrome.address,
-                companyWeb: data.companyWeb || orgChrome.web,
-                companyPhone: data.companyPhone || orgChrome.phone,
-                companyEmail: data.companyEmail || orgChrome.email,
-                logoUrl: data.logoUrl || orgChrome.logoUrl,
-              },
-              { appendCustomerTerms: true },
-            );
+            const { blob } = await generateHblFamilyClassicPdf(spec.code, merged, {
+              appendCustomerTerms: true,
+            });
             return blob;
           }
         },

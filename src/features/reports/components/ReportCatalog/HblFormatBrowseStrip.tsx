@@ -1,4 +1,5 @@
 import { listHblFormats } from '../../constants/hblFormatCatalog';
+import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
@@ -47,6 +48,7 @@ export function HblFormatBrowseStrip({
           badge={`#${row.sortOrder}`}
           name={row.name}
           sharedHint={catalogSharedLayoutHint(row.code)}
+          status={resolveCatalogFormatStatus(row.code)}
           onClick={() => onSelect(row.code)}
         />
       ))}

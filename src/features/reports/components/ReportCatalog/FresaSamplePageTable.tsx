@@ -4,9 +4,10 @@ import {
   fresaColumnForFamily,
   type FresaPageColumnId,
 } from '../../constants/fresaPageColumns';
-import { FRESA_UI } from '../../constants/fresaInvoiceColors';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
+import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
+import { FormatStatusBadge } from './FormatStatusBadge';
 
 function compareByName(a: ReportTemplate, b: ReportTemplate): number {
   const na = parseInvoiceFormatNumber(a.code);
@@ -46,8 +47,7 @@ type FresaSamplePageTableProps = {
 };
 
 /**
- * Catalogue browse matching Fresa’s Sample Report Formats table:
- * Sea Freight | Air Freight | Accounts | My Reports.
+ * Catalogue browse table: Sea Freight | Air Freight | Accounts | My Reports.
  */
 export function FresaSamplePageTable({
   items,
@@ -81,25 +81,13 @@ export function FresaSamplePageTable({
   const maxRows = Math.max(1, ...visibleCols.map((c) => columns[c.id].length));
 
   return (
-    <div
-      className="overflow-hidden rounded-xl border bg-white shadow-sm"
-      style={{ borderColor: `${FRESA_UI.sky}55` }}
-    >
-      <div
-        className="border-b px-3 py-2.5 sm:px-4"
-        style={{
-          background: `linear-gradient(90deg, ${FRESA_UI.sky}22 0%, #F0F9FF 50%, #FFFFFF 100%)`,
-          borderColor: `${FRESA_UI.sky}40`,
-        }}
-      >
-        <h3
-          className="text-xs font-semibold uppercase tracking-[0.1em]"
-          style={{ color: FRESA_UI.navy }}
-        >
-          Sample report formats
+    <div className="overflow-hidden rounded-lg border border-[var(--color-neutral-200)] bg-white shadow-sm">
+      <div className="border-b border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2.5 sm:px-4">
+        <h3 className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-neutral-800)]">
+          Format catalogue
         </h3>
         <p className="mt-0.5 text-[11px] text-[var(--color-neutral-500)]">
-          Same four columns as Fresa Gold — click a format to preview / generate
+          Click a format to preview or generate. Status badges reflect implementation evidence.
         </p>
       </div>
 
@@ -107,10 +95,7 @@ export function FresaSamplePageTable({
       <div className="grid gap-0 md:hidden">
         {visibleCols.map((col) => (
           <div key={col.id} className="border-b border-[var(--color-neutral-100)] last:border-b-0">
-            <div
-              className="px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-white"
-              style={{ backgroundColor: FRESA_UI.navy }}
-            >
+            <div className="bg-[var(--color-neutral-800)] px-3 py-2 text-[11px] font-bold uppercase tracking-wide text-white">
               {col.title}
               <span className="ml-2 font-normal opacity-80">({columns[col.id].length})</span>
             </div>
@@ -133,11 +118,11 @@ export function FresaSamplePageTable({
         ))}
       </div>
 
-      {/* Desktop: Fresa-style 4-column table */}
+      {/* Desktop: 4-column table */}
       <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[720px] border-collapse text-left text-[12px]">
           <thead>
-            <tr style={{ backgroundColor: FRESA_UI.navy }}>
+            <tr className="bg-[var(--color-neutral-800)]">
               <th className="w-10 px-2 py-2.5 text-center text-[10px] font-semibold uppercase tracking-wide text-white/90">
                 S.No
               </th>
@@ -158,11 +143,7 @@ export function FresaSamplePageTable({
             {Array.from({ length: maxRows }, (_, rowIndex) => (
               <tr
                 key={rowIndex}
-                className={
-                  rowIndex % 2 === 0
-                    ? 'bg-white'
-                    : 'bg-[#F7FBFE]'
-                }
+                className={rowIndex % 2 === 0 ? 'bg-white' : 'bg-[var(--color-neutral-50)]'}
               >
                 <td
                   className="border-t border-[var(--color-neutral-100)] px-2 py-1.5 text-center text-[11px] text-[var(--color-neutral-400)]"
@@ -214,29 +195,31 @@ function FormatLink({
 }) {
   const formatNo = parseInvoiceFormatNumber(template.code);
   const sharedHint = catalogSharedLayoutHint(template.code);
+  const status = resolveCatalogFormatStatus(template.code);
   return (
     <button
       type="button"
       onClick={() => onSelect(template)}
-      title={sharedHint ? `${template.code} — ${sharedHint}` : template.code}
+      title={`${template.code} — ${status.label}: ${status.detail}`}
       className={[
         'w-full text-left transition',
         compact ? 'rounded px-1.5 py-1' : 'px-3 py-2.5',
         active
-          ? 'bg-[#E8F4FC] font-semibold text-[#0F4D96] ring-1 ring-[#2286C8]/50'
-          : 'text-[#0F4D96] hover:bg-[#F0F9FF] hover:underline',
+          ? 'bg-[var(--color-primary-50)] font-semibold text-[var(--color-primary-900)] ring-1 ring-[var(--color-primary-300)]'
+          : 'text-[var(--color-neutral-800)] hover:bg-[var(--color-neutral-50)]',
       ].join(' ')}
     >
-      <span className="line-clamp-2 leading-snug">
+      <span className="flex flex-wrap items-center gap-1">
         {formatNo != null ? (
-          <span className="mr-1 text-[10px] font-bold text-[#2286C8]">#{formatNo}</span>
+          <span className="text-[10px] font-bold text-[var(--color-primary-700)]">#{formatNo}</span>
         ) : (
-          <span className="mr-1 text-[10px] text-[var(--color-neutral-400)]">{index + 1}.</span>
+          <span className="text-[10px] text-[var(--color-neutral-400)]">{index + 1}.</span>
         )}
-        {template.name}
+        <FormatStatusBadge status={status} />
       </span>
+      <span className="mt-0.5 line-clamp-2 leading-snug">{template.name}</span>
       {sharedHint ? (
-        <span className="mt-0.5 block text-[9px] font-medium text-[#64748b]">{sharedHint}</span>
+        <span className="mt-0.5 block text-[9px] font-medium text-amber-800">{sharedHint}</span>
       ) : null}
     </button>
   );

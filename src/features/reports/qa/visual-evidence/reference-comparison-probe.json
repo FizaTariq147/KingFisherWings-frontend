@@ -1,0 +1,195 @@
+[
+  {
+    "file": "hawb-draft-report-format.pdf",
+    "pages": 1,
+    "w": 595,
+    "h": 845,
+    "orient": "portrait",
+    "textLen": 3095,
+    "found": [
+      "Shipper",
+      "Consignee",
+      "House Air Waybill",
+      "Air Waybill",
+      "Signature"
+    ]
+  },
+  {
+    "file": "hawb-draft-report-format-1.pdf",
+    "pages": 9,
+    "w": 595,
+    "h": 842,
+    "orient": "portrait",
+    "textLen": 2696,
+    "found": [
+      "Shipper",
+      "Consignee",
+      "Notify",
+      "House Air Waybill",
+      "Air Waybill",
+      "Signature"
+    ]
+  },
+  {
+    "file": "hawb-draft-report-format-2.pdf",
+    "pages": 1,
+    "w": 595,
+    "h": 845,
+    "orient": "portrait",
+    "textLen": 3181,
+    "found": [
+      "Shipper",
+      "Consignee",
+      "Air Waybill",
+      "Signature"
+    ]
+  },
+  {
+    "file": "hawb-original-pre-printed-report-format-1.pdf",
+    "pages": 1,
+    "w": 737,
+    "h": 923,
+    "orient": "portrait",
+    "textLen": 684,
+    "found": []
+  },
+  {
+    "file": "hawb-original-pre-printed-report-format-2.pdf",
+    "pages": 1,
+    "w": 595,
+    "h": 845,
+    "orient": "portrait",
+    "textLen": 653,
+    "found": []
+  },
+  {
+    "file": "hbl-draft-report-fomat-jasper.pdf",
+    "pages": 1,
+    "w": 595,
+    "h": 842,
+    "orient": "portrait",
+    "textLen": 2585,
+    "found": [
+      "Shipper",
+      "Consignee",
+      "Notify",
+      "Bill of Lading",
+      "Delivery"
+    ]
+  },
+  {
+    "file": "hbl-draft-report-format-11.pdf",
+    "pages": 1,
+    "w": 595,
+    "h": 842,
+    "orient": "portrait",
+    "textLen": 2492,
+    "found": [
+      "Shipper",
+      "Consignee",
+      "Notify",
+      "Bill of Lading",
+      "Delivery"
+    ]
+  },
+  {
+    "file": "fg-hbl-hkg.pdf",
+    "missing": true
+  },
+  {
+    "file": "mawb-draft-report-format-1.pdf",
+    "pages": 1,
+    "w": 595,
+    "h": 845,
+    "orient": "portrait",
+    "textLen": 2753,
+    "found": [
+      "Shipper",
+      "Consignee",
+      "Air Waybill",
+      "Signature"
+    ]
+  },
+  {
+    "file": "delivery_order_format_17_rpm_ref_1496.pdf",
+    "pages": 1,
+    "w": 594,
+    "h": 842,
+    "orient": "portrait",
+    "textLen": 1805,
+    "found": [
+      "Shipper",
+      "Consignee",
+      "Delivery"
+    ]
+  },
+  {
+    "file": "fg_delivery_order_sea_format1_rpm_ref_538.pdf",
+    "pages": 1,
+    "w": 595,
+    "h": 842,
+    "orient": "portrait",
+    "textLen": 1644,
+    "found": [
+      "Consignee",
+      "Notify",
+      "Delivery",
+      "Page"
+    ]
+  },
+  {
+    "file": "job-card-report-format.pdf",
+    "pages": 1,
+    "w": 594,
+    "h": 842,
+    "orient": "portrait",
+    "textLen": 2615,
+    "found": [
+      "Shipper",
+      "Consignee",
+      "Delivery"
+    ]
+  },
+  {
+    "file": "daily-status-report-format-1.pdf",
+    "pages": 2,
+    "w": 792,
+    "h": 612,
+    "orient": "landscape",
+    "textLen": 2111,
+    "found": [
+      "Shipper",
+      "Consignee"
+    ]
+  },
+  {
+    "file": "fcl-quotation-report-format.pdf",
+    "pages": 1,
+    "w": 594,
+    "h": 842,
+    "orient": "portrait",
+    "textLen": 2432,
+    "found": [
+      "Bill of Lading"
+    ]
+  },
+  {
+    "file": "shipment-freight-manifest-report-format.pdf",
+    "pages": 1,
+    "w": 791,
+    "h": 611,
+    "orient": "landscape",
+    "textLen": 1575,
+    "found": [
+      "Shipper",
+      "Consignee",
+      "Notify",
+      "Delivery",
+      "Manifest"
+    ]
+  },
+  {
+    "file": "arrival-notice-report-format-1.pdf",
+    "missing": true
+  }
+]

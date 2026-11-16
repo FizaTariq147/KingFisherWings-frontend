@@ -11,6 +11,9 @@ import {
 import { generateHawbSamplePdf } from '../../utils/generateHawbSamplePdf';
 import { generateCatalogLayoutPdf } from '../../utils/generateCatalogLayoutPdf';
 import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
+import { catalogPreviewSourceLabel } from '../../utils/catalogFormatStatus';
+import { getSharedLayoutSource } from '../../data/sharedLayoutSource';
+import { FRESA_REFERENCE_SAMPLE_LABEL } from '../../utils/reportPdfWorkflow';
 
 type Props = {
   code: string;
@@ -19,9 +22,9 @@ type Props = {
 };
 
 /**
- * HAWB catalogue preview: official Fresa sample when browsing (unbound).
- * Entity-bound uses template-v2 with live mapped fields — samples must not
- * replace transaction data (Phase 6 QA).
+ * HAWB catalogue preview.
+ * Unbound browse: unmodified official Fresa reference sample (labelled).
+ * Entity-bound: Freightnest native layout + org branding — never a Fresa sample PDF.
  */
 export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
   const spec = getHawbFormatSpec(code);
@@ -48,33 +51,38 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
             resolveReportOrgChrome(),
           ]);
           if (!cancelled) {
-            const label =
+            const shared = getSharedLayoutSource(spec.code);
+            const source = catalogPreviewSourceLabel({
+              entityBound: data.entityBound,
+              preferOfficialSample: !data.entityBound,
+              isNativePilot: Boolean(data.entityBound),
+              isSharedLayout: Boolean(shared?.isSharedLayout),
+            });
+            const record =
               data.jobNumber ||
               data.shipmentNumber ||
               data.referenceNo ||
               (contextKey ? 'live record' : null);
             setBoundLabel(
               data.entityBound
-                ? `live template · ${label || 'bound'}`
-                : label
-                  ? `sample format · ${label}`
-                  : 'official Fresa sample',
+                ? `${source.label}${record ? ` · ${record}` : ''} — ${source.detail}`
+                : FRESA_REFERENCE_SAMPLE_LABEL,
             );
           }
 
+          // Phase 3 browse: unmodified Fresa reference (skip org stamp).
           if (!data.entityBound) {
             try {
               const { blob } = await generateHawbSamplePdf(spec.code, {
-                chrome: orgChrome,
-                appendCustomerTerms: true,
+                skipOrgStamp: true,
+                appendCustomerTerms: false,
               });
               return blob;
             } catch {
-              /* fall through */
+              /* fall through to Freightnest native */
             }
           }
 
-          // Official HAWB: prefer distinct hawbAwbShell JSON layouts (not color-only v2).
           const generated = await generateCatalogLayoutPdf(
             spec.code,
             {
@@ -86,13 +94,24 @@ export function HawbFormatAutoPdf({ code, context, autoOpen = true }: Props) {
               companyEmail: data.companyEmail || orgChrome.email,
               logoUrl: data.logoUrl || orgChrome.logoUrl,
             },
-            { logoUrl: orgChrome.logoUrl, preferTemplateV2: false },
+            {
+              logoUrl: orgChrome.logoUrl,
+              preferTemplateV2: false,
+              preferHawbOfficial: true,
+              purpose: 'generate',
+              workflow: 'freightnest_generate',
+            },
           );
           if (!generated) {
             throw new Error(
               data.entityBound
-                ? 'No HAWB live template for this format.'
-                : 'Could not load official HAWB sample PDF. Check /fresa-sample proxy, or this format has no distinct Fresa sample.',
+                ? 'No Freightnest HAWB generate path for this format.'
+                : 'Could not load official HAWB reference sample or Freightnest layout.',
+            );
+          }
+          if (!cancelled && data.entityBound) {
+            setBoundLabel(
+              `Native Layout · Freightnest generate — registered organization branding`,
             );
           }
           return generated.blob;

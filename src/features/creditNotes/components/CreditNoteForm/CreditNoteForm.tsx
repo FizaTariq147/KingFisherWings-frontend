@@ -198,7 +198,8 @@ export function CreditNoteForm({
                 description: '',
                 quantity: 1,
                 unit_price: 0,
-                is_taxable: true,
+                // Do not default to taxable — BE would apply 5% VAT and inflate total.
+                is_taxable: false,
                 sort_order: fields.length,
               })
             }

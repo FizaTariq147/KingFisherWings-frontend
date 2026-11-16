@@ -74,7 +74,11 @@ export function prepareCreditNotePayload(
     for (const line of dto.lines) {
       if (!line || typeof line !== 'object') continue;
       const prepared = prepareCreditNoteLinePayload(line as Record<string, unknown>);
-      if (prepared.description) lines.push(prepared);
+      if (!prepared.description) continue;
+      // Credit-note form has no tax controls — always send non-taxable so BE does not add 5% VAT.
+      prepared.is_taxable = false;
+      delete prepared.tax_rate_id;
+      lines.push(prepared);
     }
     if (lines.length) out.lines = lines;
   }

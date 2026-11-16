@@ -86,8 +86,10 @@ import {
 } from '../data/resolveAnyFormatUiLayout';
 import { isDistinctLayoutCode } from '../data/sharedLayoutSource';
 import { catalogSharedLayoutHint } from '../utils/catalogSharedLayoutHint';
+import { resolveCatalogFormatStatus } from '../utils/catalogFormatStatus';
 import { getReportEnrichment } from '../registry';
 import { shouldExposeHawbInPrimaryCatalogue } from '../utils/officialFormatGovernance';
+import { FormatStatusBadge } from '../components/ReportCatalog/FormatStatusBadge';
 import {
   isAccountsFormatCode,
   listAccountsFormats,
@@ -185,8 +187,11 @@ export default function ReportCatalogPage() {
   );
   /** `fresa` = Sea/Air/Accounts/My Reports table; `strips` = advanced family strips. */
   const catalogView = searchParams.get('view') === 'strips' ? 'strips' : 'fresa';
-  /** Hide Format-N codes that alias a shared JSON shell (not unique Fresa designs). */
-  const distinctLayoutsOnly = searchParams.get('layouts') === 'distinct';
+  /**
+   * Phase 0: default to distinct layouts only.
+   * Use `layouts=all` to show shared-shell aliases. Deep-linked alias codes stay visible.
+   */
+  const distinctLayoutsOnly = searchParams.get('layouts') !== 'all';
   const fresaFocusColumn = useMemo((): FresaPageColumnId | null => {
     if (family === 'all') return null;
     return fresaColumnForFamily(family);
@@ -199,7 +204,12 @@ export default function ReportCatalogPage() {
   const [restoredOnce, setRestoredOnce] = useState(false);
   const lastWrittenQRef = useRef(searchParams.get('q') || '');
   const [importMessage, setImportMessage] = useState<string | null>(null);
+  const [showAdvancedTools, setShowAdvancedTools] = useState(false);
   const importTemplates = useImportReportTemplates();
+  const selectedFormatStatus = useMemo(
+    () => (selectedCode ? resolveCatalogFormatStatus(selectedCode) : null),
+    [selectedCode],
+  );
 
   const reportContext = useMemo(
     () => ({
@@ -246,7 +256,9 @@ export default function ReportCatalogPage() {
         changed = true;
       }
       if (!next.get('code')) {
-        const first = listQuotationFormats()[0]?.code;
+        const first =
+          listQuotationFormats().find((r) => isDistinctLayoutCode(r.code))?.code ||
+          listQuotationFormats()[0]?.code;
         if (first) {
           next.set('code', first);
           changed = true;
@@ -262,7 +274,9 @@ export default function ReportCatalogPage() {
         changed = true;
       }
       if (!next.get('code')) {
-        const first = listInvoiceFormatPreviews()[0]?.code;
+        const first =
+          listInvoiceFormatPreviews().find((r) => isDistinctLayoutCode(r.code))?.code ||
+          listInvoiceFormatPreviews()[0]?.code;
         if (first) {
           next.set('code', first);
           changed = true;
@@ -292,8 +306,9 @@ export default function ReportCatalogPage() {
         (key === 'page' && value === '1') ||
         (key === 'family' && value === 'all') ||
         (key === 'context' && value === 'all') ||
-        (key === 'layouts' && value === 'all')
+        (key === 'layouts' && value === 'distinct')
       ) {
+        // layouts=distinct is the default — omit from URL.
         next.delete(key);
       } else {
         next.set(key, value);
@@ -1070,36 +1085,42 @@ export default function ReportCatalogPage() {
           {familiesFilter.length
             ? ` · families: ${familiesFilter.map((f) => reportFamilyLabel(f)).join(', ')}`
             : ''}
-          . Generate prefers a live backend pack when ready; otherwise the Fresa sample layout
-          with this record overlaid and your registered company name/logo. Default invoice/quotation
-          PDF buttons are unchanged.
+          . Generate prefers a live backend pack when ready; otherwise a client layout or official
+          sample with this record overlaid and your registered company name/logo. Default
+          invoice/quotation PDF buttons are unchanged.
         </div>
       ) : null}
 
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <h2 className={appType.pageTitle}>Sample report formats</h2>
-          <p className="mt-0.5 text-sm text-[var(--color-neutral-500)]">
-            Same layout as{' '}
+        <div className="min-w-0">
+          <h2 className={appType.pageTitle}>Report format catalogue</h2>
+          <p className="mt-1 max-w-3xl text-sm leading-relaxed text-[var(--color-neutral-600)]">
+            Browse official and distinct document formats for preview and generate. Shared-shell
+            aliases are hidden by default so formats are not presented as unique designs.
+            Registered company name and logo come from your organization profile · {metaTotal} of{' '}
+            {completeReportTotal} formats
+            {isReportSearchActive(searchQuery) ||
+            family !== 'all' ||
+            familiesFilter.length > 0 ||
+            contextFilter !== 'all' ||
+            entityBound ||
+            distinctLayoutsOnly
+              ? ' (filtered)'
+              : ''}
+            .
+          </p>
+          <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
+            Reference catalogue:{' '}
             <a
               className="underline underline-offset-2"
               href="https://fresatechnologies.com/sample-report-formats/"
               target="_blank"
               rel="noreferrer"
             >
-              Fresa sample report formats
+              sample report formats
             </a>
             {' '}
-            ({FRESA_PAGE_COLUMNS.map((c) => c.title).join(' · ')}). Registered company name and
-            logo appear on every report · {metaTotal} of {completeReportTotal} formats
-            {isReportSearchActive(searchQuery) ||
-            family !== 'all' ||
-            familiesFilter.length > 0 ||
-            contextFilter !== 'all' ||
-            entityBound
-              ? ' (filtered)'
-              : ''}
-            .
+            ({FRESA_PAGE_COLUMNS.map((c) => c.title).join(' · ')}).
           </p>
         </div>
         <div className="flex shrink-0 flex-col items-stretch gap-1 sm:items-end">
@@ -1107,42 +1128,80 @@ export default function ReportCatalogPage() {
             type="button"
             variant="secondary"
             size="sm"
-            disabled={importTemplates.isPending}
-            onClick={() => {
-              setImportMessage(null);
-              importTemplates.mutate(undefined, {
-                onSuccess: (result) => {
-                  const inserted = result?.inserted ?? 0;
-                  const updated = result?.updated ?? 0;
-                  const skipped = result?.skipped ?? 0;
-                  setImportMessage(
-                    result?.message ||
-                      `Import finished: ${inserted} inserted, ${updated} updated, ${skipped} skipped.`,
-                  );
-                },
-                onError: (err) => {
-                  setImportMessage(
-                    err instanceof Error ? err.message : 'Import registry failed.',
-                  );
-                },
-              });
-            }}
+            onClick={() => setShowAdvancedTools((v) => !v)}
           >
-            {importTemplates.isPending ? 'Importing…' : 'Import registry'}
+            {showAdvancedTools ? 'Hide advanced' : 'Advanced tools'}
           </Button>
-          {importMessage ? (
-            <p
-              role="status"
-              className={`text-xs ${
-                importTemplates.isError
-                  ? 'text-[var(--color-danger-600)]'
-                  : 'text-[var(--color-neutral-500)]'
-              }`}
-            >
-              {importMessage}
-            </p>
+          {showAdvancedTools ? (
+            <>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={importTemplates.isPending}
+                onClick={() => {
+                  setImportMessage(null);
+                  importTemplates.mutate(undefined, {
+                    onSuccess: (result) => {
+                      const inserted = result?.inserted ?? 0;
+                      const updated = result?.updated ?? 0;
+                      const skipped = result?.skipped ?? 0;
+                      setImportMessage(
+                        result?.message ||
+                          `Import finished: ${inserted} inserted, ${updated} updated, ${skipped} skipped.`,
+                      );
+                    },
+                    onError: (err) => {
+                      setImportMessage(
+                        err instanceof Error ? err.message : 'Import registry failed.',
+                      );
+                    },
+                  });
+                }}
+              >
+                {importTemplates.isPending ? 'Importing…' : 'Import registry'}
+              </Button>
+              {importMessage ? (
+                <p
+                  role="status"
+                  className={`max-w-[16rem] text-xs ${
+                    importTemplates.isError
+                      ? 'text-[var(--color-danger-600)]'
+                      : 'text-[var(--color-neutral-500)]'
+                  }`}
+                >
+                  {importMessage}
+                </p>
+              ) : null}
+            </>
           ) : null}
         </div>
+      </div>
+
+      <div className="flex flex-wrap gap-2" role="navigation" aria-label="Report families">
+        {(
+          [
+            { id: 'all', label: 'All families' },
+            { id: 'sea_docs', label: 'Sea / HBL' },
+            { id: 'air_docs', label: 'Air / HAWB' },
+            { id: 'commercial', label: 'Commercial' },
+            { id: 'quotation', label: 'Quotations' },
+            { id: 'wms', label: 'WMS' },
+            { id: 'finance', label: 'Finance' },
+            { id: 'ops_list', label: 'Ops lists' },
+            { id: 'other', label: 'Other' },
+          ] as const
+        ).map((rail) => (
+          <Button
+            key={rail.id}
+            type="button"
+            size="sm"
+            variant={family === rail.id ? 'primary' : 'secondary'}
+            onClick={() => patchParams({ family: rail.id, page: '1' })}
+          >
+            {rail.label}
+          </Button>
+        ))}
       </div>
 
       {liveBrowse.isError && !backendUnavailable ? (
@@ -1243,16 +1302,27 @@ export default function ReportCatalogPage() {
                 value={distinctLayoutsOnly ? 'distinct' : 'all'}
                 onChange={(e) =>
                   patchParams({
-                    layouts: e.target.value === 'distinct' ? 'distinct' : null,
+                    layouts: e.target.value === 'all' ? 'all' : 'distinct',
                     page: '1',
                   })
                 }
               >
-                <option value="all">All registry codes</option>
-                <option value="distinct">Distinct layouts only</option>
+                <option value="distinct">Distinct layouts only (default)</option>
+                <option value="all">Include shared-shell aliases</option>
               </select>
             </div>
           </div>
+          {distinctLayoutsOnly ? (
+            <p className="mt-2 text-[11px] text-[var(--color-neutral-500)]">
+              Shared layouts are hidden unless already selected via URL. Status badges show Official
+              Sample, Native Layout, Shared Layout, Backend Pack, or Historical / Unverified.
+            </p>
+          ) : (
+            <p className="mt-2 text-[11px] text-amber-800">
+              Showing shared-shell aliases. These codes reuse another layout and are not unique
+              designs.
+            </p>
+          )}
         </div>
       </div>
 
@@ -1264,7 +1334,7 @@ export default function ReportCatalogPage() {
           variant={catalogView === 'fresa' ? 'primary' : 'secondary'}
           onClick={() => patchParams({ view: null })}
         >
-          Fresa page (Sea / Air / Accounts / My Reports)
+          Catalogue table
         </Button>
         <Button
           type="button"
@@ -1272,7 +1342,7 @@ export default function ReportCatalogPage() {
           variant={catalogView === 'strips' ? 'primary' : 'secondary'}
           onClick={() => patchParams({ view: 'strips' })}
         >
-          Advanced family strips
+          Family strips
         </Button>
       </div>
 
@@ -1457,20 +1527,35 @@ export default function ReportCatalogPage() {
 
       {selected ? (
         <div className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-[var(--color-neutral-200)] bg-white px-4 py-2.5">
-            <div className="min-w-0">
-              <p className="truncate text-sm font-medium text-[var(--color-neutral-800)]">
-                {selected.name}
-              </p>
+          <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--color-neutral-200)] bg-white px-4 py-3">
+            <div className="min-w-0 space-y-1.5">
+              <div className="flex flex-wrap items-center gap-2">
+                <p className="truncate text-sm font-semibold text-[var(--color-neutral-900)]">
+                  {selected.name}
+                </p>
+                {selectedFormatStatus ? (
+                  <FormatStatusBadge status={selectedFormatStatus} size="md" />
+                ) : null}
+              </div>
+              <p className="font-mono text-[11px] text-[var(--color-neutral-400)]">{selected.code}</p>
+              {selectedFormatStatus ? (
+                <p className="text-[11px] leading-snug text-[var(--color-neutral-600)]">
+                  {selectedFormatStatus.detail}
+                  {selectedFormatStatus.layoutSourceCode
+                    ? ` · layout source ${selectedFormatStatus.layoutSourceCode}`
+                    : ''}
+                </p>
+              ) : null}
               {(() => {
                 const sharedHint = catalogSharedLayoutHint(selected.code);
                 const enrichment = getReportEnrichment(selected.code);
                 if (!sharedHint && enrichment?.implementationStatus !== 'shared_shell') {
                   return null;
                 }
+                if (selectedFormatStatus?.id === 'shared_layout') return null;
                 return (
-                  <p className="mt-0.5 text-[11px] text-[var(--color-neutral-500)]">
-                    {sharedHint || 'Shared JSON shell — not a unique Fresa design'}
+                  <p className="text-[11px] text-amber-800">
+                    {sharedHint || 'Shared JSON shell — not a unique design'}
                     {enrichment?.layoutSourceCode
                       ? ` · source ${enrichment.layoutSourceCode}`
                       : ''}

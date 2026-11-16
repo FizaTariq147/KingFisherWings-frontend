@@ -287,7 +287,7 @@ export function routeProgressInfo(job: Job): {
   let barColor = mode === 'Air' ? '#C7590F' : '#2C557A';
   if (isCustomsHold(job)) barColor = '#FF751F';
   if (isDocsPending(job)) barColor = '#C6303E';
-  if (job.status === 'DELIVERED') barColor = '#3BA066';
+  if (job.status === 'DELIVERED' || job.status === 'COMPLETED') barColor = '#3BA066';
 
   let caption = 'En route';
   if (isCustomsHold(job)) {
@@ -304,6 +304,8 @@ export function routeProgressInfo(job: Job): {
     caption = 'Documents outstanding';
   } else if (job.status === 'DELIVERED') {
     caption = 'Delivered';
+  } else if (job.status === 'COMPLETED') {
+    caption = 'Completed';
   } else if (Number.isFinite(eta)) {
     const days = Math.max(0, Math.ceil((eta - Date.now()) / 86_400_000));
     caption = days === 0 ? 'Arriving today' : `${days} day${days === 1 ? '' : 's'} to go`;

@@ -40,8 +40,17 @@ describe('Phase 6 defect regressions', () => {
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
         format: 'PDF',
         entityBound: false,
+        purpose: 'browse',
       }),
     ).toBe(true);
+    expect(
+      shouldPreferOfficialSamplePdf({
+        code: 'HAWB_DRAFT_REPORT_FORMAT_1',
+        format: 'PDF',
+        entityBound: false,
+        purpose: 'generate',
+      }),
+    ).toBe(false);
   });
 
   it('Arrival Format-11+ resolves to Format-1 alias layout', () => {

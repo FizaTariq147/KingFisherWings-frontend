@@ -29,6 +29,7 @@ import { FinancialStatementTemplateDocument } from '../../templates/financialSta
 import { OpsListTemplateDocument } from '../../templates/opsList/OpsListTemplateDocument';
 import { QuotationTemplateDocument } from '../../templates/quotation/QuotationTemplateDocument';
 import { captureReactDocumentPdf } from '../pdf/captureReactDocumentPdf';
+import { PAGE_A4_LANDSCAPE } from '../pdf/pageGeometry';
 
 export function supportsTemplateV2(code: string): boolean {
   const family = getReportEnrichment(code)?.templateFamily;
@@ -96,6 +97,7 @@ export async function renderTemplateV2Pdf(
     case 'cargo_manifest': {
       const model = mapToManifestViewModel(code, data, logoUrl, formatName);
       return captureReactDocumentPdf(createElement(ManifestTemplateDocument, { model }), {
+        page: PAGE_A4_LANDSCAPE,
         landscape: true,
       });
     }
@@ -116,6 +118,7 @@ export async function renderTemplateV2Pdf(
     case 'ops_list': {
       const model = mapToOpsListViewModel(code, data, logoUrl, formatName);
       return captureReactDocumentPdf(createElement(OpsListTemplateDocument, { model }), {
+        page: PAGE_A4_LANDSCAPE,
         landscape: true,
       });
     }

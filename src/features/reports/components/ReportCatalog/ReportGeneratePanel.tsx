@@ -42,11 +42,12 @@ import {
 } from '../../utils/reportParameterUtils';
 import { allowClientLayoutGenerate } from '../../utils/clientLayoutFallback';
 import { buildFresaPackGenerateParams } from '../../utils/fresaPackGenerateParams';
-import {
-  hasOfficialSamplePdf,
-  shouldPreferOfficialSamplePdf,
-} from '../../utils/preferOfficialSamplePdf';
+import { hasOfficialSamplePdf } from '../../utils/preferOfficialSamplePdf';
+import { FRESA_REFERENCE_SAMPLE_LABEL } from '../../utils/reportPdfWorkflow';
 import { isReportPackReady } from '../../utils/reportPackGenerate';
+import { resolveCatalogFormatStatus, catalogPreviewSourceLabel } from '../../utils/catalogFormatStatus';
+import { getSharedLayoutSource } from '../../data/sharedLayoutSource';
+import { FormatStatusBadge } from './FormatStatusBadge';
 import { resolveReportOrgChrome } from '../../utils/resolveReportOrgChrome';
 import { getInvoiceFormatPreview } from '../../data/invoiceFormatPreviews';
 import { isInvoiceReportFormatCode } from '../../types/invoiceFormatPreview.types';
@@ -318,19 +319,25 @@ export function ReportGeneratePanel({
             setJobId(null);
             setMessage(
               entityBound
-                ? 'Report PDF ready (Fresa layout + registered company branding, live record data).'
-                : 'Sample report ready — Fresa layout/colors/footer with registered company name/logo and sample data.',
+                ? 'Freightnest invoice PDF ready (registered organization branding + live record data).'
+                : 'Freightnest invoice PDF ready (registered organization branding).',
             );
             return;
           }
         }
 
+        // Phase 3: Generate never uses Fresa sample PDFs as the final document.
         const generated = await generateCatalogLayoutPdf(resolved.code, data, {
           logoUrl: orgChrome.logoUrl,
-          hblMode: entityBound ? 'classic' : 'sample',
+          purpose: 'generate',
+          workflow: 'freightnest_generate',
+          hblMode: 'classic',
+          preferHawbOfficial: true,
         });
         if (!generated) {
-          setError('No Fresa sample layout registered for this format code.');
+          setError(
+            'No Freightnest generate path for this format (native / template-v2 / JSON). Browse the official Fresa reference sample separately if needed.',
+          );
           return;
         }
         const fileName = formatPdfFilename(
@@ -344,12 +351,8 @@ export function ReportGeneratePanel({
         setJobId(null);
         setMessage(
           entityBound
-            ? generated.preview.samplePdfUrl
-              ? 'Official Fresa sample PDF ready (distinct per format). Shared backend pack still used for live job documents.'
-              : 'Report PDF ready (classic / JSON layout + live record data).'
-            : generated.preview.samplePdfUrl
-              ? 'Official Fresa sample PDF ready (org branding stamped). Distinct per catalogue format.'
-              : 'Sample report ready — Fresa layout/colors/footer with registered company name/logo and sample data.',
+            ? 'Freightnest report ready (registered organization branding + live record data).'
+            : 'Freightnest report ready (registered organization branding). Official Fresa PDFs remain browse-only references.',
         );
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Could not generate sample PDF.');
@@ -358,25 +361,8 @@ export function ReportGeneratePanel({
       }
     };
 
-    // HBL/HAWB: official Fresa samples are distinct per format. Shared packs
-    // (one HAWB_FORM / HBL_FORM) make every code look identical — prefer samples.
-    const officialSample = shouldPreferOfficialSamplePdf({
-      code: resolved.code,
-      format,
-      entityBound,
-    });
-    if (
-      officialSample &&
-      allowClientLayoutGenerate({
-        packReady,
-        templateActive: resolved.is_active,
-        entityBound,
-        hasOfficialSample: true,
-      })
-    ) {
-      await runClientSamplePdf();
-      return;
-    }
+    // Phase 3: Generate never short-circuits to Fresa sample PDFs.
+    // Official samples remain available via catalogue browse (reference only).
 
     // Product path: backend pack when ready (or bindable). Client shells only if pack unavailable.
     let workingPackReady = packReady;
@@ -569,24 +555,48 @@ export function ReportGeneratePanel({
   const needsPackBind = !detailFailed && rendererStatus !== 'ready';
   const canDeactivate = resolved.is_active && Boolean(detail.data || !discoveryMode);
   const isInvoiceFormat = isInvoiceReportFormatCode(resolved.code);
+  const formatStatus = resolveCatalogFormatStatus(resolved.code);
+  const sharedLayout = getSharedLayoutSource(resolved.code);
+  const previewSource = catalogPreviewSourceLabel({
+    entityBound: entityBoundForUi,
+    preferOfficialSample: !entityBoundForUi && officialSampleForUi,
+    isSharedLayout: Boolean(sharedLayout?.isSharedLayout),
+    usingBackendPack: packReadyForGenerate && entityBoundForUi,
+    isNativePilot: formatStatus.id === 'native_layout',
+  });
 
   return (
-    <div className="space-y-4 rounded-xl border border-[var(--color-neutral-200)] bg-white p-4 shadow-sm">
+    <div className="space-y-4 rounded-lg border border-[var(--color-neutral-200)] bg-white p-4 shadow-sm">
       <div className="flex items-start justify-between gap-3">
-        <div>
-          <h3 className="text-sm font-semibold text-[var(--color-neutral-900)]">{resolved.name}</h3>
-          <p className="mt-1 font-mono text-[11px] text-[var(--color-neutral-400)]">{resolved.code}</p>
-          <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
+        <div className="min-w-0 space-y-1.5">
+          <div className="flex flex-wrap items-center gap-2">
+            <h3 className="text-sm font-semibold text-[var(--color-neutral-900)]">{resolved.name}</h3>
+            <FormatStatusBadge status={formatStatus} size="md" />
+          </div>
+          <p className="font-mono text-[11px] text-[var(--color-neutral-400)]">{resolved.code}</p>
+          <p className="text-xs text-[var(--color-neutral-500)]">
             {reportFamilyLabel(resolved.family)} · {formats.join(' / ')}
             {resolved.is_active ? ' · active' : ' · inactive'}
             {isInvoiceFormat
               ? ` · Format-${getInvoiceFormatPreview(resolved.code)?.formatNumber ?? '—'}`
               : ''}
           </p>
+          <p className="text-[11px] leading-snug text-[var(--color-neutral-600)]">
+            {formatStatus.detail}
+          </p>
         </div>
         <Button type="button" variant="secondary" onClick={onClose}>
           Close
         </Button>
+      </div>
+
+      <div
+        role="status"
+        className="rounded-md border border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2 text-xs text-[var(--color-neutral-800)]"
+      >
+        <span className="font-semibold">Preview / generate path:</span> {previewSource.label}
+        {' — '}
+        {previewSource.detail}
       </div>
 
       {isInvoiceFormat &&
@@ -620,7 +630,7 @@ export function ReportGeneratePanel({
           Template not on API yet. Use <strong>Import registry</strong>, then Live API + Include
           inactive.
           {canClientLayoutPdf
-            ? ' Generate still opens the Fresa-sample PDF (dummy data + KingFisher logo).'
+            ? ' Generate uses Freightnest layouts (org branding) — not Fresa sample PDFs.'
             : ''}
         </div>
       ) : null}
@@ -628,11 +638,22 @@ export function ReportGeneratePanel({
       {!detailFailed && officialSampleForUi ? (
         <div
           role="status"
-          className="rounded-md border border-sky-200 bg-sky-50 px-3 py-2 text-xs text-sky-950"
+          className="rounded-md border border-[var(--color-primary-200)] bg-[var(--color-primary-50)] px-3 py-2 text-xs text-[var(--color-primary-950)]"
         >
-          Catalogue PDF uses the official Fresa sample for this format (distinct layout). Shared
-          backend HAWB/HBL packs are one shell for many codes — use job Documents for live pack
-          print.
+          {FRESA_REFERENCE_SAMPLE_LABEL}. Catalogue browse may open it for layout comparison.
+          Generate / download always use Freightnest native, template-v2, JSON, or a backend pack —
+          never a stamped Fresa sample as the final document.
+        </div>
+      ) : null}
+
+      {!detailFailed && formatStatus.id === 'shared_layout' ? (
+        <div
+          role="status"
+          className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-950"
+        >
+          This code reuses a shared layout
+          {formatStatus.layoutSourceCode ? ` (${formatStatus.layoutSourceCode})` : ''}. It is not a
+          unique visual design — do not treat it as format-specific fidelity.
         </div>
       ) : null}
 
@@ -643,9 +664,9 @@ export function ReportGeneratePanel({
         >
           {canClientLayoutPdf
             ? entityBoundForUi
-              ? 'Live pack not bound yet — Generate uses Fresa sample chrome with your record overlaid when possible. Bind + Activate a pack for full Fresa-parity print.'
-              : 'Generate opens the Fresa sample format (same colors/header/footer as fresatechnologies.com/sample-report-formats) with KingFisher logo and dummy data.'
-            : 'Format not enabled for print yet. Bind a Puppeteer pack, then Activate to enable Generate (KingFisher logo branding on packs).'}
+              ? 'Live pack not bound yet — Generate uses Freightnest client layouts with registered organization branding and live record data. Bind + Activate a pack when available.'
+              : 'Generate uses Freightnest client layouts with registered organization branding. Official Fresa PDFs are browse-only references.'
+            : 'Format not enabled for print yet. Bind a Puppeteer pack, then Activate to enable Generate (organization branding on packs).'}
         </div>
       ) : null}
 

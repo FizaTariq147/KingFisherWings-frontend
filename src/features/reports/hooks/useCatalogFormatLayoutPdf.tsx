@@ -11,6 +11,11 @@ import {
 import type { ReportContextIds } from '../utils/reportParameterUtils';
 import { resolveReportOrgChrome } from '../utils/resolveReportOrgChrome';
 import { supportsTemplateV2 } from '../engines/preview/renderTemplateV2Pdf';
+import { hasOfficialSamplePdf } from '../utils/preferOfficialSamplePdf';
+import {
+  FRESA_REFERENCE_SAMPLE_LABEL,
+  REPORT_PDF_WORKFLOW,
+} from '../utils/reportPdfWorkflow';
 
 type UseCatalogFormatLayoutPdfArgs = {
   autoOpen?: boolean;
@@ -60,12 +65,18 @@ export function useCatalogFormatLayoutPdf({
             }),
             resolveReportOrgChrome(),
           ]);
+          const unboundBrowse =
+            !data.entityBound && hasOfficialSamplePdf(previewCode);
           if (!cancelled) {
-            const label =
-              data.invoiceNumber ||
-              data.billToName ||
-              (contextKey ? 'live record' : null);
-            setBoundLabel(label ? `Bound to ${label}` : null);
+            if (unboundBrowse) {
+              setBoundLabel(FRESA_REFERENCE_SAMPLE_LABEL);
+            } else {
+              const label =
+                data.invoiceNumber ||
+                data.billToName ||
+                (contextKey ? 'live record' : null);
+              setBoundLabel(label ? `bound to ${label}` : null);
+            }
           }
           const merged = {
             ...data,
@@ -76,11 +87,15 @@ export function useCatalogFormatLayoutPdf({
             companyEmail: data.companyEmail || orgChrome.email,
             logoUrl: data.logoUrl || orgChrome.logoUrl,
           };
-          // Specialized template-v2 documents before generic JSON charge-table DNA.
-          if (supportsTemplateV2(previewCode)) {
+          // Phase 3: unbound official samples → reference browse; else Freightnest generate.
+          if (unboundBrowse || supportsTemplateV2(previewCode) || data.entityBound) {
             const generated = await generateCatalogLayoutPdf(previewCode, merged, {
               logoUrl: orgChrome.logoUrl,
-              preferTemplateV2: true,
+              preferTemplateV2: !unboundBrowse,
+              purpose: unboundBrowse ? 'browse' : 'generate',
+              workflow: unboundBrowse
+                ? REPORT_PDF_WORKFLOW.REFERENCE_BROWSE
+                : REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE,
             });
             if (generated) return generated.blob;
           }

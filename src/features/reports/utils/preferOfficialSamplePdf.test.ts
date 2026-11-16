@@ -13,17 +13,35 @@ describe('preferOfficialSamplePdf', () => {
     expect(hasOfficialSamplePdf('ADVANCE_SHIPPING_NOTE')).toBe(true);
   });
 
-  it('prefers sample PDF over shared pack for catalogue generate', () => {
+  it('Phase 3: Generate never prefers Fresa sample PDFs', () => {
     expect(
       shouldPreferOfficialSamplePdf({
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
         format: 'PDF',
+      }),
+    ).toBe(false);
+    expect(
+      shouldPreferOfficialSamplePdf({
+        code: 'HAWB_DRAFT_REPORT_FORMAT_1',
+        format: 'PDF',
+        purpose: 'generate',
+      }),
+    ).toBe(false);
+  });
+
+  it('Phase 3: browse may prefer official Fresa reference samples', () => {
+    expect(
+      shouldPreferOfficialSamplePdf({
+        code: 'HAWB_DRAFT_REPORT_FORMAT_1',
+        format: 'PDF',
+        purpose: 'browse',
       }),
     ).toBe(true);
     expect(
       shouldPreferOfficialSamplePdf({
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
         format: 'XLSX',
+        purpose: 'browse',
       }),
     ).toBe(false);
   });
@@ -34,6 +52,7 @@ describe('preferOfficialSamplePdf', () => {
         code: 'HAWB_DRAFT_REPORT_FORMAT_1',
         format: 'PDF',
         entityBound: true,
+        purpose: 'browse',
       }),
     ).toBe(false);
   });

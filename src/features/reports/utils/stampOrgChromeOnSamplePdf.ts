@@ -26,7 +26,11 @@ export type StampOrgChromeOptions = {
   sampleIsFallback?: boolean;
 };
 
-/** Shared pdf-lib org chrome stamp for official Fresa sample PDFs (HBL/HAWB). */
+/**
+ * Additive org chrome stamp for official Fresa sample PDFs.
+ * Phase 3: reference browse should prefer skipOrgStamp — this helper does NOT
+ * remove Fresa logos. Do not use stamped samples as Freightnest Generate output.
+ */
 export async function stampOrgChromeOnSamplePdf(
   sampleBytes: ArrayBuffer,
   chrome: ReportOrgChrome,
