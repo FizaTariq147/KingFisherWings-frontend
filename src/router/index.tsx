@@ -122,6 +122,7 @@ import {
 import JobListPage from '../features/jobs/pages/JobListPage'
 import JobCreatePage from '../features/jobs/pages/JobCreatePage'
 import JobDetailPage from '../features/jobs/pages/JobDetailPage'
+import JobDeepLinkPage from '../features/jobs/pages/JobDeepLinkPage'
 import JobEditPage from '../features/jobs/pages/JobEditPage'
 import JobBarcodeScanPage from '../features/jobs/pages/JobBarcodeScanPage'
 import JobsOnHoldPage from '../features/jobs/pages/JobsOnHoldPage'
@@ -598,6 +599,8 @@ export const router = createBrowserRouter([
               { path: '/jobs/road-freight/new', element: <JobCreatePage /> },
               { path: '/jobs/road-freight/:id/edit', element: <JobEditPage /> },
               { path: '/jobs/road-freight/:id', element: <JobDetailPage /> },
+              /* BE / notifications often use bare /jobs/:id — resolve segment then redirect */
+              { path: '/jobs/:id', element: <JobDeepLinkPage /> },
             ],
           },
           {

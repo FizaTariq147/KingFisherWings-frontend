@@ -117,6 +117,8 @@ export function LiveActivityPanel({
         ...n,
         linkPath: opened.linkPath || n.linkPath,
         href: opened.linkPath || n.href,
+        entityType: opened.entityType || n.entityType,
+        entityId: opened.entityId || n.entityId,
       }) || fallback;
       if (path) navigate(path);
       else toast.info('No linked screen for this notification.', { title: 'Notifications' });
