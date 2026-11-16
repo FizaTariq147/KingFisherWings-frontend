@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { DetailPageTemplate } from '@/components/templates/DetailPageTemplate';
-import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
 import {
@@ -24,12 +23,14 @@ import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
 import { isUuid } from '@/lib/isUuid';
 import { CREDIT_NOTE_ROUTE_PREFIX } from '../api/creditNote.api';
+import { CreditNoteForm } from '../components/CreditNoteForm';
 import {
   useCreditNote,
   useGenerateCreditNotePdf,
   usePostCreditNote,
   useUpdateCreditNote,
 } from '../hooks/useCreditNotes';
+import type { CreateCreditNoteFormValues } from '../types/creditNote.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { creditNoteDisplayNumber } from '../utils/normalizeCreditNote';
 
@@ -40,6 +41,29 @@ function Field({ label, value }: { label: string; value?: string | number | null
       <dd className="text-sm text-[var(--color-neutral-800)] mt-0.5">{value ?? '—'}</dd>
     </div>
   );
+}
+
+function creditNoteToFormValues(
+  note: NonNullable<ReturnType<typeof useCreditNote>['data']>,
+): Partial<CreateCreditNoteFormValues> {
+  return {
+    credited_invoice_id: note.credited_invoice_id || '',
+    job_id: note.job_id || '',
+    party_id: note.party_id || '',
+    currency_code: note.currency_code || 'AED',
+    invoice_date: note.invoice_date,
+    remarks: note.remarks,
+    description: note.remarks,
+    lines: (note.lines ?? []).map((line, index) => ({
+      description: line.description || '',
+      quantity: line.quantity ?? 1,
+      unit_price: line.unit_price ?? 0,
+      charge_code_id: line.charge_code_id,
+      tax_rate_id: undefined,
+      is_taxable: false,
+      sort_order: line.sort_order ?? index,
+    })),
+  };
 }
 
 export default function CreditNoteDetailPage() {
@@ -54,7 +78,11 @@ export default function CreditNoteDetailPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
-  const [editRemarks, setEditRemarks] = useState('');
+
+  const editDefaults = useMemo(
+    () => (creditNote ? creditNoteToFormValues(creditNote) : undefined),
+    [creditNote],
+  );
 
   if (isLoading) {
     return <p className="text-sm text-[var(--color-neutral-400)]">Loading…</p>;
@@ -108,10 +136,7 @@ export default function CreditNoteDetailPage() {
       ? [
           {
             label: 'Edit',
-            onClick: () => {
-              setEditRemarks(creditNote.remarks || '');
-              setEditOpen(true);
-            },
+            onClick: () => setEditOpen(true),
             variant: 'secondary' as const,
           },
         ]
@@ -207,10 +232,7 @@ export default function CreditNoteDetailPage() {
                     <CardTitle>Details</CardTitle>
                   </CardHeader>
                   <dl className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4 pt-0">
-                    <Field
-                      label="Party"
-                      value={creditNote.party_name || '—'}
-                    />
+                    <Field label="Party" value={creditNote.party_name || '—'} />
                     <Field label="Currency" value={creditNote.currency_code} />
                     <Field label="Date" value={creditNote.invoice_date} />
                     <Field
@@ -316,40 +338,23 @@ export default function CreditNoteDetailPage() {
         open={editOpen}
         onClose={() => setEditOpen(false)}
         title="Edit credit note"
-        footer={
-          <div className="flex justify-end gap-2">
-            <Button type="button" variant="secondary" onClick={() => setEditOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              disabled={pending || update.isPending}
-              onClick={() =>
-                void run(async () => {
-                  await update.mutateAsync({
-                    remarks: editRemarks.trim() || undefined,
-                    description: editRemarks.trim() || undefined,
-                  });
-                  setEditOpen(false);
-                }, 'Credit note updated.')
-              }
-            >
-              Save
-            </Button>
-          </div>
-        }
+        size="xl"
       >
-        <label className="block text-sm">
-          <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
-            Remarks
-          </span>
-          <textarea
-            className="min-h-[96px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
-            value={editRemarks}
-            onChange={(e) => setEditRemarks(e.target.value)}
-            maxLength={2000}
+        {editOpen && editDefaults ? (
+          <CreditNoteForm
+            key={`${creditNote.id}-${creditNote.updated_at ?? creditNote.id}`}
+            mode="edit"
+            defaultValues={editDefaults}
+            isSubmitting={pending || update.isPending}
+            onCancel={() => setEditOpen(false)}
+            onSubmit={async (values) => {
+              await run(async () => {
+                await update.mutateAsync(values);
+                setEditOpen(false);
+              }, 'Credit note updated.');
+            }}
           />
-        </label>
+        ) : null}
       </Modal>
     </>
   );
