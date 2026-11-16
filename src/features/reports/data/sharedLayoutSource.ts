@@ -4,6 +4,7 @@
  * coverage, not a Fresa requirement for unique designs per code.
  */
 
+import { isOfficialMeasuredNativeCode } from '../templates/official/officialFaceRegistry';
 import { resolveArrivalLayoutSourceCode } from './arrivalNoticeFormatUiLayouts';
 import { resolveDeliveryOrderLayoutSourceCode } from './deliveryOrderFormatUiLayouts';
 import { resolveHawbLayoutSourceCode } from './hawbFormatUiLayouts';
@@ -19,6 +20,14 @@ export type SharedLayoutSource = {
   isSharedLayout: boolean;
   family: SharedLayoutFamily;
 };
+
+function measuredSharedFamily(code: string): SharedLayoutFamily | null {
+  if (/HBL|FG_HBL/i.test(code)) return 'hbl';
+  if (/^HAWB_/i.test(code)) return 'hawb';
+  if (/ARRIVAL_NOTICE|CARGO_ARRIVAL/i.test(code)) return 'arrival_notice';
+  if (/DELIVERY_ORDER|DELIVERY_NOTE|PROOF_OF_DELIVERY/i.test(code)) return 'delivery_order';
+  return null;
+}
 
 function ownsFamily(code: string, family: SharedLayoutFamily): boolean {
   const c = code.toUpperCase();
@@ -43,6 +52,18 @@ function ownsFamily(code: string, family: SharedLayoutFamily): boolean {
 export function getSharedLayoutSource(code: string): SharedLayoutSource | null {
   const needle = code.trim().toUpperCase();
   if (!needle) return null;
+
+  if (isOfficialMeasuredNativeCode(needle)) {
+    const family = measuredSharedFamily(needle);
+    if (family) {
+      return {
+        requestedCode: needle,
+        layoutSourceCode: needle,
+        isSharedLayout: false,
+        family,
+      };
+    }
+  }
 
   const probes: Array<{
     family: SharedLayoutFamily;

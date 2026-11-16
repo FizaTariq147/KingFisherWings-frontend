@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
 import {
-  FRESA_OFFICIAL_SECTION_META,
   getFresaOfficialSampleByCode,
   listFresaOfficialSamples,
   listUrlVerifiedFresaSamples,
@@ -19,7 +18,7 @@ describe('Fresa official sample catalogue', () => {
   it('lists 401 catalogue entries across sections (not unique designs)', () => {
     const summary = summarizeFresaOfficialCatalogue();
     expect(summary.listedTotal).toBe(401);
-    expect(summary.urlVerifiedDirectPdfs).toBe(50);
+    expect(summary.urlVerifiedDirectPdfs).toBeGreaterThan(50);
     expect(summary.note).toContain('not unique');
   });
 
@@ -27,19 +26,22 @@ describe('Fresa official sample catalogue', () => {
     expect(listFresaOfficialSamples('hawb')).toHaveLength(5);
     expect(listFresaOfficialSamples('wms_asn')).toHaveLength(5);
     expect(listFresaOfficialSamples('delivery_order')).toHaveLength(40);
-    expect(listUrlVerifiedFresaSamples()).toHaveLength(50);
+    expect(listUrlVerifiedFresaSamples().length).toBeGreaterThan(50);
     for (const row of listUrlVerifiedFresaSamples()) {
       expect(row.samplePdfUrl).toMatch(/^https:\/\/fresatechnologies\.com\/.+\.pdf$/i);
-      expect(row.pageCount).toBeNull();
+      if (row.section === 'hawb' || row.section === 'wms_asn' || row.section === 'delivery_order') {
+        expect(row.pageCount).toBeNull();
+      } else {
+        expect(row.pageCount).toBeGreaterThan(0);
+      }
       expect(row.verificationStatus).toBe('url_verified');
     }
   });
 
-  it('marks pending sections without inventing PDF URLs', () => {
-    for (const meta of FRESA_OFFICIAL_SECTION_META) {
-      if (meta.verificationStatus === 'pending_url_extraction') {
-        expect(listFresaOfficialSamples(meta.section).length).toBe(0);
-      }
+  it('keeps arrival notice URLs that were extracted from the sample page', () => {
+    expect(listFresaOfficialSamples('arrival_notice').length).toBeGreaterThan(0);
+    for (const row of listFresaOfficialSamples('arrival_notice')) {
+      expect(row.samplePdfUrl).toMatch(/\.pdf$/i);
     }
   });
 

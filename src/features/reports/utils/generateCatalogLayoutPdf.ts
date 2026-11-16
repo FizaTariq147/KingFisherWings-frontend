@@ -35,6 +35,10 @@ import {
   type ReportPdfWorkflow,
   REPORT_PDF_WORKFLOW,
 } from './reportPdfWorkflow';
+import {
+  generateOfficialMeasuredPdf,
+  isOfficialMeasuredNativeCode,
+} from '../templates/official';
 
 /**
  * Client layout PDF for catalogue codes when backend pack is unavailable.
@@ -138,6 +142,25 @@ export async function generateCatalogLayoutPdf(
       purpose: options.purpose,
     });
   const allowSample = allowsFresaSamplePdf(workflow);
+
+  // Measured native faces. Browse may still open the unmodified Fresa sample.
+  if (!allowSample && isOfficialMeasuredNativeCode(code) && !isHblJasperPilotCode(code)) {
+    const { blob } = await generateOfficialMeasuredPdf(code, {
+      companyName: data.companyName,
+      companyAddress: data.companyAddress,
+      companyPhone: data.companyPhone,
+      companyEmail: data.companyEmail,
+      logoUrl: options.logoUrl || data.logoUrl,
+      entityBound: data.entityBound,
+      shipperLines: data.shipperLines,
+      consigneeLines: data.consigneeLines,
+      notifyLines: data.notifyLines,
+      jobNumber: data.jobNumber,
+      referenceNo: data.referenceNo,
+      invoiceNumber: data.invoiceNumber,
+    });
+    return { blob, preview: enrichmentPreviewMeta(code) };
+  }
 
   // HBL Jasper pilot — Freightnest native only (no Fresa sample fallback on generate).
   if (isHblJasperPilotCode(code)) {
@@ -328,6 +351,7 @@ export async function generateCatalogLayoutPdf(
 }
 
 export function hasCatalogLayoutPdf(code: string): boolean {
+  if (isOfficialMeasuredNativeCode(code)) return true;
   if (isHblFormatCode(code) && hasHblSamplePdf(code)) return true;
   if (isHawbFormatCode(code) && hasHawbSamplePdf(code)) return true;
   if (isHawbOfficialNativeCode(code)) return true;
@@ -339,6 +363,7 @@ export function hasCatalogLayoutPdf(code: string): boolean {
 export function hasFreightnestGeneratePath(code: string): boolean {
   if (isHblJasperPilotCode(code)) return true;
   if (isHawbOfficialNativeCode(code)) return true;
+  if (isOfficialMeasuredNativeCode(code)) return true;
   if (supportsTemplateV2(code)) return true;
   if (resolveAnyFormatUiLayout(code)) return true;
   if (isHblFormatCode(code)) return true; // classic family

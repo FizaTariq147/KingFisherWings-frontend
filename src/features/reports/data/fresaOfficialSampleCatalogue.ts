@@ -7,6 +7,8 @@
  * Do not invent JSON layouts from listed entry totals.
  */
 
+import { FRESA_EXTRACTED_SAMPLE_ENTRIES } from './fresaExtractedSampleEntries.generated';
+
 export type FresaOfficialSampleSection =
   | 'invoice'
   | 'accounts'
@@ -50,20 +52,20 @@ export const FRESA_OFFICIAL_SECTION_META: FresaOfficialSectionMeta[] = [
   {
     section: 'invoice',
     listedEntryCount: 116,
-    verificationStatus: 'pending_url_extraction',
-    notes: 'Direct PDF URLs not yet extracted',
+    verificationStatus: 'url_verified',
+    notes: 'Direct PDF URLs extracted from the Fresa sample page where a file exists',
   },
   {
     section: 'accounts',
     listedEntryCount: 27,
-    verificationStatus: 'pending_url_extraction',
-    notes: 'Direct PDF URLs not yet extracted',
+    verificationStatus: 'url_verified',
+    notes: 'Direct PDF URLs extracted from the Fresa sample page where a file exists',
   },
   {
     section: 'arrival_notice',
     listedEntryCount: 35,
-    verificationStatus: 'pending_url_extraction',
-    notes: 'Direct PDF URLs not yet extracted',
+    verificationStatus: 'url_verified',
+    notes: 'Direct PDF URLs extracted from the Fresa sample page where a file exists',
   },
   {
     section: 'hbl',
@@ -92,8 +94,8 @@ export const FRESA_OFFICIAL_SECTION_META: FresaOfficialSectionMeta[] = [
   {
     section: 'other',
     listedEntryCount: 57,
-    verificationStatus: 'pending_url_extraction',
-    notes: 'Direct PDF URLs not yet extracted',
+    verificationStatus: 'url_verified',
+    notes: 'Direct PDF URLs extracted from the Fresa sample page where a file exists',
   },
 ];
 
@@ -515,6 +517,7 @@ export const FRESA_OFFICIAL_SAMPLE_ENTRIES: FresaOfficialSampleEntry[] = [
   ...HAWB_ENTRIES,
   ...WMS_ENTRIES,
   ...DO_ENTRIES,
+  ...FRESA_EXTRACTED_SAMPLE_ENTRIES,
 ];
 
 const byCode = new Map<string, FresaOfficialSampleEntry>();
