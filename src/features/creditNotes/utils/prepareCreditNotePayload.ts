@@ -5,6 +5,7 @@ const ALLOWED_HEADER_FIELDS = new Set([
   'job_id',
   'party_id',
   'currency_code',
+  'invoice_date',
   'description',
   'remarks',
 ]);

@@ -1,8 +1,16 @@
 import { z } from 'zod';
-import { optionalTextUndef, optionalUuid } from '@/lib/validation';
+import { emptyToUndefined, optionalTextUndef, optionalUuid } from '@/lib/validation';
 import { createInvoiceLineSchema } from '@/features/invoices/schemas/invoice.schema';
 
 export { createInvoiceLineSchema };
+
+const optionalDate = z.preprocess(
+  emptyToUndefined,
+  z
+    .string()
+    .regex(/^\d{4}-\d{2}-\d{2}$/, 'Use YYYY-MM-DD')
+    .optional(),
+);
 
 export const createCreditNoteSchema = z
   .object({
@@ -11,6 +19,7 @@ export const createCreditNoteSchema = z
     job_id: optionalUuid(),
     party_id: optionalUuid(),
     currency_code: z.string().trim().length(3).optional().or(z.literal('')),
+    invoice_date: optionalDate,
     /** Shown on AR statements (stored as Invoice.remarks). Alias of remarks. */
     description: optionalTextUndef({ max: 2000 }),
     remarks: optionalTextUndef({ max: 2000 }),

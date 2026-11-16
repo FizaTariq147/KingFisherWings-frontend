@@ -67,13 +67,8 @@ export interface CreditNote {
   pdf_url?: string;
 }
 
-/** PATCH /credit-notes/:id — header fields while DRAFT. */
-export type UpdateCreditNoteDto = Partial<
-  Pick<
-    CreateCreditNoteFormValues,
-    'credited_invoice_id' | 'job_id' | 'party_id' | 'currency_code' | 'description' | 'remarks'
-  >
->;
+/** PATCH /credit-notes/:id — full draft edit (header + lines). */
+export type UpdateCreditNoteDto = Partial<CreateCreditNoteFormValues>;
 
 export type CreateCreditNoteDto = CreateCreditNoteFormValues;
 export type CreateCreditNoteLineDto = CreateCreditNoteLineFormValues;

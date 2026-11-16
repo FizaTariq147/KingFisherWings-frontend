@@ -15,15 +15,18 @@ import type { CreateCreditNoteFormValues } from '../../types/creditNote.types';
 const selectClass =
   'h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm focus:outline-none focus:border-[var(--color-primary-500)]';
 
-const CREDIT_NOTE_FORM_DEFAULTS: CreateCreditNoteFormValues = {
+export const CREDIT_NOTE_FORM_DEFAULTS: CreateCreditNoteFormValues = {
   credited_invoice_id: '',
   job_id: '',
   party_id: '',
+  currency_code: 'AED',
+  invoice_date: undefined,
   remarks: undefined,
   lines: [],
 };
 
 interface CreditNoteFormProps {
+  mode?: 'create' | 'edit';
   defaultValues?: Partial<CreateCreditNoteFormValues>;
   onSubmit: (values: CreateCreditNoteFormValues) => void | Promise<void>;
   onCancel: () => void;
@@ -35,7 +38,14 @@ function FieldError({ message }: { message?: string }) {
   return <p className="text-xs text-[var(--color-danger-500)]">{message}</p>;
 }
 
+function toDateInput(value?: string): string | undefined {
+  if (!value) return undefined;
+  const day = value.slice(0, 10);
+  return /^\d{4}-\d{2}-\d{2}$/.test(day) ? day : undefined;
+}
+
 export function CreditNoteForm({
+  mode = 'create',
   defaultValues,
   onSubmit,
   onCancel,
@@ -77,6 +87,14 @@ export function CreditNoteForm({
     });
   }
 
+  const mergedDefaults: CreateCreditNoteFormValues = {
+    ...CREDIT_NOTE_FORM_DEFAULTS,
+    ...defaultValues,
+    invoice_date: toDateInput(defaultValues?.invoice_date) ?? CREDIT_NOTE_FORM_DEFAULTS.invoice_date,
+    currency_code: (defaultValues?.currency_code || 'AED').toUpperCase(),
+    lines: Array.isArray(defaultValues?.lines) ? defaultValues.lines : [],
+  };
+
   const {
     register,
     control,
@@ -86,7 +104,7 @@ export function CreditNoteForm({
   } = useAppForm<CreateCreditNoteFormValues>({
     mode: 'onBlur',
     resolver: zodResolver(createCreditNoteSchema) as Resolver<CreateCreditNoteFormValues>,
-    defaultValues: { ...CREDIT_NOTE_FORM_DEFAULTS, ...defaultValues },
+    defaultValues: mergedDefaults,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -126,7 +144,7 @@ export function CreditNoteForm({
 
       <Card>
         <CardHeader>
-          <CardTitle>Credit note</CardTitle>
+          <CardTitle>{mode === 'edit' ? 'Edit credit note' : 'Credit note'}</CardTitle>
         </CardHeader>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 p-4 pt-0">
           <div className="space-y-1 sm:col-span-2">
@@ -175,8 +193,22 @@ export function CreditNoteForm({
               />
             )}
           />
+          <Input
+            label="Currency"
+            maxLength={3}
+            {...register('currency_code')}
+            error={fieldError('currency_code')}
+          />
+          <Input
+            label="Date"
+            type="date"
+            {...register('invoice_date')}
+            error={fieldError('invoice_date')}
+          />
           <div className="space-y-1 sm:col-span-2">
-            <label htmlFor="cn-remarks" className="text-xs font-medium text-[var(--color-neutral-500)]">Remarks</label>
+            <label htmlFor="cn-remarks" className="text-xs font-medium text-[var(--color-neutral-500)]">
+              Remarks
+            </label>
             <textarea
               id="cn-remarks"
               className="min-h-[64px] w-full rounded-md border border-[var(--color-neutral-200)] px-3 py-2 text-sm"
@@ -189,7 +221,7 @@ export function CreditNoteForm({
 
       <Card>
         <CardHeader className="flex flex-row items-center justify-between gap-2">
-          <CardTitle>Lines (optional)</CardTitle>
+          <CardTitle>Lines</CardTitle>
           <Button
             type="button"
             variant="secondary"
@@ -211,7 +243,7 @@ export function CreditNoteForm({
         <div className="space-y-3 p-4 pt-0">
           {fields.length === 0 && (
             <p className="text-sm text-[var(--color-neutral-400)]">
-              No lines yet. Optional lines use the same shape as invoice lines.
+              No lines yet. Add at least one line for the credited amount.
             </p>
           )}
           {fields.map((field, index) => (
@@ -256,7 +288,11 @@ export function CreditNoteForm({
           Cancel
         </Button>
         <Button type="submit" disabled={isSubmitting}>
-          {isSubmitting ? 'Saving…' : 'Create credit note'}
+          {isSubmitting
+            ? 'Saving…'
+            : mode === 'edit'
+              ? 'Save credit note'
+              : 'Create credit note'}
         </Button>
       </div>
     </form>
