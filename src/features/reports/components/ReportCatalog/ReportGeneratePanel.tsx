@@ -31,6 +31,13 @@ import {
   generateCatalogLayoutPdf,
   hasCatalogLayoutPdf,
 } from '../../utils/generateCatalogLayoutPdf';
+import { isReferenceAccuratePdfCode } from '../../templates/referenceAccurate';
+import {
+  ACTIVITY_COMPLETED_JOBS_CODE,
+  ACTIVITY_COMPLETED_JOBS_HEADERS,
+  generateActivityCompletedJobsWorkbook,
+} from '../../templates/referenceAccurate/activityCompletedJobsWorkbook';
+import { jobService } from '@/features/jobs/services/job.service';
 import { suggestReportPackKey } from '../../utils/suggestReportPackKey';
 import {
   buildInitialReportParams,
@@ -77,6 +84,36 @@ function isUuid(value: string): boolean {
   );
 }
 
+function printActivitySheet(headers: readonly string[], rows: string[][]): void {
+  const escape = (value: string) =>
+    value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const head = headers.map((header) => `<th>${escape(header)}</th>`).join('');
+  const body = rows
+    .map((row) => `<tr>${row.map((cell) => `<td>${escape(cell)}</td>`).join('')}</tr>`)
+    .join('');
+  const html = `<!doctype html><html><head><title>Activity completed jobs</title><style>
+    @page { size: landscape; margin: 12mm; }
+    body { font-family: Calibri, Arial, sans-serif; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #999; padding: 4px 6px; font-size: 11px; }
+    th { background: #d9e2f3; }
+  </style></head><body><table><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table></body></html>`;
+  const frame = document.createElement('iframe');
+  frame.setAttribute('style', 'position:fixed;right:0;bottom:0;width:0;height:0;border:0');
+  document.body.appendChild(frame);
+  const doc = frame.contentDocument;
+  if (!doc) {
+    frame.remove();
+    return;
+  }
+  doc.open();
+  doc.write(html);
+  doc.close();
+  frame.contentWindow?.focus();
+  frame.contentWindow?.print();
+  window.setTimeout(() => frame.remove(), 1000);
+}
+
 export function ReportGeneratePanel({
   template,
   context,
@@ -116,6 +153,7 @@ export function ReportGeneratePanel({
   const [pdfReadyUrl, setPdfReadyUrl] = useState<string | null>(null);
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
   const [pdfReadyName, setPdfReadyName] = useState('report.pdf');
+  const [sheetPreview, setSheetPreview] = useState<string[][] | null>(null);
   const [clientGenerating, setClientGenerating] = useState(false);
   const handledReadyJobId = useRef<string | null>(null);
 
@@ -240,6 +278,54 @@ export function ReportGeneratePanel({
     const entityBound = hasReportEntityContext(contextIds);
     const packReady = isReportPackReady(resolved);
 
+    if (format === 'XLSX' && resolved.code === ACTIVITY_COMPLETED_JOBS_CODE) {
+      setClientGenerating(true);
+      try {
+        const jobId = contextIds.job_id;
+        const rows = [];
+        if (jobId && isUuid(jobId)) {
+          const job = await jobService.getById(jobId);
+          rows.push({
+            jobNumber: job.job_number,
+            department: job.department_name || job.job_type,
+            por: job.origin_port_code,
+            pod: job.dest_port_code,
+            pieces: job.pieces,
+            grossWeight: job.gross_weight,
+            volume: job.volume_cbm,
+          });
+        }
+        const workbook = generateActivityCompletedJobsWorkbook(rows);
+        const previewRows = rows.map((row) => [
+          row.jobNumber || '',
+          row.department || '',
+          row.por || '',
+          row.pod || '',
+          row.pieces != null ? String(row.pieces) : '',
+          row.grossWeight != null ? String(row.grossWeight) : '',
+          row.volume != null ? String(row.volume) : '',
+        ]);
+        setSheetPreview(previewRows);
+        const blob = new Blob([workbook.bytes], {
+          type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        });
+        setPdfReadyName(workbook.fileName.endsWith('.xlsx') ? workbook.fileName : `${workbook.fileName}.xlsx`);
+        setPdfReadyBlob(blob);
+        setPdfReadyUrl(null);
+        setPdfReadyOpen(true);
+        setMessage(
+          rows.length
+            ? 'Workbook ready. Headers match the reference. The open job is the only row.'
+            : 'Workbook ready. Headers match the reference. No job was selected, so there are no data rows.',
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Could not build the workbook.');
+      } finally {
+        setClientGenerating(false);
+      }
+      return;
+    }
+
     const { parameters, error: coerceError } = coerceReportParameters(fields, params);
     if (coerceError && !hasLayout) {
       setError(coerceError);
@@ -292,7 +378,7 @@ export function ReportGeneratePanel({
           logoUrl: data.logoUrl || orgChrome.logoUrl,
         };
 
-        if (isInvoiceFormatPdf) {
+        if (isInvoiceFormatPdf && !isReferenceAccuratePdfCode(resolved.code)) {
           const invoiceId = contextIds.invoice_id;
           if (invoiceId && isUuid(invoiceId)) {
             try {
@@ -862,11 +948,61 @@ export function ReportGeneratePanel({
         }}
         blob={pdfReadyBlob}
         url={pdfReadyBlob ? null : pdfReadyUrl}
-        title="Report PDF ready"
+        title={pdfReadyName.endsWith('.xlsx') ? 'Workbook ready' : 'Report PDF ready'}
         fileName={pdfReadyName}
         skipBranding
-        description="Preview or download."
+        description={
+          pdfReadyName.endsWith('.xlsx')
+            ? 'Download the Excel file. Print preview uses the same rows.'
+            : 'Preview or download.'
+        }
       />
+      {sheetPreview ? (
+        <div className="mt-3 overflow-auto rounded border border-[var(--color-neutral-200)]">
+          <div className="flex items-center justify-between gap-2 px-2 py-1">
+            <p className="text-xs text-[var(--color-neutral-600)]">
+              Print preview of the activity-completed sheet. Download stays Excel.
+            </p>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => printActivitySheet(ACTIVITY_COMPLETED_JOBS_HEADERS, sheetPreview)}
+            >
+              Print preview
+            </Button>
+          </div>
+          <table className="w-full text-left text-xs">
+            <thead>
+              <tr>
+                {ACTIVITY_COMPLETED_JOBS_HEADERS.map((header) => (
+                  <th key={header} className="border-b px-2 py-1">
+                    {header}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {sheetPreview.length ? (
+                sheetPreview.map((row, index) => (
+                  <tr key={index}>
+                    {row.map((cell, cellIndex) => (
+                      <td key={cellIndex} className="px-2 py-1">
+                        {cell}
+                      </td>
+                    ))}
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td className="px-2 py-2 text-[var(--color-neutral-500)]" colSpan={7}>
+                    No job selected. The sheet has the header row only.
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : null}
     </div>
   );
 }

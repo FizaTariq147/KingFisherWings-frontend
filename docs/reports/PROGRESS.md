@@ -47,8 +47,9 @@ This workspace is the React frontend. There is no NestJS app and no PostgreSQL s
 | Phase | Status |
 |---|---|
 | 0 Inventory and clustering | Done. |
-| 0.5 Code map, status file, layout recount | Done. Waiting for confirmation before Phase 1. |
-| 1–8 | Not started. |
+| 0.5 Code map, status file, layout recount | Done. |
+| 1 Pilot extraction | Four pilots rendered (three single-page, one multi-page). None accepted. Other layouts not started. |
+| 2–8 | Not started. |
 
 Counts from `reports/references/summary.json`:
 
@@ -190,3 +191,114 @@ failed 0
 `node --test tools/reports/build-manifest.test.mjs` — 1 passed.
 
 pdfjs printed `Warning: TT: undefined function: 32` once during the fingerprint recount. Both hashes were still produced for all 402 PDFs.
+
+## Cleanup before Phase 1
+
+`node tools/reports/review-map.mjs`
+
+```
+ignoreRows 108
+duplicate_of_mapped 107
+no_mapped_file 1
+variant_layout 0
+familySectionDisagreements 1
+nameMatchSample 30
+noReferenceCodes 418
+noReferenceGroups 32
+```
+
+The 107 duplicates are the same path and the same SHA-256 as the file already mapped to that code, so the fingerprint was skipped. `reports/references/ignore-variants.csv` has a header and no rows. The remaining ignore row is the Fresa Gold brochure, which has no mapped code. Nothing was registered.
+
+`reports/references/map-review.csv` has one family/section disagreement: `OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES` is family `finance`, module `accounts`, and the Fresa section is `Invoice Formats`. The same file has a seeded sample of 30 normalized-name matches.
+
+`reports/references/no-reference-groups.csv` groups the 418 codes. The largest groups are commercial/invoice/INVOICE 54, air HAWB draft 25, ops pending shipments 25, arrival notice 25, daily status 20, job status 20, cargo manifest 20, and advance shipping note 20.
+
+## Phase 1 pilots
+
+Pilots only: Tax Invoice India 1, HBL Jasper, Arrival Notice Jasper. No other layout, Excel file, or scanned file was extracted. Nothing is accepted.
+
+`node tools/reports/extract.mjs --pilots`
+
+```
+INVOICE spans 205, dynamic 65, lines 269, rects 38, images 1, characters 2355, pdftotext words missing 0, warnings []
+HBL spans 87, dynamic 29, lines 93, rects 28, images 2, characters 2457, pdftotext words missing 1 (24.000CBM), warnings []
+ARRIVAL spans 126, dynamic 45, lines 424, rects 67, images 2, characters 1860, pdftotext words missing 1 (:07-FEB-19), warnings []
+```
+
+`node tools/reports/validate-spec.mjs` on each draft: valid, 0 errors.
+
+The pdfjs line `Warning: TT: undefined function: 32` is `console.log`, not `console.warn`. A scan of the 401 pinned PDFs printed it for one file only: `fg_hbl_format33_rpm_ref_684.pdf`. That file still produced 39 text items, 860 characters, and 0 words missing against `pdftotext`. The three pilots did not print it. Empty text items are positioning gaps. Zero-width text items are 0. Font names were read (invoice: ArialMT, Arial-BoldMT, Consolas; HBL and arrival: Helvetica, Helvetica-Bold, subset Arial Unicode). Those fonts were not copied. Show-text fill colors on the invoice are black and white, but the show-text operator count does not equal the span count, so each span kept the default black. That loses white text on colored bars.
+
+Dynamic spans and guessed bindings are in `reports/specs/<CODE>.dynamic.csv`. Bindings that were filled: invoice `invoice.tax` 2, `company.name` 2, `cargo.marks` 1 (60 of 65 blank); HBL `company.name` 1, `cargo.containerNo` 1 (27 of 29 blank); arrival 45 of 45 blank. HBL used the format-6 variant. Invoice and arrival are singleton layouts, so their dynamic marks are demo-value guesses.
+
+Rendered PDFs: `reports/output/<CODE>.pdf`. Six layers from `node tools/reports/diff-pilot.mjs`:
+
+Tax Invoice India 1: page pass (594 x 841.9). Geometry fail, 269/269 lines, 1 of 38 rects unmatched (a white rect at y -280.1, 792 x 1122, outside the page, not drawn). Static text fail, 0 of 140 missed on position, 140 font or size mismatches (Helvetica instead of Arial/Consolas). Dynamic text fail, 0 of 65 missed on position, 65 font or size mismatches, wrap/clip not implemented. Raster fail, 36,848 pixels, 1.70% at 150 dpi after logo and company masks (limit 0.5%). Pagination not exercised: both files are 1 page.
+
+HBL Jasper: page pass (595 x 842). Geometry pass, 93 lines and 28 rects. Static text fail, 0 of 58 missed on position, 16 font or size mismatches. Dynamic text fail, 0 of 29 missed on position, 25 font or size mismatches, wrap/clip not implemented. Raster fail, 11,451 pixels, 0.53%. Pagination not exercised.
+
+Arrival Notice Jasper: page pass (595 x 842). Geometry pass, 424 lines and 67 rects. Static text fail, 0 of 81 missed on position, 30 font or size mismatches. Dynamic text fail, 0 of 45 missed on position, 36 font or size mismatches, wrap/clip not implemented. Raster fail, 28,670 pixels, 1.32%. Pagination not exercised.
+
+Poppler printed `No display font for 'Symbol'` and `No display font for 'ArialUnicode'` while rasterizing. The dev review page is `/reports/spec-review` and is registered only when `import.meta.env.DEV`. The dev server returned the pilot list, the HBL spec, the HBL reference PNG, and a compiled page module. The route still sits behind the reports permission, so the signed-in click path was not exercised.
+
+## Pilot round 2
+
+Same three pilots plus `TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY` (`reports/references/files/trial-balance-report-format-1-trial-balance-summary.pdf`). No other layout was extracted. Nothing is accepted. Scaling was not started.
+
+Comparator and threshold changes. No numeric limit was raised. Geometry stays 0.1 pt, text position stays 0.5 pt, size stays 0.5 pt, raster stays 0.5% (ratio 0.005), pixelmatch stays 0.1, raster stays `pdftoppm -png -r 150` for both files, masks stay logo and company only.
+
+- Font identity is the mapped family and weight (`reports/font-map.json`), not the raw PDF font name.
+- A text-width check was added at 0.5 pt (reference span width against the re-extracted rendered width).
+- A line also has to match width within 0.1 pt, stroke color, and dash. A rectangle also has to match stroke color and dash. Fill matching is unchanged.
+- Elements fully outside the page box are dropped before either side is compared. The invoice dropped 6, which removes the off-page white rectangle from round 1.
+
+`reports/spec.schema.json` now allows `stroke: null` for a fill-only rectangle. That is a schema correction, not a tolerance change.
+
+Bundled fonts, not copied from the reference PDFs: Arimo regular and bold (Arial and Helvetica), Noto Sans regular and bold (Unicode fallback), Liberation Mono regular and bold (Consolas). Map: `reports/font-map.json`. `@pdf-lib/fontkit` is required to embed them. Each golden span is drawn with horizontal scaling so its advance matches the reference span width.
+
+`node tools/reports/extract.mjs --pilots`
+
+```
+INVOICE pages 1, spans 236, dynamic 65, lines 269, rects 34, images 1, characters 2311, droppedOutside 6, colors #000000 #ffffff, curves 32, nonAxisPaths 1, pdftotext words missing 29
+HBL pages 1, spans 88, dynamic 29, lines 93, rects 27, images 2, characters 2456, xobjects 2, lineStyle 108, undecodedText 6, textRenderMode 4, pdftotext words missing 1 (24.000CBM)
+ARRIVAL pages 1, spans 126, dynamic 45, lines 424, rects 66, images 2, characters 1860, curves 189, nonAxisPaths 18, xobjects 2, lineStyle 451, undecodedText 2, textRenderMode 11, pdftotext words missing 1 (:07-FEB-19)
+TRIAL BALANCE pages 3, spans 624, dynamic 302, lines 51, rects 0, images 0, characters 4916, page 3 spans 0, markedContent 784/162/2, pdftotext words missing 4
+```
+
+Shading ops recorded: 0 on all four. Dash is stored when `setDash` appears; geometry passed with dash equality, so these four did not show a dash mismatch. CMYK and opacity: 0. Curves, non-axis paths, form XObject markers, line cap/join, marked content, undecoded show-text, and nonzero text render mode are counted and not reconstructed. Image bytes are not copied. The missing `pdftotext` words are split tokens (`<h3>T` + `AX INVOICE</h3>`, `LTD` split from `PVT L`), not dropped glyphs.
+
+`node tools/reports/validate-spec.mjs` on each spec: valid, 0 errors.
+
+`node tools/reports/render-spec.mjs <CODE>` and the same command with `--overflow`. Overflow modes actually applied: invoice clip 59, shrink 4, wrap 2; HBL clip 19, wrap 10, shrink 0; arrival clip 34, wrap 7, shrink 4; trial balance clip 269, shrink 33, wrap 0. Shrink and wrap run only when the span's binding has a number, currency, date, or text format. Unbound dynamic spans use clip. Golden renders keep the reference demo strings. Invoice white text: 5 spans, all 5 re-extracted as `#ffffff`.
+
+Spans whose reference advance is more than 0.5 pt away from the bundled font's natural width, and which the renderer therefore scales: invoice 17 of 236, HBL 40 of 88, arrival 53 of 126, trial balance 242 of 624. After that scaling, the 0.5 pt width check failed on 0 spans.
+
+`node tools/reports/diff-pilot.mjs` for each code. Poppler again printed `No display font for 'Symbol'` and `No display font for 'ArialUnicode'` on the reference files.
+
+Tax Invoice India 1: page pass (594 x 841.9, 1 page). Geometry pass, 0 unmatched lines, 0 unmatched rects. Static text pass, 171 spans, 0 failures. Dynamic text pass, 65 spans, 0 failures. Raster fail, 30,390 pixels, 1.40% (limit 0.5%). Heatmap `reports/output/raster/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA-page-1-diff.png`. Pagination not a multi-page pass. Single-page invariants: header present, summary after last row (last row y 427.9, summary top 230.6), no-overflow fail. Spans past the right edge: `p1s21` `.fresatechnologies.com` (535.5 + 81.4), `p1s121` `eight` (581.1 + 18.9), `p1s236` `echnologies` (563.2 + 36.2). Page width is 594. They intersect the page, so they were kept.
+
+HBL Jasper: page pass (595 x 842, 1 page). Geometry pass, 0 unmatched lines, 0 unmatched rects. Static text pass, 59 spans, 0 failures. Dynamic text pass, 29 spans, 0 failures. Raster fail, 38,693 pixels, 1.78%. Heatmap `reports/output/raster/HBL_DRAFT_REPORT_FORMAT_JASPER-page-1-diff.png`. Pagination not a multi-page pass. Single-page invariants: no overflow, header present, summary-after-last-row fail (last row y 170.7, summary top 194.7). The detail band is y 170.7–594.7 and the summary band is y 101–235.8, so they overlap. The highest span inside the summary percentage band sits above the lowest detail span.
+
+Arrival Notice Jasper: page pass (595 x 842, 1 page). Geometry pass, 0 unmatched lines, 0 unmatched rects. Static text pass, 81 spans, 0 failures. Dynamic text pass, 45 spans, 0 failures. Raster fail, 45,442 pixels, 2.09%. Heatmap `reports/output/raster/ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER-page-1-diff.png`. Pagination not a multi-page pass. Single-page invariants: no overflow, header present, summary after last row (last row y 387.5, summary top 200.4).
+
+Trial balance: page pass (595 x 842, 3 pages). Geometry pass, 0 unmatched lines, 0 unmatched rects. Static text pass, 322 spans, 0 failures. Dynamic text pass, 302 spans, 0 failures. Raster fail, 100,147 pixels, 1.53% across three pages. Heatmaps `reports/output/raster/TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-1-diff.png`, `page-2-diff.png`, `page-3-diff.png`. Pagination exercised and failed: header repeats false, footer repeats false, summary after last row false, row break true. Page 3 has no spans, lines, rectangles, or images (marked content only). The printed footer says page 1 of 2 and page 2 of 2. The blank third page has no header and no footer, and the summary check looks at that last page, so GRAND TOTAL on page 2 does not satisfy it. Row break is true only inside the percentile detail bands. Page 2's detail band is y 487.4–671.9, so rows below y 487 are outside that check.
+
+Raster causes, from the heatmaps and the capture gaps. Every pilot's text edges differ because Arimo, Noto Sans, and Liberation Mono are substitutes, and horizontal scaling stretches a span to its reference advance. That matches the width check and still changes the glyph shapes wherever the reference width came from TJ adjustments or character spacing rather than the font's own advances. HBL and arrival barcodes stay red: they are images or nonzero text-render-mode drawing, and image bytes are not copied. Arrival also leaves 189 curves and 18 non-axis paths undrawn. Invoice leaves 32 curves undrawn, and three spans run past the right edge. Trial balance page 2 shows the stretched column text. Trial balance page 3 is blank on both sides. Poppler also has no display font for Symbol and Arial Unicode while rasterizing the references.
+
+Bindings. Dictionary `reports/binding-dictionary.csv` (63 rows) targets only the paths in `src/features/reports/contracts/reportBindings.ts` (invoice, bill of lading, arrival notice). A dynamic span takes the nearest static label on the same line to its left, otherwise the nearest label above. A label of at least 4 characters that is a unique prefix of one dictionary key is accepted, so a truncated `Bill T` can match `bill to`. Exact keys added for labels the prefix rule cannot see: `hbl ha`, `gst18 sgst9`, `gst18 cgst9`. There is no trial-balance contract.
+
+`node tools/reports/build-bindings.mjs` → dictionary 63, unresolved 360. `npx vitest run src/features/reports/contracts/reportBindings.test.ts` → 1 passed.
+
+Resolved dynamic spans: invoice 18 of 65, HBL 13 of 29, arrival 17 of 45, trial balance 33 of 302. The trial-balance matches are labels that already exist on the three contracts, such as `total`. The other 269 trial-balance spans stay unresolved.
+
+Unresolved spans, all of them, are in `reports/output/unresolved-bindings.csv`:
+
+| Pilot | No static label | Label not in the dictionary |
+|---|---|---|
+| Tax Invoice India 1 | 2 | 45 |
+| HBL Jasper | 0 | 16 |
+| Arrival Notice Jasper | 0 | 28 |
+| Trial balance | 155 | 114 |
+
+Invoice examples of unresolved labels: no label on the first date, `User :`, `AX INVOICE</h3>`, `WEB : www`, `Shipment No.`, `Due Date`, `Reference No.`, `IGM No.`, `SEAL FEE`. Those strings are not paths on the three contracts, so they were left unresolved.
+

@@ -9,6 +9,9 @@ export type InvoiceFormatPdfLine = {
   qty?: string;
   rate?: string;
   amount?: string;
+  currency?: string;
+  /** Present only when the charge or invoice line carries a tax amount. */
+  taxAmount?: string;
 };
 
 export type InvoiceFormatPdfData = {
@@ -30,6 +33,12 @@ export type InvoiceFormatPdfData = {
   jobNumber?: string;
   shipmentNumber?: string;
   referenceNo?: string;
+  /** House air waybill number from the open job or shipment. */
+  hawbNo?: string;
+  /** Master air waybill number from the open job. */
+  mawbNo?: string;
+  /** House bill of lading number from the open job or shipment. */
+  hblNo?: string;
   invoiceDate?: string;
   dueDate?: string;
   validUntil?: string;
@@ -61,6 +70,19 @@ export type InvoiceFormatPdfData = {
   subtotal?: string;
   tax?: string;
   total?: string;
+  /** Cargo figures from the job or shipment. Omitted when the record has none. */
+  pieces?: string;
+  grossWeight?: string;
+  measurement?: string;
+  containerNo?: string;
+  containerType?: string;
+  sealNo?: string;
+  /** Default organization bank account. Omitted when none is stored. */
+  bankName?: string;
+  bankAccountName?: string;
+  bankAccountNumber?: string;
+  bankIban?: string;
+  bankSwift?: string;
 };
 
 export const REPORT_FIELD_NA = 'N/A';

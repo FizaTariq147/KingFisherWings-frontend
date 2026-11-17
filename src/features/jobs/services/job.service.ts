@@ -43,6 +43,7 @@ import {
   effectiveJobListType,
   inferJobTypeFromJobNumber,
 } from '../utils/effectiveJobListType';
+import { enrichJobReopenRequestsWithUserNames } from '../utils/enrichJobReopenRequests';
 import { jobDetailTabLabel, toApiDetailTabKey } from '../utils/jobDetailTabs';
 import {
   listRecentCreatedJobIds,
@@ -129,10 +130,14 @@ import type {
   PatchJobDimensionsDto,
   PutJobGpumDto,
   PatchJobHoldDto,
+  AccountsJobListParams,
+  AccountsJobListResult,
+  AccountsJobRow,
   CreateJobReopenRequestDto,
   JobReopenRequest,
   JobReopenRequestListParams,
   JobReopenRequestListResult,
+  isPassToTransportStatus,
   ReopenJobDto,
   ReviewJobReopenRequestDto,
   ResumeJobDto,
@@ -1404,6 +1409,87 @@ export const jobService = {
   },
 
   /**
+   * GET /jobs/accounts — Accounts tab (COMPLETED / DELIVERED / CLOSED).
+   * Gate: jobs.accounts.view (not ops job_type scope). Tenant-scoped.
+   */
+  async listAccountsJobs(
+    params: AccountsJobListParams = {},
+  ): Promise<AccountsJobListResult> {
+    const query: Record<string, string | number> = {
+      page: params.page ?? 1,
+      limit: clampApiListLimit(params.limit, 25),
+      order: params.order ?? 'desc',
+    };
+    if (params.search?.trim()) query.search = params.search.trim();
+    if (params.status?.trim()) query.status = params.status.trim();
+    if (params.branch_id?.trim()) query.branch_id = params.branch_id.trim();
+    if (params.from_date?.trim()) query.from_date = params.from_date.trim();
+    if (params.to_date?.trim()) query.to_date = params.to_date.trim();
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.accounts, { params: query }),
+      );
+      const { items, meta } = unwrapList(res.data);
+      const jobs: AccountsJobRow[] = items
+        .map((row) => {
+          const r =
+            row && typeof row === 'object' && !Array.isArray(row)
+              ? (row as Record<string, unknown>)
+              : null;
+          if (!r) return null;
+          const id = String(r.id ?? r.job_id ?? '').trim();
+          if (!id) return null;
+          return {
+            id,
+            job_number: String(r.job_number ?? r.jobNumber ?? '').trim() || undefined,
+            job_type: String(r.job_type ?? r.jobType ?? '').trim() || undefined,
+            status: String(r.status ?? '').trim() || undefined,
+            branch_id: String(r.branch_id ?? r.branchId ?? '').trim() || undefined,
+            branch_name:
+              String(r.branch_name ?? r.branchName ?? '').trim() || undefined,
+            party_name:
+              String(
+                r.party_name ??
+                  r.partyName ??
+                  r.client_name ??
+                  r.customer_name ??
+                  '',
+              ).trim() || undefined,
+            shipper_name:
+              String(r.shipper_name ?? r.shipperName ?? '').trim() || undefined,
+            consignee_name:
+              String(r.consignee_name ?? r.consigneeName ?? '').trim() || undefined,
+            etd: String(r.etd ?? '').trim() || undefined,
+            eta: String(r.eta ?? '').trim() || undefined,
+            completed_at:
+              String(r.completed_at ?? r.completedAt ?? '').trim() || undefined,
+            closed_at: String(r.closed_at ?? r.closedAt ?? '').trim() || undefined,
+            has_sale_invoice:
+              r.has_sale_invoice === true ||
+              r.hasSaleInvoice === true ||
+              undefined,
+            has_purchase_invoice:
+              r.has_purchase_invoice === true ||
+              r.hasPurchaseInvoice === true ||
+              undefined,
+            currency_code:
+              String(r.currency_code ?? r.currencyCode ?? '').trim() || undefined,
+          } satisfies AccountsJobRow;
+        })
+        .filter((j): j is AccountsJobRow => Boolean(j));
+      return {
+        jobs,
+        meta: normalizePaginationMeta(meta, jobs.length, {
+          page: params.page ?? 1,
+          limit: params.limit ?? 25,
+        }),
+      };
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /**
    * GET /jobs — API accepts a single `job_type` query.
    * Segment lists pass `job_types` (e.g. ROAD_FREIGHT + LAND); we fan out per type
    * and merge so converted road jobs are not lost behind other modes on page 1.
@@ -2420,12 +2506,39 @@ export const jobService = {
 
   /**
    * POST /jobs/:id/change-status — anytime status; may return warnings[].
+   * PASS_TO_TRANSPORT requires branch + user (department resolves to TRANSPORT on BE).
    */
   async changeStatus(id: string, dto: ChangeJobStatusDto): Promise<JobChangeStatusResult> {
     assertId(id);
+    const status = String(dto.status ?? '').trim();
+    if (!status) throw new Error('Status is required.');
+    const body: Record<string, unknown> = { status };
+    if (dto.reason?.trim()) body.reason = dto.reason.trim();
+    if (isPassToTransportStatus(status)) {
+      const branchId = String(dto.branch_id ?? '').trim();
+      const branchName = String(dto.branch_name ?? '').trim();
+      const userId = String(dto.user_id ?? '').trim();
+      const userName = String(dto.user_name ?? '').trim();
+      if (!branchId && !branchName) {
+        throw new Error('Branch is required when passing to Transport.');
+      }
+      if (!userId && !userName) {
+        throw new Error('Assignee (user) is required when passing to Transport.');
+      }
+      if (branchId) body.branch_id = branchId;
+      if (branchName) body.branch_name = branchName;
+      if (userId) body.user_id = userId;
+      if (userName) body.user_name = userName;
+      if (dto.department_id?.trim()) body.department_id = dto.department_id.trim();
+      if (dto.department_name?.trim()) body.department_name = dto.department_name.trim();
+      else body.department_name = 'TRANSPORT';
+      if (dto.notes != null && String(dto.notes).trim()) {
+        body.notes = String(dto.notes).trim();
+      }
+    }
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(JOB_API.changeStatus(id), dto),
+        axiosInstance.post(JOB_API.changeStatus(id), body),
       );
       const data = unwrapEntity(res.data) ?? res.data;
       const record =
@@ -2490,9 +2603,15 @@ export const jobService = {
       const normalized = items
         .map((row) => normalizeJobReopenRequest(row))
         .filter((r): r is JobReopenRequest => Boolean(r?.id));
+      let enriched = normalized;
+      try {
+        enriched = await enrichJobReopenRequestsWithUserNames(normalized);
+      } catch {
+        enriched = normalized;
+      }
       return {
-        items: normalized,
-        meta: normalizePaginationMeta(meta, normalized.length, {
+        items: enriched,
+        meta: normalizePaginationMeta(meta, enriched.length, {
           page: params.page ?? 1,
           limit: params.limit ?? 50,
         }),

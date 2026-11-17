@@ -1,0 +1,74 @@
+{
+  "code": "TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY",
+  "thresholds": {
+    "geometryPt": 0.1,
+    "textPositionPt": 0.5,
+    "textWidthPt": 0.5,
+    "rasterRatio": 0.005,
+    "pixelmatch": 0.1,
+    "rasterDpi": 150,
+    "fontCompare": "mapped family and weight"
+  },
+  "page": {
+    "pass": true,
+    "reference": [
+      595,
+      842,
+      3
+    ],
+    "rendered": [
+      595,
+      842,
+      3
+    ]
+  },
+  "geometry": {
+    "pass": true,
+    "unmatchedLines": 0,
+    "unmatchedRects": 0
+  },
+  "staticText": {
+    "pass": true,
+    "spans": 322,
+    "failures": []
+  },
+  "dynamicText": {
+    "pass": true,
+    "spans": 302,
+    "failures": [],
+    "overflow": "wrap, clip, and shrink are implemented; the golden render uses the reference demo strings"
+  },
+  "raster": {
+    "measured": true,
+    "pass": false,
+    "mismatches": 100147,
+    "ratio": 0.0153,
+    "rasterizer": "pdftoppm",
+    "dpi": 150,
+    "heatmaps": [
+      "reports/output/raster/TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-1-diff.png",
+      "reports/output/raster/TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-2-diff.png",
+      "reports/output/raster/TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-3-diff.png"
+    ]
+  },
+  "pagination": {
+    "pass": false,
+    "status": "exercised",
+    "singlePage": {
+      "noOverflow": true,
+      "overflowSpans": [],
+      "headerPresent": true,
+      "summaryAfterLastRow": false,
+      "lastRowY": 220,
+      "summaryTop": 230.2
+    },
+    "multiPage": {
+      "headerRepeats": false,
+      "rowBreak": true,
+      "summaryAfterLastRow": false,
+      "footerRepeats": false,
+      "renderedPages": 3,
+      "referencePages": 3
+    }
+  }
+}

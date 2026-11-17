@@ -1973,6 +1973,51 @@ export function normalizeDeliveryAcknowledgement(raw: unknown): DeliveryAcknowle
   };
 }
 
+function reopenActorName(
+  record: Record<string, unknown>,
+  nestedKeys: string[],
+  flatKeys: string[],
+): string {
+  const flat = pickString(record, ...flatKeys);
+  if (flat) return flat;
+  for (const key of nestedKeys) {
+    const nested = asRecord(record[key]);
+    if (!nested) continue;
+    const name =
+      pickString(
+        nested,
+        'full_name',
+        'fullName',
+        'name',
+        'display_name',
+        'displayName',
+        'email',
+      ) ||
+      [pickString(nested, 'first_name', 'firstName'), pickString(nested, 'last_name', 'lastName')]
+        .filter(Boolean)
+        .join(' ')
+        .trim();
+    if (name) return name;
+  }
+  return '';
+}
+
+function reopenActorId(
+  record: Record<string, unknown>,
+  nestedKeys: string[],
+  flatKeys: string[],
+): string {
+  const flat = pickString(record, ...flatKeys);
+  if (flat) return flat;
+  for (const key of nestedKeys) {
+    const nested = asRecord(record[key]);
+    if (!nested) continue;
+    const id = pickString(nested, 'id', 'user_id', 'userId');
+    if (id) return id;
+  }
+  return '';
+}
+
 /** Normalize JobReopenRequest from POST/GET reopen-requests envelopes. */
 export function normalizeJobReopenRequest(raw: unknown): JobReopenRequest | null {
   const r = asRecord(unwrapEntity(raw)) ?? asRecord(raw);
@@ -1985,18 +2030,43 @@ export function normalizeJobReopenRequest(raw: unknown): JobReopenRequest | null
     pickString(r, 'job_number', 'jobNumber') ||
     (jobRec ? pickString(jobRec, 'job_number', 'jobNumber') : '') ||
     undefined;
+  const requestedById = reopenActorId(
+    r,
+    ['requested_by_user', 'requestedByUser', 'requester', 'requested_by'],
+    ['requested_by', 'requestedBy', 'requested_by_id', 'requestedById', 'requester_id'],
+  );
+  const requestedByName = reopenActorName(
+    r,
+    ['requested_by_user', 'requestedByUser', 'requester', 'requested_by'],
+    [
+      'requested_by_name',
+      'requestedByName',
+      'requester_name',
+      'requesterName',
+      'requested_by_full_name',
+    ],
+  );
+  const reviewedById = reopenActorId(
+    r,
+    ['reviewed_by_user', 'reviewedByUser', 'reviewer', 'reviewed_by'],
+    ['reviewed_by', 'reviewedBy', 'reviewed_by_id', 'reviewedById', 'reviewer_id'],
+  );
+  const reviewedByName = reopenActorName(
+    r,
+    ['reviewed_by_user', 'reviewedByUser', 'reviewer', 'reviewed_by'],
+    ['reviewed_by_name', 'reviewedByName', 'reviewer_name', 'reviewerName'],
+  );
   return {
     id,
     job_id: jobId || (jobRec ? pickString(jobRec, 'id') : '') || '',
     tenant_id: pickString(r, 'tenant_id', 'tenantId') || undefined,
-    requested_by: pickString(r, 'requested_by', 'requestedBy', 'requested_by_id') || undefined,
-    requested_by_name:
-      pickString(r, 'requested_by_name', 'requestedByName', 'requester_name') || undefined,
+    requested_by: requestedById || undefined,
+    requested_by_name: requestedByName || undefined,
     reason: pickString(r, 'reason') || '',
     target_status: pickString(r, 'target_status', 'targetStatus') || 'IN_PROGRESS',
     status: (pickString(r, 'status') || 'PENDING').toUpperCase(),
-    reviewed_by: pickString(r, 'reviewed_by', 'reviewedBy') || null,
-    reviewed_by_name: pickString(r, 'reviewed_by_name', 'reviewedByName') || null,
+    reviewed_by: reviewedById || null,
+    reviewed_by_name: reviewedByName || null,
     review_notes: pickString(r, 'review_notes', 'reviewNotes', 'notes') || null,
     reviewed_at: pickString(r, 'reviewed_at', 'reviewedAt') || null,
     created_at: pickString(r, 'created_at', 'createdAt') || undefined,

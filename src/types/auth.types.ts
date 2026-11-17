@@ -53,6 +53,9 @@ export type PermissionKey =
   | 'shipments.generate'
   | 'shipments.delete'
   | 'shipments.manage'
+  /** Accounts aggregate jobs list — GET /jobs/accounts */
+  | 'jobs.accounts.view'
+  | 'finance.accounts.view'
   // Quote Requests Integration (website KFPP bridge)
   | 'integrations.quote_requests.view'
   | 'integrations.quote_requests.manage_connection'
@@ -130,6 +133,12 @@ export interface AuthUser {
   canGrantPortalAccess?: boolean
   /** Idle logout window from GET /auth/me (`idle_timeout_minutes`). */
   idleTimeoutMinutes?: number
+  /**
+   * Job costing visibility from GET /auth/me (User.can_see_sales / can_see_cost).
+   * Tenant Admin / unrestricted → treat as both in costing helpers.
+   */
+  canSeeSales?: boolean
+  canSeeCost?: boolean
 }
 
 // Decoded JWT payload shape from NestJS backend

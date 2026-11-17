@@ -437,6 +437,18 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
   const unrestrictedOps = pickUnrestrictedOpsFromRecord(record)
   const canGrantPortalAccess = pickCanGrantPortalAccessFromRecord(record)
   const idleTimeoutMinutes = pickIdleTimeoutMinutesFromRecord(record)
+  const canSeeSales = (() => {
+    const v = record.can_see_sales ?? record.canSeeSales
+    if (v === true || v === 'true' || v === 1 || v === '1') return true
+    if (v === false || v === 'false' || v === 0 || v === '0') return false
+    return undefined
+  })()
+  const canSeeCost = (() => {
+    const v = record.can_see_cost ?? record.canSeeCost
+    if (v === true || v === 'true' || v === 1 || v === '1') return true
+    if (v === false || v === 'false' || v === 0 || v === '0') return false
+    return undefined
+  })()
 
   return {
     id: id || email,
@@ -456,6 +468,8 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     ...(unrestrictedOps !== undefined ? { unrestrictedOps } : {}),
     ...(canGrantPortalAccess !== undefined ? { canGrantPortalAccess } : {}),
     ...(idleTimeoutMinutes !== undefined ? { idleTimeoutMinutes } : {}),
+    ...(canSeeSales !== undefined ? { canSeeSales } : {}),
+    ...(canSeeCost !== undefined ? { canSeeCost } : {}),
   }
 }
 

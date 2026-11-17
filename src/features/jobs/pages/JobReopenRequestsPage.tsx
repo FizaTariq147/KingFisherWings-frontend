@@ -2,12 +2,20 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AlertCircle, CheckCircle2, RefreshCw, X } from 'lucide-react';
 import { appType } from '@/lib/erpTypography';
+import { isUuid } from '@/lib/isUuid';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
 import { Modal } from '@/components/ui/Modal';
 import { jobDetailPath, jobDisplayNumber } from '../utils/jobRoute';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import type { JobReopenRequest, JobReopenRequestStatus } from '../types/job.types';
+
+/** Prefer a human name; never surface a bare user UUID in the inbox. */
+function requesterLabel(row: JobReopenRequest): string {
+  const name = String(row.requested_by_name ?? '').trim();
+  if (name && !isUuid(name)) return name;
+  return '—';
+}
 import {
   useApproveJobReopenRequest,
   useJobReopenRequests,
@@ -200,7 +208,7 @@ export default function JobReopenRequestsPage() {
                         ) : null}
                       </td>
                       <td className="px-2 py-2.5 text-[#334155]">
-                        {row.requested_by_name || row.requested_by || '—'}
+                        {requesterLabel(row)}
                         {row.created_at ? (
                           <div className="mt-0.5 text-[11px] text-[#64748B]">
                             {new Date(row.created_at).toLocaleString()}
@@ -246,7 +254,11 @@ export default function JobReopenRequestsPage() {
                           </div>
                         ) : (
                           <span className="text-[12px] text-[#64748B]">
-                            {row.reviewed_by_name || row.review_notes || '—'}
+                            {(row.reviewed_by_name && !isUuid(row.reviewed_by_name)
+                              ? row.reviewed_by_name
+                              : null) ||
+                              row.review_notes ||
+                              '—'}
                           </span>
                         )}
                       </td>

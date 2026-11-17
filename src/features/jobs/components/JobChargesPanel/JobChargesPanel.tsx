@@ -39,7 +39,9 @@ import { SearchableSelect } from '@/features/masters/components/SearchableSelect
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { useParties } from '@/features/parties/hooks/useParties';
 import { JobSearchSelect, ShipmentSearchSelect } from '@/features/shared/entity-search';
+import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
+import { resolveJobCostingAudience } from '../../utils/jobCostingVisibility';
 import { VOUCHER_ROUTE_PREFIX } from '@/features/vouchers/api/voucher.api';
 import {
   VOUCHER_TYPE_LABELS,
@@ -558,8 +560,15 @@ function mergeSideAttachCount(
 }
 
 export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
+  const { user } = useAuth();
+  const costingAudience = resolveJobCostingAudience(job, user);
+  const showSaleSide = costingAudience === 'sale' || costingAudience === 'both';
+  const showCostSide = costingAudience === 'cost' || costingAudience === 'both';
+
   const [showHistory, setShowHistory] = useState(false);
-  const [gridFilter, setGridFilter] = useState<GridFilter>('all');
+  const [gridFilter, setGridFilter] = useState<GridFilter>(() =>
+    costingAudience === 'sale' ? 'sale' : costingAudience === 'cost' ? 'cost' : 'all',
+  );
   const [sidePanel, setSidePanel] = useState<SidePanel>(null);
   const [voucherType, setVoucherType] = useState<VoucherType>('JOURNAL');
   const [voucherSide, setVoucherSide] = useState<'SALE' | 'COST'>('SALE');
@@ -1753,12 +1762,28 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
     });
   };
 
+  if (costingAudience === 'none') {
+    return (
+      <p className="text-[13px] text-[#64748B]">
+        Costing is hidden for your account (neither sale nor cost visibility). Ask a Tenant
+        Admin to enable Can see sales and/or Can see cost on your user profile.
+      </p>
+    );
+  }
+
   return (
     <div className="kf-section-enter space-y-4">
       {error ? (
         <p className="text-sm text-[var(--color-danger-600)]">{error}</p>
       ) : null}
       {msg && <p className="text-sm text-[var(--color-success-700)]">{msg}</p>}
+      {costingAudience !== 'both' ? (
+        <p className="rounded-sm border border-amber-200 bg-amber-50 px-3 py-2 text-[12px] text-amber-900">
+          {costingAudience === 'sale'
+            ? 'Sale-only costing view — cost amounts and cost edits are hidden.'
+            : 'Cost-only costing view — sale amounts and sale edits are hidden.'}
+        </p>
+      ) : null}
 
       {/* Fresa Costing toolbar — every button a unique color */}
       <div className="kf-section-ambient space-y-2 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-3 py-2.5">
@@ -2079,8 +2104,8 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                     (saleAmt != null && costAmt != null
                       ? Number(saleAmt) - Number(costAmt)
                       : undefined);
-                  const saleEditable = c.sale?.editable !== false;
-                  const costEditable = c.cost?.editable !== false;
+                  const saleEditable = showSaleSide && c.sale?.editable !== false;
+                  const costEditable = showCostSide && c.cost?.editable !== false;
                   // Per-side only — shared line attachment_count must not paint both badges.
                   const saleAtt =
                     sideAttachCounts[c.id]?.SALE ??
@@ -2119,74 +2144,105 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
                     >
                       {linesCount ?? '—'}
                     </td>
-                    <td className={SALE_TD}>{saleAmt ?? '—'}</td>
                     <td className={SALE_TD}>
-                      {c.sale_tax_amount ?? c.sale?.tax_amount ?? '—'}
+                      {showSaleSide ? (saleAmt ?? '—') : '—'}
                     </td>
                     <td className={SALE_TD}>
-                      {c.sale_dr_cr ?? c.sale?.dr_cr ?? (!c.is_cost ? 'CR' : '—')}
+                      {showSaleSide
+                        ? (c.sale_tax_amount ?? c.sale?.tax_amount ?? '—')
+                        : '—'}
+                    </td>
+                    <td className={SALE_TD}>
+                      {showSaleSide
+                        ? (c.sale_dr_cr ?? c.sale?.dr_cr ?? (!c.is_cost ? 'CR' : '—'))
+                        : '—'}
                     </td>
                     <td className={`${SALE_TD} text-center`}>
-                      <CostingGridIconButton
-                        tone="sale"
-                        icon={<Pencil className="h-4 w-4 stroke-[2.5]" />}
-                        title={
-                          saleEditable
-                            ? 'Edit sale (PATCH …/sale)'
-                            : 'Sale not editable'
-                        }
-                        disabled={!saleEditable || mutations.updateSale.isPending}
-                        onClick={() => openSideEdit(c, 'SALE')}
-                      />
+                      {showSaleSide ? (
+                        <CostingGridIconButton
+                          tone="sale"
+                          icon={<Pencil className="h-4 w-4 stroke-[2.5]" />}
+                          title={
+                            saleEditable
+                              ? 'Edit sale (PATCH …/sale)'
+                              : 'Sale not editable'
+                          }
+                          disabled={!saleEditable || mutations.updateSale.isPending}
+                          onClick={() => openSideEdit(c, 'SALE')}
+                        />
+                      ) : (
+                        '—'
+                      )}
                     </td>
                     <td className={`${SALE_TD} text-center`}>
-                      <CostingGridIconButton
-                        tone="sale"
-                        icon={<Paperclip className="h-4 w-4 stroke-[2.5]" />}
-                        title="Sale attachments (?side=SALE)"
-                        badge={saleAtt}
-                        onClick={() => openSideAttach(c, 'SALE')}
-                      />
+                      {showSaleSide ? (
+                        <CostingGridIconButton
+                          tone="sale"
+                          icon={<Paperclip className="h-4 w-4 stroke-[2.5]" />}
+                          title="Sale attachments (?side=SALE)"
+                          badge={saleAtt}
+                          onClick={() => openSideAttach(c, 'SALE')}
+                        />
+                      ) : (
+                        '—'
+                      )}
                     </td>
-                    <td className={COST_TD}>{costAmt ?? '—'}</td>
                     <td className={COST_TD}>
-                      {c.cost_tax_amount ?? c.cost?.tax_amount ?? '—'}
+                      {showCostSide ? (costAmt ?? '—') : '—'}
                     </td>
                     <td className={COST_TD}>
-                      {c.cost_dr_cr ?? c.cost?.dr_cr ?? (c.is_cost ? 'DR' : '—')}
+                      {showCostSide
+                        ? (c.cost_tax_amount ?? c.cost?.tax_amount ?? '—')
+                        : '—'}
+                    </td>
+                    <td className={COST_TD}>
+                      {showCostSide
+                        ? (c.cost_dr_cr ?? c.cost?.dr_cr ?? (c.is_cost ? 'DR' : '—'))
+                        : '—'}
                     </td>
                     <td className={`${COST_TD} text-center`}>
-                      <CostingGridIconButton
-                        tone="cost"
-                        icon={<Pencil className="h-4 w-4 stroke-[2.5]" />}
-                        title={
-                          costEditable
-                            ? 'Edit cost (PATCH …/cost)'
-                            : 'Cost not editable'
-                        }
-                        disabled={!costEditable || mutations.updateCost.isPending}
-                        onClick={() => openSideEdit(c, 'COST')}
-                      />
+                      {showCostSide ? (
+                        <CostingGridIconButton
+                          tone="cost"
+                          icon={<Pencil className="h-4 w-4 stroke-[2.5]" />}
+                          title={
+                            costEditable
+                              ? 'Edit cost (PATCH …/cost)'
+                              : 'Cost not editable'
+                          }
+                          disabled={!costEditable || mutations.updateCost.isPending}
+                          onClick={() => openSideEdit(c, 'COST')}
+                        />
+                      ) : (
+                        '—'
+                      )}
                     </td>
                     <td className={`${COST_TD} text-center`}>
-                      <CostingGridIconButton
-                        tone="cost"
-                        icon={<Paperclip className="h-4 w-4 stroke-[2.5]" />}
-                        title="Cost attachments (?side=COST)"
-                        badge={costAtt}
-                        onClick={() => openSideAttach(c, 'COST')}
-                      />
+                      {showCostSide ? (
+                        <CostingGridIconButton
+                          tone="cost"
+                          icon={<Paperclip className="h-4 w-4 stroke-[2.5]" />}
+                          title="Cost attachments (?side=COST)"
+                          badge={costAtt}
+                          onClick={() => openSideAttach(c, 'COST')}
+                        />
+                      ) : (
+                        '—'
+                      )}
                     </td>
                     <td
                       className={`${COSTING_TD} tabular-nums font-semibold ${
-                        gp != null && gp >= 0
+                        showSaleSide &&
+                        showCostSide &&
+                        gp != null &&
+                        gp >= 0
                           ? 'text-[var(--color-success-700)]'
-                          : gp != null
+                          : showSaleSide && showCostSide && gp != null
                             ? 'text-[var(--color-danger-600)]'
                             : ''
                       }`}
                     >
-                      {gp ?? '—'}
+                      {showSaleSide && showCostSide ? (gp ?? '—') : '—'}
                     </td>
                     <td className={COSTING_TD}>
                       {c.sale?.bill_to_name ||

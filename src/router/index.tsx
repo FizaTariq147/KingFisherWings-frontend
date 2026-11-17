@@ -28,6 +28,7 @@ import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
 import ReportsMenuPage from '../pages/reports/ReportsMenuPage'
 import ReportCatalogPage from '../features/reports/pages/ReportCatalogPage'
+import SpecReviewPage from '../features/reports/pages/SpecReviewPage'
 
 import CustomerServiceMenuPage from '../pages/customers/CustomerServiceMenuPage'
 import VendorServiceMenuPage from '../pages/vendors/VendorServiceMenuPage'
@@ -128,6 +129,7 @@ import JobBarcodeScanPage from '../features/jobs/pages/JobBarcodeScanPage'
 import JobsOnHoldPage from '../features/jobs/pages/JobsOnHoldPage'
 import JobsClosedPage from '../features/jobs/pages/JobsClosedPage'
 import JobReopenRequestsPage from '../features/jobs/pages/JobReopenRequestsPage'
+import AccountsJobsPage from '../features/jobs/pages/AccountsJobsPage'
 import StaffAllJobsPage from '../features/jobs/pages/StaffAllJobsPage'
 import DepartmentHubPage from '../features/jobs/pages/DepartmentHubPage'
 import CustomsClearanceHubPage from '../features/customs-clearance/pages/CustomsClearanceHubPage'
@@ -807,6 +809,9 @@ export const router = createBrowserRouter([
             children: [
               { path: '/reports', element: <ReportsMenuPage /> },
               { path: '/reports/catalog', element: <ReportCatalogPage /> },
+              ...(import.meta.env.DEV
+                ? [{ path: '/reports/spec-review', element: <SpecReviewPage /> }]
+                : []),
             ],
           },
           { path: '/settings', element: <SettingsMenuPage /> },
@@ -939,12 +944,18 @@ export const router = createBrowserRouter([
           {
             element: (
               <ProtectedRoute
-                requireAnyPermission={['menu_accounts', 'menu_finance']}
+                requireAnyPermission={[
+                  'menu_accounts',
+                  'menu_finance',
+                  'jobs.accounts.view',
+                  'finance.accounts.view',
+                ]}
                 requireEnabledModule="finance"
               />
             ),
             children: [
               { path: '/accounts', element: <AccountsMenuPage /> },
+              { path: '/accounts/jobs', element: <AccountsJobsPage /> },
               { path: '/gl/accounts', element: <ChartOfAccountListPage /> },
               { path: '/gl/accounts/new', element: <ChartOfAccountCreatePage /> },
               { path: '/gl/accounts/tree', element: <ChartOfAccountTreePage /> },

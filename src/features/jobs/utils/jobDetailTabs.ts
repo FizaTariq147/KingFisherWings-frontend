@@ -57,6 +57,8 @@ export function jobDetailTabLabel(key: string): string {
       return 'Section files';
     case 'tracking':
       return 'Track & Trace';
+    case 'handoff':
+      return 'Handoff';
     default:
       return key
         .trim()
@@ -119,6 +121,9 @@ export function toApiDetailTabKey(value: string): string {
     norm === 'track_and_trace'
   ) {
     return 'tracking';
+  }
+  if (norm === 'handoff' || norm === 'handoff_limited' || norm === 'transport_handoff') {
+    return 'handoff';
   }
 
   // Pass through unknown API keys unchanged (backend is source of truth).
@@ -348,10 +353,17 @@ export function resolveJobActionPanels(
     return mode === 'handoff_limited' || mode === 'handoff-limited';
   })();
 
-  // Handoff-limited: port-token only (containers live on tabs; trucker on detail panel).
+  // Handoff-limited: port-token + documents (upload allowed); no finance/costing panels.
   if (handoffLimited) {
-    if (job.actions?.can_port_token === false) return [];
-    return ['port-token'];
+    const out: JobActionPanelKey[] = [];
+    if (job.actions?.can_port_token !== false) out.push('port-token');
+    if (
+      job.actions?.can_documents !== false &&
+      job.actions?.can_upload_docs !== false
+    ) {
+      out.push('documents');
+    }
+    return out;
   }
 
   const houseCount = opts.houseJobsCount ?? 0;
@@ -370,19 +382,11 @@ export function resolveJobActionPanels(
   return out;
 }
 
-const HANDOFF_LIMITED_TAB_KEYS = new Set([
-  'info',
-  'actual_container',
-  'actual_containers',
-  'containers',
-  'department',
-]);
-
 /**
  * Tab strip = only keys from GET /jobs/:id/detail `tabs`.
  * Each key is passed as-is (normalized) to GET /jobs/:id/detail/:tab — no hardcoded fallback.
  * Sea ↔ air: air hides container tabs; sea/NVOCC hides mawb.
- * Handoff-limited: info + containers only (no costing / show_all / ledger / booking).
+ * Handoff-limited: single `handoff` tab (essentials folded in) — no info/show_all/costing.
  */
 export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
   const apiTabs = job.tabs;
@@ -394,7 +398,21 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
       .toLowerCase();
     return mode === 'handoff_limited' || mode === 'handoff-limited';
   })();
-  const canViewContainers = job.actions?.can_view_containers !== false;
+
+  // Transport handoff: one tab only — payload rendered by JobHandoffPanel.
+  if (handoffLimited) {
+    const handoffFromApi = apiTabs.find(
+      (t) => toApiDetailTabKey(t?.key ?? '') === 'handoff',
+    );
+    return [
+      {
+        key: 'handoff',
+        label: handoffFromApi?.label?.trim() || jobDetailTabLabel('handoff'),
+      },
+    ];
+  }
+
+  const canViewCosting = job.actions?.can_view_costing !== false;
 
   const seen = new Set<string>();
   const out: JobDetailTab[] = [];
@@ -416,20 +434,11 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
     if (key === 'planned_container') {
       continue;
     }
-    if (handoffLimited) {
-      if (!HANDOFF_LIMITED_TAB_KEYS.has(key)) continue;
-      if (
-        (key === 'actual_container' ||
-          key === 'actual_containers' ||
-          key === 'containers') &&
-        !canViewContainers
-      ) {
-        continue;
-      }
-      // Strip show_all / costing even if API mis-labels them.
-      if (isJobShowAllTab(key) || key === 'costing' || key === 'charges' || key === 'ledger') {
-        continue;
-      }
+    if (
+      !canViewCosting &&
+      (key === 'costing' || key === 'charges')
+    ) {
+      continue;
     }
     // Sea / NVOCC: mawb tab hidden.
     if (!air && key === 'mawb') {
@@ -469,13 +478,8 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
   }
 
   // FE-owned finance tab — GET /jobs/:id/ledger (not a detail/:tab envelope).
-  if (!handoffLimited && !seen.has('ledger')) {
+  if (!seen.has('ledger')) {
     out.push({ key: 'ledger', label: jobDetailTabLabel('ledger') });
-  }
-
-  // Handoff-limited with empty API tabs: ensure containers surface exists.
-  if (handoffLimited && canViewContainers && !out.some((t) => HANDOFF_LIMITED_TAB_KEYS.has(t.key))) {
-    out.push({ key: 'actual_container', label: 'Containers' });
   }
 
   return out;
@@ -498,13 +502,8 @@ export function defaultJobDetailTabKey(
     return mode === 'handoff_limited' || mode === 'handoff-limited';
   })();
   if (handoffLimited) {
-    const containers = tabs.find((t) =>
-      ['actual_container', 'actual_containers', 'containers'].includes(
-        toApiDetailTabKey(t.key),
-      ),
-    );
-    if (containers) return containers.key;
-    return tabs[0]!.key;
+    const handoff = tabs.find((t) => toApiDetailTabKey(t.key) === 'handoff');
+    return handoff?.key ?? tabs[0]!.key;
   }
   if (preferBookingForm) {
     const booking = tabs.find((t) => toApiDetailTabKey(t.key) === 'booking_form');

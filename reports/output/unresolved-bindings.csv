@@ -1,0 +1,361 @@
+code,span,text,nearest_label,side,reason
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s1,1/28/2019,,,no static label to the left or above
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s4,"http://demo.fresagold.com:19786/ords/f?p=127:3002:6858750222047:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",User :,above,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s16,FRESA DEMO INDIA PVT L,AX INVOICE</h3>,above,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s21,.fresatechnologies.com,WEB : www,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s29,"10, DBS CENTRE, NUNGAMBAKKAM HIGH",T,above,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s30,"ROAD, NUNGAMBAKKAM, CHENNAI, T",T,above,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s32,"LNADU, INDIA, 600084",,,no static label to the left or above
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s43,4G LOGISTICS INDIA PVT L,Due Date,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s53,B/EXP/19/0251 / 22-JAN-19,Shipment No.,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s57,MBLC9878909999 / 21-JAN-19,Shipment No.,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s87,B/EXP/19/0251 MBL NO. MBLC9878909999,Narration,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s88,/ HBL NO. PLMAAJEA00080 / JOB NO.CEX,MSC MARINA / 876,above,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s96,REFE NO. 987890 / 22-JAN-19,Reference No.,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s100,1.000000,Reference No.,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s103,8987777 / 25-JAN-19,IGM No.,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s110,O JEBEL ALI - CMA CGM - PO NO. 9877777 DA,Remarks,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s127,20.000,TCNU9876543,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s161,100.00,1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s163,70.00000,1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s164,100.00,1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s165,"7,000.00",1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s166,"7,000.00",1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s172,"5,500.00",1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s174,1.00000,1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s175,"5,500.00",1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s176,"5,500.00",1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s177,9.00,1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s178,495.00,1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s179,9.00,1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s180,495.00,1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s181,"6,490.00",1,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s184,300.00,SEAL FEE,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s186,1.00000,SEAL FEE,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s187,300.00,SEAL FEE,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s188,300.00,SEAL FEE,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s189,9.00,SEAL FEE,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s190,27.00,SEAL FEE,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s191,9.00,SEAL FEE,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s192,27.00,SEAL FEE,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s193,354.00,SEAL FEE,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s208,792.00,SGST,above,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s209,792.00,CGST,above,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s210,"17,384.00",(INR),above,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s212,"17,384.00",Rupee Seventeen Thousand Three Hundred Eighty-Four Only,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s231,ram@fresatechnologies.com,Created By :,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s233,ram@fresatechnologies.com,User :,left,label is not in the dictionary
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,p1s235,Powered by Fresa T,User :,left,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s23,FRESA DEMO DUBAI UAE LLC,F/Agent Name & Ref.,above,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s24,DUBAI UNITED ARAB EMIRATES,F/Agent Name & Ref.,above,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s27,"JEBEL ALI, UNITED ARAB",CMA CGM/9887,left,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s29,"JEBEL ALI, UNITED ARAB",CMA CGM/9887,left,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s36,ram@fresatechnologies.com,Prepared By :,left,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s38,FRESA DEMO INDIA PVT LTD,F/Agent Name & Ref.,above,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s40,"Email: demo@fresatechnologies.com, user@fresatechnologies.com",Tel: 9884124194,above,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s49,"18,000.00",125 PACKAGES,left,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s50,24.000,125 PACKAGES,left,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s51,STC: VALVE MATERIALS FOR MACHINERY PARTS,FCL,above,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s53,ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT,FREIGHT PREPAID,above,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s55,ABCU9877666 / SEAL NO. : SL345566,Mark & No.,above,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s78,PAYABLE AT : CHENNAI,FREIGHT PREPAID,above,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s80,AS AGENT FOR THE CARRIER,"In WITNESS whenreof one (1) original Bill of Lading has been signed if not otherwise stated above, the",left,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s82,FRESA DEMO INDIA PVT LTD,By,left,label is not in the dictionary
+HBL_DRAFT_REPORT_FORMAT_JASPER,p1s85,ONE(1X20' DC) CONTAINER ONLY,Total Number of Containers SAY,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s10,4G LOGISTICS INDIA PVT LTD,Notify 1,above,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s11,10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM CHENNAI,Notify 1,above,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s12,TAMILNADU 600084 INDIA,Notify 1,above,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s44,16-JAN-19/ 25-JAN-19,ETD / ETA,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s51,100,No. of Pcs,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s58,B/SFI/19/0166 / 22-JAN-19,Shipment No.,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s74,STC: VALVE MATERIALS,TENU9876666,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s75,100,TENU9876666,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s76,"18,000.000",TENU9876666,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s77,20.000,TENU9876666,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s89,TERMINAL HANDLING CHARGES,Charge Description,above,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s92,1.00000,1,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s93,"5,000.00",1,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s94,"5,000.00",1,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s95,"5,900.00",1,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s99,1.00000,DELIVERY ORDER FEE,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s100,"3,000.00",DELIVERY ORDER FEE,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s101,"3,000.00",DELIVERY ORDER FEE,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s102,"3,540.00",DELIVERY ORDER FEE,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s103,ALL INCL - FCL IMPORT,DELIVERY ORDER FEE,above,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s106,1.00000,1,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s107,756.50,1,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s108,756.50,1,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s109,892.67,1,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s114,3. Cheque in favor of “FRESA DEMO COMPANY”.,2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.,above,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s119,FRESA DEMO INDIA PVT LTD,"Yours faithfully ,",above,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s124,RAM@FRESATECHNOLOGIES.COM,Printed By :,left,label is not in the dictionary
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,p1s126,Powered By : Fresa Technologies,Printed By :,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s1,FRESA DEMO INDIA PVT LTD,,,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s5,01,FROM DATE :,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s9,18,FROM DATE :,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s11,30,FROM DATE :,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s15,18,FROM DATE :,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s22,CASH AT BANK AND IN HAND,ASSET,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s26,0.00,HSBCBANK,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s27,"34,600.00",HSBCBANK,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s29,"33,100.00",HSBCBANK,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s36,6110.10.00,CURRENT ASSET,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s41,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s42,"534,305.17",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s44,"388,949.17",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s45,6110.10.20,CURRENT ASSET,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s47,EMIRATES BANK (USD),-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s48,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s49,"3,896.40",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s50,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s51,"3,896.40",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s52,6210.00.00,CURRENT ASSET,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s54,TRADE DEBTORS CONTROL,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s55,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s56,"2,204,707.23",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s58,"1,966,166.17",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s59,6210.00.01,CURRENT ASSET,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s61,TRADE DEBTORS CONTROL,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s64,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s65,"317,527.50",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s67,"276,080.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s68,6217,CURRENT ASSET,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s73,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s74,"173,500.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s76,"66,780.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s77,7108.00.00,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s80,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s81,"2,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s82,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s83,"2,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s84,7500,CURRENT ASSET,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s89,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s90,"106,720.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s93,7510.10.01,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s98,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s99,900.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s100,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s101,900.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s102,7510.10.03,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s107,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s108,"25,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s110,500.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s111,7510.10.04,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s116,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s117,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s120,7510.10.06,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s125,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s126,"68,500.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s129,7510.10.07,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s134,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s135,"374,152.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s137,"267,174.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s138,7510.10.09,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s140,I & M BANK RWANDA LTD(USD),-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s141,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s142,"1,623.50",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s143,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s144,"1,623.50",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s145,7530.10.03,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s148,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s149,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s152,7530.10.08,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s155,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s156,"124,500.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s159,7560.10.03,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s164,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s165,118.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s166,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s167,118.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s168,7560.10.10,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s171,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s172,"228,501.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s174,"127,101.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s175,7560.10.11,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s178,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s179,"1,362,504.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s180,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s181,"1,362,504.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s182,7570.10.01,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s187,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s188,"6,400.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s189,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s190,"6,400.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s191,7610.10.06,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s196,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s197,"5,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s198,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s199,"5,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s200,99.101,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s203,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s204,"22,305.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s205,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s206,"22,305.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s210,0.00,CNYBANK,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s211,"1,500.00",CNYBANK,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s212,0.00,CNYBANK,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s213,"1,500.00",CNYBANK,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s217,0.00,HDFC,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s218,"881,889.54",HDFC,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s220,"769,605.38",HDFC,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s224,0.00,ICICI,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s225,"23,657.00",ICICI,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s227,"3,557.00",ICICI,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s230,KOTAK MAHINDRA BANK,KMB,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s231,0.00,KMB,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s232,"22,146.00",KMB,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s233,0.00,KMB,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s234,"22,146.00",KMB,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s237,PUNJAB NATIONAL BANK,PNB,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s238,0.00,PNB,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s239,"663,366.68",PNB,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s241,"655,366.68",PNB,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s245,0.00,SUNDRYDEBTORS,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s246,"12,184,191.05",SUNDRYDEBTORS,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s248,"7,188,684.62",SUNDRYDEBTORS,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s252,0.00,TDSRECEIVABLE,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s253,710.00,TDSRECEIVABLE,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s255,210.00,TDSRECEIVABLE,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s261,CURRENT LIABILITIES,TDSRECEIVABLE,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s265,0.00,TDSPAYABLE,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s266,"1,090.00",TDSPAYABLE,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s275,7030.00.00,DIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s278,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s279,"15,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s280,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s281,"15,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s289,0.00,ASSET,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s290,"19,390,310.07",ASSET,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s292,"12,672,543.12",ASSET,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s295,12008,ACCOUNTS PAYABLE,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s298,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s299,"1,049,168.30",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s307,CURRENT LIABILITIES,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s308,100.9900,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s311,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s312,0.50,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s313,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s314,0.50,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s315,8210.00.00,-,above,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s317,TRADE CREDITORS CONTROL,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s318,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s319,"72,100.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s325,0.00,CGST0001,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s326,"1,152.00",CGST0001,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s328,747.00,CGST0001,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s332,0.00,CGST0003,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s333,182.50,CGST0003,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s339,0.00,GST0001,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s340,"2,520.00",GST0001,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s341,0.00,GST0001,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s342,"2,520.00",GST0001,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s346,0.00,GST0002,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s347,0.00,GST0002,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s354,0.00,GST0003,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s355,0.00,GST0003,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s361,0.00,GST0003,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s362,182.50,GST0003,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s368,0.00,GST0004,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s369,"13,892.48",GST0004,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s371,"12,852.48",GST0004,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s375,0.00,IGST0001,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s376,"15,772.50",IGST0001,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s383,0.00,IGST0002,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s384,"95,480.84",IGST0002,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s385,0.00,IGST0002,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s386,"95,480.84",IGST0002,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s390,0.00,SGST0002,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s391,"1,652.00",SGST0002,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s393,"1,247.00",SGST0002,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s401,0.00,LIABILITY,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s402,"1,252,103.62",LIABILITY,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s407,1010.10.10,DIRECT INCOME,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s412,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s413,"41,590.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s416,1040.10.10,DIRECT INCOME,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s418,SEA FREIGHT FCL REVENUE,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s419,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s420,"364,749.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s423,1050.10.10,DIRECT INCOME,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s425,SEA FREIGHT GROUPAGE REVENUE,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s426,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s427,"74,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s434,0.00,AIREXP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s435,"20,000.00",AIREXP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s437,"9,400.00",AIREXP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s440,SEA EXPORT CLEARANCE,SEAEXP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s441,0.00,SEAEXP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s442,"2,000.00",SEAEXP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s443,0.00,SEAEXP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p1s444,"2,000.00",SEAEXP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s1,FRESA DEMO INDIA PVT LTD,,,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s5,01,FROM DATE :,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s9,18,FROM DATE :,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s11,30,FROM DATE :,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s15,18,FROM DATE :,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s23,SEA IMPORT CLEARANCE,SEAIMP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s24,0.00,SEAIMP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s25,"2,700.00",SEAIMP,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s34,2030.10.23,INDIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s36,3C EXPRESS FRANCE P/S,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s37,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s38,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s41,2030.10.24,INDIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s44,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s45,"14,500.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s54,99.102,INDIRECT INCOME,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s56,DUBAI TRANSPORT INCOME,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s57,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s58,"10,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s59,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s60,"10,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s68,0.00,INCOME,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s69,"529,539.00",INCOME,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s74,1010.20.10,DIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s78,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s79,"842,857.56",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s81,"842,407.06",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s82,1040.20.10,DIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s84,SEA FREIGHT FCL COST,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s85,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s86,"1,583,069.80",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s88,"1,578,569.80",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s89,1050.20.10,DIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s91,SEA FREIGHT GROUPAGE COST,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s92,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s93,"1,037,761.44",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s95,"1,031,033.44",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s96,3450.10.08,DIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s99,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s100,"10,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s103,6710.10.10,DIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s108,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s110,00.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s112,400.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s113,6710.10.35,DIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s118,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s119,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s128,2520.00.00,INDIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s131,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s132,"32,769.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s134,"32,692.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s135,3012.00.30,INDIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s138,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s139,"24,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s140,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s141,"24,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s142,3218.00.00,INDIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s145,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s146,"1,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s147,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s148,"1,000.00",-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s149,3263.00.00,INDIRECT EXPENSES,above,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s152,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s153,1.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s154,0.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s155,1.00,-,left,no static label to the left or above
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s159,0.00,STAFFSALARY,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s160,0.00,STAFFSALARY,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s170,0.00,EXPENSE,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s171,"3,531,958.80",EXPENSE,left,label is not in the dictionary
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,p2s173,"3,501,603.30",EXPENSE,left,label is not in the dictionary

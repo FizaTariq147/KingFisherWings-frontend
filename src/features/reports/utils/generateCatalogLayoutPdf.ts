@@ -39,6 +39,11 @@ import {
   generateOfficialMeasuredPdf,
   isOfficialMeasuredNativeCode,
 } from '../templates/official';
+import {
+  generateReferenceAccuratePdf,
+  isReferenceAccuratePdfCode,
+} from '../templates/referenceAccurate';
+import { fetchHawbDraft2PlaywrightPdf } from '../engines/pdf/playwrightHtml/hawbDraft2PrintClient';
 
 /**
  * Client layout PDF for catalogue codes when backend pack is unavailable.
@@ -143,6 +148,11 @@ export async function generateCatalogLayoutPdf(
     });
   const allowSample = allowsFresaSamplePdf(workflow);
 
+  // Four independent reference forms. Other measured codes stay on the shared face drawer.
+  if (!allowSample && isReferenceAccuratePdfCode(code)) {
+    return generateReferenceAccuratePdf(code, data);
+  }
+
   // Measured native faces. Browse may still open the unmodified Fresa sample.
   if (!allowSample && isOfficialMeasuredNativeCode(code) && !isHblJasperPilotCode(code)) {
     const { blob } = await generateOfficialMeasuredPdf(code, {
@@ -219,6 +229,23 @@ export async function generateCatalogLayoutPdf(
       appendCustomerTerms: options.appendCustomerTerms,
     });
     return { blob, preview: hblPreviewMeta(code) };
+  }
+
+  // HAWB Draft 2 uses the Playwright print of its own face.
+  // The html2canvas capture below remains for the other four official HAWB codes,
+  // and for Draft 2 only when this print service is not running.
+  if (
+    !allowSample &&
+    code.trim().toUpperCase() === 'HAWB_DRAFT_REPORT_FORMAT_2' &&
+    (data.entityBound ||
+      options.preferHawbOfficial ||
+      workflow === REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE)
+  ) {
+    const printed = await fetchHawbDraft2PlaywrightPdf({
+      ...data,
+      logoUrl: options.logoUrl || data.logoUrl,
+    });
+    if (printed) return { blob: printed, preview: hawbPreviewMeta(code) };
   }
 
   // Official HAWB native layouts — Freightnest generate (entity-bound or preferHawbOfficial).

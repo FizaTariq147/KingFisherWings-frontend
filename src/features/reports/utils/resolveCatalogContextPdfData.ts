@@ -1,6 +1,7 @@
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import { jobService } from '@/features/jobs/services/job.service';
 import type { JobCharge } from '@/features/jobs/types/job.types';
+import { organizationService } from '@/features/organization/services/organization.service';
 import { partyService } from '@/features/parties/services/party.service';
 import { quotationService } from '@/features/quotations/services/quotation.service';
 import { shipmentService } from '@/features/shipments/services/shipment.service';
@@ -32,7 +33,9 @@ function money(n: number | null | undefined): string | undefined {
   });
 }
 
-function chargeLinesFromJobCharges(charges: JobCharge[]): InvoiceFormatPdfLine[] {
+function chargeLinesFromJobCharges(
+  charges: Array<JobCharge & { tax_amount?: number | null }>,
+): InvoiceFormatPdfLine[] {
   return charges
     .filter((c) => !c.is_cost)
     .map((c) => ({
@@ -40,7 +43,15 @@ function chargeLinesFromJobCharges(charges: JobCharge[]): InvoiceFormatPdfLine[]
       qty: c.quantity != null ? String(c.quantity) : undefined,
       rate: money(c.unit_price),
       amount: money(c.sale_amount ?? c.line_total ?? c.unit_price),
+      currency: c.currency_code || undefined,
+      taxAmount: money(c.tax_amount),
     }));
+}
+
+function storedNumber(value: unknown): string | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return String(value);
+  if (typeof value === 'string' && value.trim()) return value.trim();
+  return undefined;
 }
 
 /** Map a staff job into layout PDF fields (best-effort). */
@@ -60,6 +71,14 @@ export function jobRecordToFormatPdfData(job: {
   commodity?: string | null;
   currency_code?: string | null;
   carrier_name?: string | null;
+  hawb_number?: string | null;
+  hawb_no?: string | null;
+  mawb_number?: string | null;
+  mawb_no?: string | null;
+  hbl_number?: string | null;
+  pieces?: number | null;
+  gross_weight?: number | null;
+  volume_cbm?: number | null;
 }): InvoiceFormatPdfData {
   const origin = job.origin_port_code || undefined;
   const dest = job.dest_port_code || undefined;
@@ -85,6 +104,12 @@ export function jobRecordToFormatPdfData(job: {
     commodity: job.commodity || undefined,
     vesselFlight: job.carrier_name || undefined,
     currencyCode: job.currency_code || undefined,
+    hawbNo: job.hawb_number || job.hawb_no || undefined,
+    mawbNo: job.mawb_number || job.mawb_no || undefined,
+    hblNo: job.hbl_number || undefined,
+    pieces: job.pieces != null ? String(job.pieces) : undefined,
+    grossWeight: job.gross_weight != null ? String(job.gross_weight) : undefined,
+    measurement: job.volume_cbm != null ? String(job.volume_cbm) : undefined,
   };
 }
 
@@ -129,6 +154,13 @@ export function shipmentRecordToFormatPdfData(shipment: Shipment): InvoiceFormat
     vesselFlight: vesselFlight || undefined,
     currencyCode: shipment.currency_code || undefined,
     referenceNo: shipment.mbl_number || shipment.hbl_number || undefined,
+    hblNo: shipment.hbl_number || undefined,
+    mawbNo: shipment.mbl_number || undefined,
+    pieces: storedNumber(shipment.pieces),
+    grossWeight: storedNumber(shipment.gross_weight),
+    measurement: storedNumber(shipment.volume_cbm),
+    containerNo: shipment.container_number || undefined,
+    containerType: shipment.container_type_name || undefined,
   };
 }
 
@@ -498,6 +530,25 @@ export async function resolveCatalogContextPdfData(
   }
   if (data.total != null && typeof data.total !== 'string') {
     data.total = money(Number(data.total));
+  }
+
+  if (!data.bankName && !data.bankAccountNumber) {
+    try {
+      const listed = await organizationService.listBankAccounts({ limit: 20, is_active: true });
+      const bank =
+        listed.accounts.find((account) => account.is_default) || listed.accounts[0];
+      if (bank) {
+        data = mergePdfData(data, {
+          bankName: bank.bank_name || undefined,
+          bankAccountName: bank.account_name || undefined,
+          bankAccountNumber: bank.account_number || undefined,
+          bankIban: bank.iban || undefined,
+          bankSwift: bank.swift_code || undefined,
+        });
+      }
+    } catch {
+      /* no bank account on file — leave the bank block blank */
+    }
   }
 
   // Entity-bound: keep N/A placeholders even when some fetches fail (no demo fill-in).

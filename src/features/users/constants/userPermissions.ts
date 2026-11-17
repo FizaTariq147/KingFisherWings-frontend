@@ -107,6 +107,9 @@ export function menuKeysFromStaffAccess(record: Record<string, unknown>): Permis
   // Finance module requires the Finance functional flag — not can_see_invoices alone.
   if (isFinance) {
     keys.add('menu_finance');
+    keys.add('menu_accounts');
+    // Accounts aggregate jobs (GET /jobs/accounts) — classic permission.
+    keys.add('jobs.accounts.view');
   }
 
   // Vendors are a separate module (not the same as Finance invoices).

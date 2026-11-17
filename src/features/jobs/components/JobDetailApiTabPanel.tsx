@@ -22,6 +22,7 @@ import type { Job, PatchShowAllDto } from '../types/job.types';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { JobBarcodePanel } from './JobBarcodePanel';
 import { JobChargesPanel } from './JobChargesPanel';
+import { JobHandoffPanel } from './JobHandoffPanel';
 import { JobAirMawbPanel } from './JobAirMawbPanel';
 import { JobContainersPanel } from './JobContainersPanel';
 import { JobLedgerPanel } from './JobLedgerPanel';
@@ -1158,7 +1159,17 @@ function InteractiveTabBody({
       </div>
     );
   }
+  if (key === 'handoff') {
+    return <JobHandoffPanel job={job} onChanged={onChanged} />;
+  }
   if (key === 'costing') {
+    if (job.actions?.can_view_costing === false) {
+      return (
+        <p className="text-[13px] text-[#64748B]">
+          Costing is not available for your visibility permissions on this job.
+        </p>
+      );
+    }
     return <JobChargesPanel job={job} onChanged={onChanged} />;
   }
   if (key === 'history') {

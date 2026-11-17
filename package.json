@@ -29,12 +29,17 @@
     "report:manifest": "node tools/reports/build-manifest.mjs",
     "report:code-map": "node tools/reports/build-code-map.mjs",
     "report:status": "node tools/reports/build-status.mjs",
-    "report:layout-counts": "node tools/reports/fingerprint-counts.mjs"
+    "report:layout-counts": "node tools/reports/fingerprint-counts.mjs",
+    "report:extract": "node tools/reports/extract.mjs",
+    "report:validate-spec": "node tools/reports/validate-spec.mjs",
+    "report:render-spec": "node tools/reports/render-spec.mjs",
+    "report:diff-pilot": "node tools/reports/diff-pilot.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",
     "@hookform/resolvers": "^5.4.0",
     "@maplibre/maplibre-gl-leaflet": "^0.1.4",
+    "@pdf-lib/fontkit": "^1.1.1",
     "@radix-ui/react-slot": "^1.3.0",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",

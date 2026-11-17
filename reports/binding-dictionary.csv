@@ -1,0 +1,64 @@
+normalized_label,binding_path,family
+invoice no,invoice.number,invoice
+invoice number,invoice.number,invoice
+invoice date,invoice.date,invoice
+date,invoice.date,invoice
+bill to,party.billTo,invoice
+shipper,party.shipper,invoice
+consignee,party.consignee,invoice
+notify,party.notify,invoice
+notify party,party.notify,invoice
+job no,job.number,invoice
+job number,job.number,invoice
+mawb,shipment.mawb,invoice
+mawb no,shipment.mawb,invoice
+hawb,shipment.hawb,invoice
+hawb no,shipment.hawb,invoice
+hbl,shipment.hbl,billOfLading
+hbl no,shipment.hbl,billOfLading
+hbl ha,shipment.hbl,billOfLading
+gst18 sgst9,invoice.tax,invoice
+gst18 cgst9,invoice.tax,invoice
+house b l,shipment.hbl,billOfLading
+mbl,shipment.mbl,billOfLading
+mbl no,shipment.mbl,billOfLading
+bill of lading no,shipment.hbl,billOfLading
+port of loading,shipment.pol,invoice
+pol,shipment.pol,invoice
+port of discharge,shipment.pod,invoice
+pod,shipment.pod,invoice
+place of receipt,shipment.placeOfReceipt,billOfLading
+place of delivery,shipment.placeOfDelivery,billOfLading
+port of final destination,shipment.finalDestination,arrivalNotice
+final destination,shipment.finalDestination,arrivalNotice
+vessel,shipment.vessel,billOfLading
+voyage,shipment.voyage,billOfLading
+vessel voyage,shipment.vessel,billOfLading
+etd,shipment.etd,invoice
+eta,shipment.eta,invoice
+carrier,shipment.carrier,billOfLading
+freight,shipment.freightTerms,invoice
+service type,shipment.serviceType,arrivalNotice
+currency,invoice.currency,invoice
+gross weight,cargo.grossWeight,invoice
+net weight,cargo.netWeight,invoice
+measurement,cargo.measurement,invoice
+cbm,cargo.measurement,invoice
+volume,cargo.measurement,arrivalNotice
+pieces,cargo.pieces,invoice
+no of pkgs,cargo.pieces,arrivalNotice
+no of packages,cargo.pieces,arrivalNotice
+container,cargo.containerNo,billOfLading
+container no,cargo.containerNo,billOfLading
+type,cargo.containerType,arrivalNotice
+seal,cargo.sealNo,billOfLading
+description,cargo.description,invoice
+goods description,cargo.description,arrivalNotice
+marks,cargo.marks,invoice
+tax,invoice.tax,invoice
+gst,invoice.tax,invoice
+grand total,invoice.total,invoice
+total,invoice.total,invoice
+amount,invoice.amount,invoice
+company,company.name,invoice
+beneficiary,company.name,invoice

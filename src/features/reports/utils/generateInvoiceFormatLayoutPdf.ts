@@ -43,6 +43,7 @@ export function invoiceRecordToFormatPdfData(invoice: {
     unit_price?: number | null;
     amount?: number | null;
     line_total?: number | null;
+    tax_amount?: number | null;
   }>;
 }): InvoiceFormatPdfData {
   const money = (n: number | null | undefined) =>
@@ -67,6 +68,7 @@ export function invoiceRecordToFormatPdfData(invoice: {
       qty: line.quantity != null ? String(line.quantity) : undefined,
       rate: money(line.unit_price),
       amount: money(line.amount ?? line.line_total),
+      taxAmount: money(line.tax_amount),
     })),
   };
 }
