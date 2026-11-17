@@ -1,0 +1,23 @@
+{
+  "catalogueCodes": 852,
+  "mappedToReference": 419,
+  "byMethod": {
+    "override": 1,
+    "rpm_ref": 104,
+    "normalized_name": 314
+  },
+  "proposedCodes": [
+    "ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1"
+  ],
+  "codesWithoutReference": {
+    "total": 545,
+    "name_mismatch": 124,
+    "no_reference": 418,
+    "unknown": 3
+  },
+  "referencesWithoutCode": {
+    "total": 136,
+    "should_register": 28,
+    "ignore": 108
+  }
+}

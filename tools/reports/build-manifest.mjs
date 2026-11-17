@@ -366,7 +366,58 @@ function geometryKey(ops) {
   ]
     .sort()
     .slice(0, 900);
-  return { body: body.join(';'), shapes: rects.length + lines.length };
+  return { body: body.join(';'), shapes: rects.length + lines.length, rects, lines };
+}
+
+function detailRowYs(lines) {
+  const ys = [
+    ...new Set(
+      lines.filter((line) => Math.abs(line[1] - line[3]) <= 1).map((line) => line[1]),
+    ),
+  ].sort((a, b) => a - b);
+  const present = new Set(ys);
+  const drop = new Set();
+  for (let i = 0; i < ys.length; i += 1) {
+    for (let j = i + 1; j < Math.min(ys.length, i + 8); j += 1) {
+      const step = ys[j] - ys[i];
+      if (step < 8 || step > 36) continue;
+      const run = [ys[i]];
+      let expected = ys[i] + step;
+      while (expected <= ys[ys.length - 1] + step) {
+        const hit = [expected - 1, expected, expected + 1].find((y) => present.has(y));
+        if (hit == null) break;
+        run.push(hit);
+        expected = hit + step;
+      }
+      if (run.length >= 3) for (const y of run) drop.add(y);
+    }
+  }
+  return drop;
+}
+
+/** Same geometry as the strict key, without repeating detail-row rules. */
+export function normalizedGeometryBody(rects, lines) {
+  const drop = detailRowYs(lines);
+  const ys = [...drop];
+  const minY = ys.length ? Math.min(...ys) : null;
+  const maxY = ys.length ? Math.max(...ys) : null;
+  const kept = lines.filter((line) => {
+    const horizontal = Math.abs(line[1] - line[3]) <= 1;
+    if (horizontal && drop.has(line[1])) return false;
+    if (minY == null) return true;
+    const y1 = Math.min(line[1], line[3]);
+    const y2 = Math.max(line[1], line[3]);
+    const vertical = Math.abs(line[0] - line[2]) <= 1;
+    if (vertical && y1 >= minY - 1 && y2 <= maxY + 1) return false;
+    return true;
+  });
+  return [
+    ...rects.map((item) => `R${item.join(',')}`),
+    ...kept.map((item) => `L${item.join(',')}`),
+  ]
+    .sort()
+    .slice(0, 900)
+    .join(';');
 }
 
 async function inspectPdf(filePath) {
@@ -431,7 +482,7 @@ fs.mkdirSync(pngDir, { recursive: true });
 
 const html = await (await fetch(pageUrl)).text();
 fs.writeFileSync(path.join(outDir, 'page-snapshot.html'), html);
-const links = parsePage(html);
+const links = parsePage(html).filter((link) => !/Fresa_Gold_Profile/i.test(link.sourceUrl));
 const failures = [];
 const rows = [];
 const downloadedAt = new Date().toISOString();
@@ -607,5 +658,20 @@ console.log(JSON.stringify(summary, null, 2));
 const invoked =
   process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (invoked) await main();
+
+export async function fingerprintPdf(filePath) {
+  const data = new Uint8Array(fs.readFileSync(filePath));
+  const doc = await getDocument({ data, disableWorker: true, useSystemFonts: true }).promise;
+  const page = await doc.getPage(1);
+  const view = page.getViewport({ scale: 1 });
+  const geometry = geometryKey(await page.getOperatorList());
+  const size = `${Math.round(view.width)}x${Math.round(view.height)}`;
+  const hash = (body) =>
+    createHash('sha256').update(`${size}|${body}`).digest('hex').slice(0, 16);
+  return {
+    strict: hash(geometry.body),
+    detailNormalized: hash(normalizedGeometryBody(geometry.rects, geometry.lines)),
+  };
+}
 
 export { parsePage };

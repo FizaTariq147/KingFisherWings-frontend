@@ -25,11 +25,14 @@ This workspace is the React frontend. There is no NestJS app and no PostgreSQL s
 | Reports buttons | `src/features/jobs/pages/JobDetailPage.tsx` (Reports), `src/features/shipments/pages/ShipmentDetailPage.tsx` (`openShipmentReportsCatalog`), `src/features/quotations/pages/QuotationDetailPage.tsx` (`buildCatalogHref`), `src/features/invoices/pages/InvoiceDetailPage.tsx` (Generate PDF, Formats, Reports catalog) |
 | Older local pins | `src/features/reports/qa/fresa-references/pdfs`, `src/features/reports/qa/fresa-references/xlsx` |
 | Phase 0 tool | `tools/reports/build-manifest.mjs` (`npm run report:manifest`) |
-| Phase 0 outputs | `reports/references/manifest.csv`, `reports/references/layouts.csv`, `reports/references/unmatched.csv`, `reports/references/files/`, `reports/references/text/`, `reports/references/png/` |
+| Code map | `tools/reports/build-code-map.mjs` (`npm run report:code-map`) |
+| Status | `tools/reports/build-status.mjs` (`npm run report:status`), `reports/signoff.csv`, `reports/status.json` |
+| Layout counts | `tools/reports/fingerprint-counts.mjs` (`npm run report:layout-counts`) |
+| Phase 0 outputs | `reports/references/manifest.csv`, `reports/references/layouts.csv`, `reports/references/unmatched.csv`, `reports/references/code-map.csv`, `reports/references/files/`, `reports/references/text/`, `reports/references/png/` |
 
 ## Decisions
 
-- Conformance status is computed in the browser from the report code. The six pilot codes are `in_progress`. Every other code is `reference_only`. Nothing is `accepted`.
+- Conformance status is read from `reports/status.json`. That file is generated from `reports/signoff.csv`. A row with reviewer, date, and reference hash is `accepted`. A code with no reviewer is `in_progress`. Every other catalogue code is `reference_only`. Nothing is accepted.
 - The catalogue still shows Generate. Non-accepted rows say "approximate, not final".
 - A scanned PDF (fewer than 8 extracted text items) is `needs_manual` in the manifest. That overrides the default status.
 - The same file URL is kept once. A later numbered-list heading replaces the four-column table heading, because the list name is the tighter section.
@@ -43,7 +46,8 @@ This workspace is the React frontend. There is no NestJS app and no PostgreSQL s
 
 | Phase | Status |
 |---|---|
-| 0 Inventory and clustering | Done. Waiting for confirmation before Phase 1. |
+| 0 Inventory and clustering | Done. |
+| 0.5 Code map, status file, layout recount | Done. Waiting for confirmation before Phase 1. |
 | 1–8 | Not started. |
 
 Counts from `reports/references/summary.json`:
@@ -67,14 +71,44 @@ Counts from `reports/references/summary.json`:
 
 Excel workbooks are not part of the 376. They have no page geometry.
 
-The three `needs_manual` files are `BARCODE_AWB_REPORT_FORMAT`, `STANDARD_INVOICE_RPM_REF_79`, and the Fresa Gold brochure `FRESA_GOLD_PROFILE_20260727` (not a report format).
+The three scanned files are marked `needs_manual`. `BARCODE_AWB_REPORT_FORMAT` and `STANDARD_INVOICE_RPM_REF_79` stay in the report list. The Fresa Gold brochure is the third scanned file and is removed from the report list.
+
+## Phase 0.5 counts
+
+Code map (`reports/references/code-map.csv`): 852 catalogue codes, each with at most one file. 419 have a file (1 manual override, 104 `rpm_ref`, 314 normalized name). No file is used twice. Proposed code `ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1` has the Location Wise- 1 PDF, so `ADVANCE_SHIPPING_NOTE_LOCATION_WISE` keeps only the base PDF.
+
+The 545 codes that had no phase-0 filename match:
+
+| Triage | Count |
+|---|---|
+| name_mismatch (proposed reference filled in) | 124 |
+| no_reference | 418 |
+| unknown | 3 |
+
+The references that had no registered code. This is the original 135, plus the Location Wise- 1 file once it stopped sharing a registered code:
+
+| Triage | Count |
+|---|---|
+| ignore | 108 |
+| should_register | 28 |
+
+Ignore means do not add a new catalogue code. One of those is the brochure. The rest are files that are now the reference for a code that already exists. `should_register` means the file still has no catalogue code. The 23 generic invoices and notices from the first pass are in that 28, along with Location Wise- 1.
+
+Layouts, same 402 PDFs, detail-row rules removed from the second hash. `layouts.csv` was not changed:
+
+| Fingerprint | Layouts |
+|---|---|
+| Strict (phase 0) | 376 |
+| Detail-row lines excluded | 374 |
+
+Status: 0 accepted, 6 in progress, 846 reference only.
 
 ## Open questions
 
 - This repo cannot add a backend `generate(code, recordId)` payload. The status badge is client-side. Confirm that is enough until a backend repo is in the workspace.
 - 376 of 402 PDFs are their own layout at a 1 pt geometry rounding. Eighteen clusters have more than one member, and some of those mix families (a MAWB draft sits with several HBL files; an arrival confirmation sits with delivery confirmations). Phase 1 should review those clusters before treating one cluster as one spec. I did not loosen the match to force a smaller number.
-- 545 registered codes have no file on the sample page. 135 pinned files have no registered code. I did not invent those links. `ADVANCE_SHIPPING_NOTE_LOCATION_WISE_.pdf` (link text "Location Wise- 1") has no separate code, so it shares `ADVANCE_SHIPPING_NOTE_LOCATION_WISE`.
-- `reports/references/png/` is about 142 MB and is gitignored. Say if those rasters should be committed.
+- 545 registered codes had no phase-0 filename match. 135 pinned files had no registered code. The code map and the triage CSVs below are that split. `ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1` is a proposed code for the Location Wise- 1 file. It is not in the 852-code registry.
+- The 402 PDFs and 49 Excel files were committed in `ce4a25f0` as normal git objects, not Git LFS. This phase removes the Fresa Gold brochure from that pin. PNGs stay gitignored.
 - Catalogue gating stays soft. Hard gating is Phase 7 and was not implemented.
 
 ## Verification log
@@ -119,3 +153,40 @@ Test Files  1 passed (1)
 pdfjs printed `Warning: TT: undefined function: 32` once. Text extraction still completed. `reports/references/failures.log` is empty.
 
 The catalogue badge was not clicked in a browser. No dev server was running, and the catalogue requires a signed-in session. The status values are covered by the unit test; the list components render that status next to the existing format badge and do not remove Generate.
+
+### Phase 0.5
+
+`node tools/reports/build-code-map.mjs`
+
+```
+catalogueCodes 852
+mappedToReference 419
+override 1
+rpm_ref 104
+normalized_name 314
+codesWithoutReference 545 (name_mismatch 124, no_reference 418, unknown 3)
+referencesWithoutCode 136 (should_register 28, ignore 108)
+```
+
+`node tools/reports/build-status.mjs`
+
+```
+codes 852
+accepted 0
+inProgress 6
+reference_only 846
+```
+
+`node tools/reports/fingerprint-counts.mjs`
+
+```
+pdfs 402
+strictLayouts 376
+detailRowNormalizedLayouts 374
+failed 0
+```
+
+`npx vitest run src/features/reports/utils/reportConformanceStatus.test.ts` — 1 passed.
+`node --test tools/reports/build-manifest.test.mjs` — 1 passed.
+
+pdfjs printed `Warning: TT: undefined function: 32` once during the fingerprint recount. Both hashes were still produced for all 402 PDFs.

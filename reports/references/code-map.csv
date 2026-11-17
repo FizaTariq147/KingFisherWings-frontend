@@ -1,0 +1,854 @@
+code,reference_file,confidence,method,notes
+ACTIVITY_COMPLETED_JOBS_LIST_REPORT_FORMAT,reports/references/files/activity-completed-jobs-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+ADVANCE_SHIPPING_NOTE,reports/references/files/ADVANCE_SHIPPING_NOTE.pdf,high,normalized_name,filename matches the code or catalogue name
+ADVANCE_SHIPPING_NOTE_FORMAT_1,reports/references/files/ADVANCE-SHIPPING-NOTE-FORMAT1.pdf,high,normalized_name,filename matches the code or catalogue name
+ADVANCE_SHIPPING_NOTE_LOCATION_SUMMARY,,,,
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE,reports/references/files/ADVANCE_SHIPPING_NOTE_LOCATION_WISE.pdf,manual,override,Base file only. Location Wise- 1 is a separate pin.
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE_2,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_10,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_11,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_12,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_13,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_14,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_15,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_16,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_17,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_18,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_19,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_2,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_20,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_21,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_3,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_4,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_5,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_6,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_7,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_8,,,,
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_9,,,,
+ADVANCE_SHIPPING_NOTE_SUMMARY,reports/references/files/ADVANCE_SHIPPING_NOTE_SUMMARY.pdf,high,normalized_name,filename matches the code or catalogue name
+AGENT_NOMINATION_SHIPMENTS_LIST_REPORT_FORMAT,reports/references/files/agent-nomination-shipments-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+AIR_FREIGHT_ATD_CONFIRMATION_REPORT_FORMAT,reports/references/files/air-freight-atd-confirmation-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+AIR_QUOTATION_REPORT_FORMAT,reports/references/files/air-quotation-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT,reports/references/files/air-quotation-with-airline-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,reports/references/files/air-shipment-profit-and-loss-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1,reports/references/files/air-shipment-profit-and-loss-report-format-1.pdf,high,normalized_name,filename matches the code or catalogue name
+AP_AGING_SUMMARY_REPORT_FORMAT,reports/references/files/ap-aging-summary-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+AP_OUTSTANDING_STATEMENT_REPORT_FORMAT,reports/references/files/ap-outstanding-statement-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+AR_AGING_SUMMARY_REPORT_FORMAT,reports/references/files/ar-aging-summary-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+AR_JOB_NOT_INVOICE_REPORT_FORMAT,reports/references/files/ar-job-not-invoice-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_CONFIRMATION,reports/references/files/arrival-confirmation-report-format.pdf,high,normalized_name,filename starts with the code
+ARRIVAL_CONFIRMATION_FORMAT_1,reports/references/files/arrival_confirmation_format1_rpm_ref_732.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_INFORMATION,reports/references/files/arrival_information_rpm_ref_839.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,reports/references/files/arrival-notice-report-format-1-cargo-arrival-notice-jasper.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM,reports/references/files/arrival-notice-report-format-10-sea-arrival-notice-fcl-vietnam.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_11,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_12,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_13,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_14,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_15,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_16,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_17,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_18,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_19,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_2_CARGO_ARRIVAL_NOTICE_JASPER,reports/references/files/arrival-notice-report-format-2-cargo-arrival-notice-jasper.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_20,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_21,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_22,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_23,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_24,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_25,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_26,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_27,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_28,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_29,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA,reports/references/files/arrival-notice-report-format-3-arrival-notice-usa.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_30,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_31,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_32,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_33,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_34,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_35,,,,
+ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA,reports/references/files/arrival-notice-report-format-4-arrival-notice-usa.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA,reports/references/files/arrival-notice-report-format-5-cargo-arrival-notice-sea.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA,reports/references/files/arrival-notice-report-format-6-cargo-arrival-notice-sea.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA,reports/references/files/arrival-notice-report-format-7-cargo-arrival-notice-sea.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,reports/references/files/arrival-notice-report-format-8-cargo-arrival-notice-sea-without-charges.pdf,high,normalized_name,filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,reports/references/files/arrival-notice-report-format-9-cargo-arrival-notice-sea-without-charges.pdf,high,normalized_name,filename matches the code or catalogue name
+BANK_CASH_BOOK_SUMMARY_LIST_REPORT_FORMAT,reports/references/files/bank-cash-book-summary-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+BARCODE_AWB_REPORT_FORMAT,reports/references/files/barcode-awb-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+BILL_OF_LADING_IS_NOT_ISSUED_LIST_REPORT_FORMAT,reports/references/files/bill-of-lading-is-not-issued-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+BOOKING_CONFIRMATION_AIR_REPORT_FORMAT,reports/references/files/booking-confirmation-air-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+BOOKING_CONFIRMATION_REPORT_FORMAT_1,reports/references/files/booking-confirmation-report-format-1-booking-confirmation.pdf,high,normalized_name,filename starts with the code
+BOOKING_CONFIRMATION_REPORT_FORMAT_10,,,,
+BOOKING_CONFIRMATION_REPORT_FORMAT_2,reports/references/files/booking-confirmation-report-format-2-booking-confirmation.pdf,high,normalized_name,filename starts with the code
+BOOKING_CONFIRMATION_REPORT_FORMAT_3,,,,
+BOOKING_CONFIRMATION_REPORT_FORMAT_4,,,,
+BOOKING_CONFIRMATION_REPORT_FORMAT_5,,,,
+BOOKING_CONFIRMATION_REPORT_FORMAT_6,,,,
+BOOKING_CONFIRMATION_REPORT_FORMAT_7,,,,
+BOOKING_CONFIRMATION_REPORT_FORMAT_8,,,,
+BOOKING_CONFIRMATION_REPORT_FORMAT_9,,,,
+CANCELLED_JOB_LIST_REPORT_FORMAT,reports/references/files/cancelled-job-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_AIR_REPORT_FORMAT,reports/references/files/cargo-arrival-notice-air-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT,reports/references/files/cargo-arrival-notice-air-without-charges-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT_1,reports/references/files/cargo_arrival_notice_sea_format1_rpm_ref_446.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT_2,reports/references/files/cargo_arrival_notice_sea_format2_rpm_ref_592.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3,reports/references/files/cargo_arrival_notice_sea_format_3_rpm_ref_1376.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,reports/references/files/cargo_arrival_notice_sea_without_charges_rpm_ref_251.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_FORMAT_1,reports/references/files/cargo_arrival_notice_sea_without_charges_format1_rpm_ref_447.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SENT_SHIPMENTS_LIST_REPORT_FORMAT,reports/references/files/cargo-arrival-notice-sent-shipments-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+CARGO_MANIFEST_AIR_HOUSE_REPORT_FORMAT,reports/references/files/cargo-manifest-air-house-report-fomat.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT,reports/references/files/cargo-manifest-air-jasper-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT,reports/references/files/cargo-manifest-air-lc-jasper-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_MANIFEST_REPORT_FORMAT,reports/references/files/cargo-manifest-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CARGO_MANIFEST_REPORT_FORMAT_10,,,,
+CARGO_MANIFEST_REPORT_FORMAT_11,,,,
+CARGO_MANIFEST_REPORT_FORMAT_12,,,,
+CARGO_MANIFEST_REPORT_FORMAT_13,,,,
+CARGO_MANIFEST_REPORT_FORMAT_14,,,,
+CARGO_MANIFEST_REPORT_FORMAT_15,,,,
+CARGO_MANIFEST_REPORT_FORMAT_16,,,,
+CARGO_MANIFEST_REPORT_FORMAT_17,,,,
+CARGO_MANIFEST_REPORT_FORMAT_18,,,,
+CARGO_MANIFEST_REPORT_FORMAT_19,,,,
+CARGO_MANIFEST_REPORT_FORMAT_2,,,,
+CARGO_MANIFEST_REPORT_FORMAT_20,,,,
+CARGO_MANIFEST_REPORT_FORMAT_21,,,,
+CARGO_MANIFEST_REPORT_FORMAT_3,,,,
+CARGO_MANIFEST_REPORT_FORMAT_4,,,,
+CARGO_MANIFEST_REPORT_FORMAT_5,,,,
+CARGO_MANIFEST_REPORT_FORMAT_6,,,,
+CARGO_MANIFEST_REPORT_FORMAT_7,,,,
+CARGO_MANIFEST_REPORT_FORMAT_8,,,,
+CARGO_MANIFEST_REPORT_FORMAT_9,,,,
+CARGO_RECEIPT_NOTE_FOR_EXPORT_CFS_REPORT_FORMAT,reports/references/files/cargo-receipt-note-for-export-cfs-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CARTING_CONFIRMATION_REPORT_FORMAT,reports/references/files/carting-confirmation-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CASH_COLLECTION_REPORT_LIST_REPORT_FORMAT,reports/references/files/cash-collection-report-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+CHEQUE_COLLECTION_REPORT_LIST_REPORT_FORMAT,reports/references/files/cheque-collection-report-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+CLIENT_LOST_REPORT_FOR_LAST_N_DAYS_LIST_REPORT_FORMAT,reports/references/files/client-lost-report-for-last-N-days-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+CLOSED_JOB_LIST_REPORT_FORMAT,reports/references/files/closed-job-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+COLLECT_SHIPMENT_WITH_NO_COLLECT_CHARGES_LIST_REPORT_FORMAT,reports/references/files/collect-shipment-with-no-collect-charges-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+CONSOL_IGM_FILLING_LETTER_JASPER_REPORT_FORMAT,reports/references/files/consol-igm-filling-letter-jasper-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CONTAINER_LIST_BASED_ON_CARGO_UNPACK_DATE_LIST_REPORT_FORMAT,reports/references/files/container-list-based-on-cargo-unpack-date-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+CONTAINER_LOAD_PLAN_REPORT_FORMAT,reports/references/files/container-load-plan-report format.pdf,high,normalized_name,filename matches the code or catalogue name
+CONTAINER_MOVEMENT_FACILITATION_CELL_NOTE_REPORT_FORMAT,reports/references/files/container-movement-facilitation-cell-note-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CONTAINER_OUTTURN_REPORT_FORMAT,reports/references/files/container-outturn-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CONTAINER_SUMMARY_BASED_ON_CARRIER_LIST_REPORT_FORMAT,reports/references/files/container-summary-based-on-carrier-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+CONTAINER_UNLOAD_PLAN_REPORT_FORMAT,reports/references/files/container-unload-plan-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CONTAINER_VGM_FORM_REPORT_FORMAT,reports/references/files/container-vgm-form-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+CREATED_INVOICE_LIST_REPORT_FORMAT,reports/references/files/created-invoice-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+CREATED_QUOTATIONS_LIST_REPORT_FORMAT,reports/references/files/created-quotations-list-list-report-format.xlsx,high,normalized_name,link text matches the catalogue name
+CREDIT_NOTE_REPORT_FORMAT_1,,,,
+CREDIT_NOTE_REPORT_FORMAT_10,,,,
+CREDIT_NOTE_REPORT_FORMAT_2,,,,
+CREDIT_NOTE_REPORT_FORMAT_3,,,,
+CREDIT_NOTE_REPORT_FORMAT_4,,,,
+CREDIT_NOTE_REPORT_FORMAT_5,,,,
+CREDIT_NOTE_REPORT_FORMAT_6,,,,
+CREDIT_NOTE_REPORT_FORMAT_7,,,,
+CREDIT_NOTE_REPORT_FORMAT_8,,,,
+CREDIT_NOTE_REPORT_FORMAT_9,,,,
+DAILY_STATUS_REPORT_FORMAT_1,reports/references/files/daily-status-report-format-1.pdf,high,normalized_name,filename matches the code or catalogue name
+DAILY_STATUS_REPORT_FORMAT_1_DSR_LIST_REPORT_FORMAT,reports/references/files/daily-status-report-format-1-(DSR)-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+DAILY_STATUS_REPORT_FORMAT_10,,,,
+DAILY_STATUS_REPORT_FORMAT_11,,,,
+DAILY_STATUS_REPORT_FORMAT_12,,,,
+DAILY_STATUS_REPORT_FORMAT_13,,,,
+DAILY_STATUS_REPORT_FORMAT_14,,,,
+DAILY_STATUS_REPORT_FORMAT_15,,,,
+DAILY_STATUS_REPORT_FORMAT_16,,,,
+DAILY_STATUS_REPORT_FORMAT_17,,,,
+DAILY_STATUS_REPORT_FORMAT_18,,,,
+DAILY_STATUS_REPORT_FORMAT_19,,,,
+DAILY_STATUS_REPORT_FORMAT_2,reports/references/files/daily-status-report-format-2.pdf,high,normalized_name,filename matches the code or catalogue name
+DAILY_STATUS_REPORT_FORMAT_20,,,,
+DAILY_STATUS_REPORT_FORMAT_21,,,,
+DAILY_STATUS_REPORT_FORMAT_22,,,,
+DAILY_STATUS_REPORT_FORMAT_3,,,,
+DAILY_STATUS_REPORT_FORMAT_4,,,,
+DAILY_STATUS_REPORT_FORMAT_5,,,,
+DAILY_STATUS_REPORT_FORMAT_6,,,,
+DAILY_STATUS_REPORT_FORMAT_7,,,,
+DAILY_STATUS_REPORT_FORMAT_8,,,,
+DAILY_STATUS_REPORT_FORMAT_9,,,,
+DEBIT_NOTE_REPORT_FORMAT_1,,,,
+DEBIT_NOTE_REPORT_FORMAT_10,,,,
+DEBIT_NOTE_REPORT_FORMAT_2,,,,
+DEBIT_NOTE_REPORT_FORMAT_3,,,,
+DEBIT_NOTE_REPORT_FORMAT_4,,,,
+DEBIT_NOTE_REPORT_FORMAT_5,,,,
+DEBIT_NOTE_REPORT_FORMAT_6,,,,
+DEBIT_NOTE_REPORT_FORMAT_7,,,,
+DEBIT_NOTE_REPORT_FORMAT_8,,,,
+DEBIT_NOTE_REPORT_FORMAT_9,,,,
+DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT,reports/references/files/delivery_confirmation_osa_rpm_ref_733.pdf,high,rpm_ref,rpm_ref_733
+DELIVERY_CONFIRMATION_REPORT_FORMAT,reports/references/files/delivery-confirmation-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT,reports/references/files/fg_delivery_order_air_rpm_ref_377.pdf,high,rpm_ref,rpm_ref_377
+DELIVERY_ORDER_REPORT_FORMAT_10,,,,
+DELIVERY_ORDER_REPORT_FORMAT_11,,,,
+DELIVERY_ORDER_REPORT_FORMAT_12,,,,
+DELIVERY_ORDER_REPORT_FORMAT_13,reports/references/files/fg_delivery_order_format13_rpm_ref_886.pdf,high,rpm_ref,rpm_ref_886
+DELIVERY_ORDER_REPORT_FORMAT_14,reports/references/files/fg_delivery_order_format14_rpm_ref_896.pdf,high,rpm_ref,rpm_ref_896
+DELIVERY_ORDER_REPORT_FORMAT_15,reports/references/files/fg_delivery_order_format15_rpm_ref_1089.pdf,high,rpm_ref,rpm_ref_1089
+DELIVERY_ORDER_REPORT_FORMAT_16,reports/references/files/delivery_order_format16_house_rpm_ref_1133.pdf,high,rpm_ref,rpm_ref_1133
+DELIVERY_ORDER_REPORT_FORMAT_17,,,,
+DELIVERY_ORDER_REPORT_FORMAT_18,reports/references/files/fg_delivery_order_format18_rpm_ref_1505.pdf,high,rpm_ref,rpm_ref_1505
+DELIVERY_ORDER_REPORT_FORMAT_2,,,,
+DELIVERY_ORDER_REPORT_FORMAT_3,,,,
+DELIVERY_ORDER_REPORT_FORMAT_4,,,,
+DELIVERY_ORDER_REPORT_FORMAT_5,,,,
+DELIVERY_ORDER_REPORT_FORMAT_6,,,,
+DELIVERY_ORDER_REPORT_FORMAT_7,,,,
+DELIVERY_ORDER_REPORT_FORMAT_8,,,,
+DELIVERY_ORDER_REPORT_FORMAT_9,,,,
+DELIVERY_ORDER_REPORT_FORMAT_FCL_VIETNAM,,,,
+DELIVERY_ORDER_REPORT_FORMAT_LCL_VIETNAM_WITHOUT_STAMP,,,,
+DO_ISSUED_SHIPMENT_LIST_REPORT_FORMAT,reports/references/files/do-issued-shipment-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT,reports/references/files/exchange-letter-to-carrier-agent-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+EXPORT_CARGO_READY_BUT_NOT_STUFFED_LIST_REPORT_FORMAT,reports/references/files/export-cargo-ready-but-not-stuffed-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+EXPORT_SHIPMENTS_DEPARTED_BUT_NOT_CONFIRMED_ON_BOARD_LIST_REPORT_FORMAT,reports/references/files/export-shipments-departed-but-not-confirmed-on-board-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+FCL_QUOTATION_REPORT_FORMAT,reports/references/files/fcl-quotation-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+FCR_DOCUMENT_REPORT_FORMAT,reports/references/files/fcr-document-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_ARRIVAL_INFORMATION,reports/references/files/fg_arrival_information_rpm_ref_871.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_ARRIVAL_NOTICE,reports/references/files/fg_arrival_notice_rpm_ref_399.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_ARRIVAL_NOTICE_FORMAT_2,reports/references/files/fg_arrival_notice_format2_rpm_ref_593.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_ARRIVAL_NOTICE_FORMAT_3,reports/references/files/fg_arrival_notice_format3_rpm_ref_893.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_ARRIVAL_NOTICE_WITHOUT_CHARGES,,,,
+FG_CARGO_ARRIVAL_NOTICE,reports/references/files/fg_cargo_arrival_notice_rpm_ref_233.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_CARGO_ARRIVAL_NOTICE_FORMAT_1,reports/references/files/fg_cargo_arrival_notice_format1_rpm_ref_553.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_CARGO_ARRIVAL_NOTICE_SEA,reports/references/files/fg_cargo_arrival_notice_sea_rpm_ref_1172.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3,reports/references/files/fg_cargo_arrival_notice_sea_format3_rpm_ref_1322.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_CONSIGNMENT_DELIVERY_NOTE,reports/references/files/fg_consignment_delivery_note_rpm_ref_1379.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_CONSIGNMENT_DELIVERY_NOTE_FORMAT_1,reports/references/files/fg_consignment_delivery_note_format1_rpm_ref_1445.pdf,high,rpm_ref,rpm_ref_1445
+FG_DELIVERY_NOC_LETTER,reports/references/files/fg_delivery_noc_letter_rpm_ref_1320.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_NOTE,reports/references/files/fg_delivery_note_rpm_ref_1276.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_NOTE_FORMAT_1,reports/references/files/fg_delivery_note_format1_rpm_ref_1337.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_NOTE_FORMAT_UK,reports/references/files/fg_delivery_note_format_uk_rpm_ref_1305.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_ORDER_ABU_DHABI,,,,
+FG_DELIVERY_ORDER_AIR_FORMAT_1,reports/references/files/fg_delivery_order_air_format1_rpm_ref_1179.pdf,high,rpm_ref,rpm_ref_1179
+FG_DELIVERY_ORDER_AIR_FORMAT_2,reports/references/files/fg_delivery_order_air_format2_rpm_ref_1471.pdf,high,rpm_ref,rpm_ref_1471
+FG_DELIVERY_ORDER_AIR_USA,reports/references/files/fg_delivery_order_air_usa_rpm_ref_650.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_ORDER_FOR_TRUCKER,reports/references/files/fg_delivery_order_for_trucker_rpm_ref_937.pdf,high,rpm_ref,rpm_ref_937
+FG_DELIVERY_ORDER_FORMAT_16,reports/references/files/fg_delivery_order_format16_rpm_ref_1306.pdf,high,rpm_ref,rpm_ref_1306
+FG_DELIVERY_ORDER_FORMAT_8,reports/references/files/fg_delivery_order_format8_rpm_ref_777.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_1,reports/references/files/fg_delivery_order_sea_format1_rpm_ref_538.pdf,high,rpm_ref,rpm_ref_538
+FG_DELIVERY_ORDER_SEA_FORMAT_10,reports/references/files/fg_delivery_order_sea_format10_rpm_ref_1395.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_3,reports/references/files/fg_delivery_order_sea_format3_rpm_ref_560.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_5,reports/references/files/fg_delivery_order_sea_format5_rpm_ref_628.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_6,reports/references/files/fg_delivery_order_sea_format6_rpm_ref_668.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_7,reports/references/files/fg_delivery_order_sea_format7_rpm_ref_755.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_E_DELIVERY_ORDER,,,,
+FG_E_DELIVERY_ORDER_SEA_FORMAT_1,reports/references/files/fg_e_delivery_order_sea_format1_rpm_ref_1147.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_EXPORT_DELIVERY_ORDER,reports/references/files/fg_export_delivery_order_rpm_ref_1209.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_HBL_FORMAT_1,reports/references/files/fg_hbl_format1_rpm_ref_388.pdf,high,rpm_ref,rpm_ref_388
+FG_HBL_HKG,reports/references/files/fg_hbl_hkg_rpm_ref_245.pdf,high,rpm_ref,rpm_ref_245
+FG_HBL_MAGICLOGISYS,reports/references/files/fg_hbl_magiclogisys_rpm_ref_405.pdf,high,rpm_ref,rpm_ref_405
+FG_HBL_ORIGINAL_FORMAT_87,reports/references/files/fg_hbl_original_format87_rpm_ref_1479.pdf,high,rpm_ref,rpm_ref_1479
+FG_NOTICE_OF_DELIVERY,reports/references/files/fg_notice_of_delivery_rpm_ref_905.pdf,high,normalized_name,filename matches the code or catalogue name
+FG_PROOF_OF_DELIVERY,reports/references/files/fg_proof_of_delivery_rpm_ref_847.pdf,high,normalized_name,filename matches the code or catalogue name
+FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT,reports/references/files/freight-manifest-for-groupage-imports-lcl-report format.pdf,high,normalized_name,filename matches the code or catalogue name
+FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT,reports/references/files/freight-manifest-lcl-exports-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT,reports/references/files/gl-listing-sort-by-customer-code-voucher-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+GL_REPORT_CURRENCY_WISE_VOUCHER_REPORT_FORMAT,reports/references/files/gl-report-currency-wise-voucher-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+GL_REPORT_VOUCHER_REPORT_FORMAT,reports/references/files/gl-report-voucher-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+HAWB_DRAFT_REPORT_FORMAT,reports/references/files/hawb-draft-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+HAWB_DRAFT_REPORT_FORMAT_1,reports/references/files/hawb-draft-report-format-1.pdf,high,normalized_name,filename matches the code or catalogue name
+HAWB_DRAFT_REPORT_FORMAT_10,,,,
+HAWB_DRAFT_REPORT_FORMAT_11,,,,
+HAWB_DRAFT_REPORT_FORMAT_12,,,,
+HAWB_DRAFT_REPORT_FORMAT_13,,,,
+HAWB_DRAFT_REPORT_FORMAT_14,,,,
+HAWB_DRAFT_REPORT_FORMAT_15,,,,
+HAWB_DRAFT_REPORT_FORMAT_16,,,,
+HAWB_DRAFT_REPORT_FORMAT_17,,,,
+HAWB_DRAFT_REPORT_FORMAT_18,,,,
+HAWB_DRAFT_REPORT_FORMAT_19,,,,
+HAWB_DRAFT_REPORT_FORMAT_2,reports/references/files/hawb-draft-report-format-2.pdf,high,normalized_name,filename matches the code or catalogue name
+HAWB_DRAFT_REPORT_FORMAT_20,,,,
+HAWB_DRAFT_REPORT_FORMAT_21,,,,
+HAWB_DRAFT_REPORT_FORMAT_22,,,,
+HAWB_DRAFT_REPORT_FORMAT_23,,,,
+HAWB_DRAFT_REPORT_FORMAT_24,,,,
+HAWB_DRAFT_REPORT_FORMAT_25,,,,
+HAWB_DRAFT_REPORT_FORMAT_26,,,,
+HAWB_DRAFT_REPORT_FORMAT_27,,,,
+HAWB_DRAFT_REPORT_FORMAT_3,,,,
+HAWB_DRAFT_REPORT_FORMAT_4,,,,
+HAWB_DRAFT_REPORT_FORMAT_5,,,,
+HAWB_DRAFT_REPORT_FORMAT_6,,,,
+HAWB_DRAFT_REPORT_FORMAT_7,,,,
+HAWB_DRAFT_REPORT_FORMAT_8,,,,
+HAWB_DRAFT_REPORT_FORMAT_9,,,,
+HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1,reports/references/files/hawb-original-pre-printed-report-format-1.pdf,high,normalized_name,filename matches the code or catalogue name
+HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2,reports/references/files/hawb-original-pre-printed-report-format-2.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_10,reports/references/files/hbl-draft-report-format-10.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_100,reports/references/files/fg_hbl_format100_rpm_ref_1085.pdf,high,rpm_ref,rpm_ref_1085
+HBL_DRAFT_REPORT_FORMAT_101,reports/references/files/fg_hbl_format101_rpm_ref_1086.pdf,high,rpm_ref,rpm_ref_1086
+HBL_DRAFT_REPORT_FORMAT_102,reports/references/files/fg_hbl_format102_rpm_ref_1092.pdf,high,rpm_ref,rpm_ref_1092
+HBL_DRAFT_REPORT_FORMAT_107,reports/references/files/fg_hbl_format107_rpm_ref_1137.pdf,high,rpm_ref,rpm_ref_1137
+HBL_DRAFT_REPORT_FORMAT_109,reports/references/files/fg_hbl_format109_rpm_ref_1156.pdf,high,rpm_ref,rpm_ref_1156
+HBL_DRAFT_REPORT_FORMAT_11,reports/references/files/hbl-draft-report-format-11.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_114,reports/references/files/fg_hbl_format114_rpm_ref_1181.pdf,high,rpm_ref,rpm_ref_1181
+HBL_DRAFT_REPORT_FORMAT_116,reports/references/files/fg_hbl_format116_rpm_ref_1198.pdf,high,rpm_ref,rpm_ref_1198
+HBL_DRAFT_REPORT_FORMAT_117,reports/references/files/fg_hbl_format117_rpm_ref_1202.pdf,high,rpm_ref,rpm_ref_1202
+HBL_DRAFT_REPORT_FORMAT_118,reports/references/files/fg_hbl_format118_rpm_ref_1203.pdf,high,rpm_ref,rpm_ref_1203
+HBL_DRAFT_REPORT_FORMAT_12,reports/references/files/hbl-draft-report-format-12.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_120,reports/references/files/fg_hbl_format120_rpm_ref_1211.pdf,high,rpm_ref,rpm_ref_1211
+HBL_DRAFT_REPORT_FORMAT_122,reports/references/files/fg_hbl_format122_rpm_ref_1221.pdf,high,rpm_ref,rpm_ref_1221
+HBL_DRAFT_REPORT_FORMAT_127,reports/references/files/fg_hbl_format127_rpm_ref_1251.pdf,high,rpm_ref,rpm_ref_1251
+HBL_DRAFT_REPORT_FORMAT_128,reports/references/files/fg_hbl_format128_rpm_ref_1257.pdf,high,rpm_ref,rpm_ref_1257
+HBL_DRAFT_REPORT_FORMAT_129,reports/references/files/fg_hbl_format129_rpm_ref_1259.pdf,high,rpm_ref,rpm_ref_1259
+HBL_DRAFT_REPORT_FORMAT_13,reports/references/files/hbl-draft-report-format-13.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_130,reports/references/files/fg_hbl_format130_rpm_ref_1261.pdf,high,rpm_ref,rpm_ref_1261
+HBL_DRAFT_REPORT_FORMAT_132,reports/references/files/fg_hbl_format132_rpm_ref_1280.pdf,high,rpm_ref,rpm_ref_1280
+HBL_DRAFT_REPORT_FORMAT_134,reports/references/files/fg_hbl_format134_rpm_ref_1287.pdf,high,rpm_ref,rpm_ref_1287
+HBL_DRAFT_REPORT_FORMAT_135,reports/references/files/fg_hbl_format135_rpm_ref_1291.pdf,high,rpm_ref,rpm_ref_1291
+HBL_DRAFT_REPORT_FORMAT_136,reports/references/files/fg_hbl_format136_rpm_ref_1293.pdf,high,rpm_ref,rpm_ref_1293
+HBL_DRAFT_REPORT_FORMAT_137,reports/references/files/fg_hbl_format137_rpm_ref_1317.pdf,high,rpm_ref,rpm_ref_1317
+HBL_DRAFT_REPORT_FORMAT_138,reports/references/files/fg_hbl_format138_rpm_ref_1321.pdf,high,rpm_ref,rpm_ref_1321
+HBL_DRAFT_REPORT_FORMAT_139,reports/references/files/fg_hbl_format139_rpm_ref_1324.pdf,high,rpm_ref,rpm_ref_1324
+HBL_DRAFT_REPORT_FORMAT_14,reports/references/files/hbl-draft-report-format-14.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_140,reports/references/files/fg_hbl_format140_rpm_ref_1326.pdf,high,rpm_ref,rpm_ref_1326
+HBL_DRAFT_REPORT_FORMAT_141,reports/references/files/fg_hbl_format141_rpm_ref_1327.pdf,high,rpm_ref,rpm_ref_1327
+HBL_DRAFT_REPORT_FORMAT_142,reports/references/files/fg_hbl_format142_rpm_ref_1339.pdf,high,rpm_ref,rpm_ref_1339
+HBL_DRAFT_REPORT_FORMAT_143,reports/references/files/fg_hbl_format143_rpm_ref_1341.pdf,high,rpm_ref,rpm_ref_1341
+HBL_DRAFT_REPORT_FORMAT_144,reports/references/files/fg_hbl_format144_rpm_ref_1353.pdf,high,rpm_ref,rpm_ref_1353
+HBL_DRAFT_REPORT_FORMAT_145,reports/references/files/fg_hbl_format145_rpm_ref_1354.pdf,high,rpm_ref,rpm_ref_1354
+HBL_DRAFT_REPORT_FORMAT_146,reports/references/files/fg_hbl_format146_rpm_ref_1358.pdf,high,rpm_ref,rpm_ref_1358
+HBL_DRAFT_REPORT_FORMAT_147,reports/references/files/fg_hbl_format147_rpm_ref_1359.pdf,high,rpm_ref,rpm_ref_1359
+HBL_DRAFT_REPORT_FORMAT_148,reports/references/files/fg_hbl_format148_rpm_ref_1361.pdf,high,rpm_ref,rpm_ref_1361
+HBL_DRAFT_REPORT_FORMAT_149,reports/references/files/fg_hbl_format149_rpm_ref_1365.pdf,high,rpm_ref,rpm_ref_1365
+HBL_DRAFT_REPORT_FORMAT_15,reports/references/files/hbl-draft-report-format-15.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_151,reports/references/files/fg_hbl_format151_rpm_ref_1380.pdf,high,rpm_ref,rpm_ref_1380
+HBL_DRAFT_REPORT_FORMAT_16,reports/references/files/hbl-draft-report-format-16.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_17,reports/references/files/hbl-draft-report-format-17.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_171,reports/references/files/fg_hbl_format171_rpm_ref_1491.pdf,high,rpm_ref,rpm_ref_1491
+HBL_DRAFT_REPORT_FORMAT_172,reports/references/files/fg_hbl_format172_rpm_ref_1489.pdf,high,rpm_ref,rpm_ref_1489
+HBL_DRAFT_REPORT_FORMAT_18,reports/references/files/hbl-draft-report-format-18.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_19,reports/references/files/hbl-draft-report-format-19.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_2,reports/references/files/hbl-draft-report-format-2.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_20,reports/references/files/hbl-draft-report-format-20.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_21,,,,
+HBL_DRAFT_REPORT_FORMAT_22,,,,
+HBL_DRAFT_REPORT_FORMAT_23,reports/references/files/fg_hbl_format23_rpm_ref_631.pdf,high,rpm_ref,rpm_ref_631
+HBL_DRAFT_REPORT_FORMAT_24,,,,
+HBL_DRAFT_REPORT_FORMAT_25,reports/references/files/fg_hbl_format25_rpm_ref_643.pdf,high,rpm_ref,rpm_ref_643
+HBL_DRAFT_REPORT_FORMAT_26,reports/references/files/fg_hbl_format26_rpm_ref_653.pdf,high,rpm_ref,rpm_ref_653
+HBL_DRAFT_REPORT_FORMAT_27,reports/references/files/fg_hbl_format27_rpm_ref_655.pdf,high,rpm_ref,rpm_ref_655
+HBL_DRAFT_REPORT_FORMAT_28,,,,
+HBL_DRAFT_REPORT_FORMAT_29,reports/references/files/draft_hbl_html_format29_rpm_ref_660.pdf,high,rpm_ref,rpm_ref_660
+HBL_DRAFT_REPORT_FORMAT_30,,,,
+HBL_DRAFT_REPORT_FORMAT_31,,,,
+HBL_DRAFT_REPORT_FORMAT_32,,,,
+HBL_DRAFT_REPORT_FORMAT_33,reports/references/files/fg_hbl_format33_rpm_ref_684.pdf,high,rpm_ref,rpm_ref_684
+HBL_DRAFT_REPORT_FORMAT_34,,,,
+HBL_DRAFT_REPORT_FORMAT_35,,,,
+HBL_DRAFT_REPORT_FORMAT_36,reports/references/files/draft_hbl_html_format36_rpm_ref_703.pdf,high,rpm_ref,rpm_ref_703
+HBL_DRAFT_REPORT_FORMAT_37,,,,
+HBL_DRAFT_REPORT_FORMAT_38,,,,
+HBL_DRAFT_REPORT_FORMAT_39,,,,
+HBL_DRAFT_REPORT_FORMAT_4,reports/references/files/hbl-draft-report-format-4.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_40,reports/references/files/fg_hbl_format40_rpm_ref_717.pdf,high,rpm_ref,rpm_ref_717
+HBL_DRAFT_REPORT_FORMAT_41,reports/references/files/fg_hbl_format41_rpm_ref_721.pdf,high,rpm_ref,rpm_ref_721
+HBL_DRAFT_REPORT_FORMAT_42,reports/references/files/fg_hbl_format42_rpm_ref_745.pdf,high,rpm_ref,rpm_ref_745
+HBL_DRAFT_REPORT_FORMAT_43,reports/references/files/fg_hbl_format43_rpm_ref_754.pdf,high,rpm_ref,rpm_ref_754
+HBL_DRAFT_REPORT_FORMAT_44,reports/references/files/fg_hbl_format44_rpm_ref_771.pdf,high,rpm_ref,rpm_ref_771
+HBL_DRAFT_REPORT_FORMAT_45,reports/references/files/fg_hbl_format45_rpm_ref_776.pdf,high,rpm_ref,rpm_ref_776
+HBL_DRAFT_REPORT_FORMAT_46,reports/references/files/fg_hbl_format46_rpm_ref_781.pdf,high,rpm_ref,rpm_ref_781
+HBL_DRAFT_REPORT_FORMAT_47,reports/references/files/fg_hbl_format47_rpm_ref_785.pdf,high,rpm_ref,rpm_ref_785
+HBL_DRAFT_REPORT_FORMAT_48,reports/references/files/fg_hbl_format48_rpm_ref_786.pdf,high,rpm_ref,rpm_ref_786
+HBL_DRAFT_REPORT_FORMAT_49,reports/references/files/fg_hbl_format49_rpm_ref_787.pdf,high,rpm_ref,rpm_ref_787
+HBL_DRAFT_REPORT_FORMAT_5,reports/references/files/hbl-draft-report-format-5.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_50,reports/references/files/fg_hbl_format50_rpm_ref_789.pdf,high,rpm_ref,rpm_ref_789
+HBL_DRAFT_REPORT_FORMAT_51,reports/references/files/fg_hbl_format51_rpm_ref_790.pdf,high,rpm_ref,rpm_ref_790
+HBL_DRAFT_REPORT_FORMAT_52,reports/references/files/fg_hbl_format52_rpm_ref_804.pdf,high,rpm_ref,rpm_ref_804
+HBL_DRAFT_REPORT_FORMAT_53,reports/references/files/fg_hbl_format53_rpm_ref_819.pdf,high,rpm_ref,rpm_ref_819
+HBL_DRAFT_REPORT_FORMAT_54,reports/references/files/fg_hbl_format54_rpm_ref_821.pdf,high,rpm_ref,rpm_ref_821
+HBL_DRAFT_REPORT_FORMAT_55,reports/references/files/fg_hbl_format55_rpm_ref_824.pdf,high,rpm_ref,rpm_ref_824
+HBL_DRAFT_REPORT_FORMAT_56,reports/references/files/fg_hbl_format56_rpm_ref_838.pdf,high,rpm_ref,rpm_ref_838
+HBL_DRAFT_REPORT_FORMAT_59,reports/references/files/fg_hbl_format59_rpm_ref_872.pdf,high,rpm_ref,rpm_ref_872
+HBL_DRAFT_REPORT_FORMAT_6,reports/references/files/hbl-draft-report-format-6.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_60,reports/references/files/fg_hbl_format60_rpm_ref_881.pdf,high,rpm_ref,rpm_ref_881
+HBL_DRAFT_REPORT_FORMAT_61,reports/references/files/fg_hbl_format61_rpm_ref_887.pdf,high,rpm_ref,rpm_ref_887
+HBL_DRAFT_REPORT_FORMAT_63,reports/references/files/fg_hbl_format63_rpm_ref_895.pdf,high,rpm_ref,rpm_ref_895
+HBL_DRAFT_REPORT_FORMAT_64,reports/references/files/fg_hbl_format64_rpm_ref_909.pdf,high,rpm_ref,rpm_ref_909
+HBL_DRAFT_REPORT_FORMAT_65,reports/references/files/fg_hbl_format65_rpm_ref_913.pdf,high,rpm_ref,rpm_ref_913
+HBL_DRAFT_REPORT_FORMAT_66,reports/references/files/fg_hbl_format66_rpm_ref_916.pdf,high,rpm_ref,rpm_ref_916
+HBL_DRAFT_REPORT_FORMAT_67,reports/references/files/fg_hbl_format67_rpm_ref_915.pdf,high,rpm_ref,rpm_ref_915
+HBL_DRAFT_REPORT_FORMAT_68,reports/references/files/fg_hbl_format68_rpm_ref_924.pdf,high,rpm_ref,rpm_ref_924
+HBL_DRAFT_REPORT_FORMAT_69,reports/references/files/fg_hbl_format69_rpm_ref_931.pdf,high,rpm_ref,rpm_ref_931
+HBL_DRAFT_REPORT_FORMAT_7,reports/references/files/hbl-draft-report-format-7.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_70,reports/references/files/fg_hbl_format70_rpm_ref_933.pdf,high,rpm_ref,rpm_ref_933
+HBL_DRAFT_REPORT_FORMAT_72,reports/references/files/fg_hbl_format72_rpm_ref_943.pdf,high,rpm_ref,rpm_ref_943
+HBL_DRAFT_REPORT_FORMAT_73,reports/references/files/fg_hbl_format73_rpm_ref_956.pdf,high,rpm_ref,rpm_ref_956
+HBL_DRAFT_REPORT_FORMAT_75,reports/references/files/fg_hbl_format75_rpm_ref_962.pdf,high,rpm_ref,rpm_ref_962
+HBL_DRAFT_REPORT_FORMAT_77,reports/references/files/fg_hbl_format77_rpm_ref_1225.pdf,high,rpm_ref,rpm_ref_1225
+HBL_DRAFT_REPORT_FORMAT_8,reports/references/files/hbl-draft-report-format-8.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_83,reports/references/files/fg_hbl_format83_rpm_ref_1001.pdf,high,rpm_ref,rpm_ref_1001
+HBL_DRAFT_REPORT_FORMAT_84,reports/references/files/fg_hbl_format84_rpm_ref_1019.pdf,high,rpm_ref,rpm_ref_1019
+HBL_DRAFT_REPORT_FORMAT_85,reports/references/files/fg_hbl_format85_rpm_ref_1020.pdf,high,rpm_ref,rpm_ref_1020
+HBL_DRAFT_REPORT_FORMAT_86,reports/references/files/fg_hbl_format86_rpm_ref_1022.pdf,high,rpm_ref,rpm_ref_1022
+HBL_DRAFT_REPORT_FORMAT_87,reports/references/files/fg_hbl_format87_rpm_ref_1025.pdf,high,rpm_ref,rpm_ref_1025
+HBL_DRAFT_REPORT_FORMAT_88,reports/references/files/fg_hbl_format88_rpm_ref_1026.pdf,high,rpm_ref,rpm_ref_1026
+HBL_DRAFT_REPORT_FORMAT_89,reports/references/files/fg_hbl_format89_rpm_ref_1027.pdf,high,rpm_ref,rpm_ref_1027
+HBL_DRAFT_REPORT_FORMAT_9,reports/references/files/hbl-draft-report-format-9.pdf,high,normalized_name,filename matches the code or catalogue name
+HBL_DRAFT_REPORT_FORMAT_90,reports/references/files/fg_hbl_format90_rpm_ref_1035.pdf,high,rpm_ref,rpm_ref_1035
+HBL_DRAFT_REPORT_FORMAT_92,reports/references/files/fg_hbl_format92_rpm_ref_1039.pdf,high,rpm_ref,rpm_ref_1039
+HBL_DRAFT_REPORT_FORMAT_95,reports/references/files/fg_hbl_format95_rpm_ref_1076.pdf,high,rpm_ref,rpm_ref_1076
+HBL_DRAFT_REPORT_FORMAT_96,reports/references/files/fg_hbl_format96_rpm_ref_1077.pdf,high,rpm_ref,rpm_ref_1077
+HBL_DRAFT_REPORT_FORMAT_97,reports/references/files/fg_hbl_format97_rpm_ref_1079.pdf,high,rpm_ref,rpm_ref_1079
+HBL_DRAFT_REPORT_FORMAT_99,reports/references/files/fg_hbl_format99_rpm_ref_1081.pdf,high,rpm_ref,rpm_ref_1081
+HBL_DRAFT_REPORT_FORMAT_JASPER,reports/references/files/hbl-draft-report-fomat-jasper.pdf,high,normalized_name,filename matches the code or catalogue name
+IMPORT_CARGO_MANIFEST_REPORT_FORMAT,reports/references/files/import-cargo-manifest-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+IMPORT_SECURITY_FILLING_JASPER_AMS_REPORT_FORMAT,reports/references/files/import-security-filling-jasper-ams-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+IMPORT_TALLY_SHEET_REPORT_FORMAT,reports/references/files/import-tally-sheet-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,reports/references/files/invoice-report-format-1-tax-invoice-india.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE,reports/references/files/invoice-report-format-10-standard-invoice.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND,reports/references/files/invoice-report-format-11-standard-invoice-land.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED,reports/references/files/invoice-report-format-12-standard-invoice-preprinted.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA,reports/references/files/invoice-report-format-13-standard-invoice-usa.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_14_INVOICE,reports/references/files/invoice-report-format-14-invoice.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_15_INVOICE_FCY,reports/references/files/invoice-report-format-15-invoice-fcy.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED,reports/references/files/invoice-report-format-16-standard-tax-invoice-preprinted.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_17_INVOICE_JASPER,reports/references/files/invoice-report-format-17-invoice-jasper.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE,reports/references/files/invoice-report-format-18-land-freight-transportation-invoice.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM,reports/references/files/invoice-report-format-19-debit-note-vietnam.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA,reports/references/files/invoice-report-format-2-tax-invoice-india.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA,reports/references/files/invoice-report-format-20-tax-invoice-india.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE,reports/references/files/invoice-report-format-21-warehouse-invoice.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_22,,,,
+INVOICE_REPORT_FORMAT_23,,,,
+INVOICE_REPORT_FORMAT_24,,,,
+INVOICE_REPORT_FORMAT_25,,,,
+INVOICE_REPORT_FORMAT_26,,,,
+INVOICE_REPORT_FORMAT_27,,,,
+INVOICE_REPORT_FORMAT_28,,,,
+INVOICE_REPORT_FORMAT_29,,,,
+INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE,reports/references/files/invoice-report-format-3-summary-invoice.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_30,,,,
+INVOICE_REPORT_FORMAT_34,,,,
+INVOICE_REPORT_FORMAT_35,,,,
+INVOICE_REPORT_FORMAT_36,,,,
+INVOICE_REPORT_FORMAT_37,,,,
+INVOICE_REPORT_FORMAT_38,,,,
+INVOICE_REPORT_FORMAT_39,,,,
+INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE,reports/references/files/invoice-report-format-4-standard-tax-invoice.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_40,,,,
+INVOICE_REPORT_FORMAT_41,,,,
+INVOICE_REPORT_FORMAT_42,,,,
+INVOICE_REPORT_FORMAT_43,,,,
+INVOICE_REPORT_FORMAT_44,,,,
+INVOICE_REPORT_FORMAT_45,,,,
+INVOICE_REPORT_FORMAT_46,,,,
+INVOICE_REPORT_FORMAT_47,,,,
+INVOICE_REPORT_FORMAT_48,,,,
+INVOICE_REPORT_FORMAT_49,,,,
+INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA,reports/references/files/invoice-report-format-5-tax-invoice-india.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_50,,,,
+INVOICE_REPORT_FORMAT_51,,,,
+INVOICE_REPORT_FORMAT_52,,,,
+INVOICE_REPORT_FORMAT_53,,,,
+INVOICE_REPORT_FORMAT_54,,,,
+INVOICE_REPORT_FORMAT_55,,,,
+INVOICE_REPORT_FORMAT_56,,,,
+INVOICE_REPORT_FORMAT_57,,,,
+INVOICE_REPORT_FORMAT_58,,,,
+INVOICE_REPORT_FORMAT_59,,,,
+INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA,reports/references/files/invoice-report-format-6-simple-invoice-(india).pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_60,,,,
+INVOICE_REPORT_FORMAT_61,,,,
+INVOICE_REPORT_FORMAT_62,,,,
+INVOICE_REPORT_FORMAT_63,,,,
+INVOICE_REPORT_FORMAT_64,,,,
+INVOICE_REPORT_FORMAT_65,,,,
+INVOICE_REPORT_FORMAT_66,,,,
+INVOICE_REPORT_FORMAT_67,,,,
+INVOICE_REPORT_FORMAT_68,,,,
+INVOICE_REPORT_FORMAT_69,,,,
+INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE,reports/references/files/invoice-report-format-7-simple-invoice.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_70,,,,
+INVOICE_REPORT_FORMAT_71,,,,
+INVOICE_REPORT_FORMAT_72,,,,
+INVOICE_REPORT_FORMAT_73,,,,
+INVOICE_REPORT_FORMAT_74,,,,
+INVOICE_REPORT_FORMAT_75,,,,
+INVOICE_REPORT_FORMAT_76,,,,
+INVOICE_REPORT_FORMAT_77,,,,
+INVOICE_REPORT_FORMAT_78,,,,
+INVOICE_REPORT_FORMAT_79,,,,
+INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC,reports/references/files/invoice-report-format-8-standard-invoice-arabic.pdf,high,normalized_name,filename matches the code or catalogue name
+INVOICE_REPORT_FORMAT_80,,,,
+INVOICE_REPORT_FORMAT_81,,,,
+INVOICE_REPORT_FORMAT_82,,,,
+INVOICE_REPORT_FORMAT_83,,,,
+INVOICE_REPORT_FORMAT_84,,,,
+INVOICE_REPORT_FORMAT_85,,,,
+INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA,reports/references/files/invoice-report-format-9-standard-invoice-usa.pdf,high,normalized_name,filename matches the code or catalogue name
+ISF_FILING_DOCUMENT_REPORT_FORMAT,reports/references/files/isf-filing-document-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+JOB_ATA_IS_UPDATED_AND_CARGO_UNPACK_DATE_IS_NOT_ENTERED_LIST_REPORT_FORMAT,reports/references/files/job-ata-is-updated-and-cargo-unpack-date-is-not-entered-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+JOB_ATA_NOT_UPDATED_LIST_REPORT_FORMAT,reports/references/files/job-ata-not-updated-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+JOB_ATA_UPDATED_ARRIVAL_NOTICE_NOT_SENT_LIST_REPORT_FORMAT,reports/references/files/job-ata-updated-arrival-notice-not-sent-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+JOB_CARD_REPORT_FORMAT,reports/references/files/job-card-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+JOB_HOUSE_RECORD_LIST_REPORT_FORMAT,reports/references/files/job-house-record-list-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+JOB_HOUSE_RECORD_LIST_REPORT_FORMAT_1,reports/references/files/mawb-draft-report-format-1.pdf,high,normalized_name,link text matches the catalogue name
+JOB_HOUSES_RECORD_LIST_REPORT_FORMAT,reports/references/files/job-houses-record-list-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+JOB_LIST_SUMMARY_REPORT_FORMAT,reports/references/files/job-list-summary-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+JOB_NOT_CLOSED_LIST_REPORT_FORMAT,reports/references/files/job-not-closed-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+JOB_STATUS_LIST_REPORT_FORMAT_1,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_10,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_11,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_12,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_13,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_14,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_15,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_16,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_17,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_18,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_19,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_2,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_20,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_3,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_4,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_5,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_6,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_7,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_8,,,,
+JOB_STATUS_LIST_REPORT_FORMAT_9,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_1,reports/references/files/journal-voucher-report-format-1.pdf,high,normalized_name,filename matches the code or catalogue name
+JOURNAL_VOUCHER_REPORT_FORMAT_10,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_11,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_12,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_2,reports/references/files/journal-voucher-report-format-2.pdf,high,normalized_name,filename matches the code or catalogue name
+JOURNAL_VOUCHER_REPORT_FORMAT_3,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_4,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_5,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_6,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_7,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_8,,,,
+JOURNAL_VOUCHER_REPORT_FORMAT_9,,,,
+LEFTOVER_HBL_DRAFT_JASPER,,,,
+LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1,,,,
+LEFTOVER_INVOICE_FORMAT1_JASPER,reports/references/files/fg_invoice_format1_rpm_ref_443.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT12_JASPER,reports/references/files/fg_invoice_format12_rpm_ref_1199.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT14_JASPER,reports/references/files/fg_invoice_format14_rpm_ref_1325.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT15_JASPER_PREPRINTED,reports/references/files/fg_invoice_format15_rpm_ref_1384.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT15_JASPER_STANDARD,reports/references/files/fg_invoice_format15_standard_rpm_ref_1394.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT2_FCY_JASPER,reports/references/files/fg_invoice_format2_fcy_rpm_ref_490.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT3_FCY_WITH_QRIRN_JASPER,reports/references/files/fg_invoice_format3_fcy_rpm_ref_1012.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT3_JASPER,reports/references/files/fg_invoice_format3_rpm_ref_478.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT4_FCY_JASPER,reports/references/files/fg_invoice_format4_fcy_rpm_ref_1433.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT5_JASPER,reports/references/files/fg_invoice_format5_rpm_ref_672.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT6,reports/references/files/fg_invoice_format6_rpm_ref_691.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT7_JASPER_INDIA,reports/references/files/fg_invoice_format7_inr_rpm_ref_897.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT7_JASPER_USA,reports/references/files/fg_invoice_format7_rpm_ref_894.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT8_WITH_QRIRN_JASPER,reports/references/files/fg_invoice_format8_rpm_ref_1011.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT9_WITH_QRIRN_JASPER,reports/references/files/fg_invoice_format9_rpm_ref_1055.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_INVOICE_SINGAPORE_JASPER,reports/references/files/fg_invoice_singapore_rpm_ref_1069.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_LAND_FREIGHT_TRANSPORTATION_INVOICE_FORMAT_1,reports/references/files/land_freight_transportation_invoiceformat1_rpm_ref_1485.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_OVERSEAS_DEBIT_NOTE_EXPORT_INVOICE_JASPER_FORMAT2,reports/references/files/fg_overseas_debit_note_format2_rpm_ref_1343.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_PROFORMA_INVOICE_FORMAT_1,reports/references/files/proforma_invoice_format_1_rpm_ref_815.pdf,high,normalized_name,filename matches the code or catalogue name
+LEFTOVER_SAUDI_TAX_INVOICE_ARABIC_JASPER,reports/references/files/fg_ksa_invoice_arabic_rpm_ref_1161.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_INDIA,reports/references/files/simple_invoice_india_rpm_ref_575.pdf,high,normalized_name,filename matches the code or catalogue name
+LEFTOVER_SIMPLE_INVOICE_INDIA_JASPER,reports/references/files/fg_simple_invoice_india_rpm_ref_862.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_INDIA_WITH_OS,reports/references/files/simple_invoice_india_with_os_rpm_ref_767.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_JASPER,reports/references/files/fg_simple_invoice_rpm_ref_861.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_US_JASPER,reports/references/files/fg_simple_invoice_usa_rpm_ref_1274.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_WITH_OS,reports/references/files/simple_invoice_with_os_rpm_ref_76.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICEVAT,reports/references/files/simple_invoicevat_rpm_ref_673.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_3_DECIMAL,reports/references/files/fg_standard_invoice_format2_rpm_ref_778.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER,reports/references/files/fg_standard_invoice_arabic_rpm_ref_464.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER_FORMAT1,reports/references/files/fg_standard_invoice_arabic_format1_rpm_ref_939.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER_FORMAT1_WITH_LETTER_HEAD,reports/references/files/fg_standard_invoice_arabic_format1_rpm_ref_941.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_OMAN_JASPER,reports/references/files/fg_standard_invoice_arabic_oman_rpm_ref_747.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT2,reports/references/files/fg_standard_invoice_arabic_format2_rpm_ref_1171.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT3,reports/references/files/fg_standard_invoice_arabic_format3_rpm_ref_1183.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT4,reports/references/files/fg_standard_invoice_arabic_format4_rpm_ref_1215.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT5,reports/references/files/fg_standard_invoice_arabic_format5_rpm_ref_1385.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT7,reports/references/files/fg_standard_invoice_arabic_format7_rpm_ref_1400.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_COURIER_JASPER,reports/references/files/fg_standard_courier_invoice_rpm_ref_773.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_CUM_ARRIVAL_NOTICE_JASPER_FORMAT16,reports/references/files/fg_standard_tax_invoice_format16_cum_an_rpm_ref_1186.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_FCY_FORMAT2,reports/references/files/standard_invoice_fcy_format2_rpm_ref_850.pdf,high,normalized_name,filename matches the code or catalogue name
+LEFTOVER_STANDARD_INVOICE_FCY_WITH_QRIRN_JASPER,reports/references/files/fg_standard_invoice_fcy_rpm_ref_1029.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER,reports/references/files/fg_standard_invoice_rpm_ref_217.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT10,reports/references/files/fg_standard_tax_invoice_format10_rpm_ref_801.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT12_LETTERHEAD,reports/references/files/fg_standard_tax_invoice_format12_letterhead_rpm_ref_869.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT13,reports/references/files/fg_standard_tax_invoice_format13_rpm_ref_882.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT14_QR_CODE,reports/references/files/fg_standard_tax_invoice_format14_rpm_ref_921.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT15,reports/references/files/fg_standard_tax_invoice_format15_rpm_ref_997.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT16,reports/references/files/fg_standard_tax_invoice_format16_rpm_ref_1170.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT17_WITH_HOLDING_TAX,reports/references/files/fg_standard_tax_invoice_format17_rpm_ref_1309.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT18,reports/references/files/fg_standard_tax_invoice_format18_rpm_ref_1319.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT19,reports/references/files/fg_standard_tax_invoice_format19_rpm_ref_1344.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT20_UAE_LOCAL_CURRENCY,reports/references/files/fg_standard_tax_invoice_format20_rpm_ref_1345.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT21_WITH_HOLDING_TAX,reports/references/files/fg_standard_tax_invoice_format21_rpm_ref_1407.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT22,reports/references/files/fg_standard_tax_invoice_format22_rpm_ref_1425.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT3,reports/references/files/fg_standard_tax_invoice_format3_rpm_ref_687.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT4,reports/references/files/fg_standard_invoice_format4_rpm_ref_1419.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT5,reports/references/files/fg_standard_tax_invoice_format5_rpm_ref_699.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT6,reports/references/files/fg_standard_tax_invoice_format6_rpm_ref_751.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT9,reports/references/files/fg_standard_tax_invoice_format9_rpm_ref_799.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_TANZANIA,reports/references/files/fg_standard_invoice_tanzania_rpm_ref_1431.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_LAND,reports/references/files/standard_invoiceland_rpm_ref_419.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_MALAYSIA,reports/references/files/standard_invoicemalaysia_rpm_ref_611.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_USA_FORMAT_2,reports/references/files/standard_invoiceusa_format_2_rpm_ref_698.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_STANDARD_TAX_INVOICE_JASPER,reports/references/files/fg_standard_tax_invoice_rpm_ref_385.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA,reports/references/files/tax_invoice_india_rpm_ref_351.pdf,high,normalized_name,filename matches the code or catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT1,reports/references/files/tax_invoice_india_format1_rpm_ref_458.pdf,high,normalized_name,filename matches the code or catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT2,reports/references/files/tax_invoice_india_format2_rpm_ref_449.pdf,high,normalized_name,filename matches the code or catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT2_JASPER,reports/references/files/fg_tax_invoice_india_format2_rpm_ref_911.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT6_JASPER,reports/references/files/fg_tax_invoice_india_format6_rpm_ref_1059.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT7_JASPER,reports/references/files/fg_tax_invoice_india_format7_rpm_ref_1067.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT8_JASPER,reports/references/files/fg_tax_invoice_india_format8_rpm_ref_1159.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_JASPER,reports/references/files/fg_tax_invoice_india_rpm_ref_237.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_JASPER_FORMAT1,reports/references/files/fg_tax_invoice_india_format1_rpm_ref_796.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_REIMBURSEMENT_BILL,reports/references/files/tax_invoice_india_(reimbursement_bill)_rpm_ref_713.pdf,high,normalized_name,filename matches the code or catalogue name
+LEFTOVER_TAX_INVOICE_MALAYSIA_JASPER,reports/references/files/fg_tax_invoice_malaysia_rpm_ref_736.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_SINGAPORE_JASPER,reports/references/files/fg_tax_invoice_singapore_rpm_ref_737.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_WITH_QR_INDIA_FORMAT3_JASPER,reports/references/files/fg_tax_invoice_india_format3_rpm_ref_977.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_WITH_QRIRN_INDIA_FORMAT4_JASPER,reports/references/files/fg_tax_invoice_india_format4_rpm_ref_1007.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_WITH_QRIRN_INDIA_FORMAT5_JASPER,reports/references/files/fg_tax_invoice_india_format5_rpm_ref_1009.pdf,high,normalized_name,link text matches the catalogue name
+LEFTOVER_VIETNAM_INVOICE,,,,
+LEFTOVER_WAREHOUSE_INVOICE_INDIA_FORMAT,reports/references/files/warehouse_invoice_india_format_rpm_ref_1109.pdf,high,normalized_name,filename matches the code or catalogue name
+LETTER_OF_GUARANTEE_REPORT_FORMAT,reports/references/files/letter-of-guarantee-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+LOADING_CONFIRMATION_REPORT_FORMAT,reports/references/files/loading-confirmation-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+MANIFEST_NOT_SENT_TO_AGENT_REPORT_FORMAT,reports/references/files/manifest-not-sent-to-agent--report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+MAWB_DRAFT_REPORT_FORMAT,reports/references/files/mawb-draft-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+MAWB_DRAFT_REPORT_FORMAT_10,,,,
+MAWB_DRAFT_REPORT_FORMAT_11,,,,
+MAWB_DRAFT_REPORT_FORMAT_12,,,,
+MAWB_DRAFT_REPORT_FORMAT_13,,,,
+MAWB_DRAFT_REPORT_FORMAT_14,,,,
+MAWB_DRAFT_REPORT_FORMAT_15,,,,
+MAWB_DRAFT_REPORT_FORMAT_16,,,,
+MAWB_DRAFT_REPORT_FORMAT_2,,,,
+MAWB_DRAFT_REPORT_FORMAT_3,,,,
+MAWB_DRAFT_REPORT_FORMAT_4,,,,
+MAWB_DRAFT_REPORT_FORMAT_5,,,,
+MAWB_DRAFT_REPORT_FORMAT_6,,,,
+MAWB_DRAFT_REPORT_FORMAT_7,,,,
+MAWB_DRAFT_REPORT_FORMAT_8,,,,
+MAWB_DRAFT_REPORT_FORMAT_9,,,,
+MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT,reports/references/files/mawb-original-preprinted-kc-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+MRN_NUMBER_NOT_ENTERED_JOB_LIST_DUBAI_REPORT_FORMAT,reports/references/files/mrn-number-not-entered-job-list-dubai-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+OUTSTANDING_LETTER_REPORT_FORMAT_1_OUTSTANDING_LETTER,reports/references/files/outstanding-letter-report-format-1-outstanding-letter.pdf,high,normalized_name,filename matches the code or catalogue name
+OUTSTANDING_LETTER_REPORT_FORMAT_10,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_11,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_12,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_13,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_14,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_15,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_16,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_17,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_18,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_19,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER,reports/references/files/outstanding-letter-report-format-2-outstanding-letter-jasper.pdf,high,normalized_name,filename matches the code or catalogue name
+OUTSTANDING_LETTER_REPORT_FORMAT_20,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING,reports/references/files/outstanding-letter-report-format-3-outstanding-letter-with-aging.pdf,high,normalized_name,filename matches the code or catalogue name
+OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS,reports/references/files/outstanding-letter-report-format-4-outstanding-letter-with-bl-details.pdf,high,normalized_name,filename matches the code or catalogue name
+OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES,reports/references/files/outstanding-letter-report-format-5-outstanding-letter-with-invoices.pdf,high,normalized_name,filename matches the code or catalogue name
+OUTSTANDING_LETTER_REPORT_FORMAT_6,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_7,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_8,,,,
+OUTSTANDING_LETTER_REPORT_FORMAT_9,,,,
+PAYMENT_REQUEST_LIST_REPORT_FORMAT,reports/references/files/payment-request-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+PAYMENT_VOUCHER_REPORT_FORMAT_1,reports/references/files/payment-voucher-report-format-1.pdf,high,normalized_name,filename matches the code or catalogue name
+PAYMENT_VOUCHER_REPORT_FORMAT_10,,,,
+PAYMENT_VOUCHER_REPORT_FORMAT_2,reports/references/files/payment-voucher-report-format-2.pdf,high,normalized_name,filename matches the code or catalogue name
+PAYMENT_VOUCHER_REPORT_FORMAT_3,reports/references/files/payment-voucher-report-format-3.pdf,high,normalized_name,filename matches the code or catalogue name
+PAYMENT_VOUCHER_REPORT_FORMAT_4,,,,
+PAYMENT_VOUCHER_REPORT_FORMAT_4_VIETNAM,reports/references/files/payment-voucher-report-format-4-vietnam.pdf,high,normalized_name,filename matches the code or catalogue name
+PAYMENT_VOUCHER_REPORT_FORMAT_5,,,,
+PAYMENT_VOUCHER_REPORT_FORMAT_6,,,,
+PAYMENT_VOUCHER_REPORT_FORMAT_7,,,,
+PAYMENT_VOUCHER_REPORT_FORMAT_8,,,,
+PAYMENT_VOUCHER_REPORT_FORMAT_9,,,,
+PENDING_JOBS_ATD_UPDATED_BUT_CONTAINER_LOADING_DATE_NOT_UPDATED_LIST_REPORT_FORM,reports/references/files/pending-jobs-atd-updated-but-container-loading-date-not-updated-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+PENDING_SHIPMENT_FOR_CARGO_DELIVERY_DO_ISSUED_LIST_REPORT_FORMAT,reports/references/files/pending-shipment-for-cargo-delivery-do-issued-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+PENDING_SHIPMENTS_FOR_CARGO_ARRIVAL_NOTICE_LIST_REPORT_FORMAT,reports/references/files/pending-shipments-for-cargo-arrival-notice-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+PENDING_SHIPMENTS_FOR_CARGO_DELIVERY_LIST_REPORT_FORMAT,reports/references/files/pending-shipments-for-cargo-delivery-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+PENDING_SHIPMENTS_FOR_DELIVERY_ORDER_LIST_REPORT_FORMAT,reports/references/files/pending-shipments-for-delivery-order-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+PENDING_SHIPMENTS_FOR_DRAFT_BL_LIST_REPORT_FORMAT,reports/references/files/pending-shipments(bl-status-is-created)-for-draft-bl-list-report-format.xlsx,high,normalized_name,link text matches the catalogue name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_1,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_10,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_11,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_12,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_13,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_14,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_15,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_16,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_17,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_18,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_19,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_2,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_20,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_21,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_22,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_23,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_24,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_25,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_3,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_4,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_5,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_6,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_7,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_8,,,,
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_9,,,,
+PICKUP_CONFIRMATION_REPORT_FORMAT,reports/references/files/pickup-confirmation-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+PRE_ALERT_AIR_REPORT_FORMAT,reports/references/files/pre-alert-air-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+PRE_ALERT_REPORT_FORMAT_1,,,,
+PRE_ALERT_REPORT_FORMAT_10,,,,
+PRE_ALERT_REPORT_FORMAT_11,,,,
+PRE_ALERT_REPORT_FORMAT_12,,,,
+PRE_ALERT_REPORT_FORMAT_2,,,,
+PRE_ALERT_REPORT_FORMAT_3,,,,
+PRE_ALERT_REPORT_FORMAT_4,,,,
+PRE_ALERT_REPORT_FORMAT_5,,,,
+PRE_ALERT_REPORT_FORMAT_6,,,,
+PRE_ALERT_REPORT_FORMAT_7,,,,
+PRE_ALERT_REPORT_FORMAT_8,,,,
+PRE_ALERT_REPORT_FORMAT_9,,,,
+PRE_ALERT_TO_CLIENT_REPORT_FORMAT,reports/references/files/pre-alert-to-client-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+PREALERT_USA_JASPER_REPORT_FORMAT,reports/references/files/prealert-usa-jasper-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+PREPAID_SHIPMENT_WITH_NO_PREPAID_CHARGES_LIST_REPORT_FORMAT,reports/references/files/prepaid-shipment-with-no-prepaid-charges-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE,reports/references/files/profit-and-loss-report-format-1-landscape.pdf,high,normalized_name,filename matches the code or catalogue name
+PROFIT_AND_LOSS_REPORT_FORMAT_10,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_11,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_12,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_13,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_14,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_15,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_2_JASPER,reports/references/files/profit-and-loss-report-format-2-jasper.pdf,high,normalized_name,filename matches the code or catalogue name
+PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE,reports/references/files/profit-and-loss-report-format-3-summary-periodwise.pdf,high,normalized_name,filename matches the code or catalogue name
+PROFIT_AND_LOSS_REPORT_FORMAT_4,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_5,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_6,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_7,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_8,,,,
+PROFIT_AND_LOSS_REPORT_FORMAT_9,,,,
+PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT,reports/references/files/proforma-invoice-all-charges-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES,reports/references/files/proforma-invoice-report-format-1-proforma-invoice-all-charges.pdf,high,normalized_name,filename matches the code or catalogue name
+PROFORMA_INVOICE_REPORT_FORMAT_10,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_11,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_12,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_13,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_14,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_15,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_16,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_17,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES,reports/references/files/proforma-invoice-report-format-2-proforma-invoice-all-charges.pdf,high,normalized_name,filename matches the code or catalogue name
+PROFORMA_INVOICE_REPORT_FORMAT_3,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_4,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_5,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_6,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_7,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_8,,,,
+PROFORMA_INVOICE_REPORT_FORMAT_9,,,,
+PROOF_OF_DELIVERY_REPORT_FORMAT,reports/references/files/proof-of-delivery-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+PROOF_OF_DELIVERY_RPM_SAMPLE,,,,
+PURCHASE_INVOICE_REPORT_FORMAT_1,reports/references/files/purchase-invoice-report-format-1.pdf,high,normalized_name,filename matches the code or catalogue name
+PURCHASE_INVOICE_REPORT_FORMAT_2,reports/references/files/purchase-invoice-report-format-2.pdf,high,normalized_name,filename matches the code or catalogue name
+QUOTATION_REPORT_FORMAT_1,,,,
+QUOTATION_REPORT_FORMAT_10,,,,
+QUOTATION_REPORT_FORMAT_11,,,,
+QUOTATION_REPORT_FORMAT_12,,,,
+QUOTATION_REPORT_FORMAT_13,,,,
+QUOTATION_REPORT_FORMAT_14,,,,
+QUOTATION_REPORT_FORMAT_15,,,,
+QUOTATION_REPORT_FORMAT_2,,,,
+QUOTATION_REPORT_FORMAT_3,,,,
+QUOTATION_REPORT_FORMAT_4,,,,
+QUOTATION_REPORT_FORMAT_5,,,,
+QUOTATION_REPORT_FORMAT_6,,,,
+QUOTATION_REPORT_FORMAT_7,,,,
+QUOTATION_REPORT_FORMAT_8,,,,
+QUOTATION_REPORT_FORMAT_9,,,,
+RECEIPT_VOUCHER_REPORT_FORMAT_1,reports/references/files/receipt-voucher-report-format-1.pdf,high,normalized_name,filename matches the code or catalogue name
+RECEIPT_VOUCHER_REPORT_FORMAT_2,reports/references/files/receipt-voucher-report-forat-2.pdf,high,normalized_name,link text matches the catalogue name
+RIDER_SHEET_FOR_EXPORT_MANIFEST_REPORT_FORMAT,reports/references/files/rider-sheet-for-export-manifest-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+SAILING_CONFIRMATION_REPORT_FORMAT,reports/references/files/sailing-confirmation-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+SALESPERSON_NOMINATION_REPORT_LIST_REPORT_FORMAT,reports/references/files/salesperson-nomination-report-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SEA_ARRIVAL_NOTICE_LCL_VIETNAM,reports/references/files/sea_arrival_notice_lcl_vietnam_rpm_ref_422.pdf,high,normalized_name,filename matches the code or catalogue name
+SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT,reports/references/files/shipment-freight-manifest-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+SHIPMENT_IS_NOT_LINKED_WITH_JOB_LIST_REPORT_FORMAT,reports/references/files/shipment-is-not-linked-with-job-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,reports/references/files/shipment-profit-and-loss-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+SHIPMENT_STATUS_CONFIRMATION_REPORT_FORMAT,reports/references/files/shipment-status-confirmation-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+SHIPMENT_STATUS_REPORT_LIST_REPORT_FORMAT,reports/references/files/shipment-status-report-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENT_WITH_NO_JOB_CS_LIST_REPORT_FORMAT,reports/references/files/shipment-with-no-job-cs-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENTS_LIST_IMCO_LIST_REPORT_FORMAT,reports/references/files/shipments-list-IMCO-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENTS_WITH_NO_COST_CHARGES_LIST_REPORT_FORMAT,reports/references/files/shipments-with-no-cost-charges-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENTS_WITH_NO_HBL_NUMBER_ENTERED_LIST_REPORT_FORMAT,reports/references/files/shipments-with-no-HBL-number-entered-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENTS_WITH_NO_INVOICES_LIST,reports/references/files/shipments-with-no-invoices-list.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENTS_WITH_NO_INVOICES_LIST_REPORT_FORMAT,reports/references/files/shipments-with-no-invoices-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENTS_WITH_NO_JOB_NUMBER_MAPPED_LIST_REPORT_FORMAT,reports/references/files/shipments-with-no-job-number-mapped-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST,reports/references/files/shipments-with-no-purchase-invoices-list.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENTS_WITH_NO_PURCHASE_INVOICES_LIST_REPORT_FORMAT,reports/references/files/shipments-with-no-purchase-invoices-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPMENTS_WITH_NO_SALESPERSON_ENTERED_LIST_REPORT_FORMAT,reports/references/files/shipments-with-no-Salesperson-entered-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+SHIPPING_INSTRUCTION_REPORT_FORMAT,reports/references/files/shipping-instruction-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT,reports/references/files/statement-of-accounts-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_2,,,,
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_3,,,,
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_4,,,,
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_5,,,,
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_6,,,,
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_7,,,,
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_8,,,,
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_9,,,,
+STUFFING_REPORT_FORMAT,reports/references/files/stuffing-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+STUFFING_REPORT_JASPER_REPORT_FORMAT,reports/references/files/stuffing-report-jasper-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+SURRENDERED_LETTER_REPORT_FORMAT,reports/references/files/surrendered-letter-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT,reports/references/files/terminal-departure-report-(tdr)-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+TRANSSHIPMENT_LIST_REPORT_FORMAT,reports/references/files/transshipment-list-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,reports/references/files/trial-balance-report-format-1-trial-balance-summary.pdf,high,normalized_name,filename matches the code or catalogue name
+TRIAL_BALANCE_REPORT_FORMAT_10,,,,
+TRIAL_BALANCE_REPORT_FORMAT_11,,,,
+TRIAL_BALANCE_REPORT_FORMAT_12,,,,
+TRIAL_BALANCE_REPORT_FORMAT_13,,,,
+TRIAL_BALANCE_REPORT_FORMAT_14,,,,
+TRIAL_BALANCE_REPORT_FORMAT_15,,,,
+TRIAL_BALANCE_REPORT_FORMAT_16,,,,
+TRIAL_BALANCE_REPORT_FORMAT_2_TRIAL_BALANCE_SUMMARY,reports/references/files/trial-balance-report-format-2-trial-balance-summary.pdf,high,normalized_name,filename matches the code or catalogue name
+TRIAL_BALANCE_REPORT_FORMAT_3_TRIAL_BALANCE_SUMMARY_BRANCHWISE,reports/references/files/trial-balance-report-format-3-trial-balance-summary-branchwise.pdf,high,normalized_name,filename matches the code or catalogue name
+TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED,reports/references/files/trial-balance-report-format-4-trial-balance-summary-extended.pdf,high,normalized_name,filename matches the code or catalogue name
+TRIAL_BALANCE_REPORT_FORMAT_5_TRIAL_BALANCE_SUMMARY_EXTENDED,reports/references/files/trial-balance-report-format-5-trial-balance-summary-extended.pdf,high,normalized_name,filename matches the code or catalogue name
+TRIAL_BALANCE_REPORT_FORMAT_6_TRIAL_BALANCE_SUMMARY_EXTENDED_BRANCHWISE,reports/references/files/trial-balance-report-format-6-trial-balance-summary-extended-branchwise.pdf,high,normalized_name,filename matches the code or catalogue name
+TRIAL_BALANCE_REPORT_FORMAT_7,,,,
+TRIAL_BALANCE_REPORT_FORMAT_8,,,,
+TRIAL_BALANCE_REPORT_FORMAT_9,,,,
+TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT,reports/references/files/truck-cargo-pickup-request-report-format.pdf,high,normalized_name,filename matches the code or catalogue name
+UNCOLLECTED_CARGO_FOR_AGENT_ROUTED_LIST_REPORT_FORMAT,reports/references/files/uncollected-cargo-for-agent-routed-list-report-format.xlsx,high,normalized_name,filename matches the code or catalogue name
+WMS_GDO_REPORT_FORMAT_1,,,,
+WMS_GDO_REPORT_FORMAT_10,,,,
+WMS_GDO_REPORT_FORMAT_2,,,,
+WMS_GDO_REPORT_FORMAT_3,,,,
+WMS_GDO_REPORT_FORMAT_4,,,,
+WMS_GDO_REPORT_FORMAT_5,,,,
+WMS_GDO_REPORT_FORMAT_6,,,,
+WMS_GDO_REPORT_FORMAT_7,,,,
+WMS_GDO_REPORT_FORMAT_8,,,,
+WMS_GDO_REPORT_FORMAT_9,,,,
+WMS_GRN_REPORT_FORMAT_1,,,,
+WMS_GRN_REPORT_FORMAT_10,,,,
+WMS_GRN_REPORT_FORMAT_2,,,,
+WMS_GRN_REPORT_FORMAT_3,,,,
+WMS_GRN_REPORT_FORMAT_4,,,,
+WMS_GRN_REPORT_FORMAT_5,,,,
+WMS_GRN_REPORT_FORMAT_6,,,,
+WMS_GRN_REPORT_FORMAT_7,,,,
+WMS_GRN_REPORT_FORMAT_8,,,,
+WMS_GRN_REPORT_FORMAT_9,,,,
+WMS_STOCK_REPORT_FORMAT_1,,,,
+WMS_STOCK_REPORT_FORMAT_10,,,,
+WMS_STOCK_REPORT_FORMAT_11,,,,
+WMS_STOCK_REPORT_FORMAT_12,,,,
+WMS_STOCK_REPORT_FORMAT_13,,,,
+WMS_STOCK_REPORT_FORMAT_14,,,,
+WMS_STOCK_REPORT_FORMAT_15,,,,
+WMS_STOCK_REPORT_FORMAT_2,,,,
+WMS_STOCK_REPORT_FORMAT_3,,,,
+WMS_STOCK_REPORT_FORMAT_4,,,,
+WMS_STOCK_REPORT_FORMAT_5,,,,
+WMS_STOCK_REPORT_FORMAT_6,,,,
+WMS_STOCK_REPORT_FORMAT_7,,,,
+WMS_STOCK_REPORT_FORMAT_8,,,,
+WMS_STOCK_REPORT_FORMAT_9,,,,
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1,reports/references/files/ADVANCE_SHIPPING_NOTE_LOCATION_WISE_.pdf,manual,override,Proposed new code. Not in the 852-code registry. Link text is Advance Shipping Note Location Wise- 1.

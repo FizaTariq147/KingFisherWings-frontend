@@ -26,7 +26,10 @@
     "refresh:report-catalog-summary": "node scripts/refresh-report-catalog-complete-summary.mjs",
     "gen:api-schema": "node scripts/generate-api-schema.mjs",
     "audit:api-coverage": "node scripts/audit-api-coverage.mjs",
-    "report:manifest": "node tools/reports/build-manifest.mjs"
+    "report:manifest": "node tools/reports/build-manifest.mjs",
+    "report:code-map": "node tools/reports/build-code-map.mjs",
+    "report:status": "node tools/reports/build-status.mjs",
+    "report:layout-counts": "node tools/reports/fingerprint-counts.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",
