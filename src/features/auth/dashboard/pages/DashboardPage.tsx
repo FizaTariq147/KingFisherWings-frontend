@@ -186,6 +186,7 @@ export function DashboardPage() {
           counts={jobCountsData}
           invoicesOverdue={overdueQuery.data?.length ?? 0}
           loading={jobCountsLoading}
+          allJobsBase={totalJobsTo}
         />
 
         <DashboardKpiRow
