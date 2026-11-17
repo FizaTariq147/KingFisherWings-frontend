@@ -89,16 +89,24 @@ export function DashboardAlertPills({
   counts,
   invoicesOverdue,
   loading,
+  /**
+   * Admin → `/management/all-jobs-mis`; staff → `/jobs/all`.
+   * Status/category query strings stay the same so header pills open for both.
+   */
+  allJobsBase = '/management/all-jobs-mis',
 }: {
   counts?: JobDashboardCounts | null;
   invoicesOverdue: number;
   loading?: boolean;
+  allJobsBase?: string;
 }) {
   const n = (key: keyof JobDashboardCounts) =>
     loading ? '…' : (counts?.[key] ?? 0);
   const onHoldCount = loading
     ? '…'
     : (counts?.onHold ?? counts?.customsHold ?? 0);
+  const jobsPath = (query = '') =>
+    query ? `${allJobsBase}${query.startsWith('?') ? query : `?${query}`}` : allJobsBase;
 
   const pills: StatusPill[] = [
     {
@@ -112,7 +120,7 @@ export function DashboardAlertPills({
     {
       key: 'delayed',
       label: 'Delayed',
-      to: '/management/all-jobs-mis?category=delayed',
+      to: jobsPath('?category=delayed'),
       icon: Clock3,
       tone: 'bg-[#FCEBEC] text-[#C6303E]',
       count: n('delayed'),
@@ -120,7 +128,7 @@ export function DashboardAlertPills({
     {
       key: 'inProgress',
       label: 'In progress',
-      to: '/management/all-jobs-mis?category=in_progress',
+      to: jobsPath('?category=in_progress'),
       icon: PlayCircle,
       tone: 'bg-[#FFF4ED] text-[#FF751F]',
       count: n('inProgress'),
@@ -129,7 +137,7 @@ export function DashboardAlertPills({
       key: 'open',
       label: 'Open',
       // Open-status bucket only — not job_count / total jobs.
-      to: '/management/all-jobs-mis',
+      to: jobsPath(),
       icon: CircleDot,
       tone: 'bg-[#E8EEF4] text-[#2C557A]',
       count: n('open'),
@@ -137,7 +145,7 @@ export function DashboardAlertPills({
     {
       key: 'completed',
       label: 'Completed',
-      to: '/management/all-jobs-mis?category=completed',
+      to: jobsPath('?category=completed'),
       icon: CheckCircle2,
       tone: 'bg-[#E7F6EC] text-[#1B8A4A]',
       count: n('completed'),
@@ -153,7 +161,7 @@ export function DashboardAlertPills({
     {
       key: 'cancelled',
       label: 'Cancelled',
-      to: '/management/all-jobs-mis?category=cancelled',
+      to: jobsPath('?category=cancelled'),
       icon: Ban,
       tone: 'bg-[#F1F5F9] text-[#475569]',
       count: n('cancelled'),
@@ -161,7 +169,7 @@ export function DashboardAlertPills({
     {
       key: 'docsPending',
       label: 'Docs pending',
-      to: '/management/all-jobs-mis?status=DOCS_PENDING',
+      to: jobsPath('?status=DOCS_PENDING'),
       icon: FileClock,
       tone: 'bg-[#FDF2F8] text-[#9D174D]',
       count: n('docsPending'),
