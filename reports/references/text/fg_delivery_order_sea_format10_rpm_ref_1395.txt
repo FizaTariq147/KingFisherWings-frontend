@@ -1,0 +1,39 @@
+                                                DELIVERY ORDER
+To
+
+Deliver To           :                                                 D/O No.             :
+Consignee            : AL NASER TRADING COMPANY LLC                    Notify              : AL NASER TRADING COMPANY LLC
+CHA                  :                                                 Job No.             : CEXP190150
+HBL No.              : PLMAAJEA00081 / 28-JAN-19                       MBL No.             : MBLCOPY87667888 / 28-JAN-19
+BL Status            : DRAFT                                           Place of Delivery   :
+Place of Receipt :                                                     Port of Discharge : JEBEL ALI, UNITED ARAB EMIRATES
+Port of Loading      : CHENNAI (EX MADRAS), INDIA                      ETA                 : 07-FEB-19
+ETD                  : 29-JAN-19                                       PP/CC               : PREPAID
+Vessel / Voyage : EVERGREEN MARINE / 9887                              D.O. Release Date :
+Manifest No.         : CEXP190150                                      D.O. Validity       :
+Service Type         : FCL                                             Unstuff Place       :
+Container                Size            No of Pkgs Description of Goods                       Volume    Net Weight      G.Weight      V.Weight
+ABCU9877666              20' DC      125 PACKAGES STC: VALVE MATERIALS FOR                     24.000    17,000.000     18,000.000
+                                                  MACHINERY PARTS FREIGHT
+                                                  PREPAID ALL DESTINATION
+                                                  CHARGES ARE CONSIGNEE'S
+                                                  ACCOUNT
+
+Marks & Numbers : NIL MARKS
+
+
+
+
+Dear Sir,                                                                 Remarks :
+With reference to the above shipment, we request you
+to Deliver the cargo to against collection of your
+necessary charges.
+The Original Master B/L is already surrendered at
+the Port of Loading. Enclosed please find the copy
+of HBL duly endorsed by us for your reference.
+
+
+Terms and Conditions
+
+Printed By   shanmugam@fresa.io                        Printed Date : 17-MAY-23 01:29PM         Powered By : Fresa Technologies   Page 1 of 1
+

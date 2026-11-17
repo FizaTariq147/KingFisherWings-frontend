@@ -1,0 +1,52 @@
+                                             CONTAINER UNLOAD PLAN
+Job No.            : CSI190007 / 10-FEB-19                      MBL No.                           : MAEU9812678888 / 05-FEB-19
+Vessel / Voyage    : MSC MARINA / 982W                          Liner                             : SAFMARINE
+Port of Loading    : JEBEL ALI, UNITED ARAB EMIRATES            Port of Discharge                 : CHENNAI
+ETD                : 01-FEB-19                                  ETA                               : 10-FEB-19
+Container No.      : TTNU1982735                                Type                              : 20' DC
+BL No.                 Consignee                                                                              Qty         Weight               Volume
+JEAMAA20190201         3M LOGISTICS SERVICE                                                                    20        4,500.00                4.560
+                       NO. 178, 4TH CROSS STREET NUNGAMBAKKAM CHENNAI
+                       TAMILNADU 600062
+                       PHONE: 044 22435678
+                       STC: BINDING MATERIALS
+
+                       FREIGHT PREPAID
+                       ALL CHARGES ARE CONSIGNEE'S ACCOUNT
+
+                       NO MARKS
+B/SI/19/0037           ABC INDIA PVT LTD                                                                        33       6,500.00                5.879
+                       NO. 178, SMALL STREET, NEELANKARAI CHENNAI TAMIL NADU
+                       INDIA EMAIL: EZHILARASI@FRESATECHNOLOGIES.COM
+                       STC: FISHING NET PARTS WITH PROPELLER
+
+                       FREIGHT PREPAID
+                       ALL CHARGES ARE CONSIGNEE'S ACCOUNT
+
+                       CHILLERS
+B/SI/19/0038           ABU SECTOR PTLTD                                                                         28       8,790.00                9.230
+                       760/14 RS CENTER ADYAR, NEAR RIVER ROAD SIGNAL
+                       CHENNAI TAMILNADU INDIA
+                       STC: FISHING NET PARTS WITH PROPELLER
+
+                       FREIGHT PREPAID
+                       ALL CHARGES ARE CONSIGNEE'S ACCOUNT
+
+                       BOXES WITH BROWN SHADE
+DMMMAA20190202         4G LOGISTICS INDIA PVT LTD                                                                5       2,450.00                3.200
+                       10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD
+                       NUNGAMBAKKAM CHENNAI TAMILNADU 600084 INDIA EMAIL:
+                       RAM@FRESATECHNOLOGIES.COM
+                       STC: CARPETS WITH PACKING MATERIALS
+
+                       FREIGHT PREPAID
+                       ALL CHARGES ARE CONSIGNEE'S ACCOUNT
+
+                       BROWN WRAP BAGS
+                                                                                        Total :                 86      22,240.00               22.869
+
+
+
+
+Printed By : RAM                                       Print Date : 8-Feb-19 12:14 PM                                            Page 1 of 1
+

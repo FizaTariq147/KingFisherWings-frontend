@@ -1,0 +1,38 @@
+ 1/29/2019                                                    Purchase Invoice-MAAPI1900248
+                                                                                       FRESA DEMO INDIA PVT LTD
+                                                                                                                               Chennai- 600 100
+                                                                                                                               Tamil Nadu, India
+                                                                                                                WEB : www.fresatechnologies.com
+
+                                             PURCHASE INVOICE - MAAPI1900248
+                  PIN No. : MAAPI1900248                                                       Date : 28-JAN-19
+                A/C Name : CMA CGM                                                          GL Date : 28-JAN-19 (CREATED)
+                Narration : B/EXP/19/0251                                                     Client : 4G LOGISTICS INDIA PVT LTD
+                 HBL No. : PLMAAJEA00080                                                    MBL No. : MBLC9878909999
+                  Ref No. : 50013805003622-JAN-19                                           Job No. : CEXP190148
+            A/C Name                                        Narration                                Currency      Dr / Cr       Amount (INR)
+SEA FREIGHT FCL COST                    FREIGHT CHARGE                                                 INR           Dr                  3,600.00
+SEA FREIGHT FCL COST                    TERMINAL HANDLING CHARGES 20"GP                                INR           Dr                  5,500.00
+SEA FREIGHT FCL COST                    SEAL FEE                                                       INR           Dr                    250.00
+SEA FREIGHT FCL COST                    BILL OF LADING                                                 INR           Dr                  2,500.00
+IGST COST A/C                           I/U GST 18%                                                    INR           Dr                  1,485.00
+TDS PAYABLE                             TDS PAYABLES 2%                                                INR           Cr                    237.00
+CMA CGM                                 TDS PAYABLES 2%                                                INR           Dr                    237.00
+                                                            Rupee Thirteen Thousand Three Hundred Thirty-Five Only                           13,335.00
+             Remarks : 1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019
+
+
+
+
+     REQUESTED BY                      CHECKED BY            CHQ ISSUED BY                     ACCOUNTANT                    APPROVED BY
+
+
+
+
+         User : ram@fresatechnologies.com                 29-Jan-19 10:27:AM Asia/Kolkata                    Powered by Fresa Technologies
+
+
+
+
+ http://demo.fresagold.com:19786/ords/f?p=127:3002:117062835811:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NA…                   1/1
+

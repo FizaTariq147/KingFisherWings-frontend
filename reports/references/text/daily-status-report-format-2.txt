@@ -1,0 +1,66 @@
+2/13/2019                                                                  DAILY STATUS REPORT
+
+
+
+                                                                                    FRESA DEMO COMPANY LIMITED
+                                                                                                                             473A - Sai Shahi, 10th Street
+                                                                                                                             Kamakotti Nagar Pallikaranai
+                                                                                                                                       Chennai - 600 100
+                                                                                                                                         Tamilnadu, India
+                                                                                                                         WEB : www.fresatechnologies.com
+
+
+
+                                                            DAILY STATUS REPORT
+
+                      Client : 4G LOGISTICS INDIA PVT LTD
+                          Client                                                                                   No.
+                           Ref                       Consignee                                     Service
+            HBL No.                 Shipper Name                     POL             POD                   20' 40' of G.Weight Volume ETD ETA Remarks
+                           No.                         Name                                         Mode           Pcs
+                          9878                                  CHENNAI                                                                                NIL
+                                   PRAMODH         AL NASER                    JEBEL ALI,                                              13- 18-
+                                                                (EX
+   PLMAAJEA00084                   TRADING         TRADING                     UNITED ARAB FCL           1   0   100 10,000.000 18.000 OCT- OCT-
+                                                                MADRAS),
+                                   COMPANY         COMPANY LLC                 EMIRATES                                                18   18
+                                                                INDIA
+                          6678 CHENNAI                          CHENNAI                                                                                1X20
+                                                                               JEBEL ALI,                                              13- 18-
+                               FREIGHT             EMARAT       (EX
+   50013805264                                                                 UNITED ARAB FCL           1   0   100 10,000.000 18.000 OCT- OCT-
+                               FORWARDING          MARITIME LLC MADRAS),       EMIRATES                                                18   18
+                               PVT LTD                          INDIA
+                          3456 CHENNAI                          CHENNAI                                                                                2X20
+                                                   AL NASER                    JEBEL ALI,                                              28- 05-
+                               FREIGHT                          (EX
+   MAEU9812678888                                  TRADING                     UNITED ARAB FCL           1   0   125 18,000.000 20.000 JAN- FEB-
+                               FORWARDING                       MADRAS),
+                                                   COMPANY LLC                 EMIRATES                                                19   19
+                               PVT LTD                          INDIA
+                          5674                                  CHENNAI
+                                                   AL NASER                    JEBEL ALI,                                              29- 07-
+                               4G LOGISTICS                     (EX
+   PLMAAJEA00081                                   TRADING                     UNITED ARAB FCL           1   0   125 18,000.000 24.000 JAN- FEB- 1X20
+                               INDIA PVT LTD                    MADRAS),
+                                                   COMPANY LLC                 EMIRATES                                                19   19
+                                                                INDIA
+                     1298 CHENNAI                  AL ANSARI    CHENNAI                                                                          CURR
+                                                                               JEBEL ALI,                                              05- 15-
+                          FREIGHT                  LIGHTS AND   (EX                                                                              SHMT
+   HBLC09877777                                                                UNITED ARAB FCL           1   0   100 18,000.000 20.000 FEB- FEB-
+                          FORWARDING               DESIGN CO    MADRAS),
+                                                                               EMIRATES                                                19   19
+                          PVT LTD                  WLL          INDIA
+                     3489                                       CHENNAI                                                                          IN
+                                                   AL NASER                    JEBEL ALI,                                              11- 25-
+                          4G LOGISTICS                          (EX                                                                              PROGR
+   ASIANLINE20190209                               TRADING                     UNITED ARAB FCL           1   0   125 21,000.000 21.500 FEB- FEB- ESS
+                          INDIA PVT LTD                         MADRAS),
+                                                   COMPANY LLC                 EMIRATES                                                19   19
+                                                                INDIA
+
+
+
+                User : ram@fresatechnologies.com                 13-Feb-19 04:53:PM Asia/Kolkata                       Powered by Fresa Technologies
+

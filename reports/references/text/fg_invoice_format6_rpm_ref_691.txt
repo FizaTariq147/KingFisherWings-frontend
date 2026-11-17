@@ -1,0 +1,72 @@
+                                                                                                FRESA DEMO INDIA PVT LTD
+                                                                                                                       473A - SAI SHAHI, 10TH STREET
+                                                                                                                                              MUMBAI.
+                                                                                                                               MAHARASTRA- 600 100
+                                                                                                                       WEB : www.fresatechnologies.com
+
+
+
+                                                                        INVOICE
+
+                  Customer : DEMO LOGISTICS INDIA PVT LTD                                        Invoice No. : BOMINV230500382 (POSTED)
+                   Address : 21, PORT BLAIR KRISHNA ST 676876                                           Date : 17-MAY-23
+                       City : MANNARGUDI                                                           Due Date : 17-MAY-23
+                    Country : INDIA                                                                    State : TAMIL NADU
+                         Tel : 798798798                                                             Job No. :
+                        Fax : 9879878                                                              Job Date :
+                      Email : aaa@fresa.io                                                         Job Type : FCL EXPORT
+                  Attention :                                                                     Shpt Type : FCL
+                   Your Ref :                                                                   Salesperson : DEMO-PERSON
+               Quote Ref No :                                                                       Trnx Cur : INR
+                   Remarks :
+
+Job Description
+GENERAL CARGO
+
+                                                                                                                                                    Total
+Sr             Charges                   Currency        Amount / Qty           Ex.Rate             Qty          Tax %            Tax Amount
+                                                                                                                                                   Amount
+1    FREIGHT CHARGE                        INR                  1,500.00            1.000000               1           18.00                       1,500.00
+2    LOCAL CHARGES                         INR                    800.00            1.000000               1           18.00                        800.00
+3    SEA FREIGHT CHARGE                    INR                    900.00            1.000000               1           18.00                        900.00
+4    CONTAINER CLEANING FEE                INR                  1,000.00            1.000000               1           15.00                       1,000.00
+
+                                                                                                                                         Sub Total : 4200
+                                                                                                                                               Tax Total : 0
+
+                                                                                                                            Invoice Total (INR) 4,776.00
+                                       Amount Rupee Four Thousand Seven Hundred Seventy-Six Only
+
+                                                                                                                             Net Payable (INR) 4,776.00
+                                                                           .Terms
+
+         1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+
+                                                                        Bank Details
+
+                                                         Beneficiary Name: YOUR COMPANY NAME
+                                                                 Bank            : HDFC
+                                                            A/c No          : XXXXXXXXXXX
+                                                             IBAN Code       : ABA:XXXXXX
+                                                               Swift Code      : XXXXXX
+                                                               Address         : MUMBAI.
+
+
+
+Credit Terms not applicable to "Customs Duty & Legalisation Fees' Please settle such charges immediately
+E&OE
+
+
+
+
+Invoice Received By
+
+
+                                                                                                      FOR FRESA DEMO INDIA PVT LTD
+
+
+
+
+           User : shanmugam@fresa.io                         17-May-23 11:51:AM Asia/Calcutta                      Powered by Fresa Technologies
+

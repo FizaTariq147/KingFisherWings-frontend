@@ -1,0 +1,60 @@
+                                                                                                                                          INV No. : BOMINV230500382
+To             : DEMO LOGISTICS INDIA PVT LTD                                                           INV Date                    17-MAY-23 (POSTED)
+                 21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA,
+                 676876                                                                                 Due Date                    17-MAY-23
+                 Phone : 798798798                                                                      PAN No.                     AABCT1557F
+                 Fax : 9879878
+                                                                                                        GST No.                     27AAACI9260R002
+                                                                                                        Currency                    INR
+GSTIN No. :                                                                                             Total Amount                4,776.00
+
+
+
+Master B/L No.                :                                                                         No. Of PKGS                 :3
+Customer Ref. No.             :                                                                         Free Time Exp               :
+House B/L No.                 : NSAJED85630124277                                                       Date of Pick UP             :
+VESSEL/VOY                    :                                                                         CNTR. Info.                 : TTNU0712894
+POL / ETD                     : INNSA / 01-MAR-23                                                       Shipper                     : DEMO-SHIPPER ENGG COMPANY
+POD / ETA                     : SAJED / 20-MAR-23
+FINAL POD / ETA               : SAJED
+Commodity                     : GENERAL CARGO
+
+
+                                                                                                                                Amount /        Non
+Description                                    SAC             Tax % Qty Unit                          Cur.      Ex.Rate                                   Taxable    Tax Amt      Amount
+                                                                                                                                    Qty      Taxable
+FREIGHT CHARGE                                                       18       1 1 TON OR 1/2          INR             1.00000    1,500.00                  1,500.00     270.00      1,500.00
+                                                                                MEASURE
+LOCAL CHARGES                                                        18       1                       INR             1.00000     800.00                     800.00     144.00        800.00
+SEA FREIGHT CHARGE                                                   18       1 1 TON OR 1/2          INR             1.00000     900.00                     900.00     162.00        900.00
+                                                                                MEASURE
+CONTAINER CLEANING FEE                                               15       1 1 TON OR 1/2          INR             1.00000    1,000.00                  1,000.00        0.00     1,000.00
+                                                                                MEASURE
+                                                                                                                                                 Sub total :                      4,200.00
+                                                                                                                                 GST18-I/U GST18%                                     576.00
+
+
+
+Rupee Four Thousand Seven Hundred Seventy-Six Only                                                                                             Total :         INR                4,776.00
+GRAND TOTAL BALANCE DUE TO FRESA DEMO INDIA PVT LTD                                                                                                  INR               4,776.00
+
+
+
+
+ .Terms
+ 1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+ Bank Details
+ Beneficiary Name: YOUR COMPANY NAME
+ Bank                      : HDFC
+ A/c No                    : XXXXXXXXXXX
+ IBAN Code     : ABA:XXXXXX
+ Swift Code    : XXXXXX
+ Address                   : MUMBAI.
+
+
+
+
+     FRESA DEMO INDIA PVT LTD                                                                                                           AUTHORIZED SIGNATURE
+Printed By : shanmugam@fresa.io                                                   Printed Date :17-MAY-23 09:43AM                        Powered By : Fresa Technologies    Page 1 of 1
+

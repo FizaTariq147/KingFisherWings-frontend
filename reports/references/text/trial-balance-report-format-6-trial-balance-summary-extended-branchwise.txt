@@ -1,0 +1,155 @@
+                                           FRESA DEMO INDIA PVT LTD
+                                                           TRIAL BALANCE                                       FROM DATE : 01-JAN-18
+                                                                                                                  TO DATE : 30-SEP-18
+Type               COA Name                                        Opening Balance              Debit                 Credit      Closing Balance
+Branch : CHENNAI
+  ASSET
+       ADCB BANK - AED                                                                      529,000.00           131,400.00             397,600.00
+       BUTEMBO CASH BOOK                                                                          0.00             9,000.00              (9,000.00)
+       BUTEMBO PETTY CASH                                                                   119,500.00           158,000.00             (38,500.00)
+       HDFC BANK                                                                            148,548.00            11,000.00             137,548.00
+       INTERBRANCH - CHENNAI                                                                 68,000.00                 0.00               68,000.00
+       INTERBRANCH - DUBAI (DXB)                                                                  0.00            68,000.00             (68,000.00)
+       KITWE PETTY CASH                                                                     201,000.00           101,400.00               99,600.00
+       KOTAK MAHINDRA BANK                                                                   20,146.00                 0.00               20,146.00
+       NDOLA PETTY CASH                                                                     799,000.00                 0.00             799,000.00
+       PETTY CASH - BUKAVU                                                                  301,500.00               250.00             301,250.00
+       PETTY CASH - GOMA                                                                     61,000.00           335,500.00           (274,500.00)
+       PUNJAB NATIONAL BANK                                                                 663,366.68             8,000.00             655,366.68
+       SUNDRY DEBTORS                                                                     8,659,725.38         3,326,131.18           5,333,594.20
+       TDS PAYABLE                                                                                0.00            31,694.50             (31,694.50)
+       TRADE DEBTORS CONTROL                                                              1,226,086.00            10,167.00           1,215,919.00
+                                               ASSET TOTAL :                             12,796,872.06         4,190,542.68           8,606,329.38
+
+  EXPENSE
+       AIR FREIGHT CHGS COST                                                                536,353.00                 0.00             536,353.00
+       DOCUMENTATION CHGS                                                                         0.00            10,000.00             (10,000.00)
+       EXCHANGE GAIN/LOSS                                                                     2,757.50                 0.00                2,757.50
+       OFFICE EXPENSE                                                                         1,000.00                 0.00                1,000.00
+       SEA FREIGHT FCL COST                                                               1,444,777.00                 0.00           1,444,777.00
+       SEA FREIGHT GROUPAGE COST                                                            957,380.00                 0.00             957,380.00
+                                             EXPENSE TOTAL :                              2,942,267.50            10,000.00           2,932,267.50
+
+  INCOME
+       AIR EXPORT CLEARANCE                                                                      0.00             10,600.00            (10,600.00)
+       AIR FREIGHT CHGS- REVENUE                                                                 0.00          2,128,900.00         (2,128,900.00)
+       SEA FREIGHT FCL REVENUE                                                             315,175.00          7,195,030.58         (6,879,855.58)
+       SEA FREIGHT GROUPAGE REVENUE                                                              0.00             77,792.20            (77,792.20)
+                                              INCOME TOTAL :                               315,175.00          9,412,322.78         (9,097,147.78)
+
+  LIABILITY
+       CGST COST A/C                                                                           180.00                  0.00                 180.00
+       CGST SALE A/C                                                                           180.00            107,390.80           (107,210.80)
+       GST RCM INPUT A/C                                                                         0.00              9,035.00             (9,035.00)
+       GST RCM OUTPUT A/C                                                                    9,035.00                  0.00               9,035.00
+       GST SALE A/C                                                                              0.00                 18.00                 (18.00)
+       IGST COST A/C                                                                        79,270.00                  0.00              79,270.00
+       IGST SALE A/C                                                                         9,000.00             98,344.00            (89,344.00)
+       SGST COST A/C                                                                           180.00                  0.00                 180.00
+       SGST SALE A/C                                                                           180.00            107,390.80           (107,210.80)
+       SUNDRY CREDITORS                                                                    821,124.50          3,027,710.00         (2,206,585.50)
+       TRADE CREDITORS CONTROL                                                               8,520.00             19,230.00            (10,710.00)
+                                             LIABILITY TOTAL :                             927,669.50          3,369,118.60         (2,441,449.10)
+
+                                      CHENNAI BRANCH TOTAL :                             16,981,984.06        16,981,984.06                     0.00
+
+
+
+
+Printed By : RAM                                       Printed Date :08-Feb-19 11:22AM          Powered By : Fresa Technologies   Page 1 of 3
+                                          FRESA DEMO INDIA PVT LTD
+                                                       TRIAL BALANCE                                      FROM DATE : 01-JAN-18
+                                                                                                             TO DATE : 30-SEP-18
+Type               COA Name                                    Opening Balance             Debit                 Credit      Closing Balance
+Branch : MUMBAI
+  ASSET
+       ADCB BANK - AED                                                                   5,305.17            13,956.00              (8,650.83)
+       BARCLAYS BANK - ZAMBIA                                                              118.00                 0.00                  118.00
+       BUTEMBO PETTY CASH                                                                5,000.00                 0.00                5,000.00
+       CASH ADVANCE                                                                     22,305.00                 0.00               22,305.00
+       CASH BOOK - BUKAVU                                                               25,000.00            24,500.00                  500.00
+       CASH BOOK - BURUNDI                                                               6,400.00                 0.00                6,400.00
+       CASH BOOK - GGZ GARDEN OFFICE                                                     5,000.00                 0.00                5,000.00
+       CASH BOOK - KIGALI                                                                  900.00                 0.00                  900.00
+       CNY BANK                                                                          1,500.00                 0.00                1,500.00
+       EMIRATES BANK (USD)                                                               3,896.40                 0.00                3,896.40
+       HDFC BANK                                                                       733,191.54            99,784.16             633,407.38
+       HSBC BANK                                                                        34,600.00             1,500.00               33,100.00
+       I & M BANK RWANDA LTD(USD)                                                        1,623.50                 0.00                1,623.50
+       ICICI BANK                                                                       23,657.00            20,100.00                3,557.00
+       INTERBRANCH - CHENNAI                                                           105,500.00           106,720.00              (1,220.00)
+       INTERBRANCH - DUBAI (DXB)                                                       106,720.00           105,500.00                1,220.00
+       KITWE PETTY CASH                                                                 27,501.00                 0.00               27,501.00
+       KOTAK MAHINDRA BANK                                                               2,000.00                 0.00                2,000.00
+       NDOLA PETTY CASH                                                                563,504.00                 0.00             563,504.00
+       OFFICE EQUIPMENTS                                                                 2,000.00                 0.00                2,000.00
+       PETTY CASH - BUKAVU                                                              65,750.00           100,000.00             (34,250.00)
+       PETTY CASH - GOMA                                                                 7,500.00           100,000.00             (92,500.00)
+       PETTY CASH - KIGALI                                                                   0.00             4,500.00              (4,500.00)
+       SUNDRY DEBTORS                                                                3,517,413.67         1,662,323.25           1,855,090.42
+       SYSTEM SOFTWARE                                                                  15,000.00                 0.00               15,000.00
+       TDS PAYABLE                                                                       1,090.00             2,464.30              (1,374.30)
+       TDS RECEIVABLE                                                                      710.00               500.00                  210.00
+       TRADE DEBTORS CONTROL                                                           977,926.23           228,374.06             749,552.17
+       TRADE DEBTORS CONTROL -OVER SEAS                                                317,527.50            41,447.50             276,080.00
+                                            ASSET TOTAL :                            6,578,639.01         2,511,669.27           4,066,969.74
+
+  EXPENSE
+       ADVANCE - ARUN PEREIRA                                                               0.00               5,000.00             (5,000.00)
+       ADVANCE - STAFF                                                                    500.00                 100.00                 400.00
+       AIR FREIGHT CHGS COST                                                          305,004.56                 450.50            304,554.06
+       COMMISSION OTHERS                                                               24,000.00                   0.00             24,000.00
+       DISCOUNT ALLOWED                                                                     1.00                   0.00                   1.00
+       DOCUMENTATION CHGS                                                              10,000.00               1,000.00               9,000.00
+       EXCHANGE GAIN/LOSS                                                              30,011.50                  77.00             29,934.50
+       SEA FREIGHT FCL COST                                                           138,292.80               4,500.00            133,792.80
+       SEA FREIGHT GROUPAGE COST                                                       71,653.44               6,728.00             64,925.44
+       STAFF SALARY                                                                         0.00               2,500.00             (2,500.00)
+                                          EXPENSE TOTAL :                             579,463.30             20,355.50             559,107.80
+
+  INCOME
+       3C EXPRESS CC CHGS                                                              14,500.00             32,600.00            (18,100.00)
+       3C EXPRESS FRANCE P/S                                                                0.00             20,236.00            (20,236.00)
+       AIR EXPORT CLEARANCE                                                            20,000.00                  0.00              20,000.00
+       AIR FREIGHT CHGS- REVENUE                                                       41,590.00            306,196.98           (264,606.98)
+       DUBAI TRANSPORT INCOME                                                          10,000.00                  0.00              10,000.00
+       SEA EXPORT CLEARANCE                                                             2,000.00                  0.00               2,000.00
+       SEA FREIGHT FCL REVENUE                                                         49,574.00          2,638,714.78         (2,589,140.78)
+       SEA FREIGHT GROUPAGE REVENUE                                                    74,000.00          1,317,876.66         (1,243,876.66)
+       SEA IMPORT CLEARANCE                                                             2,700.00             43,173.00            (40,473.00)
+                                           INCOME TOTAL :                             214,364.00          4,358,797.42         (4,144,433.42)
+
+  LIABILITY
+       CGST COST A/C                                                                      972.00                405.00                 567.00
+       CGST SALE A/C                                                                        2.50              5,560.36             (5,557.86)
+       GST RCM INPUT A/C                                                                    0.00              4,857.48             (4,857.48)
+       GST COST A/C                                                                     2,520.00                  0.00               2,520.00
+       GST RCM OUTPUT A/C                                                               4,857.48              1,040.00               3,817.48
+       GST SALE A/C                                                                         0.00              2,983.00             (2,983.00)
+       IGST COST A/C                                                                   16,210.84                  0.00              16,210.84
+       IGST SALE A/C                                                                    6,772.50            126,500.54           (119,728.04)
+       ROUND OFF A/C                                                                        0.50                  0.00                   0.50
+       SGST COST A/C                                                                    1,472.00                405.00               1,067.00
+       SGST SALE A/C                                                                        2.50              5,560.36             (5,557.86)
+       SUNDRY CREDITORS                                                               221,315.80            437,471.90           (216,156.10)
+       TRADE CREDITORS CONTROL                                                         61,805.00            212,791.60           (150,986.60)
+
+Printed By : RAM                                   Printed Date :08-Feb-19 11:22AM         Powered By : Fresa Technologies   Page 2 of 3
+                                  FRESA DEMO INDIA PVT LTD
+                                                  TRIAL BALANCE                                       FROM DATE : 01-JAN-18
+                                                                                                         TO DATE : 30-SEP-18
+Type               COA Name                               Opening Balance              Debit                 Credit      Closing Balance
+Branch : MUMBAI
+  LIABILITY
+
+                                    LIABILITY TOTAL :                             315,931.12            797,575.24           (481,644.12)
+
+                              MUMBAI BRANCH TOTAL :                              7,688,397.43         7,688,397.43                     0.00
+
+                                      GRAND TOTAL :                             24,670,381.49        24,670,381.49                     0.00
+
+
+
+
+Printed By : RAM                              Printed Date :08-Feb-19 11:22AM          Powered By : Fresa Technologies   Page 3 of 3
+

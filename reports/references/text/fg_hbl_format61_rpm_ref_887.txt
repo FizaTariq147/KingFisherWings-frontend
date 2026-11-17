@@ -1,0 +1,63 @@
+Consignor
+4G LOGISTICS INDIA PVT LTD
+10 DBS CENTRE                                                                                                       BILL OF LADING                                 DRAFT
+NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM                                                                           FOR COMBIMED TRANSPORT
+CHENNAI, TAMILNADU, INDIA 600084                                                                              SHIPMENT OR PORT TO PORT                  Bill of Lading No.     PLMAAJEA00081
+EMAIL: RAM@FRESATECHNOLOGIES.COM                                                                              SHIPMENT NOT NEGOTIABLE             Shipment Reference No
+
+Consignee (or order)
+AL NASER TRADING COMPANY LLC
+30 AL MAKTHOOM BUILDING
+NEAR MUBARAK CENTRE ROUND ABOUT AL NABHA
+SHARJAH, SHARJAH, UAE
+
+
+Notify Party
+AL NASER TRADING COMPANY LLC
+30 AL MAKTHOOM BUILDING
+NEAR MUBARAK CENTRE ROUND ABOUT AL NABHA
+SHARJAH, SHARJAH, UAE
+
+
+Pre-Carriage by                                         Place of Receipt                                      Delivery Agent
+                                                        CHENNAI (EX MADRAS), INDIA                            FRESA DEMO DUBAI UAE LLC
+                                                                                                              DUBAI, UAE
+Ocean Vessel                       Voy No.              Port of Loading                                       TEL: 04-2339876
+CMA CGM                            9887                 CHENNAI (EX MADRAS), INDIA                            EMAIL: USER@FRESADEMOCOMPANY.COM
+
+
+Port of Discharge                                       Place of Delivery                                     Mode/Means of transport                         Number of Original
+JEBEL ALI, UNITED ARAB EMIRATES                         JEBEL ALI, UNITED ARAB EMIRATES                       FCL                                             ZERO (0)
+
+
+Container No.(s)                       Marks and Numbers                                     Number of Packages, Kinds of packages                              Gross Weight           Measurment
+                                                                                           General description of Goods ( said to contain)                          Kgs.                  M3
+
+ABCU9877666 - 20' DC                   NIL MARKS                             STC: VALVE MATERIALS FOR MACHINERY PARTS                                             18,000.000 KGS          24.000 CBM
+Seal No: SL345566
+                                                                             FREIGHT PREPAID
+                                                                             ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT
+
+
+
+
+                                       FCL                                   FREIGHT PREPAID
+                                                                             SHIPPED ON BOARD: 16-JAN-19
+                                                                             ON VESSEL CMA CGM/9887                                          AT CHENNAI
+
+
+Note:                                                                                                         Excess value declaration refer to clause 11(4) & (5) or: reserve side.
+The Merchant's attention is called to the fact that according to cluse 10, 11 and 12 of this bill of lading
+the liability of the carrier is in most cases, limited in respect of lose of or damage to the goods any
+delay.
+
+
+LAW AND JURISDICTION CLAUSE
+The contract evidented by or contented in this bill of lading shall be governmented by                                  Place and Date of issue                              CHENNAI
+the law of United Kingdom and any claim or dispose arising hereunder or in connection
+herewith shall (without prejudice to the carrier right commence proceeding in any other
+juridiction) the subject to the jurisdiction of the court of London.
+
+
+(TERMS CONTINUED ON BACK HERE OF)
+

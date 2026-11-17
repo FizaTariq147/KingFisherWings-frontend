@@ -1,0 +1,67 @@
+                                                                                             FRESA DEMO INDIA PVT LTD
+                                                                                                                             473A - SAI SHAHI, 10TH STREET
+                                                                                                                                                    MUMBAI.
+                                                                                                                                     MAHARASTRA- 600 100
+                                                                                                                             WEB : www.fresatechnologies.com
+
+
+
+                                                         INVOICE / DEBIT NOTE
+
+ Agent                         : DEMO LOGISTICS INDIA PVT LTD                 Invoice No.                   : BOMINV230500382 / 17-MAY-23 (POSTED)
+                                 21, PORT BLAIR, KRISHNA ST, MANNARGU
+                                 DI, TAMIL NADU, INDIA, 676876
+                                 Phone : 798798798
+                                 Fax : 9879878
+                                 VAT No. : 68768978898098
+ Shipper                       : DEMO-SHIPPER ENGG COMPANY                    Credit Term                   : CASH
+ Consignee                     : DEMO STEEL FACTORY CO. LTD.                  Due Date                      : 17-MAY-23
+ Job No.                       :                                              Shipment No.                  : BOM/EXP/23/05/B/0709 / 16-MAY-23
+ MBL / MAWB No.                :                                              HBL / HAWB No.                : NSAJED85630124277
+ Place of Receipt              : INMAA-CHENNAI                                Port of Loading               : NHAVA SHEVA, INDIA
+ Port of Discharge             : JEDDAH, SAUDI ARABIA                         Place of Delivery             : JEDDAH SAUDI ARABIA
+ Vessel / Flight Name          :                                              Voyage / Flight No.           :
+ ETD                           : 01-MAR-23                                    Narration                     : MBL NO... / HBL NO. NSAJED85630124277 /
+                                                                                                              JOB NO.
+ ETA                           : 20-MAR-23                                    Reference No.                 :
+ IGM No.                       :                                              Line / Subline No.            :
+ INCO Terms                    : FOB                                          BOE No.                       :
+ PO No.                        :
+ Remarks
+ Container No.      Type                             Description                               No of Pcs      Gross Weight          Volume    Volume Weight
+ TTNU0712894      40' FLAT                        GENERAL CARGO                              3 PACKAGES      22,700.000 KGS                    22,700.000
+
+           Charges                     Currency                     Qty                            Amount / Qty               FCY Amount Total Amount (INR)
+FREIGHT CHARGE                           INR                                          1                           1,500.00       1,500.00             1,500.00
+LOCAL CHARGES                            INR                                          1                            800.00          800.00              800.00
+SEA FREIGHT CHARGE                       INR                                          1                            900.00          900.00              900.00
+CONTAINER CLEANING FEE                   INR                                          1                           1,000.00       1,000.00             1,000.00
+I/U GST 18%                              INR                                          1                                            576.00              576.00
+
+                                                                      Rupee Four Thousand Seven Hundred Seventy-Six Only                              4,776.00
+.Terms
+
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+
+Bank Details
+
+Beneficiary Name: YOUR COMPANY NAME
+Bank            : HDFC
+A/c No          : XXXXXXXXXXX
+IBAN Code       : ABA:XXXXXX
+Swift Code      : XXXXXX
+Address         : MUMBAI.
+
+
+
+
+                                       This is a computer generated document and does not require a signature
+
+Created By : parthiban.in@fresatechnologies.com
+
+
+
+
+           User : shanmugam@fresa.io                      17-May-23 12:24:PM Asia/Calcutta                            Powered by Fresa Technologies
+

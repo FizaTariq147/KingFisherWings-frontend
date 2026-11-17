@@ -8,6 +8,10 @@ import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNa
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { FormatStatusBadge } from './FormatStatusBadge';
+import {
+  reportConformanceLabel,
+  reportConformanceStatus,
+} from '../../utils/reportConformanceStatus';
 
 function compareByName(a: ReportTemplate, b: ReportTemplate): number {
   const na = parseInvoiceFormatNumber(a.code);
@@ -218,6 +222,10 @@ function FormatLink({
         <FormatStatusBadge status={status} />
       </span>
       <span className="mt-0.5 line-clamp-2 leading-snug">{template.name}</span>
+      <span className="mt-0.5 block text-[9px] font-semibold uppercase tracking-wide text-amber-800">
+        {reportConformanceLabel(reportConformanceStatus(template.code))}
+        {reportConformanceStatus(template.code) === 'accepted' ? '' : ' · approximate, not final'}
+      </span>
       {sharedHint ? (
         <span className="mt-0.5 block text-[9px] font-medium text-amber-800">{sharedHint}</span>
       ) : null}

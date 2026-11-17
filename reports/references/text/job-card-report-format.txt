@@ -1,0 +1,63 @@
+  2/13/2019                                                                 Job Card-CSI190007
+                                                                                             FRESA DEMO INDIA PVT LTD
+                                                                                                                                         Chennai- 600 100
+                                                                                                                                         Tamil Nadu, India
+                                                                                                                          WEB : www.fresatechnologies.com
+
+
+                                                  JOB CARD / JOB NO - CSI190007
+
+                     Client : FRESA DEMO DUBAI UAE LLC                                             Shipper : FRESA DEMO DUBAI UAE LLC
+                              DUBAI UNITED ARAB EMIRATES                                                     DUBAI UNITED ARAB EMIRATES
+                              PHONE: 04-2339876 EMAIL: user@fresade                                          PHONE: 04-2339876 EMAIL: user@fresade
+                              mocompany.com                                                                  mocompany.com
+                 Consignee : FRESA DEMO INDIA PVT LTD                                            Forwarder : FRESA DEMO INDIA PVT LTD
+                             NO. 178, 2ND STREET, MOORE STREET N                                             NO. 178, 2ND STREET, MOORE STREET N
+                             EAR NEHRU PARK, PARRY CORNER CHE                                                EAR NEHRU PARK, PARRY CORNER
+                             NNAI TAMIL NADU 600001 INDIA                                                    CHENNAI TAMIL NADU 600001 INDIA
+                             PHONE: 9884124194                                                               PHONE: 9884124194 EMAIL: demo@fresate
+                                                                                                             chnologies.com, user@fresatechnologies.co
+                                                                                                             m
+                     Job No : CSI190007 / 10-FEB-19                                              MBL No : MAEU9812678888 / 05-FEB-19
+                    HBL No : MAEU9812678888 / 05-FEB-19                                 Place of Receipt : DUBAI
+            Port of Loading : JEBEL ALI, UNITED ARAB EMIRATES                          Port of Discharge : CHENNAI (EX MADRAS), INDIA
+   Port of Final Destination : CHENNAI (EX MADRAS), INDIA                              Place of Delivery : CHENNAI
+                        ETD : 01-FEB-19                                                             ETA : 10-FEB-19
+                     Carrier : SAFMARINE                                                Vessel / Voyage : MSC MARINA / 982W
+               Service Type : LCL                                                                 PP/CC : PREPAID
+              Sales Person : MANAGEMENT - SALES
+  Container No       Type               Description                    No of Pcs       Gross Weight    Volume            Volume Weight           Net Weight
+TTNU1982735        20' DC     CONSOLE CONTAINER 1X20                            86          22,240.000   22.869                                    20,500.000
+                                   CHARGE                                      SALE                     COST                                GP
+TRANSPORTATION CHARGES                                                                0.00                         500.00                                -500.00
+CUSTOMS CHARGES                                                                       0.00                       2,500.00                              -2,500.00
+DISCOUNTS AND REBATE                                                                  0.00                       1,300.00                              -1,300.00
+                                                                    Total            0.00                     4,300.00                           -4,300.00
+                                                                                                               Cost
+                                                                     Local   Cost    Cost                                                              Updated
+     Charge                 Unit       Currency Ex.Rate Sale/Unit                           Cost/Unit          Local           Updated By
+                                                                    Amount Currency Ex.Rate                                                              On
+                                                                                                              Amount
+TRANSPORTATION                                                                                                                                         08-FEB-
+               PER SHIPMENT INR                 1.000000     0.00      0.00 INR        1.000000      500.00    500.00 ram@fresatechnologies.com
+CHARGES                                                                                                                                                19
+CUSTOMS        PER
+                            INR                 1.000000     0.00      0.00 INR        1.000000 2,500.00 2,500.00
+CHARGES        CONTAINER
+DISCOUNTS AND WEIGHT PER
+                            INR                 1.000000     0.00      0.00 INR        1.000000       50.00 1,300.00
+REBATE         MEASUREMENT
+                                   Revenue                                                                      Expense
+               Sale Organization                             Amount                 Cost Organization                                         Amount
+FRESA DEMO DUBAI UAE LLC                                           0.00 A C MULENGA                                                                      500.00
+                                                                        AAA FORWARDERS                                                                 3,800.00
+                   Remarks : 1X20 CONSOLE CONTAINERS
+          Internal Remarks :
+
+
+
+
+          User : ram@fresatechnologies.com                     13-Feb-19 05:27:PM Asia/Kolkata                         Powered by Fresa Technologies
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:7788304946235:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                            1/1
+

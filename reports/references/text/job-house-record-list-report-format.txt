@@ -1,0 +1,45 @@
+2/18/2019                                                     Job houses/Record List-CAE190028
+                                                                                        FRESA DEMO INDIA PVT LTD
+                                                                                                                                  Chennai- 600 100
+                                                                                                                                  Tamil Nadu, India
+                                                                                                                   WEB : www.fresatechnologies.com
+
+
+                                  JOB HOUSES / RECORD LIST / JOB NO - CAE190028
+
+                 Shipper : FRESA DEMO INDIA PVT LTD                                          Consignee : FRESA DEMO DUBAI UAE LLC
+                           NO. 178, 2ND STREET, MOORE STREET N                                           DUBAI UNITED ARAB EMIRATES
+                           EAR NEHRU PARK, PARRY CORNER CHE                                              PHONE: 04-2339876 EMAIL: user@fresade
+                           NNAI TAMIL NADU 600001                                                        mocompany.com
+                           PHONE: 9884124194 EMAIL: demo@fresate
+                           chnologies.com, user@fresatechnologies.co
+                           m
+             Origin Agent : FRESA DEMO INDIA PVT LTD                                            Notify1 : AL NASER TRADING COMPANY LLC
+                            NO. 178, 2ND STREET, MOORE STREET N                                           30 AL MAKTHOOM BUILDING NEAR MUBA
+                            EAR NEHRU PARK, PARRY CORNER CHE                                              RAK CENTRE ROUND ABOUT AL NABHA
+                            NNAI TAMIL NADU 600001 INDIA                                                  SHARJAH
+                            PHONE: 9884124194 EMAIL: demo@fresate
+                            chnologies.com, user@fresatechnologies.co
+                            m
+                   Job No : CAE190028 / 20-FEB-19                                            MBL No : 17623456882 / 18-FEB-19
+            Departure Date : 20-FEB-19                                                   Arrival Date : 20-FEB-19
+                    Carrier : EMIRATES                                              Vessel / Voyage : EK9876 / EK9876
+              Agent Name : FRESA DEMO INDIA PVT LTD                                 Port of Loading : CHENNAI, INDIA
+             Carrier Agent : EMIRATES EK PVT LTD                                   Port of Discharge : DUBAI INTERNATIONAL AIRPORT, UNITED A
+                                                                                                        RAB EMIRATES
+                                                                                                                 Container
+  House B/L      PP/CC POF Forwarder / Shipper                  Notify / Consignee                   No of Pcs G.Weight Volume Chargeable Unit
+MAA/DXB/1900014 PREPAID DXB BABU SECTOR PTLTD           AL NASER TRADING COMPANY LLC                        100 1,250.00    1.00      1,250.00
+
+
+                                                                                                                                                Total:
+                                                                                              No of Pcs G.Weight Volume         Chargeable Weight
+                                                                                                     100  1,250.00   1.00                  1,250.00
+
+        User : ram@fresatechnologies.com                   18-Feb-19 07:43:PM Asia/Kolkata                      Powered by Fresa Technologies
+
+
+
+
+http://demo.fresagold.com:19786/ords/f?p=127:3002:3516041250116:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                     1/1
+

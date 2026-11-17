@@ -1,0 +1,39 @@
+                                                                                                 TAX INVOICE
+Client : HARSHA LOGISTICS                                                   Invoice No.          : CN/INV/09/25/00052 / 05-SEP-25 (CREATED)                Shipper               : HARSHA LOGISTICS
+         58, KAMARAJ STREET, CHENNAI, INDIA                                 Job No.              : CN/FE/IN/25/09/01097 / 04-SEP-25                        Consignee             : OFD LOGISTICS
+         Phone : 93222365478                                                Shipment No.         : CN/FE/25/09/B01374 / 04-SEP-25                          Origin                : INLINE-CHENNAI
+         Credit Term : CREDIT                                               MBL No.              : BOMCMR39656                                             Destination           : TUTICORIN
+                                                                            HBL No.              : O TUT799                                                Currency              : INR         1.00000
+                                                                            Vessel /Voyage       : mcde / 154797                                           Reference No.         : 12345 / 10-SEP-25
+                                                                            ETD                  : 04-SEP-25                                               IGM No.               : IGM4567 / 10-SEP-25
+                                                                            ETA                  : 10-SEP-25                                               Line / Subline No.    : INMAA8 / H0031
+                                                                            INCO Terms           : DDP                                                     PO No.                :
+ Remarks     :
+                  Charges               SAC Code   Qty       Amount / Qty     Curr.   Ex.Rate    FCY Amount     Taxable          Non Taxable     SGST %      SGST      CGST %     CGST       I/UGST      I/UGST       Total Amount (INR)
+EMAIL SERVICE CHARGE                     12345           1          100.00    USD                      100.00                         8,740.00                                                                                    8,740.00
+                                                                                      87.40000
+SERVICE TAX                              996531          1        1,500.00     INR     1.00000       1,500.00         1,500.00                      9.00      135.00      9.00      135.00                                        1,770.00
+                                                                                                   Total :            1,500.00        8,740.00                                                                                   10,510.00
+
+                                                                                                                                                                              Tax                                        Amount (INR)
+                                                                                                                                                                   GST 18-CGST9%                                              135.00
+                                                                                                                                                                   GST 18-SGST9%                                              135.00
+
+                                                                                                                                                   INR Ten Thousand Five Hundred Ten Only                                       10,510.00
+Container No.                    Type               No. of Pcs Pack Type                              G.Weight Unit                              Volume (CBM)
+ASCV5894123                                          1,000.00 PACKAGES                               3,000.000 KGS                                         4.000
+BANK DETAILS:-
+
+A/C Name                :YOUR COMPANY NAME
+Bank Name               : HDFC
+A/C No                  : xxxxxxxxxxxx
+IBAN Code               : ABAXXXXX
+Swift Code              : XXXXXX
+Bank Branch             : MUMBAI
+
+
+
+
+                                                                       This is a computer generated document and does not require a signature
+Printed By : susmitha@fresa.io                      Created By : KAVITHA                                              Printed Date :10-SEP-2025 03:51PM                Powered By : Fresa Technologies            Page 1 of 1
+

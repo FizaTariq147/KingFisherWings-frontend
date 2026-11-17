@@ -1,0 +1,41 @@
+                                                                  TAX INVOICE
+DEMO LOGISTICS INDIA PVT LTD                                                     Invoice No.           : BOMINV230500382
+21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA,
+                                                                                 Invoice Date          : 17-MAY-23 (POSTED)
+676876
+Fax : 9879878                                                                    PAN                   : AABCT1557F
+
+GSTIN                  :                                                         TAN                   : TAN123
+MBL / MAWB No.         :                                                         HBL / HAWB No.        : NSAJED85630124277
+Consignee              : DEMO STEEL FACTORY CO. LTD.                             No. of Pkg/WT/CBM     : 3.00 PACKAGES / 22,700.00 KGS /
+Cargo Type             : FCL                                                     Vessel/Flight         : CAP SAN JUAN / 310W
+Container No.          : TTNU0712894                                             ETA                   : 20-MAR-23
+Origin                 : NHAVA SHEVA, INDIA                                      ETD                   : 01-MAR-23
+Destination            : JEDDAH, SAUDI ARABIA                                    IGM No. / SB No.      : /
+Shipper                : DEMO-SHIPPER ENGG COMPANY                               Commodity             : GENERAL CARGO
+                Particulars                 SAC         Rate          Qty      Curr     Ex.Rate      Taxable Amount      I/UGST    I/UGST       Total Amount
+FREIGHT CHARGE                                          1,500.00      1.000   INR         1.00000             1,500.00    18.00        270.00          1,770.00
+LOCAL CHARGES                                             800.00      1.000   INR         1.00000               800.00    18.00        144.00            944.00
+SEA FREIGHT CHARGE                                        900.00      1.000   INR         1.00000               900.00    18.00        162.00          1,062.00
+CONTAINER CLEANING FEE                                  1,000.00      1.000   INR         1.00000             1,000.00     0.00          0.00          1,000.00
+                                                                                          Total               4,200.00                 576.00          4,776.00
+IN WORDS : Rupee Four Thousand Seven Hundred Seventy-Six Only                                                         Total Amount :                    4,776.00
+
+.Terms
+1. Payment to be made by cash. The company is not responsible for any cash settlement without
+an official receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank               : HDFC
+A/c No             : XXXXXXXXXXX
+IBAN Code          : ABA:XXXXXX
+Swift Code         : XXXXXX
+Address            : MUMBAI.
+
+
+
+
+                                        This is a computer generated document and does not require a signature
+Printed By : shanmugam@fresa.io                                 Printed Date :17-MAY-23 10:48AM              Powered By : Fresa Technologies    Page 1 of 1
+

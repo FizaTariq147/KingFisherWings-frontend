@@ -1,0 +1,72 @@
+  2/8/2019                                                                Proforma Invoice-CSI190007
+                                                                                                  FRESA DEMO INDIA PVT LTD
+                                                                                                                                                  Chennai- 600 100
+                                                                                                                                                  Tamil Nadu, India
+                                                                                                                                   WEB : www.fresatechnologies.com
+
+
+                                                               PROFORMA INVOICE
+
+                       Bill To : 4G LOGISTICS INDIA PVT LTD                                              Shipper : AL SHARQI SHIPPING CO LLC
+                                 10 DBS CENTRE NUNGAMBAKKAM HIGH                                                   151 KHALID BIN WALID ROAD OFFICE 10
+                                 ROAD NUNGAMBAKKAM CHENNAI TAMIL                                                   4, AL SAFA C BLDG SAUDI ARABIA
+                                 NADU 600084 INDIA EMAIL: ram@fresatech                                            PHONE: +971 4 523 3999
+                                 nologies.com
+                  Consignee : 4G LOGISTICS INDIA PVT LTD                                                  Notify1 : 4G LOGISTICS INDIA PVT LTD
+                              10 DBS CENTRE NUNGAMBAKKAM HIGH                                                       10 DBS CENTRE NUNGAMBAKKAM HIGH
+                              ROAD NUNGAMBAKKAM CHENNAI TAMIL                                                       ROAD NUNGAMBAKKAM CHENNAI TAMIL
+                              NADU 600084 INDIA EMAIL: ram@fresatech                                                NADU 600084 INDIA
+                              nologies.com
+                     Job No : CSI190007 / 10-FEB-19                                              Shipment No : B/SI/19/0039 / 08-FEB-19
+           MAWB / MBL No : MAEU9812678888 / 05-FEB-19                                         HAWB / HBL No : DMMMAA20190202 / 01-FEB-19
+           Place of Receipt : DAMMAM                                                          Port of Loading : JEBEL ALI, UNITED ARAB EMIRATES
+          Port of Discharge : CHENNAI (EX MADRAS), INDIA                             Port of Final Destination : CHENNAI (EX MADRAS), INDIA
+           Place of Delivery : CHENNAI                                                                     ETD : 01-FEB-19
+                        ETA : 10-FEB-19                                                        Airline / Carrier : SAFMARINE
+ Vessel / Voyage / Flight Na : MSC MARINA / 982W                                                 Service Type : LCL
+                         me
+                    PP / CC : PREPAID                                                                    IGM No. : 878998 / 08-FEB-19
+          Line / Subline No. : 1239 / 12
+                                                                                                                                           Volume
+  Container                 Type                          Description                 No of Pcs       Gross Weight        Volume                          Net Weight
+                                                                                                                                           Weight
+                                                STC: CARPETS WITH PACKING
+                                                MATERIALS FREIGHT PREPAID ALL
+TTNU1982735 20' DC                                                                                5        2,450.000             3.200                          2,358.000
+                                                CHARGES ARE CONSIGNEE'S
+                                                ACCOUNT
+                                                                                       FCY                                      Taxable Tax   Tax    Local
+       Charge                 Unit          PP/CC   Currency Amount/Unit Qty                          Ex.Rate   Amount
+                                                                                      Amount                                    Amount Group Amount Amount
+HANDLING
+                       PER SHIPMENT PREPAID            INR         1,500.00    1       1,500.00 1.00000           1,500.00       1,500.00 GST18 270.00           1,770.00
+CHARGES
+TERMINAL
+                       WEIGHT PER
+HANDLING                           PREPAID             INR           250.00 3.2          800.00 1.00000                800.00      800.00 GST18 144.00            944.00
+                       MEASUREMENT
+CHARGES
+DELIVERY ORDER
+                       PER SHIPMENT PREPAID            INR         2,500.00    1       2,500.00 1.00000           2,500.00       2,500.00 GST18 450.00           2,950.00
+FEE
+                                                                                                      Total :   4,800.00 4,800.00                  864.00 5,664.00
+                                                                              Rupee Five Thousand Six Hundred Sixty-Four Only                                   5,664.00
+
+Terms
+
+
+1. Cheques should be in favour of FRESA DEMO INDIA PVT LTD and crossed A/C payee. The company is not responsible for any cash settlement without an
+official receipt.
+
+2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.
+
+
+
+
+             User : ram@fresatechnologies.com                       08-Feb-19 01:27:PM Asia/Kolkata                             Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:4948205312565:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                                     1/1
+

@@ -1,0 +1,55 @@
+                                                                     TAX INVOICE
+Client              : DEMO LOGISTICS INDIA PVT LTD                                 Invoice No.                : BOMINV230500382
+                        21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU,
+                                                                            Date                              : 17-MAY-23 (POSTED)
+                        INDIA, 676876
+                        Phone : 798798798                                   Payment Due date                  : 17-MAY-23
+                        Fax : 9879878
+                                                                            Job No.                           :
+                        VAT No. : 68768978898098
+                                                                                   Shipment No.               : BOM/EXP/23/05/B/0709 / 16-MAY-23
+TRN No.             : 888329087642356                                              Department                 : FCL EXPORT
+MBL No.             :                                                              HBL No.                    : NSAJED85630124277
+Shipper             : DEMO-SHIPPER ENGG COMPANY                                    Origin                     : NHAVA SHEVA, INDIA
+Consignee           : DEMO STEEL FACTORY CO. LTD.                                  Destination                : JEDDAH, SAUDI ARABIA
+Place of Receipt    : INMAA-CHENNAI                                                Place of Delivery          : JEDDAH SAUDI ARABIA
+ETD                 : 01-MAR-23                                                    Vessel /Voyage             :
+ETA                 : 20-MAR-23                                                    Handled by                 : DEMO-PERSON
+Declaration         :                                                              Bill of Entry              :
+Remarks             :                                                              Narration                  : MBL NO... / HBL NO. NSAJED85630124277 / JOB NO.
+
+Charge                                           Unit       Qty Cur.   Ex.Rate Amount / Qty Tax %                 FCY Amount        VAT               Amount (INR)
+                                        1 TON OR 1/2
+FREIGHT CHARGE                                              1.00 INR    1.000000        1,500.000     18.00           1,500.00                               1,500.00
+                                        MEASURE
+LOCAL CHARGES                                               1.00 INR    1.000000            800.000   18.00             800.00                                 800.00
+                                        1 TON OR 1/2
+SEA FREIGHT CHARGE                                          1.00 INR    1.000000            900.000   18.00             900.00                                 900.00
+                                        MEASURE
+                                        1 TON OR 1/2
+CONTAINER CLEANING FEE                                      1.00 INR    1.000000        1,000.000     15.00           1,000.00                               1,000.00
+                                        MEASURE
+
+                                                                                                                                   Sub Total :               4,200.00
+
+                                                   Rupee Four Thousand Seven Hundred Seventy-Six Only                   Total :         INR                 4,776.00
+Container No.              Size                        Description                      Qty                                 Gross Weight         Volume
+TTNU0712894                40' FLAT                    GENERAL CARGO                            3 - PACKAGES                       22,700.000
+
+.Terms
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an
+official receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank               : HDFC
+A/c No             : XXXXXXXXXXX
+IBAN Code          : ABA:XXXXXX
+Swift Code         : XXXXXX
+Address            : MUMBAI.
+
+
+
+
+Printed By : shanmugam@fresa.io                                  Printed Date :17-MAY-2023 12:04PM                 Powered By : Fresa Technologies   Page 1 of 1
+

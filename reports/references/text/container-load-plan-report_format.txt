@@ -1,0 +1,74 @@
+                                                                   CONTAINER LOAD PLAN
+MBL No.            : MBLNO12347890 / 07-FEB-19         Job No.         : CEXP190152                                           POR             :    CHENNAI (EX MADRAS), INDIA
+Vessel / Voyage    : MSC MARINA / 987W                 Job Date        : 15-FEB-19                                            POL             :    CHENNAI (EX MADRAS), INDIA
+Carrier            : SAFMARINE                         ETD             : 15-FEB-19                                            POD             :    JEBEL ALI, UNITED ARAB EMIRATES
+PP/CC              : PREPAID                           ETA             : 25-FEB-19                                            POF             :    JEBEL ALI, UNITED ARAB EMIRATES
+
+BL No.            Origin   Dest.   Shipper & Address      Consignee & Address                    Commodity Description   Marks & No.   No. of Pcs      G.Weight          Volume     Remarks
+PLMAAJEA0004 INMAA AEJEA (SH)4G LOGISTICS INDIA PVT LTD   AL NASER TRADING COMPANY LLC STC: VALVE MATERIALS 4G CARGO                              15   2,400.000          3.500 NON STACKABLE
+4                        10 DBS CENTRE NUNGAMBAKKAM 30 AL MAKTHOOM BUILDING NEAR FREIGHT PREPAID                                                                                CARGO.
+                         HIGH ROAD NUNGAMBAKKAM           MUBARAK CENTRE ROUND ABOUT ALL DESTINATION
+                         CHENNAI TAMILNADU 600084 INDIA AL NABHA SHARJAH SHARJAH         CHARGES ARE
+                         EMAIL: ram@fresatechnologies.com UNITED ARAB EMIRATES           CONSIGNEE ACCOUNT
+                         (NT)AL NASER TRADING COMPANY
+                         LLC
+                         30 AL MAKTHOOM BUILDING NEAR
+                         MUBARAK CENTRE ROUND ABOUT
+                         AL NABHA SHARJAH SHARJAH
+                         UNITED ARAB EMIRATES
+PLMAAJEA0004 INMAA AEJEA (SH)3M LOGISTICS SERVICE         AL JUNAID FISHES TOOLS         STC: MACHINERY PARTS 3M CARGO                            16   3,000.000          4.230 JEBEL ALI DDU
+5                        13 PMK COMPLEX 4TH CROSS         BLOCK 216 BUILDING 3015 SHOP   FREIGHT PREPAID                                                                        SHIPMENT -
+                         STREET CHENNAI TAMIL NADU        NO 54 ROAD 1655 SHARJAH UNITED ALL DESTINATION                                                                        QUOTE SENT:
+                         INDIA                            ARAB EMIRATES                  CHARGES ARE                                                                            23456
+                         (NT)AL JUNAID FISHES TOOLS                                      CONSIGNEE ACCOUNT
+                         BLOCK 216 BUILDING 3015 SHOP NO
+                         54 ROAD 1655 SHARJAH UNITED
+                         ARAB EMIRATES
+PLMAAJEA0004 INMAA AEJEA (SH)ABC INDIA PVT LTD            AL HADAF AL AWAL GENERAL       STC: BUS SPARE PARTS SLINGER                             24   4,235.000          5.320 FF - PREPAID,
+6                        30 PLUS BUILDING 5TH STREET,     TRADING LLC,                   FREIGHT PREPAID                                                                        SEA-AIR MODE.
+                         ADYAR CHENNAI TAMILNADU INDIA M 02 AL BUTEEN BUILDING NEAR      ALL DESTINATION
+                         INDIA EMAIL:                     DUBAI WHOLESALE PLAZA DEIRA CHARGES ARE
+                         ezhilarasi@fresatechnologies.com UNITED ARAB EMIRATES           CONSIGNEE ACCOUNT
+                         (NT)AL HADAF AL AWAL GENERAL
+                         TRADING LLC,
+                         M 02 AL BUTEEN BUILDING NEAR
+                         DUBAI WHOLESALE PLAZA DEIRA
+                         UNITED ARAB EMIRATES
+PLMAAKWI0004 INMAA KWKWI (SH)AONE PVT                     AL NASER TRADING COMPANY LLC STC: PRECISIONS FOR 1-34                                   34   3,487.000          6.400
+7                        15 PUMPUHAR BUILDING VOC         30 AL MAKTHOOM BUILDING NEAR MOTORS
+                         STREET, PUDHU NAGAR CHENNAI MUBARAK CENTRE ROUND ABOUT FREIGHT PREPAID
+                         TAMIL NADU INDIA EMAIL:          AL NABHA SHARJAH SHARJAH       ALL DESTINATION
+                         accounts@fresatechnologies.com,                                 CHARGES ARE
+                         kumar@fresatechnologies.com                                     CONSIGNEE ACCOUNT
+                         (NT)AL NASER TRADING COMPANY
+
+Printed By :                                                                    Printed Date :07-Feb-19 11:29AM                        Powered By : Fresa Technologies        Page 1 of 2
+                                                                   CONTAINER LOAD PLAN
+MBL No.            : MBLNO12347890 / 07-FEB-19         Job No.         : CEXP190152                                           POR                       :    CHENNAI (EX MADRAS), INDIA
+Vessel / Voyage    : MSC MARINA / 987W                 Job Date        : 15-FEB-19                                            POL                       :    CHENNAI (EX MADRAS), INDIA
+Carrier            : SAFMARINE                         ETD             : 15-FEB-19                                            POD                       :    JEBEL ALI, UNITED ARAB EMIRATES
+PP/CC              : PREPAID                           ETA             : 25-FEB-19                                            POF                       :    JEBEL ALI, UNITED ARAB EMIRATES
+
+BL No.            Origin   Dest.   Shipper & Address      Consignee & Address                    Commodity Description   Marks & No.             No. of Pcs       G.Weight         Volume     Remarks
+                         LLC
+                         30 AL MAKTHOOM BUILDING NEAR
+                         MUBARAK CENTRE ROUND ABOUT
+                         AL NABHA SHARJAH SHARJAH
+PLMAABAH0004 INMAA BHBAH (SH)BEST BELT COMPANY PVT LTD   AL NASER TRADING COMPANY LLC STC: FRAMES FOR                    VIPPP234                           17    6,789.000         8.000
+8                        98 ARR BULIDING HHSS LAKSHMI    30 AL MAKTHOOM BUILDING NEAR SPECTACLES
+                         VILAS TAMILNADU 621306 INDIA    MUBARAK CENTRE ROUND ABOUT FREIGHT PREPAID
+                         PHONE: 2264222                  AL NABHA SHARJAH SHARJAH     ALL DESTINATION
+                         MOBILE:9940827247 EMAIL:                                     CHARGES ARE
+                         gopi1606@gmail.com                                           CONSIGNEE ACCOUNT
+                         (NT)AL NASER TRADING COMPANY
+                         LLC
+                         30 AL MAKTHOOM BUILDING NEAR
+                         MUBARAK CENTRE ROUND ABOUT
+                         AL NABHA SHARJAH SHARJAH
+                                                                                                                                       Total :          106      19,911.000        27.450
+
+
+
+
+Printed By :                                                                    Printed Date :07-Feb-19 11:29AM                                  Powered By : Fresa Technologies        Page 2 of 2
+

@@ -1,0 +1,42 @@
+2/18/2019                                                                Shipment Freight Manifest-MAA/DXB/1900014
+                                                                                                        FRESA DEMO INDIA PVT LTD
+                                                                                                                                                    Chennai- 600 100
+                                                                                                                                                    Tamil Nadu, India
+                                                                                                                                     WEB : www.fresatechnologies.com
+
+
+                                          FREIGHT MANIFEST / BL No - MAA/DXB/1900014
+
+                       Job No : CAE190028 / 20-FEB-19                                                       MBL No : 17623456882 / 18-FEB-19
+              Port of Loading : CHENNAI, INDIA                                                    Port of Discharge : DUBAI INTERNATIONAL AIRPORT, UNITED A
+                                                                                                                      RAB EMIRATES
+   Port of Final Destination : DUBAI INTERNATIONAL AIRPORT                                        Place of Delivery : DUBAI
+                        ETD : 20-FEB-19                                                                        ETA : 20-FEB-19
+                     Carrier : EMIRATES                                                            Vessel / Voyage : EK9876 / EK9876
+               Service Type : AIR                                                                            PP/CC : PREPAID
+                                                                                                Marks and Description Container            G.Weight Volume
+      BL No                              Shipper / Consignee / Notify                                                           No of Pkgs
+                                                                                                Numbers    of Goods      No                 (KGS)    (CBM)
+                (SH) BABU SECTOR PTLTD
+                144/78B GKM TOWERS MUTHUSAMY STREET, NEAR A2B
+                SIGNAL, NEELANKARAI CHENNAI TAMILNADU INDIA
+                (CO) AL NASER TRADING COMPANY LLC
+                                                                             STC: PAPER                                                      100
+MAA/DXB/1900014 30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND CTN - 1-20                                                                             1,250.00       1.00
+                                                                             CUPS                                                      PACKAGES
+                ABOUT AL NABHA SHARJAH UNITED ARAB EMIRATES
+                (NO) AL NASER TRADING COMPANY LLC
+                30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND
+                ABOUT AL NABHA SHARJAH UNITED ARAB EMIRATES
+                                                                                                                           Total :             100 1,250.00 1.00
+                                                       Charge                                                                  Currency                FCY Amount
+FREIGHT CHARGE                                                                                                                              USD               2,500.00
+                                                                                                                                       Total :                2,500.00
+
+            User : ram@fresatechnologies.com                            18-Feb-19 05:30:PM Asia/Kolkata                           Powered by Fresa Technologies
+
+
+
+
+http://demo.fresagold.com:19786/ords/f?p=127:3002:3516041250116:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NAME,P3002_TABLE_ID,P3002_FORMAT,P3002_REP…   1/1
+

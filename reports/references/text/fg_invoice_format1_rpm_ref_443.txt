@@ -1,0 +1,62 @@
+ INVOICE BOMINV230500382                                                                                                                  Page 1 of 1
+
+DEMO LOGISTICS INDIA PVT LTD                                                                  INVOICE DATE 17-MAY-23
+21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA, 676876
+Phone : 798798798
+                                                                                              CUSTOMER ID DEMOCLIEJK001
+Fax : 9879878                                                                                      SHIPMENT BOM/EXP/23/05/B/0709
+VAT No. : 68768978898098
+                                                                                                   DUE DATE 17-MAY-23
+                                                                                                      TERMS CASH
+PLACE OF SUPPLY              TAMIL NADU                                                        JOB NUMBER
+SHIPMENT DETAILS
+SHIPPER                                                                               CONSIGNEE
+DEMO-SHIPPER ENGG COMPANY                                                             DEMO STEEL FACTORY CO. LTD.
+SHIPPERS REFERENCE                                                                    DEPARTMENT                   FCL EXPORT
+REFERENCE NO / DATE
+GOODS DESCRIPTION
+GENERAL CARGO
+CUSTOMS BROKER                                            GROSS WEIGHT                CHARGEABLE         PACKAGES          VOLUME
+                                                              22,700.000 KGS              22,700.000 KGS 3 PACKAGES
+VESSEL / VOYAGE / IMO(LLOYDS)                                                         OCEAN BILL OF LADING        HOUSE BILL OF LADING
+CAP SAN JUAN 310W                                                                                                                NSAJED85630124277
+ORIGIN                                                  ETD                           DESTINATION                                           ETA
+INNSA - NHAVA SHEVA, INDIA                              01-MAR-23                     SAJED - JEDDAH, SAUDI ARABIA                          20-MAR-23
+CONTAINERS
+TTNU0712894 / 40' FLAT
+REMARKS
+
+
+CHARGES
+      Charge Details                    SAC     Cur. Rate/Unit Qty Cur Amount Ex.Rate              Amount          IGST%   IGST                            Total Amt
+                                                                                                                                                               (INR)
+FREIGHT CHARGE                                   INR       1,500.00     1       1,500.00 1.00000     1,500.00       18      270.00                               1,770.00
+LOCAL CHARGES                                    INR        800.00      1        800.00 1.00000           800.00    18      144.00                                944.00
+SEA FREIGHT CHARGE                               INR        900.00      1        900.00 1.00000           900.00    18      162.00                               1,062.00
+CONTAINER CLEANING FEE                           INR       1,000.00     1       1,000.00 1.00000     1,000.00       0            0.00                            1,000.00
+                                                                              SubTotal :             4,200.00               576.00                               4,776.00
+
+
+
+
+                                                       Rupee Four Thousand Seven Hundred Seventy-Six Only                  Total :        INR                   4,776.00
+*Payments delayed beyond agreed credit terms will attract interest @24% per annum.
+*Cheques should be made out to Enkay Express (Br. of Al Rai Logistica UAE LLC) & crossed A/C payee. Penalty of AED 500 for any
+cheque returned from the bank. The company is not responsible for any cash settlement without an official receipt.
+*Any discrepancy should be notified in writing within 07 days from the invoice date.
+*This is a computer-generated document & does not require a signature & stamp.
+
+
+
+
+E&OE
+Transfer Funds To :
+.Terms
+1. Payment to be made by cash. The company is not responsible
+for any cash settlement without an official receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME                                                                                         For FRESA DEMO INDIA PVT LTD
+                                                This is a computer generated document and does not require a signature
+Printed By : shanmugam@fresa.io                                       Printed Date :17-MAY-2023 11:40AM                       Powered By : Fresa Technologies
+

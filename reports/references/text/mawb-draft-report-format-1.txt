@@ -1,0 +1,81 @@
+176|MAA|23456882                                                                                                                                                                                                                     176-23456882
+Shipper's Name and Address                                                              Shipper's Account Number               Non Negotiable
+FRESA DEMO INDIA PVT LTD                                                                                                              AIR WAYBILL
+NO. 178, 2ND STREET, MOORE STREET NEAR NEHRU PARK, PARRY                                                                       Issued by  EMIRATES
+CORNER CHENNAI TAMIL NADU 600001
+
+
+
+
+                                                                                                                               Copies marked Original 1,2,3 and 4 are originals and have the same validity
+
+Consignee's Name and Address                                                         Consignee's Account Number
+                                                                                                                                 It is agreed that the goods described herein are accepted in apparent good
+FRESA DEMO DUBAI UAE LLC                                                                                                         order and condition (except as noted) for carriage SUBJECT TO THE
+DUBAI UNITED ARAB EMIRATES                                                                                                       CONDITIONS OF CONTRACT ON THE REVERSE HEREOF. THE
+                                                                                                                                 SHIPPER'S ATTENTION IS DRAWN TO THE NOTICE CONCERNING
+                                                                                                                                 CARRIERS LIMITATION OF LIABILITY. Shipper may increase such
+                                                                                                                                 limitation of liability by declaring a higer value ofr carriage and paying a
+                                                                                                                                 supplemental charge if required.
+
+Issuing Carrier' Agent Name and city                                                                                           Accounting Information
+EMIRATES EK PVT LTD
+
+
+
+Agent's IATA Code                                              Account No.
+
+
+Airport of Departure(Addr.of first Carrier) and requested Routing
+                                                                                                                                                                                                  FREIGHT PREPAID
+CHENNAI, INDIA
+   to                                     Routing and Destination           to        by          to          by               Currency             WT               Other                Declared Value for Carriage             Declared Value for Customs
+           By first Carrier
+ DXB       EK9879                                                                                                                 INR          PP                PP                                 N.V.D.                             AS PER INV
+         Airport of Destination                                                     Requested Flight/Date                           Amount of Insurance               INSURANCE-If shipper requests insurance in accordance with conditions on reverse
+DUBAI INTERNATIONAL AIRPORT,                                              EK9876EK9876 20-FEB-19                                              NIL                     hereof, indicate amount to be insured in figures in box marked amount of insurance.
+
+
+Handling Information
+HIGH PRIORITY SHIPMENT
+
+TOTAL : (100) PACKAGES ONLY
+                                                            Rate Class
+        No.of                 Gross            kg                                Chargeable              Rate                                                                               Nature and Quality of Goods
+                                                              Commodity            Weight                                              Total
+        Pieces                Weight           lb                                                       Charge                                                                              (Incl. Dimensions or Volume)
+                                                                                                                                                              STC: PAPER CUPS
+         100                       1,250.00 K          S                           1,250.00                                                       0.00
+
+
+ CTN - 1-20
+
+
+
+
+         100                       1,250.00                                                                                                        0.00
+
+           Prepaid                  Weight Charge                        Collect           Other Charges
+
+                      0.00
+                                   Valuation Charge
+
+
+
+
+                       Total Other Charges Due Agent                                       Shipper certifies that particulars on the face hereof are correct and that insofar as any part of the consignment contains restricted articles, such part is properly
+                                                                                           described by name and is in proper condition for carriage by air according to the International Air Transport Association's Restricted Articles Regulations.
+
+
+                       Total Other Charges Due Carrier
+                                                                                                                                                      FRESA DEMO INDIA PVT LTD
+                                                                                                                                                         Signature of Shipper or his Agent
+
+            Total Prepaid                                   Total Collect                  EMIRATES
+                      0.00
+         Currency Conversion Rates                  CC Charges in Dest. Currency                                   18-FEB-19                                 CHENNAI                                                       RAM
+                                                                                                                   Executed on(Date)                        at(Place)                        Signature of Issuing Carrier or its Agent
+
+           For Carriers Use only                        Charges at Destination                         Total Collect Charges
+               at Destination                                                                                                                                                                                                            17623456882
+

@@ -1,0 +1,48 @@
+  2/8/2019                                                        Delivery Confirmation-CSI190007
+                                                                                            FRESA DEMO INDIA PVT LTD
+                                                                                                                                    Chennai- 600 100
+                                                                                                                                    Tamil Nadu, India
+                                                                                                                     WEB : www.fresatechnologies.com
+
+
+                                    DELIVERY CONFIRMATION / BL NO - DMMMAA20190202
+
+                       Client : 4G LOGISTICS INDIA PVT LTD                                         Notify : 4G LOGISTICS INDIA PVT LTD
+                                10 DBS CENTRE NUNGAMBAKKAM HIGH R                                           10 DBS CENTRE NUNGAMBAKKAM HIGH RO
+                                OAD NUNGAMBAKKAM CHENNAI TAMILNAD                                           AD NUNGAMBAKKAM CHENNAI TAMILNADU
+                                U 600084 INDIA EMAIL: ram@fresatechnologie                                  600084 INDIA
+                                s.com
+                   Consignee : 4G LOGISTICS INDIA PVT LTD                                        Shipper : AL SHARQI SHIPPING CO LLC
+                                10 DBS CENTRE NUNGAMBAKKAM HIGH R                                          151 KHALID BIN WALID ROAD OFFICE 104, A
+                                OAD NUNGAMBAKKAM CHENNAI TAMILNAD                                          L SAFA C BLDG SAUDI ARABIA
+                                U 600084 INDIA EMAIL: ram@fresatechnologie                                 PHONE: +971 4 523 3999
+                                s.com
+                   Deliver To : 4G LOGISTICS INDIA PVT LTD
+                                10 DBS CENTRE NUNGAMBAKKAM HIGH R
+                                OAD NUNGAMBAKKAM CHENNAI TAMILNAD
+                                U 600084 INDIA EMAIL: ram@fresatechnologie
+                                s.com
+                     MBL No : MAEU9812678888 / 05-FEB-19                                         HBL No : DMMMAA20190202 / 01-FEB-19
+                          ETA : 10-FEB-19                                                          ETD : 01-FEB-19
+                   Container : TTNU1982735                                               Vessel / Voyage : MSC MARINA / 982W
+                Shipment No : B/SI/19/0039 / 08-FEB-19                                           Job No : CSI190007 / 10-FEB-19
+             Place of Receipt : DAMMAM                                                    Port of Receipt : DAMMAM, SAUDI ARABIA
+             Port of Loading : JEBEL ALI, UNITED ARAB EMIRATES                         Port of Discharge : CHENNAI (EX MADRAS), INDIA
+  Port of Final Destination : CHENNAI (EX MADRAS), INDIA                               Place of Delivery : CHENNAI
+                       Carrier : SAFMARINE                                               Movement Type : LCL
+                       PP/CC : PREPAID
+
+Dear Sir,
+We are pleased to inform you the dispatch of shipment from CHENNAI (EX MADRAS), INDIA To CHENNAI Truck Number , Driver Name we offer three working
+days grace period for further movement please contact our office.
+
+
+
+
+             User : ram@fresatechnologies.com                  08-Feb-19 05:54:PM Asia/Kolkata                   Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:17171178192518:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…                   1/1
+

@@ -1,0 +1,42 @@
+                                                                     FRESA DEMO INDIA PVT LTD
+                                                                    Profit and Loss Summary Periodwise
+Branch Name : CHENNAI
+
+Currency     : INR                                                                                                              From Date : 01-JAN-18       To Date : 30-Sep-18
+Group Name                     201901       201902       201903          201904         201905        201906      201907   201908     201909       201910        201911       201912           Total
+ PROFIT AND LOSS                                                                                                                                                                                0.00
+
+  DIRECT INCOME                                                                                                                                                                                 0.00
+
+     AIR EXPORT CLEARANCE                                                                            10,600.00                                                                             10,600.00
+
+     AIR FREIGHT CHGS                                    1,300.00    2,127,000.00                       500.00                                                                          2,128,800.00
+
+     SEA FREIGHT FCL                                    73,500.00    2,936,153.68   3,699,936.40    170,265.50                                                                          6,879,855.58
+
+     SEA FREIGHT GROUPAGE     13,050.00                                                              64,592.20                                                                             77,642.20
+
+    DIRECT INCOME TOTAL       13,050.00                 74,800.00    5,063,153.68   3,699,936.40    245,957.70                                                                          9,096,897.78
+
+  DIRECT EXPENSES                                                                                                                                                                               0.00
+
+     AIR FREIGHT CHGS COST                 (6,728.00)                (529,500.00)                      (125.00)                                                                         (536,353.00)
+
+     DOCUMENTATION CHGS                                                                              10,000.00                                                                             10,000.00
+
+     SEA FREIGHT FCL COST                  (1,100.00)   (9,000.00) (1,231,850.00)   (202,187.00)       (640.00)                                                                        (1,444,777.00)
+
+     SEA FREIGHT GROUPAGE      (700.00)                                                            (956,680.00)                                                                         (957,380.00)
+
+    DIRECT EXPENSES TOTAL      (700.00)    (7,828.00)   (9,000.00) (1,761,350.00)   (202,187.00)   (947,445.00)                                                                        (2,928,510.00)
+
+  INDIRECT EXPENSES                                                                                                                                                                             0.00
+
+     EXCHANGE GAIN/LOSS                                                                              (2,757.50)                                                                            (2,757.50)
+
+     OFFICE EXPENSE           (1,000.00)                                                                                                                                                   (1,000.00)
+
+    INDIRECT EXPENSES TOTAL   (1,000.00)                                                             (2,757.50)                                                                            (3,757.50)
+
+  PROFIT AND LOSS TOTAL       11,350.00    (7,828.00)   65,800.00    3,301,803.68   3,497,749.40   (704,244.80)                                                                         6,164,630.28
+

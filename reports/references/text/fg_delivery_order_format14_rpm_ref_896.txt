@@ -1,0 +1,67 @@
+                                                            Delivery Order
+                                                                                                 DATE                          OUR REF .NO
+
+
+
+
+                                                                              THE MERCHANDISE DESCRIBED BELOW
+                                                                              WILL BE ENTERED AND FORWARDED AS FOLLOWS:
+
+PICKUP                                                                      TRUCKER
+
+
+                                                                            MB/L No.                                HB/L No.
+                                                                            MBLCOPY87667888                         PLMAAJEA00081
+
+                                                                            AMS B/L No.                             CUSTOMER REFERENCE No.
+
+
+DELIVERY                                                                    I.T. No. & PLACE                       DATE OF ARRIVAL         LAST FREE DATE
+                                                                                                                  02/07/2019
+
+                                                                            CARRIER
+                                                                            CMA CGM
+                                                                            ORIGIN PORT
+                                                                            CHENNAI (EX MADRAS), INDIA
+
+ROUTE                                                                       FIRMS CODE
+                                                                            CONTAINER No. TYPE          SEAL No.        WEIGHT    PICKUP No. LFD
+                                                                            ABCU9877666   20' DC        SL345566       17,000.000
+
+
+
+
+              MARK                                DESCRIPTION                                  PKGS                   WEIGHT                MEASUREMENT
+Container No/Seal No              SAID TO CONTAIN / SHIPPER LOAD , STOW,                         125 PACKAGES            18,000.000 K            24.000 CBM
+ABCU9877666 / SL345566            WEIGHT AND COUNT
+
+                                  STC: VALVE MATERIALS FOR MACHINERY PARTS
+
+                                  FREIGHT PREPAID
+                                  ALL DESTINATION CHARGES ARE CONSIGNEE'S
+                                  ACCOUNT
+
+
+
+
+ORIGINAL DELIVERY ORDER                                                                   NOTICE: BAD ORDER PACKAGES MUST BE SIGNED FOR AS IN
+                                                                                          CONDITION RECEIVED. ALL PIER CHARGES FOR ACCOUNT OF
+INLAND FREIGHT:                     PREPAID
+                                                                                          RECEIVER UNLESS OTHERWISE SPECIFIED.
+FRESA DEMO INDIA PVT LTD
+PREPARED BY                shanmugam 05/17/2023
+
+
+
+CARRIER SIGNATURE / DATE                                                    RECEIVED IN GOOD ORDER / DATE
+CARRIER: CMA CGM                                   DATE :                   BY                                                     DATE :
+
+
+
+
+REMARKS
+
+
+
+Printed By   shanmugam@fresa.io                             Printed Date : 17-MAY-2023 03:03PM           Powered By : Fresa Technologies     Page 1 of 1
+

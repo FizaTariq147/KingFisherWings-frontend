@@ -1,0 +1,66 @@
+                                                                            ‫ﻓﺎﺗﻮﺭﺓ ﺿﺮﻳﺒﻴﺔ‬
+                                                                           TAX INVOICE
+
+
+Invoice Number:           BOMINV230500382                     BOMINV230500382                                                  ‫ﺭﻗﻢ ﺍﻟﻔﺎﺗﻮﺭﺓ‬
+
+
+
+Invoice Issue Date:       17/05/2023                          17/05/2023                                           :‫ﺗﺎﺭﻳﺦ ﺇﺻﺪﺍﺭ ﺍﻟﻔﺎﺗﻮﺭﺓ‬
+Date of Supply:           17/05/2023                          17/05/2023                                                       :‫ﺗﺎﺭﻳﺦ ﺍﻟﺘﻮﺭﻳﺪ‬
+
+Seller:                                                                                 :‫ ﺗﺎﺟﺮ‬Buyer:                                                                                                  :‫ﻣﺸﺘﺮ‬
+Name:                     FRESA DEMO INDIA PVT LTD                                      :‫ ﺍﺳﻢ‬Name:                                  ENGLISH                                                            :‫ﺍﺳﻢ‬
+Building No.              406, 4TH FLOOR, D-21 CORPORATE                             .‫ ﻻ ﻟﻠﺒﻨﺎﺀ‬Building No.                         21                                                              .‫ﻻ ﻟﻠﺒﻨﺎﺀ‬
+Street Name               MUMBAI                                               ‫ ﺍﺳﻢ ﺍﻟﺸﺎﺭﻉ‬Street Name                               KRISHNA ST                                                 ‫ﺍﺳﻢ ﺍﻟﺸﺎﺭﻉ‬
+District                                                                              ‫ ﻳﺼﺮﻑ‬District                                                                                                  ‫ﻳﺼﺮﻑ‬
+City                                                                                    ‫ ﻣﺪﻳﻨﺔ‬City                                  MANNARGUDI                                                         ‫ﻣﺪﻳﻨﺔ‬
+Country                   INDIA                                                          ‫ ﺩﻭﻟﺔ‬Country                               INDIA                                                               ‫ﺩﻭﻟﺔ‬
+Postal Code               400001                                                  ‫ ﺭﻣﺰ ﺑﺮﻳﺪﻱ‬Postal Code                             676876                                                       ‫ﺭﻣﺰ ﺑﺮﻳﺪﻱ‬
+Additional No.                                                                 ‫ ﺭﻗﻢ ﺇﺿﺎﻓﻲ‬Additional No.                                                                                        ‫ﺭﻗﻢ ﺇﺿﺎﻓﻲ‬
+VAT Number:                                                                  :‫ ﻇﺮﻳﺒﻪ ﺍﻟﺸﺮﺍﺀ‬VAT Number:                              68768978898098                                          :‫ﻇﺮﻳﺒﻪ ﺍﻟﺸﺮﺍﺀ‬
+Other Seller ID:          324324324                                    :‫ ﻣﻌﺮﻑ ﺍﻟﺒﺎﺋﻊ ﺍﻵﺧﺮ‬Other Buyer ID:                                                                                  ‫ﻣﻌﺮﻑ ﺍﻟﻤﺸﺘﺮﻱ‬
+Shipment Details:
+Job Number                 :                                                                    Shipment No.                       : BOM/EXP/23/05/B/0709
+Shipper                    : ENGLISH                                                            Consignee                          : ENGLISH
+Master Number              :                                                                    House No.                          : NSAJED85630124277
+Place of Origin            : NHAVA SHEVA, INDIA                                                 Final destination                  : JEDDAH, SAUDI ARABIA
+ETD                        : 01-MAR-23                                                          ETA                                : 20-MAR-23
+Vessel / Flight            :
+Consignment                : Total No. of Pcs : 3.00, G.Weight : 22,700.00,
+Line Items:                                                                                                                                                                                            ‫ﺍﻟﺒﻨﻮﺩ‬
+               Nature of goods or services                      Unit price Quantity             Taxable           Discount               Tax Rate          Tax Amount       Item Subtotal(Including VAT)
+
+
+                   ‫ﻃﺒﻴﻌﺔ ﺍﻟﺴﻠﻊ ﺃﻭ ﺍﻟﺨﺪﻣﺎﺕ‬                      ‫ﺳﻌﺮ ﺍﻟﻮﺣﺪﺓ‬        ‫ﻛﻤﻴﺔ‬        ‫ﺍﻟﻤﺒﻠﻎ ﺍﻟﺨﺎﺿﻊ‬           ‫ﺧﺼﻢ‬             ‫ﻣﻌﺪﻝ ﺍﻟﻀﺮﻳﺒﺔ‬           ‫ﻗﻴﻤﺔ ﺍﻟﻀﺮﻳﺒﺔ‬         ‫ﺍﻟﻤﺠﻤﻮﻉ ﺍﻟﻔﺮﻋﻲ ﻟﻠﺒﻨﺪ )ﻣﺘﻀﻤﻨًﺎ‬
+                                                                                                                                                                                         ‫)ﺿﺮﻳﺒﺔ ﺍﻟﻘﻴﻤﺔ ﺍﻟﻤﻀﺎﻓﺔ‬
+                                                                                                                                                                                                           INR
+FREIGHT CHARGE                                                   1,500.00                1          1,500.00         0.00                       18 %                                        1,500.00 INR
+LOCAL CHARGES                                                      800.00                1            800.00         0.00                       18 %                                          800.00 INR
+SEA FREIGHT CHARGE                                                 900.00                1            900.00         0.00                       18 %                                          900.00 INR
+CONTAINER CLEANING FEE                                           1,000.00                1          1,000.00         0.00                       15 %                                        1,000.00 INR
+
+                                                 Total (Excluding VAT)                                                            (‫ﺍﻹﺟﻤﺎﻟﻲ )ﺑﺎﺳﺘﺜﻨﺎﺀ ﺿﺮﻳﺒﺔ ﺍﻟﻘﻴﻤﺔ ﺍﻟﻤﻀﺎﻓﺔ‬                 4,200.00 INR
+                                                 Discount                                                                                                                  ‫ﺧﺼﻢ‬                  0.00 INR
+                                                 Total Taxable Amount (Excluding VAT)                                       ‫ﺇﺟﻤﺎﻟﻲ ﺍﻟﻤﺒﻠﻎ ﺍﻟﺨﺎﺿﻊ ﻟﻠﻀﺮﻳﺒﺔ )ﺑﺎﺳﺘﺜﻨﺎﺀ ﺿﺮﻳﺒﺔ‬                  4,200.00 INR
+                                                 Total VAT                                                                                       ‫ﺇﺟﻤﺎﻟﻲ ﺿﺮﻳﺒﺔ ﺍﻟﻘﻴﻤﺔ ﺍﻟﻤﻀﺎﻓﺔ‬                            INR
+                                                 Total Amount Due                                                                                      ‫ﺇﺟﻤﺎﻟﻲ ﺍﻟﻤﺒﻠﻎ ﺍﻟﻤﺴﺘﺤﻖ‬              4,200.00 INR
+.Terms
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official
+receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank                  : HDFC
+A/c No                : XXXXXXXXXXX
+IBAN Code : ABA:XXXXXX
+Swift Code            : XXXXXX
+Address               : MUMBAI.
+
+
+
+
+                                                       This is a computer generated document and does not require a signature
+                                                                 . ‫ﻫﺬﺍ ﺍﻟﻤﺴﺘﻨﺪ ﺗﻢ ﺍﻧﺘﺎﺟﻪ ﺑﻮﺍﺳﻄﺔ ﺍﻟﻜﻤﺒﻴﻮﺗﺮ ﻭﻻ ﻳﺤﺘﺎﺝ ﺍﻟﻰ ﺗﻮﻗﻴﻊ‬
+Printed By : shanmugam@fresa.io                                        Printed Date :17-MAY-2023 11:57AM                                  Powered By : Fresa Technologies             Page 1 of 1
+

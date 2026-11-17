@@ -1,0 +1,119 @@
+                                             FRESA DEMO INDIA PVT LTD
+                                                         BRANCH : CHENNAI
+                                    FROM DATE : 01-JAN-18               TO DATE : 30-SEP-18
+                                                           TRIAL BALANCE
+                                                                 Opening Balance      Debit           Credit           Closing Balance
+ASSET
+ CASH AT BANK AND IN HAND
+   HSBCBANK - HSBC BANK                                                      0.00        34,600.00        (1,500.00)            33,100.00
+                                                      TOTAL :                0.00        34,600.00        (1,500.00)            33,100.00
+ CURRENT ASSET
+   6110.10.00 - ADCB BANK - AED                                              0.00        534,305.17     (145,356.00)           388,949.17
+   6110.10.20 - EMIRATES BANK (USD)                                          0.00          3,896.40             0.00              3,896.40
+   6210.00.00 - TRADE DEBTORS CONTROL                                        0.00      2,204,707.23     (238,541.06)         1,966,166.17
+   6210.00.01 - TRADE DEBTORS CONTROL -OVER SEAS                             0.00        317,527.50      (41,447.50)           276,080.00
+   6217 - INTERBRANCH - CHENNAI                                              0.00        173,500.00     (106,720.00)             66,780.00
+   7108.00.00 - OFFICE EQUIPMENTS                                            0.00          2,000.00             0.00              2,000.00
+   7500 - INTERBRANCH - DUBAI (DXB)                                          0.00        106,720.00     (173,500.00)           (66,780.00)
+   7510.10.01 - CASH BOOK - KIGALI                                           0.00            900.00             0.00                900.00
+   7510.10.03 - CASH BOOK - BUKAVU                                           0.00         25,000.00      (24,500.00)                500.00
+   7510.10.04 - PETTY CASH - KIGALI                                          0.00              0.00       (4,500.00)            (4,500.00)
+   7510.10.06 - PETTY CASH - GOMA                                            0.00         68,500.00     (435,500.00)         (367,000.00)
+   7510.10.07 - PETTY CASH - BUKAVU                                          0.00        374,152.00     (106,978.00)           267,174.00
+   7510.10.09 - I & M BANK RWANDA LTD(USD)                                   0.00          1,623.50             0.00              1,623.50
+   7530.10.03 - BUTEMBO CASH BOOK                                            0.00              0.00       (9,000.00)            (9,000.00)
+   7530.10.08 - BUTEMBO PETTY CASH                                           0.00        124,500.00     (158,000.00)           (33,500.00)
+   7560.10.03 - BARCLAYS BANK - ZAMBIA                                       0.00            118.00             0.00                118.00
+   7560.10.10 - KITWE PETTY CASH                                             0.00        228,501.00     (101,400.00)           127,101.00
+   7560.10.11 - NDOLA PETTY CASH                                             0.00      1,362,504.00             0.00         1,362,504.00
+   7570.10.01 - CASH BOOK - BURUNDI                                          0.00          6,400.00             0.00              6,400.00
+   7610.10.06 - CASH BOOK - GGZ GARDEN OFFICE                                0.00          5,000.00             0.00              5,000.00
+   99.101 - CASH ADVANCE                                                     0.00         22,305.00             0.00             22,305.00
+   CNYBANK - CNY BANK                                                        0.00          1,500.00             0.00              1,500.00
+   HDFC - HDFC BANK                                                          0.00        881,889.54     (112,284.16)           769,605.38
+   ICICI - ICICI BANK                                                        0.00         23,657.00      (20,100.00)              3,557.00
+   KMB - KOTAK MAHINDRA BANK                                                 0.00         22,146.00             0.00             22,146.00
+   PNB - PUNJAB NATIONAL BANK                                                0.00        663,366.68       (8,000.00)           655,366.68
+   SUNDRYDEBTORS - SUNDRY DEBTORS                                            0.00     12,184,191.05   (4,995,506.43)         7,188,684.62
+   TDSRECEIVABLE - TDS RECEIVABLE                                            0.00            710.00         (500.00)                210.00
+                                                      TOTAL :                0.00     19,339,620.07   (6,681,833.15)        12,657,786.92
+ CURRENT LIABILITIES
+   TDSPAYABLE - TDS PAYABLE                                                  0.00          1,090.00      (34,433.80)           (33,343.80)
+                                                      TOTAL :                0.00          1,090.00      (34,433.80)           (33,343.80)
+ DIRECT EXPENSES
+   7030.00.00 - SYSTEM SOFTWARE                                              0.00        15,000.00              0.00            15,000.00
+                                                      TOTAL :                0.00        15,000.00             0.00             15,000.00
+
+                                               ASSET TOTAL :                 0.00     19,390,310.07   (6,717,766.95)        12,672,543.12
+LIABILITY
+  ACCOUNTS PAYABLE
+    12008 - SUNDRY CREDITORS                                                 0.00      1,049,168.30   (3,471,909.90)        (2,422,741.60)
+                                                      TOTAL :                0.00      1,049,168.30   (3,471,909.90)        (2,422,741.60)
+ CURRENT LIABILITIES
+   100.9900 - ROUND OFF A/C                                                  0.00             0.50              0.00                 0.50
+   8210.00.00 - TRADE CREDITORS CONTROL                                      0.00        72,100.00      (235,521.60)         (163,421.60)
+   CGST0001 - CGST COST A/C                                                  0.00         1,152.00          (405.00)               747.00
+   CGST0003 - CGST SALE A/C                                                  0.00           182.50      (112,951.16)         (112,768.66)
+   GST0001 - GST COST A/C                                                    0.00         2,520.00              0.00             2,520.00
+   GST0002 - GST SALE A/C                                                    0.00             0.00        (3,096.00)           (3,096.00)
+   GST0003 - GST RCM INPUT A/C                                               0.00             0.00       (13,892.48)          (13,892.48)
+   GST0003 - SGST SALE A/C                                                   0.00           182.50      (112,951.16)         (112,768.66)
+   GST0004 - GST RCM OUTPUT A/C                                              0.00        13,892.48        (1,040.00)            12,852.48
+   IGST0001 - IGST SALE A/C                                                  0.00        15,772.50      (224,844.54)         (209,072.04)
+   IGST0002 - IGST COST A/C                                                  0.00        95,480.84              0.00            95,480.84
+   SGST0002 - SGST COST A/C                                                  0.00         1,652.00          (405.00)             1,247.00
+                                                      TOTAL :                0.00       202,935.32     (705,106.94)          (502,171.62)
+
+                                             LIABILITY TOTAL :               0.00      1,252,103.62   (4,177,016.84)        (2,924,913.22)
+INCOME
+  DIRECT INCOME
+    1010.10.10 - AIR FREIGHT CHGS- REVENUE                                   0.00        41,590.00    (2,435,096.98)        (2,393,506.98)
+   1040.10.10 - SEA FREIGHT FCL REVENUE                                      0.00       364,749.00    (9,833,745.36)        (9,468,996.36)
+   1050.10.10 - SEA FREIGHT GROUPAGE REVENUE                                 0.00        74,000.00    (1,403,320.86)        (1,329,320.86)
+   AIREXP - AIR EXPORT CLEARANCE                                             0.00        20,000.00       (10,600.00)              9,400.00
+   SEAEXP - SEA EXPORT CLEARANCE                                             0.00         2,000.00              0.00              2,000.00
+
+                                                                                                            Page 1 of 2
+                                             FRESA DEMO INDIA PVT LTD
+                                                        BRANCH : CHENNAI
+                                     FROM DATE : 01-JAN-18            TO DATE : 30-SEP-18
+
+
+
+                                                          TRIAL BALANCE
+                                                               Opening Balance      Debit           Credit            Closing Balance
+   SEAIMP - SEA IMPORT CLEARANCE                                            0.00         2,700.00       (43,173.00)           (40,473.00)
+                                                     TOTAL :                0.00       505,039.00   (13,725,936.20)       (13,220,897.20)
+ INDIRECT EXPENSES
+   2030.10.23 - 3C EXPRESS FRANCE P/S                                       0.00             0.00       (20,236.00)           (20,236.00)
+   2030.10.24 - 3C EXPRESS CC CHGS                                          0.00        14,500.00       (32,600.00)           (18,100.00)
+                                                     TOTAL :               0.00        14,500.00       (52,836.00)            (38,336.00)
+ INDIRECT INCOME
+   99.102 - DUBAI TRANSPORT INCOME                                          0.00        10,000.00              0.00            10,000.00
+                                                     TOTAL :               0.00        10,000.00              0.00             10,000.00
+                                              INCOME TOTAL :               0.00       529,539.00    (13,778,772.20)       (13,249,233.20)
+EXPENSE
+ DIRECT EXPENSES
+   1010.20.10 - AIR FREIGHT CHGS COST                                       0.00       842,857.56          (450.50)           842,407.06
+   1040.20.10 - SEA FREIGHT FCL COST                                        0.00     1,583,069.80        (4,500.00)         1,578,569.80
+   1050.20.10 - SEA FREIGHT GROUPAGE COST                                   0.00     1,037,761.44        (6,728.00)         1,031,033.44
+   3450.10.08 - DOCUMENTATION CHGS                                          0.00        10,000.00       (11,000.00)            (1,000.00)
+   6710.10.10 - ADVANCE - STAFF                                             0.00           500.00          (100.00)                400.00
+   6710.10.35 - ADVANCE - ARUN PEREIRA                                      0.00             0.00        (5,000.00)            (5,000.00)
+                                                     TOTAL :               0.00      3,474,188.80      (27,778.50)          3,446,410.30
+ INDIRECT EXPENSES
+   2520.00.00 - EXCHANGE GAIN/LOSS                                          0.00        32,769.00           (77.00)            32,692.00
+   3012.00.30 - COMMISSION OTHERS                                           0.00        24,000.00              0.00            24,000.00
+   3218.00.00 - OFFICE EXPENSE                                              0.00         1,000.00              0.00              1,000.00
+   3263.00.00 - DISCOUNT ALLOWED                                            0.00             1.00              0.00                  1.00
+   STAFFSALARY - STAFF SALARY                                               0.00             0.00        (2,500.00)            (2,500.00)
+                                                     TOTAL :               0.00        57,770.00        (2,577.00)             55,193.00
+                                             EXPENSE TOTAL :               0.00      3,531,958.80       (30,355.50)         3,501,603.30
+
+                                               GRAND TOTAL :                0.00    24,703,911.49   (24,703,911.49)                  0.00
+
+
+
+
+                                                                                                           Page 2 of 2
+

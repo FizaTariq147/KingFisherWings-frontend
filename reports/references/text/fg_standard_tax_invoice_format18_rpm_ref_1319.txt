@@ -1,0 +1,59 @@
+                                                                              TAX INVOICE
+Bill To                : DEMO STEEL FACTORY CO. LTD.                                            Invoice No.                   : BOMINV230500382 / (POSTED)
+                         P.O BOX 11700, 8100 UNIT NO 2, JEDDAH, SAUDI                           Date                          : 17-MAY-23
+                         ARABIA, 21463, SAUDI ARABIA                                            Currency                      : INR 1.000000
+                         PHONE: +966
+                         MOBILE:+966                                                            Job No.                       :
+                                                                                                Shipment No.                  : BOM/EXP/23/05/B/0709 / 16-MAY-23
+Shipper                : DEMO-SHIPPER ENGG COMPANY                                              Consignee                     : DEMO STEEL FACTORY CO. LTD.
+                                                                                                                                P.O BOX 11700, 8100 UNIT NO 2 JEDDAH
+                                                                                                                                SAUDI ARABIA 21463 SAUDI ARABIA
+                                                                                                                                PHONE: +966
+                                                                                                                                MOBILE:+966
+HBL/AWB No.            : NSAJED85630124277                                                      MBL / MAWB No.                :
+Port of Loading        : NHAVA SHEVA, INDIA                                                     Destination Place             : JEDDAH SAUDI ARABIA
+Vessel / Flight        : CAP SAN JUAN                                                           Voyage / Flight No            : 310W
+BOE No                 :                                                                        Reference No.                 :
+Narration              : MBL NO... / HBL NO. NSAJED85630124277 / JOB NO. Remarks                                              :
+                                                                                                                                            Gross Weight                      Volume
+Container No               Type                        Description                                                     No of Pcs                                Volume
+                                                                                                                                                kgs                           Weight
+TTNU0712894                40' FLAT                    GENERAL CARGO                                                    3 PACKAGES            22,700.000                     22,700.000
+
+                                                                                                                      FCY         Taxable      Non      Tax Tax Total Amount
+Charges                                    Unit                    Qty Amount / Qty Curr.           Ex.Rate                                                         (INR)
+                                                                                                                     Amount       Amount      Taxable    % Amount
+FREIGHT CHARGE                             1 TON OR 1/2               1       1,500.00 INR            1.00000        1,500.00     1,500.00                 18                   1,500.00
+                                           MEASURE
+LOCAL CHARGES                                                         1         800.00 INR            1.00000         800.00        800.00                 18                     800.00
+SEA FREIGHT CHARGE                         1 TON OR 1/2               1         900.00 INR            1.00000         900.00        900.00                 18                     900.00
+                                           MEASURE
+CONTAINER CLEANING FEE                     1 TON OR 1/2               1       1,000.00 INR            1.00000        1,000.00     1,000.00                 15                   1,000.00
+                                           MEASURE
+
+                                                                                                                                                Tax                        Amount (INR)
+                                                                                                                                                GST18
+                                                                                                                                                GST 15%
+
+                                                                                         Rupee Four Thousand Seven Hundred Seventy-Six Only                                    4,776.00
+.Terms
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank                    : HDFC
+A/c No                  : XXXXXXXXXXX
+IBAN Code : ABA:XXXXXX
+Swift Code : XXXXXX
+Address                 : MUMBAI.
+
+
+
+Created By : PARTHIBAN
+
+
+
+
+                                                  This is a computer generated document and does not require a signature
+Printed By : shanmugam@fresa.io                                            Printed Date :17-MAY-2023 12:12PM                       Powered By : Fresa Technologies       Page 1 of 1
+

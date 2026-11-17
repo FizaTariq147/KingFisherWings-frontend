@@ -1,0 +1,84 @@
+ 2/8/2019                                                                <h3>CARGO MANIFEST NO - CSI190007</h3>
+                                                                                                        FRESA DEMO INDIA PVT LTD
+                                                                                                                                                     Chennai- 600 100
+                                                                                                                                                     Tamil Nadu, India
+                                                                                                                                      WEB : www.fresatechnologies.com
+
+
+                                                       CARGO MANIFEST NO - CSI190007
+
+                Delivery Agent : FRESA DEMO INDIA PVT LTD                                                   Terminal : CHENNAI CONTAINER TERMINAL
+                                 NO. 178, 2ND STREET, MOORE STREET N                                                   CHENNAI PORT AUTHORITY BUILDING CH
+                                 EAR NEHRU PARK, PARRY CORNER CHE                                                      ENNAI TAMIL NADU INDIA
+                                 NNAI TAMIL NADU 600001 INDIA
+                                 PHONE: 9884124194
+                         Job No : CSI190007 / 10-FEB-19                                                     MBL No : MAEU9812678888 / 05-FEB-19
+               Place of Receipt : DUBAI                                                             Port of Loading : JEBEL ALI, UNITED ARAB EMIRATES
+              Port of Discharge : CHENNAI (EX MADRAS), INDIA                               Port of Final Destination : CHENNAI (EX MADRAS), INDIA
+              Place of Delivery : CHENNAI                                                                       ETD : 01-FEB-19
+                           ETA : 10-FEB-19                                                                   Carrier : SAFMARINE
+               Vessel / Voyage : MSC MARINA / 982W                                                     Service Type : LCL
+
+Routing Details
+Line No Sea / Air / Road    POL        ETD            POD                                      ETA    Vessel / Flight Name              Status             Remarks
+10     SEA               JEBEL ALI 01-FEB-19 CHENNAI (EX MADRAS)                           08-FEB-19 MSC MARINA / 982W               CONFIRMED         VESSEL SAILED
+
+
+Container Details
+                                                       Custom Seal
+            Container No           Actual Seal No.                              Type                                          Description
+                                                           No.
+TTNU1982735                       SL9878999           SL9878999          20' DC              CONSOLE CONTAINER 1X20
+                                                                                                                              No
+                       AMS Place of                                                                                                       Volume
+       BL No                              Shipper / Consignee / Notify             Commodity Description             Marks No of G.Weight                      Remarks
+                       No. Delivery                                                                                                        (CBM)
+                                                                                                                              Pcs
+                                                                              STC: BINDING MATERIALS
+                                    (Shipper) AL ANSARI LIGHTS
+                                    AND DESIGN CO WLL                                                        NO
+ JEAMAA20190201             CHENNAI                                           FREIGHT PREPAID                      20 4,500.000                      4.560
+                                    (Consignee) 3M LOGISTICS                                               MARKS
+                                                                              ALL CHARGES ARE
+                                    SERVICE
+                                                                              CONSIGNEE'S ACCOUNT
+        B/SI/19/0037             CHENNAI (Shipper) AL HADAF AL AWAL           STC: FISHING NET PARTS WITH CHILLERS 33 6,500.000                         5.879
+                                              GENERAL TRADING LLC,            PROPELLER
+                                              (Consignee) ABC INDIA PVT LTD
+ http://demo.fresagold.com:19786/ords/f?p=127:3002:18072218186872:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NAME,P3002_TABLE_ID,P3002_FORMAT,P3002_REP…   1/2
+2/8/2019
+                                                                             FREIGHT PREPAID
+                                                                        <h3>CARGO MANIFEST NO - CSI190007</h3>
+                                                                             ALL CHARGES ARE
+                                                                             CONSIGNEE'S ACCOUNT
+                                                                             STC: FISHING NET PARTS WITH
+                                   (Shipper) AL JUNAID FISHES
+                                                                             PROPELLER                               BOXES
+                                   TOOLS                                                                                                                  BOXES WITH
+                                                                                                                      WITH
+       B/SI/19/0038        CHENNAI (Consignee) BABU SECTOR                                                                       28 8,790.000       9.230 BROWN
+                                                                FREIGHT PREPAID                                      BROWN
+                                   PTLTD                                                                                                                  SHADE
+                                                                ALL CHARGES ARE                                      SHADE
+                                   (Notify) BABU SECTOR PTLTD
+                                                                CONSIGNEE'S ACCOUNT
+                                   (Shipper) AL SHARQI SHIPPING STC: CARPETS WITH PACKING
+                                   CO LLC                       MATERIALS
+                                                                                                                     BROWN
+                                   (Consignee) 4G LOGISTICS                                                                                                 BROWN
+DMMMAA20190202             CHENNAI                                                                                    WRAP         5 2,450.000      3.200
+                                   INDIA PVT LTD                FREIGHT PREPAID                                                                             WRAP BAGS
+                                                                                                                      BAGS
+                                   (Notify) 4G LOGISTICS INDIA  ALL CHARGES ARE
+                                   PVT LTD                      CONSIGNEE'S ACCOUNT
+                                                                                                                      Total      86 22,240.000 22.869
+                                                      Remarks : 1X20 CONSOLE CONTAINERS
+
+
+            User : ram@fresatechnologies.com                            08-Feb-19 06:04:PM Asia/Kolkata                           Powered by Fresa Technologies
+
+
+
+
+http://demo.fresagold.com:19786/ords/f?p=127:3002:18072218186872:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NAME,P3002_TABLE_ID,P3002_FORMAT,P3002_REP…   2/2
+

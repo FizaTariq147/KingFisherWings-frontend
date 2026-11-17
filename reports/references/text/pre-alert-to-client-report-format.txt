@@ -1,0 +1,40 @@
+             PRE ALERT TO CLIENT - SHIPMENT NO - BDXBSE180055
+                   Client                   :   CLARION SHIPPING SERVICES LLC
+                                                PALCE TOWER 1, OFFICE 1802 AND 1803 DUBAI، ACADEMIC CITY
+                                                RD - UNITED ARAB EMIRATES
+                                                PHONE: 971 4 333 3852
+
+                   Shipper                  :   CLARION SHIPPING SERVICES LLC
+                                                PALCE TOWER 1, OFFICE 1802 AND 1803 DUBAI، ACADEMIC CITY
+                                                RD - UNITED ARAB EMIRATES UNITED ARAB EMIRATES
+                                                PHONE: 971 4 333 3852
+
+                   Consignee                :   BLUEMAX SHIPPING SERVICES PVT. LTD.
+                                                CHENNAI INDIA
+                                                PHONE: 4556785445
+
+
+
+                   Notify Party             :   SAME AS CONSIGNEE
+
+
+
+
+                   HAWB/ HBL No.            :   JEA/MAA/1800033 / 17-NOV-18
+                   MAWB/MBL No.             :   987877777 / 23-NOV-18
+                   POR                      :   JEBEL ALI
+                   POL                      :   JEBEL ALI
+                   POD                      :   CHENNAI (EX MADRAS)
+                   POF                      :   CHENNAI (EX MADRAS)
+                   ETD                      :   23-NOV-18
+                   ETA                      :   30-NOV-18
+                   PP/CC                    :   PREPAID
+                  Terms                     :   CFR
+                  PCS                       :   150
+                  Cargo Details(G/WT)       :   18
+
+
+
+
+Printed By : RAM.AE@FRESATECHNOLOGIES.COM             Printed Date :25-JAN-19 06:20PM   Powered By : Fresa Technologies   Page 1 of 1
+

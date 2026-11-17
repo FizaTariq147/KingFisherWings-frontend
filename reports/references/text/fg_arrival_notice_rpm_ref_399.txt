@@ -1,0 +1,56 @@
+                                                              ARRIVAL NOTICE / FREIGHT BILL
+TO                                                                                     HOUSE B/L NO.                             EXPORT MANIFEST NO.
+AL NASER TRADING COMPANY LLC                                                           PLMAAJEA00081                             CEXP190150
+30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT AL                             IMPORT HOUSE DOC. NO.                     IMPORT FILE NO.
+NABHA SHARJAH SHARJAH UAE
+                                                                                       B/EXP/19/0254                             CEXP190150
+                                                                                       MASTER B/L NO.                            AMS REF NO.
+                                                                                       MBLCOPY87667888
+BROKER                                                                                 DOCUMENT NO.                              ISF NO.
+
+                                                                                       CARRIER
+                                                                                       CMA CGM
+                                                                                       VESSEL / VOYAGE
+                                                                                       EVERGREEN MARINE / 9887
+                                                                                       PORT OF LOADING                           PLACE OF RECEIPT
+                                                                                       CHENNAI (EX MADRAS), INDIA
+SHIPPER                                                                                PORT OF DISCHARGE                         ETD                    ETA POD
+4G LOGISTICS INDIA PVT LTD                                                             JEBEL ALI, UNITED ARAB EMIRATES           29-JAN-19              07-FEB-19
+NOTIFY PARTY                                                                           FINAL PLACE OF DELIVERY                   ETA FINAL PLACE OF DELIVERY
+AL NASER TRADING COMPANY LLC                                                           JEBEL ALI, UNITED ARAB EMIRATES
+FREIGHT LOCATION                                                                       LAST FREE DATE                            G.O. DATE
+
+                                                                                       I.T. No.                                  I.T. DATE
+
+                                                                                       I.T. City                                 I.T. DESTINATION
+
+                                                                                       SERVICE TYPE                              DELIVERY MODE
+                                                                                       FCL
+REMARKS                                                                                PICK UP NO.                               LOAD NO.
+
+                                                                                       TERMS
+                                                                                        √ Freight PREPAID                        √ DRAFT
+Container No.      Type               Actual Seal     Commodity Desc                         No of Pcs No of Pallet      G.Wt.(KGS) G.Wt.(LBS)      Vol. (CBM) Vol.(CFT)
+ABCU9877666        20' DC             SL345566        STC: VALVE MATERIALS FOR                     125                    18,000.000 39,683.207          24.000     847.552
+                                                      MACHINERY PARTS
+
+                                                      FREIGHT PREPAID
+                                                      ALL DESTINATION CHARGES
+                                                      ARE CONSIGNEE'S ACCOUNT
+                                                                                  Total :          125                  18,000.000 39,683.20            24.000 847.552
+                                                                                      Charge Description                                                            Amount
+  1. Kindly contact our Imports Department/Customer Service for Actual Arrival.       OTHER CHARGES - PALLET REWORK                                                  225.00
+  2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.
+                                                                                                                      *** TOTAL DUE ( INR )***                      225.00
+  3. Cheque in favor of “FRESA DEMO COMPANY”.
+  4. Partial Payments are not acceptable.
+  5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free
+Days
+  6. After Free days storage charges applicable
+Please check the Terninal/warehouse location before sending the trucker for pick up
+
+
+
+
+Printed By : SHANMUGAM@FRESA.IO                                        Printed Date :17-MAY-23 03:02PM                Powered By : Fresa Technologies    Page 1 of 1
+

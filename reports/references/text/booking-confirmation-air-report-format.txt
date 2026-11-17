@@ -1,0 +1,45 @@
+   2/18/2019                                                            Booking Confirmation -B/AE/19/0112
+                                                                                                 FRESA DEMO INDIA PVT LTD
+                                                                                                                                             Chennai- 600 100
+                                                                                                                                             Tamil Nadu, India
+                                                                                                                              WEB : www.fresatechnologies.com
+
+
+                                   BOOKING CONFIRMATION - Shipment No - B/AE/19/0112
+
+                     Shipper : BABU SECTOR PTLTD                                                      Consignee : AL NASER TRADING COMPANY LLC
+                               144/78B GKM TOWERS MUTHUSAMY STR                                                   30 AL MAKTHOOM BUILDING NEAR MUBA
+                               EET, NEAR A2B SIGNAL, NEELANKARAI C                                                RAK CENTRE ROUND ABOUT AL NABHA
+                               HENNAI TAMILNADU INDIA                                                             SHARJAH UNITED ARAB EMIRATES
+               Shipment No : B/AE/19/0112 / 18-FEB-19                                                  Job No : CAE190028 / 20-FEB-19
+                  MAWB No : 17623456882 / 18-FEB-19                                                  HAWB No : MAA/DXB/1900014 / 18-FEB-19
+            Place of Receipt : CHENNAI                                                       Port of Departure : CHENNAI, INDIA
+              Port of Arrival : DUBAI INTERNATIONAL AIRPORT, UNITED A                        Place of Delivery : DUBAI
+                                RAB EMIRATES
+                        ETD : 20-FEB-19                                                               Flight Name : EK9876
+                        ETA : 20-FEB-19                                                                  Flight No : EK9876
+            Movement Type : AIR                                                                             PP/CC : PREPAID
+
+Booking Consignment
+             Description                                        No of Pcs                         Gross Weight                        Volume Weight
+STC: PAPER CUPS                                                        100 PACKAGES                         1,250.000 K                        1,250.000 KGS
+
+
+Actual Consignment
+               Description                                  No of Pcs                       Gross Weight                            Volume Weight
+STC: PAPER CUPS                                                              100                               1,250.00                                   1,250.00
+
+
+Terms and Conditions
+We are pleased to confirm your booking with the above details
+
+This is only a booking information and subsequent process will be updated.
+
+
+            User : ram@fresatechnologies.com                        18-Feb-19 03:35:PM Asia/Kolkata                       Powered by Fresa Technologies
+
+
+
+
+   http://demo.fresagold.com:19786/ords/f?p=127:3002:3690169652639:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                              1/1
+

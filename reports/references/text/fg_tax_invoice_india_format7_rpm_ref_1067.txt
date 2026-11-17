@@ -1,0 +1,73 @@
+                                               TAX INVOICE - BOMINV230500382                                                             (ORIGINAL FOR RECIPIENT)
+
+Bill To                  : DEMO LOGISTICS INDIA PVT LTD                               Invoice No.                : BOMINV230500382 / 17-MAY-23 (POSTED)
+                           21, PORT BLAIR, KRISHNA ST, MANNARGUDI,
+                                                                                      Due Date                   : 17-MAY-23
+                           TAMIL NADU, INDIA, 676876
+                           Phone : 798798798
+                           Fax : 9879878
+
+
+
+IRN No.                  :
+
+Shipper                  : DEMO-SHIPPER ENGG COMPANY                                  Consignee                  : DEMO STEEL FACTORY CO. LTD.
+
+Job No.                  :                                                            Shipment No.               : BOM/EXP/23/05/B/0709 / 16-MAY-23
+
+MBL No.                  :                                                            HBL No.                    : NSAJED85630124277
+
+Place of Receipt         : INMAA-CHENNAI                                              Port of Loading            : NHAVA SHEVA, INDIA
+
+Port of Discharge        : JEDDAH, SAUDI ARABIA                                       Place of Delivery          : JEDDAH SAUDI ARABIA
+
+Vessel /Voyage           :                                                            ETD                        : 01-MAR-23
+
+Narration                : MBL NO... / HBL NO. NSAJED85630124277 / JOB NO.            ETA                        : 20-MAR-23
+
+Reference                :                                                            Currency                   : INR
+
+IGM No.                  :                                                            Line / Subline No.         :
+INCO Terms               : FOB                                                        SB / BOE No.               :
+PO No.                   :                                                            Quote No. / Date           :
+Remarks
+Container No.            Type                                   Description                                No. of Pcs       Gross Weight       Volume          Vol. Weight
+TTNU0712894        40' FLAT             GENERAL CARGO                                                     3 - PACKAGES           22,700.000                      22,700.000
+
+                                                                                                                                                               Total Amount
+                                        Amount /                                  Taxable      Non      SGST             CGST            I/UGST                    (INR)
+Charge                    SAC     Qty              Cur. Ex.Rate      FCY Amt                                    SGST            CGST                 I/UGST
+                                          Qty                                       Amt       Taxable    %                %                 %
+
+FREIGHT CHARGE                      1     1,500.00 INR     1.00000     1,500.00    1,500.00                                                18.00      270.00        1,500.00
+
+LOCAL CHARGES                       1      800.00 INR      1.00000       800.00     800.00                                                 18.00      144.00          800.00
+
+SEA FREIGHT CHARGE                  1      900.00 INR      1.00000       900.00     900.00                                                 18.00      162.00          900.00
+CONTAINER CLEANING                  1     1,000.00 INR     1.00000     1,000.00    1,000.00                                                   0.00      0.00        1,000.00
+FEE
+                                                                                                                                       Sub Total :                  4,200.00
+                                                                                                               Tax                                            Amount (INR)
+                                                                                                               GST18-I/U GST18%                                       576.00
+                                                         Rupee Four Thousand Seven Hundred Seventy-Six Only                Total :         INR                    4,776.00
+                                                                                                    Less : Advance Received :              INR
+                                                                                                                Net Payable :              INR                    4,776.00
+
+Terms & Conditions:
+
+
+
+
+Bank details
+ .Terms
+ 1. Payment to be made by cash. The company is not
+ responsible for any cash settlement without an
+ official receipt.
+
+ Bank Details
+ Beneficiary Name: YOUR COMPANY NAME
+ Bank                : HDFC
+
+
+Printed By : shanmugam@fresa.io                                      Printed Date :17-MAY-2023 11:25AM               Powered By : Fresa Technologies     Page 1 of 1
+

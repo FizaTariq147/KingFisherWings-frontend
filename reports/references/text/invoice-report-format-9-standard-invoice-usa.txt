@@ -1,0 +1,61 @@
+                                                                                 INVOICE
+1.Invoice No.              : INV1800564                                                    6.Booking No.                     : BDXBSI180115 / 10-OCT-18
+2.Invoice Date             : 27-NOV-18 (CREATED)                                           7.BL No's                         : NSA.JEA.18/26917 / 12-OCT-18
+3.Prepared By              : RAM                                                           8.HBL No's                        : 500138050266 / 10-OCT-18
+4.Preparer Email           : ram.ae@fresatechnologies.com                                  9.File No.                        : CCDXBSI18000061 / 27-NOV-18
+5.Quote Reference          :                                                               10.Carrier Name / Ref             :
+11.Place of Receipt        :                                                               17.ETD Origin Port                : 12-OCT-18
+12.Port of Loading         : NHAVA SHEVA (JAWAHARLAL NEHRU), INDIA                         18.ETA Discharge Port             : 24-OCT-18
+14.Port of Discharge       : JEBEL ALI, UAE                                                19.ETA Final Destn                : 24-OCT-18
+15.Final Destination       : JEBEL ALI, UAE                                                20.Origin Vessel Name             : NORTHERN GENERAL
+16.Move Type               : LCL                                                           21.Voyage                         : 0068
+22.Shipper/Bill To         : FRESA DEMO DUBAI LLC                                          23.Payable to                     : FRESA DEMO COMPANY LIMITED
+                             AL NABHA, DUBAI                                                                                   DUBAI, DUBAI
+                             Phone : 04-233456
+                             GSTIN No. : 29760737473
+
+                                                                                           24.Payable by                     : CASH
+25.Consignee / Notify : FRESA DEMO DUBAI LLC                                               26.Tracking Information & Remarks (if any)
+                        AL NABHA DUBAI                                                     SHIPMENT FROM INDIA - PO REF # 7778909 DATE 14/10/2018
+                        PHONE: 04-233456
+
+
+
+
+27.Terms of Freight        : PREPAID                                                       28. BL Type                       : ORIGINAL
+                                                                 PARTICULARS FURNISHED BY SHIPPER
+29.Description of Packages and Goods            : TEMU6105051 12 PACKAGES 1,116.000KGS 1.903 CBM STC: 12 PACKAGE(S) 12 PACKAGE(S)
+
+
+
+                         30.PARTICULARS                                      31.Currency          32.AMOUNT IN USD                  33.QUANTITY                    34.Amount (AED)
+DELIVERY ORDER CHARGES                                                           AED                              275.000                        1.000                        275.00
+THC CHARGES                                                                      AED                                50.000                       1.903                         95.15
+DOCUMENTATION CHARGES                                                            AED                              100.000                        1.000                        100.00
+HANDLING CHARGES                                                                 AED                              250.000                        1.000                        250.00
+
+                                                           Dirham Seven Hundred Fifty-Six and Sixteen Fils Only                       Total :        AED                      756.16
+ Terms and conditions
+
+ ELECTRONIC & WIRE TRANSFER INFORMATION
+ FRESA DEMO COMPANY LTD               ACCOUNT                                                #: XXXXXXXXXXXXX (USD)
+ 473A- SAI SHAHI, 10TH STREET         SWIFT ID                                               #: 0198766
+ BUR DUBAI,                           WIRE TRANSFER ROUTING                                  #: 9877777
+ DUBAI UAE                            ACH/DOMESTIC/ABA ROUTING                               #: 9876666
+
+
+ Payment shall be made for full amount on or prior to due date, free of charges, without any deductions
+ All bank charges are for the account of the paying remitter
+ Telex Released issued in USA: Please note that a local service charge of $50 applies, in addition to any carrier fees for telex
+ release.
+ Payment before Delivery of Bill of Lading (Export) or containers (Import)
+ Please use Invoice Number or BL number for reference during payment
+
+
+
+
+                                                        THANK YOU FOR YOUR BUSINESS & CONTINUED SUPPORT
+                                               This is a computer generated document and does not require a signature
+
+Printed By : ram.ae@fresatechnologies.com                                Printed Date :28-JAN-19 01:52PM                         Powered By : Fresa Technologies     Page 1 of 1
+

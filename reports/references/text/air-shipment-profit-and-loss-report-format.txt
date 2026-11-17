@@ -1,0 +1,48 @@
+  2/18/2019                                                 Shipment Profit & Loss Report-B/AI/19/0041
+                                                                                          FRESA DEMO INDIA PVT LTD
+                                                                                                                                    Chennai- 600 100
+                                                                                                                                    Tamil Nadu, India
+                                                                                                                     WEB : www.fresatechnologies.com
+
+
+                             SHIPMENT PROFIT AND LOSS / SHIPMENT NO - B/AI/19/0041
+
+                     Client : 4G LOGISTICS INDIA PVT LTD                                       Shipper : AL NASER TRADING COMPANY LLC
+                              10 DBS CENTRE NUNGAMBAKKAM HIGH                                            30 AL MAKTHOOM BUILDING NEAR MUBA
+                              ROAD NUNGAMBAKKAM CHENNAI TAMIL                                            RAK CENTRE ROUND ABOUT AL NABHA
+                              NADU 600084 INDIA EMAIL: ram@fresatech                                     SHARJAH SHARJAH UNITED ARAB EMIRA
+                              nologies.com                                                               TES
+               Consignee : BABU SECTOR PTLTD                                                   Notify1 : BABU SECTOR PTLTD
+                           144/8 NALLATHAMBI STREET, NEELANKA                                            144/8 NALLATHAMBI STREET, NEELANKA
+                           RAI CHENNAI TAMIL NADU INDIA                                                  RAI CHENNAI TAMIL NADU INDIA
+             Shipment No : B/AI/19/0041 / 18-FEB-19                                             Job No : CAI190005 / 19-FEB-19
+                  MBL No : MAWB98777777 / 18-FEB-19                                            HBL No : AWB91384768 / 18-FEB-19
+          Place of Receipt : DUBAI                                                     Port of Receipt : DUBAI INTERNATIONAL AIRPORT, UNITED A
+                                                                                                         RAB EMIRATES
+            Port of Loading : DUBAI INTERNATIONAL AIRPORT, UNITED A                  Port of Discharge : CHENNAI, INDIA
+                               RAB EMIRATES
+   Port of Final Destination : CHENNAI, INDIA                                         Place of Delivery : CHENNAI AIRPORT
+                        ETD : 18-FEB-19                                                            ETA : 19-FEB-19
+                     Carrier : EMIRATES                                                Vessel / Voyage : EK / 176
+               Service Type : PORT TO PORT                                                       PP/CC : PREPAID
+  Container     Type              Description                No of Pcs          Gross Weight       Volume        Volume Weight            Net Weight
+                       STC: VALVE MATERIALS                              5              375.000        3.700              375.000              360.000
+         Charge      P.Curency Revenue(USD) P.Curency Expense(USD) P.Curency GP(USD) Local P.Revenue Local P.Expense Local P.GP
+MISC EXP CHARGE                        11.25                  11.25              0.00           750.00          750.00      0.00
+DELIVERY ORDER FEE                     37.50                  33.00              4.50         2,500.00        2,200.00   300.00
+DOCUMENTATION CHARGE                   27.00                  22.50              4.50         1,800.00        1,500.00   300.00
+HS CODE                                11.25                  10.50              0.75           750.00          700.00     50.00
+              Net Profit :                      87.00                    77.25                    9.75         5,800.00          5,150.00         650.00
+                        Tax :                    15.66                       13.91                1.76          1,044.00             927.00        117.00
+          Gross Profit :                     102.66                      91.16                 11.51           6,844.00          6,077.00         767.00
+              Sale Organization                          Amount                           Cost Organization                           Amount
+BABU SECTOR PTLTD                                            6,844.00        EMIRATES                                                         6,077.00
+
+
+          User : ram@fresatechnologies.com                   18-Feb-19 06:48:PM Asia/Kolkata                      Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:3516041250116:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                      1/1
+

@@ -1,0 +1,58 @@
+                                          FRESA DEMO INDIA PVT LTD
+                                          GENERAL LEDGER CURRENCY WISE
+                                                  SUNDRY DEBTORS - RECEIVABLES
+Branch : ALL                                                                                                            From     : 01-JAN-19
+                                                                                                                        To       : 13-FEB-19
+GL Date     Voucher No.   Narration                  Subledger                     Currency        Debit               Credit       Net Amount
+31-DEC-18                 OPENING BALANCE                                                      73,971.20           54,596.20           19,375.00
+                                                                                              135,219.95           54,596.20           80,623.75
+23-JAN-19 MAABR1900089                               4G LOGISTICS INDIA              INR            0.00           54,096.20          -35,596.20
+                                                                                                    0.00           54,096.20          -35,596.20
+25-JAN-19 MAAINV1900713   B/SFI/19/0166 MBL NO.      4G LOGISTICS INDIA              INR        9,440.00                0.00          -26,156.20
+                                                                                                9,440.00                0.00          -26,156.20
+28-JAN-19 MAAINV1900717   B/EXP/19/0251 MBL NO.      4G LOGISTICS INDIA              INR       17,384.00                0.00           -8,772.20
+                                                                                               17,384.00                0.00           -8,772.20
+28-JAN-19 MAACN1900032    REVERSED VOUCHER           4G LOGISTICS INDIA              INR            0.00           17,384.00          -26,156.20
+                                                                                                    0.00           17,384.00          -26,156.20
+29-JAN-19 MAAINV1900709   CEXP190150 MBL NO. /       4G LOGISTICS INDIA              INR       25,658.00                0.00             -498.20
+                                                                                               25,658.00                0.00             -498.20
+29-JAN-19 MAAINV1900734   CEXP190150 MBL NO.         4G LOGISTICS INDIA              INR          265.50                0.00             -232.70
+                                                                                                  265.50                0.00             -232.70
+31-JAN-19 MAAINV1900728   MBL NO. / HBL NO. / JOB 4G LOGISTICS INDIA                 INR        2,950.00                0.00            2,717.30
+                                                                                                2,950.00                0.00            2,717.30
+31-JAN-19 MAABR1900095    MAAINV1900728              4G LOGISTICS INDIA              INR            0.00            2,950.00             -232.70
+                                                                                                    0.00            2,950.00             -232.70
+31-JAN-19 MAAINV1900729   MBL NO. / HBL NO. / JOB 4G LOGISTICS INDIA                 INR        2,500.00                0.00            2,267.30
+                                                                                                2,500.00                0.00            2,267.30
+31-JAN-19 MAACN1900038    B/EXP/19/0255              4G LOGISTICS INDIA              INR            0.00              250.00            2,017.30
+                                                                                                    0.00              250.00            2,017.30
+                                                                          Currency Total       58,197.50           74,680.20
+                                                                                               58,197.50           74,680.20
+23-JAN-19 MAABR1900089                               4G LOGISTICS INDIA             USD             0.00              875.00          -35,596.20
+                                                                                                    0.00           62,123.75          -35,596.20
+                                                                          Currency Total            0.00              875.00
+                                                                                                    0.00           62,123.75
+                                                                           Monthly Total       58,197.50           75,555.20
+                                                                                               58,197.50          136,803.95
+05-FEB-19 MAAINV1900731   B/EXP/19/0256 MBL NO. / 4G LOGISTICS INDIA                 INR       20,434.00                0.00           22,451.30
+                                                                                               20,434.00                0.00           22,451.30
+05-FEB-19 MAABR1900097    RECEIPT VOUCHER            4G LOGISTICS INDIA              INR            0.00           25,658.00           -3,206.70
+                                                                                                    0.00           25,658.00           -3,206.70
+05-FEB-19 MAABR1900098                               4G LOGISTICS INDIA              INR            0.00              265.50           -3,472.20
+                                                                                                    0.00              265.50           -3,472.20
+11-FEB-19 MAAINV1900739   CEXP190153 MBL NO.         4G LOGISTICS INDIA              INR       28,288.00                0.00           24,815.80
+                                                                                               28,288.00                0.00           24,815.80
+                                                                          Currency Total       48,722.00           25,923.50
+                                                                                               48,722.00           25,923.50
+                                                                           Monthly Total       48,722.00           25,923.50
+                                                                                               48,722.00           25,923.50
+                                                                             Period Total     106,919.50          101,478.70
+                                                                                              106,919.50          162,727.45
+                                                                              Grand Total     180,890.70          156,074.90          24,815.80
+                                                                                              242,139.45          217,323.65          24,815.80
+
+
+
+
+Printed By : RAM                                  Print Date : 13-Feb-19 6:37 PM              Powered By : Fresa Technologies   Page 1 of 1
+

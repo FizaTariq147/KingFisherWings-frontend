@@ -1,0 +1,58 @@
+SHIPPER                                                          CARTA PORTE                           PLMAAJEA00081
+4G LOGISTICS INDIA PVT LTD
+10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM
+CHENNAI TAMILNADU INDIA600084 EMAIL: ram@fresatechnologies.com
+
+
+
+CONSIGNEE
+AL NASER TRADING COMPANY LLC
+POST BOX : 12356 30 AL MAKTHOOM BUILDING NEAR MUBARAK
+CENTRE ROUND ABOUT AL NABHA SHARJAH SHARJAH UAE
+
+
+
+
+NOTIFY                                                  AGENTE DESPACHANTE
+AL NASER TRADING COMPANY LLC
+30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT
+AL NABHA SHARJAH SHARJAH UAE
+
+
+
+
+Place of Receipt                  Port of Loading                DATOS DEL TRANPORTISTA
+                                  CHENNAI (EX MADRAS), INDIA     null
+Port of Discharge                 Place of Delivery
+JEBEL ALI, UNITED ARAB EMIRATES
+
+MARKS AND NUMBERS                       NUMBER AND KIND OF PACKAGES/DESCRIPTION OF        GROSS WEIGHT     MEASUREMENT
+                                                          GOODS
+NIL MARKS                         125 PACKAGES                                            18,000.000 KGS    24.000 CBM
+                                  STC: VALVE MATERIALS FOR MACHINERY PARTS
+
+                                  FREIGHT PREPAID
+                                  ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT
+
+
+
+
+SHIPPED ON BOARD
+
+Consol Number: CEXP190150                                        TYPE OF SERVICES
+                                                                 FCL
+FREIGHT PREPAID
+                                                                 FREIGHT AND CHARGES
+
+
+
+
+DELIVERY AGENT
+FRESA DEMO DUBAI UAE LLC
+DUBAI UAE
+TEL: 04-2339876 EMAIL: user@fresademocompany.com
+                                                                 AS CARRIER
+
+PLACE(S) OF ACCEPTANCE            PLACE OF DELIVERY
+CHENNAI (EX MADRAS), INDIA
+

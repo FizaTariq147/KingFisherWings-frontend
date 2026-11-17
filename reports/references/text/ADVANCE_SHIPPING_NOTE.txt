@@ -1,0 +1,35 @@
+                                                                                                             FRESA DEMO INC
+                                                                                                                473A - SAI SHAHI, 10TH STREET
+                                                                                                              KAMAKOTTI NAGAR PALLIKARANAI
+                                                                                                                                       MUMBAI
+                                                                                                                        MAHARASTRA- 600 100
+                                                                                                                WEB : www.fresatechnologies.com
+
+
+
+                                    ADVANCE SHIPPING NOTE / ASN No - ASN/000033
+
+Client No                   : DMO/ASN/0002                         ASN No                            : ASN/000033 / 10-FEB-20
+Client                      : DEMO PVT LTD                         Bill of Entry No                  : 757657868/20
+Bill of Entry Date          : 10-FEB-20                            Warehouse                         : WAREHOUSE-01
+Source Reference No         : 511252 / 10-FEB-20                   Container No                      : MSKU1234567
+Vessel / Flight Name        : MSC MARIA / V012                     HBL / HAWB No                     : MAAJEA0445
+SNo      Product Code                 Product Name     Serial No        ASN Qty              Qty       Pack Code         Weight           Volume
+   1 112541AASD52          WD EXTERNAL HDD                                      500                500 BOX                  250.000             1.000
+   2 2253465               HP LAPTOP                 1024662001                    1                1 BOX                     2.750             3.000
+   3 2253465               HP LAPTOP                 1024662002                    1                1 BOX                     2.750             3.000
+   4 2253465               HP LAPTOP                 1024662003                    1                1 BOX                     2.750             3.000
+   5 2253465               HP LAPTOP                 1024662004                    1                1 BOX                     2.750             3.000
+   6 2253465100            HP MOUSE                                            1200            1200 BOX                     120.000       12000.000
+   7 22534653              HP MONITOR                                           550                550 BOX                   55.000        11000.000
+   8 2253465350            HP KEYBOARD                                          750                750 BOX                   75.000        11250.000
+   9 5251255220            NVIDIA GPU                                           600                600 BOX                  150.000         7200.000
+  10 5251255220            NVIDIA GPU                                           600                600 BOX                  150.000         7200.000
+
+                                                                                                                                        48663.00
+                                                     Total :                4204             4204                       811.000
+                                                                                                                                               0
+
+
+          User : demo.bom@fresatechnologies.com           17-Mar-20 11:15:AM Asia/Calcutta                      Powered by Fresa Technologies
+

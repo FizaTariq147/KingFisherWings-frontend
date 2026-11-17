@@ -1,0 +1,52 @@
+  2/8/2019                                                                    Proforma Invoice-CSI190007
+                                                                                                   FRESA DEMO INDIA PVT LTD
+                                                                                                                                            Chennai- 600 100
+                                                                                                                                            Tamil Nadu, India
+                                                                                                                             WEB : www.fresatechnologies.com
+
+
+                                                               PROFORMA INVOICE
+
+                                                     Bill To   :    4G LOGISTICS INDIA PVT LTD
+                                                                    10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM CHENNAI TAMILNA
+                                                                    DU 600084 INDIA EMAIL: ram@fresatechnologies.com
+
+                                                    Job No     :    CSI190007 / 10-FEB-19
+                                                  Remarks      :    BROWN WRAP BAGS
+
+                                                                                       FCY                             Taxable     Tax   Tax               Local
+   Charge               Unit           PP/CC    Currency Amount/Unit Qty                        Ex.Rate    Amount
+                                                                                      Amount                           Amount     Group Amount            Amount
+HANDLING
+                 PER SHIPMENT        PREPAID       INR             1,500.00     1     1,500.00 1.00000      1,500.00   1,500.00 GST18        270.00       1,770.00
+CHARGES
+TERMINAL
+                 WEIGHT PER
+HANDLING                     PREPAID               INR              250.00     3.2      800.00 1.00000       800.00      800.00 GST18        144.00        944.00
+                 MEASUREMENT
+CHARGES
+DELIVERY
+                 PER SHIPMENT        PREPAID       INR             2,500.00     1     2,500.00 1.00000      2,500.00   2,500.00 GST18        450.00       2,950.00
+ORDER FEE
+
+                                                                                                Total :    4,800.00 4,800.00               864.00 5,664.00
+                                                                                    Rupee Five Thousand Six Hundred Sixty-Four Only                       5,664.00
+
+Terms
+
+
+1. Cheques should be in favour of FRESA DEMO INDIA PVT LTD and crossed A/C payee. The company is not responsible for any cash settlement without an
+official receipt.
+
+2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.
+
+
+
+
+             User : ram@fresatechnologies.com                         08-Feb-19 01:29:PM Asia/Kolkata                     Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:4948205312565:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                               1/1
+

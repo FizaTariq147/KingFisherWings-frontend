@@ -1,0 +1,29 @@
+                                         FRESA DEMO INDIA PVT LTD
+                                                    MUMBAI,
+                                                     INDIA
+
+
+                                            Profit and Loss Summary
+Branch Name : CHENNAI
+
+Currency      : INR                                           To         01-JAN-18 To 30-Sep-18
+Group Name                                             Previous Amount      Current Amount
+  PROFIT AND LOSS
+    DIRECT INCOME
+             AIR EXPORT CLEARANCE                                                             10,600.00
+             AIR FREIGHT CHGS REVENUE                                                      21,28,800.00
+             SEA FREIGHT FCL REVENUE                                                       68,79,855.58
+             SEA FREIGHT GROUPAGE REVENUE                                                     77,642.20
+       DIRECT INCOME TOTAL                                                                 90,96,897.78
+    DIRECT EXPENSES
+             AIR FREIGHT CHGS COST                                                         (5,36,353.00)
+             DOCUMENTATION CHGS                                                               10,000.00
+             SEA FREIGHT FCL COST                                                         (14,44,777.00)
+             SEA FREIGHT GROUPAGE COST                                                     (9,57,380.00)
+       DIRECT EXPENSES TOTAL                                                              (29,28,510.00)
+    INDIRECT EXPENSES
+             EXCHANGE GAIN/LOSS                                                               (2,757.50)
+             OFFICE EXPENSE                                                                   (1,000.00)
+       INDIRECT EXPENSES TOTAL                                                                (3,757.50)
+    PROFIT AND LOSS TOTAL                                                                  61,64,630.28
+

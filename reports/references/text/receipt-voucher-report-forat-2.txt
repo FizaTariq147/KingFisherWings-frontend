@@ -1,0 +1,37 @@
+  2/5/2019                                                       Receipt Voucher-MAABR1900096
+                                                                                          FRESA DEMO INDIA PVT LTD
+                                                                                                                                Chennai- 600 100
+                                                                                                                                Tamil Nadu, India
+                                                                                                                 WEB : www.fresatechnologies.com
+
+                                                RECEIPT VOUCHER - MAABR1900096
+              Received From : 4G LOGISTICS INDIA PVT LTD                                  Receipt No : MAABR1900096
+                  A/C Name : KOTAK MAHINDRA BANK                                                Date : 05-FEB-19 ( CREATED )
+                       Type : CASH                                                     Cheque/Ref.No :
+                                                   Description                                                                   Amount
+4G LOGISTICS INDIA PVT LTD                                                                                                                    25,658.00
+
+
+Against Voucher Details
+ Against V.No  Date                  Description                              Amount
+              29-
+                    CEXP190150 MBL NO. / HBL NO. / JOB
+MAAINV1900709 JAN-                                                            25,658.00
+                    NO.CEXP190150 B/EXP/19/0254 CEXP190150
+              19
+                                                           Against Total 25,658.00
+                                                              Rupee Twenty-Five Thousand Six Hundred Fifty-Eight Only                         25,658.00
+
+
+
+
+                      Accountant                                     Checked by                                     Receiver's Signature
+                        ( Ram )
+
+
+
+
+             User : ram@fresatechnologies.com               05-Feb-19 09:16:AM Asia/Kolkata                   Powered by Fresa Technologies
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:12634927023024:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…                   1/1
+

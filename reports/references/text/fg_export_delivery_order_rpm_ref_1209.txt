@@ -1,0 +1,49 @@
+                                                      EXPORT DELIVERY ORDER
+Branch Office        : CHENNAI
+                          CHROMPET, BRANCH ADD, INDIA, TAMILNADU, pincode : 600100,
+                          phone : +91 7806805429, fax : +91 7806805429,
+                          email : support@fresatechnologies.com
+
+D/O No.              :                                                              Agent               :
+Date                 :                                                              Line                : CMA CGM
+Validity             :                                                              Load Port           : CHENNAI (EX MADRAS), INDIA
+Booking No.          : B/EXP/19/0254                                                Discharge Port      : JEBEL ALI, UNITED ARAB EMIRATES
+                                                                                    Final Destination   : JEBEL ALI, UNITED ARAB EMIRATES
+
+Vessel                : CMA CGM/9887                                                VIA No.             :
+ETA                   : 07-Feb-19                                                   Roation Number      :
+ETD                   : 29-Jan-19                                                   Port cut off.       :
+Stuffing Point        :                                                             List cut off.       :
+
+Broker /CHA           :                                                             Shipper             : 4G LOGISTICS INDIA PVT LTD
+Surveyor              :
+
+
+
+
+To
+
+  4G LOGISTICS INDIA PVT LTD
+
+
+       Dear Sir,
+       Kindly deliver the following container to
+       1X20' DC
+
+
+Commodity            : STC: VALVE MATERIALS FOR MACHINERY
+Cargo Weight         : 18000
+Other Details        :
+
+
+
+
+       Note : PLS CHECK & TAKE THE SOUND CONDITION CONTAINER
+       AS PER SHIPPER'S REQUIREMENT
+           Thanking You
+           FRESA DEMO INDIA PVT LTD
+
+
+
+Printed By : shanmugam@fresa.io                                  Printed Date :17-May-23 01:37PM                    Powered By : Fresa Technologies
+

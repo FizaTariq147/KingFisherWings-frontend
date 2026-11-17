@@ -1,0 +1,40 @@
+  2/18/2019                                                          Cargo Manifet Air-MAA/DXB/1900014
+                                                                                                FRESA DEMO INDIA PVT LTD
+                                                                                                                                         Chennai- 600 100
+                                                                                                                                         Tamil Nadu, India
+                                                                                                                          WEB : www.fresatechnologies.com
+
+
+                                   AIR CARGO MANIFEST / HAWB NO - MAA/DXB/1900014
+
+                     Shipper : BABU SECTOR PTLTD                                              Delivery Agent : FRESA DEMO DUBAI UAE LLC
+                               144/78B GKM TOWERS MUTHUSAMY STR                                                DUBAI UNITED ARAB EMIRATES
+                               EET, NEAR A2B SIGNAL, NEELANKARAI C                                             PHONE: 04-2339876 EMAIL: user@fresade
+                               HENNAI TAMILNADU INDIA                                                          mocompany.com
+                 Consignee : AL NASER TRADING COMPANY LLC                                            Notify1 : AL NASER TRADING COMPANY LLC
+                             30 AL MAKTHOOM BUILDING NEAR MUBA                                                 30 AL MAKTHOOM BUILDING NEAR MUBA
+                             RAK CENTRE ROUND ABOUT AL NABHA                                                   RAK CENTRE ROUND ABOUT AL NABHA
+                             SHARJAH UNITED ARAB EMIRATES                                                      SHARJAH UNITED ARAB EMIRATES
+                Booking No. : B/AE/19/0112 / 18-FEB-19                                                Job No : CAE190028 / 20-FEB-19
+                  HAWB No : MAA/DXB/1900014 / 18-FEB-19                                             MAWB No : 17623456882 / 18-FEB-19
+            Place of Receipt : CHENNAI                                                      Port of Departure : CHENNAI, INDIA
+              Port of Arrival : DUBAI INTERNATIONAL AIRPORT, UNITED A                       Place of Delivery : DUBAI
+                                RAB EMIRATES
+                        ETD : 20-FEB-19                                                                  ETA : 20-FEB-19
+                      Airline : EMIRATES                                                     Flight Name / No : EK9876 / EK9876
+                      PP/CC : PREPAID
+                                 Goods Description                                          No of Pkgs              G.Weight                 V.Weight
+STC: PAPER CUPS                                                                                          100              1,250.00                  1,250.00
+                    Remarks : DAILY FLIGHT TO DXB
+
+Terms and Conditions
+Please send the report to POL office/agent within 24 hours of unpacking the cargo.
+
+
+            User : ram@fresatechnologies.com                       18-Feb-19 03:41:PM Asia/Kolkata                     Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:3690169652639:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                         1/1
+

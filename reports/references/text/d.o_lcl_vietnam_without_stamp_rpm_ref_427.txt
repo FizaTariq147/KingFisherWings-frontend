@@ -1,0 +1,28 @@
+                                                                             FRESA DEMO INDIA PVT LTD
+                                                                                                                        Chennai- 600 100
+                                                                                                                       Tamil Nadu, India
+                                                                                                         WEB : www.fresatechnologies.com
+
+
+                                                      LỆNH GIAO HÀNG
+
+Kính gửi                               : HẢI QUAN KHU VỰC : JEBEL ALI, UNITED ARAB EMIRATES
+                                         PHÒNG KHAI THÁC : JEBEL ALI, UNITED ARAB EMIRATES
+                                         KHO HÀNG LẺ (, JEBEL ALI, UNITED ARAB EMIRATES)
+                                                                                                                             Job : CEXP190150
+Kính đề nghị giao cho (To)             : AL NASER TRADING COMPANY LLC
+                                         30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT AL NABHA SHARJAH
+                                         SHARJAH UAE
+Tên tàu / Chuyến       : CMA CGM / 9887                                   Ngày cập cảng (ETA)    : 07-FEB-2019
+Số MB/L (MBL No.)      : MBLCOPY87667888                                  Số HBL (HBL No.)       : PLMAAJEA00081
+Khối lượng (Measuremen : 24.000 CBM                                       Ghi chú (Note)         : FCL
+t)
+      SỐ CONT/SEAL                         SỐ LƯỢNG        TÊN HÀNG HÓA                   TRỌNG LƯỢNG(KGS)               SỐ KHỐI (CBM)
+ABCU9877666 / SL345566                      125 PACKAGES AS PER BILL                                    18,000.00                   24.000
+                 TỔNG CỘNG                  125 PACKAGES                                           18,000.00 KGS               24.000 CBM
+
+
+
+
+           User : shanmugam@fresa.io                   17-May-23 02:52:PM Asia/Calcutta                  Powered by Fresa Technologies
+

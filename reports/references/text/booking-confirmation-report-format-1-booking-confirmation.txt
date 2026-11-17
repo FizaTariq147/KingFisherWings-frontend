@@ -1,0 +1,49 @@
+  2/8/2019                                                        Booking Confirmation -B/EXP/19/0257
+                                                                                              FRESA DEMO INDIA PVT LTD
+                                                                                                                          Chennai- 600 100
+                                                                                                                          Tamil Nadu, India
+                                                                                                           WEB : www.fresatechnologies.com
+
+
+                                  BOOKING CONFIRMATION - Shipment No - B/EXP/19/0257
+
+                          S/O No.     :    PLMAAJEA00044
+               Destination Agent      :   FRESA DEMO DUBAI UAE LLC
+                          Shipper     :    4G LOGISTICS INDIA PVT LTD
+                       Consignee      :    AL NASER TRADING COMPANY LLC
+                            Notify    :   AL NASER TRADING COMPANY LLC
+                              PO#     :
+                       Commodity      :   STC: VALVE MATERIALS
+                                          FREIGHT PREPAID
+                                          ALL DESTINATION CHARGES ARE CONSIGNEE ACCOUNT
+                 Place of Receipt     :    CHENNAI
+                        Load Port     :    CHENNAI (EX MADRAS), INDIA
+                       Destination    :    JEBEL ALI, UNITED ARAB EMIRATES
+                  Discharge Port      :   JEBEL ALI, UNITED ARAB EMIRATES
+                      Freight HBL     :    PREPAID
+                      Freight_MBL     :    FREIGHT PREPAID
+                        Inco Term     :    CFR
+               Booking Received       :    07-FEB-19
+               S-Line / Co-loader     :    SAFMARINE
+                 Vessel / Voyage      :    MSC MARINA/987W
+                              ETD     :    08-FEB-19(CHENNAI (EX MADRAS), INDIA)
+                              ETA     :    25-FEB-19(JEBEL ALI, UNITED ARAB EMIRATES)
+
+
+Container Details
+
+                        Cargo Ready                                                                               No of      Gross
+ Container      Type                                              Description                                                            Volume
+                            Date                                                                                   Pcs       Weight
+                20'    10-FEB-19    STC: VALVE MATERIALS FREIGHT PREPAID ALL DESTINATION CHARGES ARE
+TCNU9876577                                                                                                            15     2,400.00     3.50
+                DC                  CONSIGNEE ACCOUNT
+
+
+             User : ram@fresatechnologies.com                    08-Feb-19 02:29:PM Asia/Kolkata        Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:4948205312565:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…             1/1
+

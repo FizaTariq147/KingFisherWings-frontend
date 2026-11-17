@@ -1,0 +1,46 @@
+  2/13/2019                                                             A_P_OUTSTANDING_STATEMENT_
+                                                                                        FRESA DEMO COMPANY LIMITED
+                                                                                                                             473A - Sai Shahi, 10th Street
+                                                                                                                             Kamakotti Nagar Pallikaranai
+                                                                                                                                        Mumbai- 600 100
+                                                                                                                                        Maharastra, India
+                                                                                                                         WEB : www.fresatechnologies.com
+
+
+
+                                                      A/P OUTSTANDING STATEMENT
+
+ To
+ 3M LOGISTICS SERVICE
+ NO. 178, 4TH CROSS STREET NUNGAMBAKKAM
+ CHENNAI TAMILNADU 600062
+ Phone : 044 22435678
+
+
+
+ Dear Sir/Madam,
+
+ Please find the below Outstanding details.
+
+
+    Date         Voucher No          Branch     Ref No    Ref Date                  Narration                Amount   O/S Amount   Running Total Aging
+22-OCT-18     BOMINV1800443         MUMBAI                              MBL No. / HBL No. / JOB NO.          3,000.00     3,000.00       3,000.00  114
+24-OCT-18     BOMPI1800195          MUMBAI     5468      25-OCT-18      CEXP180112                             300.00       300.00       3,300.00  112
+24-OCT-18     BOMPI1800194          MUMBAI     7536      25-OCT-18      CEXP180112                             250.00       250.00       3,550.00  112
+24-OCT-18     BOMPI1800196          MUMBAI     2220      25-OCT-18      CP180002                               300.00       300.00       3,850.00  112
+
+                                                                                  Rupee Three Thousand Eight Hundred Fifty Only                       3,850.00
+
+Aging
+     Total O/S              < 30          30 - 60           60 - 90                90 - 120             120 - 150            150 - 180                180+
+             3,850.00                                                                     3,850.00
+
+
+
+            User : ram@fresatechnologies.com                          13-Feb-19 05:24:PM Asia/Kolkata                 Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:211231533955:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NA…                          1/1
+

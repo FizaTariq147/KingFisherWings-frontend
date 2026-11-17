@@ -1,0 +1,70 @@
+  1/28/2019                                                              Standard Invoice-INV1800564
+                                                                                   FRESA DEMO COMPANY LIMITED
+                                                                                                                                 Al Khabeeshi Building,
+                                                                                                                                 Mezzanine Floor 03/5,
+                                                                                                                               Salahuddin Road, Deira,
+                                                                                                                                          Dubai, U.A.E.
+                                                                                                                       WEB : www.fresatechnologies.com
+
+
+
+                                                            INVOICE - INV1800564
+
+                      Client : FRESA DEMO DUBAI LLC                                              Invoice No : INV1800564
+                               AL NABHA, DUBAI
+                               Phone : 04-233456
+                               GSTIN No. : 29760737473
+                 Consignee : FRESA DEMO DUBAI LLC                                                     Date : 27-NOV-18 (CREATED)
+                     Job No : CCDXBSI18000061 / 27-NOV-18                                     Shipment No : 500138050266 / 10-OCT-18
+                    MBL No : NSA.JEA.18/26917 / 12-OCT-18                                 Place of Receipt :
+            Port of Loading : NHAVA SHEVA (JAWAHARLAL NEHRU), INDI                       Port of Discharge : JEBEL ALI, UAE
+                               A
+           Place of Delivery : JEBEL ALI, UAE JEBEL ALI, UAE                               Vessel / Voyage : NORTHERN GENERAL / 0068
+                        ETD : 12-OCT-18                                                                ETA : 24-OCT-18
+                  Narration : BDXBSI180115 Job No. CCDXBSI18000061 /                         Reference No : REFE NO. 987890/22-NOV-18
+                               MBL No. NSA.JEA.18/26917 / HBL No. 500138
+                               050266
+                    Remarks : SHIPMENT FROM INDIA - PO REF # 7778909 DATE 14/10/2018
+           Container No                      Type            No of Pcs               Gross Weight                 Volume               Volume Weight
+          TEMU6105051                       40' HC              12                    1,116.000                    1.903
+
+                                                                                                                                           Amount Amount
+                              Charges                             GRN / GDN No      Client Ref No.         Unit              Qty
+                                                                                                                                            / Qty  (AED)
+DELIVERY ORDER CHARGES                                                                               PER SHIPMENT                     1 275.000 275.000
+THC CHARGES                                                                                          W/M                           1.903   50.000    95.150
+DOCUMENTATION CHARGES                                                                                PER SHIPMENT                     1 100.000 100.000
+HANDLING CHARGES                                                                                     PER SHIPMENT                     1 250.000 250.000
+
+                                                                           Dirham Seven Hundred Fifty-Six and Sixteen Fils Only                      756.160
+Terms and conditions
+
+ELECTRONIC & WIRE TRANSFER INFORMATION
+
+FRESA DEMO COMPANY LTD                  ACCOUNT                 #: XXXXXXXXXXXXX (USD)
+473A- SAI SHAHI, 10TH STREET            SWIFT ID                #: 0198766
+BUR DUBAI,                              WIRE TRANSFER ROUTING   #: 9877777
+DUBAI UAE                               ACH/DOMESTIC/ABA ROUTING#: 9876666
+
+
+Payment shall be made for full amount on or prior to due date, free of charges, without any deductions
+All bank charges are for the account of the paying remitter
+Telex Released issued in USA: Please note that a local service charge of $50 applies, in addition to any carrier fees for telex release.
+Payment before Delivery of Bill of Lading (Export) or containers (Import)
+Please use Invoice Number or BL number for reference during payment
+
+Collection Branch Address
+DUBAI (DXB)
+DUBAI, DUBAI
+
+                                         This is a computer generated document and does not require a signature
+
+
+
+            User : ram.ae@fresatechnologies.com                    28-Jan-19 01:55:PM Asia/Kolkata                   Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:5759556143869:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                         1/1
+

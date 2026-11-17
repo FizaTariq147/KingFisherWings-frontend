@@ -1,0 +1,50 @@
+  2/8/2019                                                     Shipment Profit & Loss Report-BDXBSFI180130
+                                                                                    FRESA DEMO COMPANY LIMITED
+                                                                                                                                   Al Khabeeshi Building,
+                                                                                                                                   Mezzanine Floor 03/5,
+                                                                                                                                 Salahuddin Road, Deira,
+                                                                                                                                            Dubai, U.A.E.
+                                                                                                                         WEB : www.fresatechnologies.com
+
+
+
+                            SHIPMENT PROFIT AND LOSS / SHIPMENT NO - BDXBSFI180130
+
+                        Client : TITAN INTERNATIONAL SHIPPING LLC                                     Shipper : OECL SHIPPING AND LOGISTICS PVT LTD
+                                 DUBAI UNITED ARAB EMIRATES EMAIL: tit                                          2, ANGAPPA NAICKEN ST, MANNADY, GEO
+                                 anuser@titanshipping.net                                                       RGE TOWN CHENNAI TAMIL NADU 600001
+                                                                                                                INDIA
+                                                                                                                PHONE: 044 4560 5500
+                  Consignee : TITAN INTERNATIONAL SHIPPING LLC                                        Notify1 : TITAN INTERNATIONAL SHIPPING LLC
+                              DUBAI UNITED ARAB EMIRATES EMAIL: tit                                             DUBAI UNITED ARAB EMIRATES
+                              anuser@titanshipping.net
+               Shipment No : BDXBSFI180130 / 17-NOV-18                                                Job No : CCDXBSFI18000032 / 17-NOV-18
+                     MBL No : 930000121 / 06-FEB-19                                                  HBL No : MAA/JEA/1800003A / 18-NOV-18
+            Place of Receipt : CHENNAI                                                       Port of Receipt : CHENNAI (EX MADRAS), INDIA
+             Port of Loading : CHENNAI (EX MADRAS), INDIA                                  Port of Discharge : JEBEL ALI, UAE
+   Port of Final Destination : JEBEL ALI, UAE                                              Place of Delivery : DUBAI
+                        ETD : 01-FEB-19                                                                  ETA : 08-FEB-19
+                      Carrier : CMA CGM & ANL LLC                                           Vessel / Voyage : EMMA MAERSK / E850
+               Service Type : FCL                                                                      PP/CC : PREPAID
+   Container               Type                       Description                     No of Pcs Gross Weight Volume          Volume Weight       Net Weight
+MAEU9876543         20' STANDARD         STC: CLOTHES HS CODE: 9678900                        97   23,000.000 24.800                              21,000.000
+
+           Charge         P.Curency Revenue(USD) P.Curency Expense(USD) P.Curency GP(USD) Local P.Revenue Local P.Expense Local P.GP
+DELIVERY ORDER CHARGES                      74.25                  74.25              0.00          275.00          275.00       0.00
+BL EXCHANGE FEE                             74.25                   0.00             74.25          275.00            0.00    275.00
+TERMINAL HANDLING CHARGES                  148.50                 148.50              0.00          550.00          550.00       0.00
+                      Net Profit :                  297.00                     222.75                   74.25        1,100.00           825.00         275.00
+                                 Tax :                 14.85                       11.14                   3.71          55.00             41.25         13.75
+                  Gross Profit :                    311.85                     233.89                   77.96        1,155.00           866.25         288.75
+                 Sale Organization                              Amount                           Cost Organization                          Amount
+TITAN INTERNATIONAL SHIPPING LLC                                 1,155.00      CMA-CGM                                                                 866.25
+
+
+
+             User : ram.ae@fresatechnologies.com                    08-Feb-19 06:27:PM Asia/Kolkata                    Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:11381763867950:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…                           1/1
+

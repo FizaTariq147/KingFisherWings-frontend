@@ -1,0 +1,86 @@
+  1/28/2019                                                                 Standard Invoice-INV1800564
+                                                                                        FRESA DEMO COMPANY LIMITED
+                                                                                                                                           Al Khabeeshi Building,
+                                                                                                                                           Mezzanine Floor 03/5,
+                                                                                                                                         Salahuddin Road, Deira,
+                                                                                                                                                    Dubai, U.A.E.
+                                                                                                                                 WEB : www.fresatechnologies.com
+
+
+
+                                                             TAX INVOICE - INV1800564
+                                                                  TRN NO ABC123
+
+                       Bill To : FRESA DEMO DUBAI LLC                                                Invoice No. : INV1800564 / 27-NOV-18 (CREATED)
+                                 AL NABHA, DUBAI
+                                 Phone : 04-233456
+                                 GSTIN No. : 29760737473
+                                 TRN No : VATNO98766655555
+                                 Credit Term : CASH
+                  Consignee : FRESA DEMO DUBAI LLC                                                      Shipper : PAHILAJRAI JAIKISHIN AND CO
+              Shipment No. : BDXBSI180115 / 27-NOV-18                                                   Job No. : CCDXBSI18000061 / 27-NOV-18
+           MBL / MAWB No. : NSA.JEA.18/26917 / 12-OCT-18                                       Place of Receipt :
+            Port of Loading : NHAVA SHEVA (JAWAHARLAL NEHRU), INDI                            Port of Discharge : JEBEL ALI, UAE
+                                 A
+        Vessel / Flight Name : NORTHERN GENERAL                                                Place of Delivery : JEBEL ALI, UAE
+          Voyage / Flight No : 0068                                                                         ETD : 12-OCT-18
+                    Narration : BDXBSI180115 Job No. CCDXBSI18000061 /                                      ETA : 24-OCT-18
+                                 MBL No. NSA.JEA.18/26917 / HBL No. 500138
+                                 050266
+             Reference No. : 987898 / 01-NOV-18                                                      Currency : AED 1.000000
+                     BOE No : BOE 987666                                                          HBL/AWB No. : 500138050266
+         Marks and Number : NM
+                     Remarks : SHIPMENT FROM INDIA - PO REF # 7778909 DATE 14/10/2018
+ Truck No.     Container No.       Type                        Description                         No of Pcs         Gross Weight       Volume      Volume Weight
+               TEMU6105051        40' HC           STC: 12 PACKAGE(S) 12 PACKAGE(S)              12 PACKAGES          1116 KGS           1.903
+
+                                                                                                                                    Non                      Total
+                                                                 Amount /                                  FCY       Taxable                 Tax     Tax
+             Charges                     Unit          Qty                  Currency       Ex.Rate                                Taxable                  Amount
+                                                                   Qty                                    Amount     Amount                   %     Amount
+                                                                                                                                  Amount                    (AED)
+                                   PER
+DELIVERY ORDER CHARGES                                       1    275.000      AED         1.0000          275.000    275.000               5.000   13.750 288.750
+                                   SHIPMENT
+THC CHARGES                        W/M                  1.903      50.000      AED         1.0000           95.150     95.150               5.000     4.760    99.910
+                                   PER
+DOCUMENTATION CHARGES                                        1    100.000      AED         1.0000          100.000    100.000               5.000     5.000 105.000
+                                   SHIPMENT
+                                   PER
+HANDLING CHARGES                                             1    250.000      AED         1.0000          250.000    250.000               5.000   12.500 262.500
+                                   SHIPMENT
+
+                                                                                                                                           Tax       Amount (AED)
+                                                                                                                                          VAT-05             36.010
+                                                                               Dirham Seven Hundred Fifty-Six and Sixteen Fils Only                            756.160
+Terms and conditions
+
+ELECTRONIC & WIRE TRANSFER INFORMATION
+
+FRESA DEMO COMPANY LTD                   ACCOUNT                 #: XXXXXXXXXXXXX (USD)
+473A- SAI SHAHI, 10TH STREET             SWIFT ID                #: 0198766
+BUR DUBAI,                               WIRE TRANSFER ROUTING   #: 9877777
+DUBAI UAE                                ACH/DOMESTIC/ABA ROUTING#: 9876666
+
+
+Payment shall be made for full amount on or prior to due date, free of charges, without any deductions
+All bank charges are for the account of the paying remitter
+Telex Released issued in USA: Please note that a local service charge of $50 applies, in addition to any carrier fees for telex release.
+Payment before Delivery of Bill of Lading (Export) or containers (Import)
+Please use Invoice Number or BL number for reference during payment
+
+Office Address
+DUBAI (DXB)
+DUBAI, DUBAI
+
+                                           This is a computer generated document and does not require a signature
+
+Created By : ram.ae@fresatechnologies.com
+
+
+
+
+             User : ram.ae@fresatechnologies.com                        28-Jan-19 01:29:PM Asia/Kolkata                        Powered by Fresa Technologies
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:16622732302740:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…                                   1/1
+

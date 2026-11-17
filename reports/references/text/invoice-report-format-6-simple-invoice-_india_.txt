@@ -1,0 +1,72 @@
+  1/28/2019                                                             Standard Invoice-MAAINV1900716
+                                                                                                  FRESA DEMO INDIA PVT LTD
+                                                                                                                                                Chennai- 600 100
+                                                                                                                                                Tamil Nadu, India
+                                                                                                                                 WEB : www.fresatechnologies.com
+
+                                                      TAX INVOICE - MAAINV1900716
+                      Bill To : 4G LOGISTICS INDIA PVT LTD                                             Invoice No. : MAAINV1900716 / 28-JAN-19 (CREATED)
+                                10, DBS CENTRE, NUNGAMBAKKAM HIGH
+                                ROAD, NUNGAMBAKKAM, CHENNAI, TAMI
+                                LNADU, INDIA, 600084
+                                Phone : N/A
+                                GSTIN No. : GSTNO9876666554
+                                Credit Term : CASH
+                   Narration : B/EXP/19/0251 MBL NO. MBLC9878909999                              Reference No. : REFE NO. 987890/17-JAN-19
+                               / HBL NO. PLMAAJEA00080 / JOB NO.CEX
+                               P190148
+                   Currency : INR 1.000000
+Remarks: 1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019
+                                                                                            Non                                                              Total
+                 SAC            Amount                              FCY        Taxable            SGST      CGST      I/UGST
+   Charges               Qty               Currency    Ex.Rate                            Taxable      SGST      CGST        I/UGST                         Amount
+                 Code            / Qty                             Amount      Amount              %         %           %
+                                                                                          Amount                                                             (INR)
+FREIGHT
+                            1     100.00       USD     70.00000      100.00               7,000.00                                                           7,000.00
+CHARGE
+TERMINAL
+HANDLING
+                            1   5,500.00       INR       1.00000   5,500.00    5,500.00                  9.00 495.00     9.00 495.00                         5,500.00
+CHARGES
+20"GP
+SEAL FEE                    1     300.00       INR       1.00000     300.00      300.00                  9.00    27.00   9.00    27.00                        300.00
+BILL OF
+                            1   3,000.00       INR       1.00000   3,000.00    3,000.00                  9.00 270.00     9.00 270.00                         3,000.00
+LADING
+                                                                               8,800.00 7,000.00                792.00          792.00                      15,800.00
+
+                                                                                 Rupee Fifteen Thousand Eight Hundred Only                             15,800.00
+                                                                                                                                           Sub Total : 15,800.00
+                                                                                                                                   Tax             Amount (INR)
+                                                                                                                            GST18-SGST9%                  792.00
+                                                                                                                            GST18-CGST9%                  792.00
+                                                                    Rupee Seventeen Thousand Three Hundred Eighty-Four Only                                 17,384.00
+Terms
+
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.
+
+Bank Details
+
+Beneficiary Name: YOUR COMPANY NAME
+Bank            : HDFC
+A/c No          : XXXXXXXXXXX
+IBAN Code       : ABA:XXXXXX
+Swift Code      : XXXXXX
+Address         : CHENNAI.
+
+Office Address :
+CHENNAI
+CHROMPET, INDIA
+
+                                         This is a computer generated document and does not require a signature
+
+
+
+
+            User : ram@fresatechnologies.com                         28-Jan-19 11:36:AM Asia/Kolkata                        Powered by Fresa Technologies
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:1388389324461:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                                  1/1
+

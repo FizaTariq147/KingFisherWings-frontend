@@ -1,0 +1,51 @@
+  2/7/2019                                                                        Transhipment List
+                                                                                         FRESA DEMO COMPANY LIMITED
+                                                                                                                                            Al Khabeeshi Building,
+                                                                                                                                            Mezzanine Floor 03/5,
+                                                                                                                                          Salahuddin Road, Deira,
+                                                                                                                                                     Dubai, U.A.E.
+                                                                                                                                  WEB : www.fresatechnologies.com
+
+
+
+                                                                 TRANSHIPMENT LIST
+
+                      Job No : CCDXBSI18000060 / 23-NOV-18                                                 MRN No. : 987678
+                 Rotation No. : 456789
+                                               No
+                                                                                                                                    Vessel
+Container No     D/o No         HBL No          of G.Weight Volume       Destination         Remarks          BL Status   Pp/Cc              ETD ETA          Agent
+                                                                                                                                    Name
+                                               Pcs
+                                                                                                                                       FRESA
+                                                                       BHBAH -                                               17- 23-
+                                                                                       TRANSSHIPMENT                 MAERSK            DEMO
+MAEU9876543 9876567 MAA/JEA/1800007                12 2,800.00   2.900 BAHRAIN,                      EXPRESS PREPAID         NOV- NOV-
+                                                                                       DO                            CHARLIE           COMPANY
+                                                                       BAHRAIN                                               18   18
+                                                                                                                                       LIMITED
+                                                                                                                                       FRESA
+                                                                       OMSOH -                                               17- 23-
+                                                                                       TRANSSHIPMENT                 MAERSK            DEMO
+MAEU9876543 9876576 MAA/JEA/1800008                15 3,200.00   3.300 SOHAR,                        EXPRESS PREPAID         NOV- NOV-
+                                                                                       DO                            CHARLIE           COMPANY
+                                                                       OMAN                                                  18   18
+                                                                                                                                       LIMITED
+                                                                                                                                       FRESA
+                                                                       KWKWI -                                               17- 23-
+                                                                                       TRANSSHIPMENT                 MAERSK            DEMO
+MAEU9876543 9876578 MAA/JEA/1800009                19 5,500.00   5.800 KUWAIT,                       EXPRESS PREPAID         NOV- NOV-
+                                                                                       DO                            CHARLIE           COMPANY
+                                                                       KUWAIT                                                18   18
+                                                                                                                                       LIMITED
+                Total:                             46 11,500.00 12.000
+
+
+
+             User : ram.ae@fresatechnologies.com                         07-Feb-19 05:17:PM Asia/Kolkata                      Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:2184448928029:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                                  1/1
+

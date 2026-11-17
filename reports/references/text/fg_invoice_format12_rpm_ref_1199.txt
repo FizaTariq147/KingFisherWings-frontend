@@ -1,0 +1,62 @@
+TAX DISBURSEMENT INVOICE BOMINV230500382                                                                                            Page 1 of 1
+
+DEMO LOGISTICS INDIA PVT LTD                                                             INVOICE DATE 17-MAY-23
+21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA, 676876
+Phone : 798798798                                                                         CUSTOMER ID DEMOCLIEJK001
+Fax : 9879878                                                                            DECLARATION BOM/EXP/23/05/B/0709
+VAT No. : 68768978898098
+                                                                                          CLIENT VAT # 68768978898098
+                                                                                              DUE DATE 17-MAY-23
+                                                                                                   TERMS CASH
+BROKERAGE DETAILS
+CONSIGNOR                                                                        CONSIGNEE
+DEMO-SHIPPER ENGG COMPANY                                                        DEMO STEEL FACTORY CO. LTD.
+SUPPLIER'S INVOICE NUMBER(S)                                                     GOODS DESCRIPTION
+                                                                                 GENERAL CARGO
+ORDER NUMBERS / REFERENCE                                                        WEIGHT             VOLUME                           PACKAGES
+                                                                                     22,700.000 KGS                                  3 PACKAGES
+VESSEL / VOYAGE / IMO(LLOYDS)                                                    OCEAN BILL OF LADING                    HOUSE BILL OF LADING
+CAP SAN JUAN 310W                                                                                                        NSAJED85630124277
+ORIGIN                                                          ETD              DESTINATION                                            ETA
+INNSA = NHAVA SHEVA, INDIA                                      01-MAR-23        SAJED = JEDDAH, SAUDI ARABIA                           20-MAR-23
+CUSTOMS ENTRY DETAILS
+
+
+CONTAINERS
+ TTNU0712894 / 40' FLAT
+CHARGES
+
+DESCRIPTION                                                                                              VAT IN INR                          CHARGES IN INR
+FREIGHT CHARGE                                                                                         Standard Rated                                     1,500.00
+LOCAL CHARGES                                                                                          Standard Rated                                      800.00
+SEA FREIGHT CHARGE                                                                                     Standard Rated                                      900.00
+CONTAINER CLEANING FEE                                                                                 Standard Rated                                     1,000.00
+
+
+
+
+ TOTAL CHARGES
+
+
+*Payments delayed beyond agreed credit terms will attract interest @24% per annum.
+*Cheques should be made out to Enkay Express (Br. of Al Rai Logistica UAE LLC) & crossed                                SUB TOTAL                     4,200.00
+A/C payee. Penalty of AED 500 for any cheque returned from the bank. The company is not
+responsible for  any   cash   settlement without an  official receipt.                                                    ADD VAT
+*Any discrepancy should be notified in writing within 07 days from the invoice date.
+*This is a computer-generated document & does not require a signature & stamp.
+                                                                                                                        TOTAL INR                     4,776.00
+
+
+  CUSTOMER ID          DEMOCLIEJK001                        Invoiced INR    4,776.00                        BALANCE DUE INR                     4,776.00
+                                                                                                            DUE DATE                         17-MAY-23
+Transfer Funds To :
+.Terms                                                                           Address:
+1. Payment to be made by cash. The company is not responsible
+for any cash settlement without an official receipt.                             FRESA DEMO INDIA PVT LTD
+                                                                                 MUMBAI
+Bank Details                                                                     406, 4TH FLOOR, D-21 CORPORATE PARK, SECTOR 21,, MUMBAI,
+Beneficiary Name: YOUR COMPANY NAME
+                                                                                 Pincode : 400001
+
+Printed By : shanmugam@fresa.io                                  Printed Date :17-May-23 10:04AM                        Powered By : Fresa Technologies
+

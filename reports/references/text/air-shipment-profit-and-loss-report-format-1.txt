@@ -1,0 +1,63 @@
+ 2/18/2019                                               SALES MANIFEST / MANIFEST NO -B/AI/19/0041
+                                                                                          FRESA DEMO INDIA PVT LTD
+                                                                                                                                  Chennai- 600 100
+                                                                                                                                  Tamil Nadu, India
+                                                                                                                   WEB : www.fresatechnologies.com
+
+
+                                      SALES MANIFEST / MANIFEST NO - B/AI/19/0041
+
+                    Client : 4G LOGISTICS INDIA PVT LTD                                        Shipper : AL NASER TRADING COMPANY LLC
+                             10 DBS CENTRE NUNGAMBAKKAM HIGH                                             30 AL MAKTHOOM BUILDING NEAR MUBA
+                             ROAD NUNGAMBAKKAM CHENNAI TAMIL                                             RAK CENTRE ROUND ABOUT AL NABHA
+                             NADU 600084 INDIA EMAIL: ram@fresatech                                      SHARJAH SHARJAH UNITED ARAB EMIRA
+                             nologies.com                                                                TES
+               Consignee : BABU SECTOR PTLTD                                                    Notify1 : BABU SECTOR PTLTD
+                           144/8 NALLATHAMBI STREET, NEELANKA                                             144/8 NALLATHAMBI STREET, NEELANKA
+                           RAI CHENNAI TAMIL NADU INDIA                                                   RAI CHENNAI TAMIL NADU INDIA
+                     CHA : RR LOGISTICS CLEARING AND AGENCIE
+                           S
+                           ABC COMPLEX NELSON STREET CHENN
+                           AI TAMILNADU INDIA
+             Manifest No. : B/AI/19/0041 / 18-FEB-19                                           HBL No. : AWB91384768 / 18-FEB-19
+           Document No. :                                                                      FILE No. :
+           Stuffing Point : DUBAI INTERNATIONAL AIRPORT, UNITED A                      Place of Receipt : DUBAI
+                            RAB EMIRATES
+          Port of Receipt : DUBAI INTERNATIONAL AIRPORT, UNITED A                      Port of Loading : DUBAI INTERNATIONAL AIRPORT, UNITED A
+                            RAB EMIRATES                                                                  RAB EMIRATES
+        Port of Discharge : CHENNAI, INDIA                                    Port of Final Destination : CHENNAI, INDIA
+        Place of Delivery : CHENNAI AIRPORT                                            Vessel / Voyage : EK / 176
+                     ETD : 18-FEB-19                                                               ETA : 19-FEB-19
+             Service Type : PORT TO PORT                                                        Job No : CAI190005 / 19-FEB-19
+                  MBL No : MAWB98777777 / 18-FEB-19                                             Carrier : EMIRATES
+                   PP/CC : PREPAID
+Container Type    HAZ/NON-HAZ        Description               No of Pcs Gross Weight Volume Volume Weight Net Weight Stuffing FPD
+                 GENERAL      STC: VALVE MATERIALS                      5      375.000   3.700      375.000    360.000
+           A/C HEADS                        Qty    RATE/CBM (USD)         FREIGHT TERMS                TOTAL CC (USD)            TOTAL PP (USD)
+DELIVERY ORDER FEE                             1              2,950.00 COLLECT                                    2,950.00                      0.00
+DOCUMENTATION CHARGE                           1              2,124.00 PREPAID                                        0.00                  2,124.00
+SECURITY SURCHARGE                             1                885.00 PREPAID                                        0.00                    885.00
+HS CODE                                        1                885.00 PREPAID                                        0.00                    885.00
+                                    Total                    6,844.00                                             2,950.00                      3,894.00
+
+
+  MARKETING EXECUTIVE                                                                          Sign:
+
+
+
+  FINALISED BY                                                                                 Sign:
+
+
+
+             *** THE REALIZATION OF PAYMENT IS WHOLE RESPONSIBILITY OF SALES AGAINST CREDIT GIVEN TO THE CLIENT. ***
+
+
+
+
+         User : ram@fresatechnologies.com                    18-Feb-19 06:51:PM Asia/Kolkata                    Powered by Fresa Technologies
+
+
+
+
+ http://demo.fresagold.com:19786/ords/f?p=127:3002:3516041250116:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                      1/1
+

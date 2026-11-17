@@ -1,0 +1,74 @@
+                                                                                                                        BILL OF LADING FOR OCEAN                                      B/L No.
+                                                                                                                        TRANSPORT OR MULTIMODAL
+                                                                                                                                                                                      NSAJED85630124277
+                                                                                                                        TRANSPORT
+Shipper's Name and Address                                                                                              Booking No.
+DEMO-SHIPPER ENGG COMPANY                                                                                               BOM/EXP/23/05/B/0709
+
+
+
+
+                                                                                                                        Delivery Agent
+
+
+Consignee (Negotiable only if consigned 'To Order', 'To Order Of', or 'To Order of Bearer')
+DEMO STEEL FACTORY CO. LTD.
+P.O BOX 11700, 8100 UNIT NO 2
+JEDDAH SAUDI ARABIA
+SAUDI ARABIA 21463
+TEL: +966,
+
+
+Notify Party (see clause 22)                                                                                            Country of Origin
+
+
+                                                                                                                        Precarriage By - Applicable only when document used as Multimodal transport B/L (see clause 1)
+
+
+
+                                                                                                                        Place of Receipt - Applicable only when document used as Multimodal transport B/L (see clause 1)
+
+                                                                                                                         INMAA-CHENNAI
+
+Vessel (see clause 1 and 19)                                  Voyage No.                                                Onward inland routing (Not part Carriage as defined in clause 1. for account and risk of Merchant)
+
+
+
+Port of Loading                                               Port of Discharge                                         Place of Delivery - Applicable only when document used as Multimodal transport B/L (see clause 1)
+
+NHAVA SHEVA, INDIA                                            JEDDAH, SAUDI ARABIA                                       JEDDAH SAUDI ARABIA
+
+                                                            PARTICULARS FURNISHED BY SHIPPER - CARRIER / AGENT NOT RESPONSIBLE
+ Container No/Seal No./Marks & Numbers                                  Number of Packages/Kind of Packages/General Description of Goods                                          Gross Weight (Kgs)                    Measurement
+
+                                                          3 PACKAGES                   GENERAL CARGO                                                                              22700 KGS                                   CBM
+
+
+
+
+Container No / Type                                              Seal No                                           No of Packages                Gross WT. in KG                      Net WT. in KG                               Volume
+TTNU0712894 / 40' FLAT                                                                                                   3                                22,700.000
+
+
+
+
+SHIPPER'S LOAD, STOW AND COUNT                                                                                                                                                  MOVE TYPE : FCL
+Above particulars as declared by shipper, but without responsibility of or representation by Carrier (see clause 14)
+
+Freight and Other Charges                                 Rates                                              Unit                         Currency                     Prepaid                              Collect
+
+
+
+
+Carrier's Receipt (see clause 1 and 14) Total number of   Freight Payable At                                            Received by the carrier the goods as specified above in apparent good order and condition unless otherwise stated, to be
+containers or packages received by Carrier / Agent.       JEDDAH                                                        transported to such place as agreed, authorized or permitted herein and subject to all the terms and conditions appearing
+                                    1 Container(s)                                                                      on the front and reverse of this Bill of Lading to which the Merchant agrees by accepting this Bill of Lading, any local
+                                                                                                                        privileges and customs notwithstanding. The particulars given above as stated by the Shipper and the weight, measure,
+                                                          Declared Value (see clause 7.3)                               quantity, condition, contents and value of the Goods are unknown to the Carrier In WITNESS whereof one (1) original Bill
+                    CREATED                                                                                             of Lading has been signed if not otherwise stated above, the same being accomplished the other(s), if any, to be void. If
+                                                                                                                        required by the Carrier one (1) original Bill of Lading must be surrendered duly endorsed in exchange for the Goods or
+                                                                                                                        Delivery Order.
+Number & Sequence of Original B(s)/L                      Place of Issue of B/L             Date of Issue of B/L
+ 0 /(ZERO)                                                                                  17-05-23
+                                                                                                                         FRESA DEMO INDIA PVT LTD AS AGENT FOR THE CARRIER
+

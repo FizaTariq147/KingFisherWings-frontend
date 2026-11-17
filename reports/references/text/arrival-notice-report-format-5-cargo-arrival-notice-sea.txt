@@ -1,0 +1,69 @@
+  2/7/2019                                                     Cargo Arrival Notice-PLJEAMAA00001
+                                                                                           FRESA DEMO INDIA PVT LTD
+                                                                                                                                    Chennai- 600 100
+                                                                                                                                    Tamil Nadu, India
+                                                                                                                     WEB : www.fresatechnologies.com
+
+
+                                     CARGO ARRIVAL NOTICE / HBL No. - PLJEAMAA00001
+
+                        Client : 4G LOGISTICS INDIA PVT LTD                                     Shipper : AL NASER TRADING COMPANY LLC
+                                 10 DBS CENTRE NUNGAMBAKKAM HIGH                                          30 AL MAKTHOOM BUILDING NEAR MUBA
+                                 ROAD NUNGAMBAKKAM CHENNAI TAMIL                                          RAK CENTRE ROUND ABOUT AL NABHA
+                                 NADU 600084 INDIA EMAIL: ram@fresatech                                   SHARJAH SHARJAH UNITED ARAB EMIRA
+                                 nologies.com                                                             TES
+                  Consignee : 4G LOGISTICS INDIA PVT LTD                                        Notify1 : 4G LOGISTICS INDIA PVT LTD
+                              10 DBS CENTRE NUNGAMBAKKAM HIGH                                             10 DBS CENTRE NUNGAMBAKKAM HIGH
+                              ROAD NUNGAMBAKKAM CHENNAI TAMIL                                             ROAD NUNGAMBAKKAM CHENNAI TAMIL
+                              NADU 600084 INDIA EMAIL: ram@fresatech                                      NADU 600084 INDIA
+                              nologies.com
+                   Forwarder : FRESA DEMO INDIA PVT LTD
+                               NO. 178, 2ND STREET, MOORE STREET N
+                               EAR NEHRU PARK, PARRY CORNER
+                               CHENNAI TAMIL NADU 600001 INDIA
+                               PHONE: 9884124194 EMAIL: demo@fresate
+                               chnologies.com, user@fresatechnologies.co
+                               m
+                    Job No. : CSFI190012 / 25-JAN-19                                           MBL No. : MBLCOPY87666666 / 16-JAN-19
+                    HBL No. : PLJEAMAA00001 / 16-JAN-19                                Place of Receipt : DUBAI
+            Port of Loading : JEBEL ALI, UNITED ARAB EMIRATES                         Port of Discharge : CHENNAI (EX MADRAS), INDIA
+   Port of Final Destination : CHENNAI (EX MADRAS), INDIA                              Place of Delivery : CHENNAI
+                        ETD : 16-JAN-19                                                             ETA : 25-JAN-19
+                     Carrier : CMA CGM                                                  Vessel / Voyage : MSC MELINA / 987
+               Service Type : FCL/FCL                                                            Freight : PREPAID
+                    IGM No. : 98778798 / 10-JAN-19                                    Line / Subline No. : 1234 / 128
+   Container         Type                Goods Description                 No. of Pkgs Volume Net Weight         Gross Weight        Volume Weight
+TENU9876666         20' DC    STC: VALVE MATERIALS                                  100   20.00                       18,000.00
+                                                                                            Currency       Taxable              Tax              Total
+             Charge                        Unit    Qty Currency Ex.Rate Amount/Qty                                       Tax
+                                                                                            Amount         Amount              Amount           Amount
+TERMINAL HANDLING                  20' DRY
+                                                     1 INR      1.00000       5,000.00          5,000.00     5,000.00 GST18       900.00         5,900.00
+CHARGES                            CONTAINER
+DELIVERY ORDER FEE                 PER SHIPMENT      1 INR      1.00000       3,000.00          3,000.00     3,000.00 GST18       540.00         3,540.00
+ALL INCL                           PER SHIPMENT      1 INR      1.00000         756.50            756.50       756.50 GST18       136.17           892.67
+                                                                TOTAL
+                                                                                                                                            10,332.67
+                                                                  :
+                                                                                                                                Tax             Amount
+                                                                                                                                  GST18          1,576.17
+                                                                                                                               Tax Total:        1,576.17
+                                                  Rupee Ten Thousand Three Hundred Thirty-Two and Sixty-Seven PAISA Only                        10,332.67
+                     Remarks : CHENNAI ARRIVAL 1X20
+
+Terms & Conditions
+
+  1. Kindly contact our Imports Department/Customer Service for Actual Arrival.
+  2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.
+  3. Cheque in favor of “FRESA DEMO COMPANY”.
+  4. Partial Payments are not acceptable.
+  5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days
+  6. After Free days storage charges applicable
+
+
+
+
+             User : ram@fresatechnologies.com                 07-Feb-19 05:02:PM Asia/Kolkata                   Powered by Fresa Technologies
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:15310838065371:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…                      1/1
+

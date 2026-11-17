@@ -1,0 +1,70 @@
+                                                                                 FRESA DEMO INDIA PVT LTD
+                                                                                               GENERAL LEDGER
+                                                                                      SUNDRYDEBTORS - SUNDRY DEBTORS
+From    : 01-JAN-19      To : 13-FEB-19
+Branch : All
+Voucher No.       GL Date     Narration                           Subledger                    Currency      FCY Dr Amt    FCY Cr Amt    Running FCY Amt      Dr Amt       Cr Amt           Running Amt
+                  31-DEC-18   Opening Balance                                                                                                                80,623.75                              80,623.75
+MAABR1900089      23-JAN-19   CEXP180108 MBL NO. / HBL NO. /      4G LOGISTICS INDIA PVT LTD     INR                                                                      36,596.20                 44,027.55
+                              JOB NO.CEXP180108
+MAABR1900089      23-JAN-19   B/SFI/18/0162 MBL NO. / HBL NO. /   4G LOGISTICS INDIA PVT LTD     INR                                                                      12,500.00                 31,527.55
+                              JOB NO.CSFI180010
+MAABR1900089      23-JAN-19   B/EXP/18/0206 MBL NO. / HBL NO. /   4G LOGISTICS INDIA PVT LTD     INR                                                                       5,000.00                 26,527.55
+                              JOB NO.CEXP180123
+MAAINV1900713     25-JAN-19   B/SFI/19/0166 MBL NO.               4G LOGISTICS INDIA PVT LTD     INR                                                          9,440.00                              35,967.55
+                              MBLCOPY87666666 / HBL NO. / JOB
+                              NO.CSFI190012
+MAAINV1900717     28-JAN-19   B/EXP/19/0251 MBL NO.               4G LOGISTICS INDIA PVT LTD     INR                                                         17,384.00                              53,351.55
+                              MBLC9878909999 / HBL NO.
+                              PLMAAJEA00080 / JOB NO.
+                              CEXP190148
+MAACN1900032      28-JAN-19   REVERSED VOUCHER AGAINST            4G LOGISTICS INDIA PVT LTD     INR                                                                      17,384.00                 35,967.55
+                              INVOICE - MAAINV1900717
+MAAINV1900709     29-JAN-19   CEXP190150 MBL NO. / HBL NO. /      4G LOGISTICS INDIA PVT LTD     INR                                                         25,658.00                              61,625.55
+                              JOB NO.CEXP190150
+MAAINV1900734     29-JAN-19   CEXP190150 MBL NO.                  4G LOGISTICS INDIA PVT LTD     INR                                                           265.50                               61,891.05
+                              MBLCOPY87667888 / HBL NO.
+                              PLMAAJEA00081 / JOB NO.
+                              CEXP190150
+MAAINV1900728     31-JAN-19   B/EXP/19/0255 MBL NO. / HBL NO. /   4G LOGISTICS INDIA PVT LTD     INR                                                          2,950.00                              64,841.05
+                              JOB NO.
+MAABR1900095      31-JAN-19   MAAINV1900728 - SHIPMENT            4G LOGISTICS INDIA PVT LTD     INR                                                                       2,950.00                 61,891.05
+MAAINV1900729     31-JAN-19   B/EXP/19/0255 MBL NO. / HBL NO. /   4G LOGISTICS INDIA PVT LTD     INR                                                          2,500.00                              64,391.05
+                              JOB NO.
+MAACN1900038      31-JAN-19   B/EXP/19/0255                       4G LOGISTICS INDIA PVT LTD     INR                                                                        250.00                  64,141.05
+                                                                                       Currency Total :                                                      58,197.50    74,680.20
+
+MAABR1900089      23-JAN-19   CEXP180156 MBL NO. / HBL NO. /      4G LOGISTICS INDIA PVT LTD     USD                            875.00            (875.00)                62,123.75                  2,017.30
+                              JOB NO.CEXP180156
+                                                                                       Currency Total :                         875.00                                    62,123.75
+
+                                                                                        Monthly Total :                         875.00                       58,197.50   136,803.95
+
+MAAINV1900731     05-FEB-19   B/EXP/19/0256 MBL NO. / HBL NO.     4G LOGISTICS INDIA PVT LTD     INR                                                         20,434.00                              22,451.30
+                              PLMAAJEA00082 / JOB NO.
+                              CEXP190151
+MAABR1900097      05-FEB-19                                       4G LOGISTICS INDIA PVT LTD     INR                                                                      25,658.00                 (3,206.70)
+MAABR1900098      05-FEB-19                                       4G LOGISTICS INDIA PVT LTD     INR                                                                        265.50                  (3,472.20)
+MAAINV1900739     11-FEB-19   CEXP190153 MBL NO.                  4G LOGISTICS INDIA PVT LTD     INR                                                         28,288.00                              24,815.80
+                              MBLASIAAN98789 / HBL NO.
+                              ASIANLINE20190209 / JOB NO.
+                              CEXP190153
+                                                                                       Currency Total :                                                      48,722.00    25,923.50
+
+                                                                                        Monthly Total :                                                      48,722.00    25,923.50
+
+
+Printed By : RAM@FRESATECHNOLOGIES.COM                                                  Printed Date : 13-Feb-19 6:36 PM                                                              Page 1 of 2
+                                                     FRESA DEMO INDIA PVT LTD
+                                                              GENERAL LEDGER
+                                                       SUNDRYDEBTORS - SUNDRY DEBTORS
+From    : 01-JAN-19     To : 13-FEB-19
+Branch : All
+Voucher No.       GL Date   Narration    Subledger           Currency        FCY Dr Amt    FCY Cr Amt    Running FCY Amt     Dr Amt       Cr Amt           Running Amt
+                                                         Period Total :                         875.00                     106,919.50   162,727.45
+
+
+
+
+Printed By : RAM@FRESATECHNOLOGIES.COM                  Printed Date : 13-Feb-19 6:36 PM                                                             Page 2 of 2
+

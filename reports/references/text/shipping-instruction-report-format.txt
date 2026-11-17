@@ -1,0 +1,51 @@
+   1/25/2019                                                                 FRESA DEMO COMPANY LIMITED
+                                                              Shipping Instruction-50013805264
+                                                                                                                        Al Khabeeshi Building,
+                                                                                                                        Mezzanine Floor 03/5,
+                                                                                                                      Salahuddin Road, Deira,
+                                                                                                                                 Dubai, U.A.E.
+                                                                                                              WEB : www.fresatechnologies.com
+
+
+
+                                 SHIPPING INSTRUCTION / JOB NO - CCDXBSI18000060
+
+                  Shipper : FRESA DEMO COMPANY LIMITED                                    Consignee : TEAM SHIPPING CO LLC
+                            473A SAI SHAHI, 10TH STREET KAMAKOT                                       DUBAI
+                            TI NAGAR PALLIKARANAI CHENNAI TAMIL
+                            NADU 600 100 EMAIL: sales@fresatechnolo
+                            gies.com
+               Notify Party : SAME AS CONSIGNEE                                                Agent : FRESA DEMO COMPANY LIMITED
+                                                                                                       DUBAI UNITED ARAB EMIRATES
+                                                                                                       PHONE: NA
+                     Job No : CCDXBSI18000060 / 23-NOV-18                                    MBL No : 98000001 / 14-NOV-18
+                    HBL No : 50013805264 / 17-NOV-18                                Place of Receipt :
+            Port of Loading : CHENNAI (EX MADRAS), INDIA                           Port of Discharge : JEBEL ALI, UAE
+   Port of Final Destination : JEBEL ALI, UAE                                      Place of Delivery : JEBEL ALI, UAE
+                        ETD : 17-NOV-18                                                         ETA : 23-NOV-18
+                     Carrier : CMA CGM & ANL LLC                                    Vessel / Voyage : MAERSK CHARLIE / V033
+               Service Type : LCL                                                             PP/CC : PREPAID
+  Container           Type           Actual Seal       Description       Pkgs Pack Type Volume Net Weight       Gross Weight Volume Weight
+MAEU9876543     20' STANDARD        SL001234     CONSOLE CONTAINER         95 BUNDLE     25.100                    24,000.000
+                                                 Total                     95            25.100                    24,000.000
+Note:
+FOR AIR FREIGHT SHIPMENTS:
+A COPY OF THE COMMERCIAL INVOICE & PACKING LIST MUST BE ATTACHED TO THE AIRWAY BILL THAT ACCOMPANIES THE SHIPMENT.
+FOR OCEAN FREIGHT SHIPMENTS:
+PLEASE UTILIZE AN EXPRESS BILL OF LADING WHENEVER POSSIBLE, IF NOT, AFTER SHIPMENT HAS BEEN DISPATCHED, PROMPTLY COURIER A
+COPY OF THE COMMERCIAL INVOICE AND 2/3 ORIGINAL BILL OF LADING TO NOTIFY PARTY.
+PREPARATION OF COMMERCIAL INVOICE:
+1. INVOICE TO CONSIGNEE (ATTENTION OF PERSON THAT INITIATED THE SAMPLE)
+2. INDICATE COUNTRY OF ORIGIN OF THE GOODS .
+3. INDICATE "GOODS ARE FOR TESTING PURPOSE ONLY-FREE OF CHARGE-NO COMMERCIAL VALUE".
+4. DECLARE A NOMINAL VALUE FOR U.S CUSTOMS PURPOSE ONLY.
+5. WHEN MORE THAN ONE TYPE OF MATERIAL, INDICATE A WEIGHT AND VALUE FOR EACH.
+
+
+          User : ram.ae@fresatechnologies.com                25-Jan-19 07:44:PM Asia/Kolkata                Powered by Fresa Technologies
+
+
+
+
+   http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…             1/1
+

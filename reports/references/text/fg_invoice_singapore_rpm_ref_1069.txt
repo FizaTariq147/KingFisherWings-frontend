@@ -1,0 +1,57 @@
+                                                                   TAX INVOICE
+ Customer             : DEMO LOGISTICS INDIA PVT LTD                          Invoice No.                                : BOMINV230500382
+                        21, PORT BLAIR KRISHNA ST MANNARGUDI TAMIL NADU INDIA Invoice Date                               : 17-MAY-23
+                        676876
+                                                                              Reference No.                              :
+                                                                                                 Terms                   : COD
+                                                                                                 Job No.                 :
+
+ MBL No.                    :                                    DATE:                Inco Terms              : FOB
+ HBL No.                    : NSAJED85630124277                  DATE:                Shipper                 : DEMO-SHIPPER ENGG COMPANY
+ Vsl / Voyage               : CAP SAN JUAN / 310W                                     Place of Receipt        : INMAA-CHENNAI
+ No of Containers           : 1 X 40' FLAT                       FCL                  Port of Loading         : NHAVA SHEVA, INDIA
+                                                                                      Port of Discharge       : JEDDAH, SAUDI ARABIA
+                                                                                      Place of Delivery       : JEDDAH SAUDI ARABIA
+Containers
+TTNU0712894
+
+
+
+
+                                                                                                                                                      TOTAL AMOUNT
+ SL NO     DESCRIPTION                                                                QTY               UOM           UNIT PRICE
+                                                                                                                                                          (INR)
+   1       FREIGHT CHARGE                                                               1               W2                   1,500.00                            1,500.00
+   2       LOCAL CHARGES                                                                1                                     800.00                              800.00
+   3       SEA FREIGHT CHARGE                                                           1               W2                    900.00                              900.00
+   4       CONTAINER CLEANING FEE                                                       1               W2                   1,000.00                            1,000.00
+
+
+
+
+ Bank Details                                                                                   Total Amount Before Tax                    INR                  4,200.00
+ .Terms                                                                                         Add: GST                                   INR                   576.00
+ 1. Payment to be made by cash. The company is not responsible
+ for any cash settlement without an official receipt.                                           Total Invoice Value                        INR                  4,776.00
+ Bank Details
+ Beneficiary Name: YOUR COMPANY NAME
+ Bank                  : HDFC
+ A/c No                : XXXXXXXXXXX
+                                                                                                         Rupee Four Thousand Seven Hundred Seventy-Six Only
+Remarks
+
+
+ Terms & Conditions
+
+
+
+   1. Kindly highlight any discrepancy upon received. otherwise this invoice shall be deemed to be correct.
+   2. All business is transacted in accordance with the Standard Trading Conditions of Singapore Logistics Association (SLA) , Copy available upon
+ request.
+   3. For payment by TT, please note that 100% invoiced amount to be remitted into nominated Bank Account, Free of any Banking charges. Banking
+ charges all ends to be on the account of the remitter.
+
+ E & O.E
+                                              This is a computer generated document and does not require a signature
+Printed By : shanmugam@fresa.io                                    Printed Date :17-MAY-2023 11:38AM                          Powered By : Fresa Technologies
+

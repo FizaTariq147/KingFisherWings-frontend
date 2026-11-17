@@ -1,0 +1,59 @@
+                                                                                                      TAX INVOICE
+Client   DEMO LOGISTICS INDIA PVT LTD                                             Invoice No.         : BOMINV230500382 / 17-MAY-23 (POSTED)                   Shipper            : DEMO-SHIPPER ENGG COMPANY
+         21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU,                      Job No.             :                                                        Shipper Ref No.    :
+         INDIA, 676876                                                            Shipment No.        : BOM/EXP/23/05/B/0709 / 16-MAY-23                       Consignee          : DEMO STEEL FACTORY CO. LTD.
+         Phone : 798798798                                                        MBL No.             :                                                        Origin             : NHAVA SHEVA, INDIA
+         Fax : 9879878                                                            HBL No.             : NSAJED85630124277                                      Destination        : JEDDAH, SAUDI ARABIA
+         State :TN - TAMIL NADU                                                   Vessel /Voyage      : CAP SAN JUAN / 310W                                    Currency           : INR 1.00000
+Due Date             : 17-MAY-23        GST RCM     : No                          Cargo Type          : General                                                Line Name          :/
+Place of Supply      : TN - TAMIL NADU                                            ETA                 : 20-MAR-23                                              Division           : FCL
+IRN No.              :                                                                                                                                         Reference No.      :
+SB / BOE No.         :
+Remarks              :
+                 Charges                     HSN/SAC     Qty       Amount / Qty     Curr.   Ex.Rate   FCY Amount     Taxable          Non Taxable   SGST %      SGST     CGST %       CGST     IGST %       IGST       Total Amount (INR)
+FREIGHT CHARGE                                                 1        1,500.00     INR    1.00000       1,500.00         1,500.00                                                               18.00      270.00               1,770.00
+LOCAL CHARGES                                                  1          800.00     INR    1.00000         800.00          800.00                                                                18.00      144.00                944.00
+SEA FREIGHT CHARGE                                             1          900.00     INR    1.00000         900.00          900.00                                                                18.00      162.00               1,062.00
+CONTAINER CLEANING FEE                                         1        1,000.00     INR    1.00000       1,000.00         1,000.00                                                                0.00        0.00               1,000.00
+                                                                                                        Total :            4,200.00                                                                                               4,776.00
+
+                                                                                                                                                                                 Tax                                      Amount (INR)
+                                                                                                                                                                     GST18-I/U GST18%                                          576.00
+                                                                                                                                        Rupee Four Thousand Seven Hundred Seventy-Six Only                                       4,776.00
+HSN/SAC                                  IGST            CGST                 SGST
+                                                576.00
+Container No.                     Type                    No. of Pcs Pack Type                             G.Weight Unit                            Volume (CBM)
+TTNU0712894                       40' FLAT                         3.00 PACKAGES                         22,700.000 KGS
+.Terms
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank                : HDFC
+A/c No              : XXXXXXXXXXX
+IBAN Code           : ABA:XXXXXX
+Swift Code          : XXXXXX
+Address             : MUMBAI.
+
+
+
+
+Printed By : shanmugam@fresa.io                            Created By : PARTHIBAN                                          Printed Date :17-MAY-2023 11:21AM              Powered By : Fresa Technologies          Page 1 of 2
+                                                                                    TAX INVOICE
+Client   DEMO LOGISTICS INDIA PVT LTD                              Invoice No.      : BOMINV230500382 / 17-MAY-23 (POSTED)               Shipper            : DEMO-SHIPPER ENGG COMPANY
+         21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU,       Job No.          :                                                    Shipper Ref No.    :
+         INDIA, 676876                                             Shipment No.     : BOM/EXP/23/05/B/0709 / 16-MAY-23                   Consignee          : DEMO STEEL FACTORY CO. LTD.
+         Phone : 798798798                                         MBL No.          :                                                    Origin             : NHAVA SHEVA, INDIA
+         Fax : 9879878                                             HBL No.          : NSAJED85630124277                                  Destination        : JEDDAH, SAUDI ARABIA
+         State :TN - TAMIL NADU                                    Vessel /Voyage   : CAP SAN JUAN / 310W                                Currency           : INR 1.00000
+Due Date             : 17-MAY-23        GST RCM     : No           Cargo Type       : General                                            Line Name          :/
+Place of Supply      : TN - TAMIL NADU                             ETA              : 20-MAR-23                                          Division           : FCL
+IRN No.              :                                                                                                                   Reference No.      :
+SB / BOE No.         :
+Remarks              :
+
+
+
+
+Printed By : shanmugam@fresa.io                  Created By : PARTHIBAN                              Printed Date :17-MAY-2023 11:21AM              Powered By : Fresa Technologies   Page 2 of 2
+

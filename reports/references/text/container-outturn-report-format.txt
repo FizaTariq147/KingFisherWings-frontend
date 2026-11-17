@@ -1,0 +1,38 @@
+                                                            CONTAINER OUTTURN REPORT
+MBL No.             : MAEU9812678888 / 05-FEB-19         Job No.          : CSI190007                                        POR                  :   JEBEL ALI, UNITED ARAB EMIRATES
+Vessel / Voyage     : MSC MARINA / 982W                  Job Date         : 10-FEB-19                                        POL                  :   JEBEL ALI, UNITED ARAB EMIRATES
+Carrier             : SAFMARINE                          ETD              : 01-FEB-19                                        POD                  :   CHENNAI (EX MADRAS), INDIA
+Cargo Unpack Date   : 08-FEB-19                          ETA              : 10-FEB-19                                        POF                  :   CHENNAI (EX MADRAS), INDIA
+
+Container No. : TTNU1982735 / 20' DC                                   Clerk Name   : UNNI & RAJESH - II SHIFT                        Seal No. : SL9878999
+BL No.                     Commodity Description            Marks & No.                                       Manifested                           Received               Received Remarks
+                                                                                                  No of Pcs   G.Weight     Volume     No of Pcs   G.Weight     Volume
+JEAMAA20190201            STC: BINDING MATERIALS            NO MARKS                                     20    4,500.000      4.560         20     4,501.000      4.560 GOOD CONDITION
+
+                          FREIGHT PREPAID
+                          ALL CHARGES ARE CONSIGNEE'S
+                          ACCOUNT
+B/SI/19/0037              STC: FISHING NET PARTS WITH       CHILLERS                                     33    6,500.000      5.879         33     6,500.000      5.880 30 + 3 SMALL PIECES
+                          PROPELLER
+
+                          FREIGHT PREPAID
+                          ALL CHARGES ARE CONSIGNEE'S
+                          ACCOUNT
+B/SI/19/0038              STC: FISHING NET PARTS WITH       BOXES WITH BROWN SHADE                       28    8,790.000      9.230         28     8,790.000      9.220 BOXES SLIGHT
+                          PROPELLER                                                                                                                                     DAMAGE, CARGO
+                                                                                                                                                                        CONDITION FINE
+                          FREIGHT PREPAID
+                          ALL CHARGES ARE CONSIGNEE'S
+                          ACCOUNT
+DMMMAA20190202            STC: CARPETS WITH PACKING MATERIALS BROWN WRAP BAGS                             5    2,450.000      3.200          5     2,450.000      3.300 CARTON DAMAGE
+                                                                                                                                                                        CONDITION, PLEASE
+                          FREIGHT PREPAID                                                                                                                               INFORM CUSTOMER
+                          ALL CHARGES ARE CONSIGNEE'S
+                          ACCOUNT
+                                                                                        Total :          86   22,240.000     22.869         86    22,241.000     22.960
+
+
+
+
+                                                                                                                                                                        Page 1 of 1
+

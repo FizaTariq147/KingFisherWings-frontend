@@ -1,0 +1,69 @@
+         MULTIMODAL TRANSPORT DOCUMENT / BILL OF LADING
+Consignor / Shipper                                                                     MTD / BL NUMBER :            PLMAAJEA00081
+4G LOGISTICS INDIA PVT LTD
+10 DBS CENTRE                                                                      SHIPMENT REFERENCE
+NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM
+CHENNAI, TAMILNADU, INDIA 600084
+EMAIL: RAM@FRESATECHNOLOGIES.COM
+
+
+Consignee ( or order)
+AL NASER TRADING COMPANY LLC
+POST BOX : 12356 30 AL MAKTHOOM BUILDING
+NEAR MUBARAK CENTRE ROUND ABOUT AL NABHA
+SHARJAH, SHARJAH, UAE
+
+
+
+Notify Address
+AL NASER TRADING COMPANY LLC
+POST BOX : 12356 30 AL MAKTHOOM BUILDING
+NEAR MUBARAK CENTRE ROUND ABOUT AL NABHA
+SHARJAH, SHARJAH, UAE
+
+
+
+Place of Acceptance                   Port of Loading
+CHENNAI (EX MADRAS), INDIA            CHENNAI (EX MADRAS), INDIA
+Vessel & Voyage No.                   Port of Discharge
+CMA CGM / 9887                        JEBEL ALI, UNITED ARAB
+Place of Delivery                     Date of Period of Delivery       Modes means of Transport               Route / Place of Transhipment
+JEBEL ALI, UNITED ARAB                JEBEL ALI, UNITED ARAB           FCL
+Container No.(s)          Marks & Numbers          No. of Packages    Kind of packages, General Description       Gross Weight / Measurement
+                                                                         of Goods (SAID TO CONTAIN)              (SAID TO WEIGHT/MEASURE)
+ABCU9877666 - 20' DC NIL MARKS                     125 PACKAGES      STC: VALVE MATERIALS FOR                   Gross Weight       Volume :
+Seal No: SL345566                                                    MACHINERY PARTS                            18,000.000 KGS     24.000 CBM
+
+                                                                     FREIGHT PREPAID
+                                                                     ALL DESTINATION CHARGES ARE
+                                                                     CONSIGNEE'S ACCOUNT                        Net Weight
+                                                                                                                17,000.000 KGS
+
+
+
+
+                                                                                                                FREIGHT PREPAID
+
+
+
+
+Origin Inland Haulage Charge
+
+Origin Terminal Handling / L.C.L Service Charges
+
+Ocean Freight
+
+Destination Terminal Handling / L.C.L Charges
+
+Destination Inland Haulage Charges
+
+For Delivery Apply to :                                                Number of Original BL / MTD(s)         Place & Date of Issue
+
+FRESA DEMO DUBAI UAE LLC                                               ZERO (0)                               CHENNAI 28-JAN-19
+
+DUBAI, UAE                                                             Freight Amount                         Freight Payable at
+TEL: 04-2339876                                                                                               CHENNAI
+EMAIL: USER@FRESADEMOCOMPANY.COM                                                                         For FRESA DEMO INDIA PVT LTD
+
+                                                                                                                             Authorised Signatory
+

@@ -1,0 +1,55 @@
+2/8/2019                                                                 Truck - Cargo Pickup Request-BDXBSI180112
+                                                                                             FRESA DEMO COMPANY LIMITED
+                                                                                                                                               Al Khabeeshi Building,
+                                                                                                                                               Mezzanine Floor 03/5,
+                                                                                                                                             Salahuddin Road, Deira,
+                                                                                                                                                        Dubai, U.A.E.
+                                                                                                                                     WEB : www.fresatechnologies.com
+
+
+
+                                                           Truck - Cargo Pickup Request
+
+                   Consignee FRESA DEMO DUBAI LLC                                                        Origin Agent FRESA DEMO COMPANY LIMITED
+                             AL NABHA DUBAI                                                                           473A SAI SHAHI, 10TH STREET KAMAKOTTI
+                             PHONE: 04-233456                                                                         NAGAR PALLIKARANAI CHENNAI TAMIL NA
+                                                                                                                      DU 600 100 INDIA EMAIL: sales@fresatechnol
+                                                                                                                      ogies.com
+               Delivery Agent 3A LOGISTICS
+                              60 DUBAI UNITED ARAB EMIRATES
+                              PHONE: 5 EMAIL: info@ofw-global.com
+                      Job No CCDXBSI18000061 / 27-NOV-18                                                      MBL No NSA.JEA.18/26917 / 12-OCT-18
+                     HBL No 50013805264 / 08-OCT-18                                                  Place of Receipt NHAVASHEVA
+             Port of Loading NHAVA SHEVA (JAWAHARLAL NEHRU), INDIA                                  Port of Discharge JEBEL ALI, UAE
+    Port of Final Destination JEBEL ALI, UAE                                                        Place of Delivery DUBAI
+                         ETD 12-OCT-18                                                                           ETA 24-OCT-18
+                      Carrier MAERSK LINE                                                            Vessel / Voyage NORTHERN GENERAL / 0068
+                Service Type LCL                                                                               PP/CC PREPAID
+           Container No                Type                   Description                             No of Pcs               Gross Weight             Volume (CBM)
+                                                   STC: 16 PACKAGE(S) 16
+TEMU6105051                       40' HC                                                                             16                    989.00                        3.04
+                                                   PACKAGES(S)
+
+                                    Shipper / Consignee                                                              Volume
+   BL No       Origin Destination                       Commodity Description            Marks No        No of Pcs                Weight               Remarks
+                                          / Notify                                                                   (CBM)
+                                                                         SEC MOBILE
+                                    (CO) FRESA DEMO                     P/O:5228040109
+                                    DUBAI LLC        STC: 16 PACKAGE(S)    P/N:3903-
+50013805264 INNSA         AEJEA                                                                              16       3.035         989      NOT SURRENDERED
+                                    AL NABHA DUBAI 16 PACKAGES(S)           000447
+                                    PHONE: 04-233456                        C/NO:1
+                                                                        MADE IN CHINA
+                                                                             Total                           16       3.035         989
+
+                     Remarks NOT SURRENDERED
+
+http://demo.fresagold.com:19786/ords/f?p=127:3002:11381763867950:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NAME,P3002_TABLE_ID,P3002_FORMAT,P3002_REP…
+               User : ram.ae@fresatechnologies.com                                08-Feb-19 06:42:PM Asia/Kolkata                      Powered by Fresa Technologies     1/2
+2/8/2019                                                                 Truck - Cargo Pickup Request-BDXBSI180112
+
+
+
+
+http://demo.fresagold.com:19786/ords/f?p=127:3002:11381763867950:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NAME,P3002_TABLE_ID,P3002_FORMAT,P3002_REP…   2/2
+
