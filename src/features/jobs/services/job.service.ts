@@ -37,7 +37,11 @@ import { ensureJobBranchReady } from '../utils/ensureJobBranchReady';
 import { prepareJobPayload } from '../utils/prepareJobPayload';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { normalizeCode128Value } from '../utils/scannableBarcode';
-import type { JobType } from '../constants/job.constants';
+import {
+  isPassToTransportStatus,
+  type JobStatus,
+  type JobType,
+} from '../constants/job.constants';
 import { canonicalizeJobType } from '../utils/canonicalizeJobType';
 import {
   effectiveJobListType,
@@ -137,7 +141,6 @@ import type {
   JobReopenRequest,
   JobReopenRequestListParams,
   JobReopenRequestListResult,
-  isPassToTransportStatus,
   ReopenJobDto,
   ReviewJobReopenRequestDto,
   ResumeJobDto,
@@ -1411,6 +1414,7 @@ export const jobService = {
   /**
    * GET /jobs/accounts — Accounts tab (COMPLETED / DELIVERED / CLOSED).
    * Gate: jobs.accounts.view (not ops job_type scope). Tenant-scoped.
+   * If BE JWT pack lags (403 for Tenant Admin), fall back to GET /jobs status filters.
    */
   async listAccountsJobs(
     params: AccountsJobListParams = {},
@@ -1425,12 +1429,9 @@ export const jobService = {
     if (params.branch_id?.trim()) query.branch_id = params.branch_id.trim();
     if (params.from_date?.trim()) query.from_date = params.from_date.trim();
     if (params.to_date?.trim()) query.to_date = params.to_date.trim();
-    try {
-      const res = await withGatewayRetry(() =>
-        axiosInstance.get(JOB_API.accounts, { params: query }),
-      );
-      const { items, meta } = unwrapList(res.data);
-      const jobs: AccountsJobRow[] = items
+
+    const mapAccountsRows = (items: unknown[]): AccountsJobRow[] =>
+      items
         .map((row) => {
           const r =
             row && typeof row === 'object' && !Array.isArray(row)
@@ -1477,6 +1478,100 @@ export const jobService = {
           } satisfies AccountsJobRow;
         })
         .filter((j): j is AccountsJobRow => Boolean(j));
+
+    const listFallback = async (): Promise<AccountsJobListResult> => {
+      const page = params.page ?? 1;
+      const limit = clampApiListLimit(params.limit, 25);
+      const base: JobListParams = {
+        page,
+        limit,
+        order: params.order ?? 'desc',
+        search: params.search?.trim() || undefined,
+        branch_id: params.branch_id?.trim() || undefined,
+        from_date: params.from_date?.trim() || undefined,
+        to_date: params.to_date?.trim() || undefined,
+        skip_client_hydrate: true,
+      };
+      const statusFilter = String(params.status ?? '')
+        .trim()
+        .toUpperCase();
+      const accountsStatuses = ['COMPLETED', 'DELIVERED', 'CLOSED'] as const;
+      if (statusFilter && accountsStatuses.includes(statusFilter as (typeof accountsStatuses)[number])) {
+        const result = await jobService.list({ ...base, status: statusFilter as JobStatus });
+        return {
+          jobs: result.jobs.map((j) => ({
+            id: j.id,
+            job_number: j.job_number,
+            job_type: j.job_type,
+            status: j.status,
+            branch_id: j.branch_id,
+            branch_name: j.branch_name,
+            party_name: j.client_name || j.shipper_name,
+            shipper_name: j.shipper_name,
+            consignee_name: j.consignee_name,
+            etd: j.etd,
+            eta: j.eta,
+            currency_code: j.currency_code,
+          })),
+          meta: result.meta,
+        };
+      }
+      // “All” accounts statuses — fan-out then merge (admin GET /jobs is unrestricted).
+      const pages = await Promise.all(
+        accountsStatuses.map((status) =>
+          jobService.list({
+            ...base,
+            page: 1,
+            limit: Math.min(limit * page, API_LIST_LIMIT_MAX),
+            status,
+          }),
+        ),
+      );
+      const byId = new Map<string, AccountsJobRow>();
+      for (const pageResult of pages) {
+        for (const j of pageResult.jobs) {
+          if (byId.has(j.id)) continue;
+          byId.set(j.id, {
+            id: j.id,
+            job_number: j.job_number,
+            job_type: j.job_type,
+            status: j.status,
+            branch_id: j.branch_id,
+            branch_name: j.branch_name,
+            party_name: j.client_name || j.shipper_name,
+            shipper_name: j.shipper_name,
+            consignee_name: j.consignee_name,
+            etd: j.etd,
+            eta: j.eta,
+            currency_code: j.currency_code,
+          });
+        }
+      }
+      const merged = [...byId.values()].sort((a, b) => {
+        const an = String(a.job_number ?? a.id);
+        const bn = String(b.job_number ?? b.id);
+        return params.order === 'asc' ? an.localeCompare(bn) : bn.localeCompare(an);
+      });
+      const total = merged.length;
+      const start = (page - 1) * limit;
+      const slice = merged.slice(start, start + limit);
+      return {
+        jobs: slice,
+        meta: {
+          page,
+          limit,
+          total,
+          totalPages: Math.max(1, Math.ceil(total / Math.max(limit, 1))),
+        },
+      };
+    };
+
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.get(JOB_API.accounts, { params: query, ...SOFT_ACL_AXIOS }),
+      );
+      const { items, meta } = unwrapList(res.data);
+      const jobs = mapAccountsRows(items);
       return {
         jobs,
         meta: normalizePaginationMeta(meta, jobs.length, {
@@ -1485,6 +1580,19 @@ export const jobService = {
         }),
       };
     } catch (error) {
+      const status = (error as { response?: { status?: number } })?.response?.status;
+      const msg = getErrorMessage(error).toLowerCase();
+      if (
+        status === 403 ||
+        status === 404 ||
+        /jobs\.accounts\.view|finance\.accounts\.view|forbidden|not found/i.test(msg)
+      ) {
+        try {
+          return await listFallback();
+        } catch (fallbackError) {
+          throw formatAxiosError(fallbackError);
+        }
+      }
       throw formatAxiosError(error);
     }
   },

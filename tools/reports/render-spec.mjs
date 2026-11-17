@@ -12,17 +12,30 @@ import { PDFDocument, rgb } from 'pdf-lib';
 
 const require = createRequire(import.meta.url);
 const {
+  appendBezierCurve,
   clip,
   closePath,
   endPath,
+  fill,
+  fillAndStroke,
   lineTo,
   moveTo,
   popGraphicsState,
   pushGraphicsState,
   restoreDashPattern,
+  setCharacterSpacing,
   setCharacterSqueeze,
   setDashPattern,
+  setFillingRgbColor,
+  setLineCap,
+  setLineJoin,
+  setLineWidth,
+  setStrokingRgbColor,
+  setWordSpacing,
+  stroke,
 } = require('pdf-lib/cjs/api/operators.js');
+const CODE128AUTO = require('jsbarcode/bin/barcodes/CODE128/CODE128_AUTO.js').default;
+const QRCode = require('qrcode');
 import { fontFile, mapFont } from './font-map.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -76,6 +89,7 @@ async function embedBundles(doc) {
     return cache.get(file);
   }
   return {
+    embed,
     async forSpan(span, text) {
       const mapped = mapFont(span.font);
       const primary = await embed(fontFile(mapped));
@@ -106,13 +120,131 @@ function drawClipped(page, span, draw) {
   page.pushOperators(popGraphicsState());
 }
 
-function drawScaled(page, span, text, font, size, color) {
-  const natural = font.widthOfTextAtSize(text, size);
-  const scale = span.width > 0 && natural > 0 ? (span.width / natural) * 100 : 100;
-  page.pushOperators(pushGraphicsState(), setCharacterSqueeze(scale));
-  page.drawText(text, { x: span.x, y: span.y, size, font, color });
+function rgbParts(hex) {
+  const text = String(hex || '#000000').replace('#', '');
+  const value = Number.parseInt(text.padEnd(6, '0').slice(0, 6), 16);
+  return [((value >> 16) & 255) / 255, ((value >> 8) & 255) / 255, (value & 255) / 255];
+}
+
+function drawPositioned(page, span, pieces, size, color) {
+  page.pushOperators(
+    pushGraphicsState(),
+    setCharacterSpacing(span.charSpacing || 0),
+    setWordSpacing(span.wordSpacing || 0),
+    setCharacterSqueeze(span.hScale || 100),
+  );
+  for (const piece of pieces) {
+    if (!piece.text) continue;
+    page.drawText(piece.text, { x: piece.x, y: piece.y, size, font: piece.font, color });
+  }
   page.pushOperators(popGraphicsState());
-  return { natural, scale, drawnWidth: natural * (scale / 100) };
+}
+
+async function piecesFor(bundles, span, text, x, y) {
+  const mapped = mapFont(span.font);
+  const primaryFile = fontFile(mapped);
+  const primary = await bundles.embed(primaryFile);
+  const fallbackName = mapped.weight === 'bold' ? 'Noto Sans Bold' : 'Noto Sans';
+  const fallback = await bundles.embed(fontFile(mapFont(fallbackName)));
+  const runs = [];
+  let current = '';
+  let useFallback = null;
+  function push() {
+    if (!current) return;
+    runs.push({ text: current, font: useFallback ? fallback : primary, fallback: useFallback });
+    current = '';
+  }
+  for (const char of String(text)) {
+    let fallbackChar = false;
+    try { primary.encodeText(char); } catch { fallbackChar = true; }
+    if (useFallback !== null && fallbackChar !== useFallback) push();
+    useFallback = fallbackChar;
+    current += char;
+  }
+  push();
+  let cursor = x;
+  return runs.map((run) => {
+    const piece = { ...run, x: cursor, y };
+    cursor += run.font.widthOfTextAtSize(run.text, span.size || 8);
+    return piece;
+  });
+}
+
+function drawPath(page, path) {
+  const strokeColor = rgbParts(path.stroke || '#000000');
+  const fillColor = rgbParts(path.fill || '#000000');
+  const operators = [
+    pushGraphicsState(),
+    setLineWidth(path.strokeWidth || 0.6),
+    setLineCap(path.lineCap || 0),
+    setLineJoin(path.lineJoin || 0),
+    setStrokingRgbColor(...strokeColor),
+    setFillingRgbColor(...fillColor),
+  ];
+  if (path.dash?.length) operators.push(setDashPattern(path.dash, path.dashPhase || 0));
+  let started = false;
+  for (const command of path.commands || []) {
+    if (command.op === 'm') operators.push(moveTo(command.p[0], command.p[1]));
+    else if (command.op === 'l') operators.push(lineTo(command.p[0], command.p[1]));
+    else if (command.op === 'c') {
+      const [c1, c2, end] = command.p;
+      if (!started) operators.push(moveTo(c1[0], c1[1]));
+      operators.push(appendBezierCurve(c1[0], c1[1], c2[0], c2[1], end[0], end[1]));
+    } else if (command.op === 'h') operators.push(closePath());
+    started = command.op !== 'h';
+  }
+  if (path.paint === 'fill') operators.push(fill());
+  else if (path.paint === 'both') operators.push(fillAndStroke());
+  else operators.push(stroke());
+  operators.push(popGraphicsState());
+  page.pushOperators(...operators);
+}
+
+function drawBarcode(page, image) {
+  const value = String(image.demoValue || '').trim();
+  if (!value) return false;
+  let bits = '';
+  try {
+    const encoded = new CODE128AUTO(value, { text: value });
+    if (!encoded.valid()) return false;
+    bits = encoded.encode().data;
+  } catch {
+    return false;
+  }
+  if (!bits) return false;
+  const moduleWidth = image.width / bits.length;
+  let cursor = image.x;
+  for (const bit of bits) {
+    if (bit === '1') {
+      page.drawRectangle({ x: cursor, y: image.y, width: Math.max(moduleWidth, 0.2), height: image.height, color: rgb(0, 0, 0) });
+    }
+    cursor += moduleWidth;
+  }
+  return true;
+}
+
+function drawQr(page, image) {
+  const value = String(image.demoValue || '').trim();
+  if (!value) return false;
+  let code;
+  try { code = QRCode.create(value, { errorCorrectionLevel: 'M' }); } catch { return false; }
+  const size = code.modules.size;
+  const moduleSize = Math.min(image.width, image.height) / size;
+  const originX = image.x + (image.width - moduleSize * size) / 2;
+  const originY = image.y + (image.height - moduleSize * size) / 2;
+  for (let row = 0; row < size; row += 1) {
+    for (let col = 0; col < size; col += 1) {
+      if (!code.modules.get(row, col)) continue;
+      page.drawRectangle({
+        x: originX + col * moduleSize,
+        y: originY + (size - 1 - row) * moduleSize,
+        width: moduleSize,
+        height: moduleSize,
+        color: rgb(0, 0, 0),
+      });
+    }
+  }
+  return true;
 }
 
 export async function renderSpec(code, options = {}) {
@@ -120,7 +252,11 @@ export async function renderSpec(code, options = {}) {
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
   const bundles = await embedBundles(doc);
-  const pages = spec.pages?.length ? spec.pages : [spec];
+  let pages = spec.pages?.length ? spec.pages : [spec];
+  if (options.live) {
+    const blank = (source) => !(source.spans || []).length && !(source.lines || []).length && !(source.rects || []).length && !(source.paths || []).length && !(source.images || []).length && !(source.table?.rows || []).length;
+    while (pages.length > 1 && blank(pages.at(-1))) pages = pages.slice(0, -1);
+  }
   const overflowLog = [];
   for (const source of pages) {
     const page = doc.addPage([source.width || spec.page.width, source.height || spec.page.height]);
@@ -140,6 +276,7 @@ export async function renderSpec(code, options = {}) {
       if (rect.dash?.length) page.pushOperators(restoreDashPattern());
     }
     for (const line of source.lines || []) {
+      page.pushOperators(setLineCap(line.lineCap || 0), setLineJoin(line.lineJoin || 0));
       if (line.dash?.length) page.pushOperators(setDashPattern(line.dash, line.dashPhase || 0));
       page.drawLine({
         start: { x: line.x1, y: line.y1 },
@@ -149,38 +286,48 @@ export async function renderSpec(code, options = {}) {
       });
       if (line.dash?.length) page.pushOperators(restoreDashPattern());
     }
-    for (const span of source.spans || []) {
+    for (const path of source.paths || []) drawPath(page, path);
+    for (const image of source.images || []) {
+      if (image.proposedClass === 'barcode') drawBarcode(page, image);
+      if (image.proposedClass === 'qr') drawQr(page, image);
+    }
+    const paintSpans = [
+      ...(source.spans || []),
+      ...(source.table?.rows || []).flat().filter(Boolean).map((cell) => ({ ...cell, role: 'dynamic' })),
+    ];
+    for (const span of paintSpans) {
       const demo = span.text;
       const text = options.overflow && span.role === 'dynamic' ? replacement(span, spec) : demo;
       if (!text) continue;
-      const chosen = await bundles.forSpan(span, text);
       const mode = options.overflow ? overflowMode(span, spec) : 'none';
       const color = parseColor(span.color);
       const box = Math.max(span.width, 1);
       let size = span.size || 8;
-      let drawn = text;
-      let lines = [text];
-      if (mode === 'shrink') {
-        while (size > 4 && chosen.font.widthOfTextAtSize(drawn, size) > box + 0.5) size -= 0.25;
-        const metrics = drawScaled(page, { ...span, width: Math.min(box, chosen.font.widthOfTextAtSize(drawn, size)) }, drawn, chosen.font, size, color);
-        overflowLog.push({ id: span.id, mode, size, lines: 1, natural: metrics.natural, box });
-        continue;
+      const probe = await piecesFor(bundles, span, text, span.x, span.y);
+      const probeFont = probe[0]?.font;
+      if (mode === 'shrink' && probeFont) {
+        while (size > 4 && probeFont.widthOfTextAtSize(text, size) > box + 0.5) size -= 0.25;
       }
-      if (mode === 'wrap') {
-        lines = wrapLines(text, chosen.font, size, box).slice(0, spec.overflowRules.maxLines || 3);
-        lines.forEach((line, index) => {
-          const natural = chosen.font.widthOfTextAtSize(line, size);
-          drawScaled(page, { ...span, y: span.y - index * size * 1.15, width: natural }, line, chosen.font, size, color);
-        });
-        overflowLog.push({ id: span.id, mode, size, lines: lines.length, box, clipped: wrapLines(text, chosen.font, size, box).length > lines.length });
+      const positioned = span.segments?.length && mode === 'none'
+        ? (await Promise.all(span.segments.map(async (segment) => piecesFor(bundles, { ...span, size }, segment.text, segment.x, segment.y)))).flat()
+        : await piecesFor(bundles, { ...span, size }, text, span.x, span.y);
+      const draw = () => drawPositioned(page, span, positioned, size, color);
+      if (mode === 'wrap' && probeFont) {
+        const lines = wrapLines(text, probeFont, size, box).slice(0, spec.overflowRules.maxLines || 3);
+        for (let index = 0; index < lines.length; index += 1) {
+          const linePieces = await piecesFor(bundles, { ...span, size }, lines[index], span.x, span.y - index * size * 1.15);
+          drawPositioned(page, span, linePieces, size, color);
+        }
+        overflowLog.push({ id: span.id, mode, size, lines: lines.length, box });
         continue;
       }
       if (mode === 'clip') {
-        drawClipped(page, span, () => drawScaled(page, span, drawn, chosen.font, size, color));
-        overflowLog.push({ id: span.id, mode, size, lines: 1, box, clipped: chosen.font.widthOfTextAtSize(drawn, size) > box + 0.5 });
+        drawClipped(page, span, draw);
+        overflowLog.push({ id: span.id, mode, size, lines: 1, box });
         continue;
       }
-      drawScaled(page, span, drawn, chosen.font, size, color);
+      draw();
+      if (mode === 'shrink') overflowLog.push({ id: span.id, mode, size, lines: 1, box });
     }
   }
   const bytes = await doc.save();
@@ -197,5 +344,5 @@ export async function renderSpec(code, options = {}) {
 
 const code = process.argv[2];
 if (code && process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  console.log(await renderSpec(code, { overflow: process.argv.includes('--overflow') }));
+  console.log(await renderSpec(code, { overflow: process.argv.includes('--overflow'), live: process.argv.includes('--live') }));
 }

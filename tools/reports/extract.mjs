@@ -27,6 +27,10 @@ const LABEL_BINDINGS = [
   [/consignee/i, 'party.consignee'],
   [/notify/i, 'party.notify'],
   [/job\s*no/i, 'job.number'],
+  [/opening balance/i, 'ledger.openingBalance'],
+  [/^debit$/i, 'ledger.debit'],
+  [/^credit$/i, 'ledger.credit'],
+  [/closing balance/i, 'ledger.closingBalance'],
   [/\bmawb\b/i, 'shipment.mawb'],
   [/\bhawb\b/i, 'shipment.hawb'],
   [/\bhbl\b|house\s*b\/l|bill of lading no/i, 'shipment.hbl'],
@@ -444,14 +448,128 @@ function markSpans(spans, variants) {
   return dynamic;
 }
 
-function bands(pageHeight, spans) {
-  const ys = spans.map((span) => span.y).sort((a, b) => a - b);
+function cluster(values, tolerance) {
+  const sorted = [...values].sort((a, b) => a - b);
+  const groups = [];
+  for (const value of sorted) {
+    const last = groups.at(-1);
+    if (!last || Math.abs(value - last.center) > tolerance) groups.push({ values: [value], center: value });
+    else {
+      last.values.push(value);
+      last.center = last.values.reduce((sum, item) => sum + item, 0) / last.values.length;
+    }
+  }
+  return groups;
+}
+
+function proposeImageClass(image, pageHeight) {
+  const aspect = image.height > 0 ? image.width / image.height : 0;
+  if (aspect >= 3.5 && image.height <= 40) return 'barcode';
+  if (aspect >= 0.8 && aspect <= 1.25 && image.width >= 28 && image.width <= 140) return 'qr';
+  if (image.y >= pageHeight * 0.72 && image.height >= 24) return 'logo';
+  if (image.y <= pageHeight * 0.16) return 'decorative Fresa branding';
+  return 'other';
+}
+
+function layoutOf(pageHeight, spans) {
+  const headerFloor = pageHeight * 0.82;
+  const footerCeiling = pageHeight * 0.1;
+  const body = spans.filter((span) => span.y < headerFloor && span.y > footerCeiling);
+  const yGroups = cluster(body.map((span) => span.y), 2);
+  const rows = yGroups
+    .map((group) => body.filter((span) => Math.abs(span.y - group.center) <= 2))
+    .filter((row) => row.length >= 3);
+  function repeating(groups, edge) {
+    return groups.filter((column) => {
+      const hits = rows.filter((row) => row.some((span) => Math.abs(edge(span) - column.center) <= 4)).length;
+      return hits >= Math.max(6, Math.ceil(rows.length * 0.25));
+    }).map((column) => ({ ...column, edge }));
+  }
+  const columns = [
+    ...repeating(cluster(rows.flatMap((row) => row.map((span) => span.x)), 4), (span) => span.x),
+    ...repeating(cluster(rows.flatMap((row) => row.map((span) => span.x + (span.width || 0))), 4), (span) => span.x + (span.width || 0)),
+  ];
+  const aligned = rows.filter((row) => row.filter((span) => columns.some((column) => Math.abs(column.edge(span) - column.center) <= 4)).length >= 3);
+  const isDynamic = (span) => span.role === 'dynamic' || (!span.role && looksLikeValue(span.text));
+  const dynamicCount = spans.filter(isDynamic).length || 1;
+  const alignedDynamic = aligned.flat().filter(isDynamic).length;
+  const dataRows = aligned.filter((row) => {
+    if (row.some((span) => /\b(total|grand total)\b/i.test(span.text))) return false;
+    const dynamicCells = row.filter((span) => span.role === 'dynamic' || (!span.role && looksLikeValue(span.text))).length;
+    return dynamicCells >= Math.ceil(row.length / 2);
+  });
+  const isTable = dataRows.length >= 8 && columns.length >= 4 && alignedDynamic / dynamicCount >= 0.6;
+  const summaryRows = spans.filter((span) => /\b(total|grand total)\b/i.test(span.text));
+  const columnHeader = isTable && dataRows.length
+    ? spans.filter((span) => span.role !== 'dynamic' && span.y > Math.max(...dataRows.flat().map((span) => span.y)) && span.y < headerFloor)
+    : [];
+  const detailYs = (dataRows.length ? dataRows.flat() : body).map((span) => span.y);
+  const headerYs = spans.filter((span) => span.y >= headerFloor || columnHeader.includes(span)).map((span) => span.y);
+  const summaryYs = summaryRows.map((span) => span.y);
   return {
-    header: { yMin: round1(pageHeight * 0.82), yMax: round1(pageHeight) },
-    title: { yMin: round1(pageHeight * 0.74), yMax: round1(pageHeight * 0.86) },
-    detail: { yMin: round1(ys[Math.floor(ys.length * 0.25)] || 0), yMax: round1(ys[Math.floor(ys.length * 0.75)] || pageHeight) },
-    summary: { yMin: round1(pageHeight * 0.12), yMax: round1(pageHeight * 0.28) },
-    footer: { yMin: 0, yMax: round1(pageHeight * 0.1) },
+    kind: isTable ? 'table' : 'form',
+    columns,
+    dataRows,
+    bands: {
+      header: { yMin: round1(headerYs.length ? Math.min(...headerYs) - 2 : headerFloor), yMax: round1(pageHeight) },
+      title: { yMin: round1(pageHeight * 0.74), yMax: round1(pageHeight * 0.86) },
+      detail: { yMin: round1(detailYs.length ? Math.min(...detailYs) : pageHeight * 0.25), yMax: round1(detailYs.length ? Math.max(...detailYs) : pageHeight * 0.75) },
+      summary: { yMin: round1(summaryYs.length ? Math.min(...summaryYs) - 2 : pageHeight * 0.12), yMax: round1(summaryYs.length ? Math.max(...summaryYs) + 2 : pageHeight * 0.28) },
+      footer: { yMin: 0, yMax: round1(footerCeiling) },
+    },
+  };
+}
+
+function tableTemplate(page) {
+  const layout = layoutOf(page.height, page.spans);
+  if (layout.kind !== 'table') return null;
+  const columns = layout.columns.map((column, index) => {
+    const bodyTop = Math.max(...layout.dataRows.flat().map((span) => span.y), 0);
+    const header = page.spans
+      .filter((span) => span.role !== 'dynamic' && !looksLikeValue(span.text) && Math.abs(column.edge(span) - column.center) <= 12 && span.y > bodyTop + 1)
+      .sort((a, b) => a.y - b.y)[0];
+    return {
+      index,
+      x: round1(column.center),
+      header: header?.text || '',
+      binding: LABEL_BINDINGS.find(([pattern]) => header && pattern.test(header.text))?.[1] || '',
+    };
+  });
+  const assigned = new Set();
+  const rows = layout.dataRows.map((row) => layout.columns.map((column) => {
+    const cell = row.find((span) => !assigned.has(span.id) && Math.abs(column.edge(span) - column.center) <= 4);
+    if (!cell) return null;
+    assigned.add(cell.id);
+    return {
+      id: cell.id,
+      text: cell.text,
+      x: cell.x,
+      y: cell.y,
+      width: cell.width,
+      size: cell.size,
+      font: cell.font,
+      color: cell.color,
+      hScale: cell.hScale,
+      charSpacing: cell.charSpacing || 0,
+      wordSpacing: cell.wordSpacing || 0,
+      glyphWidth: cell.glyphWidth,
+      segments: cell.segments,
+    };
+  }));
+  page.spans = page.spans.filter((span) => !assigned.has(span.id));
+  const sample = rows.flat().find(Boolean);
+  return {
+    columns: columns.map((column) => ({
+      ...column,
+      cells: rows.reduce((sum, row) => sum + (row[column.index] ? 1 : 0), 0),
+    })),
+    rowTemplate: {
+      height: sample?.size || 8,
+      font: sample?.font || '',
+      size: sample?.size || 8,
+      cells: columns.length,
+    },
+    rows,
   };
 }
 
@@ -478,9 +596,21 @@ function pageSpec(read, pageIndex) {
     lines: read.lines,
     rects: read.rects,
     spans,
-    images: read.images,
+    paths: read.paths || [],
+    images: read.images.map((image) => {
+      const proposedClass = proposeImageClass(image, read.height);
+      const source = spans
+        .filter((span) => Math.abs(span.y - (image.y + image.height / 2)) <= image.height + 24)
+        .sort((a, b) => Math.abs(a.x - image.x) - Math.abs(b.x - image.x))[0];
+      return {
+        ...image,
+        proposedClass,
+        demoValue: proposedClass === 'barcode' || proposedClass === 'qr' ? (source?.text || '') : '',
+      };
+    }),
     shadings: read.shadings,
-    bands: bands(read.height, spans),
+    bands: layoutOf(read.height, spans).bands,
+    layoutKind: layoutOf(read.height, spans).kind,
     uncaptured: read.uncaptured,
     droppedOutside: read.droppedOutside,
     emptyTextItems: read.empty,
@@ -511,12 +641,21 @@ export async function extractSpec(code) {
   const missingWords = [...new Set(pdftotext.split(/\s+/).filter((word) => word && !extractedWords.has(word)))];
   const variants = code === 'HBL_DRAFT_REPORT_FORMAT_JASPER' ? await variantStrings(HBL_VARIANT) : [];
   const dynamic = pages.flatMap((page) => markSpans(page.spans, variants));
+  for (const page of pages) {
+    const layout = layoutOf(page.height, page.spans);
+    page.bands = layout.bands;
+    page.layoutKind = layout.kind;
+    page.table = tableTemplate(page);
+  }
+  const layoutKind = pages.some((page) => page.layoutKind === 'table') ? 'table' : 'form';
   const logo = [...first.images].sort((a, b) => b.width * b.height - a.width * a.height)[0];
   if (logo) logo.slot = 'logo';
   const company = first.spans
     .filter((span) => span.y > first.height * 0.7 && /PVT LTD|LLC|LIMITED|FRESA/i.test(span.text))
     .sort((a, b) => b.size - a.size)[0];
   if (company) company.slot = 'company';
+  const keptIds = new Set(pages.flatMap((page) => page.spans.map((span) => span.id)));
+  const keptDynamic = dynamic.filter((span) => keptIds.has(span.id));
   const fontNames = new Map();
   for (const span of allSpans) fontNames.set(span.font, (fontNames.get(span.font) || 0) + 1);
   const uniqueWarnings = [...new Set(warnings)];
@@ -538,14 +677,17 @@ export async function extractSpec(code) {
     images: first.images,
     shadings: first.shadings,
     pages,
+    layoutKind,
     bands: first.bands,
+    paths: first.paths || [],
+    table: first.table || null,
     slots: {
       logo: logo ? { x: logo.x, y: logo.y, width: logo.width, height: logo.height } : null,
       company: company
         ? { x: company.x, y: company.y, width: Math.max(company.width, 8), height: company.size, binding: 'company.name' }
         : null,
     },
-    bindings: dynamic.filter((span) => span.binding).map((span) => ({ id: span.id, path: span.binding })),
+    bindings: keptDynamic.filter((span) => span.binding).map((span) => ({ id: span.id, path: span.binding })),
     formatRules: [
       { path: 'invoice.date', format: 'date' },
       { path: 'invoice.total', format: 'number' },
@@ -574,7 +716,7 @@ export async function extractSpec(code) {
   fs.mkdirSync(outDir, { recursive: true });
   fs.writeFileSync(path.join(outDir, `${code}.json`), JSON.stringify(spec, null, 2));
   const dynamicLines = ['id,page,text,binding,reason'];
-  for (const span of dynamic) {
+  for (const span of keptDynamic) {
     const pageNumber = Number(String(span.id).match(/^p(\d+)/)?.[1] || 1);
     dynamicLines.push([span.id, pageNumber, span.text, span.binding, span.reason].map(csv).join(','));
   }
@@ -583,7 +725,10 @@ export async function extractSpec(code) {
     code,
     pages: pages.length,
     spans: allSpans.length,
-    dynamic: dynamic.length,
+    layoutKind,
+    dynamic: keptDynamic.length,
+    tableRows: pages.reduce((sum, page) => sum + (page.table?.rows.length || 0), 0),
+    paths: pages.reduce((sum, page) => sum + (page.paths?.length || 0), 0),
     lines: pages.reduce((sum, page) => sum + page.lines.length, 0),
     rects: pages.reduce((sum, page) => sum + page.rects.length, 0),
     images: pages.reduce((sum, page) => sum + page.images.length, 0),

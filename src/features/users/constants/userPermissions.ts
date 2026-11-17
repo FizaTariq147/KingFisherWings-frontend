@@ -165,7 +165,18 @@ export function mergeStaffPermissions(opts: {
   const { fromMe, fromJwt, fromStaffFlags, staffFlagsPresent, isTenantAdmin } = opts;
 
   if (isTenantAdmin) {
-    return [...new Set([...fromMe, ...fromJwt, ...fromStaffFlags])] as PermissionKey[];
+    // Tenant Admin full pack — include Accounts aggregate even when JWT role presets lag.
+    return [
+      ...new Set([
+        ...fromMe,
+        ...fromJwt,
+        ...fromStaffFlags,
+        'jobs.accounts.view',
+        'finance.accounts.view',
+        'menu_accounts',
+        'menu_finance',
+      ]),
+    ] as PermissionKey[];
   }
 
   const combined = [...fromMe, ...fromJwt];

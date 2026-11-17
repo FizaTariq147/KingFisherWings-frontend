@@ -1,30 +1,30 @@
 id,page,text,binding,reason
-p1s2,1,"NOT NEGOTIABLE UNLESS CONSIGNED ""TO ORDER""",shipment.hbl,dictionary
-p1s15,1,AL NASER TRADING COMPANY LLC,party.consignee,dictionary
-p1s16,1,30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT,party.consignee,dictionary
-p1s17,1,AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES,party.consignee,dictionary
-p1s18,1,AL NASER TRADING COMPANY LLC,party.notify,dictionary
-p1s19,1,POST BOX : 12356 30AL MAKTHOOM BUILDING,party.notify,dictionary
-p1s20,1,NEAR MUBARAK CENTRE ROUND ABOUT,party.notify,dictionary
-p1s21,1,AL NABHA,party.notify,dictionary
-p1s23,1,FRESA DEMO DUBAI UAE LLC,,unresolved
-p1s24,1,DUBAI UNITED ARAB EMIRATES,,unresolved
-p1s26,1,"CHENNAI (EX MADRAS), INDIA",shipment.placeOfReceipt,dictionary
-p1s27,1,"JEBEL ALI, UNITED ARAB",,unresolved
-p1s28,1,"CHENNAI (EX MADRAS), INDIA",shipment.pol,dictionary
-p1s29,1,"JEBEL ALI, UNITED ARAB",,unresolved
-p1s31,1,4G LOGISTICS INDIA PVT LTD,party.shipper,dictionary
-p1s32,1,10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM,party.shipper,dictionary
-p1s33,1,CHENNAI TAMILNADU 600084 INDIA,party.shipper,dictionary
-p1s36,1,ram@fresatechnologies.com,,unresolved
-p1s38,1,FRESA DEMO INDIA PVT LTD,,unresolved
-p1s40,1,"Email: demo@fresatechnologies.com, user@fresatechnologies.com",,unresolved
-p1s49,1,"18,000.00",,unresolved
-p1s50,1,24.000,,unresolved
-p1s51,1,STC: VALVE MATERIALS FOR MACHINERY PARTS,,unresolved
-p1s53,1,ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT,,unresolved
-p1s55,1,ABCU9877666 / SEAL NO. : SL345566,,unresolved
-p1s78,1,PAYABLE AT : CHENNAI,,unresolved
-p1s80,1,AS AGENT FOR THE CARRIER,,unresolved
-p1s82,1,FRESA DEMO INDIA PVT LTD,,unresolved
-p1s85,1,ONE(1X20' DC) CONTAINER ONLY,,unresolved
+p1s2,1,"NOT NEGOTIABLE UNLESS CONSIGNED ""TO ORDER""",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s15,1,AL NASER TRADING COMPANY LLC,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s16,1,30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT,,text differs from the same-layout variant at this position
+p1s17,1,AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES,,text differs from the same-layout variant at this position
+p1s18,1,AL NASER TRADING COMPANY LLC,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s19,1,POST BOX : 12356 30AL MAKTHOOM BUILDING,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s20,1,NEAR MUBARAK CENTRE ROUND ABOUT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s21,1,AL NABHA,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s23,1,FRESA DEMO DUBAI UAE LLC,company.name,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s24,1,DUBAI UNITED ARAB EMIRATES,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s26,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s27,1,"JEBEL ALI, UNITED ARAB",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s28,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s29,1,"JEBEL ALI, UNITED ARAB",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s31,1,4G LOGISTICS INDIA PVT LTD,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s32,1,10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s33,1,CHENNAI TAMILNADU 600084 INDIA,,text differs from the same-layout variant at this position
+p1s36,1,ram@fresatechnologies.com,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s38,1,FRESA DEMO INDIA PVT LTD,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s40,1,"Email: demo@fresatechnologies.com, user@fresatechnologies.com",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s49,1,"18,000.00",,value is absent from the same-layout variant
+p1s50,1,24.000,,value is absent from the same-layout variant
+p1s51,1,STC: VALVE MATERIALS FOR MACHINERY PARTS,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s53,1,ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s55,1,ABCU9877666 / SEAL NO. : SL345566,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s78,1,PAYABLE AT : CHENNAI,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s80,1,AS AGENT FOR THE CARRIER,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s82,1,FRESA DEMO INDIA PVT LTD,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s85,1,ONE(1X20' DC) CONTAINER ONLY,,"matches a demo value (number, date, party, or Fresa sample text)"

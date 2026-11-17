@@ -48,7 +48,7 @@ This workspace is the React frontend. There is no NestJS app and no PostgreSQL s
 |---|---|
 | 0 Inventory and clustering | Done. |
 | 0.5 Code map, status file, layout recount | Done. |
-| 1 Pilot extraction | Four pilots rendered (three single-page, one multi-page). None accepted. Other layouts not started. |
+| 1 Pilot extraction | Four pilots through round 3. None accepted. Other layouts not started. |
 | 2–8 | Not started. |
 
 Counts from `reports/references/summary.json`:
@@ -301,4 +301,44 @@ Unresolved spans, all of them, are in `reports/output/unresolved-bindings.csv`:
 | Trial balance | 155 | 114 |
 
 Invoice examples of unresolved labels: no label on the first date, `User :`, `AX INVOICE</h3>`, `WEB : www`, `Shipment No.`, `Due Date`, `Reference No.`, `IGM No.`, `SEAL FEE`. Those strings are not paths on the three contracts, so they were left unresolved.
+
+## Pilot round 3
+
+Same four pilots. Nothing accepted. No other layout was rendered. Thresholds are unchanged: geometry 0.1 pt, text position 0.5 pt, text width 0.5 pt, raster ratio 0.005, pixelmatch 0.1, `pdftoppm -png -r 150`.
+
+Checker changes, all stricter or additive:
+
+- A span fails the width check when its rendered horizontal scale differs from the reference Tz, even if the advances match. Fit-to-width scaling is a failure. This round had 0 such failures.
+- Natural width delta is reported per span and does not change the 0.5 pt tolerance. A font mapping is listed when its mean absolute natural delta exceeds 0.5% of the reference glyph advance.
+- Arial Unicode is compared as Arimo. Noto is accepted on that span only for a glyph outside Latin.
+- Geometry fails when a captured path is not redrawn within 0.1 pt, and when a curve, non-axis path, unresolved XObject, shading, opacity, undecoded show-text, nonzero text render mode, or unknown operator remains. Marked content is recorded and is not a geometry element. Line cap and line join are compared.
+- Raster pixels are classified. The 0.5% limit is unchanged.
+- Pagination ignores trailing blank pages. Golden output still keeps them, so the page-count check still sees them. `--live` omits trailing blank pages. Row break and summary-after-last-row run only on layouts classified as tables. Detail bands come from repeating column edges.
+- CI compares `reports/ci-baseline.json` and fails when a passing layer starts failing, a mismatch count rises, or the raster ratio rises. The workflow is `.github/workflows/report-pilots.yml`.
+
+`node tools/reports/extract.mjs --pilots` then render, then `node tools/reports/diff-pilot.mjs` for each code. `node --test tools/reports/round3.test.mjs` — 2 passed. `node tools/reports/census.mjs` — 401 PDFs, 0 failures.
+
+Tax Invoice India 1, form: page pass. Geometry pass (1 path redrawn, uncaptured 0). Static text fail, 14 width failures, all over 0.5 pt and none from horizontal scale. Dynamic text pass, 65 spans. Raster fail, 37,068 px, 1.71%. Causes: text glyph 80.93%, text position 3.25%, vector 15.82%, image/barcode 0, color 0. Pagination not a multi-page pass. Header present. Three spans still cross the right edge (`p1s21`, `p1s121`, `p1s236`). Font over 0.5% natural deviation: Consolas to Liberation Mono, 11 spans, mean 7.82%.
+
+HBL Jasper, form: page pass. Geometry fail, 0 unmatched lines, rects, and paths, 10 uncaptured (6 undecoded show-text, 4 nonzero text render mode). Static text pass, 59 spans. Dynamic text pass, 29 spans. Raster fail, 22,561 px, 1.04%. Causes: text glyph 68.44%, text position 0.37%, vector 2.57%, image/barcode 28.62%, color 0. No font mapping over 0.5%.
+
+Arrival Notice Jasper, form: page pass. Geometry fail, 30 paths redrawn, 13 uncaptured (2 undecoded show-text, 11 nonzero text render mode). Static text fail, 2 width failures. Dynamic text pass, 45 spans. Raster fail, 38,996 px, 1.79%. Causes: text glyph 54.97%, text position 0.35%, vector 2.45%, image/barcode 42.02%, color 0, other 0.22%. Fonts over 0.5%: Arial Unicode to Arimo 0.81% (66 spans), Helvetica to Arimo 0.58% (26 spans).
+
+Trial balance, table: page pass, 3 pages including the blank page. Geometry pass. Static text fail, 68 failures. Dynamic text fail, 134 failures. Of the 202 text failures, 182 are position or string and 20 are width. Raster fail, 37,427 px, 0.57%. Causes: text glyph 92.72%, text position 1.16%, vector 6.11%. Pagination exercised and failed. The trailing blank page is ignored (1). Footer repeats on the two content pages. Header does not repeat. Row break passes inside the column-aligned detail band. Summary-after-last-row fails: last detail y 150, summary top y 699.9. The row template has 29 rows and 196 filled cells; 14 of those cells sit on a column whose header mapped to `ledger.debit`, `ledger.openingBalance`, or `ledger.closingBalance`. Fonts over 0.5%: Arial Unicode to Arimo 4.71%, Arial Bold to Arimo Bold 22.15%, Arial to Arimo 12.74%.
+
+Images, bytes not copied:
+
+| Pilot | Box | Proposed class | Demo value used |
+|---|---|---|---|
+| Invoice | 27.4, 784.6, 82 × 39.6 | logo | |
+| HBL | 360, 627, 155.4 × 75 | logo | |
+| HBL | 380, 795, 194 × 17 | barcode | PLMAAJEA00081 |
+| Arrival | 21, 742.7, 552 × 77.3 | logo | |
+| Arrival | 350, 211, 220 × 35 | barcode | Yours faithfully , |
+
+The arrival barcode's nearest text is the closing line, so the generated bars are not the reference payload. No QR image appears in these four pilots. Proposed allowed differences, for a decision: logo (already masked), barcode generated from the bound value, QR generated from the bound value, decorative Fresa branding. Class `other` is proposed as not allowed. The wide arrival header matched the logo rule because it sits in the top band.
+
+`reports/label-inventory.csv` has 1,343 labels from 401 PDFs. `reports/binding-proposals.csv` proposes paths for the top 300. 225 of those are new fields the contracts do not have (`ledger.debit`, `ledger.credit`, `document.user`, `company.website`, `invoice.dueDate`, `shipment.number`, and slug fields where the nearest text was a value such as `inr` or `1`). Resolved 270, unresolved 171 (167 outside the top 300, 4 with no label). Files: `reports/output/pilot-bindings-resolved.csv`, `reports/output/pilot-bindings-unresolved.csv`.
+
+Capability census, 401 PDFs, 509 pages, extraction only. Files using each feature: curves 110 (5,776 ops), images 359 (449), nonzero text render mode 227 (6,710), word spacing 78 (2,041), character spacing 20 (957), TJ 60 (4,928), dash 29 (82). Shading, CMYK, opacity, and non-100 Tz: 0. The common unsupported features are nonzero text render mode and the curves that are still uncaptured outside these four pilots.
 

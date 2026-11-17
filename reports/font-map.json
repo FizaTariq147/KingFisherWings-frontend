@@ -18,7 +18,8 @@
   },
   "rules": [
     { "match": "consolas|courier|liberation\\s*mono|monospace", "bundle": "LiberationMono" },
-    { "match": "arial\\s*unicode|noto|dejavu|freesans|symbol", "bundle": "NotoSans" },
+    { "match": "arial\\s*unicode", "bundle": "Arimo" },
+    { "match": "noto|dejavu|freesans|symbol", "bundle": "NotoSans" },
     { "match": "arial|helvetica|arimo", "bundle": "Arimo" },
     { "match": ".*", "bundle": "NotoSans" }
   ]
