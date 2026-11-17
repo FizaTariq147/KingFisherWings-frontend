@@ -23,11 +23,11 @@
     ]
   },
   "geometry": {
-    "pass": false,
+    "pass": true,
     "unmatchedLines": 0,
     "unmatchedRects": 0,
     "unmatchedPaths": 0,
-    "uncaptured": 10,
+    "uncaptured": 0,
     "uncapturedByPage": [
       {
         "curves": 0,
@@ -35,29 +35,34 @@
         "xobjects": 0,
         "shading": 0,
         "opacity": 0,
-        "undecodedText": 6,
-        "textRenderMode": 4,
+        "undecodedText": 0,
+        "textRenderMode": 0,
         "unknown": 0,
-        "total": 10
+        "total": 0
       }
     ]
   },
   "staticText": {
     "pass": true,
-    "spans": 59,
+    "spans": 62,
     "failures": []
   },
   "dynamicText": {
     "pass": true,
-    "spans": 29,
+    "spans": 20,
     "failures": [],
     "overflow": "wrap, clip, and shrink are implemented; the golden render uses the reference demo strings",
     "naturalWidth": {
       "spans": [
         {
           "id": "p1s1",
+          "text": "BILL OF LADING",
           "font": "Helvetica-Bold",
           "mapped": "Arimo|bold",
+          "size": 11,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 88,
           "natural": 88,
           "delta": 0,
@@ -65,26 +70,41 @@
         },
         {
           "id": "p1s2",
+          "text": "NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 128.3,
+          "size": 5,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 128.29,
           "natural": 128.3,
           "delta": 0,
-          "percent": 0.00007002630553399351
+          "percent": 0.000007916634188229465
         },
         {
           "id": "p1s3",
+          "text": "Shipper",
           "font": "Helvetica-Bold",
           "mapped": "Arimo|bold",
-          "glyphWidth": 29.8,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 29.78,
           "natural": 29.8,
           "delta": 0,
-          "percent": 0.000629194630872507
+          "percent": 0.00004197447951641582
         },
         {
           "id": "p1s4",
+          "text": "Consignee",
           "font": "Helvetica-Bold",
           "mapped": "Arimo|bold",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 40.9,
           "natural": 40.9,
           "delta": 0,
@@ -92,26 +112,41 @@
         },
         {
           "id": "p1s5",
+          "text": "Bill of Lading No.",
           "font": "Helvetica-Bold",
           "mapped": "Arimo|bold",
-          "glyphWidth": 65.8,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 65.78,
           "natural": 65.8,
           "delta": 0,
-          "percent": 0.00046305091185406015
+          "percent": 0.00015914791730010848
         },
         {
           "id": "p1s6",
+          "text": "F/Agent Name & Ref.",
           "font": "Helvetica-Bold",
           "mapped": "Arimo|bold",
-          "glyphWidth": 79.1,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 79.12,
           "natural": 79.1,
           "delta": 0,
-          "percent": 0.0002666719342605017
+          "percent": 0.00001382393832147943
         },
         {
           "id": "p1s7",
+          "text": "Notify Party",
           "font": "Helvetica-Bold",
           "mapped": "Arimo|bold",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 44.9,
           "natural": 44.9,
           "delta": 0,
@@ -119,44 +154,69 @@
         },
         {
           "id": "p1s8",
+          "text": "Place of Receipt",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 58.2,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 58.25,
           "natural": 58.3,
-          "delta": 0.1,
-          "percent": 0.0009262242268040749
+          "delta": 0,
+          "percent": 0.00006706008583690987
         },
         {
           "id": "p1s9",
+          "text": "Port of Loading",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 54.3,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 54.26,
           "natural": 54.3,
           "delta": 0,
-          "percent": 0.0007049953959483823
+          "percent": 0.00003167618872100976
         },
         {
           "id": "p1s10",
+          "text": "Job No.",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 27.6,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 27.57,
           "natural": 27.6,
           "delta": 0,
-          "percent": 0.0010756340579710659
+          "percent": 0.000011334784185698795
         },
         {
           "id": "p1s11",
+          "text": "Vessel/Voyage No.",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 68,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 68.03,
           "natural": 68,
           "delta": 0,
-          "percent": 0.0005744485294117647
+          "percent": 0.00013321328825516483
         },
         {
           "id": "p1s12",
+          "text": "Port of Discharge",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 61.8,
           "natural": 61.8,
           "delta": 0,
@@ -164,134 +224,209 @@
         },
         {
           "id": "p1s13",
+          "text": "Place of Delivery",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 60,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 60.02,
           "natural": 60,
           "delta": 0,
-          "percent": 0.000390625
+          "percent": 0.000057272575808011884
         },
         {
           "id": "p1s14",
+          "text": "No.of Bills of Lading",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 71.1,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 71.14,
           "natural": 71.2,
-          "delta": 0.1,
-          "percent": 0.0007361990154712474
+          "delta": 0,
+          "percent": 0.00017351349451784413
         },
         {
           "id": "p1s15",
+          "text": "AL NASER TRADING COMPANY LLC",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 137.2,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 137.23,
           "natural": 137.4,
-          "delta": 0.2,
-          "percent": 0.0011900965743441062
+          "delta": 0.1,
+          "percent": 0.0009712253151643973
         },
         {
           "id": "p1s16",
+          "text": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 272.7,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 272.67,
           "natural": 272.9,
-          "delta": 0.2,
-          "percent": 0.000842271727172759
+          "delta": 0.3,
+          "percent": 0.0009523875013752304
         },
         {
           "id": "p1s17",
+          "text": "AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 217.6,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 217.59,
           "natural": 217.8,
           "delta": 0.2,
-          "percent": 0.0010124655330882614
+          "percent": 0.0010584700583666372
         },
         {
           "id": "p1s18",
+          "text": "AL NASER TRADING COMPANY LLC",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 137.2,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 137.23,
           "natural": 137.4,
-          "delta": 0.2,
-          "percent": 0.0011900965743441062
+          "delta": 0.1,
+          "percent": 0.0009712253151643973
         },
         {
           "id": "p1s19",
+          "text": "POST BOX : 12356 30AL MAKTHOOM BUILDING",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 179.9,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 179.87,
           "natural": 180.1,
           "delta": 0.2,
-          "percent": 0.0008815661478598905
+          "percent": 0.0010485003057763688
         },
         {
           "id": "p1s20",
+          "text": "NEAR MUBARAK CENTRE ROUND ABOUT",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 160.3,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 160.31,
           "natural": 160.5,
           "delta": 0.2,
-          "percent": 0.0010039769182781572
+          "percent": 0.0009415351506456099
         },
         {
           "id": "p1s21",
+          "text": "AL NABHA",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 39.5,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 39.53,
           "natural": 39.6,
-          "delta": 0.1,
-          "percent": 0.0017800632911392405
+          "delta": 0,
+          "percent": 0.0010197950923349066
         },
         {
           "id": "p1s22",
+          "text": "SHARJAH SHARJAH",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 76.8,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 76.84,
           "natural": 76.9,
           "delta": 0.1,
-          "percent": 0.0013326009114583703
+          "percent": 0.0008113450026027666
         },
         {
           "id": "p1s23",
+          "text": "FRESA DEMO DUBAI UAE LLC",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 115,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 115.02,
           "natural": 115.1,
           "delta": 0.1,
-          "percent": 0.001188858695652174
+          "percent": 0.0010147691705790643
         },
         {
           "id": "p1s24",
+          "text": "DUBAI UNITED ARAB EMIRATES",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 123.4,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 123.43,
           "natural": 123.6,
-          "delta": 0.2,
-          "percent": 0.0014118213128038438
+          "delta": 0.1,
+          "percent": 0.0011684254233168044
         },
         {
           "id": "p1s25",
+          "text": "Pre-carriage by",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 54.7,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 54.68,
           "natural": 54.7,
           "delta": 0,
-          "percent": 0.0002285191956124834
+          "percent": 0.0001371616678858867
         },
         {
           "id": "p1s26",
+          "text": "CHENNAI (EX MADRAS), INDIA",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 116.3,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 116.34,
           "natural": 116.5,
-          "delta": 0.2,
-          "percent": 0.0013502257093723374
+          "delta": 0.1,
+          "percent": 0.0010059416365824014
         },
         {
           "id": "p1s27",
+          "text": "JEBEL ALI, UNITED ARAB",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 96.8,
           "natural": 96.9,
           "delta": 0.1,
@@ -299,17 +434,27 @@
         },
         {
           "id": "p1s28",
+          "text": "CHENNAI (EX MADRAS), INDIA",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 116.3,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 116.34,
           "natural": 116.5,
-          "delta": 0.2,
-          "percent": 0.0013502257093723374
+          "delta": 0.1,
+          "percent": 0.0010059416365824014
         },
         {
           "id": "p1s29",
+          "text": "JEBEL ALI, UNITED ARAB",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 96.8,
           "natural": 96.9,
           "delta": 0.1,
@@ -317,17 +462,27 @@
         },
         {
           "id": "p1s30",
+          "text": "CMA CGM/9887",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 58.6,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 58.65,
           "natural": 58.7,
-          "delta": 0.1,
-          "percent": 0.0014265145051194296
+          "delta": 0,
+          "percent": 0.0005727834612105954
         },
         {
           "id": "p1s31",
+          "text": "4G LOGISTICS INDIA PVT LTD",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 114.1,
           "natural": 114.2,
           "delta": 0.1,
@@ -335,35 +490,55 @@
         },
         {
           "id": "p1s32",
+          "text": "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 252.2,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 252.25,
           "natural": 252.5,
-          "delta": 0.3,
-          "percent": 0.001127577319587674
+          "delta": 0.2,
+          "percent": 0.0009291377601585728
         },
         {
           "id": "p1s33",
+          "text": "CHENNAI TAMILNADU 600084 INDIA",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 136.8,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 136.82,
           "natural": 136.9,
           "delta": 0.1,
-          "percent": 0.0009480080409355893
+          "percent": 0.0008016920040930188
         },
         {
           "id": "p1s34",
+          "text": "PLMAAJEA00081",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 72,
+          "size": 9,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 71.99,
           "natural": 72,
-          "delta": 0,
-          "percent": 0.0006103515625
+          "delta": 0.1,
+          "percent": 0.0007493445270177124
         },
         {
           "id": "p1s35",
+          "text": "1(ONE)",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 27.1,
           "natural": 27.1,
           "delta": 0,
@@ -371,26 +546,41 @@
         },
         {
           "id": "p1s36",
+          "text": "ram@fresatechnologies.com",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 101.9,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 101.93,
           "natural": 101.9,
           "delta": 0,
-          "percent": 0.0004063420019626527
+          "percent": 0.00011190277641511997
         },
         {
           "id": "p1s37",
+          "text": "Prepared By :",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 51.1,
-          "natural": 48.9,
-          "delta": -2.2,
-          "percent": 0.0427776418786693
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 51.14,
+          "natural": 51.1,
+          "delta": 0,
+          "percent": 0.00006416210402816911
         },
         {
           "id": "p1s38",
+          "text": "FRESA DEMO INDIA PVT LTD",
           "font": "Helvetica-Bold",
           "mapped": "Arimo|bold",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 112.9,
           "natural": 112.9,
           "delta": 0,
@@ -398,80 +588,125 @@
         },
         {
           "id": "p1s39",
+          "text": "Tel: 9884124194",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 60,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 60.02,
           "natural": 60.1,
-          "delta": 0.1,
-          "percent": 0.0008463541666666667
+          "delta": 0,
+          "percent": 0.0005128498833721571
         },
         {
           "id": "p1s40",
+          "text": "Email: demo@fresatechnologies.com, user@fresatechnologies.com",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 240.7,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 240.68,
           "natural": 240.8,
           "delta": 0.1,
-          "percent": 0.00040247195679273527
+          "percent": 0.0004856032906763885
         },
         {
           "id": "p1s41",
+          "text": "Container No. / Seal No./",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 88.9,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 88.93,
           "natural": 88.9,
           "delta": 0,
-          "percent": 0.00037788245219341185
+          "percent": 0.00004041099741361946
         },
         {
           "id": "p1s42",
+          "text": "Mark & No.",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 40,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 40.01,
           "natural": 40,
           "delta": 0,
-          "percent": 0.0001953125
+          "percent": 0.00005467383154206475
         },
         {
           "id": "p1s43",
+          "text": "No. of Pkgs or",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 50.7,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 50.69,
           "natural": 50.7,
           "delta": 0,
-          "percent": 0.00024654832347145646
+          "percent": 0.00004931939238504096
         },
         {
           "id": "p1s44",
+          "text": "Shipping Units",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 51.6,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 51.58,
           "natural": 51.6,
           "delta": 0,
-          "percent": 0.0002725290697674694
+          "percent": 0.0001151124466847946
         },
         {
           "id": "p1s45",
+          "text": "Description of Goods & Pkgs.",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 104.5,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 104.49,
           "natural": 104.5,
           "delta": 0,
-          "percent": 0.00007476076555023923
+          "percent": 0.000020935017705092507
         },
         {
           "id": "p1s46",
+          "text": "Gross Weight",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 48.5,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 48.46,
           "natural": 48.5,
           "delta": 0,
-          "percent": 0.0008859536082474227
+          "percent": 0.00006126186545606381
         },
         {
           "id": "p1s47",
+          "text": "Measurement",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 48.9,
           "natural": 48.9,
           "delta": 0,
@@ -479,62 +714,97 @@
         },
         {
           "id": "p1s48",
+          "text": "125 PACKAGES",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 59.5,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 59.52,
           "natural": 59.6,
           "delta": 0.1,
-          "percent": 0.001444327731092437
+          "percent": 0.0011078209005375818
         },
         {
           "id": "p1s49",
+          "text": "18,000.00",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 35.6,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 35.57,
           "natural": 35.6,
           "delta": 0,
-          "percent": 0.0002852879213483545
+          "percent": 0.0005578788304751115
         },
         {
           "id": "p1s50",
+          "text": "24.000",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 24.5,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 24.46,
           "natural": 24.5,
           "delta": 0,
-          "percent": 0.0012755102040816326
+          "percent": 0.00035772690106292506
         },
         {
           "id": "p1s51",
+          "text": "STC: VALVE MATERIALS FOR MACHINERY PARTS",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 191.8,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 191.82,
           "natural": 192,
           "delta": 0.2,
-          "percent": 0.0012260492700729333
+          "percent": 0.001121657022208356
         },
         {
           "id": "p1s52",
+          "text": "FREIGHT PREPAID",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 72.4,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 72.37,
           "natural": 72.5,
           "delta": 0.1,
-          "percent": 0.0007337707182319657
+          "percent": 0.001148611303026053
         },
         {
           "id": "p1s53",
+          "text": "ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 229.3,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 229.32,
           "natural": 229.6,
-          "delta": 0.3,
-          "percent": 0.0011618240296554236
+          "delta": 0.2,
+          "percent": 0.0010745083289726445
         },
         {
           "id": "p1s54",
+          "text": "FCL",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 15.1,
           "natural": 15.1,
           "delta": 0,
@@ -542,116 +812,181 @@
         },
         {
           "id": "p1s55",
+          "text": "ABCU9877666 / SEAL NO. : SL345566",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 140,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 139.96,
           "natural": 140.1,
           "delta": 0.1,
-          "percent": 0.0006417410714285714
+          "percent": 0.0009277204201199774
         },
         {
           "id": "p1s56",
+          "text": "/ 20' DC X 1",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 42.8,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 42.82,
           "natural": 42.9,
           "delta": 0.1,
-          "percent": 0.0018436039719626834
+          "percent": 0.001375671415226523
         },
         {
           "id": "p1s57",
+          "text": "NIL MARKS",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 43.1,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 43.08,
           "natural": 43.1,
           "delta": 0,
-          "percent": 0.0004894141531322176
+          "percent": 0.0009538939182915903
         },
         {
           "id": "p1s58",
+          "text": "Total Number of Containers SAY",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 116.5,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 116.49,
           "natural": 116.5,
           "delta": 0,
-          "percent": 0.000033530042918454936
+          "percent": 0.00005231135719808667
         },
         {
           "id": "p1s59",
+          "text": ":",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 2.2,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 2.22,
           "natural": 2.2,
           "delta": 0,
-          "percent": 0.010298295454545373
+          "percent": 0.001196509009008921
         },
         {
           "id": "p1s60",
+          "text": "or Packages(In words)",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 80,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 80.02,
           "natural": 80,
           "delta": 0,
-          "percent": 0.000390625
+          "percent": 0.0001405898525369155
         },
         {
           "id": "p1s61",
+          "text": "Freight Details, Charges etc :",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 103.6,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 103.59,
           "natural": 103.6,
           "delta": 0,
-          "percent": 0.00002262306949801463
+          "percent": 0.0000739091611159049
         },
         {
           "id": "p1s62",
+          "text": "RECEIVED by the Carrier the Goods as specified above in appearent good order and",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 226.8,
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 226.78,
           "natural": 226.8,
           "delta": 0,
-          "percent": 0.000005166997354547481
+          "percent": 0.00008302374548019607
         },
         {
           "id": "p1s63",
+          "text": "condition unless otherwise stated, to be transported to such place as agreed, authorised",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 233.8,
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 233.79,
           "natural": 233.8,
           "delta": 0,
-          "percent": 0.000053464499572235374
+          "percent": 0.00009624021557811694
         },
         {
           "id": "p1s64",
+          "text": "or permitted herein and subject to all the terms and conditions appearing on the fornt",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 224.4,
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 224.45,
           "natural": 224.5,
-          "delta": 0.1,
-          "percent": 0.0003107244318181565
+          "delta": 0,
+          "percent": 0.0000878884495433788
         },
         {
           "id": "p1s65",
+          "text": "and reverse of the Bill of Lading to which the Merchant agrees by accepting this Bills of",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 230.4,
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 230.44,
           "natural": 230.5,
-          "delta": 0.1,
-          "percent": 0.00026448567708330865
+          "delta": 0,
+          "percent": 0.0000908587918764202
         },
         {
           "id": "p1s66",
+          "text": "Lading, any local privileges and customs notwithstanding.",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 152.7,
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 152.74,
           "natural": 152.8,
-          "delta": 0.1,
-          "percent": 0.00037220653241657744
+          "delta": 0,
+          "percent": 0.00011022611954950179
         },
         {
           "id": "p1s67",
+          "text": "The particulars given above as stated by the shipper and the weight, measure, quantity, condition,",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 259.8,
           "natural": 259.8,
           "delta": 0,
@@ -659,179 +994,279 @@
         },
         {
           "id": "p1s68",
+          "text": "contents and value of the Goods are unknown to the Carrier",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 159.1,
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 159.08,
           "natural": 159.1,
           "delta": 0,
-          "percent": 0.000020869343180353963
+          "percent": 0.00010485093977864907
         },
         {
           "id": "p1s69",
+          "text": "In WITNESS whenreof one (1) original Bill of Lading has been signed if not otherwise stated above, the",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 273.5,
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 273.47,
           "natural": 273.5,
           "delta": 0,
-          "percent": 0.00002856489945155393
+          "percent": 0.00008113321388076466
         },
         {
           "id": "p1s70",
+          "text": "same being accomplished the other(s). If any, to be void, it required by the Carrier one (1) original Bill",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 268.4,
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 268.44,
           "natural": 268.5,
-          "delta": 0.1,
-          "percent": 0.00024159370342780455
+          "delta": 0,
+          "percent": 0.00009254861421547561
         },
         {
           "id": "p1s71",
+          "text": "of Lading must be surrendered duty andorsed in exchange fo the Goods or delivery order.",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 238.1,
+          "size": 6,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 238.12,
           "natural": 238.1,
           "delta": 0,
-          "percent": 0.00019112898992022548
+          "percent": 0.0001071216718461089
         },
         {
           "id": "p1s72",
+          "text": "Excess Value Declaration: Refer to Clause 6(4)(B) + (C) on reverse side",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 255.4,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 255.42,
           "natural": 255.4,
           "delta": 0,
-          "percent": 0.0001468285043069472
+          "percent": 0.00006851460339837329
         },
         {
           "id": "p1s73",
+          "text": "Signed on behalf of the Carrier.",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 111.2,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 111.17,
           "natural": 111.2,
           "delta": 0,
-          "percent": 0.00018266636690650038
+          "percent": 0.00008714131510298007
         },
         {
           "id": "p1s74",
+          "text": "By",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 9.3,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 9.34,
           "natural": 9.3,
           "delta": 0,
-          "percent": 0.0038642473118278803
+          "percent": 0.00043495717344752227
         },
         {
           "id": "p1s75",
+          "text": "Place and Date of Issue",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 84.9,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 84.94,
           "natural": 84.9,
           "delta": 0,
-          "percent": 0.00048770612485270095
+          "percent": 0.000016555804097036422
         },
         {
           "id": "p1s76",
+          "text": "CHENNAI 28-JAN-19",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 76.4,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 76.42,
           "natural": 76.5,
-          "delta": 0.1,
-          "percent": 0.0008487401832459988
+          "delta": 0,
+          "percent": 0.0005868064642763451
         },
         {
           "id": "p1s77",
+          "text": "FREIGHT PREPAID",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 72.4,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 72.37,
           "natural": 72.5,
           "delta": 0.1,
-          "percent": 0.0007337707182319657
+          "percent": 0.001148611303026053
         },
         {
           "id": "p1s78",
+          "text": "PAYABLE AT : CHENNAI",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 91.5,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 91.46,
           "natural": 91.6,
           "delta": 0.1,
-          "percent": 0.000896516393442623
+          "percent": 0.0013342581456375056
         },
         {
           "id": "p1s79",
+          "text": "ONBOARD DATE :",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 68.5,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 68.46,
           "natural": 68.5,
           "delta": 0,
-          "percent": 0.0006843065693430657
+          "percent": 0.0001004236050247407
         },
         {
           "id": "p1s80",
+          "text": "AS AGENT FOR THE CARRIER",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 116,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 116.02,
           "natural": 116,
           "delta": 0,
-          "percent": 0.00010102370689655172
+          "percent": 0.00007137777969312206
         },
         {
           "id": "p1s81",
+          "text": "AS ARRANGED",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 58.2,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 58.18,
           "natural": 58.2,
-          "delta": 0,
-          "percent": 0.0005906357388315663
+          "delta": 0.1,
+          "percent": 0.0009345995187349654
         },
         {
           "id": "p1s82",
+          "text": "FRESA DEMO INDIA PVT LTD",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 111.4,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 111.44,
           "natural": 111.6,
-          "delta": 0.2,
-          "percent": 0.0015288375224416005
+          "delta": 0.1,
+          "percent": 0.001169351220387673
         },
         {
           "id": "p1s83",
+          "text": "16-JAN-19",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 38.2,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 38.22,
           "natural": 38.2,
           "delta": 0,
-          "percent": 0.001002126963350711
+          "percent": 0.000478316326530642
         },
         {
           "id": "p1s84",
+          "text": "CMA CGM",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 38.6,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 38.64,
           "natural": 38.7,
-          "delta": 0.1,
-          "percent": 0.0016596502590673207
+          "delta": 0,
+          "percent": 0.0006227355072463621
         },
         {
           "id": "p1s85",
+          "text": "ONE(1X20' DC) CONTAINER ONLY",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 129.9,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 129.88,
           "natural": 130,
           "delta": 0.1,
-          "percent": 0.0007397517321015728
+          "percent": 0.0008938539421004354
         },
         {
           "id": "p1s86",
+          "text": "DRAFT",
           "font": "RHQBFJ+ArialUnicodeMS",
           "mapped": "Arimo|regular",
-          "glyphWidth": 36.6,
+          "size": 11,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 36.63,
           "natural": 36.7,
-          "delta": 0.1,
-          "percent": 0.0017236594945354803
+          "delta": 0,
+          "percent": 0.0009032469969969271
         },
         {
           "id": "p1s87",
+          "text": "KGS",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
           "glyphWidth": 16.9,
           "natural": 16.9,
           "delta": 0,
@@ -839,15 +1274,25 @@
         },
         {
           "id": "p1s88",
+          "text": "CBM",
           "font": "Helvetica",
           "mapped": "Arimo|regular",
-          "glyphWidth": 17.8,
+          "size": 8,
+          "tc": 0,
+          "tw": 0,
+          "tj": 0,
+          "glyphWidth": 17.78,
           "natural": 17.8,
           "delta": 0,
-          "percent": 0.0012728230337079051
+          "percent": 0.00014939538807655437
         }
       ],
-      "fontsOverHalfPercent": []
+      "fontsOverHalfPercent": [],
+      "samples": {
+        "arial": [],
+        "arialBold": [],
+        "consolas": []
+      }
     }
   },
   "images": [
@@ -858,7 +1303,11 @@
       "width": 155.4,
       "height": 75,
       "proposedClass": "logo",
-      "demoValue": ""
+      "demoValue": "",
+      "symbology": "",
+      "moduleWidth": 0,
+      "quietZone": 0,
+      "decoded": false
     },
     {
       "page": 1,
@@ -867,41 +1316,466 @@
       "width": 194,
       "height": 17,
       "proposedClass": "barcode",
-      "demoValue": "PLMAAJEA00081"
+      "demoValue": "PLMAAJEA00081",
+      "symbology": "CODE_128",
+      "moduleWidth": 0.96,
+      "quietZone": 9.83,
+      "decoded": true
+    }
+  ],
+  "branding": [
+    {
+      "page": 1,
+      "id": "p1s23",
+      "text": "FRESA DEMO DUBAI UAE LLC",
+      "kind": "name",
+      "x": 302,
+      "y": 753.5
+    },
+    {
+      "page": 1,
+      "id": "p1s36",
+      "text": "ram@fresatechnologies.com",
+      "kind": "name",
+      "x": 363,
+      "y": 572.7
+    },
+    {
+      "page": 1,
+      "id": "p1s38",
+      "text": "FRESA DEMO INDIA PVT LTD",
+      "kind": "name",
+      "x": 302,
+      "y": 618.7
+    },
+    {
+      "page": 1,
+      "id": "p1s39",
+      "text": "Tel: 9884124194",
+      "kind": "phone",
+      "x": 302,
+      "y": 605.5
+    },
+    {
+      "page": 1,
+      "id": "p1s40",
+      "text": "Email: demo@fresatechnologies.com, user@fresatechnologies.com",
+      "kind": "name",
+      "x": 302,
+      "y": 594.7
+    },
+    {
+      "page": 1,
+      "id": "p1s82",
+      "text": "FRESA DEMO INDIA PVT LTD",
+      "kind": "name",
+      "x": 330,
+      "y": 77.5
     }
   ],
   "allowedDifferenceProposal": {
     "logo": "already masked; proposed allowed",
     "barcode": "generated from the demo value; proposed allowed",
     "qr": "generated from the demo value; proposed allowed",
+    "letterhead": "page-width header artwork; proposed allowed",
     "decorative Fresa branding": "Fresa identity; proposed allowed",
     "other": "proposed not allowed"
   },
   "raster": {
     "measured": true,
     "pass": false,
-    "mismatches": 22561,
-    "ratio": 0.0104,
+    "mismatches": 23046,
+    "ratio": 0.0106,
     "rasterizer": "pdftoppm",
     "dpi": 150,
     "heatmaps": [
       "reports/output/raster/HBL_DRAFT_REPORT_FORMAT_JASPER-page-1-diff.png"
     ],
     "causes": {
-      "text glyph": 15441,
-      "text position": 84,
-      "vector": 580,
-      "image/barcode": 6456,
+      "text glyph": 17212,
+      "text position": 63,
+      "vector": 546,
+      "image/barcode": 5225,
       "color": 0,
       "other": 0
     },
     "causeShare": {
-      "text glyph": 0.6844,
-      "text position": 0.0037,
-      "vector": 0.0257,
-      "image/barcode": 0.2862,
+      "text glyph": 0.7469,
+      "text position": 0.0027,
+      "vector": 0.0237,
+      "image/barcode": 0.2267,
       "color": 0,
       "other": 0
+    },
+    "nonText": {
+      "pass": true,
+      "mismatches": 419,
+      "ratio": 0.0002,
+      "limit": 0.005,
+      "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
+    },
+    "text": {
+      "blurredMismatches": 31326,
+      "blurredRatio": 0.0794,
+      "textPixels": 394622,
+      "sigmaPx": 1,
+      "inkMean": 0.7839,
+      "inkMin": 0,
+      "inkSpans": 88,
+      "spans": [
+        {
+          "id": "p1s1",
+          "iou": 0.878
+        },
+        {
+          "id": "p1s2",
+          "iou": 0.7601
+        },
+        {
+          "id": "p1s3",
+          "iou": 0.9056
+        },
+        {
+          "id": "p1s4",
+          "iou": 0.9232
+        },
+        {
+          "id": "p1s5",
+          "iou": 0.9493
+        },
+        {
+          "id": "p1s6",
+          "iou": 0.8621
+        },
+        {
+          "id": "p1s7",
+          "iou": 0.8917
+        },
+        {
+          "id": "p1s8",
+          "iou": 0.8141
+        },
+        {
+          "id": "p1s9",
+          "iou": 0.863
+        },
+        {
+          "id": "p1s10",
+          "iou": 0.859
+        },
+        {
+          "id": "p1s11",
+          "iou": 0.8716
+        },
+        {
+          "id": "p1s12",
+          "iou": 0.8869
+        },
+        {
+          "id": "p1s13",
+          "iou": 0.8851
+        },
+        {
+          "id": "p1s14",
+          "iou": 0.8615
+        },
+        {
+          "id": "p1s15",
+          "iou": 1
+        },
+        {
+          "id": "p1s16",
+          "iou": 0.5257
+        },
+        {
+          "id": "p1s17",
+          "iou": 0.7975
+        },
+        {
+          "id": "p1s18",
+          "iou": 0.82
+        },
+        {
+          "id": "p1s19",
+          "iou": 0.7999
+        },
+        {
+          "id": "p1s20",
+          "iou": 0.7994
+        },
+        {
+          "id": "p1s21",
+          "iou": 0.8806
+        },
+        {
+          "id": "p1s22",
+          "iou": 0.8434
+        },
+        {
+          "id": "p1s23",
+          "iou": 0
+        },
+        {
+          "id": "p1s24",
+          "iou": 0.8341
+        },
+        {
+          "id": "p1s25",
+          "iou": 0.8713
+        },
+        {
+          "id": "p1s26",
+          "iou": 0.6339
+        },
+        {
+          "id": "p1s27",
+          "iou": 0.8804
+        },
+        {
+          "id": "p1s28",
+          "iou": 0.6389
+        },
+        {
+          "id": "p1s29",
+          "iou": 0.8912
+        },
+        {
+          "id": "p1s30",
+          "iou": 0.8762
+        },
+        {
+          "id": "p1s31",
+          "iou": 0.8067
+        },
+        {
+          "id": "p1s32",
+          "iou": 0.7986
+        },
+        {
+          "id": "p1s33",
+          "iou": 0.8349
+        },
+        {
+          "id": "p1s34",
+          "iou": 0.8695
+        },
+        {
+          "id": "p1s35",
+          "iou": 0.8188
+        },
+        {
+          "id": "p1s36",
+          "iou": 0
+        },
+        {
+          "id": "p1s37",
+          "iou": 0.8548
+        },
+        {
+          "id": "p1s38",
+          "iou": 0
+        },
+        {
+          "id": "p1s39",
+          "iou": 0
+        },
+        {
+          "id": "p1s40",
+          "iou": 0
+        },
+        {
+          "id": "p1s41",
+          "iou": 0.8776
+        },
+        {
+          "id": "p1s42",
+          "iou": 0.8568
+        },
+        {
+          "id": "p1s43",
+          "iou": 0.7974
+        },
+        {
+          "id": "p1s44",
+          "iou": 0.8974
+        },
+        {
+          "id": "p1s45",
+          "iou": 0.8239
+        },
+        {
+          "id": "p1s46",
+          "iou": 0.8027
+        },
+        {
+          "id": "p1s47",
+          "iou": 0.878
+        },
+        {
+          "id": "p1s48",
+          "iou": 0.817
+        },
+        {
+          "id": "p1s49",
+          "iou": 0.8525
+        },
+        {
+          "id": "p1s50",
+          "iou": 0.8566
+        },
+        {
+          "id": "p1s51",
+          "iou": 0.7818
+        },
+        {
+          "id": "p1s52",
+          "iou": 0.8465
+        },
+        {
+          "id": "p1s53",
+          "iou": 0.7719
+        },
+        {
+          "id": "p1s54",
+          "iou": 0.8112
+        },
+        {
+          "id": "p1s55",
+          "iou": 0.8047
+        },
+        {
+          "id": "p1s56",
+          "iou": 0.8357
+        },
+        {
+          "id": "p1s57",
+          "iou": 0.8712
+        },
+        {
+          "id": "p1s58",
+          "iou": 0.8599
+        },
+        {
+          "id": "p1s59",
+          "iou": 1
+        },
+        {
+          "id": "p1s60",
+          "iou": 0.864
+        },
+        {
+          "id": "p1s61",
+          "iou": 0.8709
+        },
+        {
+          "id": "p1s62",
+          "iou": 0.8567
+        },
+        {
+          "id": "p1s63",
+          "iou": 0.8604
+        },
+        {
+          "id": "p1s64",
+          "iou": 0.8628
+        },
+        {
+          "id": "p1s65",
+          "iou": 0.871
+        },
+        {
+          "id": "p1s66",
+          "iou": 0.8643
+        },
+        {
+          "id": "p1s67",
+          "iou": 0.8759
+        },
+        {
+          "id": "p1s68",
+          "iou": 0.8685
+        },
+        {
+          "id": "p1s69",
+          "iou": 0.8649
+        },
+        {
+          "id": "p1s70",
+          "iou": 0.8609
+        },
+        {
+          "id": "p1s71",
+          "iou": 0.8723
+        },
+        {
+          "id": "p1s72",
+          "iou": 0.8581
+        },
+        {
+          "id": "p1s73",
+          "iou": 0.8494
+        },
+        {
+          "id": "p1s74",
+          "iou": 0.8879
+        },
+        {
+          "id": "p1s75",
+          "iou": 0.8643
+        },
+        {
+          "id": "p1s76",
+          "iou": 0.8687
+        },
+        {
+          "id": "p1s77",
+          "iou": 0.8197
+        },
+        {
+          "id": "p1s78",
+          "iou": 0.7989
+        },
+        {
+          "id": "p1s79",
+          "iou": 0.8988
+        },
+        {
+          "id": "p1s80",
+          "iou": 0.8673
+        },
+        {
+          "id": "p1s81",
+          "iou": 0.8672
+        },
+        {
+          "id": "p1s82",
+          "iou": 0
+        },
+        {
+          "id": "p1s83",
+          "iou": 0.7168
+        },
+        {
+          "id": "p1s84",
+          "iou": 0.8781
+        },
+        {
+          "id": "p1s85",
+          "iou": 0.5712
+        },
+        {
+          "id": "p1s86",
+          "iou": 0.8302
+        },
+        {
+          "id": "p1s87",
+          "iou": 0.8152
+        },
+        {
+          "id": "p1s88",
+          "iou": 0.8689
+        }
+      ]
     }
   },
   "pagination": {
@@ -912,7 +1786,7 @@
       "overflowSpans": [],
       "headerPresent": true,
       "summaryAfterLastRow": null,
-      "lastRowY": 88.1,
+      "lastRowY": 410.3,
       "summaryTop": 194.7,
       "layoutKind": "form"
     },

@@ -1,10 +1,7 @@
 normalized_label,frequency,families,proposed_path,new_field
-inr,1389,other:1056|commercial:134|finance:93|sea_docs:62|quotation:40|air_docs:4,other.inr,yes
-1,651,other:482|commercial:109|air_docs:24|sea_docs:16|wms:10|finance:8|ops_list:2,other.1,yes
 shipper,174,sea_docs:138|other:32|commercial:3|air_docs:1,party.shipper,no
 consignee,160,sea_docs:113|other:42|commercial:5,party.consignee,no
 freight prepaid,138,sea_docs:108|other:27|air_docs:3,shipment.freightTerms,no
-aed,137,commercial:131|finance:6,commercial.aed,yes
 total,133,finance:70|other:29|sea_docs:26|air_docs:3|wms:3|commercial:2,invoice.total,no
 printed by,123,other:84|sea_docs:20|commercial:8|air_docs:8|finance:2|wms:1,other.printed_by,yes
 credit,116,finance:116,ledger.credit,yes
@@ -22,7 +19,6 @@ consignor,77,sea_docs:68|other:9,sea_docs.consignor,yes
 otal,77,other:23|sea_docs:19|commercial:15|wms:9|air_docs:4|quotation:4|finance:2|ops_list:1,other.otal,yes
 176 maa 23456882,74,air_docs:74,air_docs.176_maa_23456882,yes
 10 dbs centre,69,sea_docs:67|other:2,sea_docs.10_dbs_centre,yes
-usd,67,commercial:29|quotation:20|finance:8|other:8|sea_docs:2,commercial.usd,yes
 notify address,66,sea_docs:60|other:6,party.notify,no
 place of delivery,64,sea_docs:60|other:4,shipment.placeOfDelivery,no
 dxb,64,air_docs:64,air_docs.dxb,yes
@@ -30,7 +26,6 @@ llc,62,sea_docs:43|other:16|ops_list:3,sea_docs.llc,yes
 port of loading,61,sea_docs:54|other:7,shipment.pol,no
 dubai uae,60,sea_docs:45|commercial:10|other:5,sea_docs.dubai_uae,yes
 printed date,60,other:47|sea_docs:10|air_docs:2|finance:1,other.printed_date,yes
-t,57,commercial:25|quotation:13|other:10|finance:5|sea_docs:4,commercial.t,yes
 al,55,other:39|sea_docs:12|air_docs:4,other.al,yes
 nadu 600001,54,air_docs:54,air_docs.nadu_600001,yes
 delivery agent,51,sea_docs:50|other:1,sea_docs.delivery_agent,yes
@@ -50,7 +45,6 @@ stc paper cups,37,air_docs:37,air_docs.stc_paper_cups,yes
 local charges,37,other:37,charge.description,yes
 amount,36,other:15|commercial:9|finance:9|sea_docs:3,invoice.amount,no
 consignee s name and address,36,air_docs:34|sea_docs:2,party.consignee,no
-5,35,air_docs:14|commercial:11|wms:3|other:3|finance:2|sea_docs:2,air_docs.5,yes
 rupee four thousand seven hundred seventy six only,35,other:35,other.rupee_four_thousand_seven_hundred_sevent,yes
 4g logistics india,34,other:28|sea_docs:6,other.4g_logistics_india,yes
 amil,33,other:24|sea_docs:5|air_docs:2|commercial:2,other.amil,yes
@@ -61,19 +55,15 @@ packages,30,sea_docs:19|other:9|commercial:2,cargo.pieces,no
 charge,30,other:25|commercial:4|air_docs:1,charge.description,yes
 sub total,30,other:26|commercial:2|sea_docs:2,other.sub_total,yes
 shipper address,29,sea_docs:23|other:6,party.shipper,no
-current asset,29,finance:29,finance.current_asset,yes
 tes,28,ops_list:12|sea_docs:8|quotation:3|air_docs:2|other:2|commercial:1,ops_list.tes,yes
 trading llc,28,sea_docs:18|other:10,sea_docs.trading_llc,yes
-30,28,finance:18|other:10,finance.30,yes
 473a,28,other:28,other.473a,yes
-18,27,finance:11|other:8|commercial:6|sea_docs:2,finance.18,yes
-q,27,air_docs:27,air_docs.q,yes
 weight and measurement of container not to be included,26,sea_docs:24|other:2,cargo.measurement,no
 invoice,26,other:15|commercial:11,other.invoice,yes
 nadu 600084 india,26,sea_docs:10|other:9|air_docs:4|commercial:3,sea_docs.nadu_600084_india,yes
 india,26,sea_docs:14|wms:6|other:4|finance:1|air_docs:1,sea_docs.india,yes
+current asset,26,finance:26,finance.current_asset,yes
 3c express cc chgs,26,finance:26,finance.3c_express_cc_chgs,yes
-0,25,ops_list:18|other:6|finance:1,ops_list.0,yes
 qty,24,other:17|commercial:6|sea_docs:1,charge.quantity,yes
 notify,24,sea_docs:24,party.notify,no
 office expense,24,finance:24,finance.office_expense,yes
@@ -127,9 +117,7 @@ subledger,17,finance:17,finance.subledger,yes
 charges,16,other:15|commercial:1,charge.description,yes
 shipper consignor,16,sea_docs:16,party.shipper,no
 plmaajea00081,16,sea_docs:10|air_docs:4|other:2,sea_docs.plmaajea00081,yes
-x,16,commercial:16,commercial.x,yes
 containers,16,other:12|commercial:3|sea_docs:1,cargo.containerNo,no
-9,16,commercial:9|wms:5|other:2,commercial.9,yes
 subtotal,16,other:10|commercial:6,other.subtotal,yes
 terials,16,sea_docs:15|other:1,sea_docs.terials,yes
 cash advance,16,finance:16,finance.cash_advance,yes
@@ -152,26 +140,20 @@ name,15,other:8|sea_docs:7,other.name,yes
 sl345566,15,other:10|sea_docs:4|air_docs:1,other.sl345566,yes
 b exp 19 0254,15,sea_docs:15,sea_docs.b_exp_19_0254,yes
 by,14,sea_docs:14,sea_docs.by,yes
-a,14,air_docs:5|sea_docs:3|quotation:2|commercial:2|finance:2,air_docs.a,yes
 taxable,14,other:8|commercial:6,other.taxable,yes
-w,14,sea_docs:5|other:5|commercial:3|air_docs:1,sea_docs.w,yes
-o,14,commercial:9|finance:2|sea_docs:2|other:1,commercial.o,yes
 final destination,14,sea_docs:10|other:4,shipment.finalDestination,no
 sl988888,14,sea_docs:14,sea_docs.sl988888,yes
-3,14,other:9|wms:3|sea_docs:2,other.3,yes
 igst cost a c,14,finance:14,invoice.tax,no
 description,14,sea_docs:10|other:3|commercial:1,cargo.description,no
 22 700 000 kgs,14,other:13|sea_docs:1,other.22_700_000_kgs,yes
 english,14,other:14,other.english,yes
 total in inr,14,other:14,other.total_in_inr,yes
 for failure to notify,14,other:8|sea_docs:6,party.notify,no
-k,13,air_docs:11|quotation:1|sea_docs:1,air_docs.k,yes
 said to contain,13,sea_docs:13,sea_docs.said_to_contain,yes
 airport of destination,13,air_docs:12|sea_docs:1,air_docs.airport_of_destination,yes
 http demo fresagold com 19786 ords f p 127 3002 1,13,finance:8|sea_docs:3|commercial:2,finance.http_demo_fresagold_com_19786_ords_f_p_1,yes
 from date 01 jan 18 to date 30 sep 18,13,finance:13,finance.from_date_01_jan_18_to_date_30_sep_18,yes
 gst sale a c,13,finance:13,invoice.tax,no
-3 000 00,13,finance:13,finance.3_000_00,yes
 4g logistics,13,finance:13,finance.4g_logistics,yes
 evergreen marine,13,sea_docs:9|other:2|air_docs:2,sea_docs.evergreen_marine,yes
 consignor shipper,13,sea_docs:13,party.shipper,no
@@ -187,7 +169,6 @@ cgst sale a c,12,finance:12,invoice.tax,no
 sgst sale a c,12,finance:12,invoice.tax,no
 igst sale a c,12,finance:12,invoice.tax,no
 grand total,12,finance:10|sea_docs:2,invoice.total,no
-10 000 00,12,finance:12,finance.10_000_00,yes
 adcb bank aed,12,finance:12,finance.adcb_bank_aed,yes
 petty cash goma,12,finance:12,finance.petty_cash_goma,yes
 asset total,12,finance:12,finance.asset_total,yes
@@ -201,10 +182,8 @@ email,11,sea_docs:7|other:3|quotation:1,company.email,no
 144 78b gkm t,11,sea_docs:7|air_docs:3|commercial:1,sea_docs.144_78b_gkm_t,yes
 web www,11,sea_docs:7|air_docs:4,company.website,yes
 signature of issuing carrier or its agent,11,air_docs:11,shipment.carrier,no
-4,11,sea_docs:5|wms:3|other:3,sea_docs.4,yes
 date,11,sea_docs:6|other:3|finance:2,invoice.date,no
 income,11,finance:11,finance.income,yes
-35 596 20,11,finance:11,finance.35_596_20,yes
 organization,11,finance:11,finance.organization,yes
 shipment,11,other:11,other.shipment,yes
 ainer cleaning fee,11,other:11,other.ainer_cleaning_fee,yes
@@ -217,7 +196,6 @@ draft,10,sea_docs:9|other:1,sea_docs.draft,yes
 bur dubai,10,commercial:10,commercial.bur_dubai,yes
 total no of pcs,10,other:7|commercial:3,other.total_no_of_pcs,yes
 destination agent,10,sea_docs:9|other:1,sea_docs.destination_agent,yes
-s,10,air_docs:9|sea_docs:1,air_docs.s,yes
 ek9876ek9876 20,10,air_docs:10,air_docs.ek9876ek9876_20,yes
 phone 9884124194,10,air_docs:4|other:4|sea_docs:2,company.phone,no
 client,10,other:5|sea_docs:4|finance:1,other.client,yes
@@ -227,7 +205,6 @@ bukavu,10,finance:10,finance.bukavu,yes
 zambia,10,finance:10,finance.zambia,yes
 burundi,10,finance:10,finance.burundi,yes
 staff salary,10,finance:10,finance.staff_salary,yes
-8 650 83,10,finance:10,finance.8_650_83,yes
 cash book bukavu,10,finance:10,finance.cash_book_bukavu,yes
 india pvt ltd,10,finance:10,finance.india_pvt_ltd,yes
 nsajed85630124277,10,sea_docs:8|other:2,sea_docs.nsajed85630124277,yes
@@ -279,8 +256,6 @@ omsoh,8,sea_docs:6|ops_list:2,sea_docs.omsoh,yes
 kwkwi,8,sea_docs:6|ops_list:2,sea_docs.kwkwi,yes
 ggz garden office,8,finance:8,finance.ggz_garden_office,yes
 cost a c,8,finance:8,finance.cost_a_c,yes
-4 500 00,8,finance:8,finance.4_500_00,yes
-38 500 00,8,finance:8,finance.38_500_00,yes
 gst rcm input a c,8,finance:8,invoice.tax,no
 advance staff,8,finance:8,finance.advance_staff,yes
 rupee two thousand one hundred ninety one and eighty paisa only,8,finance:8,finance.rupee_two_thousand_one_hundred_ninety_on,yes
@@ -292,10 +267,35 @@ notify party see clause 22,8,sea_docs:8,party.notify,no
 consignee negotiable only if consigned to order to order of,8,sea_docs:8,party.consignee,no
 3 notify party intermediate consignee nome and address,8,sea_docs:8,party.consignee,no
 1x20 dc,8,other:4|sea_docs:4,other.1x20_dc,yes
-p,7,sea_docs:4|commercial:2|other:1,sea_docs.p,yes
 volume,7,other:4|commercial:3,other.volume,yes
 abcu9877666 20 dc,7,other:4|sea_docs:3,other.abcu9877666_20_dc,yes
 no responsibility shall be attached to mto or his agents for failure to notify,7,sea_docs:7,party.notify,no
 w m,7,commercial:7,commercial.w_m,yes
 description of goods said to contain,7,sea_docs:6|other:1,cargo.description,no
 place of acceptance,7,sea_docs:6|other:1,sea_docs.place_of_acceptance,yes
+olume,7,other:4|sea_docs:2|air_docs:1,other.olume,yes
+notify party or broker,7,other:6|sea_docs:1,party.notify,no
+sundr,7,finance:7,finance.sundr,yes
+profit and loss as on 01 jan 18 31 dec 18,7,finance:7,finance.profit_and_loss_as_on_01_jan_18_31_dec_1,yes
+commodity description,7,sea_docs:4|other:3,cargo.description,no
+profit and loss summary periodwise,7,finance:7,finance.profit_and_loss_summary_periodwise,yes
+bhbah,7,sea_docs:4|ops_list:2|other:1,sea_docs.bhbah,yes
+hdfc hdfc bank,7,finance:7,finance.hdfc_hdfc_bank,yes
+trial balance,7,finance:7,finance.trial_balance,yes
+u 600084 india,7,sea_docs:6|other:1,sea_docs.u_600084_india,yes
+an interna,7,sea_docs:7,sea_docs.an_interna,yes
+bl exchange fee,7,sea_docs:7,sea_docs.bl_exchange_fee,yes
+country,7,sea_docs:7,sea_docs.country,yes
+marks,7,sea_docs:7,cargo.description,no
+trn no,7,other:7,other.trn_no,yes
+tamil fee,7,other:7,other.tamil_fee,yes
+phone 798798798,7,other:7,company.phone,no
+payment can be through the bank transfer showing bl no in reference or cheque deposit slip proof with bl no written on scanned file,7,other:7,shipment.referenceNo,yes
+shipment reference no,7,sea_docs:6|other:1,shipment.referenceNo,yes
+no of pkgs,7,sea_docs:6|air_docs:1,cargo.pieces,no
+export references,7,sea_docs:7,shipment.referenceNo,yes
+marks and numbers,7,sea_docs:7,cargo.description,no
+notify party address,7,sea_docs:7,party.notify,no
+ackages,6,quotation:2|sea_docs:2|air_docs:1|other:1,quotation.ackages,yes
+only,6,sea_docs:4|quotation:1|finance:1,sea_docs.only,yes
+1x20 shipment t,6,commercial:5|finance:1,commercial.1x20_shipment_t,yes

@@ -32,6 +32,8 @@ import { normalizeJob } from '../utils/normalizeJob';
 import { resolveListProbesFromCounts } from '../utils/resolveListProbesFromCounts';
 import { staffAlignedJobListParams } from '../utils/staffAlignedJobListParams';
 import { jobDetailPath } from '../utils/jobRoute';
+import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
+import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
 
 export type HubAllJobsVariant = 'nvocc' | 'documentation' | 'management';
@@ -81,6 +83,7 @@ export interface HubAllJobsPageProps {
 export default function HubAllJobsPage({ variant, backTo, title, subtitle }: HubAllJobsPageProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
   const currentUserId = useAuthStore((s) => s.user?.id);
   const config = variantConfig(variant);
@@ -570,14 +573,37 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
           action={confirm.action}
           job={confirm.job}
           isPending={Boolean(pendingId)}
+          allowForceClose={isOpsUnrestrictedUser(user)}
           onClose={closeConfirm}
-          onConfirm={() => {
+          onResolveBlocker={(hint) => {
+            const j = confirm.job;
+            closeConfirm();
+            const base = jobDetailPath(j);
+            if (hint === 'costing') {
+              navigate(`${base}?tab=costing`);
+              return;
+            }
+            if (hint === 'vouchers') {
+              navigate(`${base}?tab=vouchers`);
+              return;
+            }
+            navigate(base);
+          }}
+          onConfirm={(opts) => {
             const j = confirm.job;
             if (confirm.action === 'cancel') {
               return run(j, () => lifecycle.cancel.mutateAsync(j.id), 'Job cancelled.');
             }
             if (confirm.action === 'close') {
-              return run(j, () => lifecycle.close.mutateAsync(j.id), 'Job closed.');
+              return run(
+                j,
+                () =>
+                  lifecycle.close.mutateAsync({
+                    id: j.id,
+                    body: opts?.force ? { force: true } : undefined,
+                  }),
+                opts?.force ? 'Job force-closed.' : 'Job closed.',
+              );
             }
             return run(j, () => lifecycle.remove.mutateAsync(j.id), 'Job deleted.');
           }}

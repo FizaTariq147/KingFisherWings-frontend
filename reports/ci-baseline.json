@@ -4,31 +4,31 @@
     "geometry": { "pass": true, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 0 },
     "staticText": { "pass": false, "failures": 14 },
     "dynamicText": { "pass": true, "failures": 0 },
-    "raster": { "ratio": 0.0171 },
+    "raster": { "ratio": 0.0165 },
     "pagination": { "pass": false }
   },
   "HBL_DRAFT_REPORT_FORMAT_JASPER": {
     "page": { "pass": true },
-    "geometry": { "pass": false, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 10 },
+    "geometry": { "pass": true, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 0 },
     "staticText": { "pass": true, "failures": 0 },
     "dynamicText": { "pass": true, "failures": 0 },
-    "raster": { "ratio": 0.0104 },
+    "raster": { "ratio": 0.0106 },
     "pagination": { "pass": false }
   },
   "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER": {
     "page": { "pass": true },
-    "geometry": { "pass": false, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 13 },
+    "geometry": { "pass": true, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 0 },
     "staticText": { "pass": false, "failures": 2 },
     "dynamicText": { "pass": true, "failures": 0 },
-    "raster": { "ratio": 0.0179 },
+    "raster": { "ratio": 0.0158 },
     "pagination": { "pass": false }
   },
   "TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY": {
     "page": { "pass": true },
     "geometry": { "pass": true, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 0 },
-    "staticText": { "pass": false, "failures": 68 },
-    "dynamicText": { "pass": false, "failures": 134 },
-    "raster": { "ratio": 0.0057 },
-    "pagination": { "pass": false }
+    "staticText": { "pass": false, "failures": 1 },
+    "dynamicText": { "pass": false, "failures": 11 },
+    "raster": { "ratio": 0.0058 },
+    "pagination": { "pass": true }
   }
 }

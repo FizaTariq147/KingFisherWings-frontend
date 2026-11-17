@@ -343,15 +343,17 @@ function heuristicJobActionPanels(
  */
 export function resolveJobActionPanels(
   job: Job,
-  opts: { houseJobsCount?: number } = {},
+  opts: { houseJobsCount?: number; handoffLimited?: boolean } = {},
 ): JobActionPanelKey[] {
   const actions = job.actions as Record<string, unknown> | undefined;
-  const handoffLimited = (() => {
-    const mode = String(job.actions?.view_mode ?? job.view_mode ?? '')
-      .trim()
-      .toLowerCase();
-    return mode === 'handoff_limited' || mode === 'handoff-limited';
-  })();
+  const handoffLimited =
+    opts.handoffLimited ??
+    (() => {
+      const mode = String(job.actions?.view_mode ?? job.view_mode ?? '')
+        .trim()
+        .toLowerCase();
+      return mode === 'handoff_limited' || mode === 'handoff-limited';
+    })();
 
   // Handoff-limited: port-token + documents (upload allowed); no finance/costing panels.
   if (handoffLimited) {
@@ -388,20 +390,23 @@ export function resolveJobActionPanels(
  * Sea ↔ air: air hides container tabs; sea/NVOCC hides mawb.
  * Handoff-limited: single `handoff` tab (essentials folded in) — no info/show_all/costing.
  */
-export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
+export function resolveJobDetailTabs(
+  job: Job,
+  opts: { handoffLimited?: boolean } = {},
+): JobDetailTab[] {
   const apiTabs = job.tabs;
-  if (!apiTabs?.length) return [];
-
-  const handoffLimited = (() => {
-    const mode = String(job.actions?.view_mode ?? job.view_mode ?? '')
-      .trim()
-      .toLowerCase();
-    return mode === 'handoff_limited' || mode === 'handoff-limited';
-  })();
+  const handoffLimited =
+    opts.handoffLimited ??
+    (() => {
+      const mode = String(job.actions?.view_mode ?? job.view_mode ?? '')
+        .trim()
+        .toLowerCase();
+      return mode === 'handoff_limited' || mode === 'handoff-limited';
+    })();
 
   // Transport handoff: one tab only — payload rendered by JobHandoffPanel.
   if (handoffLimited) {
-    const handoffFromApi = apiTabs.find(
+    const handoffFromApi = apiTabs?.find(
       (t) => toApiDetailTabKey(t?.key ?? '') === 'handoff',
     );
     return [
@@ -411,6 +416,8 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
       },
     ];
   }
+
+  if (!apiTabs?.length) return [];
 
   const canViewCosting = job.actions?.can_view_costing !== false;
 
@@ -492,15 +499,18 @@ export function resolveJobDetailTabs(job: Job): JobDetailTab[] {
 export function defaultJobDetailTabKey(
   job: Job,
   preferBookingForm = false,
+  opts: { handoffLimited?: boolean } = {},
 ): JobDetailTabKey | string {
-  const tabs = resolveJobDetailTabs(job);
+  const tabs = resolveJobDetailTabs(job, opts);
   if (!tabs.length) return '';
-  const handoffLimited = (() => {
-    const mode = String(job.actions?.view_mode ?? job.view_mode ?? '')
-      .trim()
-      .toLowerCase();
-    return mode === 'handoff_limited' || mode === 'handoff-limited';
-  })();
+  const handoffLimited =
+    opts.handoffLimited ??
+    (() => {
+      const mode = String(job.actions?.view_mode ?? job.view_mode ?? '')
+        .trim()
+        .toLowerCase();
+      return mode === 'handoff_limited' || mode === 'handoff-limited';
+    })();
   if (handoffLimited) {
     const handoff = tabs.find((t) => toApiDetailTabKey(t.key) === 'handoff');
     return handoff?.key ?? tabs[0]!.key;

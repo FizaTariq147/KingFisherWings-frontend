@@ -9,6 +9,10 @@ function round1(value) {
   return Math.round(Number(value) * 10) / 10;
 }
 
+function round2(value) {
+  return Math.round(Number(value) * 100) / 100;
+}
+
 function hex(color) {
   const raw = [...(color || [0, 0, 0])];
   while (raw.length < 3) raw.push(raw[0] || 0);
@@ -94,6 +98,7 @@ function freshState() {
     lineCap: 0,
     lineJoin: 0,
     miterLimit: 10,
+    textRenderMode: 0,
   };
 }
 
@@ -126,13 +131,15 @@ function glyphsOf(arg) {
       glyphs.push(item);
       continue;
     }
-    if (item && item.unicode != null) {
-      glyphs.push(item);
+    if (item && (item.unicode != null || item.fontChar)) {
+      glyphs.push(item.unicode == null ? { ...item, unicode: String(item.fontChar) } : item);
       continue;
     }
     if (item && typeof item.length === 'number') {
       for (const glyph of asList(item)) {
-        if (typeof glyph === 'number' || (glyph && glyph.unicode != null)) glyphs.push(glyph);
+        if (typeof glyph === 'number') glyphs.push(glyph);
+        else if (glyph && glyph.unicode != null) glyphs.push(glyph);
+        else if (glyph && glyph.fontChar) glyphs.push({ ...glyph, unicode: String(glyph.fontChar) });
       }
     }
   }
@@ -361,10 +368,21 @@ function textPoint(state, distance) {
   return mapPoint(state.ctm, local[4], local[5]);
 }
 
+function argumentHasGlyphs(arg) {
+  return asList(arg).some((item) => {
+    if (typeof item === 'number') return false;
+    if (item && (item.unicode != null || item.fontChar)) return true;
+    if (item && typeof item.length === 'number') {
+      return asList(item).some((glyph) => (glyph && (glyph.unicode != null || glyph.fontChar)) || typeof glyph === 'number');
+    }
+    return item != null && item !== '';
+  });
+}
+
 function showSpan(state, arg, page, uncaptured) {
   const glyphs = glyphsOf(arg);
   if (!glyphs.length) {
-    uncaptured.undecodedText += 1;
+    if (argumentHasGlyphs(arg)) uncaptured.undecodedText += 1;
     return null;
   }
   const scale = (state.hScale || 100) / 100;
@@ -387,7 +405,7 @@ function showSpan(state, arg, page, uncaptured) {
       text: segmentText,
       x: round1(origin[0]),
       y: round1(origin[1]),
-      width: round1(Math.hypot(end[0] - origin[0], end[1] - origin[1])),
+      width: round2(Math.hypot(end[0] - origin[0], end[1] - origin[1])),
     });
     segmentText = '';
     segmentStart = cursor;
@@ -417,6 +435,7 @@ function showSpan(state, arg, page, uncaptured) {
   if (!text.replace(/\s+/g, '').length) return { empty: true };
   return {
     text: text.replace(/\s+/g, ' ').trim(),
+    glyphText: text,
     segments,
     font: fontNameOf(page, state.fontId),
     size: size || round1(state.fontSize),
@@ -424,13 +443,16 @@ function showSpan(state, arg, page, uncaptured) {
     colorSource: state.fillSource,
     x: round1(start[0]),
     y: round1(start[1]),
-    width: round1(Math.hypot(end[0] - start[0], end[1] - start[1])),
+    width: round2(Math.hypot(end[0] - start[0], end[1] - start[1])),
     anchor: 'left',
     alignment: 'left',
     hScale: state.hScale,
     charSpacing: state.charSpacing,
     wordSpacing: state.wordSpacing,
-    glyphWidth: round1(glyphWidth),
+    glyphWidth: round2(glyphWidth),
+    renderMode: state.textRenderMode || 0,
+    stroke: hex(state.stroke),
+    strokeWidth: round2(state.lineWidth),
   };
 }
 
@@ -544,7 +566,10 @@ export function readOperators(ops, page, pageBox) {
     } else if (fn === OPS.setHScale) state.hScale = numberArg(args[i]) || 100;
     else if (fn === OPS.setCharSpacing) state.charSpacing = numberArg(args[i]);
     else if (fn === OPS.setWordSpacing) state.wordSpacing = numberArg(args[i]);
-    else if (fn === OPS.setTextRenderingMode && numberArg(args[i]) !== 0) uncaptured.textRenderMode += 1;
+    else if (fn === OPS.setTextRenderingMode) {
+      state.textRenderMode = numberArg(args[i]);
+      if (state.textRenderMode > 3) uncaptured.textRenderMode += 1;
+    }
     else if (fn === OPS.constructPath || fn === OPS.rectangle) {
       const raw = args[i];
       const pathOps = fn === OPS.rectangle ? [OPS.rectangle] : raw?.[0];
@@ -602,6 +627,7 @@ export function readOperators(ops, page, pageBox) {
         height: round1(Math.max(...ys) - Math.min(...ys)),
         format: 'unknown',
         slot: '',
+        name: String(asList(args[i])[0] || ''),
       };
       if (keepBox({ minX: image.x, minY: image.y, maxX: image.x + image.width, maxY: image.y + image.height }, pageBox, dropped)) images.push(image);
     } else if (fn === OPS.shadingFill) {

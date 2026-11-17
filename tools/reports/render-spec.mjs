@@ -31,6 +31,7 @@ const {
   setLineJoin,
   setLineWidth,
   setStrokingRgbColor,
+  setTextRenderingMode,
   setWordSpacing,
   stroke,
 } = require('pdf-lib/cjs/api/operators.js');
@@ -127,11 +128,15 @@ function rgbParts(hex) {
 }
 
 function drawPositioned(page, span, pieces, size, color) {
+  const stroke = rgbParts(span.stroke || span.color || '#000000');
   page.pushOperators(
     pushGraphicsState(),
     setCharacterSpacing(span.charSpacing || 0),
     setWordSpacing(span.wordSpacing || 0),
     setCharacterSqueeze(span.hScale || 100),
+    setLineWidth(span.strokeWidth || 0.6),
+    setStrokingRgbColor(...stroke),
+    setTextRenderingMode(span.renderMode || 0),
   );
   for (const piece of pieces) {
     if (!piece.text) continue;
@@ -200,23 +205,33 @@ function drawPath(page, path) {
   page.pushOperators(...operators);
 }
 
+function barcodeEncoder(symbology) {
+  const name = String(symbology || '').toUpperCase();
+  if (name.includes('39')) return require('jsbarcode/bin/barcodes/CODE39/CODE39.js').default;
+  if (name.includes('EAN') && name.includes('13')) return require('jsbarcode/bin/barcodes/EAN_UPC/EAN13.js').default;
+  if (name.includes('ITF') || name.includes('I25')) return require('jsbarcode/bin/barcodes/ITF/ITF.js').default;
+  return CODE128AUTO;
+}
+
 function drawBarcode(page, image) {
-  const value = String(image.demoValue || '').trim();
+  const value = String(image.barcode?.payload || image.demoValue || '').trim();
   if (!value) return false;
+  if (/QR/i.test(image.barcode?.symbology || '')) return drawQr(page, { ...image, demoValue: value });
   let bits = '';
   try {
-    const encoded = new CODE128AUTO(value, { text: value });
-    if (!encoded.valid()) return false;
+    const encoded = new (barcodeEncoder(image.barcode?.symbology))(value, {});
+    if (encoded.valid && !encoded.valid()) return false;
     bits = encoded.encode().data;
   } catch {
     return false;
   }
   if (!bits) return false;
-  const moduleWidth = image.width / bits.length;
-  let cursor = image.x;
+  const quiet = image.barcode?.quietZone || 0;
+  const moduleWidth = image.barcode?.moduleWidth || Math.max((image.width - quiet * 2) / bits.length, 0.2);
+  let cursor = image.x + quiet;
   for (const bit of bits) {
     if (bit === '1') {
-      page.drawRectangle({ x: cursor, y: image.y, width: Math.max(moduleWidth, 0.2), height: image.height, color: rgb(0, 0, 0) });
+      page.drawRectangle({ x: cursor, y: image.y, width: Math.max(moduleWidth, 0.15), height: image.height, color: rgb(0, 0, 0) });
     }
     cursor += moduleWidth;
   }
@@ -288,14 +303,14 @@ export async function renderSpec(code, options = {}) {
     }
     for (const path of source.paths || []) drawPath(page, path);
     for (const image of source.images || []) {
-      if (image.proposedClass === 'barcode') drawBarcode(page, image);
-      if (image.proposedClass === 'qr') drawQr(page, image);
+      if (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded) drawBarcode(page, image);
     }
     const paintSpans = [
       ...(source.spans || []),
-      ...(source.table?.rows || []).flat().filter(Boolean).map((cell) => ({ ...cell, role: 'dynamic' })),
+      ...(source.table?.rows || []).flat().filter(Boolean).map((cell) => ({ ...cell, role: cell.role || 'dynamic' })),
     ];
     for (const span of paintSpans) {
+      if (span.role === 'branding') continue;
       const demo = span.text;
       const text = options.overflow && span.role === 'dynamic' ? replacement(span, spec) : demo;
       if (!text) continue;
