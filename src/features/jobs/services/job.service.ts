@@ -2614,15 +2614,17 @@ export const jobService = {
 
   /**
    * POST /jobs/:id/change-status — anytime status; may return warnings[].
-   * PASS_TO_TRANSPORT requires branch + user (department resolves to TRANSPORT on BE).
+   * Live ChangeJobStatusDto is status + reason only (forbidNonWhitelisted).
+   * PASS_TO_TRANSPORT: POST /department/pass first (branch + user + TRANSPORT), then
+   * change-status without pass fields. Falls back to IN_PROGRESS if catalog code missing.
    */
   async changeStatus(id: string, dto: ChangeJobStatusDto): Promise<JobChangeStatusResult> {
     assertId(id);
     const status = String(dto.status ?? '').trim();
     if (!status) throw new Error('Status is required.');
-    const body: Record<string, unknown> = { status };
-    if (dto.reason?.trim()) body.reason = dto.reason.trim();
-    if (isPassToTransportStatus(status)) {
+
+    const passToTransport = isPassToTransportStatus(status);
+    if (passToTransport) {
       const branchId = String(dto.branch_id ?? '').trim();
       const branchName = String(dto.branch_name ?? '').trim();
       const userId = String(dto.user_id ?? '').trim();
@@ -2633,18 +2635,24 @@ export const jobService = {
       if (!userId && !userName) {
         throw new Error('Assignee (user) is required when passing to Transport.');
       }
-      if (branchId) body.branch_id = branchId;
-      if (branchName) body.branch_name = branchName;
-      if (userId) body.user_id = userId;
-      if (userName) body.user_name = userName;
-      if (dto.department_id?.trim()) body.department_id = dto.department_id.trim();
-      if (dto.department_name?.trim()) body.department_name = dto.department_name.trim();
-      else body.department_name = 'TRANSPORT';
-      if (dto.notes != null && String(dto.notes).trim()) {
-        body.notes = String(dto.notes).trim();
-      }
+      await this.passDepartment(id, {
+        department_name: String(dto.department_name ?? '').trim() || 'TRANSPORT',
+        ...(dto.department_id?.trim()
+          ? { department_id: dto.department_id.trim() }
+          : {}),
+        ...(branchId ? { branch_id: branchId } : {}),
+        ...(branchName ? { branch_name: branchName } : {}),
+        ...(userId ? { user_id: userId } : {}),
+        ...(userName ? { user_name: userName } : {}),
+        ...(dto.notes != null && String(dto.notes).trim()
+          ? { notes: String(dto.notes).trim() }
+          : {}),
+      });
     }
-    try {
+
+    const postChange = async (statusCode: string): Promise<JobChangeStatusResult> => {
+      const body: Record<string, unknown> = { status: statusCode };
+      if (dto.reason?.trim()) body.reason = dto.reason.trim();
       const res = await withGatewayRetry(() =>
         axiosInstance.post(JOB_API.changeStatus(id), body),
       );
@@ -2661,7 +2669,34 @@ export const jobService = {
         normalizeJob(record?.job ?? data) ??
         (await this.getDetail(id).catch(() => this.getById(id)));
       return { job, warnings };
+    };
+
+    try {
+      return await postChange(status);
     } catch (error) {
+      // Catalog row may not exist yet — map Pass to Transport → IN_PROGRESS after pass.
+      if (passToTransport) {
+        const msg = getErrorMessage(error).toLowerCase();
+        if (
+          /pass_to_transport|should not exist|whitelist|forbidden|invalid|unknown status|not found|400/.test(
+            msg,
+          ) ||
+          (error as { response?: { status?: number } })?.response?.status === 400
+        ) {
+          try {
+            const result = await postChange('IN_PROGRESS');
+            return {
+              ...result,
+              warnings: [
+                ...(result.warnings ?? []),
+                'Pass to Transport completed via department pass; status set to IN_PROGRESS (PASS_TO_TRANSPORT catalog not available).',
+              ],
+            };
+          } catch (fallbackError) {
+            throw formatAxiosError(fallbackError);
+          }
+        }
+      }
       throw formatAxiosError(error);
     }
   },
@@ -3462,9 +3497,18 @@ export const jobService = {
     }
   },
 
-  async closeChecklist(id: string): Promise<unknown> {
+  /** GET /jobs/:id/close-checklist — blockers before POST /close (unless force). */
+  async closeChecklist(
+    id: string,
+  ): Promise<import('../utils/normalizeJobCloseChecklist').JobCloseChecklist> {
     assertId(id);
-    return request(() => axiosInstance.get(JOB_API.closeChecklist(id)));
+    const { normalizeJobCloseChecklist } = await import(
+      '../utils/normalizeJobCloseChecklist'
+    );
+    return request(
+      () => axiosInstance.get(JOB_API.closeChecklist(id)),
+      normalizeJobCloseChecklist,
+    );
   },
 
   async copyJob(id: string, body: Record<string, unknown> = {}): Promise<Job> {

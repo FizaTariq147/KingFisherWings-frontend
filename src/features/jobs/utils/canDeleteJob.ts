@@ -3,6 +3,7 @@ import type { Job } from '../types/job.types';
 import { canonicalizeJobType } from './canonicalizeJobType';
 import { effectiveListJobTypes } from './deptAccessFromStaffGrants';
 import { filterJobTypesByStaffAccess } from './filterJobTypesByStaffAccess';
+import { isHandoffLimitedJob } from './isHandoffLimitedJob';
 import { isOpsUnrestrictedUser } from './isOpsUnrestrictedUser';
 import { jobEditable } from './jobRoute';
 
@@ -100,10 +101,8 @@ export function canEditJob(
   user?: AccessActor | null,
 ): boolean {
   if (String(job.status ?? '').toUpperCase() === 'CLOSED') return false;
-  const viewMode = String(job.actions?.view_mode ?? job.view_mode ?? '')
-    .trim()
-    .toLowerCase();
-  if (viewMode === 'handoff_limited' || viewMode === 'handoff-limited') return false;
+  // Tenant Admin / Branch Manager / unrestricted ops are never handoff-limited.
+  if (isHandoffLimitedJob(job, user)) return false;
   if (job.actions?.can_edit === false) return false;
   if (job.actions?.can_edit === true) return jobEditable(job.status);
   if (!jobEditable(job.status)) return false;

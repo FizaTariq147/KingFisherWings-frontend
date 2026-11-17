@@ -1,11 +1,12 @@
 import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { appType } from '@/lib/erpTypography';
+import { appType, listShell, erpTable } from '@/lib/erpTypography';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import { PageBackLink } from '@/components/ui/PageBackLink';
+import { EmptyState, ErrorState } from '@/components/erp';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 import { jobService } from '@/features/jobs/services/job.service';
@@ -35,13 +36,6 @@ function jobDisplayName(row: TransportRequestRow, hydrated?: string): string {
   return 'Job';
 }
 
-function listLabel(row: TransportRequestRow, hydratedJob?: string): string {
-  const job = jobDisplayName(row, hydratedJob);
-  const req = requestDisplayName(row);
-  if (job !== 'Job') return `${job} — ${req}`;
-  return req;
-}
-
 const COST_STORAGE_PREFIX = 'kf:transportRequestCost:';
 
 function readSavedCost(requestId: string): string {
@@ -69,6 +63,11 @@ function resolveSavedCostAmount(row?: TransportRequestRow | null): string {
   return readSavedCost(row.id);
 }
 
+/**
+ * Tenant transport board — jobs passed to Transport appear here.
+ * Assign trucker / pickup / transit / delivery on the request; open the linked job for
+ * handoff-limited ops (containers, port token, docs).
+ */
 export default function TransportRequestsPage() {
   const qc = useQueryClient();
   const list = useQuery({
@@ -156,7 +155,6 @@ export default function TransportRequestsPage() {
   const current = rows.find((row) => row.id === selected) ?? rows[0];
   const currentId = current?.id;
 
-  // Cost / trucker inputs are per-request — load that row's saved cost when switching.
   useEffect(() => {
     setAmount(resolveSavedCostAmount(current));
     setTruckerId(
@@ -177,212 +175,271 @@ export default function TransportRequestsPage() {
     (current?.job_id ? `/jobs/road-freight/${current.job_id}` : '');
 
   return (
-    <div className="space-y-4">
-      <PageBackLink to="/dashboard" />
-      <div>
-        <h2 className={appType.pageTitle}>Transport requests</h2>
-        <p className="text-sm text-[var(--color-neutral-500)]">
-          Tenant transport board — jobs passed to the Transport department appear here. Assign
-          trucker, pickup, transit, delivery, cost, and PDF.
-        </p>
-      </div>
-      {error ? <p className="text-sm text-[var(--color-danger-600)]">{error}</p> : null}
-      {message ? <p className="text-sm text-[var(--color-success-700)]">{message}</p> : null}
-      <div className="flex flex-wrap items-end gap-3">
-        <label className="block text-sm">
-          <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
-            Status
-          </span>
-          <select
-            className="h-9 rounded-md border border-[var(--color-neutral-200)] bg-white px-2 text-sm"
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-          >
-            <option value="">All</option>
-            <option value="CREATED">CREATED</option>
-            <option value="ASSIGNED">ASSIGNED</option>
-            <option value="PICKUP_CONFIRMED">PICKUP_CONFIRMED</option>
-            <option value="IN_TRANSIT">IN_TRANSIT</option>
-            <option value="DELIVERED">DELIVERED</option>
-            <option value="CANCELLED">CANCELLED</option>
-          </select>
-        </label>
-      </div>
-      <div className="grid gap-4 lg:grid-cols-[1.2fr_1fr]">
-        <Card>
-          <CardHeader>
-            <CardTitle>Requests</CardTitle>
-          </CardHeader>
-          <div className="space-y-1 px-4 pb-4">
-            {list.isLoading ? <p className="text-sm text-[var(--color-neutral-500)]">Loading…</p> : null}
-            {list.isError ? (
-              <p className="text-sm text-[var(--color-danger-600)]">{getErrorMessage(list.error)}</p>
-            ) : null}
-            {rows.length === 0 && !list.isLoading ? (
-              <p className="text-sm text-[var(--color-neutral-500)]">
-                No transport requests yet. Pass a job to the Transport department (Department tab →
-                Pass) to enqueue one here.
-              </p>
-            ) : null}
-            {rows.map((row) => {
-              const hydrated = row.job_id ? jobMetaById[row.job_id]?.job_number : undefined;
-              return (
-                <button
-                  key={row.id}
-                  type="button"
-                  onClick={() => setSelected(row.id)}
-                  className={`block w-full rounded-md px-3 py-2 text-left text-sm ${
-                    current?.id === row.id
-                      ? 'bg-[var(--color-primary-100)]'
-                      : 'hover:bg-[var(--color-neutral-50)]'
-                  }`}
-                >
-                  <span className="font-medium">{listLabel(row, hydrated)}</span>
-                  <span className="ml-2 text-xs text-[var(--color-neutral-500)]">
-                    {humanizeToken(row.status)}
-                  </span>
-                </button>
-              );
-            })}
+    <div className={listShell.page}>
+      <PageBackLink to="/dashboard" label="Back to dashboard" />
+      <div className={listShell.card}>
+        <div className={listShell.header}>
+          <div className="min-w-0">
+            <h2 className={appType.pageTitle}>Transport requests</h2>
+            <p className="mt-1 text-[13px] text-[#64748b]">
+              Jobs passed to Transport appear here. Assign trucker and stamp pickup / transit /
+              delivery on the request. Open the linked job for the handoff view (containers, port
+              token, documents).
+            </p>
           </div>
-        </Card>
-        {current ? (
-          <Card>
-            <CardHeader>
-              <CardTitle>Actions</CardTitle>
-            </CardHeader>
-            <div className="space-y-3 px-4 pb-4">
-              <div className="space-y-1 text-sm text-[var(--color-neutral-700)]">
-                <p>
-                  <span className="text-xs font-medium text-[var(--color-neutral-500)]">
-                    Request{' '}
-                  </span>
-                  {requestDisplayName(current)}
-                </p>
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            leftIcon={<RefreshCw className={list.isFetching ? 'animate-spin' : undefined} />}
+            disabled={list.isFetching}
+            onClick={() => void list.refetch()}
+          >
+            Refresh
+          </Button>
+        </div>
+
+        <div className={listShell.toolbar}>
+          <label className="flex items-center gap-2 text-[13px]">
+            <span className="text-[12px] font-medium text-[#64748B]">Status</span>
+            <select
+              className="h-8 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-2 text-[13px]"
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+            >
+              <option value="">All</option>
+              <option value="CREATED">CREATED</option>
+              <option value="ASSIGNED">ASSIGNED</option>
+              <option value="PICKUP_CONFIRMED">PICKUP_CONFIRMED</option>
+              <option value="IN_TRANSIT">IN_TRANSIT</option>
+              <option value="DELIVERED">DELIVERED</option>
+              <option value="CANCELLED">CANCELLED</option>
+            </select>
+          </label>
+        </div>
+
+        {error ? (
+          <p className="px-4 pt-3 text-[13px] text-[var(--color-danger-600)]" role="alert">
+            {error}
+          </p>
+        ) : null}
+        {message ? (
+          <p className="px-4 pt-3 text-[13px] text-[var(--color-success-700)]" role="status">
+            {message}
+          </p>
+        ) : null}
+
+        {list.isLoading ? (
+          <div className="space-y-1.5 px-3 py-4" aria-busy>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-8 animate-pulse rounded-sm bg-[#eef2f6]" />
+            ))}
+          </div>
+        ) : list.isError ? (
+          <div className="px-3 py-3">
+            <ErrorState
+              message={getErrorMessage(list.error) || 'Failed to load transport requests.'}
+              onRetry={() => void list.refetch()}
+            />
+          </div>
+        ) : rows.length === 0 ? (
+          <EmptyState
+            title="No transport requests yet"
+            description="Pass a job to Transport (Pass to Transport / Department pass). It will enqueue here for trucker assignment."
+          />
+        ) : (
+          <div className="grid gap-0 lg:grid-cols-[1.35fr_1fr]">
+            <div className="overflow-x-auto border-r border-[var(--fresa-border,#E8EEF5)]">
+              <table className={listShell.table}>
+                <thead>
+                  <tr>
+                    <th className={erpTable.th}>Job</th>
+                    <th className={erpTable.th}>Request</th>
+                    <th className={erpTable.th}>Status</th>
+                    <th className={erpTable.th}>Trucker</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {rows.map((row) => {
+                    const hydrated = row.job_id
+                      ? jobMetaById[row.job_id]?.job_number
+                      : undefined;
+                    const active = current?.id === row.id;
+                    return (
+                      <tr
+                        key={row.id}
+                        className={`${erpTable.row} cursor-pointer ${
+                          active ? 'bg-[var(--color-primary-50,#EFF6FF)]' : ''
+                        }`}
+                        onClick={() => setSelected(row.id)}
+                      >
+                        <td className={erpTable.td}>
+                          {jobDisplayName(row, hydrated)}
+                        </td>
+                        <td className={erpTable.td}>{requestDisplayName(row)}</td>
+                        <td className={erpTable.td}>
+                          {humanizeToken(row.status) || '—'}
+                        </td>
+                        <td className={erpTable.td}>
+                          {row.trucker_name || '—'}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {current ? (
+              <div className="space-y-3 px-4 py-4 text-[13px]">
+                <div>
+                  <h3 className="text-[14px] font-medium text-[#1E293B]">Request actions</h3>
+                  <p className="mt-0.5 text-[12px] text-[#64748B]">
+                    {requestDisplayName(current)}
+                    {current.request_type
+                      ? ` · ${humanizeToken(current.request_type)}`
+                      : ''}
+                  </p>
+                </div>
+
                 {current.job_id && currentJobPath ? (
-                  <p>
-                    <span className="text-xs font-medium text-[var(--color-neutral-500)]">
-                      Job{' '}
-                    </span>
+                  <div className="rounded-sm border border-sky-200 bg-sky-50 px-3 py-2 text-[13px] text-sky-900">
+                    <p className="mb-1.5">
+                      Linked job{' '}
+                      <strong>{currentJobLabel}</strong> — open for handoff work
+                      (containers, port token, documents).
+                    </p>
                     <Link
                       to={currentJobPath}
-                      className="font-medium text-[var(--color-primary-600)] hover:underline"
+                      className="inline-flex h-8 items-center rounded-sm border border-sky-300 bg-white px-3 text-[13px] font-medium text-[var(--color-primary-700)] hover:bg-sky-50"
                     >
-                      {currentJobLabel}
+                      Open job handoff
                     </Link>
-                  </p>
+                  </div>
                 ) : null}
-                {current.request_type ? (
-                  <p>
-                    <span className="text-xs font-medium text-[var(--color-neutral-500)]">
-                      Type{' '}
-                    </span>
-                    {humanizeToken(current.request_type)}
-                  </p>
-                ) : null}
-                {current.trucker_name ? (
-                  <p>
-                    <span className="text-xs font-medium text-[var(--color-neutral-500)]">
-                      Trucker{' '}
-                    </span>
-                    {current.trucker_name}
-                  </p>
-                ) : null}
-              </div>
-              <label className="block text-sm">
-                <span className="mb-1 block text-xs font-medium text-[var(--color-neutral-600)]">
-                  Trucker
-                </span>
-                <select
-                  className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-2 text-sm"
-                  value={truckerId}
-                  onChange={(e) => setTruckerId(e.target.value)}
-                >
-                  <option value="">Select trucker…</option>
-                  {truckerOptions.map((t) => (
-                    <option key={t.value} value={t.value}>
-                      {t.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <Button
-                type="button"
-                disabled={!truckerId.trim() || run.isPending}
-                onClick={() =>
-                  run.mutate(() =>
-                    transportService.assign(current.id, { trucker_id: truckerId.trim() }),
-                  )
-                }
-              >
-                Assign trucker
-              </Button>
-              <div className="flex flex-wrap gap-2">
+
+                <label className="block">
+                  <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                    Trucker
+                  </span>
+                  <select
+                    className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-white px-2 text-[13px]"
+                    value={truckerId}
+                    onChange={(e) => setTruckerId(e.target.value)}
+                  >
+                    <option value="">Select trucker…</option>
+                    {truckerOptions.map((t) => (
+                      <option key={t.value} value={t.value}>
+                        {t.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
                 <Button
                   type="button"
-                  variant="secondary"
-                  onClick={() => run.mutate(() => transportService.stamp(current.id, 'pickup'))}
-                >
-                  Pickup
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => run.mutate(() => transportService.stamp(current.id, 'transit'))}
-                >
-                  In transit
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
+                  size="sm"
+                  disabled={!truckerId.trim() || run.isPending}
                   onClick={() =>
-                    run.mutate(() => transportService.stamp(current.id, 'delivered'))
+                    run.mutate(() =>
+                      transportService.assign(current.id, {
+                        trucker_id: truckerId.trim(),
+                      }),
+                    )
                   }
                 >
-                  Delivered
+                  Assign trucker
                 </Button>
+
+                <div className="flex flex-wrap gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() =>
+                      run.mutate(() => transportService.stamp(current.id, 'pickup'))
+                    }
+                  >
+                    Pickup
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() =>
+                      run.mutate(() => transportService.stamp(current.id, 'transit'))
+                    }
+                  >
+                    In transit
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() =>
+                      run.mutate(() =>
+                        transportService.stamp(current.id, 'delivered'),
+                      )
+                    }
+                  >
+                    Delivered
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() =>
+                      run.mutate(() => transportService.cancel(current.id))
+                    }
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="button"
+                    size="sm"
+                    variant="secondary"
+                    onClick={() =>
+                      run.mutate(() => transportService.queuePdf(current.id))
+                    }
+                  >
+                    Queue PDF
+                  </Button>
+                </div>
+
+                <Input
+                  label="Transport cost amount"
+                  value={amount}
+                  onChange={(e) => setAmount(e.target.value)}
+                  placeholder={
+                    resolveSavedCostAmount(current)
+                      ? undefined
+                      : 'Enter cost for this request'
+                  }
+                />
                 <Button
                   type="button"
+                  size="sm"
                   variant="secondary"
-                  onClick={() => run.mutate(() => transportService.cancel(current.id))}
+                  disabled={
+                    !amount.trim() ||
+                    run.isPending ||
+                    !Number.isFinite(Number(amount))
+                  }
+                  onClick={() => {
+                    const n = Number(amount);
+                    if (!Number.isFinite(n)) return;
+                    run.mutate(async () => {
+                      await transportService.recordCost(current.id, { amount: n });
+                      writeSavedCost(current.id, n);
+                      setAmount(String(n));
+                    });
+                  }}
                 >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  variant="secondary"
-                  onClick={() => run.mutate(() => transportService.queuePdf(current.id))}
-                >
-                  Queue PDF
+                  Record transport cost
                 </Button>
               </div>
-              <Input
-                label="Cost amount"
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder={
-                  resolveSavedCostAmount(current) ? undefined : 'Enter cost for this request'
-                }
-              />
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={!amount.trim() || run.isPending || !Number.isFinite(Number(amount))}
-                onClick={() => {
-                  const n = Number(amount);
-                  if (!Number.isFinite(n)) return;
-                  run.mutate(async () => {
-                    await transportService.recordCost(current.id, { amount: n });
-                    writeSavedCost(current.id, n);
-                    setAmount(String(n));
-                  });
-                }}
-              >
-                Record cost
-              </Button>
-            </div>
-          </Card>
-        ) : null}
+            ) : null}
+          </div>
+        )}
       </div>
     </div>
   );

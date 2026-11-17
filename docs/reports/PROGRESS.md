@@ -48,7 +48,7 @@ This workspace is the React frontend. There is no NestJS app and no PostgreSQL s
 |---|---|
 | 0 Inventory and clustering | Done. |
 | 0.5 Code map, status file, layout recount | Done. |
-| 1 Pilot extraction | Four pilots through round 3. None accepted. Other layouts not started. |
+| 1 Pilot extraction | Four pilots through round 4. None accepted. Other layouts not started. |
 | 2–8 | Not started. |
 
 Counts from `reports/references/summary.json`:
@@ -341,4 +341,33 @@ The arrival barcode's nearest text is the closing line, so the generated bars ar
 `reports/label-inventory.csv` has 1,343 labels from 401 PDFs. `reports/binding-proposals.csv` proposes paths for the top 300. 225 of those are new fields the contracts do not have (`ledger.debit`, `ledger.credit`, `document.user`, `company.website`, `invoice.dueDate`, `shipment.number`, and slug fields where the nearest text was a value such as `inr` or `1`). Resolved 270, unresolved 171 (167 outside the top 300, 4 with no label). Files: `reports/output/pilot-bindings-resolved.csv`, `reports/output/pilot-bindings-unresolved.csv`.
 
 Capability census, 401 PDFs, 509 pages, extraction only. Files using each feature: curves 110 (5,776 ops), images 359 (449), nonzero text render mode 227 (6,710), word spacing 78 (2,041), character spacing 20 (957), TJ 60 (4,928), dash 29 (82). Shading, CMYK, opacity, and non-100 Tz: 0. The common unsupported features are nonzero text render mode and the curves that are still uncaptured outside these four pilots.
+
+## Pilot round 4
+
+Same four pilots. Nothing accepted. No other layout was rendered. The 0.5% raster limit, 0.1 pt geometry, and 0.5 pt text position and width limits are unchanged.
+
+Checker changes:
+
+- Natural width uses the full glyph string, including the padding spaces the display text trims. The old Arial means (12.74% and 22.15%) compared the trimmed string with an advance that still included those spaces.
+- Text widths are stored to 0.01 pt. The 0.5 pt width limit is unchanged. A whitespace-only TJ segment is not required to reappear as its own extracted span.
+- An empty show-text array is not undecoded content. Text render modes 0–3 are captured. Modes above 3 would still fail geometry.
+- Overflow uses the baseline origin. The reference is allowed to let the advance cross the page edge.
+- On a table, the running header is the column-title row (Opening Balance, Debit, Credit, Closing Balance) and the title above it. Page-1 account names are not required on later pages. A parenthesized amount or a currency code is not a header label.
+- A form header is the top 18% of the page. A summary band is only the region below the last detail row. An empty summary passes. The trial-balance reference now passes header repeat, row break, summary-after-last-row, and footer repeat.
+- Branding spans are omitted from the golden draw and from the text checks. The arrival page-width header image is class `letterhead`.
+- Raster now also reports non-text pixels and a blurred text-region measurement. The original full-page 0.5% result is still recorded and still fails.
+
+Font samples after the measurement fix: Arial `01` at 9 pt, Tc 0.036, TJ 0.1, reference 10.01, Arimo 10.00. Arial Bold `Debit` reference 22.50, Arimo 22.50. Arial Bold `TRIAL BALANCE` reference 80.78, Arimo 81.10. Consolas `Bank` reference 21.76, Liberation Mono 23.70 (8.95% on all 11 Consolas spans). Consolas in the file advances at 549.8 units; Liberation Mono is the Courier-metric 600-unit font. No horizontal scaling was applied. Fonts still over 0.5% natural deviation: Arial to Arimo 0.57% (313 spans), Arial Unicode to Arimo 0.52% (261 spans). Arial Bold is under 0.5%.
+
+Trial balance text failures fell from 68 static and 134 dynamic to 1 static and 11 dynamic. Every remaining failure is width, between 0.5 and 0.8 pt, on long account names. The golden cells use the reference strings, including unbound columns. The 182 position-or-string failures were whitespace segments the re-extraction dropped.
+
+Geometry is pass on all four. The 6 and 2 undecoded operators were empty show-text arrays. HBL has four fill-and-stroke settings and arrival has eleven; those modes are now drawn and are not geometry failures.
+
+Barcodes, decoded with ZXing from a temporary page render and not stored: HBL Code 128 `PLMAAJEA00081`, module 0.96 pt, quiet zone 9.83 pt. Arrival Code 128 `PLJEAMAA00001 / 16-JAN-19`, module 0.48 pt, quiet zone 6.72 pt. The arrival payload is no longer the closing line.
+
+Pagination on the reference: trial balance passes, including the ignored trailing blank page. The three single-page pilots keep pagination pass false because they are not the multi-page fixture. Their own invariants pass (no overflow, header present).
+
+Label inventory is 1,242 after dropping currency codes and bare numbers. Resolved 200, unresolved 211 against the top 300. Contract proposals, not wired, are in `src/features/reports/contracts/proposals/`. Arrival notice and quotation had no label whose main family was that document. Fields with no current source include `party.notify`, `shipment.freightTerms`, `shipment.igmNo`, `shipment.referenceNo`, `ledger.openingBalance`, and `ledger.closingBalance`.
+
+`reports/ci-baseline.json` is the round 4 layer result.
 

@@ -649,8 +649,14 @@ export function useJobLifecycleMutations() {
       onSuccess: (_d, id) => invalidate(id),
     }),
     close: useMutation({
-      mutationFn: (id: string) => jobService.close(id),
-      onSuccess: (_d, id) => invalidate(id),
+      mutationFn: ({
+        id,
+        body,
+      }: {
+        id: string;
+        body?: { force?: boolean };
+      }) => jobService.close(id, body),
+      onSuccess: (_d, { id }) => invalidate(id),
     }),
     changeStatus: useMutation({
       mutationFn: ({ id, dto }: { id: string; dto: ChangeJobStatusDto }) =>

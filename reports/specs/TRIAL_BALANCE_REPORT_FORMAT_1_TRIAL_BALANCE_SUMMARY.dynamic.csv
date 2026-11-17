@@ -1,5 +1,4 @@
 id,page,text,binding,reason
-p1s1,1,FRESA DEMO INDIA PVT LTD,company.name,"matches a demo value (number, date, party, or Fresa sample text)"
 p1s5,1,01,,"matches a demo value (number, date, party, or Fresa sample text)"
 p1s9,1,18,,"matches a demo value (number, date, party, or Fresa sample text)"
 p1s11,1,30,,"matches a demo value (number, date, party, or Fresa sample text)"
@@ -119,7 +118,6 @@ p1s441,1,0.00,,"matches a demo value (number, date, party, or Fresa sample text)
 p1s442,1,"2,000.00",,"matches a demo value (number, date, party, or Fresa sample text)"
 p1s443,1,0.00,,"matches a demo value (number, date, party, or Fresa sample text)"
 p1s444,1,"2,000.00",,"matches a demo value (number, date, party, or Fresa sample text)"
-p2s1,2,FRESA DEMO INDIA PVT LTD,company.name,"matches a demo value (number, date, party, or Fresa sample text)"
 p2s5,2,01,,"matches a demo value (number, date, party, or Fresa sample text)"
 p2s9,2,18,,"matches a demo value (number, date, party, or Fresa sample text)"
 p2s11,2,30,,"matches a demo value (number, date, party, or Fresa sample text)"
@@ -155,7 +153,6 @@ p2s119,2,0.00,,"matches a demo value (number, date, party, or Fresa sample text)
 p2s123,2,0.00,,"matches a demo value (number, date, party, or Fresa sample text)"
 p2s124,2,"3,474,188.80",,"matches a demo value (number, date, party, or Fresa sample text)"
 p2s126,2,"3,446,410.30",,"matches a demo value (number, date, party, or Fresa sample text)"
-p2s146,2,"1,000.00",,"matches a demo value (number, date, party, or Fresa sample text)"
 p2s147,2,0.00,,"matches a demo value (number, date, party, or Fresa sample text)"
 p2s153,2,1.00,,"matches a demo value (number, date, party, or Fresa sample text)"
 p2s154,2,0.00,,"matches a demo value (number, date, party, or Fresa sample text)"

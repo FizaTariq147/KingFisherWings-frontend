@@ -6,8 +6,10 @@ import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
+import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
 import { JobConfirmModal } from '../components/JobConfirmModal';
+import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import {
   JobMisFilters,
   jobMisDraftFromSearch,
@@ -34,7 +36,7 @@ import {
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { resolveListProbesFromCounts } from '../utils/resolveListProbesFromCounts';
 import { staffAlignedJobListParams } from '../utils/staffAlignedJobListParams';
-import { jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
+import { jobDetailPath, jobRoutePrefix, segmentFromPath } from '../utils/jobRoute';
 
 /** Stamp job_type from job-number mid-code when it maps into this department. */
 function stampJobForSegment(
@@ -63,6 +65,7 @@ function stampJobForSegment(
 export default function JobListPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user } = useAuth();
   const accessToken = useAuthStore((s) => s.accessToken);
   const { pathname } = location;
   const segment = segmentFromPath(pathname) ?? 'air-export';
@@ -456,14 +459,37 @@ export default function JobListPage() {
           action={confirm.action}
           job={confirm.job}
           isPending={Boolean(pendingId)}
+          allowForceClose={isOpsUnrestrictedUser(user)}
           onClose={closeConfirm}
-          onConfirm={() => {
+          onResolveBlocker={(hint) => {
+            const j = confirm.job;
+            closeConfirm();
+            const base = jobDetailPath(j);
+            if (hint === 'costing') {
+              navigate(`${base}?tab=costing`);
+              return;
+            }
+            if (hint === 'vouchers') {
+              navigate(`${base}?tab=vouchers`);
+              return;
+            }
+            navigate(base);
+          }}
+          onConfirm={(opts) => {
             const j = confirm.job;
             if (confirm.action === 'cancel') {
               return run(j, () => lifecycle.cancel.mutateAsync(j.id), 'Job cancelled.');
             }
             if (confirm.action === 'close') {
-              return run(j, () => lifecycle.close.mutateAsync(j.id), 'Job closed.');
+              return run(
+                j,
+                () =>
+                  lifecycle.close.mutateAsync({
+                    id: j.id,
+                    body: opts?.force ? { force: true } : undefined,
+                  }),
+                opts?.force ? 'Job force-closed.' : 'Job closed.',
+              );
             }
             return run(j, () => lifecycle.remove.mutateAsync(j.id), 'Job deleted.');
           }}

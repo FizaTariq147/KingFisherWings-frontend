@@ -4,8 +4,11 @@
  * Pilots: node tools/reports/extract.mjs --pilots
  */
 import fs from 'node:fs';
+import os from 'node:os';
 import path from 'node:path';
+import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { PNG } from 'pngjs';
 import { getDocument, OPS } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { readOperators } from './read-operators.mjs';
 import { mapFont } from './font-map.mjs';
@@ -331,7 +334,7 @@ function looksLikeValue(text) {
   if (/^\d{1,2}[/-]\d{1,2}[/-]\d{2,4}$/.test(value)) return true;
   if (/^[0-9][0-9,.\s/-]*$/.test(value) && /\d/.test(value)) return true;
   if (/@/.test(value)) return true;
-  if (/FRESA|DEMO|4G LOGISTICS|AL NASER|AL NABHA/i.test(value)) return true;
+  if (/FRESA|DEMO|4G LOGISTICS|AL NASER|AL NABHA/i.test(value)) return false;
   if (value === value.toUpperCase() && value.length > 18 && /[A-Z]/.test(value)) return true;
   return false;
 }
@@ -384,6 +387,175 @@ async function readText(page) {
   return { spans, empty, zeroWidth, fontNames };
 }
 
+function imageObject(page, name) {
+  if (!name) return null;
+  for (const store of [page.objs, page.commonObjs]) {
+    try {
+      if (store?.has?.(name)) return store.get(name);
+    } catch {
+      // The object is not ready.
+    }
+  }
+  return null;
+}
+
+function luminanceOf(image) {
+  const width = image.width || 0;
+  const height = image.height || 0;
+  const data = image.data;
+  const pixels = width * height;
+  if (!data || !pixels) return null;
+  const out = new Uint8ClampedArray(pixels);
+  if (data.length === pixels) {
+    out.set(data);
+    return out;
+  }
+  if (data.length === pixels * 3 || data.length === pixels * 4) {
+    const step = data.length === pixels * 4 ? 4 : 3;
+    for (let index = 0; index < pixels; index += 1) {
+      out[index] = (data[index * step] + data[index * step + 1] + data[index * step + 2]) / 3;
+    }
+    return out;
+  }
+  if (data.length * 8 >= pixels) {
+    for (let index = 0; index < pixels; index += 1) {
+      const bit = (data[index >> 3] >> (7 - (index & 7))) & 1;
+      out[index] = bit ? 0 : 255;
+    }
+    return out;
+  }
+  return null;
+}
+
+function flipLuminance(source, width, height) {
+  const out = new Uint8ClampedArray(source.length);
+  for (let y = 0; y < height; y += 1) out.set(source.subarray((height - 1 - y) * width, (height - y) * width), y * width);
+  return out;
+}
+
+function invertLuminance(source) {
+  const out = new Uint8ClampedArray(source.length);
+  for (let index = 0; index < source.length; index += 1) out[index] = 255 - source[index];
+  return out;
+}
+
+function barMeasures(luminance, width, height, boxWidth) {
+  let y = Math.floor(height / 2);
+  let bestDark = -1;
+  const start = Math.floor(height * 0.1);
+  const end = Math.max(start + 1, Math.floor(height * 0.75));
+  for (let row = start; row < end; row += Math.max(1, Math.floor(height / 16))) {
+    let dark = 0;
+    for (let x = 0; x < width; x += 1) if (luminance[row * width + x] < 128) dark += 1;
+    if (dark > bestDark) {
+      bestDark = dark;
+      y = row;
+    }
+  }
+  const runs = [];
+  let bit = luminance[y * width] < 128 ? 1 : 0;
+  let count = 0;
+  for (let x = 0; x < width; x += 1) {
+    const next = luminance[y * width + x] < 128 ? 1 : 0;
+    if (next === bit) count += 1;
+    else {
+      runs.push({ bit, count });
+      bit = next;
+      count = 1;
+    }
+  }
+  runs.push({ bit, count });
+  const quietPx = runs[0]?.bit === 0 ? runs[0].count : 0;
+  const inner = runs.slice(quietPx ? 1 : 0, runs.length - 1).map((run) => run.count).filter((value) => value > 0);
+  const frequent = inner.filter((value) => inner.filter((other) => Math.abs(other - value) <= 1).length >= 2);
+  const modulePx = (frequent.length ? Math.min(...frequent) : Math.min(...inner, 1)) || 1;
+  const scale = width ? boxWidth / width : 1;
+  const quietZone = Math.min(boxWidth * 0.2, quietPx * scale);
+  return {
+    moduleWidth: Math.round(modulePx * scale * 100) / 100,
+    quietZone: Math.round(quietZone * 100) / 100,
+  };
+}
+
+let zxingModule;
+async function readBarcode(luminance, width, height) {
+  if (!zxingModule) zxingModule = await import('@zxing/library');
+  const reader = new zxingModule.MultiFormatReader();
+  const hints = new Map();
+  hints.set(zxingModule.DecodeHintType.TRY_HARDER, true);
+  reader.setHints(hints);
+  const bitmap = new zxingModule.BinaryBitmap(new zxingModule.HybridBinarizer(new zxingModule.RGBLuminanceSource(luminance, width, height)));
+  const result = reader.decode(bitmap);
+  const format = result.getBarcodeFormat();
+  const name = Object.entries(zxingModule.BarcodeFormat || {}).find(([, value]) => value === format)?.[0] || String(format);
+  return { symbology: name, payload: result.getText() };
+}
+
+async function decodeCrop(filePath, pageIndex, image, view) {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'kf-barcode-'));
+  try {
+    const prefix = path.join(dir, 'page');
+    execFileSync('pdftoppm', ['-png', '-r', '300', '-f', String(pageIndex), '-l', String(pageIndex), filePath, prefix], { stdio: 'ignore' });
+    const pngName = fs.readdirSync(dir).find((name) => name.endsWith('.png'));
+    if (!pngName) return null;
+    const png = PNG.sync.read(fs.readFileSync(path.join(dir, pngName)));
+    const scale = 300 / 72;
+    const x0 = Math.max(0, Math.floor(image.x * scale));
+    const x1 = Math.min(png.width, Math.ceil((image.x + image.width) * scale));
+    const yTop = view.height - (image.y + image.height);
+    const y0 = Math.max(0, Math.floor(yTop * scale));
+    const y1 = Math.min(png.height, Math.ceil((yTop + image.height) * scale));
+    const width = x1 - x0;
+    const height = y1 - y0;
+    if (width < 8 || height < 8) return null;
+    const luminance = new Uint8ClampedArray(width * height);
+    for (let y = 0; y < height; y += 1) {
+      for (let x = 0; x < width; x += 1) {
+        const offset = ((y0 + y) * png.width + (x0 + x)) * 4;
+        luminance[y * width + x] = (png.data[offset] + png.data[offset + 1] + png.data[offset + 2]) / 3;
+      }
+    }
+    const attempts = [luminance, invertLuminance(luminance)];
+    for (const attempt of attempts) {
+      try {
+        const decoded = await readBarcode(attempt, width, height);
+        return { ...decoded, ...barMeasures(attempt, width, height, image.width), decoded: true };
+      } catch {
+        // The crop is discarded with the temp directory.
+      }
+    }
+    return null;
+  } finally {
+    fs.rmSync(dir, { recursive: true, force: true });
+  }
+}
+
+async function attachBarcodes(page, images, view, filePath, pageIndex) {
+  for (const image of images) {
+    const kind = proposeImageClass(image, view.height, view.width);
+    if (kind !== 'barcode' && kind !== 'qr') continue;
+    const raw = imageObject(page, image.name);
+    const luminance = raw ? luminanceOf(raw) : null;
+    image.barcode = { symbology: '', payload: '', moduleWidth: 0, quietZone: 0, decoded: false };
+    if (luminance) {
+      const flipped = flipLuminance(luminance, raw.width, raw.height);
+      for (const attempt of [luminance, invertLuminance(luminance), flipped, invertLuminance(flipped)]) {
+        try {
+          const decoded = await readBarcode(attempt, raw.width, raw.height);
+          image.barcode = { ...decoded, ...barMeasures(attempt, raw.width, raw.height, image.width), decoded: true };
+          break;
+        } catch {
+          // Try the next orientation. The image bytes are not stored.
+        }
+      }
+    }
+    if (!image.barcode.decoded) {
+      const decoded = await decodeCrop(filePath, pageIndex, image, view);
+      if (decoded) image.barcode = decoded;
+    }
+  }
+}
+
 async function openPdf(filePath) {
   const data = new Uint8Array(fs.readFileSync(filePath));
   const doc = await getDocument({ data, disableWorker: true, useSystemFonts: true }).promise;
@@ -393,6 +565,7 @@ async function openPdf(filePath) {
     const view = page.getViewport({ scale: 1 });
     const ops = await page.getOperatorList();
     const read = readOperators(ops, page, { width: view.width, height: view.height });
+    await attachBarcodes(page, read.images, view, filePath, index);
     pages.push({
       width: round1(view.width),
       height: round1(view.height),
@@ -419,7 +592,19 @@ function guessBinding(span, spans) {
   return '';
 }
 
-function markSpans(spans, variants) {
+function brandingKind(span, spans, pageHeight) {
+  const text = String(span.text || '');
+  if (/fresa/i.test(text)) return 'name';
+  if (/https?:\/\/|www\./i.test(text)) return 'url';
+  if (/\b(tel|phone|fax|mobile)\b\s*[:.]/i.test(text)) return 'phone';
+  if (/^\d{1,4}$/.test(text.trim())) return '';
+  const inChrome = span.y > pageHeight * 0.7 || span.y < pageHeight * 0.15;
+  const nearName = spans.some((other) => other !== span && /fresa/i.test(other.text || '') && Math.abs(other.x - span.x) < 80 && Math.abs(other.y - span.y) < 40);
+  if (inChrome && nearName && text.length >= 12 && /road|street|floor|plot|building|tower|block|nagar|po box|p\.o\./i.test(text)) return 'address';
+  return '';
+}
+
+function markSpans(spans, variants, pageHeight) {
   const dynamic = [];
   for (const span of spans) {
     const nearby = variants.find((item) => Math.abs(item.x - span.x) <= 3 && Math.abs(item.y - span.y) <= 3);
@@ -428,6 +613,9 @@ function markSpans(spans, variants) {
     if (isHeading(span.text)) {
       role = 'static';
       reason = 'document title';
+    } else if (brandingKind(span, spans, pageHeight)) {
+      role = 'branding';
+      reason = 'Fresa name, URL, phone, or HQ address; golden output omits it';
     } else if (nearby && nearby.text !== span.text) {
       role = 'dynamic';
       reason = 'text differs from the same-layout variant at this position';
@@ -441,6 +629,7 @@ function markSpans(spans, variants) {
       reason = 'matches a demo value (number, date, party, or Fresa sample text)';
     }
     span.role = role;
+    span.brandingKind = role === 'branding' ? brandingKind(span, spans, pageHeight) : '';
     const binding = role === 'dynamic' ? guessBinding(span, spans) : '';
     span.binding = binding;
     if (role === 'dynamic') dynamic.push({ ...span, reason });
@@ -462,19 +651,19 @@ function cluster(values, tolerance) {
   return groups;
 }
 
-function proposeImageClass(image, pageHeight) {
+function proposeImageClass(image, pageHeight, pageWidth) {
   const aspect = image.height > 0 ? image.width / image.height : 0;
   if (aspect >= 3.5 && image.height <= 40) return 'barcode';
   if (aspect >= 0.8 && aspect <= 1.25 && image.width >= 28 && image.width <= 140) return 'qr';
+  if (image.y >= pageHeight * 0.72 && image.height >= 24 && pageWidth && image.width >= pageWidth * 0.55) return 'letterhead';
   if (image.y >= pageHeight * 0.72 && image.height >= 24) return 'logo';
   if (image.y <= pageHeight * 0.16) return 'decorative Fresa branding';
   return 'other';
 }
 
 function layoutOf(pageHeight, spans) {
-  const headerFloor = pageHeight * 0.82;
   const footerCeiling = pageHeight * 0.1;
-  const body = spans.filter((span) => span.y < headerFloor && span.y > footerCeiling);
+  const body = spans.filter((span) => span.y > footerCeiling);
   const yGroups = cluster(body.map((span) => span.y), 2);
   const rows = yGroups
     .map((group) => body.filter((span) => Math.abs(span.y - group.center) <= 2))
@@ -499,22 +688,24 @@ function layoutOf(pageHeight, spans) {
     return dynamicCells >= Math.ceil(row.length / 2);
   });
   const isTable = dataRows.length >= 8 && columns.length >= 4 && alignedDynamic / dynamicCount >= 0.6;
-  const summaryRows = spans.filter((span) => /\b(total|grand total)\b/i.test(span.text));
-  const columnHeader = isTable && dataRows.length
-    ? spans.filter((span) => span.role !== 'dynamic' && span.y > Math.max(...dataRows.flat().map((span) => span.y)) && span.y < headerFloor)
-    : [];
-  const detailYs = (dataRows.length ? dataRows.flat() : body).map((span) => span.y);
-  const headerYs = spans.filter((span) => span.y >= headerFloor || columnHeader.includes(span)).map((span) => span.y);
-  const summaryYs = summaryRows.map((span) => span.y);
+  const detailSource = dataRows.length ? dataRows.flat() : [];
+  const detailYs = detailSource.map((span) => span.y);
+  const detailTop = detailYs.length ? Math.max(...detailYs) : pageHeight * 0.75;
+  const detailBottom = detailYs.length ? Math.min(...detailYs) : pageHeight * 0.25;
+  const columnTitle = spans.filter((span) => /^(opening balance|debit|credit|closing balance)$/i.test(String(span.text || '').trim()));
+  const headerFloor = detailYs.length
+    ? (columnTitle.length ? Math.min(...columnTitle.map((span) => span.y)) - 1 : detailTop + 2)
+    : pageHeight * 0.82;
+  const summaryMax = detailYs.length ? Math.max(footerCeiling, detailBottom - 2) : pageHeight * 0.28;
   return {
     kind: isTable ? 'table' : 'form',
     columns,
     dataRows,
     bands: {
-      header: { yMin: round1(headerYs.length ? Math.min(...headerYs) - 2 : headerFloor), yMax: round1(pageHeight) },
+      header: { yMin: round1(headerFloor), yMax: round1(pageHeight) },
       title: { yMin: round1(pageHeight * 0.74), yMax: round1(pageHeight * 0.86) },
-      detail: { yMin: round1(detailYs.length ? Math.min(...detailYs) : pageHeight * 0.25), yMax: round1(detailYs.length ? Math.max(...detailYs) : pageHeight * 0.75) },
-      summary: { yMin: round1(summaryYs.length ? Math.min(...summaryYs) - 2 : pageHeight * 0.12), yMax: round1(summaryYs.length ? Math.max(...summaryYs) + 2 : pageHeight * 0.28) },
+      detail: { yMin: round1(detailBottom), yMax: round1(detailTop) },
+      summary: { yMin: round1(footerCeiling), yMax: round1(summaryMax) },
       footer: { yMin: 0, yMax: round1(footerCeiling) },
     },
   };
@@ -526,7 +717,7 @@ function tableTemplate(page) {
   const columns = layout.columns.map((column, index) => {
     const bodyTop = Math.max(...layout.dataRows.flat().map((span) => span.y), 0);
     const header = page.spans
-      .filter((span) => span.role !== 'dynamic' && !looksLikeValue(span.text) && Math.abs(column.edge(span) - column.center) <= 12 && span.y > bodyTop + 1)
+      .filter((span) => span.role !== 'dynamic' && span.role !== 'branding' && !looksLikeValue(span.text) && Math.abs(column.edge(span) - column.center) <= 12 && span.y > bodyTop + 1)
       .sort((a, b) => a.y - b.y)[0];
     return {
       index,
@@ -553,7 +744,11 @@ function tableTemplate(page) {
       charSpacing: cell.charSpacing || 0,
       wordSpacing: cell.wordSpacing || 0,
       glyphWidth: cell.glyphWidth,
+      glyphText: cell.glyphText,
       segments: cell.segments,
+      renderMode: cell.renderMode || 0,
+      stroke: cell.stroke,
+      strokeWidth: cell.strokeWidth,
     };
   }));
   page.spans = page.spans.filter((span) => !assigned.has(span.id));
@@ -598,14 +793,18 @@ function pageSpec(read, pageIndex) {
     spans,
     paths: read.paths || [],
     images: read.images.map((image) => {
-      const proposedClass = proposeImageClass(image, read.height);
-      const source = spans
-        .filter((span) => Math.abs(span.y - (image.y + image.height / 2)) <= image.height + 24)
-        .sort((a, b) => Math.abs(a.x - image.x) - Math.abs(b.x - image.x))[0];
+      const proposedClass = proposeImageClass(image, read.height, read.width);
+      const decoded = image.barcode || null;
       return {
-        ...image,
+        x: image.x,
+        y: image.y,
+        width: image.width,
+        height: image.height,
+        format: image.format,
+        slot: image.slot || '',
         proposedClass,
-        demoValue: proposedClass === 'barcode' || proposedClass === 'qr' ? (source?.text || '') : '',
+        demoValue: decoded?.payload || '',
+        barcode: decoded,
       };
     }),
     shadings: read.shadings,
@@ -640,7 +839,7 @@ export async function extractSpec(code) {
   const extractedWords = new Set(allSpans.flatMap((span) => span.text.split(/\s+/).filter(Boolean)));
   const missingWords = [...new Set(pdftotext.split(/\s+/).filter((word) => word && !extractedWords.has(word)))];
   const variants = code === 'HBL_DRAFT_REPORT_FORMAT_JASPER' ? await variantStrings(HBL_VARIANT) : [];
-  const dynamic = pages.flatMap((page) => markSpans(page.spans, variants));
+  const dynamic = pages.flatMap((page) => markSpans(page.spans, variants, page.height));
   for (const page of pages) {
     const layout = layoutOf(page.height, page.spans);
     page.bands = layout.bands;

@@ -1,14 +1,18 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { AlertCircle, RefreshCw } from 'lucide-react';
-import { appType } from '@/lib/erpTypography';
+import { Link } from 'react-router-dom';
+import { RefreshCw } from 'lucide-react';
+import { appType, listShell, erpTable } from '@/lib/erpTypography';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { OperationTypeBadge } from '@/components/erp';
+import { PageBackLink } from '@/components/ui/PageBackLink';
+import { EmptyState, ErrorState, OperationTypeBadge } from '@/components/erp';
 import { jobDetailPath, jobDisplayNumber } from '../utils/jobRoute';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { useAccountsJobs } from '../hooks/useAccountsJobs';
-import { JOB_STATUS_LABELS, type JobStatus } from '../constants/job.constants';
+import {
+  JOB_STATUS_LABELS,
+  jobStatusDisplayLabel,
+  type JobStatus,
+} from '../constants/job.constants';
 
 const STATUS_FILTERS: Array<JobStatus | 'all'> = [
   'all',
@@ -33,7 +37,6 @@ function formatDate(value?: string): string {
  * Permission: jobs.accounts.view (Tenant Admin / finance pack).
  */
 export default function AccountsJobsPage() {
-  const navigate = useNavigate();
   const [status, setStatus] = useState<JobStatus | 'all'>('all');
   const [search, setSearch] = useState('');
   const [appliedSearch, setAppliedSearch] = useState('');
@@ -53,31 +56,32 @@ export default function AccountsJobsPage() {
 
   const jobs = data?.jobs ?? [];
   const meta = data?.meta;
+  const totalPages = meta?.totalPages ?? 1;
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <button
+    <div className={listShell.page}>
+      <PageBackLink to="/accounts" label="Back to accounts" />
+      <div className={listShell.card}>
+        <div className={listShell.header}>
+          <div className="min-w-0">
+            <h2 className={appType.pageTitle}>Accounts jobs</h2>
+            <p className="mt-1 text-[13px] text-[#64748b]">
+              Completed, delivered, and closed jobs for finance (not scoped by ops job type).
+            </p>
+          </div>
+          <Button
             type="button"
-            className="mb-1 text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-            onClick={() => navigate('/accounts')}
+            size="sm"
+            variant="secondary"
+            leftIcon={<RefreshCw className={isFetching ? 'animate-spin' : undefined} />}
+            disabled={isFetching}
+            onClick={() => void refetch()}
           >
-            ← Accounts
-          </button>
-          <h2 className={appType.pageTitle}>Accounts jobs</h2>
-          <p className="mt-0.5 text-sm text-[var(--color-neutral-400)]">
-            Completed, delivered, and closed jobs for finance (not scoped by ops job type).
-          </p>
+            Refresh
+          </Button>
         </div>
-        <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
-      </div>
 
-      <Card className="space-y-4 p-4">
-        <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-end">
+        <div className={listShell.toolbar}>
           <div className="flex flex-wrap gap-2">
             {STATUS_FILTERS.map((s) => (
               <button
@@ -95,7 +99,7 @@ export default function AccountsJobsPage() {
             ))}
           </div>
           <form
-            className="flex min-w-[220px] flex-1 gap-2"
+            className="flex min-w-[220px] flex-1 gap-2 sm:max-w-sm sm:flex-none"
             onSubmit={(e) => {
               e.preventDefault();
               setAppliedSearch(search.trim());
@@ -114,48 +118,48 @@ export default function AccountsJobsPage() {
         </div>
 
         {isError ? (
-          <div className="space-y-3 py-8">
-            <p className="flex items-start gap-2 text-sm text-[var(--color-danger-600)]">
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-              {getErrorMessage(error) ||
-                'Failed to load accounts jobs. You may need jobs.accounts.view.'}
-            </p>
-            <Button type="button" variant="secondary" onClick={() => refetch()}>
-              Retry
-            </Button>
+          <div className="px-3 py-3">
+            <ErrorState
+              message={
+                getErrorMessage(error) ||
+                'Failed to load accounts jobs. You may need jobs.accounts.view.'
+              }
+              onRetry={() => void refetch()}
+            />
           </div>
         ) : isLoading ? (
-          <p className="py-10 text-center text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          <div className="space-y-1.5 px-3 py-4" aria-busy>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-8 animate-pulse rounded-sm bg-[#eef2f6]" />
+            ))}
+          </div>
         ) : jobs.length === 0 ? (
-          <p className="py-10 text-center text-sm text-[var(--color-neutral-400)]">
-            No accounts jobs found.
-          </p>
+          <EmptyState
+            title="No accounts jobs found"
+            description="Try another status filter or search, or wait for completed / delivered / closed jobs."
+          />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] border-collapse text-left text-[13px]">
+            <table className={listShell.table}>
               <thead>
-                <tr className="border-b border-[var(--fresa-border,#C9D3DF)] text-[11px] uppercase tracking-wide text-[#64748B]">
-                  <th className="px-2 py-2 font-medium">Job</th>
-                  <th className="px-2 py-2 font-medium">Type</th>
-                  <th className="px-2 py-2 font-medium">Status</th>
-                  <th className="px-2 py-2 font-medium">Branch</th>
-                  <th className="px-2 py-2 font-medium">Party</th>
-                  <th className="px-2 py-2 font-medium">ETD / ETA</th>
-                  <th className="px-2 py-2 font-medium">Invoices</th>
+                <tr>
+                  <th className={erpTable.th}>Job</th>
+                  <th className={erpTable.th}>Type</th>
+                  <th className={erpTable.th}>Status</th>
+                  <th className={erpTable.th}>Branch</th>
+                  <th className={erpTable.th}>Party</th>
+                  <th className={erpTable.th}>ETD / ETA</th>
+                  <th className={erpTable.th}>Invoices</th>
                 </tr>
               </thead>
               <tbody>
                 {jobs.map((row) => {
-                  const href =
-                    row.job_type
-                      ? jobDetailPath({ id: row.id, job_type: row.job_type })
-                      : `/jobs/${row.id}`;
+                  const href = row.job_type
+                    ? jobDetailPath({ id: row.id, job_type: row.job_type })
+                    : `/jobs/${row.id}`;
                   return (
-                    <tr
-                      key={row.id}
-                      className="border-b border-[var(--fresa-border,#E8EEF5)] align-top"
-                    >
-                      <td className="px-2 py-2.5">
+                    <tr key={row.id} className={erpTable.row}>
+                      <td className={erpTable.td}>
                         <Link
                           to={href}
                           className="font-medium text-[var(--color-primary-700)] underline-offset-2 hover:underline"
@@ -163,31 +167,27 @@ export default function AccountsJobsPage() {
                           {jobDisplayNumber(row)}
                         </Link>
                       </td>
-                      <td className="px-2 py-2.5">
+                      <td className={erpTable.td}>
                         {row.job_type ? (
                           <OperationTypeBadge code={row.job_type} />
                         ) : (
                           '—'
                         )}
                       </td>
-                      <td className="px-2 py-2.5">
-                        {row.status
-                          ? (JOB_STATUS_LABELS[row.status as JobStatus] ?? row.status)
-                          : '—'}
+                      <td className={erpTable.td}>
+                        {jobStatusDisplayLabel({ status: row.status })}
                       </td>
-                      <td className="px-2 py-2.5 text-[#334155]">
-                        {row.branch_name || '—'}
-                      </td>
-                      <td className="px-2 py-2.5 text-[#334155]">
+                      <td className={erpTable.td}>{row.branch_name || '—'}</td>
+                      <td className={erpTable.td}>
                         {row.party_name ||
                           row.shipper_name ||
                           row.consignee_name ||
                           '—'}
                       </td>
-                      <td className="px-2 py-2.5 text-[#64748B]">
+                      <td className={erpTable.td}>
                         {formatDate(row.etd)} / {formatDate(row.eta)}
                       </td>
-                      <td className="px-2 py-2.5 text-[12px] text-[#64748B]">
+                      <td className={erpTable.td}>
                         {[
                           row.has_sale_invoice ? 'Sale' : null,
                           row.has_purchase_invoice ? 'PI' : null,
@@ -203,11 +203,11 @@ export default function AccountsJobsPage() {
           </div>
         )}
 
-        {meta && (meta.totalPages ?? 1) > 1 ? (
-          <div className="flex items-center justify-between gap-2 text-[12px] text-[#64748B]">
+        {totalPages > 1 ? (
+          <div className="flex items-center justify-between gap-2 border-t border-[var(--fresa-border,#E8EEF5)] px-4 py-3 text-[12px] text-[#64748B]">
             <span>
-              Page {meta.page ?? page} of {meta.totalPages}
-              {meta.total != null ? ` · ${meta.total} total` : ''}
+              Page {meta?.page ?? page} of {totalPages}
+              {meta?.total != null ? ` · ${meta.total} total` : ''}
             </span>
             <div className="flex gap-2">
               <Button
@@ -223,7 +223,7 @@ export default function AccountsJobsPage() {
                 type="button"
                 size="sm"
                 variant="secondary"
-                disabled={page >= (meta.totalPages ?? 1) || isFetching}
+                disabled={page >= totalPages || isFetching}
                 onClick={() => setPage((p) => p + 1)}
               >
                 Next
@@ -231,7 +231,7 @@ export default function AccountsJobsPage() {
             </div>
           </div>
         ) : null}
-      </Card>
+      </div>
     </div>
   );
 }

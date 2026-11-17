@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { AlertCircle, CheckCircle2, RefreshCw, X } from 'lucide-react';
-import { appType } from '@/lib/erpTypography';
+import { Link } from 'react-router-dom';
+import { CheckCircle2, RefreshCw, X } from 'lucide-react';
+import { appType, listShell, erpTable } from '@/lib/erpTypography';
 import { isUuid } from '@/lib/isUuid';
 import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
+import { PageBackLink } from '@/components/ui/PageBackLink';
 import { Modal } from '@/components/ui/Modal';
+import { EmptyState, ErrorState } from '@/components/erp';
 import { jobDetailPath, jobDisplayNumber } from '../utils/jobRoute';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import type { JobReopenRequest, JobReopenRequestStatus } from '../types/job.types';
+import {
+  useApproveJobReopenRequest,
+  useJobReopenRequests,
+  useRejectJobReopenRequest,
+} from '../hooks/useJobReopenRequests';
 
 /** Prefer a human name; never surface a bare user UUID in the inbox. */
 function requesterLabel(row: JobReopenRequest): string {
@@ -16,11 +22,6 @@ function requesterLabel(row: JobReopenRequest): string {
   if (name && !isUuid(name)) return name;
   return '—';
 }
-import {
-  useApproveJobReopenRequest,
-  useJobReopenRequests,
-  useRejectJobReopenRequest,
-} from '../hooks/useJobReopenRequests';
 
 const STATUS_FILTERS: Array<JobReopenRequestStatus | 'all'> = [
   'PENDING',
@@ -38,7 +39,6 @@ function statusTone(status: string): string {
 }
 
 export default function JobReopenRequestsPage() {
-  const navigate = useNavigate();
   const [status, setStatus] = useState<JobReopenRequestStatus | 'all'>('PENDING');
   const [page, setPage] = useState(1);
   const [reviewTarget, setReviewTarget] = useState<JobReopenRequest | null>(null);
@@ -62,6 +62,7 @@ export default function JobReopenRequestsPage() {
   const reject = useRejectJobReopenRequest();
   const items = data?.items ?? [];
   const meta = data?.meta;
+  const totalPages = meta?.totalPages ?? 1;
   const pending = approve.isPending || reject.isPending;
 
   const openReview = (row: JobReopenRequest, mode: 'approve' | 'reject') => {
@@ -105,73 +106,81 @@ export default function JobReopenRequestsPage() {
   };
 
   return (
-    <div className="space-y-4">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-        <div>
-          <button
+    <div className={listShell.page}>
+      <PageBackLink to="/dashboard" label="Back to dashboard" />
+      <div className={listShell.card}>
+        <div className={listShell.header}>
+          <div className="min-w-0">
+            <h2 className={appType.pageTitle}>Job reopen requests</h2>
+            <p className="mt-1 text-[13px] text-[#64748b]">
+              Tenant Admin inbox — approve or reject staff reopen requests for closed jobs.
+              Branch Managers cannot approve.
+            </p>
+          </div>
+          <Button
             type="button"
-            className="mb-1 text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
-            onClick={() => navigate('/dashboard')}
+            size="sm"
+            variant="secondary"
+            leftIcon={<RefreshCw className={isFetching ? 'animate-spin' : undefined} />}
+            disabled={isFetching}
+            onClick={() => void refetch()}
           >
-            ← Dashboard
-          </button>
-          <h2 className={appType.pageTitle}>Job reopen requests</h2>
-          <p className="mt-0.5 text-sm text-[var(--color-neutral-400)]">
-            Tenant Admin inbox — approve or reject staff reopen requests for closed jobs.
-            Branch Managers cannot approve.
-          </p>
+            Refresh
+          </Button>
         </div>
-        <Button type="button" variant="secondary" onClick={() => refetch()} disabled={isFetching}>
-          <RefreshCw className={`h-4 w-4 ${isFetching ? 'animate-spin' : ''}`} />
-          Refresh
-        </Button>
-      </div>
 
-      <Card className="space-y-4 p-4">
-        <div className="flex flex-wrap gap-2">
-          {STATUS_FILTERS.map((s) => (
-            <button
-              key={s}
-              type="button"
-              onClick={() => setStatus(s)}
-              className={`rounded-sm border px-2.5 py-1 text-[12px] font-medium ${
-                status === s
-                  ? 'border-[var(--color-primary-500)] bg-[var(--color-primary-50)] text-[var(--color-primary-700)]'
-                  : 'border-[var(--fresa-border,#C9D3DF)] text-[#475569]'
-              }`}
-            >
-              {s === 'all' ? 'All' : s}
-            </button>
-          ))}
+        <div className={listShell.toolbar}>
+          <div className="flex flex-wrap gap-2">
+            {STATUS_FILTERS.map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => setStatus(s)}
+                className={`rounded-sm border px-2.5 py-1 text-[12px] font-medium ${
+                  status === s
+                    ? 'border-[var(--color-primary-500)] bg-[var(--color-primary-50)] text-[var(--color-primary-700)]'
+                    : 'border-[var(--fresa-border,#C9D3DF)] text-[#475569]'
+                }`}
+              >
+                {s === 'all' ? 'All' : s}
+              </button>
+            ))}
+          </div>
         </div>
 
         {isError ? (
-          <div className="space-y-3 py-8">
-            <p className="flex items-start gap-2 text-sm text-[var(--color-danger-600)]">
-              <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
-              {getErrorMessage(error) || 'Failed to load reopen requests.'}
-            </p>
-            <Button type="button" variant="secondary" onClick={() => refetch()}>
-              Retry
-            </Button>
+          <div className="px-3 py-3">
+            <ErrorState
+              message={getErrorMessage(error) || 'Failed to load reopen requests.'}
+              onRetry={() => void refetch()}
+            />
           </div>
         ) : isLoading ? (
-          <p className="py-10 text-center text-sm text-[var(--color-neutral-400)]">Loading…</p>
+          <div className="space-y-1.5 px-3 py-4" aria-busy>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div key={i} className="h-8 animate-pulse rounded-sm bg-[#eef2f6]" />
+            ))}
+          </div>
         ) : items.length === 0 ? (
-          <p className="py-10 text-center text-sm text-[var(--color-neutral-400)]">
-            No reopen requests{status !== 'all' ? ` with status ${status}` : ''}.
-          </p>
+          <EmptyState
+            title={
+              status !== 'all'
+                ? `No reopen requests with status ${status}`
+                : 'No reopen requests'
+            }
+            description="Staff reopen requests for closed jobs will appear here."
+          />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[720px] border-collapse text-left text-[13px]">
+            <table className={listShell.table}>
               <thead>
-                <tr className="border-b border-[var(--fresa-border,#C9D3DF)] text-[11px] uppercase tracking-wide text-[#64748B]">
-                  <th className="px-2 py-2 font-medium">Job</th>
-                  <th className="px-2 py-2 font-medium">Requested by</th>
-                  <th className="px-2 py-2 font-medium">Reason</th>
-                  <th className="px-2 py-2 font-medium">Target</th>
-                  <th className="px-2 py-2 font-medium">Status</th>
-                  <th className="px-2 py-2 font-medium">Actions</th>
+                <tr>
+                  <th className={erpTable.th}>Job</th>
+                  <th className={erpTable.th}>Requested by</th>
+                  <th className={erpTable.th}>Reason</th>
+                  <th className={erpTable.th}>Target</th>
+                  <th className={erpTable.th}>Status</th>
+                  <th className={erpTable.th}>Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -188,11 +197,8 @@ export default function JobReopenRequestsPage() {
                   });
                   const isPending = String(row.status).toUpperCase() === 'PENDING';
                   return (
-                    <tr
-                      key={row.id}
-                      className="border-b border-[var(--fresa-border,#E8EEF5)] align-top"
-                    >
-                      <td className="px-2 py-2.5">
+                    <tr key={row.id} className={erpTable.row}>
+                      <td className={erpTable.td}>
                         {jobHref ? (
                           <Link
                             to={jobHref}
@@ -204,10 +210,12 @@ export default function JobReopenRequestsPage() {
                           <span>{jobLabel}</span>
                         )}
                         {row.job_status ? (
-                          <div className="mt-0.5 text-[11px] text-[#64748B]">{row.job_status}</div>
+                          <div className="mt-0.5 text-[11px] text-[#64748B]">
+                            {row.job_status}
+                          </div>
                         ) : null}
                       </td>
-                      <td className="px-2 py-2.5 text-[#334155]">
+                      <td className={erpTable.td}>
                         {requesterLabel(row)}
                         {row.created_at ? (
                           <div className="mt-0.5 text-[11px] text-[#64748B]">
@@ -215,20 +223,20 @@ export default function JobReopenRequestsPage() {
                           </div>
                         ) : null}
                       </td>
-                      <td className="max-w-[280px] px-2 py-2.5 text-[#334155]">
+                      <td className={`${erpTable.td} max-w-[280px]`}>
                         <span className="line-clamp-3">{row.reason || '—'}</span>
                       </td>
-                      <td className="px-2 py-2.5 text-[#334155]">
+                      <td className={erpTable.td}>
                         {row.target_status || 'IN_PROGRESS'}
                       </td>
-                      <td className="px-2 py-2.5">
+                      <td className={erpTable.td}>
                         <span
                           className={`inline-flex rounded-sm border px-1.5 py-0.5 text-[11px] font-medium ${statusTone(String(row.status))}`}
                         >
                           {String(row.status).toUpperCase()}
                         </span>
                       </td>
-                      <td className="px-2 py-2.5">
+                      <td className={erpTable.td}>
                         {isPending ? (
                           <div className="flex flex-wrap gap-1.5">
                             <Button
@@ -270,11 +278,11 @@ export default function JobReopenRequestsPage() {
           </div>
         )}
 
-        {meta && (meta.totalPages ?? 1) > 1 ? (
-          <div className="flex items-center justify-between gap-2 text-[12px] text-[#64748B]">
+        {totalPages > 1 ? (
+          <div className="flex items-center justify-between gap-2 border-t border-[var(--fresa-border,#E8EEF5)] px-4 py-3 text-[12px] text-[#64748B]">
             <span>
-              Page {meta.page ?? page} of {meta.totalPages}
-              {meta.total != null ? ` · ${meta.total} total` : ''}
+              Page {meta?.page ?? page} of {totalPages}
+              {meta?.total != null ? ` · ${meta.total} total` : ''}
             </span>
             <div className="flex gap-2">
               <Button
@@ -290,7 +298,7 @@ export default function JobReopenRequestsPage() {
                 type="button"
                 size="sm"
                 variant="secondary"
-                disabled={page >= (meta.totalPages ?? 1) || isFetching}
+                disabled={page >= totalPages || isFetching}
                 onClick={() => setPage((p) => p + 1)}
               >
                 Next
@@ -298,7 +306,7 @@ export default function JobReopenRequestsPage() {
             </div>
           </div>
         ) : null}
-      </Card>
+      </div>
 
       {reviewTarget ? (
         <Modal

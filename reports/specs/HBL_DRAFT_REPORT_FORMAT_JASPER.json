@@ -1624,6 +1624,7 @@
     {
       "id": "p1s1",
       "text": "BILL OF LADING",
+      "glyphText": "BILL OF LADING",
       "segments": [
         {
           "text": "BILL OF LADING",
@@ -1645,18 +1646,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 88,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s2",
       "text": "NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+      "glyphText": "NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
       "segments": [
         {
           "text": "NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
           "x": 245.4,
           "y": 795.5,
-          "width": 128.3
+          "width": 128.29
         }
       ],
       "font": "Helvetica",
@@ -1665,25 +1671,30 @@
       "colorSource": "rgb",
       "x": 245.4,
       "y": 795.5,
-      "width": 128.3,
+      "width": 128.29,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 128.3,
+      "glyphWidth": 128.29,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s3",
       "text": "Shipper",
+      "glyphText": "Shipper",
       "segments": [
         {
           "text": "Shipper",
           "x": 20,
           "y": 780.7,
-          "width": 29.8
+          "width": 29.78
         }
       ],
       "font": "Helvetica-Bold",
@@ -1692,19 +1703,24 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 780.7,
-      "width": 29.8,
+      "width": 29.78,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 29.8,
+      "glyphWidth": 29.78,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s4",
       "text": "Consignee",
+      "glyphText": "Consignee",
       "segments": [
         {
           "text": "Consignee",
@@ -1726,18 +1742,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 40.9,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s5",
       "text": "Bill of Lading No.",
+      "glyphText": "Bill of Lading No.",
       "segments": [
         {
           "text": "Bill of Lading No.",
           "x": 302,
           "y": 780.2,
-          "width": 65.8
+          "width": 65.78
         }
       ],
       "font": "Helvetica-Bold",
@@ -1746,25 +1767,30 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 780.2,
-      "width": 65.8,
+      "width": 65.78,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 65.8,
+      "glyphWidth": 65.78,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s6",
       "text": "F/Agent Name & Ref.",
+      "glyphText": "F/Agent Name & Ref.",
       "segments": [
         {
           "text": "F/Agent Name & Ref.",
           "x": 302,
           "y": 766.7,
-          "width": 79.1
+          "width": 79.12
         }
       ],
       "font": "Helvetica-Bold",
@@ -1773,19 +1799,24 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 766.7,
-      "width": 79.1,
+      "width": 79.12,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 79.1,
+      "glyphWidth": 79.12,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s7",
       "text": "Notify Party",
+      "glyphText": "Notify Party",
       "segments": [
         {
           "text": "Notify Party",
@@ -1807,18 +1838,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 44.9,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s8",
       "text": "Place of Receipt",
+      "glyphText": "Place of Receipt",
       "segments": [
         {
           "text": "Place of Receipt",
           "x": 20,
           "y": 555.7,
-          "width": 58.2
+          "width": 58.25
         }
       ],
       "font": "Helvetica",
@@ -1827,25 +1863,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 555.7,
-      "width": 58.2,
+      "width": 58.25,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 58.2,
+      "glyphWidth": 58.25,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s9",
       "text": "Port of Loading",
+      "glyphText": "Port of Loading",
       "segments": [
         {
           "text": "Port of Loading",
           "x": 170,
           "y": 555.7,
-          "width": 54.3
+          "width": 54.26
         }
       ],
       "font": "Helvetica",
@@ -1854,25 +1895,30 @@
       "colorSource": "rgb",
       "x": 170,
       "y": 555.7,
-      "width": 54.3,
+      "width": 54.26,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 54.3,
+      "glyphWidth": 54.26,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s10",
       "text": "Job No.",
+      "glyphText": "Job No.",
       "segments": [
         {
           "text": "Job No.",
           "x": 302,
           "y": 555.7,
-          "width": 27.6
+          "width": 27.57
         }
       ],
       "font": "Helvetica",
@@ -1881,25 +1927,30 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 555.7,
-      "width": 27.6,
+      "width": 27.57,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 27.6,
+      "glyphWidth": 27.57,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s11",
       "text": "Vessel/Voyage No.",
+      "glyphText": "Vessel/Voyage No.",
       "segments": [
         {
           "text": "Vessel/Voyage No.",
           "x": 20,
           "y": 527.7,
-          "width": 68
+          "width": 68.03
         }
       ],
       "font": "Helvetica",
@@ -1908,19 +1959,24 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 527.7,
-      "width": 68,
+      "width": 68.03,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 68,
+      "glyphWidth": 68.03,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s12",
       "text": "Port of Discharge",
+      "glyphText": "Port of Discharge",
       "segments": [
         {
           "text": "Port of Discharge",
@@ -1942,18 +1998,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 61.8,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s13",
       "text": "Place of Delivery",
+      "glyphText": "Place of Delivery",
       "segments": [
         {
           "text": "Place of Delivery",
           "x": 302,
           "y": 527.7,
-          "width": 60
+          "width": 60.02
         }
       ],
       "font": "Helvetica",
@@ -1962,25 +2023,30 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 527.7,
-      "width": 60,
+      "width": 60.02,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 60,
+      "glyphWidth": 60.02,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s14",
       "text": "No.of Bills of Lading",
+      "glyphText": "No.of Bills of Lading",
       "segments": [
         {
           "text": "No.of Bills of Lading",
           "x": 456.4,
           "y": 527.7,
-          "width": 71.1
+          "width": 71.14
         }
       ],
       "font": "Helvetica",
@@ -1989,25 +2055,30 @@
       "colorSource": "rgb",
       "x": 456.4,
       "y": 527.7,
-      "width": 71.1,
+      "width": 71.14,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 71.1,
+      "glyphWidth": 71.14,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s15",
       "text": "AL NASER TRADING COMPANY LLC",
+      "glyphText": "AL NASER TRADING COMPANY LLC",
       "segments": [
         {
           "text": "AL NASER TRADING COMPANY LLC",
           "x": 21,
           "y": 691.5,
-          "width": 137.2
+          "width": 137.23
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2016,26 +2087,31 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 691.5,
-      "width": 137.2,
+      "width": 137.23,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 137.2,
-      "role": "dynamic",
+      "glyphWidth": 137.23,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
+      "role": "static",
+      "brandingKind": "",
       "binding": "",
       "slot": "company"
     },
     {
       "id": "p1s16",
       "text": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
+      "glyphText": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
       "segments": [
         {
           "text": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
           "x": 21,
           "y": 680.7,
-          "width": 272.7
+          "width": 272.67
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2044,25 +2120,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 680.7,
-      "width": 272.7,
+      "width": 272.67,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 272.7,
+      "glyphWidth": 272.67,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s17",
       "text": "AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES",
+      "glyphText": "AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES",
       "segments": [
         {
           "text": "AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES",
           "x": 21,
           "y": 670,
-          "width": 217.6
+          "width": 217.59
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2071,25 +2152,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 670,
-      "width": 217.6,
+      "width": 217.59,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 217.6,
+      "glyphWidth": 217.59,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s18",
       "text": "AL NASER TRADING COMPANY LLC",
+      "glyphText": "AL NASER TRADING COMPANY LLC",
       "segments": [
         {
           "text": "AL NASER TRADING COMPANY LLC",
           "x": 20,
           "y": 618.5,
-          "width": 137.2
+          "width": 137.23
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2098,25 +2184,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 618.5,
-      "width": 137.2,
+      "width": 137.23,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 137.2,
-      "role": "dynamic",
+      "glyphWidth": 137.23,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
+      "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s19",
       "text": "POST BOX : 12356 30AL MAKTHOOM BUILDING",
+      "glyphText": "POST BOX : 12356 30AL MAKTHOOM BUILDING",
       "segments": [
         {
           "text": "POST BOX : 12356 30AL MAKTHOOM BUILDING",
           "x": 20,
           "y": 607.7,
-          "width": 179.9
+          "width": 179.87
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2125,25 +2216,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 607.7,
-      "width": 179.9,
+      "width": 179.87,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 179.9,
+      "glyphWidth": 179.87,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s20",
       "text": "NEAR MUBARAK CENTRE ROUND ABOUT",
+      "glyphText": "NEAR MUBARAK CENTRE ROUND ABOUT",
       "segments": [
         {
           "text": "NEAR MUBARAK CENTRE ROUND ABOUT",
           "x": 20,
           "y": 597,
-          "width": 160.3
+          "width": 160.31
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2152,25 +2248,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 597,
-      "width": 160.3,
+      "width": 160.31,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 160.3,
+      "glyphWidth": 160.31,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s21",
       "text": "AL NABHA",
+      "glyphText": "AL NABHA",
       "segments": [
         {
           "text": "AL NABHA",
           "x": 20,
           "y": 586.3,
-          "width": 39.5
+          "width": 39.53
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2179,25 +2280,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 586.3,
-      "width": 39.5,
+      "width": 39.53,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 39.5,
-      "role": "dynamic",
+      "glyphWidth": 39.53,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
+      "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s22",
       "text": "SHARJAH SHARJAH",
+      "glyphText": "SHARJAH SHARJAH",
       "segments": [
         {
           "text": "SHARJAH SHARJAH",
           "x": 20,
           "y": 575.6,
-          "width": 76.8
+          "width": 76.84
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2206,25 +2312,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 575.6,
-      "width": 76.8,
+      "width": 76.84,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 76.8,
+      "glyphWidth": 76.84,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s23",
       "text": "FRESA DEMO DUBAI UAE LLC",
+      "glyphText": "FRESA DEMO DUBAI UAE LLC",
       "segments": [
         {
           "text": "FRESA DEMO DUBAI UAE LLC",
           "x": 302,
           "y": 753.5,
-          "width": 115
+          "width": 115.02
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2233,25 +2344,30 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 753.5,
-      "width": 115,
+      "width": 115.02,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 115,
-      "role": "dynamic",
-      "binding": "company.name"
+      "glyphWidth": 115.02,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
+      "role": "branding",
+      "brandingKind": "name",
+      "binding": ""
     },
     {
       "id": "p1s24",
       "text": "DUBAI UNITED ARAB EMIRATES",
+      "glyphText": "DUBAI UNITED ARAB EMIRATES",
       "segments": [
         {
           "text": "DUBAI UNITED ARAB EMIRATES",
           "x": 302,
           "y": 742.7,
-          "width": 123.4
+          "width": 123.43
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2260,25 +2376,30 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 742.7,
-      "width": 123.4,
+      "width": 123.43,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 123.4,
+      "glyphWidth": 123.43,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s25",
       "text": "Pre-carriage by",
+      "glyphText": "Pre-carriage by",
       "segments": [
         {
           "text": "Pre-carriage by",
           "x": 302,
           "y": 542.7,
-          "width": 54.7
+          "width": 54.68
         }
       ],
       "font": "Helvetica",
@@ -2287,25 +2408,30 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 542.7,
-      "width": 54.7,
+      "width": 54.68,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 54.7,
+      "glyphWidth": 54.68,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s26",
       "text": "CHENNAI (EX MADRAS), INDIA",
+      "glyphText": "CHENNAI (EX MADRAS), INDIA",
       "segments": [
         {
           "text": "CHENNAI (EX MADRAS), INDIA",
           "x": 20,
           "y": 542.5,
-          "width": 116.3
+          "width": 116.34
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2314,19 +2440,24 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 542.5,
-      "width": 116.3,
+      "width": 116.34,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 116.3,
+      "glyphWidth": 116.34,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s27",
       "text": "JEBEL ALI, UNITED ARAB",
+      "glyphText": "JEBEL ALI, UNITED ARAB",
       "segments": [
         {
           "text": "JEBEL ALI, UNITED ARAB",
@@ -2348,18 +2479,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 96.8,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s28",
       "text": "CHENNAI (EX MADRAS), INDIA",
+      "glyphText": "CHENNAI (EX MADRAS), INDIA",
       "segments": [
         {
           "text": "CHENNAI (EX MADRAS), INDIA",
           "x": 170,
           "y": 542.5,
-          "width": 116.3
+          "width": 116.34
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2368,19 +2504,24 @@
       "colorSource": "rgb",
       "x": 170,
       "y": 542.5,
-      "width": 116.3,
+      "width": 116.34,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 116.3,
+      "glyphWidth": 116.34,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s29",
       "text": "JEBEL ALI, UNITED ARAB",
+      "glyphText": "JEBEL ALI, UNITED ARAB",
       "segments": [
         {
           "text": "JEBEL ALI, UNITED ARAB",
@@ -2402,18 +2543,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 96.8,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s30",
       "text": "CMA CGM/9887",
+      "glyphText": "CMA CGM/9887",
       "segments": [
         {
           "text": "CMA CGM/9887",
           "x": 20,
           "y": 515.5,
-          "width": 58.6
+          "width": 58.65
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2422,19 +2568,24 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 515.5,
-      "width": 58.6,
+      "width": 58.65,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 58.6,
+      "glyphWidth": 58.65,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s31",
       "text": "4G LOGISTICS INDIA PVT LTD",
+      "glyphText": "4G LOGISTICS INDIA PVT LTD",
       "segments": [
         {
           "text": "4G LOGISTICS INDIA PVT LTD",
@@ -2456,18 +2607,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 114.1,
-      "role": "dynamic",
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
+      "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s32",
       "text": "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM",
+      "glyphText": "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM",
       "segments": [
         {
           "text": "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM",
           "x": 21,
           "y": 755.7,
-          "width": 252.2
+          "width": 252.25
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2476,25 +2632,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 755.7,
-      "width": 252.2,
+      "width": 252.25,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 252.2,
+      "glyphWidth": 252.25,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s33",
       "text": "CHENNAI TAMILNADU 600084 INDIA",
+      "glyphText": "CHENNAI TAMILNADU 600084 INDIA",
       "segments": [
         {
           "text": "CHENNAI TAMILNADU 600084 INDIA",
           "x": 21,
           "y": 745,
-          "width": 136.8
+          "width": 136.82
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2503,25 +2664,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 745,
-      "width": 136.8,
+      "width": 136.82,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 136.8,
+      "glyphWidth": 136.82,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s34",
       "text": "PLMAAJEA00081",
+      "glyphText": "PLMAAJEA00081",
       "segments": [
         {
           "text": "PLMAAJEA00081",
           "x": 385,
           "y": 779.9,
-          "width": 72
+          "width": 71.99
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2530,19 +2696,24 @@
       "colorSource": "rgb",
       "x": 385,
       "y": 779.9,
-      "width": 72,
+      "width": 71.99,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 72,
+      "glyphWidth": 71.99,
+      "renderMode": 2,
+      "stroke": "#000000",
+      "strokeWidth": 0.3,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s35",
       "text": "1(ONE)",
+      "glyphText": "1(ONE)",
       "segments": [
         {
           "text": "1(ONE)",
@@ -2564,18 +2735,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 27.1,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 1,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s36",
       "text": "ram@fresatechnologies.com",
+      "glyphText": "ram@fresatechnologies.com",
       "segments": [
         {
           "text": "ram@fresatechnologies.com",
           "x": 363,
           "y": 572.7,
-          "width": 101.9
+          "width": 101.93
         }
       ],
       "font": "Helvetica",
@@ -2584,25 +2760,30 @@
       "colorSource": "rgb",
       "x": 363,
       "y": 572.7,
-      "width": 101.9,
+      "width": 101.93,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 101.9,
-      "role": "dynamic",
+      "glyphWidth": 101.93,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 1,
+      "role": "branding",
+      "brandingKind": "name",
       "binding": ""
     },
     {
       "id": "p1s37",
       "text": "Prepared By :",
+      "glyphText": "Prepared By  :",
       "segments": [
         {
           "text": "Prepared By  :",
           "x": 302,
           "y": 572.7,
-          "width": 51.1
+          "width": 51.14
         }
       ],
       "font": "Helvetica",
@@ -2611,19 +2792,24 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 572.7,
-      "width": 51.1,
+      "width": 51.14,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 51.1,
+      "glyphWidth": 51.14,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 1,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s38",
       "text": "FRESA DEMO INDIA PVT LTD",
+      "glyphText": "FRESA DEMO INDIA PVT LTD",
       "segments": [
         {
           "text": "FRESA DEMO INDIA PVT LTD",
@@ -2645,18 +2831,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 112.9,
-      "role": "dynamic",
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 1,
+      "role": "branding",
+      "brandingKind": "name",
       "binding": ""
     },
     {
       "id": "p1s39",
       "text": "Tel: 9884124194",
+      "glyphText": "Tel: 9884124194",
       "segments": [
         {
           "text": "Tel: 9884124194",
           "x": 302,
           "y": 605.5,
-          "width": 60
+          "width": 60.02
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2665,25 +2856,30 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 605.5,
-      "width": 60,
+      "width": 60.02,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 60,
-      "role": "static",
+      "glyphWidth": 60.02,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 1,
+      "role": "branding",
+      "brandingKind": "phone",
       "binding": ""
     },
     {
       "id": "p1s40",
       "text": "Email: demo@fresatechnologies.com, user@fresatechnologies.com",
+      "glyphText": "Email: demo@fresatechnologies.com, user@fresatechnologies.com",
       "segments": [
         {
           "text": "Email: demo@fresatechnologies.com, user@fresatechnologies.com",
           "x": 302,
           "y": 594.7,
-          "width": 240.7
+          "width": 240.68
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2692,25 +2888,30 @@
       "colorSource": "rgb",
       "x": 302,
       "y": 594.7,
-      "width": 240.7,
+      "width": 240.68,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 240.7,
-      "role": "dynamic",
+      "glyphWidth": 240.68,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 1,
+      "role": "branding",
+      "brandingKind": "name",
       "binding": ""
     },
     {
       "id": "p1s41",
       "text": "Container No. / Seal No./",
+      "glyphText": "Container No. / Seal No./",
       "segments": [
         {
           "text": "Container No. / Seal No./",
           "x": 20,
           "y": 502.7,
-          "width": 88.9
+          "width": 88.93
         }
       ],
       "font": "Helvetica",
@@ -2719,25 +2920,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 502.7,
-      "width": 88.9,
+      "width": 88.93,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 88.9,
+      "glyphWidth": 88.93,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s42",
       "text": "Mark & No.",
+      "glyphText": "Mark & No.",
       "segments": [
         {
           "text": "Mark & No.",
           "x": 20,
           "y": 492.6,
-          "width": 40
+          "width": 40.01
         }
       ],
       "font": "Helvetica",
@@ -2746,25 +2952,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 492.6,
-      "width": 40,
+      "width": 40.01,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 40,
+      "glyphWidth": 40.01,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s43",
       "text": "No. of Pkgs or",
+      "glyphText": "No. of Pkgs or",
       "segments": [
         {
           "text": "No. of Pkgs or",
           "x": 170.2,
           "y": 502.7,
-          "width": 50.7
+          "width": 50.69
         }
       ],
       "font": "Helvetica",
@@ -2773,25 +2984,30 @@
       "colorSource": "rgb",
       "x": 170.2,
       "y": 502.7,
-      "width": 50.7,
+      "width": 50.69,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 50.7,
+      "glyphWidth": 50.69,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s44",
       "text": "Shipping Units",
+      "glyphText": "Shipping Units",
       "segments": [
         {
           "text": "Shipping Units",
           "x": 169.7,
           "y": 492.6,
-          "width": 51.6
+          "width": 51.58
         }
       ],
       "font": "Helvetica",
@@ -2800,25 +3016,30 @@
       "colorSource": "rgb",
       "x": 169.7,
       "y": 492.6,
-      "width": 51.6,
+      "width": 51.58,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 51.6,
+      "glyphWidth": 51.58,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s45",
       "text": "Description of Goods & Pkgs.",
+      "glyphText": "Description of Goods & Pkgs.",
       "segments": [
         {
           "text": "Description of Goods & Pkgs.",
           "x": 230,
           "y": 502.7,
-          "width": 104.5
+          "width": 104.49
         }
       ],
       "font": "Helvetica",
@@ -2827,25 +3048,30 @@
       "colorSource": "rgb",
       "x": 230,
       "y": 502.7,
-      "width": 104.5,
+      "width": 104.49,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 104.5,
+      "glyphWidth": 104.49,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s46",
       "text": "Gross Weight",
+      "glyphText": "Gross Weight",
       "segments": [
         {
           "text": "Gross Weight",
           "x": 449.5,
           "y": 502.7,
-          "width": 48.5
+          "width": 48.46
         }
       ],
       "font": "Helvetica",
@@ -2854,19 +3080,24 @@
       "colorSource": "rgb",
       "x": 449.5,
       "y": 502.7,
-      "width": 48.5,
+      "width": 48.46,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 48.5,
+      "glyphWidth": 48.46,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s47",
       "text": "Measurement",
+      "glyphText": "Measurement",
       "segments": [
         {
           "text": "Measurement",
@@ -2888,18 +3119,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 48.9,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s48",
       "text": "125 PACKAGES",
+      "glyphText": "125 PACKAGES",
       "segments": [
         {
           "text": "125 PACKAGES",
           "x": 166.2,
           "y": 479.5,
-          "width": 59.5
+          "width": 59.52
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2908,25 +3144,30 @@
       "colorSource": "rgb",
       "x": 166.2,
       "y": 479.5,
-      "width": 59.5,
+      "width": 59.52,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 59.5,
+      "glyphWidth": 59.52,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s49",
       "text": "18,000.00",
+      "glyphText": "18,000.00",
       "segments": [
         {
           "text": "18,000.00",
           "x": 447.4,
           "y": 479.5,
-          "width": 35.6
+          "width": 35.57
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2935,25 +3176,30 @@
       "colorSource": "rgb",
       "x": 447.4,
       "y": 479.5,
-      "width": 35.6,
+      "width": 35.57,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 35.6,
+      "glyphWidth": 35.57,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s50",
       "text": "24.000",
+      "glyphText": "24.000",
       "segments": [
         {
           "text": "24.000",
           "x": 530.5,
           "y": 479.5,
-          "width": 24.5
+          "width": 24.46
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2962,25 +3208,30 @@
       "colorSource": "rgb",
       "x": 530.5,
       "y": 479.5,
-      "width": 24.5,
+      "width": 24.46,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 24.5,
+      "glyphWidth": 24.46,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s51",
       "text": "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+      "glyphText": "STC: VALVE MATERIALS FOR MACHINERY PARTS",
       "segments": [
         {
           "text": "STC: VALVE MATERIALS FOR MACHINERY PARTS",
           "x": 233,
           "y": 442.5,
-          "width": 191.8
+          "width": 191.82
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -2989,25 +3240,30 @@
       "colorSource": "rgb",
       "x": 233,
       "y": 442.5,
-      "width": 191.8,
+      "width": 191.82,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 191.8,
+      "glyphWidth": 191.82,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s52",
       "text": "FREIGHT PREPAID",
+      "glyphText": "FREIGHT PREPAID",
       "segments": [
         {
           "text": "FREIGHT PREPAID",
           "x": 233,
           "y": 421,
-          "width": 72.4
+          "width": 72.37
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3016,25 +3272,30 @@
       "colorSource": "rgb",
       "x": 233,
       "y": 421,
-      "width": 72.4,
+      "width": 72.37,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 72.4,
+      "glyphWidth": 72.37,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s53",
       "text": "ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
+      "glyphText": "ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
       "segments": [
         {
           "text": "ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "x": 233,
           "y": 410.3,
-          "width": 229.3
+          "width": 229.32
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3043,19 +3304,24 @@
       "colorSource": "rgb",
       "x": 233,
       "y": 410.3,
-      "width": 229.3,
+      "width": 229.32,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 229.3,
+      "glyphWidth": 229.32,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s54",
       "text": "FCL",
+      "glyphText": "FCL",
       "segments": [
         {
           "text": "FCL",
@@ -3077,18 +3343,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 15.1,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s55",
       "text": "ABCU9877666 / SEAL NO. : SL345566",
+      "glyphText": "ABCU9877666 / SEAL NO. : SL345566",
       "segments": [
         {
           "text": "ABCU9877666 / SEAL NO. : SL345566",
           "x": 21,
           "y": 479.5,
-          "width": 140
+          "width": 139.96
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3097,25 +3368,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 479.5,
-      "width": 140,
+      "width": 139.96,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 140,
+      "glyphWidth": 139.96,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s56",
       "text": "/ 20' DC X 1",
+      "glyphText": "/ 20' DC X 1",
       "segments": [
         {
           "text": "/ 20' DC X 1",
           "x": 21,
           "y": 468.7,
-          "width": 42.8
+          "width": 42.82
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3124,25 +3400,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 468.7,
-      "width": 42.8,
+      "width": 42.82,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 42.8,
+      "glyphWidth": 42.82,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s57",
       "text": "NIL MARKS",
+      "glyphText": "NIL MARKS",
       "segments": [
         {
           "text": "NIL MARKS",
           "x": 21,
           "y": 436.6,
-          "width": 43.1
+          "width": 43.08
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3151,25 +3432,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 436.6,
-      "width": 43.1,
+      "width": 43.08,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 43.1,
+      "glyphWidth": 43.08,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s58",
       "text": "Total Number of Containers SAY",
+      "glyphText": "Total Number of Containers SAY",
       "segments": [
         {
           "text": "Total Number of Containers SAY",
           "x": 20,
           "y": 194.7,
-          "width": 116.5
+          "width": 116.49
         }
       ],
       "font": "Helvetica",
@@ -3178,25 +3464,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 194.7,
-      "width": 116.5,
+      "width": 116.49,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 116.5,
+      "glyphWidth": 116.49,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s59",
       "text": ":",
+      "glyphText": ":",
       "segments": [
         {
           "text": ":",
           "x": 140,
           "y": 194.7,
-          "width": 2.2
+          "width": 2.22
         }
       ],
       "font": "Helvetica",
@@ -3205,25 +3496,30 @@
       "colorSource": "rgb",
       "x": 140,
       "y": 194.7,
-      "width": 2.2,
+      "width": 2.22,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 2.2,
+      "glyphWidth": 2.22,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s60",
       "text": "or Packages(In words)",
+      "glyphText": "or Packages(In words)",
       "segments": [
         {
           "text": "or Packages(In words)",
           "x": 20,
           "y": 184.6,
-          "width": 80
+          "width": 80.02
         }
       ],
       "font": "Helvetica",
@@ -3232,25 +3528,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 184.6,
-      "width": 80,
+      "width": 80.02,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 80,
+      "glyphWidth": 80.02,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s61",
       "text": "Freight Details, Charges etc :",
+      "glyphText": "Freight Details, Charges etc :",
       "segments": [
         {
           "text": "Freight Details, Charges etc :",
           "x": 21,
           "y": 165.7,
-          "width": 103.6
+          "width": 103.59
         }
       ],
       "font": "Helvetica",
@@ -3259,25 +3560,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 165.7,
-      "width": 103.6,
+      "width": 103.59,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 103.6,
+      "glyphWidth": 103.59,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s62",
       "text": "RECEIVED by the Carrier the Goods as specified above in appearent good order and",
+      "glyphText": "RECEIVED by the Carrier the Goods as specified above in appearent good order and",
       "segments": [
         {
           "text": "RECEIVED by the Carrier the Goods as specified above in appearent good order and",
           "x": 20,
           "y": 110.8,
-          "width": 226.8
+          "width": 226.78
         }
       ],
       "font": "Helvetica",
@@ -3286,25 +3592,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 110.8,
-      "width": 226.8,
+      "width": 226.78,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 226.8,
+      "glyphWidth": 226.78,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s63",
       "text": "condition unless otherwise stated, to be transported to such place as agreed, authorised",
+      "glyphText": "condition unless otherwise stated, to be transported to such place as agreed, authorised",
       "segments": [
         {
           "text": "condition unless otherwise stated, to be transported to such place as agreed, authorised",
           "x": 20,
           "y": 103.2,
-          "width": 233.8
+          "width": 233.79
         }
       ],
       "font": "Helvetica",
@@ -3313,25 +3624,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 103.2,
-      "width": 233.8,
+      "width": 233.79,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 233.8,
+      "glyphWidth": 233.79,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s64",
       "text": "or permitted herein and subject to all the terms and conditions appearing on the fornt",
+      "glyphText": "or permitted herein and subject to all the terms and conditions appearing on the fornt",
       "segments": [
         {
           "text": "or permitted herein and subject to all the terms and conditions appearing on the fornt",
           "x": 20,
           "y": 95.7,
-          "width": 224.4
+          "width": 224.45
         }
       ],
       "font": "Helvetica",
@@ -3340,25 +3656,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 95.7,
-      "width": 224.4,
+      "width": 224.45,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 224.4,
+      "glyphWidth": 224.45,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s65",
       "text": "and reverse of the Bill of Lading to which the Merchant agrees by accepting this Bills of",
+      "glyphText": "and reverse of the Bill of Lading to which the Merchant agrees by accepting this Bills of",
       "segments": [
         {
           "text": "and reverse of the Bill of Lading to which the Merchant agrees by accepting this Bills of",
           "x": 20,
           "y": 88.1,
-          "width": 230.4
+          "width": 230.44
         }
       ],
       "font": "Helvetica",
@@ -3367,25 +3688,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 88.1,
-      "width": 230.4,
+      "width": 230.44,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 230.4,
+      "glyphWidth": 230.44,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s66",
       "text": "Lading, any local privileges and customs notwithstanding.",
+      "glyphText": "Lading, any local privileges and customs notwithstanding.",
       "segments": [
         {
           "text": "Lading, any local privileges and customs notwithstanding.",
           "x": 20,
           "y": 80.6,
-          "width": 152.7
+          "width": 152.74
         }
       ],
       "font": "Helvetica",
@@ -3394,19 +3720,24 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 80.6,
-      "width": 152.7,
+      "width": 152.74,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 152.7,
+      "glyphWidth": 152.74,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s67",
       "text": "The particulars given above as stated by the shipper and the weight, measure, quantity, condition,",
+      "glyphText": "The particulars given above as stated by the shipper and the weight, measure, quantity, condition,",
       "segments": [
         {
           "text": "The particulars given above as stated by the shipper and the weight, measure, quantity, condition,",
@@ -3428,18 +3759,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 259.8,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s68",
       "text": "contents and value of the Goods are unknown to the Carrier",
+      "glyphText": "contents and value of the Goods are unknown to the Carrier",
       "segments": [
         {
           "text": "contents and value of the Goods are unknown to the Carrier",
           "x": 20,
           "y": 65.5,
-          "width": 159.1
+          "width": 159.08
         }
       ],
       "font": "Helvetica",
@@ -3448,25 +3784,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 65.5,
-      "width": 159.1,
+      "width": 159.08,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 159.1,
+      "glyphWidth": 159.08,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s69",
       "text": "In WITNESS whenreof one (1) original Bill of Lading has been signed if not otherwise stated above, the",
+      "glyphText": "In WITNESS whenreof one (1) original Bill of Lading has been signed if not otherwise stated above, the",
       "segments": [
         {
           "text": "In WITNESS whenreof one (1) original Bill of Lading has been signed if not otherwise stated above, the",
           "x": 20,
           "y": 57.9,
-          "width": 273.5
+          "width": 273.47
         }
       ],
       "font": "Helvetica",
@@ -3475,25 +3816,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 57.9,
-      "width": 273.5,
+      "width": 273.47,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 273.5,
+      "glyphWidth": 273.47,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s70",
       "text": "same being accomplished the other(s). If any, to be void, it required by the Carrier one (1) original Bill",
+      "glyphText": "same being accomplished the other(s). If any, to be void, it required by the Carrier one (1) original Bill",
       "segments": [
         {
           "text": "same being accomplished the other(s). If any, to be void, it required by the Carrier one (1) original Bill",
           "x": 20,
           "y": 50.4,
-          "width": 268.4
+          "width": 268.44
         }
       ],
       "font": "Helvetica",
@@ -3502,25 +3848,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 50.4,
-      "width": 268.4,
+      "width": 268.44,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 268.4,
+      "glyphWidth": 268.44,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s71",
       "text": "of Lading must be surrendered duty andorsed in exchange fo the Goods or delivery order.",
+      "glyphText": "of Lading must be surrendered duty andorsed in exchange fo the Goods or delivery order.",
       "segments": [
         {
           "text": "of Lading must be surrendered duty andorsed in exchange fo the Goods or delivery order.",
           "x": 20,
           "y": 42.9,
-          "width": 238.1
+          "width": 238.12
         }
       ],
       "font": "Helvetica",
@@ -3529,25 +3880,30 @@
       "colorSource": "rgb",
       "x": 20,
       "y": 42.9,
-      "width": 238.1,
+      "width": 238.12,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 238.1,
+      "glyphWidth": 238.12,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s72",
       "text": "Excess Value Declaration: Refer to Clause 6(4)(B) + (C) on reverse side",
+      "glyphText": "Excess Value Declaration: Refer to Clause 6(4)(B) + (C) on reverse side",
       "segments": [
         {
           "text": "Excess Value Declaration: Refer to Clause 6(4)(B) + (C) on reverse side",
           "x": 303,
           "y": 170.7,
-          "width": 255.4
+          "width": 255.42
         }
       ],
       "font": "Helvetica",
@@ -3556,25 +3912,30 @@
       "colorSource": "rgb",
       "x": 303,
       "y": 170.7,
-      "width": 255.4,
+      "width": 255.42,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 255.4,
+      "glyphWidth": 255.42,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s73",
       "text": "Signed on behalf of the Carrier.",
+      "glyphText": "Signed on behalf of the Carrier.",
       "segments": [
         {
           "text": "Signed on behalf of the Carrier.",
           "x": 303,
           "y": 106.7,
-          "width": 111.2
+          "width": 111.17
         }
       ],
       "font": "Helvetica",
@@ -3583,25 +3944,30 @@
       "colorSource": "rgb",
       "x": 303,
       "y": 106.7,
-      "width": 111.2,
+      "width": 111.17,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 111.2,
+      "glyphWidth": 111.17,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s74",
       "text": "By",
+      "glyphText": "By",
       "segments": [
         {
           "text": "By",
           "x": 313,
           "y": 77.7,
-          "width": 9.3
+          "width": 9.34
         }
       ],
       "font": "Helvetica",
@@ -3610,25 +3976,30 @@
       "colorSource": "rgb",
       "x": 313,
       "y": 77.7,
-      "width": 9.3,
+      "width": 9.34,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 9.3,
+      "glyphWidth": 9.34,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s75",
       "text": "Place and Date of Issue",
+      "glyphText": "Place and Date of Issue",
       "segments": [
         {
           "text": "Place and Date of Issue",
           "x": 21,
           "y": 29.7,
-          "width": 84.9
+          "width": 84.94
         }
       ],
       "font": "Helvetica",
@@ -3637,25 +4008,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 29.7,
-      "width": 84.9,
+      "width": 84.94,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 84.9,
+      "glyphWidth": 84.94,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s76",
       "text": "CHENNAI 28-JAN-19",
+      "glyphText": "CHENNAI 28-JAN-19",
       "segments": [
         {
           "text": "CHENNAI 28-JAN-19",
           "x": 121,
           "y": 29.5,
-          "width": 76.4
+          "width": 76.42
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3664,25 +4040,30 @@
       "colorSource": "rgb",
       "x": 121,
       "y": 29.5,
-      "width": 76.4,
+      "width": 76.42,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 76.4,
+      "glyphWidth": 76.42,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s77",
       "text": "FREIGHT PREPAID",
+      "glyphText": "FREIGHT PREPAID",
       "segments": [
         {
           "text": "FREIGHT PREPAID",
           "x": 21,
           "y": 153.5,
-          "width": 72.4
+          "width": 72.37
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3691,25 +4072,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 153.5,
-      "width": 72.4,
+      "width": 72.37,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 72.4,
+      "glyphWidth": 72.37,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s78",
       "text": "PAYABLE AT : CHENNAI",
+      "glyphText": "PAYABLE AT : CHENNAI",
       "segments": [
         {
           "text": "PAYABLE AT : CHENNAI",
           "x": 21,
           "y": 140.5,
-          "width": 91.5
+          "width": 91.46
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3718,25 +4104,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 140.5,
-      "width": 91.5,
+      "width": 91.46,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 91.5,
+      "glyphWidth": 91.46,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s79",
       "text": "ONBOARD DATE :",
+      "glyphText": "ONBOARD DATE :",
       "segments": [
         {
           "text": "ONBOARD DATE :",
           "x": 390,
           "y": 188.2,
-          "width": 68.5
+          "width": 68.46
         }
       ],
       "font": "Helvetica",
@@ -3745,25 +4136,30 @@
       "colorSource": "rgb",
       "x": 390,
       "y": 188.2,
-      "width": 68.5,
+      "width": 68.46,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 68.5,
+      "glyphWidth": 68.46,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s80",
       "text": "AS AGENT FOR THE CARRIER",
+      "glyphText": "AS AGENT FOR THE CARRIER",
       "segments": [
         {
           "text": "AS AGENT FOR THE CARRIER",
           "x": 309,
           "y": 57.7,
-          "width": 116
+          "width": 116.02
         }
       ],
       "font": "Helvetica",
@@ -3772,25 +4168,30 @@
       "colorSource": "rgb",
       "x": 309,
       "y": 57.7,
-      "width": 116,
+      "width": 116.02,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 116,
+      "glyphWidth": 116.02,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s81",
       "text": "AS ARRANGED",
+      "glyphText": "AS ARRANGED",
       "segments": [
         {
           "text": "AS ARRANGED",
           "x": 21,
           "y": 127.5,
-          "width": 58.2
+          "width": 58.18
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3799,25 +4200,30 @@
       "colorSource": "rgb",
       "x": 21,
       "y": 127.5,
-      "width": 58.2,
+      "width": 58.18,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 58.2,
+      "glyphWidth": 58.18,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s82",
       "text": "FRESA DEMO INDIA PVT LTD",
+      "glyphText": "FRESA DEMO INDIA PVT LTD",
       "segments": [
         {
           "text": "FRESA DEMO INDIA PVT LTD",
           "x": 330,
           "y": 77.5,
-          "width": 111.4
+          "width": 111.44
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3826,25 +4232,30 @@
       "colorSource": "rgb",
       "x": 330,
       "y": 77.5,
-      "width": 111.4,
+      "width": 111.44,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 111.4,
-      "role": "dynamic",
+      "glyphWidth": 111.44,
+      "renderMode": 2,
+      "stroke": "#000000",
+      "strokeWidth": 0.27,
+      "role": "branding",
+      "brandingKind": "name",
       "binding": ""
     },
     {
       "id": "p1s83",
       "text": "16-JAN-19",
+      "glyphText": "16-JAN-19",
       "segments": [
         {
           "text": "16-JAN-19",
           "x": 460,
           "y": 188.3,
-          "width": 38.2
+          "width": 38.22
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3853,25 +4264,30 @@
       "colorSource": "rgb",
       "x": 460,
       "y": 188.3,
-      "width": 38.2,
+      "width": 38.22,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 38.2,
+      "glyphWidth": 38.22,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 1,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s84",
       "text": "CMA CGM",
+      "glyphText": "CMA CGM",
       "segments": [
         {
           "text": "CMA CGM",
           "x": 309,
           "y": 44.5,
-          "width": 38.6
+          "width": 38.64
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3880,25 +4296,30 @@
       "colorSource": "rgb",
       "x": 309,
       "y": 44.5,
-      "width": 38.6,
+      "width": 38.64,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 38.6,
+      "glyphWidth": 38.64,
+      "renderMode": 2,
+      "stroke": "#000000",
+      "strokeWidth": 0.27,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s85",
       "text": "ONE(1X20' DC) CONTAINER ONLY",
+      "glyphText": "ONE(1X20' DC) CONTAINER ONLY",
       "segments": [
         {
           "text": "ONE(1X20' DC) CONTAINER ONLY",
           "x": 146,
           "y": 194.5,
-          "width": 129.9
+          "width": 129.88
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3907,25 +4328,30 @@
       "colorSource": "rgb",
       "x": 146,
       "y": 194.5,
-      "width": 129.9,
+      "width": 129.88,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 129.9,
+      "glyphWidth": 129.88,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 1,
       "role": "dynamic",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s86",
       "text": "DRAFT",
+      "glyphText": "DRAFT",
       "segments": [
         {
           "text": "DRAFT",
           "x": 461.7,
           "y": 30,
-          "width": 36.6
+          "width": 36.63
         }
       ],
       "font": "RHQBFJ+ArialUnicodeMS",
@@ -3934,19 +4360,24 @@
       "colorSource": "rgb",
       "x": 461.7,
       "y": 30,
-      "width": 36.6,
+      "width": 36.63,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 36.6,
+      "glyphWidth": 36.63,
+      "renderMode": 2,
+      "stroke": "#000000",
+      "strokeWidth": 0.37,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s87",
       "text": "KGS",
+      "glyphText": "KGS",
       "segments": [
         {
           "text": "KGS",
@@ -3968,18 +4399,23 @@
       "charSpacing": 0,
       "wordSpacing": 0,
       "glyphWidth": 16.9,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     },
     {
       "id": "p1s88",
       "text": "CBM",
+      "glyphText": "CBM",
       "segments": [
         {
           "text": "CBM",
           "x": 555.2,
           "y": 479.7,
-          "width": 17.8
+          "width": 17.78
         }
       ],
       "font": "Helvetica",
@@ -3988,14 +4424,18 @@
       "colorSource": "rgb",
       "x": 555.2,
       "y": 479.7,
-      "width": 17.8,
+      "width": 17.78,
       "anchor": "left",
       "alignment": "left",
       "hScale": 100,
       "charSpacing": 0,
       "wordSpacing": 0,
-      "glyphWidth": 17.8,
+      "glyphWidth": 17.78,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.5,
       "role": "static",
+      "brandingKind": "",
       "binding": ""
     }
   ],
@@ -4008,7 +4448,8 @@
       "format": "unknown",
       "slot": "logo",
       "proposedClass": "logo",
-      "demoValue": ""
+      "demoValue": "",
+      "barcode": null
     },
     {
       "x": 380,
@@ -4018,7 +4459,14 @@
       "format": "unknown",
       "slot": "",
       "proposedClass": "barcode",
-      "demoValue": "PLMAAJEA00081"
+      "demoValue": "PLMAAJEA00081",
+      "barcode": {
+        "symbology": "CODE_128",
+        "payload": "PLMAAJEA00081",
+        "moduleWidth": 0.96,
+        "quietZone": 9.83,
+        "decoded": true
+      }
     }
   ],
   "shadings": [],
@@ -5621,6 +6069,7 @@
         {
           "id": "p1s1",
           "text": "BILL OF LADING",
+          "glyphText": "BILL OF LADING",
           "segments": [
             {
               "text": "BILL OF LADING",
@@ -5642,18 +6091,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 88,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s2",
           "text": "NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
+          "glyphText": "NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
           "segments": [
             {
               "text": "NOT NEGOTIABLE UNLESS CONSIGNED \"TO ORDER\"",
               "x": 245.4,
               "y": 795.5,
-              "width": 128.3
+              "width": 128.29
             }
           ],
           "font": "Helvetica",
@@ -5662,25 +6116,30 @@
           "colorSource": "rgb",
           "x": 245.4,
           "y": 795.5,
-          "width": 128.3,
+          "width": 128.29,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 128.3,
+          "glyphWidth": 128.29,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s3",
           "text": "Shipper",
+          "glyphText": "Shipper",
           "segments": [
             {
               "text": "Shipper",
               "x": 20,
               "y": 780.7,
-              "width": 29.8
+              "width": 29.78
             }
           ],
           "font": "Helvetica-Bold",
@@ -5689,19 +6148,24 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 780.7,
-          "width": 29.8,
+          "width": 29.78,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 29.8,
+          "glyphWidth": 29.78,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s4",
           "text": "Consignee",
+          "glyphText": "Consignee",
           "segments": [
             {
               "text": "Consignee",
@@ -5723,18 +6187,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 40.9,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s5",
           "text": "Bill of Lading No.",
+          "glyphText": "Bill of Lading No.",
           "segments": [
             {
               "text": "Bill of Lading No.",
               "x": 302,
               "y": 780.2,
-              "width": 65.8
+              "width": 65.78
             }
           ],
           "font": "Helvetica-Bold",
@@ -5743,25 +6212,30 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 780.2,
-          "width": 65.8,
+          "width": 65.78,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 65.8,
+          "glyphWidth": 65.78,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s6",
           "text": "F/Agent Name & Ref.",
+          "glyphText": "F/Agent Name & Ref.",
           "segments": [
             {
               "text": "F/Agent Name & Ref.",
               "x": 302,
               "y": 766.7,
-              "width": 79.1
+              "width": 79.12
             }
           ],
           "font": "Helvetica-Bold",
@@ -5770,19 +6244,24 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 766.7,
-          "width": 79.1,
+          "width": 79.12,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 79.1,
+          "glyphWidth": 79.12,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s7",
           "text": "Notify Party",
+          "glyphText": "Notify Party",
           "segments": [
             {
               "text": "Notify Party",
@@ -5804,18 +6283,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 44.9,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s8",
           "text": "Place of Receipt",
+          "glyphText": "Place of Receipt",
           "segments": [
             {
               "text": "Place of Receipt",
               "x": 20,
               "y": 555.7,
-              "width": 58.2
+              "width": 58.25
             }
           ],
           "font": "Helvetica",
@@ -5824,25 +6308,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 555.7,
-          "width": 58.2,
+          "width": 58.25,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 58.2,
+          "glyphWidth": 58.25,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s9",
           "text": "Port of Loading",
+          "glyphText": "Port of Loading",
           "segments": [
             {
               "text": "Port of Loading",
               "x": 170,
               "y": 555.7,
-              "width": 54.3
+              "width": 54.26
             }
           ],
           "font": "Helvetica",
@@ -5851,25 +6340,30 @@
           "colorSource": "rgb",
           "x": 170,
           "y": 555.7,
-          "width": 54.3,
+          "width": 54.26,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 54.3,
+          "glyphWidth": 54.26,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s10",
           "text": "Job No.",
+          "glyphText": "Job No.",
           "segments": [
             {
               "text": "Job No.",
               "x": 302,
               "y": 555.7,
-              "width": 27.6
+              "width": 27.57
             }
           ],
           "font": "Helvetica",
@@ -5878,25 +6372,30 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 555.7,
-          "width": 27.6,
+          "width": 27.57,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 27.6,
+          "glyphWidth": 27.57,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s11",
           "text": "Vessel/Voyage No.",
+          "glyphText": "Vessel/Voyage No.",
           "segments": [
             {
               "text": "Vessel/Voyage No.",
               "x": 20,
               "y": 527.7,
-              "width": 68
+              "width": 68.03
             }
           ],
           "font": "Helvetica",
@@ -5905,19 +6404,24 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 527.7,
-          "width": 68,
+          "width": 68.03,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 68,
+          "glyphWidth": 68.03,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s12",
           "text": "Port of Discharge",
+          "glyphText": "Port of Discharge",
           "segments": [
             {
               "text": "Port of Discharge",
@@ -5939,18 +6443,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 61.8,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s13",
           "text": "Place of Delivery",
+          "glyphText": "Place of Delivery",
           "segments": [
             {
               "text": "Place of Delivery",
               "x": 302,
               "y": 527.7,
-              "width": 60
+              "width": 60.02
             }
           ],
           "font": "Helvetica",
@@ -5959,25 +6468,30 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 527.7,
-          "width": 60,
+          "width": 60.02,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 60,
+          "glyphWidth": 60.02,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s14",
           "text": "No.of Bills of Lading",
+          "glyphText": "No.of Bills of Lading",
           "segments": [
             {
               "text": "No.of Bills of Lading",
               "x": 456.4,
               "y": 527.7,
-              "width": 71.1
+              "width": 71.14
             }
           ],
           "font": "Helvetica",
@@ -5986,25 +6500,30 @@
           "colorSource": "rgb",
           "x": 456.4,
           "y": 527.7,
-          "width": 71.1,
+          "width": 71.14,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 71.1,
+          "glyphWidth": 71.14,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s15",
           "text": "AL NASER TRADING COMPANY LLC",
+          "glyphText": "AL NASER TRADING COMPANY LLC",
           "segments": [
             {
               "text": "AL NASER TRADING COMPANY LLC",
               "x": 21,
               "y": 691.5,
-              "width": 137.2
+              "width": 137.23
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6013,26 +6532,31 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 691.5,
-          "width": 137.2,
+          "width": 137.23,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 137.2,
-          "role": "dynamic",
+          "glyphWidth": 137.23,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
+          "role": "static",
+          "brandingKind": "",
           "binding": "",
           "slot": "company"
         },
         {
           "id": "p1s16",
           "text": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
+          "glyphText": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
           "segments": [
             {
               "text": "30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT",
               "x": 21,
               "y": 680.7,
-              "width": 272.7
+              "width": 272.67
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6041,25 +6565,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 680.7,
-          "width": 272.7,
+          "width": 272.67,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 272.7,
+          "glyphWidth": 272.67,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s17",
           "text": "AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES",
+          "glyphText": "AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES",
           "segments": [
             {
               "text": "AL NABHA SHARJAH SHARJAH UNITED ARAB EMIRATES",
               "x": 21,
               "y": 670,
-              "width": 217.6
+              "width": 217.59
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6068,25 +6597,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 670,
-          "width": 217.6,
+          "width": 217.59,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 217.6,
+          "glyphWidth": 217.59,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s18",
           "text": "AL NASER TRADING COMPANY LLC",
+          "glyphText": "AL NASER TRADING COMPANY LLC",
           "segments": [
             {
               "text": "AL NASER TRADING COMPANY LLC",
               "x": 20,
               "y": 618.5,
-              "width": 137.2
+              "width": 137.23
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6095,25 +6629,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 618.5,
-          "width": 137.2,
+          "width": 137.23,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 137.2,
-          "role": "dynamic",
+          "glyphWidth": 137.23,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
+          "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s19",
           "text": "POST BOX : 12356 30AL MAKTHOOM BUILDING",
+          "glyphText": "POST BOX : 12356 30AL MAKTHOOM BUILDING",
           "segments": [
             {
               "text": "POST BOX : 12356 30AL MAKTHOOM BUILDING",
               "x": 20,
               "y": 607.7,
-              "width": 179.9
+              "width": 179.87
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6122,25 +6661,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 607.7,
-          "width": 179.9,
+          "width": 179.87,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 179.9,
+          "glyphWidth": 179.87,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s20",
           "text": "NEAR MUBARAK CENTRE ROUND ABOUT",
+          "glyphText": "NEAR MUBARAK CENTRE ROUND ABOUT",
           "segments": [
             {
               "text": "NEAR MUBARAK CENTRE ROUND ABOUT",
               "x": 20,
               "y": 597,
-              "width": 160.3
+              "width": 160.31
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6149,25 +6693,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 597,
-          "width": 160.3,
+          "width": 160.31,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 160.3,
+          "glyphWidth": 160.31,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s21",
           "text": "AL NABHA",
+          "glyphText": "AL NABHA",
           "segments": [
             {
               "text": "AL NABHA",
               "x": 20,
               "y": 586.3,
-              "width": 39.5
+              "width": 39.53
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6176,25 +6725,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 586.3,
-          "width": 39.5,
+          "width": 39.53,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 39.5,
-          "role": "dynamic",
+          "glyphWidth": 39.53,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
+          "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s22",
           "text": "SHARJAH SHARJAH",
+          "glyphText": "SHARJAH SHARJAH",
           "segments": [
             {
               "text": "SHARJAH SHARJAH",
               "x": 20,
               "y": 575.6,
-              "width": 76.8
+              "width": 76.84
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6203,25 +6757,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 575.6,
-          "width": 76.8,
+          "width": 76.84,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 76.8,
+          "glyphWidth": 76.84,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s23",
           "text": "FRESA DEMO DUBAI UAE LLC",
+          "glyphText": "FRESA DEMO DUBAI UAE LLC",
           "segments": [
             {
               "text": "FRESA DEMO DUBAI UAE LLC",
               "x": 302,
               "y": 753.5,
-              "width": 115
+              "width": 115.02
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6230,25 +6789,30 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 753.5,
-          "width": 115,
+          "width": 115.02,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 115,
-          "role": "dynamic",
-          "binding": "company.name"
+          "glyphWidth": 115.02,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
+          "role": "branding",
+          "brandingKind": "name",
+          "binding": ""
         },
         {
           "id": "p1s24",
           "text": "DUBAI UNITED ARAB EMIRATES",
+          "glyphText": "DUBAI UNITED ARAB EMIRATES",
           "segments": [
             {
               "text": "DUBAI UNITED ARAB EMIRATES",
               "x": 302,
               "y": 742.7,
-              "width": 123.4
+              "width": 123.43
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6257,25 +6821,30 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 742.7,
-          "width": 123.4,
+          "width": 123.43,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 123.4,
+          "glyphWidth": 123.43,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s25",
           "text": "Pre-carriage by",
+          "glyphText": "Pre-carriage by",
           "segments": [
             {
               "text": "Pre-carriage by",
               "x": 302,
               "y": 542.7,
-              "width": 54.7
+              "width": 54.68
             }
           ],
           "font": "Helvetica",
@@ -6284,25 +6853,30 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 542.7,
-          "width": 54.7,
+          "width": 54.68,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 54.7,
+          "glyphWidth": 54.68,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s26",
           "text": "CHENNAI (EX MADRAS), INDIA",
+          "glyphText": "CHENNAI (EX MADRAS), INDIA",
           "segments": [
             {
               "text": "CHENNAI (EX MADRAS), INDIA",
               "x": 20,
               "y": 542.5,
-              "width": 116.3
+              "width": 116.34
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6311,19 +6885,24 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 542.5,
-          "width": 116.3,
+          "width": 116.34,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 116.3,
+          "glyphWidth": 116.34,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s27",
           "text": "JEBEL ALI, UNITED ARAB",
+          "glyphText": "JEBEL ALI, UNITED ARAB",
           "segments": [
             {
               "text": "JEBEL ALI, UNITED ARAB",
@@ -6345,18 +6924,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 96.8,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s28",
           "text": "CHENNAI (EX MADRAS), INDIA",
+          "glyphText": "CHENNAI (EX MADRAS), INDIA",
           "segments": [
             {
               "text": "CHENNAI (EX MADRAS), INDIA",
               "x": 170,
               "y": 542.5,
-              "width": 116.3
+              "width": 116.34
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6365,19 +6949,24 @@
           "colorSource": "rgb",
           "x": 170,
           "y": 542.5,
-          "width": 116.3,
+          "width": 116.34,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 116.3,
+          "glyphWidth": 116.34,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s29",
           "text": "JEBEL ALI, UNITED ARAB",
+          "glyphText": "JEBEL ALI, UNITED ARAB",
           "segments": [
             {
               "text": "JEBEL ALI, UNITED ARAB",
@@ -6399,18 +6988,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 96.8,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s30",
           "text": "CMA CGM/9887",
+          "glyphText": "CMA CGM/9887",
           "segments": [
             {
               "text": "CMA CGM/9887",
               "x": 20,
               "y": 515.5,
-              "width": 58.6
+              "width": 58.65
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6419,19 +7013,24 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 515.5,
-          "width": 58.6,
+          "width": 58.65,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 58.6,
+          "glyphWidth": 58.65,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s31",
           "text": "4G LOGISTICS INDIA PVT LTD",
+          "glyphText": "4G LOGISTICS INDIA PVT LTD",
           "segments": [
             {
               "text": "4G LOGISTICS INDIA PVT LTD",
@@ -6453,18 +7052,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 114.1,
-          "role": "dynamic",
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
+          "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s32",
           "text": "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM",
+          "glyphText": "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM",
           "segments": [
             {
               "text": "10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM",
               "x": 21,
               "y": 755.7,
-              "width": 252.2
+              "width": 252.25
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6473,25 +7077,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 755.7,
-          "width": 252.2,
+          "width": 252.25,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 252.2,
+          "glyphWidth": 252.25,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s33",
           "text": "CHENNAI TAMILNADU 600084 INDIA",
+          "glyphText": "CHENNAI TAMILNADU 600084 INDIA",
           "segments": [
             {
               "text": "CHENNAI TAMILNADU 600084 INDIA",
               "x": 21,
               "y": 745,
-              "width": 136.8
+              "width": 136.82
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6500,25 +7109,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 745,
-          "width": 136.8,
+          "width": 136.82,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 136.8,
+          "glyphWidth": 136.82,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s34",
           "text": "PLMAAJEA00081",
+          "glyphText": "PLMAAJEA00081",
           "segments": [
             {
               "text": "PLMAAJEA00081",
               "x": 385,
               "y": 779.9,
-              "width": 72
+              "width": 71.99
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6527,19 +7141,24 @@
           "colorSource": "rgb",
           "x": 385,
           "y": 779.9,
-          "width": 72,
+          "width": 71.99,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 72,
+          "glyphWidth": 71.99,
+          "renderMode": 2,
+          "stroke": "#000000",
+          "strokeWidth": 0.3,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s35",
           "text": "1(ONE)",
+          "glyphText": "1(ONE)",
           "segments": [
             {
               "text": "1(ONE)",
@@ -6561,18 +7180,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 27.1,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 1,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s36",
           "text": "ram@fresatechnologies.com",
+          "glyphText": "ram@fresatechnologies.com",
           "segments": [
             {
               "text": "ram@fresatechnologies.com",
               "x": 363,
               "y": 572.7,
-              "width": 101.9
+              "width": 101.93
             }
           ],
           "font": "Helvetica",
@@ -6581,25 +7205,30 @@
           "colorSource": "rgb",
           "x": 363,
           "y": 572.7,
-          "width": 101.9,
+          "width": 101.93,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 101.9,
-          "role": "dynamic",
+          "glyphWidth": 101.93,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 1,
+          "role": "branding",
+          "brandingKind": "name",
           "binding": ""
         },
         {
           "id": "p1s37",
           "text": "Prepared By :",
+          "glyphText": "Prepared By  :",
           "segments": [
             {
               "text": "Prepared By  :",
               "x": 302,
               "y": 572.7,
-              "width": 51.1
+              "width": 51.14
             }
           ],
           "font": "Helvetica",
@@ -6608,19 +7237,24 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 572.7,
-          "width": 51.1,
+          "width": 51.14,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 51.1,
+          "glyphWidth": 51.14,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 1,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s38",
           "text": "FRESA DEMO INDIA PVT LTD",
+          "glyphText": "FRESA DEMO INDIA PVT LTD",
           "segments": [
             {
               "text": "FRESA DEMO INDIA PVT LTD",
@@ -6642,18 +7276,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 112.9,
-          "role": "dynamic",
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 1,
+          "role": "branding",
+          "brandingKind": "name",
           "binding": ""
         },
         {
           "id": "p1s39",
           "text": "Tel: 9884124194",
+          "glyphText": "Tel: 9884124194",
           "segments": [
             {
               "text": "Tel: 9884124194",
               "x": 302,
               "y": 605.5,
-              "width": 60
+              "width": 60.02
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6662,25 +7301,30 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 605.5,
-          "width": 60,
+          "width": 60.02,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 60,
-          "role": "static",
+          "glyphWidth": 60.02,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 1,
+          "role": "branding",
+          "brandingKind": "phone",
           "binding": ""
         },
         {
           "id": "p1s40",
           "text": "Email: demo@fresatechnologies.com, user@fresatechnologies.com",
+          "glyphText": "Email: demo@fresatechnologies.com, user@fresatechnologies.com",
           "segments": [
             {
               "text": "Email: demo@fresatechnologies.com, user@fresatechnologies.com",
               "x": 302,
               "y": 594.7,
-              "width": 240.7
+              "width": 240.68
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6689,25 +7333,30 @@
           "colorSource": "rgb",
           "x": 302,
           "y": 594.7,
-          "width": 240.7,
+          "width": 240.68,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 240.7,
-          "role": "dynamic",
+          "glyphWidth": 240.68,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 1,
+          "role": "branding",
+          "brandingKind": "name",
           "binding": ""
         },
         {
           "id": "p1s41",
           "text": "Container No. / Seal No./",
+          "glyphText": "Container No. / Seal No./",
           "segments": [
             {
               "text": "Container No. / Seal No./",
               "x": 20,
               "y": 502.7,
-              "width": 88.9
+              "width": 88.93
             }
           ],
           "font": "Helvetica",
@@ -6716,25 +7365,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 502.7,
-          "width": 88.9,
+          "width": 88.93,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 88.9,
+          "glyphWidth": 88.93,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s42",
           "text": "Mark & No.",
+          "glyphText": "Mark & No.",
           "segments": [
             {
               "text": "Mark & No.",
               "x": 20,
               "y": 492.6,
-              "width": 40
+              "width": 40.01
             }
           ],
           "font": "Helvetica",
@@ -6743,25 +7397,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 492.6,
-          "width": 40,
+          "width": 40.01,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 40,
+          "glyphWidth": 40.01,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s43",
           "text": "No. of Pkgs or",
+          "glyphText": "No. of Pkgs or",
           "segments": [
             {
               "text": "No. of Pkgs or",
               "x": 170.2,
               "y": 502.7,
-              "width": 50.7
+              "width": 50.69
             }
           ],
           "font": "Helvetica",
@@ -6770,25 +7429,30 @@
           "colorSource": "rgb",
           "x": 170.2,
           "y": 502.7,
-          "width": 50.7,
+          "width": 50.69,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 50.7,
+          "glyphWidth": 50.69,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s44",
           "text": "Shipping Units",
+          "glyphText": "Shipping Units",
           "segments": [
             {
               "text": "Shipping Units",
               "x": 169.7,
               "y": 492.6,
-              "width": 51.6
+              "width": 51.58
             }
           ],
           "font": "Helvetica",
@@ -6797,25 +7461,30 @@
           "colorSource": "rgb",
           "x": 169.7,
           "y": 492.6,
-          "width": 51.6,
+          "width": 51.58,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 51.6,
+          "glyphWidth": 51.58,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s45",
           "text": "Description of Goods & Pkgs.",
+          "glyphText": "Description of Goods & Pkgs.",
           "segments": [
             {
               "text": "Description of Goods & Pkgs.",
               "x": 230,
               "y": 502.7,
-              "width": 104.5
+              "width": 104.49
             }
           ],
           "font": "Helvetica",
@@ -6824,25 +7493,30 @@
           "colorSource": "rgb",
           "x": 230,
           "y": 502.7,
-          "width": 104.5,
+          "width": 104.49,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 104.5,
+          "glyphWidth": 104.49,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s46",
           "text": "Gross Weight",
+          "glyphText": "Gross Weight",
           "segments": [
             {
               "text": "Gross Weight",
               "x": 449.5,
               "y": 502.7,
-              "width": 48.5
+              "width": 48.46
             }
           ],
           "font": "Helvetica",
@@ -6851,19 +7525,24 @@
           "colorSource": "rgb",
           "x": 449.5,
           "y": 502.7,
-          "width": 48.5,
+          "width": 48.46,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 48.5,
+          "glyphWidth": 48.46,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s47",
           "text": "Measurement",
+          "glyphText": "Measurement",
           "segments": [
             {
               "text": "Measurement",
@@ -6885,18 +7564,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 48.9,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s48",
           "text": "125 PACKAGES",
+          "glyphText": "125 PACKAGES",
           "segments": [
             {
               "text": "125 PACKAGES",
               "x": 166.2,
               "y": 479.5,
-              "width": 59.5
+              "width": 59.52
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6905,25 +7589,30 @@
           "colorSource": "rgb",
           "x": 166.2,
           "y": 479.5,
-          "width": 59.5,
+          "width": 59.52,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 59.5,
+          "glyphWidth": 59.52,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s49",
           "text": "18,000.00",
+          "glyphText": "18,000.00",
           "segments": [
             {
               "text": "18,000.00",
               "x": 447.4,
               "y": 479.5,
-              "width": 35.6
+              "width": 35.57
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6932,25 +7621,30 @@
           "colorSource": "rgb",
           "x": 447.4,
           "y": 479.5,
-          "width": 35.6,
+          "width": 35.57,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 35.6,
+          "glyphWidth": 35.57,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s50",
           "text": "24.000",
+          "glyphText": "24.000",
           "segments": [
             {
               "text": "24.000",
               "x": 530.5,
               "y": 479.5,
-              "width": 24.5
+              "width": 24.46
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6959,25 +7653,30 @@
           "colorSource": "rgb",
           "x": 530.5,
           "y": 479.5,
-          "width": 24.5,
+          "width": 24.46,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 24.5,
+          "glyphWidth": 24.46,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s51",
           "text": "STC: VALVE MATERIALS FOR MACHINERY PARTS",
+          "glyphText": "STC: VALVE MATERIALS FOR MACHINERY PARTS",
           "segments": [
             {
               "text": "STC: VALVE MATERIALS FOR MACHINERY PARTS",
               "x": 233,
               "y": 442.5,
-              "width": 191.8
+              "width": 191.82
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -6986,25 +7685,30 @@
           "colorSource": "rgb",
           "x": 233,
           "y": 442.5,
-          "width": 191.8,
+          "width": 191.82,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 191.8,
+          "glyphWidth": 191.82,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s52",
           "text": "FREIGHT PREPAID",
+          "glyphText": "FREIGHT PREPAID",
           "segments": [
             {
               "text": "FREIGHT PREPAID",
               "x": 233,
               "y": 421,
-              "width": 72.4
+              "width": 72.37
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7013,25 +7717,30 @@
           "colorSource": "rgb",
           "x": 233,
           "y": 421,
-          "width": 72.4,
+          "width": 72.37,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 72.4,
+          "glyphWidth": 72.37,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s53",
           "text": "ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
+          "glyphText": "ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
           "segments": [
             {
               "text": "ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT",
               "x": 233,
               "y": 410.3,
-              "width": 229.3
+              "width": 229.32
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7040,19 +7749,24 @@
           "colorSource": "rgb",
           "x": 233,
           "y": 410.3,
-          "width": 229.3,
+          "width": 229.32,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 229.3,
+          "glyphWidth": 229.32,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s54",
           "text": "FCL",
+          "glyphText": "FCL",
           "segments": [
             {
               "text": "FCL",
@@ -7074,18 +7788,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 15.1,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s55",
           "text": "ABCU9877666 / SEAL NO. : SL345566",
+          "glyphText": "ABCU9877666 / SEAL NO. : SL345566",
           "segments": [
             {
               "text": "ABCU9877666 / SEAL NO. : SL345566",
               "x": 21,
               "y": 479.5,
-              "width": 140
+              "width": 139.96
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7094,25 +7813,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 479.5,
-          "width": 140,
+          "width": 139.96,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 140,
+          "glyphWidth": 139.96,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s56",
           "text": "/ 20' DC X 1",
+          "glyphText": "/ 20' DC X 1",
           "segments": [
             {
               "text": "/ 20' DC X 1",
               "x": 21,
               "y": 468.7,
-              "width": 42.8
+              "width": 42.82
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7121,25 +7845,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 468.7,
-          "width": 42.8,
+          "width": 42.82,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 42.8,
+          "glyphWidth": 42.82,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s57",
           "text": "NIL MARKS",
+          "glyphText": "NIL MARKS",
           "segments": [
             {
               "text": "NIL MARKS",
               "x": 21,
               "y": 436.6,
-              "width": 43.1
+              "width": 43.08
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7148,25 +7877,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 436.6,
-          "width": 43.1,
+          "width": 43.08,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 43.1,
+          "glyphWidth": 43.08,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s58",
           "text": "Total Number of Containers SAY",
+          "glyphText": "Total Number of Containers SAY",
           "segments": [
             {
               "text": "Total Number of Containers SAY",
               "x": 20,
               "y": 194.7,
-              "width": 116.5
+              "width": 116.49
             }
           ],
           "font": "Helvetica",
@@ -7175,25 +7909,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 194.7,
-          "width": 116.5,
+          "width": 116.49,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 116.5,
+          "glyphWidth": 116.49,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s59",
           "text": ":",
+          "glyphText": ":",
           "segments": [
             {
               "text": ":",
               "x": 140,
               "y": 194.7,
-              "width": 2.2
+              "width": 2.22
             }
           ],
           "font": "Helvetica",
@@ -7202,25 +7941,30 @@
           "colorSource": "rgb",
           "x": 140,
           "y": 194.7,
-          "width": 2.2,
+          "width": 2.22,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 2.2,
+          "glyphWidth": 2.22,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s60",
           "text": "or Packages(In words)",
+          "glyphText": "or Packages(In words)",
           "segments": [
             {
               "text": "or Packages(In words)",
               "x": 20,
               "y": 184.6,
-              "width": 80
+              "width": 80.02
             }
           ],
           "font": "Helvetica",
@@ -7229,25 +7973,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 184.6,
-          "width": 80,
+          "width": 80.02,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 80,
+          "glyphWidth": 80.02,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s61",
           "text": "Freight Details, Charges etc :",
+          "glyphText": "Freight Details, Charges etc :",
           "segments": [
             {
               "text": "Freight Details, Charges etc :",
               "x": 21,
               "y": 165.7,
-              "width": 103.6
+              "width": 103.59
             }
           ],
           "font": "Helvetica",
@@ -7256,25 +8005,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 165.7,
-          "width": 103.6,
+          "width": 103.59,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 103.6,
+          "glyphWidth": 103.59,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s62",
           "text": "RECEIVED by the Carrier the Goods as specified above in appearent good order and",
+          "glyphText": "RECEIVED by the Carrier the Goods as specified above in appearent good order and",
           "segments": [
             {
               "text": "RECEIVED by the Carrier the Goods as specified above in appearent good order and",
               "x": 20,
               "y": 110.8,
-              "width": 226.8
+              "width": 226.78
             }
           ],
           "font": "Helvetica",
@@ -7283,25 +8037,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 110.8,
-          "width": 226.8,
+          "width": 226.78,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 226.8,
+          "glyphWidth": 226.78,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s63",
           "text": "condition unless otherwise stated, to be transported to such place as agreed, authorised",
+          "glyphText": "condition unless otherwise stated, to be transported to such place as agreed, authorised",
           "segments": [
             {
               "text": "condition unless otherwise stated, to be transported to such place as agreed, authorised",
               "x": 20,
               "y": 103.2,
-              "width": 233.8
+              "width": 233.79
             }
           ],
           "font": "Helvetica",
@@ -7310,25 +8069,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 103.2,
-          "width": 233.8,
+          "width": 233.79,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 233.8,
+          "glyphWidth": 233.79,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s64",
           "text": "or permitted herein and subject to all the terms and conditions appearing on the fornt",
+          "glyphText": "or permitted herein and subject to all the terms and conditions appearing on the fornt",
           "segments": [
             {
               "text": "or permitted herein and subject to all the terms and conditions appearing on the fornt",
               "x": 20,
               "y": 95.7,
-              "width": 224.4
+              "width": 224.45
             }
           ],
           "font": "Helvetica",
@@ -7337,25 +8101,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 95.7,
-          "width": 224.4,
+          "width": 224.45,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 224.4,
+          "glyphWidth": 224.45,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s65",
           "text": "and reverse of the Bill of Lading to which the Merchant agrees by accepting this Bills of",
+          "glyphText": "and reverse of the Bill of Lading to which the Merchant agrees by accepting this Bills of",
           "segments": [
             {
               "text": "and reverse of the Bill of Lading to which the Merchant agrees by accepting this Bills of",
               "x": 20,
               "y": 88.1,
-              "width": 230.4
+              "width": 230.44
             }
           ],
           "font": "Helvetica",
@@ -7364,25 +8133,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 88.1,
-          "width": 230.4,
+          "width": 230.44,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 230.4,
+          "glyphWidth": 230.44,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s66",
           "text": "Lading, any local privileges and customs notwithstanding.",
+          "glyphText": "Lading, any local privileges and customs notwithstanding.",
           "segments": [
             {
               "text": "Lading, any local privileges and customs notwithstanding.",
               "x": 20,
               "y": 80.6,
-              "width": 152.7
+              "width": 152.74
             }
           ],
           "font": "Helvetica",
@@ -7391,19 +8165,24 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 80.6,
-          "width": 152.7,
+          "width": 152.74,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 152.7,
+          "glyphWidth": 152.74,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s67",
           "text": "The particulars given above as stated by the shipper and the weight, measure, quantity, condition,",
+          "glyphText": "The particulars given above as stated by the shipper and the weight, measure, quantity, condition,",
           "segments": [
             {
               "text": "The particulars given above as stated by the shipper and the weight, measure, quantity, condition,",
@@ -7425,18 +8204,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 259.8,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s68",
           "text": "contents and value of the Goods are unknown to the Carrier",
+          "glyphText": "contents and value of the Goods are unknown to the Carrier",
           "segments": [
             {
               "text": "contents and value of the Goods are unknown to the Carrier",
               "x": 20,
               "y": 65.5,
-              "width": 159.1
+              "width": 159.08
             }
           ],
           "font": "Helvetica",
@@ -7445,25 +8229,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 65.5,
-          "width": 159.1,
+          "width": 159.08,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 159.1,
+          "glyphWidth": 159.08,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s69",
           "text": "In WITNESS whenreof one (1) original Bill of Lading has been signed if not otherwise stated above, the",
+          "glyphText": "In WITNESS whenreof one (1) original Bill of Lading has been signed if not otherwise stated above, the",
           "segments": [
             {
               "text": "In WITNESS whenreof one (1) original Bill of Lading has been signed if not otherwise stated above, the",
               "x": 20,
               "y": 57.9,
-              "width": 273.5
+              "width": 273.47
             }
           ],
           "font": "Helvetica",
@@ -7472,25 +8261,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 57.9,
-          "width": 273.5,
+          "width": 273.47,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 273.5,
+          "glyphWidth": 273.47,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s70",
           "text": "same being accomplished the other(s). If any, to be void, it required by the Carrier one (1) original Bill",
+          "glyphText": "same being accomplished the other(s). If any, to be void, it required by the Carrier one (1) original Bill",
           "segments": [
             {
               "text": "same being accomplished the other(s). If any, to be void, it required by the Carrier one (1) original Bill",
               "x": 20,
               "y": 50.4,
-              "width": 268.4
+              "width": 268.44
             }
           ],
           "font": "Helvetica",
@@ -7499,25 +8293,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 50.4,
-          "width": 268.4,
+          "width": 268.44,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 268.4,
+          "glyphWidth": 268.44,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s71",
           "text": "of Lading must be surrendered duty andorsed in exchange fo the Goods or delivery order.",
+          "glyphText": "of Lading must be surrendered duty andorsed in exchange fo the Goods or delivery order.",
           "segments": [
             {
               "text": "of Lading must be surrendered duty andorsed in exchange fo the Goods or delivery order.",
               "x": 20,
               "y": 42.9,
-              "width": 238.1
+              "width": 238.12
             }
           ],
           "font": "Helvetica",
@@ -7526,25 +8325,30 @@
           "colorSource": "rgb",
           "x": 20,
           "y": 42.9,
-          "width": 238.1,
+          "width": 238.12,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 238.1,
+          "glyphWidth": 238.12,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s72",
           "text": "Excess Value Declaration: Refer to Clause 6(4)(B) + (C) on reverse side",
+          "glyphText": "Excess Value Declaration: Refer to Clause 6(4)(B) + (C) on reverse side",
           "segments": [
             {
               "text": "Excess Value Declaration: Refer to Clause 6(4)(B) + (C) on reverse side",
               "x": 303,
               "y": 170.7,
-              "width": 255.4
+              "width": 255.42
             }
           ],
           "font": "Helvetica",
@@ -7553,25 +8357,30 @@
           "colorSource": "rgb",
           "x": 303,
           "y": 170.7,
-          "width": 255.4,
+          "width": 255.42,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 255.4,
+          "glyphWidth": 255.42,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s73",
           "text": "Signed on behalf of the Carrier.",
+          "glyphText": "Signed on behalf of the Carrier.",
           "segments": [
             {
               "text": "Signed on behalf of the Carrier.",
               "x": 303,
               "y": 106.7,
-              "width": 111.2
+              "width": 111.17
             }
           ],
           "font": "Helvetica",
@@ -7580,25 +8389,30 @@
           "colorSource": "rgb",
           "x": 303,
           "y": 106.7,
-          "width": 111.2,
+          "width": 111.17,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 111.2,
+          "glyphWidth": 111.17,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s74",
           "text": "By",
+          "glyphText": "By",
           "segments": [
             {
               "text": "By",
               "x": 313,
               "y": 77.7,
-              "width": 9.3
+              "width": 9.34
             }
           ],
           "font": "Helvetica",
@@ -7607,25 +8421,30 @@
           "colorSource": "rgb",
           "x": 313,
           "y": 77.7,
-          "width": 9.3,
+          "width": 9.34,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 9.3,
+          "glyphWidth": 9.34,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s75",
           "text": "Place and Date of Issue",
+          "glyphText": "Place and Date of Issue",
           "segments": [
             {
               "text": "Place and Date of Issue",
               "x": 21,
               "y": 29.7,
-              "width": 84.9
+              "width": 84.94
             }
           ],
           "font": "Helvetica",
@@ -7634,25 +8453,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 29.7,
-          "width": 84.9,
+          "width": 84.94,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 84.9,
+          "glyphWidth": 84.94,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s76",
           "text": "CHENNAI 28-JAN-19",
+          "glyphText": "CHENNAI 28-JAN-19",
           "segments": [
             {
               "text": "CHENNAI 28-JAN-19",
               "x": 121,
               "y": 29.5,
-              "width": 76.4
+              "width": 76.42
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7661,25 +8485,30 @@
           "colorSource": "rgb",
           "x": 121,
           "y": 29.5,
-          "width": 76.4,
+          "width": 76.42,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 76.4,
+          "glyphWidth": 76.42,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s77",
           "text": "FREIGHT PREPAID",
+          "glyphText": "FREIGHT PREPAID",
           "segments": [
             {
               "text": "FREIGHT PREPAID",
               "x": 21,
               "y": 153.5,
-              "width": 72.4
+              "width": 72.37
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7688,25 +8517,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 153.5,
-          "width": 72.4,
+          "width": 72.37,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 72.4,
+          "glyphWidth": 72.37,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s78",
           "text": "PAYABLE AT : CHENNAI",
+          "glyphText": "PAYABLE AT : CHENNAI",
           "segments": [
             {
               "text": "PAYABLE AT : CHENNAI",
               "x": 21,
               "y": 140.5,
-              "width": 91.5
+              "width": 91.46
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7715,25 +8549,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 140.5,
-          "width": 91.5,
+          "width": 91.46,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 91.5,
+          "glyphWidth": 91.46,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s79",
           "text": "ONBOARD DATE :",
+          "glyphText": "ONBOARD DATE :",
           "segments": [
             {
               "text": "ONBOARD DATE :",
               "x": 390,
               "y": 188.2,
-              "width": 68.5
+              "width": 68.46
             }
           ],
           "font": "Helvetica",
@@ -7742,25 +8581,30 @@
           "colorSource": "rgb",
           "x": 390,
           "y": 188.2,
-          "width": 68.5,
+          "width": 68.46,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 68.5,
+          "glyphWidth": 68.46,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s80",
           "text": "AS AGENT FOR THE CARRIER",
+          "glyphText": "AS AGENT FOR THE CARRIER",
           "segments": [
             {
               "text": "AS AGENT FOR THE CARRIER",
               "x": 309,
               "y": 57.7,
-              "width": 116
+              "width": 116.02
             }
           ],
           "font": "Helvetica",
@@ -7769,25 +8613,30 @@
           "colorSource": "rgb",
           "x": 309,
           "y": 57.7,
-          "width": 116,
+          "width": 116.02,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 116,
+          "glyphWidth": 116.02,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s81",
           "text": "AS ARRANGED",
+          "glyphText": "AS ARRANGED",
           "segments": [
             {
               "text": "AS ARRANGED",
               "x": 21,
               "y": 127.5,
-              "width": 58.2
+              "width": 58.18
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7796,25 +8645,30 @@
           "colorSource": "rgb",
           "x": 21,
           "y": 127.5,
-          "width": 58.2,
+          "width": 58.18,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 58.2,
+          "glyphWidth": 58.18,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s82",
           "text": "FRESA DEMO INDIA PVT LTD",
+          "glyphText": "FRESA DEMO INDIA PVT LTD",
           "segments": [
             {
               "text": "FRESA DEMO INDIA PVT LTD",
               "x": 330,
               "y": 77.5,
-              "width": 111.4
+              "width": 111.44
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7823,25 +8677,30 @@
           "colorSource": "rgb",
           "x": 330,
           "y": 77.5,
-          "width": 111.4,
+          "width": 111.44,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 111.4,
-          "role": "dynamic",
+          "glyphWidth": 111.44,
+          "renderMode": 2,
+          "stroke": "#000000",
+          "strokeWidth": 0.27,
+          "role": "branding",
+          "brandingKind": "name",
           "binding": ""
         },
         {
           "id": "p1s83",
           "text": "16-JAN-19",
+          "glyphText": "16-JAN-19",
           "segments": [
             {
               "text": "16-JAN-19",
               "x": 460,
               "y": 188.3,
-              "width": 38.2
+              "width": 38.22
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7850,25 +8709,30 @@
           "colorSource": "rgb",
           "x": 460,
           "y": 188.3,
-          "width": 38.2,
+          "width": 38.22,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 38.2,
+          "glyphWidth": 38.22,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 1,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s84",
           "text": "CMA CGM",
+          "glyphText": "CMA CGM",
           "segments": [
             {
               "text": "CMA CGM",
               "x": 309,
               "y": 44.5,
-              "width": 38.6
+              "width": 38.64
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7877,25 +8741,30 @@
           "colorSource": "rgb",
           "x": 309,
           "y": 44.5,
-          "width": 38.6,
+          "width": 38.64,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 38.6,
+          "glyphWidth": 38.64,
+          "renderMode": 2,
+          "stroke": "#000000",
+          "strokeWidth": 0.27,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s85",
           "text": "ONE(1X20' DC) CONTAINER ONLY",
+          "glyphText": "ONE(1X20' DC) CONTAINER ONLY",
           "segments": [
             {
               "text": "ONE(1X20' DC) CONTAINER ONLY",
               "x": 146,
               "y": 194.5,
-              "width": 129.9
+              "width": 129.88
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7904,25 +8773,30 @@
           "colorSource": "rgb",
           "x": 146,
           "y": 194.5,
-          "width": 129.9,
+          "width": 129.88,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 129.9,
+          "glyphWidth": 129.88,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 1,
           "role": "dynamic",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s86",
           "text": "DRAFT",
+          "glyphText": "DRAFT",
           "segments": [
             {
               "text": "DRAFT",
               "x": 461.7,
               "y": 30,
-              "width": 36.6
+              "width": 36.63
             }
           ],
           "font": "RHQBFJ+ArialUnicodeMS",
@@ -7931,19 +8805,24 @@
           "colorSource": "rgb",
           "x": 461.7,
           "y": 30,
-          "width": 36.6,
+          "width": 36.63,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 36.6,
+          "glyphWidth": 36.63,
+          "renderMode": 2,
+          "stroke": "#000000",
+          "strokeWidth": 0.37,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s87",
           "text": "KGS",
+          "glyphText": "KGS",
           "segments": [
             {
               "text": "KGS",
@@ -7965,18 +8844,23 @@
           "charSpacing": 0,
           "wordSpacing": 0,
           "glyphWidth": 16.9,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         },
         {
           "id": "p1s88",
           "text": "CBM",
+          "glyphText": "CBM",
           "segments": [
             {
               "text": "CBM",
               "x": 555.2,
               "y": 479.7,
-              "width": 17.8
+              "width": 17.78
             }
           ],
           "font": "Helvetica",
@@ -7985,14 +8869,18 @@
           "colorSource": "rgb",
           "x": 555.2,
           "y": 479.7,
-          "width": 17.8,
+          "width": 17.78,
           "anchor": "left",
           "alignment": "left",
           "hScale": 100,
           "charSpacing": 0,
           "wordSpacing": 0,
-          "glyphWidth": 17.8,
+          "glyphWidth": 17.78,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.5,
           "role": "static",
+          "brandingKind": "",
           "binding": ""
         }
       ],
@@ -8006,7 +8894,8 @@
           "format": "unknown",
           "slot": "logo",
           "proposedClass": "logo",
-          "demoValue": ""
+          "demoValue": "",
+          "barcode": null
         },
         {
           "x": 380,
@@ -8016,13 +8905,20 @@
           "format": "unknown",
           "slot": "",
           "proposedClass": "barcode",
-          "demoValue": "PLMAAJEA00081"
+          "demoValue": "PLMAAJEA00081",
+          "barcode": {
+            "symbology": "CODE_128",
+            "payload": "PLMAAJEA00081",
+            "moduleWidth": 0.96,
+            "quietZone": 9.83,
+            "decoded": true
+          }
         }
       ],
       "shadings": [],
       "bands": {
         "header": {
-          "yMin": 689.5,
+          "yMin": 690.4,
           "yMax": 842
         },
         "title": {
@@ -8030,12 +8926,12 @@
           "yMax": 724.1
         },
         "detail": {
-          "yMin": 88.1,
-          "yMax": 680.7
+          "yMin": 210.5,
+          "yMax": 631.5
         },
         "summary": {
-          "yMin": 192.7,
-          "yMax": 196.7
+          "yMin": 84.2,
+          "yMax": 235.8
         },
         "footer": {
           "yMin": 0,
@@ -8052,8 +8948,8 @@
         "xobjects": 0,
         "lineStyle": 0,
         "markedContent": 0,
-        "undecodedText": 6,
-        "textRenderMode": 4,
+        "undecodedText": 0,
+        "textRenderMode": 0,
         "unknownOps": {}
       },
       "droppedOutside": 0,
@@ -8064,7 +8960,7 @@
   "layoutKind": "form",
   "bands": {
     "header": {
-      "yMin": 689.5,
+      "yMin": 690.4,
       "yMax": 842
     },
     "title": {
@@ -8072,12 +8968,12 @@
       "yMax": 724.1
     },
     "detail": {
-      "yMin": 88.1,
-      "yMax": 680.7
+      "yMin": 210.5,
+      "yMax": 631.5
     },
     "summary": {
-      "yMin": 192.7,
-      "yMax": 196.7
+      "yMin": 84.2,
+      "yMax": 235.8
     },
     "footer": {
       "yMin": 0,
@@ -8096,17 +8992,12 @@
     "company": {
       "x": 21,
       "y": 691.5,
-      "width": 137.2,
+      "width": 137.23,
       "height": 8,
       "binding": "company.name"
     }
   },
-  "bindings": [
-    {
-      "id": "p1s23",
-      "path": "company.name"
-    }
-  ],
+  "bindings": [],
   "formatRules": [
     {
       "path": "invoice.date",
@@ -8163,8 +9054,8 @@
         "xobjects": 0,
         "lineStyle": 0,
         "markedContent": 0,
-        "undecodedText": 6,
-        "textRenderMode": 4,
+        "undecodedText": 0,
+        "textRenderMode": 0,
         "unknownOps": {}
       }
     ],

@@ -101,6 +101,7 @@ import {
   isHandoffLimitedJob,
   isJobHardClosed,
 } from '../utils/isHandoffLimitedJob';
+import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
 import { isPassToTransportStatus } from '../constants/job.constants';
 import { useJobLookupsDropdowns } from '../hooks/useJobs';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
@@ -246,7 +247,7 @@ export default function JobDetailPage() {
   const resolvedShipmentId =
     job?.shipment_id && isUuid(job.shipment_id) ? job.shipment_id : undefined;
 
-  const handoffLimited = isHandoffLimitedJob(job);
+  const handoffLimited = isHandoffLimitedJob(job, user);
   const canTracking =
     !handoffLimited && job?.actions?.can_tracking !== false;
 
@@ -433,17 +434,23 @@ export default function JobDetailPage() {
     }
   }, [requestedTab, highlightInvoiceId]);
 
+  const handoffTabOpts = useMemo(
+    () => ({ handoffLimited }),
+    [handoffLimited],
+  );
+
   const defaultTab = useMemo(() => {
     if (!job) return undefined;
-    const available = resolveJobDetailTabs(job);
+    const available = resolveJobDetailTabs(job, handoffTabOpts);
     const availableKeys = new Set([
       ...available.map((t) => t.key),
-      'section-files',
-      'section_files',
+      ...(!handoffLimited ? (['section-files', 'section_files'] as const) : []),
       ...(canTracking ? (['tracking'] as const) : []),
     ]);
     const pick = (key: string | undefined) =>
-      key && availableKeys.has(key) ? key : defaultJobDetailTabKey(job);
+      key && availableKeys.has(key)
+        ? key
+        : defaultJobDetailTabKey(job, false, handoffTabOpts);
 
     if (requestedTab) {
       const legacy: Record<string, string> = {
@@ -460,25 +467,30 @@ export default function JobDetailPage() {
         tracking: 'tracking',
         track_trace: 'tracking',
         tracktrace: 'tracking',
+        handoff: 'handoff',
       };
       const mapped = legacy[requestedTab.toLowerCase()] || requestedTab;
       // Action keys open as popup — keep Show All (or API default) underneath.
       if (isJobActionPanelKey(mapped)) {
-        return pick(defaultJobDetailTabKey(job));
+        return pick(defaultJobDetailTabKey(job, false, handoffTabOpts));
       }
       if (mapped === 'section-files' || mapped === 'section_files') {
-        return 'section-files';
+        return handoffLimited
+          ? pick(defaultJobDetailTabKey(job, false, handoffTabOpts))
+          : 'section-files';
       }
       if (isJobTrackingTab(mapped)) {
-        return canTracking ? 'tracking' : pick(defaultJobDetailTabKey(job));
+        return canTracking
+          ? 'tracking'
+          : pick(defaultJobDetailTabKey(job, false, handoffTabOpts));
       }
       if (isJobDetailTabKey(mapped)) {
         return pick(normalizeJobDetailTabKey(mapped));
       }
     }
-    // Opening a job always lands on Show All when the API returns that tab.
-    return pick(defaultJobDetailTabKey(job));
-  }, [job, requestedTab, canTracking]);
+    // Handoff-limited lands on handoff; otherwise Show All when available.
+    return pick(defaultJobDetailTabKey(job, false, handoffTabOpts));
+  }, [job, requestedTab, canTracking, handoffLimited, handoffTabOpts]);
 
   /** API detail tabs + FE Track & Trace + Section files hub. */
   const tabs = useMemo(() => {
@@ -493,7 +505,7 @@ export default function JobDetailPage() {
       shipment_number: shipmentNumber || job.shipment_number,
     };
 
-    const resolved = resolveJobDetailTabs(job);
+    const resolved = resolveJobDetailTabs(job, handoffTabOpts);
     const siblingTabKeys = resolved.map((t) => t.key);
     const apiTabs = resolved.map((t) => ({
       key: t.key,
@@ -507,10 +519,9 @@ export default function JobDetailPage() {
         />
       ),
     }));
-    const handoff = isHandoffLimitedJob(job);
     return [
       ...apiTabs,
-      ...(canTracking && !handoff
+      ...(canTracking && !handoffLimited
         ? [
             {
               key: 'tracking',
@@ -525,7 +536,7 @@ export default function JobDetailPage() {
             },
           ]
         : []),
-      ...(!handoff
+      ...(!handoffLimited
         ? [
             {
               key: 'section-files',
@@ -551,6 +562,8 @@ export default function JobDetailPage() {
     quotationNumber,
     shipmentNumber,
     canTracking,
+    handoffLimited,
+    handoffTabOpts,
   ]);
 
   if (isLoading) {
@@ -627,6 +640,7 @@ export default function JobDetailPage() {
   const canCopy = !handoffLimited && fclActions?.can_copy !== false;
   const actionPanels = resolveJobActionPanels(job, {
     houseJobsCount: houseJobs.length,
+    handoffLimited,
   });
   const statusCatalog = (() => {
     if (fclActions?.allowed_statuses?.length) {
@@ -723,21 +737,23 @@ export default function JobDetailPage() {
 
   return (
     <>
-      <OpsContinuumRail
-        entityType="JOB"
-        entityId={job.id}
-        pathHints={['ops_continuum']}
-        opsContinuum={job.ops_continuum}
-        actions={job.actions as Record<string, unknown> | undefined}
-        links={{
-          enquiryId: resolvedEnquiryId,
-          quotationId: resolvedQuotationId,
-          shipmentId: resolvedShipmentId,
-          jobId: job.id,
-        }}
-      />
+      {!handoffLimited ? (
+        <OpsContinuumRail
+          entityType="JOB"
+          entityId={job.id}
+          pathHints={['ops_continuum']}
+          opsContinuum={job.ops_continuum}
+          actions={job.actions as Record<string, unknown> | undefined}
+          links={{
+            enquiryId: resolvedEnquiryId,
+            quotationId: resolvedQuotationId,
+            shipmentId: resolvedShipmentId,
+            jobId: job.id,
+          }}
+        />
+      ) : null}
       <DetailPageTemplate
-        reserveContinuumRail
+        reserveContinuumRail={!handoffLimited}
         eyebrow="Job details"
         title={jobDisplayNumber(job)}
         subtitle={
@@ -781,8 +797,9 @@ export default function JobDetailPage() {
                   role="status"
                   className="rounded-sm border border-sky-200 bg-sky-50 px-3 py-2 text-[13px] text-sky-900"
                 >
-                  Limited handoff view — containers, assign trucker, port token, and document
-                  upload only. Full costing / show-all stay with ops roles that have full access.
+                  Transport handoff view — one Handoff tab only. You can update containers, assign
+                  trucker, generate/confirm port token, and upload documents. Costing, pass, close,
+                  and full ops tabs stay with Tenant Admin / Branch Manager.
                 </div>
               ) : null}
               {(actionError || costingWarningMessage) && (
@@ -804,8 +821,9 @@ export default function JobDetailPage() {
             </div>
           ) : null
         }
-        detailTitle="Job detail"
+        detailTitle={handoffLimited ? undefined : 'Job detail'}
         detailSection={
+          handoffLimited ? null : (
           <div className="grid grid-cols-1 gap-x-4 gap-y-2.5 sm:grid-cols-3">
             <FresaReadonlyField label="Job No" value={jobDisplayNumber(job)} />
             <FresaReadonlyField
@@ -958,8 +976,10 @@ export default function JobDetailPage() {
             <OptionalFresaField label="Origin door" value={job.origin_door_address} />
             <OptionalFresaField label="Dest door" value={job.dest_door_address} />
           </div>
+          )
         }
         afterDetail={
+          handoffLimited ? null : (
           <>
             {job.draft_bl_customer_comment?.trim() ? (
               <div
@@ -1080,6 +1100,7 @@ export default function JobDetailPage() {
               <span className="text-[#64748b]"> · {job.job_type?.replaceAll('_', ' ')}</span>
             </div>
           </>
+          )
         }
         toolbar={
           <>
@@ -1269,9 +1290,10 @@ export default function JobDetailPage() {
                 Track & Trace
               </Button>
             ) : null}
-            {(job.path_hints?.includes('job_not_invoiced_do') ||
-              job.path_hints?.includes('job_finance_report') ||
-              !job.path_hints?.length) && (
+            {!handoffLimited &&
+              (job.path_hints?.includes('job_not_invoiced_do') ||
+                job.path_hints?.includes('job_finance_report') ||
+                !job.path_hints?.length) && (
               <Button
                 size="sm"
                 type="button"
@@ -1402,13 +1424,44 @@ export default function JobDetailPage() {
           action={confirm.action}
           job={confirm.job}
           isPending={pending}
+          allowForceClose={isOpsUnrestrictedUser(user)}
           onClose={closeConfirm}
-          onConfirm={() => {
+          onResolveBlocker={(hint) => {
+            closeConfirm();
+            const params = new URLSearchParams(location.search);
+            if (hint === 'costing') {
+              params.set('tab', 'costing');
+              navigate(
+                { pathname: location.pathname, search: `?${params.toString()}` },
+                { replace: true, state: location.state },
+              );
+              return;
+            }
+            if (hint === 'vouchers') {
+              params.set('tab', 'vouchers');
+              navigate(
+                { pathname: location.pathname, search: `?${params.toString()}` },
+                { replace: true, state: location.state },
+              );
+              return;
+            }
+            if (hint === 'shipments') {
+              if (resolvedShipmentId) {
+                navigate(`/operations/shipments/${resolvedShipmentId}`);
+                return;
+              }
+              navigate('/operations/shipments');
+            }
+          }}
+          onConfirm={(opts) => {
             if (confirm.action === 'cancel') {
               return run(() => actions.cancel.mutateAsync(), 'Job cancelled.');
             }
             if (confirm.action === 'close') {
-              return run(() => actions.close.mutateAsync(), 'Job closed.');
+              return run(
+                () => actions.close.mutateAsync(opts?.force ? { force: true } : undefined),
+                opts?.force ? 'Job force-closed.' : 'Job closed.',
+              );
             }
             return run(() => actions.remove.mutateAsync(), 'Job deleted.', true);
           }}
@@ -1487,7 +1540,7 @@ export default function JobDetailPage() {
           <p className="mb-3 text-[13px] text-[#475569]">
             Any catalog status can be set anytime (no transition graph). Warnings may be returned.
             {passToTransport
-              ? ' Pass to Transport also hands the job to the Transport org department (branch + assignee required).'
+              ? ' Pass to Transport hands the job to the Transport org department (branch + assignee required), then updates status.'
               : ''}
           </p>
           <label className="mb-3 block text-[13px]">

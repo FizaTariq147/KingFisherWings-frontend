@@ -82,7 +82,11 @@ export default function JobEditPage() {
     );
   }
 
-  if (isJobHardClosed(job) || isHandoffLimitedJob(job) || !canEditJob(job, user)) {
+  if (
+    isJobHardClosed(job) ||
+    isHandoffLimitedJob(job, user) ||
+    !canEditJob(job, user)
+  ) {
     const detailHref = jobDetailPath(job);
     return (
       <div className="space-y-3">
@@ -90,7 +94,7 @@ export default function JobEditPage() {
         <p className="text-sm text-[var(--color-danger-600)]">
           {isJobHardClosed(job)
             ? 'Job is closed. Request reopen and wait for Tenant Admin approval before editing.'
-            : isHandoffLimitedJob(job)
+            : isHandoffLimitedJob(job, user)
               ? 'Handoff-limited view — full edit is not available. Use containers, assign trucker, or port token on the job detail.'
               : 'You do not have permission to edit this job.'}
         </p>

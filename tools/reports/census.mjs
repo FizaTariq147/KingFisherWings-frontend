@@ -104,6 +104,14 @@ function familiesByCode() {
   return map;
 }
 
+function isValueLabel(label) {
+  if (!label || label.length < 2) return true;
+  if (/^(inr|aed|usd|eur|gbp|sar|qar|omr|bhd|kwd|sgd|myr|cny|jpy|aud|cad|chf|hkd|nzd|zar|lkr|bdt|pkr|thb|idr|php)$/.test(label)) return true;
+  if (/^\d+( \d+)*$/.test(label)) return true;
+  if (/^[0-9]+[.,][0-9., ]+$/.test(label)) return true;
+  return false;
+}
+
 function propose(label, family) {
   const hit = RULES.find(([pattern]) => pattern.test(label));
   if (hit) return { path: hit[1], fresh: hit[2] };
@@ -147,7 +155,7 @@ for (const row of pdfs) {
         const found = nearestLabel(span, read.spans);
         if (!found) continue;
         const key = normalizeLabel(found.text);
-        if (!key) continue;
+        if (!key || isValueLabel(key)) continue;
         const item = labels.get(key) || { frequency: 0, families: new Map(), codes: new Set(), side: found.side };
         item.frequency += 1;
         item.families.set(family, (item.families.get(family) || 0) + 1);
