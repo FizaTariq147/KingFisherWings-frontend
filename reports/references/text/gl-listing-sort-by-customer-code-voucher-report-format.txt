@@ -1,0 +1,52 @@
+                                                                      FRESA DEMO INDIA PVT LTD
+                                                                     GL LISTINGS SORT BY CUSTOMER CODE
+                                                                           SUNDRYDEBTORS - SUNDRY DEBTORS
+Branch      :                                                                                                                                                  From : 01-JAN-19
+                                                                                                                                                               To   : 13-FEB-19
+GL Date         Voucher No.     Narration                             Debit            Credit Organization      Job No.      Ref No.      Ref Date Currency Org.Amount     INV Amount
+31-DEC-18                       OPENING BALANCE                   135,219.95       54,596.20                                                                                  80,623.75
+23-JAN-19       MAABR1900089                                            0.00      116,219.95 4G LOGISTICS                                           INR       116,219.95    -116,219.95
+                                                                                             INDIA PVT LTD
+25-JAN-19       MAAINV1900713   B/SFI/19/0166 MBL NO.               9,440.00            0.00 4G LOGISTICS       CSFI190012                          INR         9,440.00          9,440.00
+                                MBLCOPY87666666 / HBL NO. /                                  INDIA PVT LTD
+                                JOB NO.CSFI190012
+                                B/SFI/19/0166 CSFI190012
+28-JAN-19       MAAINV1900717   B/EXP/19/0251 MBL NO.              17,384.00              0.00 4G LOGISTICS     CEXP190148   REFE NO.     22-JAN-   INR        17,384.00      17,384.00
+                                MBLC9878909999 / HBL NO.                                       INDIA PVT LTD                 987890       19
+                                PLMAAJEA00080 / JOB NO.
+                                CEXP190148 B/EXP/19/0251
+                                CEXP190148
+28-JAN-19       MAACN1900032    REVERSED VOUCHER AGAINST                0.00       17,384.00 4G LOGISTICS       CEXP190148   MAAINV190071 28-JAN-   INR        17,384.00     -17,384.00
+                                INVOICE - MAAINV1900717                                      INDIA PVT LTD                   7            19
+                                B/EXP/19/0251 CEXP190148
+29-JAN-19       MAAINV1900709   CEXP190150 MBL NO. / HBL NO. /     25,658.00              0.00 4G LOGISTICS     CEXP190150                          INR        25,658.00      25,658.00
+                                JOB NO.CEXP190150                                              INDIA PVT LTD
+                                B/EXP/19/0254 CEXP190150
+29-JAN-19       MAAINV1900734   CEXP190150 MBL NO.                   265.50               0.00 4G LOGISTICS     CEXP190150                          INR          265.50             265.50
+                                MBLCOPY87667888 / HBL NO.                                      INDIA PVT LTD
+                                PLMAAJEA00081 / JOB NO.
+                                CEXP190150 B/EXP/19/0254
+                                CEXP190150
+31-JAN-19       MAAINV1900728   MBL NO. / HBL NO. / JOB NO.         2,950.00             0.00 4G LOGISTICS                                          INR         2,950.00          2,950.00
+                                B/EXP/19/0255                                                 INDIA PVT LTD
+31-JAN-19       MAABR1900095    MAAINV1900728                           0.00         2,950.00 4G LOGISTICS                                          INR         2,950.00          -2,950.00
+                                                                                              INDIA PVT LTD
+31-JAN-19       MAAINV1900729   MBL NO. / HBL NO. / JOB NO.         2,500.00             0.00 4G LOGISTICS                                          INR         2,500.00          2,500.00
+                                B/EXP/19/0255                                                 INDIA PVT LTD
+31-JAN-19       MAACN1900038    B/EXP/19/0255                           0.00           250.00 4G LOGISTICS                                          INR          250.00            -250.00
+                                                                                              INDIA PVT LTD
+05-FEB-19       MAAINV1900731   B/EXP/19/0256 MBL NO. / HBL NO.    20,434.00             0.00 4G LOGISTICS      CEXP190151   PO NO .      23-JAN-   INR        20,434.00      20,434.00
+                                PLMAAJEA00082 / JOB NO.                                       INDIA PVT LTD                  987777       19
+                                CEXP190151 B/EXP/19/0256
+                                CEXP190151
+05-FEB-19       MAABR1900097    RECEIPT VOUCHER                         0.00       25,658.00 4G LOGISTICS                    REFE876566   04-FEB-   INR        25,658.00     -25,658.00
+                                B/EXP/19/0254 CEXP190150                                     INDIA PVT LTD                                19
+05-FEB-19       MAABR1900098                                            0.00          265.50 4G LOGISTICS                                           INR          265.50            -265.50
+                                                                                             INDIA PVT LTD
+11-FEB-19       MAAINV1900739   CEXP190153 MBL NO.                 28,288.00            0.00 4G LOGISTICS       CEXP190153                          INR        28,288.00      28,288.00
+                                MBLASIAAN98789 / HBL NO.                                     INDIA PVT LTD
+                                ASIANLINE20190209 / JOB NO.
+                                CEXP190153 B/EXP/19/0262
+                                CEXP190153
+Printed By : RAM                                                               Print Date : 13-Feb-19 6:34 PM                                                       Page 1 of 1
+

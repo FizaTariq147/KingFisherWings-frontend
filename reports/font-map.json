@@ -1,0 +1,25 @@
+{
+  "bundles": {
+    "Arimo": {
+      "family": "Arimo",
+      "regular": "reports/fonts/Arimo-Regular.ttf",
+      "bold": "reports/fonts/Arimo-Bold.ttf"
+    },
+    "NotoSans": {
+      "family": "Noto Sans",
+      "regular": "reports/fonts/NotoSans-Regular.ttf",
+      "bold": "reports/fonts/NotoSans-Bold.ttf"
+    },
+    "LiberationMono": {
+      "family": "Liberation Mono",
+      "regular": "reports/fonts/LiberationMono-Regular.ttf",
+      "bold": "reports/fonts/LiberationMono-Bold.ttf"
+    }
+  },
+  "rules": [
+    { "match": "consolas|courier|liberation\\s*mono|monospace", "bundle": "LiberationMono" },
+    { "match": "arial\\s*unicode|noto|dejavu|freesans|symbol", "bundle": "NotoSans" },
+    { "match": "arial|helvetica|arimo", "bundle": "Arimo" },
+    { "match": ".*", "bundle": "NotoSans" }
+  ]
+}

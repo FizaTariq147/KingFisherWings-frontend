@@ -1,0 +1,54 @@
+[
+  {
+    "stem": "invoice-india",
+    "refSize": [
+      594,
+      842
+    ],
+    "genSize": [
+      594,
+      842
+    ],
+    "sameSize": true,
+    "mismatchPct": 4.4
+  },
+  {
+    "stem": "fcl-quotation",
+    "refSize": [
+      594,
+      842
+    ],
+    "genSize": [
+      594,
+      842
+    ],
+    "sameSize": true,
+    "mismatchPct": 3.7
+  },
+  {
+    "stem": "hbl-jasper",
+    "refSize": [
+      595,
+      842
+    ],
+    "genSize": [
+      595,
+      842
+    ],
+    "sameSize": true,
+    "mismatchPct": 2.6
+  },
+  {
+    "stem": "arrival-jasper",
+    "refSize": [
+      595,
+      842
+    ],
+    "genSize": [
+      595,
+      842
+    ],
+    "sameSize": true,
+    "mismatchPct": 4.2
+  }
+]

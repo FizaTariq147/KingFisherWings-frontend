@@ -92,7 +92,6 @@ import {
   resolveAuthRoleSlug,
   TENANT_USER_MANAGER_ROLE_SLUGS,
 } from '@/features/users/constants/userPermissions';
-import { RoadLandWorkflowPanel } from '../components/RoadLandWorkflowPanel';
 import {
   canCancelJob,
   canDeleteJob,
@@ -102,6 +101,10 @@ import {
   isHandoffLimitedJob,
   isJobHardClosed,
 } from '../utils/isHandoffLimitedJob';
+import { isPassToTransportStatus } from '../types/job.types';
+import { useJobLookupsDropdowns } from '../hooks/useJobs';
+import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
+import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
 
 function statusTone(status: string): 'emerald' | 'amber' | 'rose' | 'slate' {
   if (status === 'COMPLETED' || status === 'CLOSED' || status === 'DELIVERED') {
@@ -290,7 +293,18 @@ export default function JobDetailPage() {
   const [changeStatusOpen, setChangeStatusOpen] = useState(false);
   const [changeStatusValue, setChangeStatusValue] = useState('IN_PROGRESS');
   const [changeStatusReason, setChangeStatusReason] = useState('');
+  const [passBranchId, setPassBranchId] = useState('');
+  const [passBranchName, setPassBranchName] = useState('');
+  const [passUserId, setPassUserId] = useState('');
+  const [passUserName, setPassUserName] = useState('');
   const [addStatusOpen, setAddStatusOpen] = useState(false);
+  const passToTransport = isPassToTransportStatus(changeStatusValue);
+  const lookupsQuery = useJobLookupsDropdowns(changeStatusOpen && passToTransport);
+  const { data: branchMasters = [] } = useMasterOptions(
+    'branches',
+    MASTER_PATHS.branches,
+    changeStatusOpen && passToTransport,
+  );
   const [reopenOpen, setReopenOpen] = useState(false);
   const [reopenStatus, setReopenStatus] = useState('IN_PROGRESS');
   const [reopenReason, setReopenReason] = useState('');
@@ -522,29 +536,6 @@ export default function JobDetailPage() {
                   entityId={job.id}
                   title="Section files"
                 />
-              ),
-            },
-          ]
-        : []),
-      ...(handoff && job.actions?.can_assign_trucker !== false
-        ? [
-            {
-              key: 'handoff-trucker',
-              label: 'Assign trucker',
-              content: (
-                <div className="space-y-3">
-                  <RoadLandWorkflowPanel job={job} handoffLimited />
-                  <p className="text-[12px] text-[#64748B]">
-                    Or open{' '}
-                    <Link
-                      to="/operations/transport-requests"
-                      className="font-medium text-[var(--color-primary-700)] underline-offset-2 hover:underline"
-                    >
-                      Transport requests
-                    </Link>{' '}
-                    to assign a trucker on a transport request.
-                  </p>
-                </div>
               ),
             },
           ]
@@ -790,8 +781,8 @@ export default function JobDetailPage() {
                   role="status"
                   className="rounded-sm border border-sky-200 bg-sky-50 px-3 py-2 text-[13px] text-sky-900"
                 >
-                  Limited handoff view — containers, assign trucker, and port token only. Full
-                  costing / show-all stay with ops roles that have full access.
+                  Limited handoff view — containers, assign trucker, port token, and document
+                  upload only. Full costing / show-all stay with ops roles that have full access.
                 </div>
               ) : null}
               {(actionError || costingWarningMessage) && (
@@ -1104,6 +1095,10 @@ export default function JobDetailPage() {
                     job.status_code || job.status || 'BOOKING_CONFIRMED',
                   );
                   setChangeStatusReason('');
+                  setPassBranchId('');
+                  setPassBranchName('');
+                  setPassUserId('');
+                  setPassUserName('');
                   setChangeStatusOpen(true);
                 }}
               >
@@ -1441,7 +1436,13 @@ export default function JobDetailPage() {
                 size="sm"
                 variant="warning"
                 leftIcon={<RefreshCw />}
-                disabled={pending || !changeStatusValue}
+                disabled={
+                  pending ||
+                  !changeStatusValue ||
+                  (passToTransport &&
+                    !(passBranchId.trim() || passBranchName.trim()) ||
+                    !(passUserId.trim() || passUserName.trim()))
+                }
                 onClick={() =>
                   void run(async () => {
                     const result = await actions.changeStatus.mutateAsync({
@@ -1449,19 +1450,45 @@ export default function JobDetailPage() {
                       ...(changeStatusReason.trim()
                         ? { reason: changeStatusReason.trim() }
                         : {}),
+                      ...(passToTransport
+                        ? {
+                            ...(passBranchId.trim()
+                              ? { branch_id: passBranchId.trim() }
+                              : {}),
+                            ...(passBranchName.trim()
+                              ? { branch_name: passBranchName.trim() }
+                              : {}),
+                            ...(passUserId.trim()
+                              ? { user_id: passUserId.trim() }
+                              : {}),
+                            ...(passUserName.trim()
+                              ? { user_name: passUserName.trim() }
+                              : {}),
+                            department_name: 'TRANSPORT',
+                          }
+                        : {}),
                     });
                     setChangeStatusOpen(false);
                     return result;
-                  }, `Status changed to ${changeStatusValue}.`)
+                  }, passToTransport
+                    ? 'Passed to Transport and status updated.'
+                    : `Status changed to ${changeStatusValue}.`)
                 }
               >
-                {pending ? 'Saving…' : 'Save status'}
+                {pending
+                  ? 'Saving…'
+                  : passToTransport
+                    ? 'Pass to Transport'
+                    : 'Save status'}
               </Button>
             </div>
           }
         >
           <p className="mb-3 text-[13px] text-[#475569]">
             Any catalog status can be set anytime (no transition graph). Warnings may be returned.
+            {passToTransport
+              ? ' Pass to Transport also hands the job to the Transport org department (branch + assignee required).'
+              : ''}
           </p>
           <label className="mb-3 block text-[13px]">
             <span className="mb-1 block text-[12px] font-medium text-[#334155]">Status</span>
@@ -1469,7 +1496,15 @@ export default function JobDetailPage() {
               <select
                 className="h-8 min-w-0 flex-1 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
                 value={changeStatusValue}
-                onChange={(e) => setChangeStatusValue(e.target.value)}
+                onChange={(e) => {
+                  setChangeStatusValue(e.target.value);
+                  if (!isPassToTransportStatus(e.target.value)) {
+                    setPassBranchId('');
+                    setPassBranchName('');
+                    setPassUserId('');
+                    setPassUserName('');
+                  }
+                }}
               >
                 {statusCatalog.map((opt) => (
                   <option key={opt.value} value={opt.value}>
@@ -1477,6 +1512,9 @@ export default function JobDetailPage() {
                     {opt.is_custom ? ' (custom)' : ''}
                   </option>
                 ))}
+                {!statusCatalog.some((o) => isPassToTransportStatus(o.value)) ? (
+                  <option value="PASS_TO_TRANSPORT">Pass to Transport</option>
+                ) : null}
               </select>
               <button
                 type="button"
@@ -1489,6 +1527,89 @@ export default function JobDetailPage() {
               </button>
             </div>
           </label>
+          {passToTransport ? (
+            <div className="mb-3 grid gap-3 sm:grid-cols-2">
+              <label className="block text-[13px]">
+                <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                  Branch (required)
+                </span>
+                <select
+                  className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                  value={passBranchId || passBranchName}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    const fromLookup = (lookupsQuery.data?.branches ?? []).find(
+                      (b) => b.id === v || b.name === v,
+                    );
+                    const fromMaster = branchMasters.find(
+                      (b) => String(b.id ?? '') === v || String(b.name ?? '') === v,
+                    );
+                    if (fromLookup?.id) {
+                      setPassBranchId(fromLookup.id);
+                      setPassBranchName(fromLookup.name || '');
+                    } else if (fromMaster?.id) {
+                      setPassBranchId(String(fromMaster.id));
+                      setPassBranchName(String(fromMaster.name ?? fromMaster.code ?? ''));
+                    } else {
+                      setPassBranchId(isUuid(v) ? v : '');
+                      setPassBranchName(isUuid(v) ? '' : v);
+                    }
+                  }}
+                >
+                  <option value="">Select branch…</option>
+                  {(lookupsQuery.data?.branches?.length
+                    ? lookupsQuery.data.branches
+                    : branchMasters.map((b) => ({
+                        id: String(b.id ?? ''),
+                        name: String(b.name ?? b.code ?? ''),
+                      }))
+                  ).map((b) => (
+                    <option key={b.id || b.name} value={b.id || b.name}>
+                      {b.name || b.id}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="block text-[13px]">
+                <span className="mb-1 block text-[12px] font-medium text-[#334155]">
+                  Assignee (required)
+                </span>
+                <select
+                  className="h-8 w-full rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2.5 text-[13px]"
+                  value={passUserId || passUserName}
+                  onChange={(e) => {
+                    const v = e.target.value;
+                    const fromLookup = (
+                      lookupsQuery.data?.employees ??
+                      lookupsQuery.data?.salespeople ??
+                      []
+                    ).find((u) => u.id === v || u.name === v || u.email === v);
+                    if (fromLookup?.id) {
+                      setPassUserId(fromLookup.id);
+                      setPassUserName(fromLookup.name || fromLookup.email || '');
+                    } else {
+                      setPassUserId(isUuid(v) ? v : '');
+                      setPassUserName(isUuid(v) ? '' : v);
+                    }
+                  }}
+                >
+                  <option value="">Select user…</option>
+                  {(
+                    lookupsQuery.data?.employees?.length
+                      ? lookupsQuery.data.employees
+                      : (lookupsQuery.data?.salespeople ?? [])
+                  ).map((u) => (
+                    <option key={u.id || u.name} value={u.id || u.name}>
+                      {u.name || u.email || u.id}
+                      {u.email && u.name && u.email !== u.name
+                        ? ` (${u.email})`
+                        : ''}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+          ) : null}
           <label className="block text-[13px]">
             <span className="mb-1 block text-[12px] font-medium text-[#334155]">Reason (optional)</span>
             <input

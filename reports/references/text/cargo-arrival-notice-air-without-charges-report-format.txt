@@ -1,0 +1,47 @@
+  2/18/2019                                                    Cargo Arrival Notice-AWB91384768
+                                                                                         FRESA DEMO INDIA PVT LTD
+                                                                                                                                Chennai- 600 100
+                                                                                                                                Tamil Nadu, India
+                                                                                                                 WEB : www.fresatechnologies.com
+
+
+                                      CARGO ARRIVAL NOTICE / HAWB - AWB91384768
+
+                      Client BABU SECTOR PTLTD                                                Shipper AL NASER TRADING COMPANY LLC
+                                                                                                      30 AL MAKTHOOM BUILDING NEAR MUBAR
+                                                                                                      AK CENTRE ROUND ABOUT AL NABHA SH
+                                                                                                      ARJAH SHARJAH UNITED ARAB EMIRATES
+                Consignee BABU SECTOR PTLTD                                                   Notify1 BABU SECTOR PTLTD
+                          144/8 NALLATHAMBI STREET, NEELANKAR                                         144/8 NALLATHAMBI STREET, NEELANKAR
+                          AI CHENNAI TAMIL NADU INDIA                                                 AI CHENNAI TAMIL NADU INDIA
+                    Job No. CAI190005 / 19-FEB-19                                           MAWB No. MAWB98777777 / 18-FEB-19
+                  HAWB No. AWB91384768 / 18-FEB-19                                    Place of Receipt DUBAI
+            Port of Loading DUBAI INTERNATIONAL AIRPORT, UNITED A                    Port of Discharge CHENNAI, INDIA
+                              RAB EMIRATES
+   Port of Final Destination CHENNAI, INDIA                                          Place of Delivery CHENNAI AIRPORT
+                        ETD 18-FEB-19                                                             ETA 19-FEB-19
+                      Airline EMIRATES                                               Flight Name / No. EK / 176
+                     Freight PREPAID                                                          IGM No. 9876777 / 19-FEB-19
+          Line / Subline No. 1289 / 127
+          Goods Description                  No. of Pkgs        Volume           Net Weight          Gross Weight             Volume Weight
+STC: VALVE MATERIALS                                       5         3.70                360.00                 375.00                    375.00
+                   Remarks VALVES
+
+Terms & Conditions
+
+   1. Kindly contact our Imports Department/Customer Service for Actual Arrival.
+   2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.
+   3. Cheque in favor of “FRESA DEMO COMPANY”.
+   4. Partial Payments are not acceptable.
+   5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days
+   6. After Free days storage charges applicable
+
+
+
+          User : ram@fresatechnologies.com                  18-Feb-19 05:58:PM Asia/Kolkata                   Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:3516041250116:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                1/1
+

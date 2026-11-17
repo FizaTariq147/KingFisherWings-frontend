@@ -1,0 +1,42 @@
+                                                 E - Delivery Order
+To     THE MANAGER                                                                                                         Date : 17-MAY-23
+
+
+
+
+HBL No.              : PLMAAJEA00081 / 28-JAN-19                      D/O No.            :
+MBL No.              : MBLCOPY87667888 / 28-JAN-19                    D.O. Validity      :
+CHA                  :                                                Line No.           :/
+Notify               : AL NASER TRADING COMPANY LLC                   D.O. Release Date :
+Consignee            : AL NASER TRADING COMPANY LLC                   Place of Delivery : JEBEL ALI, UNITED ARAB EMIRATES
+Place of Receipt     :                                                Port of Discharge : JEBEL ALI, UNITED ARAB EMIRATES
+Port of Loading      : CHENNAI (EX MADRAS), INDIA                     Job No.            : CEXP190150
+Vessel / Voyage      : EVERGREEN MARINE / 9887                        Rotation No. /Date :
+Service Type         : FCL
+Container              Size       Seal                No of Pkgs Description of Goods                       Volume       G.Weight      V.Weight
+ABCU9877666            20' DC     SL345566      125 PACKAGES STC: VALVE MATERIALS FOR                        24.000     18,000.000
+                                                             MACHINERY PARTS FREIGHT
+                                                             PREPAID ALL DESTINATION
+                                                             CHARGES ARE CONSIGNEE'S
+                                                             ACCOUNT
+
+Marks & Numbers : NIL MARKS
+
+
+
+
+ Thanking you
+ Yours faithfully
+ FOR FRESA DEMO INDIA PVT LTD
+
+
+
+
+ As Agent
+
+
+
+
+                                             This is E-Delivery Order, no Signature Required.
+Printed By   shanmugam@fresa.io                      Printed Date : 17-MAY-23 01:37PM           Powered By : Fresa Technologies   Page 1 of 1
+

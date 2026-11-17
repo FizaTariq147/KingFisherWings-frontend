@@ -1,0 +1,63 @@
+                                              FRESA DEMO INDIA PVT LTD
+                                                            TRIAL BALANCE
+BRANCH : CHENNAI                                                                                TO DATE : 30-SEP-18
+ACCOUNT                                                                      CURRENT MONTH         YEAR TO DATE
+GROUP
+  CURRENT ASSET
+     6110.10.00 - ADCB BANK - AED                                                        0.00           397,600.00
+     6210.00.00 - TRADE DEBTORS CONTROL                                            (3,000.00)         1,215,919.00
+     6217 - INTERBRANCH - CHENNAI                                                        0.00             68,000.00
+     7500 - INTERBRANCH - DUBAI (DXB)                                                    0.00           (68,000.00)
+     7510.10.06 - PETTY CASH - GOMA                                                      0.00         (274,500.00)
+     7510.10.07 - PETTY CASH - BUKAVU                                                  250.00           301,250.00
+     7530.10.03 - BUTEMBO CASH BOOK                                                      0.00            (9,000.00)
+     7530.10.08 - BUTEMBO PETTY CASH                                                     0.00           (38,500.00)
+     7560.10.10 - KITWE PETTY CASH                                                       0.00             99,600.00
+     7560.10.11 - NDOLA PETTY CASH                                                       0.00           799,000.00
+     HDFC - HDFC BANK                                                             131,412.00            137,548.00
+     KMB - KOTAK MAHINDRA BANK                                                     17,255.00              20,146.00
+     PNB - PUNJAB NATIONAL BANK                                                          0.00           655,366.68
+     SUNDRYDEBTORS - SUNDRY DEBTORS                                               108,933.20          5,333,594.20
+                                                     TOTAL CURRENT ASSET          254,850.20          8,638,023.88
+  CURRENT LIABILITIES
+     TDSPAYABLE - TDS PAYABLE                                                         (92.00)          (31,694.50)
+                                                 TOTAL CURRENT LIABILITIES            (92.00)          (31,694.50)
+  ACCOUNTS PAYABLE
+     12008 - SUNDRY CREDITORS                                                    (977,603.00)        (2,206,585.50)
+                                                 TOTAL ACCOUNTS PAYABLE          (977,603.00)       (2,206,585.50)
+  CURRENT LIABILITIES
+     8210.00.00 - TRADE CREDITORS CONTROL                                          (4,500.00)          (10,710.00)
+     CGST0001 - CGST COST A/C                                                            0.00               180.00
+     CGST0003 - CGST SALE A/C                                                            0.00         (107,210.80)
+     GST0002 - GST SALE A/C                                                              0.00               (18.00)
+     GST0003 - GST RCM INPUT A/C                                                         0.00           (9,035.00)
+     GST0003 - SGST SALE A/C                                                             0.00         (107,210.80)
+     GST0004 - GST RCM OUTPUT A/C                                                        0.00             9,035.00
+     IGST0001 - IGST SALE A/C                                                      (1,900.00)          (89,344.00)
+     IGST0002 - IGST COST A/C                                                      25,000.00             79,270.00
+     SGST0002 - SGST COST A/C                                                            0.00               180.00
+                                                 TOTAL CURRENT LIABILITIES         18,600.00          (234,863.60)
+  DIRECT INCOME
+     1010.10.10 - AIR FREIGHT CHGS- REVENUE                                          (500.00)        (2,128,900.00)
+     1040.10.10 - SEA FREIGHT FCL REVENUE                                        (170,265.50)        (6,879,855.58)
+     1050.10.10 - SEA FREIGHT GROUPAGE REVENUE                                    (64,592.20)           (77,792.20)
+     AIREXP - AIR EXPORT CLEARANCE                                                (10,600.00)           (10,600.00)
+                                                     TOTAL DIRECT INCOME         (245,957.70)       (9,097,147.78)
+  DIRECT EXPENSES
+     1010.20.10 - AIR FREIGHT CHGS COST                                                125.00           536,353.00
+     1040.20.10 - SEA FREIGHT FCL COST                                                 640.00         1,444,777.00
+     1050.20.10 - SEA FREIGHT GROUPAGE COST                                       956,680.00            957,380.00
+     3450.10.08 - DOCUMENTATION CHGS                                              (10,000.00)           (10,000.00)
+                                                   TOTAL DIRECT EXPENSES          947,445.00          2,928,510.00
+  INDIRECT EXPENSES
+     2520.00.00 - EXCHANGE GAIN/LOSS                                                2,757.50              2,757.50
+     3218.00.00 - OFFICE EXPENSE                                                        0.00              1,000.00
+                                                 TOTAL INDIRECT EXPENSES            2,757.50              3,757.50
+
+ TOTAL GROUP                                                                            0.00                  0.00
+
+
+
+
+                                                                                                Page 1 of 1
+

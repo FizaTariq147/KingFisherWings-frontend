@@ -1,0 +1,70 @@
+  1/28/2019                                                              Standard Invoice-INV1800562
+                                                                                      FRESA DEMO COMPANY LIMITED
+                                                                                                                                     Al Khabeeshi Building,
+                                                                                                                                     Mezzanine Floor 03/5,
+                                                                                                                                   Salahuddin Road, Deira,
+                                                                                                                                              Dubai, U.A.E.
+                                                                                                                           WEB : www.fresatechnologies.com
+
+
+
+                                                               TAX INVOICE - INV1800562
+
+                      Bill To : ADUL AZIZ MOHD TAHER TRDG.EST                                     Invoice No. : INV1800562 / 27-NOV-18 (CREATED)
+                                DUBAI, UNITED ARAB EMIRATES
+                                Phone : N/A
+                                Credit Term : CASH
+                   Narration : BDXBSI180112 Job No. CCDXBSI18000061                             Reference No. : REFE NO. 987890/07-NOV-18
+                               / MBL No. NSA.JEA.18/26917 / HBL No. 500
+                               13805264
+                   Currency : AED 1.000000
+Remarks: SHIPMENT FROM INDIA - PO REF # 7778909 DATE 14/10/2018
+
+                                                                                                                                                  Amount
+                   Charges                              Unit          Qty        Amount / Qty       Currency     Ex.Rate       FCY Amount
+                                                                                                                                                   (AED)
+                                                  PER
+DELIVERY ORDER CHARGES                                                       1         275.000          AED       1.0000            275.000           275.000
+                                                  SHIPMENT
+THC CHARGES                                       W/M                   3.035           50.000          AED       1.0000            151.750           151.750
+                                                  PER
+DOCUMENTATION CHARGES                                                        1         100.000          AED       1.0000            100.000           100.000
+                                                  SHIPMENT
+                                                  PER
+HANDLING CHARGES                                                             1         250.000          AED       1.0000            250.000           250.000
+                                                  SHIPMENT
+
+                                                                     Dirham Seven Hundred Seventy-Six and Seventy-Five Fils Only                      776.750
+                                                                                                                                          Sub Total : 776.750
+                                                                                                                                    Tax       Amount (AED)
+                                                                                                                                  VAT-05               38.840
+                                                                             Dirham Eight Hundred Fifteen and Fifty-Nine Fils Only                    815.590
+Terms and conditions
+
+ELECTRONIC & WIRE TRANSFER INFORMATION
+
+FRESA DEMO COMPANY LTD                  ACCOUNT                 #: XXXXXXXXXXXXX (USD)
+473A- SAI SHAHI, 10TH STREET            SWIFT ID                #: 0198766
+BUR DUBAI,                              WIRE TRANSFER ROUTING   #: 9877777
+DUBAI UAE                               ACH/DOMESTIC/ABA ROUTING#: 9876666
+
+
+Payment shall be made for full amount on or prior to due date, free of charges, without any deductions
+All bank charges are for the account of the paying remitter
+Telex Released issued in USA: Please note that a local service charge of $50 applies, in addition to any carrier fees for telex release.
+Payment before Delivery of Bill of Lading (Export) or containers (Import)
+Please use Invoice Number or BL number for reference during payment
+
+Office Address :
+DUBAI (DXB)
+DUBAI, DUBAI
+
+                                         This is a computer generated document and does not require a signature
+
+
+
+
+            User : ram.ae@fresatechnologies.com                       28-Jan-19 12:25:PM Asia/Kolkata                 Powered by Fresa Technologies
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:16602138129374:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…                          1/1
+

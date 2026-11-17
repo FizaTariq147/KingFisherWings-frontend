@@ -1,0 +1,43 @@
+DEMO LOGISTICS INDIA PVT LTD                                                       INVOICE NO BOMINV230500382
+21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA, 676876               INVOICE DATE 17-MAY-23
+Phone : 798798798
+                                                                                 CUSTOMER ID DEMOCLIEJK001
+Fax : 9879878
+VAT No. : 68768978898098
+                                                                                     SHIPMENT BOM/EXP/23/05/B/0709
+                                                                                 JOB NUMBER
+                                                                             PLACE OF SUPPLY TAMIL NADU
+SHIPMENT DETAILS                                                             DECLARATION NO.
+SHIPPER                                                                    CONSIGNEE
+DEMO-SHIPPER ENGG COMPANY                                                  DEMO STEEL FACTORY CO. LTD.
+SHIPPERS REFERENCE                                                         DEPARTMENT         FCL EXPORT
+REFERENCE NO / DATE
+GOODS DESCRIPTION
+GENERAL CARGO
+CUSTOMS BROKER            NET WEIGHT                GROSS WEIGHT          CHARGEABLE          PACKAGES          VOLUME
+                                                    22,700.000 KGS        22,700.000 KGS      3 PACKAGES
+VESSEL / VOYAGE / IMO(LLOYDS)                                             OCEAN BILL OF LADING         HOUSE BILL OF LADING
+CAP SAN JUAN 310W                                                                                      NSAJED85630124277
+ORIGIN                                          ETD                       DESTINATION                           ETA
+INNSA - NHAVA SHEVA, INDIA                      01-MAR-23                 SAJED - JEDDAH, SAUDI ARABIA          20-MAR-23
+CONTAINERS
+1*40' FLAT - TTNU0712894
+REMARKS
+
+CHARGES
+Charge Details                                                           Rate/Unit      Qty         Amount TVA %             TVA          Total Amt(INR)
+ FREIGHT CHARGE                                                             1,500.00     1           1,500.00     18                             1,500.00
+ LOCAL CHARGES                                                               800.00      1             800.00     18                               800.00
+ SEA FREIGHT CHARGE                                                          900.00      1             900.00     18                               900.00
+ CONTAINER CLEANING FEE                                                     1,000.00     1           1,000.00     15                             1,000.00
+
+
+
+
+                                                            quatre mille sept cent soixante-seize dollars   Total :    INR                      4,776.00
+
+
+
+
+Printed By : shanmugam@fresa.io                           Printed Date :17-MAY-2023 11:41AM             Powered By : Fresa Technologies   Page 1 of 1
+

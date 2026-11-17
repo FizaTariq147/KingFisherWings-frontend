@@ -1,0 +1,56 @@
+                                                    CARGO ARRIVAL NOTICE
+Attention: Ocean Import - Shipping Dept.
+Please come before 12:30pm or after 2:00pm
+
+
+Shipper                                                                           MBL No.             : MBLCOPY87666666 / 16-JAN-19
+AL NASER TRADING COMPANY LLC                                     HBL No.                              : PLJEAMAA00001 / 16-JAN-19
+30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT AL NABHA
+                                                                 ETD                                  : 16-JAN-19
+SHARJAH SHARJAH UNITED ARAB EMIRATES
+                                                                                  ETA                 : 25-JAN-19
+                                                                                  Vessel / Voyage No. : MSC MELINA / 987
+                                                                                  Port of Loading     : JEBEL ALI, UNITED ARAB EMIRATES
+Consignee
+                                                                                  Port of Discharge   : CHENNAI (EX MADRAS), INDIA
+4G LOGISTICS INDIA PVT LTD
+10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM CHENNAI                         Final Destination   : CHENNAI (EX MADRAS), INDIA
+                                                                                  Gross Weight        : 18000 KGS
+                                                                                  Measurement         : 20 CBM
+                                                                                  No. of Pcs          : 100 PACKAGES
+Notify 1                                                                          Freight             : PREPAID
+4G LOGISTICS INDIA PVT LTD
+                                                                                  BL Status           : CREATED
+10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM CHENNAI                         Service Type        : FCL/FCL
+                                                                                  Shipment No.        : B/SFI/19/0166 / 22-JAN-19
+                                                                                  Item / Line No.     : 987777 / 1234
+                                                                                  CFS                 : DUBAI PORT - FCL
+Marks
+CM MARKS NO.2
+
+   Container No.             Type              Seal                          Commodity Desc                           No. of Pcs      G.Weight          Volume
+
+TENU9876666            20' DC            SL988888           STC: VALVE MATERIALS                                             100         18,000.000         20.000
+
+                                                                                                            Total :          100        18,000.000          20.000
+
+Charge Description                                    Qty       Currency        Ex.Rate            Amount/Qty             FCY Amount                  Local Amount
+TERMINAL HANDLING CHARGES                               1         INR                1.00000               5,000.00                5,000.00               5,900.00
+DELIVERY ORDER FEE                                      1         INR                1.00000               3,000.00                3,000.00               3,540.00
+ALL INCL - FCL IMPORT                                   1         INR                1.00000                 756.50                 756.50                  892.67
+                                                                                                                                     Total :            10,332.67
+
+  1. Kindly contact our Imports Department/Customer Service for Actual Arrival.
+  2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.
+  3. Cheque in favor of “FRESA DEMO COMPANY”.
+  4. Partial Payments are not acceptable.
+  5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days
+  6. After Free days storage charges applicable
+
+
+
+
+                                              This is a computer generated document and hence requires no signature
+
+Printed By : RAM@FRESATECHNOLOGIES.COM                          Printed Date :07-FEB-19 04:53PM                Powered By : Fresa Technologies    Page 1 of 1
+

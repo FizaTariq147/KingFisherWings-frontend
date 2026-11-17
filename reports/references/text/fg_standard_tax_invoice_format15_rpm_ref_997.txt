@@ -1,0 +1,58 @@
+                                                                                                          TAX INVOICE
+
+
+Invoice To          Demo Logistics India Pvt Ltd                            Date                    17-MAY-23
+                    21, Port Blair, Krishna St, Mannargudi,                 Invoice #               BOMINV230500382
+                    Tamil Nadu, INDIA, 676876
+                    Phone : 798798798                                       Customer ID #           DEMOCLIEJK001
+                    Fax : 9879878                                           Payment Due By          17-MAY-23
+
+Our Ref                                                                     Your Ref
+Origin             Nhava Sheva, India                                       Destination             Jeddah, Saudi Arabia
+Volume             1 x 40' FLAT                                             Cargo                   GENERAL CARGO
+BL Ref             NSAJED85630124277
+Vessel Info        CAP SAN JUAN 310W
+Shipped On                                                                  Container No            TTNU0712894
+
+Sl No.                            Description of Charges                             Basis / Unit            VAT - (INR)           Value - (INR)
+   1     Freight Charge                                    INR      1,500.00        1 Ton Or 1/2                                         1,500.00
+                                                                                      Measure
+   2     Local Charges                                     INR        800.00                                                                  800.00
+   3     Sea Freight Charge                                INR        900.00        1 Ton Or 1/2                                              900.00
+                                                                                      Measure
+   4     Container Cleaning Fee                            INR      1,000.00        1 Ton Or 1/2                                         1,000.00
+                                                                                      Measure
+                                                                                     Sub Total                                           4,200.00
+                                                                                        GST18
+                                                                                                    Grand Total        INR               4,776.00
+Rupee Four Thousand Seven Hundred Seventy-Six Only
+
+Bank Details
+.Terms                                                                 Bank Charges for account of Remitter
+1. Payment to be made by cash. The company is not responsible for any cash settlement
+                                                                       Please  mention Invoice # in your remittance slips
+without an official receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank            : HDFC
+A/c No          : XXXXXXXXXXX
+IBAN Code       : ABA:XXXXXX
+Swift Code      : XXXXXX
+Address                 : MUMBAI.
+
+
+
+
+                                                                                                        For FRESA DEMO INDIA PVT LTD
+
+
+                                                                                                                             Authorised Signatory
+
+
+
+
+                                     PO Box 122316, Dubai, United Arab Emirates, Tel + 971 4 3252508
+                                                      www.leaapgulflogistics.com
+Printed By : shanmugam@fresa.io                             Printed Date :17-MAY-2023 12:10PM               Powered By : Fresa Technologies
+

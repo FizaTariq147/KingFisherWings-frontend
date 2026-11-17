@@ -1,0 +1,37 @@
+                                                                      INVOICE
+Acc. Name         : DEMO LOGISTICS INDIA PVT LTD                                Invoice No.       : BOMINV230500382
+Address           : 21, PORT BLAIR KRISHNA ST MANNARGUDI                        Invoice Date      : 17-MAY-23 (POSTED)
+                    TAMIL NADU INDIA 676876                                     Invoice Period    : MAY-23
+                    Phone : 798798798                                           Job No.           :
+                    Fax : 9879878
+Attention of      :
+
+
+
+L.No.   Charges                             AWB No.            Date            Destination              Group                     Weight      Amount (INR)
+   1    FREIGHT CHARGE                                                         JEDDAH, SAUDI            PACKAGES                                   1,500.00
+                                                                               ARABIA
+   2    LOCAL CHARGES                                                          JEDDAH, SAUDI            PACKAGES                                     800.00
+                                                                               ARABIA
+   3    SEA FREIGHT CHARGE                                                     JEDDAH, SAUDI            PACKAGES                                     900.00
+                                                                               ARABIA
+   4    CONTAINER CLEANING FEE                                                 JEDDAH, SAUDI            PACKAGES                                   1,000.00
+                                                                               ARABIA
+                                                            Rupee Four Thousand Seven Hundred Seventy-Six Only             Total Amount :          4,776.00
+.Terms
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank                : HDFC
+A/c No              : XXXXXXXXXXX
+IBAN Code           : ABA:XXXXXX
+Swift Code : XXXXXX
+Address             : MUMBAI.
+
+
+
+
+                                  This is a computer generated document and does not require a signature and official stamp
+Printed By : shanmugam@fresa.io                                 Printed Date :17-MAY-23 10:54AM            Powered By : Fresa Technologies   Page 1 of 1
+

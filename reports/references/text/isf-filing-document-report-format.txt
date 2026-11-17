@@ -1,0 +1,57 @@
+SHIPPER'S CONTRACT/REF#:
+1. Manufacturer/Supplier **REQUIRED**                                                              Importer Security Filing (10+2) Request Form
+     Name: BLUE MOON LOGISTICS FZE
+ Address1: , AL MAKTHOOM BUILDING
+ Address2: ,
+       City: DUBAI                                 State/Province:
+   Country: UNITED ARAB EMIRATES                     Postal Code:
+2. Seller **REQUIRED**
+     Name: BLUE MOON LOGISTICS FZE
+ Address1: , AL MAKTHOOM BUILDING
+ Address2: ,
+       City: DUBAI                                 State/Province:                               5. Container Stuffing Location **REQUIRED**
+   Country: UNITED ARAB EMIRATES                     Postal Code:                                     Name:
+3. Buyer **REQUIRED**                                                                             Address1:
+     Name: 3WAYW LOGISTICS                                                                        Address2:
+ Address1: 234, LOUITASTALL                                                                             City:                                         State/Province:
+ Address2: GANDHI STREET, HOTEL                                                                     Country:                                            Postal Code:
+       City: CHENNAI                               State/Province: TAMILNADU                     6. Consolidator (Stuffer) **REQUIRED**
+   Country: UNITED STATES OF AMERICA                 Postal Code: 343423                              Name: FRESA DEMO COMPANY LIMITED
+4. Ship To                                                                                        Address1: DUBAI
+     Name: SAME AS CONSIGNEE                                                                      Address2: DUBAI
+ Address1: ,                                                                                            City:                                         State/Province
+ Address2: ,                                                                                        Country: UNITED ARAB EMIRATES                       Postal Code:
+       City:                                        State/Province                                  M B/L#: CMA987654321                                     H B/L#: JEA/MAA/1800044
+   Country:                                          Postal Code:                                     AMS#:                                              4 LTR AMS SCAC CODE:
+7. Importer of Record Number (Federal Tax ID#)                                                  VEL&VOY#: CMA CGM ASHA/V032                           Port of Arrival: CHENNAI (EX
+                                                                                                        ETD: 23-NOV-18                                           ETA: 30-NOV-18
+8. Consignee Number (Federal Tax ID#)                                                                 CTR#: MAEU9876543                     DESCRIPTION STC: MACHINERY PARTS
+                                                                                                  CTN QTY: 1                                 KGS: 4,500.000 KGS             CBM: 4.450 CBM
+
+             Origin                               Description                                              HS Code                 No. of Pcs                  Net Weight             G.Weight
+                              STC: MACHINERY PARTS FOR FACTORY ALL DESTINATION                         8890000                                   17                                   4,500.000
+                              CHARGES ARE CONSIGNEE'S AC FREIGHT PREPAID
+                              PREPAID
+                              LCL
+
+
+
+
+SENDER:                                                                                                             ISF IMPORTER
+Completed By:                                                         ***REQUIRED***                             Approved By (Name):
+Date/Time             11/17/18 3:59 PM                                                                            Date/Time Approved:
+Reuturn e-mail:                                                       ***REQUIRED***
+
+
+Signature:                                                            ***REQUIRED***                                     RECEIVER:
+                                                                                                                 ISF Form received by:
+                                                                                                                  Date/Time Received:
+                                                                                                                Date/Time Transmitted:
+                                                                                                                        Sec. Filing No.:
+
+By completing this form, the ISF Importer certifies that all information is accurate. This form must be received by TED T. KIM d/b/a EXPRESS CUSTOMHOUSE BROKER at least 3 WORKING DAYS prior to
+loading OR 5 WORKING DAYS FOR ITEMS 10 OR MORE . Failure to comply with this requirement may result in penalties being assesed by US CBP against the ISF Importer. A SIGNED POWER OF
+ATTORNEY IS REQUIRED FOR ISF FILING IF WE DO NOT HAVE ON OUR FILE.
+
+Printed By : RAM                                                              Printed Date :17-Nov-18 03:59PM                        Powered By : Fresa Technologies         Page 1 of 1
+

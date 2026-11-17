@@ -1,0 +1,46 @@
+  2/8/2019                                                        Cargo Receipt Note-PLMAAJEA00044
+                                                                                              FRESA DEMO INDIA PVT LTD
+                                                                                                                                     Chennai- 600 100
+                                                                                                                                     Tamil Nadu, India
+                                                                                                                      WEB : www.fresatechnologies.com
+
+
+                                    CARGO RECEIPT NOTE / SHIPMENT NO - B/EXP/19/0257
+
+                         Client : 4G LOGISTICS INDIA PVT LTD                                       Shipper : 4G LOGISTICS INDIA PVT LTD
+                                  10 DBS CENTRE NUNGAMBAKKAM HIGH R                                          10 DBS CENTRE NUNGAMBAKKAM HIGH RO
+                                  OAD NUNGAMBAKKAM CHENNAI TAMILNAD                                          AD NUNGAMBAKKAM CHENNAI TAMILNADU
+                                  U 600084 INDIA EMAIL: ram@fresatechnologie                                600084 INDIA EMAIL: ram@fresatechnologies.
+                                  s.com                                                                      com
+
+                                                                                                           PO NO 987898 01-FEB-19
+               CFS Location : A C MULENGA                                                           From : 4G LOGISTICS INDIA PVT LTD
+
+                                   Phone : N/A
+              Shipment No : B/EXP/19/0257 / 07-FEB-19                                               Job No : CEXP190152 / 15-FEB-19
+                   MBL No : MBLNO12347890 / 07-FEB-19                                              HBL No : PLMAAJEA00044 / 07-FEB-19
+          Place of Receipt : CHENNAI                                                       Port of Loading : CHENNAI (EX MADRAS), INDIA
+         Port of Discharge : JEBEL ALI, UNITED ARAB EMIRATES                      Port of Final Destination : JEBEL ALI, UNITED ARAB EMIRATES
+         Place of Delivery : JEBEL ALI, UNITED ARAB EMIRATES                                           ETD : 08-FEB-19
+                    Carrier : SAFMARINE                                                                ETA : 25-FEB-19
+          Vessel / Voyage : MSC MARINA / 987W                                                        PP/CC : PREPAID
+                  Truck No : AP 01 K 9876                                                     Driver Name : BILAL
+  Cargo Received                                                                                                           No of       Gross
+                                                                 Description                                                                        Volume
+       Date                                                                                                                 Pcs        Weight
+07-FEB-19              STC: VALVE MATERIALS FREIGHT PREPAID ALL DESTINATION CHARGES ARE CONSIGNEE
+                                                                                                                                15       2,400.00     3.50
+                       ACCOUNT
+                     CFS Note : GOOD CONDITION - SEAWORTHY
+
+                                                          * Cargo Received in Good Condition
+
+
+
+             User : ram@fresatechnologies.com                    08-Feb-19 02:39:PM Asia/Kolkata                   Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:4948205312565:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                        1/1
+

@@ -1,0 +1,48 @@
+  1/28/2019                                                                Standard Invoice-INV1800564
+FRESA DEMO COMPANY LTD
+DUBAI
+DUBAI
+
+
+
+
+INVOICE
+BILL TO : FRESA DEMO DUBAI LLC                                                                                                   INVOICE# : INV1800564
+          AL NABHA, DUBAI                                                                                                           DATE : 27-NOV-18
+          Phone : 04-233456                                                                                                     DUE DATE : 27-NOV-18
+          GSTIN No. : 29760737473                                                                                                  TERMS : CASH
+
+
+AWB / HBL / CONTR NO.         : 500138050266 / TEMU6105051, 40' HC                      CUSTOMS ENTRY NO. : BOE 987666
+JOB NO.                       : CCDXBSI18000061
+                                      Charges                                                      Qty                 Amount / Qty          Total Amount (AED)
+DELIVERY ORDER CHARGES                                                                                         1                 275.000                      275.000
+THC CHARGES                                                                                               1.903                    50.000                      95.150
+DOCUMENTATION CHARGES                                                                                          1                 100.000                      100.000
+HANDLING CHARGES                                                                                               1                 250.000                      250.000
+
+                                                                                Dirham Seven Hundred Twenty and Fifteen Fils Only                             720.150
+
+                                                                                                               BALANCE :                                     720.150
+Remarks : SHIPMENT FROM INDIA - PO REF # 7778909 DATE 14/10/2018
+
+
+   If you are the importer of record, payment to the broker will not relieve you of liability for customs charges (duties, taxes, or other debts owed CBP) in the
+   event the charges are not paid by the broker. Therefore, if you pay by check, customs charges may be paid with a separate check payable to the -U.S.
+   Customs and Border Protection- which will be delivered to CBP by the broker.
+
+
+
+                                         This is a computer generated document and does not require a signature
+
+Created By : ram.ae@fresatechnologies.com
+
+
+
+            User : ram.ae@fresatechnologies.com                         28-Jan-19 01:53:PM Asia/Kolkata                      Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:5759556143869:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                                  1/1
+

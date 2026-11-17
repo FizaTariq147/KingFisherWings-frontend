@@ -1,0 +1,366 @@
+{
+  "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+  "maxLines": 3,
+  "spans": [
+    {
+      "id": "p1s4",
+      "mode": "wrap",
+      "size": 7,
+      "lines": 3,
+      "box": 120.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s5",
+      "mode": "wrap",
+      "size": 7,
+      "lines": 2,
+      "box": 275.1,
+      "clipped": false
+    },
+    {
+      "id": "p1s6",
+      "mode": "wrap",
+      "size": 7,
+      "lines": 3,
+      "box": 153.9,
+      "clipped": false
+    },
+    {
+      "id": "p1s7",
+      "mode": "wrap",
+      "size": 7,
+      "lines": 3,
+      "box": 99.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s8",
+      "mode": "wrap",
+      "size": 7,
+      "lines": 2,
+      "box": 254.1,
+      "clipped": false
+    },
+    {
+      "id": "p1s9",
+      "mode": "wrap",
+      "size": 7,
+      "lines": 2,
+      "box": 202.3,
+      "clipped": false
+    },
+    {
+      "id": "p1s10",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 99.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s11",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 254.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s12",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 86.3,
+      "clipped": true
+    },
+    {
+      "id": "p1s42",
+      "mode": "wrap",
+      "size": 7,
+      "lines": 3,
+      "box": 104.6,
+      "clipped": true
+    },
+    {
+      "id": "p1s43",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 95.3,
+      "clipped": true
+    },
+    {
+      "id": "p1s44",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 70.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s46",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 122.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s47",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 101.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s48",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 101.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s49",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 31.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s50",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 21.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s51",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 11.7,
+      "clipped": true
+    },
+    {
+      "id": "p1s58",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 84,
+      "clipped": true
+    },
+    {
+      "id": "p1s74",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 82.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s75",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 11.7,
+      "clipped": true
+    },
+    {
+      "id": "p1s76",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 35,
+      "clipped": true
+    },
+    {
+      "id": "p1s77",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 21.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s79",
+      "mode": "shrink",
+      "size": 4,
+      "lines": 1,
+      "natural": 27.806640625,
+      "box": 13.3
+    },
+    {
+      "id": "p1s80",
+      "mode": "shrink",
+      "size": 5.75,
+      "lines": 1,
+      "natural": 39.9720458984375,
+      "box": 40
+    },
+    {
+      "id": "p1s81",
+      "mode": "shrink",
+      "size": 4,
+      "lines": 1,
+      "natural": 27.806640625,
+      "box": 24.5
+    },
+    {
+      "id": "p1s89",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 125.7,
+      "clipped": true
+    },
+    {
+      "id": "p1s92",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 28.9,
+      "clipped": true
+    },
+    {
+      "id": "p1s93",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 31.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s94",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 31.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s95",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 31.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s99",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 28.9,
+      "clipped": true
+    },
+    {
+      "id": "p1s100",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 31.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s101",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 31.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s102",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 31.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s103",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 90.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s106",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 28.9,
+      "clipped": true
+    },
+    {
+      "id": "p1s107",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 24.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s108",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 24.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s109",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 24.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s111",
+      "mode": "shrink",
+      "size": 5,
+      "lines": 1,
+      "natural": 35.660000000000004,
+      "box": 35.6
+    },
+    {
+      "id": "p1s114",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 190.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s119",
+      "mode": "clip",
+      "size": 9,
+      "lines": 1,
+      "box": 125.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s124",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 119.9,
+      "clipped": true
+    },
+    {
+      "id": "p1s126",
+      "mode": "clip",
+      "size": 7,
+      "lines": 1,
+      "box": 105,
+      "clipped": true
+    }
+  ]
+}

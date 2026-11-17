@@ -1,0 +1,69 @@
+  1/28/2019                                           LAND_FREIGHT__TRANSPORTATION_INVOICE_MAAINV1900716
+                                                                                                 FRESA DEMO INDIA PVT LTD
+                                                                                                                                              Chennai- 600 100
+                                                                                                                                              Tamil Nadu, India
+                                                                                                                               WEB : www.fresatechnologies.com
+
+                                                                 VAT/ TAX INVOICE
+                                                                           (TRN # )
+
+                                                  LAND FREIGHT/ TRANSPORTATION
+
+ BILL TO:-                                                                                                 PORTS SHIPPING's REFERENCE
+
+ 4G LOGISTICS INDIA PVT LTD                                                                                 Invoice Number                   : MAAINV1900716
+ 10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD, NUNGAMBAKKAM, CHENNAI, TAMILNADU,
+ INDIA, 600084                                                                                              Invoice Date                     : 28-JAN-19
+ Phone : N/A                                                                                                Agreed Terms/Days                : CASH / 0
+ GSTIN No. : GSTNO9876666554                                                                                Invoice Date                     : 28-JAN-19
+                                                                                                                                                 REFE NO.
+                                                                                                            Customer Ref.                    :
+                                                                                                                                                 987890
+
+
+
+DETAILS OF CHARGES/ SHIPMENTS
+
+  Load        Delivery                                                                                      DN-      VAT                    TAX          Total
+                          Origin Destination                  Truck#                        Unit Type                    Unit Rate
+  Date         Date                                                                                         REF       %                    Amount       Charges
+28-JAN-                                                                                20' DRY
+          05-FEB-19       INMAA AEJEA           FREIGHT CHARGE                                                                 7,000.00                      7,000.00
+19                                                                                     CONTAINER
+28-JAN-                                         TERMINAL HANDLING CHARGES              20' DRY
+          05-FEB-19       INMAA AEJEA                                                                                18 %      5,500.00                      5,500.00
+19                                              20"GP                                  CONTAINER
+28-JAN-
+          05-FEB-19       INMAA AEJEA           SEAL FEE                               PER CONTAINER                 18 %        300.00                       300.00
+19
+28-JAN-
+          05-FEB-19       INMAA AEJEA           BILL OF LADING                         PER SHIPMENT                  18 %      3,000.00                      3,000.00
+19
+                                                                                                           Total :           15,800.00           0.00       15,800.00
+                                                                   Rupee Seventeen Thousand Three Hundred Eighty-Four Only                                  17,384.00
+Terms
+
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.
+
+Bank Details
+
+Beneficiary Name: YOUR COMPANY NAME
+Bank            : HDFC
+A/c No          : XXXXXXXXXXX
+IBAN Code       : ABA:XXXXXX
+Swift Code      : XXXXXX
+Address         : CHENNAI.
+
+
+
+                                                                                                                      Stamp & Signature
+
+
+
+
+             User : ram@fresatechnologies.com                       28-Jan-19 11:28:AM Asia/Kolkata                         Powered by Fresa Technologies
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:1388389324461:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                                  1/1
+

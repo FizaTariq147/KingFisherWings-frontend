@@ -1,0 +1,85 @@
+  2/13/2019                                                     <h3>STATEMENT OF ACCOUNTS</h3>
+                                                                             FRESA DEMO COMPANY LIMITED
+                                                                                                                  473A - Sai Shahi, 10th Street
+                                                                                                                  Kamakotti Nagar Pallikaranai
+                                                                                                                             Chennai- 600 100
+                                                                                                                              Tamilnadu, India
+                                                                                                              WEB : www.fresatechnologies.com
+
+
+
+                                                  STATEMENT OF ACCOUNTS
+
+
+DEAR SIR/MADAM,
+PLEASE FIND HERE BELOW STATEMENT OF ACCOUNTS FROM. 01-JAN-19 TO 13-FEB-19
+
+Account Name          : 4G LOGISTICS INDIA PVT LTD
+                 Voucher              Cheque                                                                     Net FCY Net Local Running
+  Voucher No.              GL Date               Shipment No.      Job No.           Narration        Currency
+                   Date               Ref No.                                                                     Amount Amount Amount
+                31-DEC-18 31-DEC-18                                          Opening Balance            INR      19,375.00 80,623.75 80,623.75
+                                                B/SFI/18/0164                CEXP180156 MBL NO. / HB
+MAABR1900089 23-JAN-19 23-JAN-19                                             L NO. / JOB NO.CEXP18015 USD          -875.00 -62,123.75 18,500.00
+                                                                             6
+                                                B/SFI/18/0163                CEXP180108 MBL NO. / HB
+MAABR1900089 23-JAN-19 23-JAN-19                                             L NO. / JOB NO.CEXP18010 INR        -36,596.20 -36,596.20 -18,096.20
+                                                                             8
+                                                B/SFI/18/0162                B/SFI/18/0162 MBL NO. / HB
+MAABR1900089 23-JAN-19 23-JAN-19                                                                        INR      -12,500.00 -12,500.00 -30,596.20
+                                                                             L NO. / JOB NO.CSFI180010
+                                                B/EXP/18/0206                B/EXP/18/0206 MBL NO. / H
+MAABR1900089 23-JAN-19 23-JAN-19                                             BL NO. / JOB NO.CEXP1801 INR         -5,000.00 -5,000.00 -35,596.20
+                                                                             23
+                                                                             B/SFI/19/0166 MBL NO. MB
+MAAINV1900713 25-JAN-19 25-JAN-19               B/SFI/19/0166 CSFI190012     LCOPY87666666 / HBL NO. INR          9,440.00   9,440.00 -26,156.20
+                                                                             / JOB NO.CSFI190012
+                                                                             B/EXP/19/0251 MBL NO. MB
+                                                                             LC9878909999 / HBL NO. P
+MAAINV1900717 28-JAN-19 28-JAN-19               B/EXP/19/0251 CEXP190148                                INR      17,384.00 17,384.00 -8,772.20
+                                                                             LMAAJEA00080 / JOB NO.C
+                                                                             EXP190148
+                                                                             REVERSED VOUCHER AG
+MAACN1900032 28-JAN-19 28-JAN-19                B/EXP/19/0251 CEXP190148     AINST INVOICE - MAAINV1 INR         -17,384.00 -17,384.00 -26,156.20
+                                                                             900717
+                                                                             CEXP190150 MBL NO. / HB
+MAAINV1900709 29-JAN-19 29-JAN-19               B/EXP/19/0254 CEXP190150     L NO. / JOB NO.CEXP19015 INR        25,658.00 25,658.00     -498.20
+                                                                             0
+                                                                             CEXP190150 MBL NO. MBL
+                                                                             COPY87667888 / HBL NO. P
+MAAINV1900734 29-JAN-19 29-JAN-19               B/EXP/19/0254 CEXP190150                                INR         265.50     265.50    -232.70
+                                                                             LMAAJEA00081 / JOB NO.C
+                                                                             EXP190150
+                                                                             B/EXP/19/0255 MBL NO. / H
+MAAINV1900728 31-JAN-19 31-JAN-19               B/EXP/19/0255                                           INR       2,950.00   2,950.00   2,717.30
+                                                                             BL NO. / JOB NO.
+                                                B/EXP/19/0256                MAAINV1900728 - SHIPME
+MAABR1900095 31-JAN-19 31-JAN-19                                                                        INR       -2,950.00 -2,950.00    -232.70
+                                                                             NT
+                                                                             B/EXP/19/0255 MBL NO. / H
+MAAINV1900729 31-JAN-19 31-JAN-19               B/EXP/19/0255                                           INR       2,500.00   2,500.00   2,267.30
+                                                                             BL NO. / JOB NO.
+MAACN1900038 31-JAN-19 31-JAN-19                B/EXP/19/0255                B/EXP/19/0255              INR        -250.00    -250.00   2,017.30
+                                                                             B/EXP/19/0256 MBL NO. / H
+MAAINV1900731 05-FEB-19 05-FEB-19               B/EXP/19/0256 CEXP190151     BL NO. PLMAAJEA00082 / J INR        20,434.00 20,434.00 22,451.30
+                                                                             OB NO.CEXP190151
+MAABR1900097 05-FEB-19 05-FEB-19                B/EXP/19/0258 CEXP190152     B/EXP/19/0256 MBL NO. / H INR       -25,658.00 -25,658.00 -3,206.70
+                                                                             BL NO. PLMAAJEA00082 / J
+                                                                             OB NO.CEXP190152
+MAABR1900098 05-FEB-19 05-FEB-19                B/EXP/19/0261 CEXP190153     B/EXP/19/0256 MBL NO. / H INR         -265.50    -265.50 -3,472.20
+                                                                             BL NO. PLMAAJEA00082 / J
+                                                                             OB NO.CEXP190153
+                                                                             CEXP190153 MBL NO. MBL
+                                                                             ASIAAN98789 / HBL NO. AS
+MAAINV1900739 11-FEB-19 11-FEB-19               B/EXP/19/0262 CEXP190153                                INR      28,288.00 28,288.00 24,815.80
+                                                                             IANLINE20190209 / JOB N
+                                                                             O.CEXP190153
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:7788304946235:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…             11
+User : ram@fresatechnologies.com   13-Feb-19 06:39:PM Asia/Kolkata   Powered by Fresa Technologies
+
+                                                                                                     /
+

@@ -1,0 +1,47 @@
+  2/7/2019                                                     Cargo Arrival Notice-PLJEAMAA00001
+                                                                               FRESA DEMO INDIA PVT LTD
+                                                                                                                        Chennai- 600 100
+                                                                                                                        Tamil Nadu, India
+                                                                                                         WEB : www.fresatechnologies.com
+
+
+                                                       ARRIVAL NOTICE
+                                                    (THÔNG BÁO HÀNG ĐẾN)
+
+Kính gửi: (Messrs)                  : 4G LOGISTICS INDIA PVT LTD
+                                      10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM CHENNAI TAMILNADU
+                                      600084 INDIA
+Người liên hệ/Attn                  : Import Department
+NGƯỜI GỬI/ SHIPPER                  : AL NASER TRADING COMPANY LLC
+CẢNG XẾP/POL                    : JEBEL ALI, UNITED ARAB EMIRATE           TÊN TÀU/ VESSEL          : MSC MELINA / 987
+                                  S
+CẢNG DỠ/POD                     : CHENNAI (EX MADRAS), INDIA               NGÀY VỀ/ETA              : 25-JAN-2019
+JOB                             : CSFI190012 / 25-JAN-19                   SỐ MBL / HBL             : MBLCOPY87666666 / PLJEAMAA000
+                                                                                                      01
+                                                                                                                             Job : CSFI190012
+
+
+                                                CHI TIẾT CỤ THỂ/DETAIL CARGO
+        CONT/SEAL                                  PKG           M3            KGS           COMM           VOL        BILL'S STATUS
+TENU9876666 / SL988888                          100 PACKAGES    20.000        18,000.000 AS PER BILL       1 X 20' DC CREATED
+
+
+No. of Container Details
+    No. of Containers                 Type
+            1                      20' DC
+ALL CHARGES HAVE TO PAY BEFORE PICK UP D/O ( Các phí cần thanh toán trước khi lấy lệnh )
+NO.         DESCRIPTION           QTY          UNIT            CUR UNIT PRICE         TAX TOTAL USD TOTAL VND
+ 1 TERMINAL HANDLING CHARGES       1 20' DRY CONTAINER         INR        5,000.00 GST18      88.500      5,900
+ 2 DELIVERY ORDER FEE              1 PER SHIPMENT              INR        3,000.00 GST18      53.100      3,540
+ 3 ALL INCL                        1 PER SHIPMENT              INR          756.50 GST18      13.391        893
+                                                                                                       TOTAL :          154.991             10,333
+
+
+
+
+             User : ram@fresatechnologies.com                  07-Feb-19 05:08:PM Asia/Kolkata              Powered by Fresa Technologies
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:15310838065371:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…               1/1
+

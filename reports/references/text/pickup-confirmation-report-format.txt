@@ -1,0 +1,50 @@
+  1/25/2019                                               Pickup Confirmation -BDXBSE180055
+                                                                           FRESA DEMO COMPANY LIMITED
+                                                                                                                      Al Khabeeshi Building,
+                                                                                                                      Mezzanine Floor 03/5,
+                                                                                                                    Salahuddin Road, Deira,
+                                                                                                                               Dubai, U.A.E.
+                                                                                                            WEB : www.fresatechnologies.com
+
+
+
+                                                       Pickup Confirmation
+
+                  Shipper : CLARION SHIPPING SERVICES LLC                               Consignee : BLUEMAX SHIPPING SERVICES PVT. LTD.
+                            PALCE TOWER 1, OFFICE 1802 AND 1803                                     CHENNAI INDIA
+                            DUBAI، ACADEMIC CITY RD - UNITED ARA                                    PHONE: 4556785445
+                            B EMIRATES UNITED ARAB EMIRATES
+                            PHONE: 971 4 333 3852
+              Shipment No : BDXBSE180055 / 17-NOV-18                                       Job No : CCDXBSE18000045 / 17-NOV-18
+                   MBL No : 987877777 / 23-NOV-18                                         HBL No : JEA/MAA/1800033 / 17-NOV-18
+          Place of Receipt : JEBEL ALI, DUBAI                                     Port of Loading : JEBEL ALI
+         Port of Discharge : CHENNAI (EX MADRAS)                         Port of Final Destination : CHENNAI (EX MADRAS)
+         Place of Delivery : CHENNAI                                                          ETD : 23-NOV-18
+                    Carrier : MAERSK LINE                                                     ETA : 30-NOV-18
+          Vessel / Voyage : MAERSK BLUR MOON / V032                               Movement Type : FCL
+                    PP/CC : PREPAID
+
+Routing Details
+Line No Sea / Air / Road   POL        ETD       ATD            POD            ETA    ATA Vessel / Flight Name Status Remarks
+10      SEA              JEBEL ALI 23-NOV-18 23-NOV-18 CHENNAI (EX MADRAS) 30-NOV-18    MAERSK BLUE MOON PLANNED VIA COLOMBO
+
+
+Actual Container
+                     Loaded                                                                                   Loaded No of Gross
+  Container      Type                                     Description                                                               Volume
+                      Date                                                                                     Date Pcs     Weight
+                     17-                                                                                        17-
+            20'             STC: PRINTING PRESS MATERIALS HS CODE: 9600000 EXPRESS RELEASE ALL
+MAEU9876543          NOV-                                                                                      NOV-   150 18,000.000 18.000
+            STANDARD        DESTINATION CHARGES ARE CONSIGNEE'S A/C FREIGHT PREPAID
+                     18                                                                                         18
+
+
+
+          User : ram.ae@fresatechnologies.com              25-Jan-19 06:18:PM Asia/Kolkata                Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…            1/1
+

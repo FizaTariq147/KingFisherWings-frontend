@@ -1,0 +1,55 @@
+                      TAX INVOICE OMAN                                                                                             ‫ﻓﺎﺗﻮﺭﺓ‬
+Customer                : DEMO LOGISTICS INDIA PVT LTD                                    ENGLISH                                                                            ‫ﺍﻟﻌﻤﻴﻞ‬
+                          21, PORT BLAIR, KRISHNA ST, MANNARGUDI,                         21, PORT BLAIR, KRISHNA ST,
+                          TAMIL NADU, INDIA, 676876                                       MANNARGUDI, TAMIL NADU, INDIA,
+                          Phone : 798798798                                               676876
+                          Fax : 9879878                                                   Phone : 798798798
+                          VAT No. : 68768978898098
+Customer VAT No.                                                             68768978898098                                                                 ‫ﺭﻗﻢ ﺿﺮﻳﺒﺔ ﺍﻟﻘﻴﻤﺔ ﺍﻟﻤﻀﺎﻓﺔ‬
+Invoice No.                                                                  BOMINV230500382                                                                            ‫ﺭﻗﻢ ﺍﻟﻔﺎﺗﻮﺭﺓ‬
+Invoice Date                                                                 17-MAY-23 (POSTED)                                                                                ‫ﺗﺎﺭﻳﺦ‬
+Paymet Due Date                                                              17-MAY-23                                                                          ‫ﺗﺎﺭﻳﺦ ﺍﻻﺳﺘﺤﻘﺎﻕ ﻟﻠﺪﻓﻊ‬
+Shipper                  : ENGLISH                                                    Job Number                      :
+Consignee                : ENGLISH                                                         Job Date                   :
+Notify Name              :                                                                 Master Number              :
+Place of Origin          : NHAVA SHEVA, INDIA                                              House No.                  : NSAJED85630124277
+Final destination        : JEDDAH, SAUDI ARABIA                                            Number of Packs            : 3.00
+Vessel / Flight          :                                                                 Weight in Kgs              : 22,700.000
+Voyage / Flight No.      :                                                                 Volume in CBM              :
+Shipper Ref No.          :                                                                 ETD                        : 01-MAR-23
+Customer P/O No.         :                                                                 ETA                        : 20-MAR-23
+Remarks                  :                                                                 Narration                  : MBL NO... / HBL NO. NSAJED85630124277 / JOB
+                                                                                                                        NO.
+               Charge Description                 .Curr      Rate Per Unit    Unit       Curr. Amount             /ROE       Total Price    VAT%            VAT                 Total
+                   ‫ﺑﻴﺎﻥ ﺍﻟﺮﺳﻮﻡ‬                    ‫ﺍﻟﻌﻤﻠﺔ‬         ‫ﺍﻟﺴﻌﺮ ﻟﻜﻞ‬    ‫ﻭﺣﺪﺓ‬           ‫ﻣﺒﻠﻎ ﺍﻟﻌﻤﻠﺔ‬            ‫ﺳﻌﺮ‬        excl. VAT    ‫ﺍﻟﻀﺮﻳﺒﺔ‬      Amount               ‫ﺍﻟﻤﺠﻤﻮﻉ‬
+                                                                     ‫ﻭﺣﺪﺓ‬                                         ‫ﺍﻟﺼﺮﻑ‬     ‫ﺍﻟﺴﻌﺮ ﺍﻟﺠﻤﺎﻟﻲ‬        %           ‫ﻗﻴﻤﺔ‬                INR
+                                                                                                                             ‫ﺑﺪﻭﻥ ﺍﻟﻀﺮﻳﺒﺔ‬                 ‫ﺍﻟﻀﺮﻳﺒﺔ‬
+FREIGHT CHARGE                                    INR             1,500.00           1        1,500.00           1.00000         1,500.00       18                           1,500.00
+LOCAL CHARGES                                     INR               800.00           1          800.00           1.00000           800.00       18                             800.00
+SEA FREIGHT CHARGE                                INR               900.00           1          900.00           1.00000           900.00       18                             900.00
+CONTAINER CLEANING FEE                            INR             1,000.00           1        1,000.00           1.00000         1,000.00       15                           1,000.00
+Rupee Four Thousand Two Hundred Only                                                                       Total in : INR       4,200.00                                   4,200.00
+
+FOUR THOUSAND TWO HUNDRED                                                                                                               .                       .                      .
+
+Container No.                  Type                                          No. of Pcs Pack Type                                             G.Weight(KGS)           Volume(CBM)
+TTNU0712894                    40' FLAT                                              3.00 PACKAGES                                                    22,700.000
+
+ .Terms
+ 1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+ Bank Details
+ Beneficiary Name: YOUR COMPANY NAME
+ Bank                  : HDFC
+ A/c No                : XXXXXXXXXXX
+ IBAN Code : ABA:XXXXXX
+ Swift Code            : XXXXXX
+ Address               : MUMBAI.
+
+
+
+
+                                              This is a computer generated document and does not require a signature
+                                                           . ‫ﻫﺬﺍ ﺍﻟﻤﺴﺘﻨﺪ ﺗﻢ ﺍﻧﺘﺎﺟﻪ ﺑﻮﺍﺳﻄﺔ ﺍﻟﻜﻤﺒﻴﻮﺗﺮ ﻭﻻ ﻳﺤﺘﺎﺝ ﺍﻟﻰ ﺗﻮﻗﻴﻊ‬
+Printed By : PARTHIBAN                                                 Printed Date :17-MAY-23 10:50AM                         Powered By : Fresa Technologies      Page 1 of 1
+

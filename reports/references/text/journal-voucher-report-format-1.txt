@@ -1,0 +1,32 @@
+                                                      JOURNAL VOUCHER
+Voucher No      : MAAINV1900717                                      GL Date     : 28-JAN-19
+Branch          : CHENNAI                                            Account     : 4G LOGISTICS INDIA PVT LTD
+Narration       : B/EXP/19/0251 MBL NO. MBLC9878909999 / HBL NO. PLMAAJEA00080 / JOB NO.CEXP190148
+
+A/c Name                                  Narration                  Currency       FCY Amount    Ex.Rate     Dr Amount     Cr Amount
+SUNDRYDEBTORS-SUNDRY DEBTORS- B/EXP/19/0251 MBL NO.                     INR           17,384.00    1.00000     17,384.00
+4G LOGISTICS INDIA PVT LTD         MBLC9878909999 / HBL
+                                   NO. PLMAAJEA00080 /
+                                   JOB NO.CEXP190148
+1040.10.10-SEA FREIGHT FCL REVENUE FREIGHT CHARGE                       USD              100.00   70.00000                    7,000.00
+1040.10.10-SEA FREIGHT FCL REVENUE TERMINAL HANDLING                    INR            5,500.00    1.00000                    5,500.00
+                                   CHARGES 20"GP
+1040.10.10-SEA FREIGHT FCL REVENUE SEAL FEE                             INR              300.00    1.00000                      300.00
+1040.10.10-SEA FREIGHT FCL REVENUE BILL OF LADING                       INR            3,000.00    1.00000                    3,000.00
+GST0003-SGST SALE A/C              SGST 9%                              INR              792.00    1.00000                      792.00
+CGST0003-CGST SALE A/C             CGST 9%                              INR              792.00    1.00000                      792.00
+                                                                                                    Total :    17,384.00     17,384.00
+Remarks : 1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019
+
+
+
+
+               Prepared By                                       Checked By                                   Approved By
+
+
+
+
+                 ( RAM )
+
+Printed By : ram@fresatechnologies.com                      Printed Date : 29-JAN-19 10:21AM                                Page 1 of 1
+

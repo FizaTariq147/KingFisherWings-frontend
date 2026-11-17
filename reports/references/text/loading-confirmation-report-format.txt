@@ -1,0 +1,54 @@
+  11/17/2018                                                         Loading Confirmation -BDXBSE180055
+                                                                                     FRESA DEMO COMPANY LIMITED
+                                                                                                                                Al Khabeeshi Building,
+                                                                                                                                Mezzanine Floor 03/5,
+                                                                                                                              Salahuddin Road, Deira,
+                                                                                                                                         Dubai, U.A.E.
+                                                                                                                      WEB : www.fresatechnologies.com
+
+
+
+                              LOADING CONFIRMATION - Shipment No - BDXBSE180055
+
+                   Shipper : CLARION SHIPPING SERVICES LLC                                        Consignee : BLUEMAX SHIPPING SERVICES PVT. LTD.
+                             PALCE TOWER 1, OFFICE 1802 AND 1803                                              CHENNAI INDIA
+                             DUBAI، ACADEMIC CITY RD - UNITED ARA                                             PHONE: 4556785445
+                             B EMIRATES UNITED ARAB EMIRATES
+                             PHONE: 971 4 333 3852
+              Shipment No : BDXBSE180055 / 17-NOV-18                                                 Job No : / 17-NOV-18
+                   MBL No : 987877777 / 17-NOV-18                                                   HBL No : JEA/MAA/1800033 / 19-NOV-18
+          Place of Receipt : JEBEL ALI, DUBAI                                               Port of Loading : JEBEL ALI
+         Port of Discharge : CHENNAI (EX MADRAS)                                   Port of Final Destination : CHENNAI (EX MADRAS)
+         Place of Delivery : CHENNAI (EX MADRAS)                                                        ETD : 23-NOV-18
+                    Carrier : MAERSK LINE                                                               ETA : 30-NOV-18
+          Vessel / Voyage : MAERSK BLUR MOON / V032                                         Movement Type : FCL
+                    PP/CC : PREPAID
+
+Routing Details
+Line No Sea / Air / Road   POL        ETD       ATD            POD            ETA    ATA Vessel / Flight Name Status Remarks
+10      SEA              JEBEL ALI 23-NOV-18 23-NOV-18 CHENNAI (EX MADRAS) 30-NOV-18    MAERSK BLUE MOON PLANNED VIA COLOMBO
+
+
+Actual Container
+                              Manifest                                                                     No
+                             Actual    Loaded                                                       Loaded      Gross
+  Container      Type          Seal                                  Description                            of          Volume
+                            Seal No.    Date                                                         Date       Weight
+                                No.                                                                        Pcs
+                                       17-    STC: PRINTING PRESS MATERIALS HS CODE: 9600000 EXPRESS 17-
+            20'
+MAEU9876543          SL001234          NOV- RELEASE ALL DESTINATION CHARGES ARE CONSIGNEE'S A/C      NOV- 150 18,000.000 18.000
+            STANDARD
+                                       18     FREIGHT PREPAID                                         18
+
+         Shipping Bill No                       Shipping Bill Date
+
+
+
+          User : ram.ae@fresatechnologies.com                        17-Nov-18 12:09:PM Asia/Kolkata                Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:5589300094283:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                      1/1
+

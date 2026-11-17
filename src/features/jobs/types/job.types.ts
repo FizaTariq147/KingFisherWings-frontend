@@ -943,6 +943,16 @@ export interface JobActions {
   can_view_containers?: boolean;
   can_assign_trucker?: boolean;
   can_port_token?: boolean;
+  /** Upload docs allowed on handoff-limited surface. */
+  can_upload_docs?: boolean;
+  can_documents?: boolean;
+  /**
+   * Costing visibility from User.can_see_sales / can_see_cost (Tenant Admin → both).
+   * neither → no costing tab; sale-only / cost-only / both.
+   */
+  can_view_costing?: boolean;
+  can_view_sale?: boolean;
+  can_view_cost?: boolean;
   /** `handoff_limited` | `full` — strip costing/show_all/finance when handoff_limited. */
   view_mode?: 'full' | 'handoff_limited' | string;
   /** Permitted status values when provided by backend. */
@@ -1032,6 +1042,69 @@ export interface ChangeJobStatusDto {
   /** Catalog code or system enum — backend resolves status_code + enum status. */
   status: JobStatus | string;
   reason?: string;
+  /**
+   * Required when status/catalog code is PASS_TO_TRANSPORT — same fields as department pass.
+   * Department resolves to org TRANSPORT on the server.
+   */
+  branch_id?: string;
+  branch_name?: string;
+  user_id?: string;
+  user_name?: string;
+  department_id?: string;
+  department_name?: string;
+  notes?: string | null;
+}
+
+/** Catalog / change-status code that auto-passes the job to Transport. */
+export const PASS_TO_TRANSPORT_STATUS = 'PASS_TO_TRANSPORT';
+
+export function isPassToTransportStatus(status?: string | null): boolean {
+  const raw = String(status ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  return raw === 'PASS_TO_TRANSPORT' || raw === 'PASS_TO_TRANSPORTATION';
+}
+
+/** GET /jobs/accounts — finance/accounts aggregate (COMPLETED / DELIVERED / CLOSED). */
+export interface AccountsJobListParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  status?: JobStatus | string;
+  branch_id?: string;
+  from_date?: string;
+  to_date?: string;
+  order?: 'asc' | 'desc';
+}
+
+export interface AccountsJobRow {
+  id: string;
+  job_number?: string;
+  job_type?: string;
+  status?: string;
+  branch_id?: string;
+  branch_name?: string;
+  party_name?: string;
+  shipper_name?: string;
+  consignee_name?: string;
+  etd?: string;
+  eta?: string;
+  completed_at?: string;
+  closed_at?: string;
+  has_sale_invoice?: boolean;
+  has_purchase_invoice?: boolean;
+  currency_code?: string;
+}
+
+export interface AccountsJobListResult {
+  jobs: AccountsJobRow[];
+  meta?: {
+    page?: number;
+    limit?: number;
+    total?: number;
+    totalPages?: number;
+  };
 }
 
 /** Tenant-admin status catalog create/update body. */

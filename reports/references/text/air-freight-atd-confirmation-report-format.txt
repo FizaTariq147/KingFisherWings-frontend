@@ -1,0 +1,32 @@
+2/18/2019                                         Air Freight ATD Confirmation - MAA/DXB/1900014
+                                                                                   FRESA DEMO INDIA PVT LTD
+                                                                                                                        Chennai- 600 100
+                                                                                                                        Tamil Nadu, India
+                                                                                                         WEB : www.fresatechnologies.com
+
+
+                             Air Freight ATD Confirmation - Shipment No - B/AE/19/0112
+
+                Client : 4G LOGISTICS INDIA PVT LTD                                Shipper : BABU SECTOR PTLTD
+                         10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD                                144/78B GKM TOWERS MUTHUSAMY STREET,
+                         NUNGAMBAKKAM CHENNAI TAMILNADU 600084                               NEAR A2B SIGNAL, NEELANKARAI CHENNAI
+                         EMAIL: ram@fresatechnologies.com                                    TAMILNADU INDIA
+            Consignee : AL NASER TRADING COMPANY LLC                          Shipment No. : B/AE/19/0112
+                         30 AL MAKTHOOM BUILDING NEAR MUBARAK
+                         CENTRE ROUND ABOUT AL NABHA SHARJAH
+                         UNITED ARAB EMIRATES
+              Job No. : CAE190028 / 20-FEB-19                                    MAWB No. : 17623456882 / 18-FEB-19
+            HAWB No. : MAA/DXB/1900014 / 18-FEB-19                         Port of Loading : CHENNAI, INDIA
+                  ATD : 20-FEB-19                                         Port of Discharge : DUBAI INTERNATIONAL AIRPORT, UNITED ARAB
+                                                                                              EMIRATES
+       Measurement :                                                        Volume Weight : 1250 KGS
+       Gross Weight : 1250 K                                                           Item : STC: PAPER CUPS
+
+
+        User : ram@fresatechnologies.com              18-Feb-19 05:37:PM Asia/Kolkata                 Powered by Fresa Technologies
+
+
+
+
+http://demo.fresagold.com:19786/ords/f?p=127:3002:3516041250116:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…          1/1
+

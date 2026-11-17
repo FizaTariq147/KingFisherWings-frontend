@@ -1,0 +1,28 @@
+                                                          PURCHASE INVOICE
+PI No.           : MAAPI1900248                                                GL Date           : 28-JAN-19 (CREATED)
+A/C Name         : CMA CGM                                                     Date              : 28-JAN-19
+Narration        : B/EXP/19/0251                                               Client         : 4G LOGISTICS INDIA PVT LTD
+HAWB / HBL       : PLMAAJEA00080                                               MAWB / MBL No. : MBLC9878909999
+Ref No.          : 500138050036 / 22-JAN-19                                    Job No.        : CEXP190148
+A/c Name                                         Narration                                           Currency     Dr / Cr                 Amount (INR)
+SEA FREIGHT FCL COST                             FREIGHT CHARGE                                         INR          Dr                          3,600.00
+SEA FREIGHT FCL COST                             TERMINAL HANDLING CHARGES 20"GP                        INR          Dr                          5,500.00
+SEA FREIGHT FCL COST                             SEAL FEE                                               INR          Dr                            250.00
+SEA FREIGHT FCL COST                             BILL OF LADING                                         INR          Dr                          2,500.00
+IGST COST A/C                                    I/U GST 18%                                            INR          Dr                          1,485.00
+TDS PAYABLE                                      TDS PAYABLES 2%                                        INR          Cr                            237.00
+CMA CGM                                          TDS PAYABLES 2%                                        INR          Dr                            237.00
+                                                      Rupee Thirteen Thousand Three Hundred Thirty-Five Only                                  13,335.00
+
+
+
+
+      Requested By                       Checked By                  Chq Issued By                 Accountant                     Approved By
+
+
+
+
+          ( RAM )
+
+Printed By : ram@fresatechnologies.com                         Printed Date :29-JAN-19 10:27AM         Powered By : Fresa Technologies   Page 1 of 1
+

@@ -1,0 +1,61 @@
+ 1/25/2019                                                 Job houses/Record List-CCDXBSI18000060
+                                                                               FRESA DEMO COMPANY LIMITED
+                                                                                                                                  Al Khabeeshi Building,
+                                                                                                                                  Mezzanine Floor 03/5,
+                                                                                                                                Salahuddin Road, Deira,
+                                                                                                                                           Dubai, U.A.E.
+                                                                                                                        WEB : www.fresatechnologies.com
+
+
+
+                            JOB HOUSES / RECORD LIST / JOB NO - CCDXBSI18000060
+
+                  Shipper : FRESA DEMO COMPANY LIMITED                                      Consignee : TEAM SHIPPING CO LLC
+                            473A SAI SHAHI, 10TH STREET KAMAKOT                                         DUBAI
+                            TI NAGAR PALLIKARANAI CHENNAI TAMIL
+                            NADU 600 100 EMAIL: sales@fresatechnolo
+                            gies.com
+               Origin Agent : FRESA DEMO COMPANY LIMITED                                          Notify1 : SAME AS CONSIGNEE
+                              DUBAI UNITED ARAB EMIRATES
+                              PHONE: NA
+                    Job No : CCDXBSI18000060 / 23-NOV-18                                       MBL No : 98000001 / 14-NOV-18
+             Departure Date : 17-NOV-18                                                    Arrival Date : 23-NOV-18
+                     Carrier : CMA CGM & ANL LLC                                      Vessel / Voyage : MAERSK CHARLIE / V033
+               Agent Name : FRESA DEMO COMPANY LIMITED                                Port of Loading : CHENNAI (EX MADRAS), INDIA
+              Carrier Agent :                                                        Port of Discharge : JEBEL ALI, UAE
+                                                                                                               Container
+                                                                                          MAEU9876543 20' STANDARD
+                                                                                                                No of                        Chargeable
+   House B/L       PP/CC     POF                Forwarder / Shipper                    Notify / Consignee                G.Weight Volume
+                                                                                                                 Pcs                            Unit
+                                                                                    SAME AS
+MAA/JEA/1800006 PREPAID AEJEA SHANSON LOGISTICS PVT LTD                                                             17 4,500.000    4.600             4.600
+                                                                                    CONSIGNEE
+                                                                                    SAME AS
+MAA/JEA/1800007 PREPAID BHBAH KERRY INDEV LOGISTICS PVT LTD                                                         12 2,800.000    2.900             2.900
+                                                                                    CONSIGNEE
+                                                                                    SAME AS
+MAA/JEA/1800008 PREPAID OMSOH CLARION SHIPPING SERVICES LLC                                                         15 3,200.000    3.300             3.300
+                                                                                    CONSIGNEE
+                                                                                    SAME AS
+MAA/JEA/1800009 PREPAID KWKWI SYNERGY MARITIME                                                                      19 5,500.000    5.800             5.800
+                                                                                    CONSIGNEE
+                                    FAIRMACS SHIPPING AND LOGISTICS PVT,            SAME AS
+MAA/JEA/1800010 PREPAID AEJEA                                                                                       14 3,000.000    3.200             3.200
+                                    LTD.                                            CONSIGNEE
+                                                                                    SAME AS
+MAA/JEA/1800011 PREPAID AEJEA GRAND SHIPPING & LOGISTICS COMPANY                                                    18 5,000.000    5.300             5.300
+                                                                                    CONSIGNEE
+
+
+                                                                                                                                                    Total:
+                                                                                                 No of Pcs    G.Weight  Volume       Chargeable Weight
+                                                                                                         95   24,000.000 25.100                  25.100
+
+         User : ram.ae@fresatechnologies.com                   25-Jan-19 07:27:PM Asia/Kolkata                      Powered by Fresa Technologies
+
+
+
+
+ http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…                        1/1
+

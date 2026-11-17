@@ -107,6 +107,7 @@ export function buildHawbDraft2Html(data: InvoiceFormatPdfData = {}): string {
   html, body { margin: 0; padding: 0; background: #ffffff; }
   body { width: ${width}; height: ${height}; overflow: hidden; }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body, body * { font-family: Helvetica, Arial, sans-serif !important; }
 </style>
 </head>
 <body>${body}</body>

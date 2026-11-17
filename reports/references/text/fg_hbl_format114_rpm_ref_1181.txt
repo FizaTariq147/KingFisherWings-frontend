@@ -1,0 +1,66 @@
+Shipper
+                                                                         B/L No :    NSAJED85630124277
+DEMO-SHIPPER ENGG COMPANY
+
+
+
+
+Consignee
+DEMO STEEL FACTORY CO. LTD.
+P.O BOX 11700, 8100 UNIT NO 2 JEDDAH SAUDI ARABIA SAUDI
+ARABIA21463
+TEL: +966
+
+
+Notify Party :
+                                                                                             MUMBAI--1111
+                                                                                                   INDIA
+                                                                                 Phone : Level-1 : +91 7806805429 Email :
+                                                                                     support@fresatechnologies.com
+
+Place of Receipt                     Port of Loading
+INMAA-CHENNAI                        NHAVA SHEVA, INDIA
+
+Vessel / Voyage
+CAP SAN JUAN/310W
+
+
+Port of Discharge                    Place of Delivery                Movement
+JEDDAH, SAUDI ARABIA                 JEDDAH SAUDI ARABIA              JEDDAH SAUDI ARABIA
+
+                                      PARTICLUARS FURNISHED BY SHIPPER-CARRIER/AGENT NOT RESPONSIBLE
+                  Marks & Numbers                                     Description                             Gross Weight      Volume
+TTNU0712894 - 40' FLAT                                    GENERAL CARGO                                       22,700.000 KGS             CBM
+
+
+
+
+          Container No / Type              Seal No             No of Packages            Gross WT. in KG    Net WT. in KG      Volume
+TTNU0712894/40' FLAT                                                 3                         22,700.000
+
+
+
+
+  Delivery Agent :
+
+
+
+
+                                                                                             SHIPPER'S LOAD AND COUNT AND SEAL
+
+Ocean Freight and Charge :          COLLECT                           Shipped on Board :
+
+
+
+Total amount due                                                      Place and Date of issue :
+
+
+
+
+Date:                17-MAY-23                                        For and behalf of the carrier
+
+                                                                      No of Originals:       3 (THREE)
+
+Vessel:              CAP SAN JUAN/310W
+Shipped from:        NHAVA SHEVA, INDIA                                                       CREATED
+

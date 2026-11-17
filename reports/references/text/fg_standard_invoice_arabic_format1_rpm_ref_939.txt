@@ -1,0 +1,60 @@
+                                                           TAX INVOICE ‫ﻓﺎﺗﻮﺭﺓ ﺿﺮﻳﺒﻴﺔ‬
+Invoice Receiver ‫ﻓﺎﺗﻮﺭﺓ ﺇﻟﻰ‬                                                           Invoice No ‫ﺭﻗﻢ ﺍﻟﻔﺎﺗﻮﺭﺓ‬         : BOMINV230500382
+DEMO LOGISTICS INDIA PVT LTD                                                          Invoice Date ‫ﺗﺎﺭﻳﺦ‬              : 17-MAY-23 (POSTED)
+21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA,
+                                                                                      Job No ‫ﺭﻗﻢ ﺍﻟﻮﻇﻴﻔﺔ‬              :
+676876
+Phone : 798798798                                                                     Attention ‫ﺍﻧﺘﺒﺎﻩ‬                :
+Fax : 9879878
+                                                                                      PO/BL No. ‫ﺃﻣﺮ ﺷﺮﺍﺀ‬              : NSAJED85630124277
+VAT No. : 68768978898098
+                                                     ENGLISH
+
+VAT No. ‫ﺍﻟﺮﻗﻢ ﺍﻟﻀﺮﻳﺒﻲ‬       : 68768978898098
+
+
+Place of Loading ‫ﻣﻜﺎﻥ ﺍﻟﺘﺤﻤﯿﻞ‬          : INMAA-CHENNAI                                ETD ‫ﻣﻮﻋﺪ ﺍﻟﻤﻐﺎﺩﺭﺓ‬               : 01-MAR-23
+Place of Delivery ‫ﻣﻜﺎﻥ ﺍﻟﺘﻮﺻﯿﻞ‬         : JEDDAH SAUDI ARABIA                          ETA ‫ﻣﻮﻋﺪ ﺍﻟﻮﺻﻮﻝ‬                 : 20-MAR-23
+Shipper ‫ﺍﻟﺸﺎﺣﻦ‬                         : DEMO-SHIPPER ENGG COMPANY                    TWB No ‫ﺭﻗﻢ ﻓﺎﺗﻮﺭﺓ‬               :
+Consignee ‫ﺍﻟﻤﺮﺳﻞ ﺇﻟﯿﮫ‬                  : DEMO STEEL FACTORY CO. LTD.                  BL/AWB No ‫ﺭﻗﻢ ﺑﻮﻟﯿﺼﺔ‬            : NSAJED85630124277
+              ‫ﺗﻔﺎﺻﯿﻞ ﺍﻟﺮﺳﻮﻡ‬                  ‫ﻛﻤﯿﺔ‬            Unit            .Curr    ‫ﺳﻌﺮ ﺍﻟﻮﺣﺪﻩ‬         ‫ﺳﻌﺮ ﺍﻟﺼﺮﻑ‬         ‫ﻛﻤﯿﺔ‬        ‫ﺿﺮﻳﺒﺔ‬%      ‫ﺿﺮﻳﺒﺔ‬        ‫ﻣﺠﻤﻮﻉ‬
+             Charges Details                 QTY             ‫ﻭﺣﺪﺓ‬            ‫ﺍﻟﻌﻤﻠﺔ‬   Unit Price         Exch. Rate       Amount       VAT %       VAT         Total Amt
+FREIGHT CHARGE                                1         1 TON OR 1/2         INR       1,500.00           1.00000         1,500.00       18                     1,500.00
+                                                          MEASURE
+LOCAL CHARGES                                 1                              INR        800.00            1.00000         800.00         18                       800.00
+SEA FREIGHT CHARGE                            1         1 TON OR 1/2         INR        900.00            1.00000         900.00         18                       900.00
+                                                          MEASURE
+CONTAINER CLEANING FEE                        1         1 TON OR 1/2         INR       1,000.00           1.00000         1,000.00       15                     1,000.00
+                                                          MEASURE
+Rupee Four Thousand Two Hundred Only                                                          Total ‫(ﻣﺠﻤﻮﻉ‬INR)                                                 4,200.00
+
+Vehicle ‫ﻣﺮﻛﺒﺔ‬                                          Container No ‫ﺭﻗﻢ ﺍﻟﺤﺎﻭﻳﺔ‬       TTNU0712894                         Cntnr Type ‫ﻧﻮﻉ ﺍﻟﺤﺎﻭﻳﺔ‬       40' FLAT
+
+
+Descriptions ‫ﺍﻟﻮﺻﻒ‬          GENERAL CARGO
+
+
+
+
+ .Terms
+ 1. Payment to be made by cash. The company is not responsible for any cash settlement without an
+ official receipt.
+
+ Bank Details
+ Beneficiary Name: YOUR COMPANY NAME
+ Bank                  : HDFC
+ A/c No                : XXXXXXXXXXX
+ IBAN Code : ABA:XXXXXX
+ Swift Code            : XXXXXX
+ Address               : MUMBAI.
+
+
+
+
+ Received By ‫ﺍﺳﺘﻠﻤﺖ ﻣﻦ ﻗﺒﻞ‬                                                                                                            For FRESA DEMO INDIA PVT LTD
+
+
+
+
+Printed By : shanmugam@fresa.io                                      Printed Date :17-MAY-2023 12:20PM                    Powered By : Fresa Technologies   Page 1 of 1
+

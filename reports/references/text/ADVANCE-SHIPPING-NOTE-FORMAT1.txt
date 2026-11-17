@@ -1,0 +1,25 @@
+                                               ADVANCE SHIPPING NOTE
+Client No.    : DMO/ASN/0002                                             ASN No.           : ASN/000033 / 10-FEB-20
+Client Name : DEMO PVT LTD
+BOE No.       : 757657868/20                                           Container No.     : MSKU1234567
+Source Ref    : 511252 / 10-FEB-20                                     HBL / HAWB No. : MAAJEA0445
+S.No.    Product Code                     Product Name             Category          COO          Qty        Pack Code       Weight         Volume
+  1                         WD EXTERNAL HDD                       NA            INDIA                   500 BOX                250.000             1.000
+  2                         HP LAPTOP                             NA            INDIA                     1 BOX                     2.750          3.000
+  3                         HP LAPTOP                             NA            INDIA                     1 BOX                     2.750          3.000
+  4                         HP LAPTOP                             NA            INDIA                     1 BOX                     2.750          3.000
+  5                         HP LAPTOP                             NA            INDIA                     1 BOX                     2.750          3.000
+  6                         HP MOUSE                              NA            INDIA                 1200 BOX                 120.000 12000.000
+  7                         HP MONITOR                            NA            INDIA                   550 BOX                 55.000 11000.000
+  8                         HP KEYBOARD                           NA            INDIA                   750 BOX                 75.000 11250.000
+  9                         NVIDIA GPU                            NA            INDIA                   600 BOX                150.000      7200.000
+  10                        NVIDIA GPU                            NA            INDIA                   600 BOX                150.000      7200.000
+                                                                                Total :               4204                     811.000 48663.000
+
+
+
+
+              Checked by                                                                                     Received by
+
+Printed By : demo.bom@fresatechnologies.com              Printed Date :17-Mar-20 11:16AM          Powered By : Fresa Technologies    Page 1 of 1
+

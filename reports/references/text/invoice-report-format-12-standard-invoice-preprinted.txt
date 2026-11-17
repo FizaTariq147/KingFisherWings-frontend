@@ -1,0 +1,34 @@
+                    : FRESA DEMO DUBAI LLC                          Invoice No.       : INV1800564
+                      AL NABHA, DUBAI                               Date              : 27-NOV-18 (CREATED)
+                      Phone : 04-233456                             Job No.           : CCDXBSI18000061 / 27-NOV-18
+                      GSTIN No. : 29760737473                       Shipment No.      : 500138050266 / 10-OCT-18
+                                                                    Port of Loading : NHAVA SHEVA (JAWAHARLAL NEHRU),
+Credit Term         : CASH                                          Place of Delivery : JEBEL ALI, UAE
+MBL No.             : NSA.JEA.18/26917 / 12-OCT-18                  Vsl / Voyage      : NORTHERN GENERAL / 0068
+ETD                 : 12-OCT-18                                     Reference No.     : REFE NO. 987890/22-NOV-18
+ETA                 : 24-OCT-18                                     Currency          : AED 1.000000
+HBL No.             : 500138050266 / 10-OCT-18                      Narration         :BDXBSI180115 Job No. CCDXBSI18000061
+                                                                                        / MBL No. NSA.JEA.18/26917 / HBL No.
+Remarks             : SHIPMENT FROM INDIA - PO REF #
+Container No                    Type              No of Pcs Pack Type                     G.Weight     Unit   Volume        V.Weight
+TEMU6105051                     40' HC                    12 PACKAGES                      1,116.00    KGS      1.903
+Charge                                          Qty    Currency   Amount/Qty                 Ex.Rate   FCY Amount Amount(AED)
+DELIVERY ORDER CHARGES                           1       AED    X    275.000                  1.000000      275.00     275.00
+THC CHARGES                                      2       AED    X     50.000                  1.000000       95.15       95.15
+DOCUMENTATION CHARGES                            1       AED    X    100.000                  1.000000      100.00     100.00
+HANDLING CHARGES                                 1       AED    X    250.000                  1.000000      250.00     250.00
+
+
+
+
+                             Dirham Seven Hundred Fifty-Six and Sixteen Fils Only                 Total :                     756.16
+
+Terms and conditions
+
+ELECTRONIC & WIRE TRANSFER INFORMATION
+FRESA DEMO COMPANY LTD              ACCOUNT                     #: XXXXXXXXXXXXX (USD)
+473A- SAI SHAHI, 10TH STREET SWIFT ID           #: 0198766
+BUR DUBAI,                   WIRE TRANSFER ROUTING      #: 9877777
+DUBAI UAE                    ACH/DOMESTIC/ABA ROUTING#: 9876666
+Printed By : ram.ae@fresatechnologies.com                Print Date : 28-Jan-19 1:53 PM                       Page 1 of 1
+

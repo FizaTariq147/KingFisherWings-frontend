@@ -1,0 +1,40 @@
+                                                                                                                FRESA DEMO INC
+                                                                                                                   473A - SAI SHAHI, 10TH STREET
+                                                                                                                 KAMAKOTTI NAGAR PALLIKARANAI
+                                                                                                                                          MUMBAI
+                                                                                                                           MAHARASTRA- 600 100
+                                                                                                                   WEB : www.fresatechnologies.com
+
+
+
+                                           ASN LOCATION WISE / ASN No - ASN/000033
+
+Client No                     : DMO/ASN/0002                               ASN No                       : ASN/000033 / 10-FEB-20
+Client                        : DEMO PVT LTD                               Bill of Entry No             : 757657868/20
+Bill of Entry Date            : 10-FEB-20                                  Warehouse                    : WAREHOUSE-01
+Client Ref No                 : 511252 / 10-FEB-20
+SNO          Product Code                            Product Name                            Location             Serial No                   Qty
+                                                                                   GOODS_RECEIPT_ARE
+    1 22534653                    HP MONITOR                                                                                                         550
+                                                                                   A
+    2 2253465                     HP LAPTOP                                        AB0001                  1024662004                                  1
+                                                                                   GOODS_RECEIPT_ARE
+    3 5251255220                  NVIDIA GPU                                                                                                         600
+                                                                                   A
+                                                                                   GOODS_RECEIPT_ARE
+    4 2253465350                  HP KEYBOARD                                                                                                        750
+                                                                                   A
+                                                                                   GOODS_RECEIPT_ARE
+    5 5251255220                  NVIDIA GPU                                                                                                         600
+                                                                                   A
+    6 112541AASD52                WD EXTERNAL HDD                                  AB0001                                                            500
+    7 2253465                     HP LAPTOP                                        AB0001                  1024662001                                  1
+    8 2253465                     HP LAPTOP                                        AB0001                  1024662002                                  1
+    9 2253465                     HP LAPTOP                                        AB0001                  1024662003                                  1
+   10 2253465100                  HP MOUSE                                         AB-001-B                                                         1200
+
+                                                                                                           Total :                                 4204
+
+
+            User : demo.bom@fresatechnologies.com                   17-Mar-20 11:16:AM Asia/Calcutta               Powered by Fresa Technologies
+

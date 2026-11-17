@@ -1,0 +1,58 @@
+                                                                                                                                INV No. : BOMINV230500382
+To        : DEMO LOGISTICS INDIA PVT LTD                                                                 INV Date         05/17/2023 (POSTED)
+           21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU, INDIA,                                                     05/17/2023
+                                                                                                         Due Date
+           676876
+           Phone : 798798798                                                                             Post Date        05/17/2023
+           Fax : 9879878
+                                                                                                         Remarks
+                                                                                                         Currency         INR
+
+                                                                                                         Total Amount     4,776.00
+
+
+
+
+Master B/L No.                 :                                                                        No. Of PKGS       :3
+Customer Ref. No.              :                                                                        Free Time Exp     :
+House B/L No.                  : NSAJED85630124277                                                      Date of Pick UP   :
+VESSEL/VOY                     :                                                                        CNTR. Info.       : TTNU0712894
+POL / ETD                      : INNSA / 03/01/2023                                                     Shipper           : DEMO-SHIPPER ENGG COMPANY
+POD / ETA                      : SAJED / 03/20/2023
+FINAL POD / ETA                : SAJED
+Commodity                      : GENERAL CARGO                                                          Remarks           :
+
+Description                                                                              Unit                                  Rate              Qty               Amount (INR)
+
+FREIGHT CHARGE                                                                           1 TON OR 1/2                     1,500.00               1.00                     1,500.00
+                                                                                         MEASURE
+LOCAL CHARGES                                                                                                                 800.00             1.00                      800.00
+SEA FREIGHT CHARGE                                                                       1 TON OR 1/2                         900.00             1.00                      900.00
+                                                                                         MEASURE
+CONTAINER CLEANING FEE                                                                   1 TON OR 1/2                     1,000.00               1.00                     1,000.00
+                                                                                         MEASURE
+Rupee Four Thousand Seven Hundred Seventy-Six Only                                                                                     Total :          INR              4,776.00
+
+GRAND TOTAL BALANCE DUE TO FRESA DEMO INDIA PVT LTD                                                                                                           4,200.00
+
+
+
+
+ .Terms
+ 1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+ Bank Details
+ Beneficiary Name: YOUR COMPANY NAME
+ Bank                      : HDFC
+ A/c No                    : XXXXXXXXXXX
+ IBAN Code     : ABA:XXXXXX
+ Swift Code    : XXXXXX
+ Address                   : MUMBAI.
+
+
+
+
+   FRESA DEMO INDIA PVT LTD                                                                                               AUTHORIZED SIGNATURE
+
+ Printed By : shanmugam@fresa.io                                                   Printed Date :17-MAY-2023 11:52AM           Powered By : Fresa Technologies    Page 1 of 1
+

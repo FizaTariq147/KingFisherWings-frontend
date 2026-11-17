@@ -1,0 +1,526 @@
+{
+  "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+  "maxLines": 3,
+  "spans": [
+    {
+      "id": "p1s1",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 35.6,
+      "clipped": true
+    },
+    {
+      "id": "p1s4",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 483.2,
+      "clipped": false
+    },
+    {
+      "id": "p1s13",
+      "mode": "shrink",
+      "size": 3.9000000000000004,
+      "lines": 1,
+      "natural": 27.111474609375,
+      "box": 24.2
+    },
+    {
+      "id": "p1s15",
+      "mode": "shrink",
+      "size": 3.9000000000000004,
+      "lines": 1,
+      "natural": 27.111474609375,
+      "box": 24.2
+    },
+    {
+      "id": "p1s16",
+      "mode": "clip",
+      "size": 15.8,
+      "lines": 1,
+      "box": 202.3,
+      "clipped": true
+    },
+    {
+      "id": "p1s21",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 81.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s27",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 102.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s29",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 158.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s30",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 144.7,
+      "clipped": true
+    },
+    {
+      "id": "p1s32",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 83.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s37",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 132.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s43",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 102.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s46",
+      "mode": "wrap",
+      "size": 7.9,
+      "lines": 3,
+      "box": 102.9,
+      "clipped": true
+    },
+    {
+      "id": "p1s50",
+      "mode": "wrap",
+      "size": 7.9,
+      "lines": 3,
+      "box": 92.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s53",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 98.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s57",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 110.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s61",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 107.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s87",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 157.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s88",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 156.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s96",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 110.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s100",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 33,
+      "clipped": true
+    },
+    {
+      "id": "p1s103",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 75.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s110",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 175.9,
+      "clipped": true
+    },
+    {
+      "id": "p1s127",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s161",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s163",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 33,
+      "clipped": true
+    },
+    {
+      "id": "p1s164",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s165",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s166",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s172",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s174",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 28.6,
+      "clipped": true
+    },
+    {
+      "id": "p1s175",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s176",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s177",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 15.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s178",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s179",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 15.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s180",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s181",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s184",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s186",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 28.6,
+      "clipped": true
+    },
+    {
+      "id": "p1s187",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s188",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s189",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 15.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s190",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 19.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s191",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 15.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s192",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 19.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s193",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s196",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s198",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 28.6,
+      "clipped": true
+    },
+    {
+      "id": "p1s199",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s200",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s201",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 15.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s202",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s203",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 15.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s204",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s205",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 30.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s206",
+      "mode": "shrink",
+      "size": 4.4,
+      "lines": 1,
+      "natural": 30.5873046875,
+      "box": 30.8
+    },
+    {
+      "id": "p1s207",
+      "mode": "shrink",
+      "size": 4.4,
+      "lines": 1,
+      "natural": 30.5873046875,
+      "box": 30.8
+    },
+    {
+      "id": "p1s208",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s209",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 24.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s210",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 35.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s212",
+      "mode": "clip",
+      "size": 8.5,
+      "lines": 1,
+      "box": 37.7,
+      "clipped": true
+    },
+    {
+      "id": "p1s231",
+      "mode": "clip",
+      "size": 7.9,
+      "lines": 1,
+      "box": 108.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s233",
+      "mode": "clip",
+      "size": 6.8,
+      "lines": 1,
+      "box": 86.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s235",
+      "mode": "clip",
+      "size": 6.8,
+      "lines": 1,
+      "box": 61.1,
+      "clipped": true
+    }
+  ]
+}

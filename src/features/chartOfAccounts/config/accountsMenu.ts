@@ -1,8 +1,17 @@
-import { BookOpen, Network, Scale, FileStack, Banknote, Landmark, BarChart3, LineChart, Bookmark, ClipboardList, CalendarClock } from 'lucide-react';
+import { BookOpen, Network, Scale, FileStack, Banknote, Landmark, BarChart3, LineChart, Bookmark, ClipboardList, CalendarClock, Briefcase } from 'lucide-react';
 import type { MenuTile } from '../../customers/types/menu.types';
 
 /** Accounts hub tiles — modules only; create actions live on each list page. */
 export const accountsMenu: MenuTile[] = [
+  {
+    id: 'accounts-jobs',
+    title: 'Accounts jobs',
+    description:
+      'Completed, delivered, and closed jobs for finance (GET /jobs/accounts).',
+    icon: Briefcase,
+    iconColor: 'bg-teal-600',
+    path: '/accounts/jobs',
+  },
   {
     id: 'all-payments-ar-ap',
     title: 'Payments (AR/AP)',

@@ -1,0 +1,49 @@
+             INFORMATION ABOUT VERIFIED GROSS MASS OF CONTAINER
+  Sr.No                                       Details of Information                                               Particulars
+    1*     Booking No                                                                                   BDXBSE180055
+
+    2*     Name of the Shipper                                                                          CLARION SHIPPING SERVICES LLC
+
+    3*     Shipper Registration / License No (IEC No / CIN No)                                          /
+
+    4*     Name & Designation of the Official of the Shipper authorized to Sign document
+
+    5*     24 x 7 Contact details of Authorized official of Shipper
+
+    6*     Container No                                                                                 MAEU9876543
+
+    7*     Container Size (TEU/FUE/Others)                                                              TEU
+
+    8*     Maximum permissible weight of container as per the CSC Plate                                 1200
+
+    9*     Weighbridge registration no & address of weighbridge
+
+   10*     Weighing Method (Method-1 /Method-2)
+
+                                                                                                        CARGO WT:18000
+
+   11*     Verified Gross Mass of the Container                                                         CONTAINER TARE WT:1250
+
+                                                                                                        VGM WEIGHT: 18
+
+   12*     Unit Of Measure (KG / MT / LBS)                                                              KGS
+
+   13*     Date & Time of Weighing
+
+   14*     Weighing Slip No.
+
+    15     Type (Normal / Reefer / Hazardous / Others)                                                  NORMAL
+
+    16     If Hazardous, UN No, IMDG Class                                                              NO
+*Mandatory Fields
+
+
+
+                                                                                           Signature & Seal of Authorised person of shipper
+
+
+
+
+                                                                                           AUTH. SIGNATORY
+                                                                                           01/25/2019
+

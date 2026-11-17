@@ -1,0 +1,55 @@
+                                                            ARRIVAL NOTICE / FREIGHT BILL
+TO                                                                                     HOUSE B/L NO.                            EXPORT MANIFEST NO.
+4G LOGISTICS INDIA PVT LTD                                                             PLJEAMAA00001                            CSFI190012
+10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM CHENNAI
+                                                                                       IMPORT HOUSE DOC. NO.                    IMPORT FILE NO.
+TAMILNADU 600084 INDIA EMAIL: ram@fresatechnologies.com
+                                                                                       B/SFI/19/0166                            CSFI190012
+                                                                                       MASTER B/L NO.                           AMS REF NO.
+                                                                                       MBLCOPY87666666                          AMSREF11234
+BROKER                                                                                 DOCUMENT NO.                             ISF NO.
+FRESA DEMO INDIA PVT LTD
+NO. 178, 2ND STREET, MOORE STREET NEAR NEHRU PARK, PARRY CORNER
+                                                                                       CARRIER
+CHENNAI TAMIL NADU 600001 INDIA
+                                                                                       CMA CGM
+PHONE: 9884124194 EMAIL: demo@fresatechnologies.com, user@fresatechnologies.
+com                                                                                    VESSEL / VOYAGE
+                                                                                       MSC MELINA / 987
+                                                                                       PORT OF LOADING                         PLACE OF RECEIPT
+                                                                                       JEBEL ALI, UNITED ARAB EMIRATES         DUBAI
+SHIPPER                                                                                PORT OF DISCHARGE                       ETD                     ETA POD
+AL NASER TRADING COMPANY LLC                                                           CHENNAI (EX MADRAS), INDIA              16-JAN-19               25-JAN-19
+NOTIFY PARTY                                                                           FINAL PLACE OF DELIVERY                 ETA FINAL PLACE OF DELIVERY
+4G LOGISTICS INDIA PVT LTD                                                             CHENNAI
+FREIGHT LOCATION                                                                       LAST FREE DATE                          G.O. DATE
+
+                                                                                       I.T. No.                                I.T. DATE
+
+                                                                                       I.T. City                               I.T. DESTINATION
+
+                                                                                       SERVICE TYPE                            DELIVERY MODE
+                                                                                       FCL/FCL
+
+REMARKS                                                                                PICK UP NO.                             LOAD NO.
+CHENNAI ARRIVAL 1X20
+                                                                                       TERMS
+                                                                                        √ Freight PREPAID                       √ CREATED
+Container No.     Type               Actual Seal     Commodity Desc                         No of Pcs No of Pallet      G.Wt.(KGS) G.Wt.(LBS)      Vol. (CBM) Vol.(CFT)
+TENU9876666       20' DC             SL988888        STC: VALVE MATERIALS                          100                   18,000.000 39,683.207          20.000     706.293
+
+                                                                                  Total :          100                 18,000.000 39,683.20            20.000 706.293
+                                                                                       Charge Description                                                          Amount
+  1. Kindly contact our Imports Department/Customer Service for Actual Arrival.        TERMINAL HANDLING CHARGES                                                   5,000.00
+  2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.                     DELIVERY ORDER FEE                                                          3,000.00
+  3. Cheque in favor of “FRESA DEMO COMPANY”.
+  4. Partial Payments are not acceptable.                                              ALL INCL - FCL IMPORT                                                        756.50
+  5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free                                          *** TOTAL DUE (USD )***                     8,756.50
+Days
+  6. After Free days storage charges applicable
+
+
+
+
+Printed By : RAM@FRESATECHNOLOGIES.COM                                Printed Date :07-FEB-19 04:47PM                Powered By : Fresa Technologies    Page 1 of 1
+

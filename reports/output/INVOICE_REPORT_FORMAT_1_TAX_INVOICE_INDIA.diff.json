@@ -1,0 +1,69 @@
+{
+  "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+  "thresholds": {
+    "geometryPt": 0.1,
+    "textPositionPt": 0.5,
+    "textWidthPt": 0.5,
+    "rasterRatio": 0.005,
+    "pixelmatch": 0.1,
+    "rasterDpi": 150,
+    "fontCompare": "mapped family and weight"
+  },
+  "page": {
+    "pass": true,
+    "reference": [
+      594,
+      841.9,
+      1
+    ],
+    "rendered": [
+      594,
+      841.9,
+      1
+    ]
+  },
+  "geometry": {
+    "pass": true,
+    "unmatchedLines": 0,
+    "unmatchedRects": 0
+  },
+  "staticText": {
+    "pass": true,
+    "spans": 171,
+    "failures": []
+  },
+  "dynamicText": {
+    "pass": true,
+    "spans": 65,
+    "failures": [],
+    "overflow": "wrap, clip, and shrink are implemented; the golden render uses the reference demo strings"
+  },
+  "raster": {
+    "measured": true,
+    "pass": false,
+    "mismatches": 30390,
+    "ratio": 0.014,
+    "rasterizer": "pdftoppm",
+    "dpi": 150,
+    "heatmaps": [
+      "reports/output/raster/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA-page-1-diff.png"
+    ]
+  },
+  "pagination": {
+    "pass": false,
+    "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+    "singlePage": {
+      "noOverflow": false,
+      "overflowSpans": [
+        "p1s21",
+        "p1s121",
+        "p1s236"
+      ],
+      "headerPresent": true,
+      "summaryAfterLastRow": true,
+      "lastRowY": 427.9,
+      "summaryTop": 230.6
+    },
+    "multiPage": null
+  }
+}

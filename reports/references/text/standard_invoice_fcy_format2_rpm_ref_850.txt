@@ -1,0 +1,71 @@
+                                                                                               FRESA DEMO INDIA PVT LTD
+                                                                                                                           473A - SAI SHAHI, 10TH STREET
+                                                                                                                                                  MUMBAI.
+                                                                                                                                   MAHARASTRA- 600 100
+                                                                                                                           WEB : www.fresatechnologies.com
+
+
+
+                                                                   TAX INVOICE
+
+ Invoice Receiver               : DEMO LOGISTICS INDIA PVT LTD                  Invoice No.                    : BOMINV230500382
+ Address                        : 21, PORT BLAIR, KRISHNA ST, MANNARGU          Date                           : 17-MAY-23 (POSTED)
+                                  DI, TAMIL NADU, INDIA, 676876
+                                  Phone : 798798798
+                                  Fax : 9879878
+ Job No.                        :                                               MBL No                         :
+ Narration                      : MBL NO... / HBL NO. NSAJED85630124277 /       Port of Discharge              : JEDDAH, SAUDI ARABIA
+                                  JOB NO.
+ Port of Loading                : NHAVA SHEVA, INDIA                            ETD                            : 01-MAR-23
+ ETA                            : 20-MAR-23                                     Movement Type                  : FCL
+ Vessel/Voyage                  : CAP SAN JUAN / 310W                           MBL Freight                    :
+                                                                                                                                                       Amount
+         BL No                 Description                   Shipper                       Place of Delivery                    Units
+                                                                                                                                                        (INR)
+                                                 DEMO-SHIPPER ENGG                                                 1 x 1,500.00 1 TON OR 1/2
+NSAJED85630124277 FREIGHT CHARGE                                                   JEDDAH SAUDI ARABIA                                                 1,500.00
+                                                 COMPANY                                                           MEASURE
+                                                 DEMO-SHIPPER ENGG
+NSAJED85630124277 LOCAL CHARGES                                                    JEDDAH SAUDI ARABIA             1 x 800.00                            800.00
+                                                 COMPANY
+                         SEA FREIGHT             DEMO-SHIPPER ENGG                                                 1 x 900.00 1 TON OR 1/2
+NSAJED85630124277                                                                  JEDDAH SAUDI ARABIA                                                   900.00
+                         CHARGE                  COMPANY                                                           MEASURE
+                         CONTAINER               DEMO-SHIPPER ENGG                                                 1 x 1,000.00 1 TON OR 1/2
+NSAJED85630124277                                                                  JEDDAH SAUDI ARABIA                                                 1,000.00
+                         CLEANING FEE            COMPANY                                                           MEASURE
+
+                                                                                                                                                       Amount
+                                                                                                                                          Tax
+                                                                                                                                                        (INR)
+                                                                                                                                        GST 15%
+                                                                                                                                         GST18
+                                                                        Rupee Four Thousand Seven Hundred Seventy-Six Only                             4,776.00
+Container : TTNU0712894 / 40' FLAT
+
+Remarks :
+
+.Terms
+
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+
+Bank Details
+
+Beneficiary Name: YOUR COMPANY NAME
+Bank            : HDFC
+A/c No          : XXXXXXXXXXX
+IBAN Code       : ABA:XXXXXX
+Swift Code      : XXXXXX
+Address         : MUMBAI.
+
+
+
+
+                                        This invoice is system generated and does not require any stamp or signature
+
+
+
+
+            User : shanmugam@fresa.io                       17-May-23 12:25:PM Asia/Calcutta                           Powered by Fresa Technologies
+

@@ -1,0 +1,546 @@
+code,triage,proposed_reference,confidence,notes
+ADVANCE_SHIPPING_NOTE_LOCATION_SUMMARY,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE_2,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_17,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_18,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_19,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_20,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_21,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+ADVANCE_SHIPPING_NOTE_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+ARRIVAL_CONFIRMATION_FORMAT_1,name_mismatch,reports/references/files/arrival_confirmation_format1_rpm_ref_732.pdf,high,normalized_name: filename matches the code or catalogue name
+ARRIVAL_INFORMATION,name_mismatch,reports/references/files/arrival_information_rpm_ref_839.pdf,high,normalized_name: filename matches the code or catalogue name
+ARRIVAL_NOTICE_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_17,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_18,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_19,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_20,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_21,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_22,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_23,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_24,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_25,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_26,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_27,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_28,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_29,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_30,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_31,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_32,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_33,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_34,no_reference,,,no pinned file has a close name
+ARRIVAL_NOTICE_REPORT_FORMAT_35,no_reference,,,no pinned file has a close name
+BOOKING_CONFIRMATION_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+BOOKING_CONFIRMATION_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+BOOKING_CONFIRMATION_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+BOOKING_CONFIRMATION_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+BOOKING_CONFIRMATION_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+BOOKING_CONFIRMATION_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+BOOKING_CONFIRMATION_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+BOOKING_CONFIRMATION_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT_1,name_mismatch,reports/references/files/cargo_arrival_notice_sea_format1_rpm_ref_446.pdf,high,normalized_name: filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT_2,name_mismatch,reports/references/files/cargo_arrival_notice_sea_format2_rpm_ref_592.pdf,high,normalized_name: filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3,name_mismatch,reports/references/files/cargo_arrival_notice_sea_format_3_rpm_ref_1376.pdf,high,normalized_name: filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,name_mismatch,reports/references/files/cargo_arrival_notice_sea_without_charges_rpm_ref_251.pdf,high,normalized_name: filename matches the code or catalogue name
+CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_FORMAT_1,name_mismatch,reports/references/files/cargo_arrival_notice_sea_without_charges_format1_rpm_ref_447.pdf,high,normalized_name: filename matches the code or catalogue name
+CARGO_MANIFEST_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_17,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_18,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_19,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_20,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_21,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+CARGO_MANIFEST_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_1,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+CREDIT_NOTE_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_17,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_18,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_19,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_20,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_21,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_22,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+DAILY_STATUS_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_1,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+DEBIT_NOTE_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_17,name_mismatch,reports/references/files/delivery_order_format_17_rpm_ref_1496.pdf,medium,name overlap 1.00 with delivery_order_format_17_rpm_ref_1496.pdf
+DELIVERY_ORDER_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_9,name_mismatch,reports/references/files/fg_delivery_order_format9_rpm_ref_803.pdf,low,name overlap 0.60 with fg_delivery_order_format9_rpm_ref_803.pdf
+DELIVERY_ORDER_REPORT_FORMAT_FCL_VIETNAM,no_reference,,,no pinned file has a close name
+DELIVERY_ORDER_REPORT_FORMAT_LCL_VIETNAM_WITHOUT_STAMP,name_mismatch,reports/references/files/d.o_lcl_vietnam_without_stamp_rpm_ref_427.pdf,low,name overlap 0.50 with d.o_lcl_vietnam_without_stamp_rpm_ref_427.pdf
+FG_ARRIVAL_INFORMATION,name_mismatch,reports/references/files/fg_arrival_information_rpm_ref_871.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_ARRIVAL_NOTICE,name_mismatch,reports/references/files/fg_arrival_notice_rpm_ref_399.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_ARRIVAL_NOTICE_FORMAT_2,name_mismatch,reports/references/files/fg_arrival_notice_format2_rpm_ref_593.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_ARRIVAL_NOTICE_FORMAT_3,name_mismatch,reports/references/files/fg_arrival_notice_format3_rpm_ref_893.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_ARRIVAL_NOTICE_WITHOUT_CHARGES,unknown,reports/references/files/cargo_arrival_notice_air_without_charges_rpm_ref_363.pdf,low,also close to reports/references/files/fg_arrivalnotice_without_chg_rpm_ref_633.pdf
+FG_CARGO_ARRIVAL_NOTICE,name_mismatch,reports/references/files/fg_cargo_arrival_notice_rpm_ref_233.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_CARGO_ARRIVAL_NOTICE_FORMAT_1,name_mismatch,reports/references/files/fg_cargo_arrival_notice_format1_rpm_ref_553.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_CARGO_ARRIVAL_NOTICE_SEA,name_mismatch,reports/references/files/fg_cargo_arrival_notice_sea_rpm_ref_1172.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3,name_mismatch,reports/references/files/fg_cargo_arrival_notice_sea_format3_rpm_ref_1322.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_CONSIGNMENT_DELIVERY_NOTE,name_mismatch,reports/references/files/fg_consignment_delivery_note_rpm_ref_1379.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_NOC_LETTER,name_mismatch,reports/references/files/fg_delivery_noc_letter_rpm_ref_1320.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_NOTE,name_mismatch,reports/references/files/fg_delivery_note_rpm_ref_1276.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_NOTE_FORMAT_1,name_mismatch,reports/references/files/fg_delivery_note_format1_rpm_ref_1337.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_NOTE_FORMAT_UK,name_mismatch,reports/references/files/fg_delivery_note_format_uk_rpm_ref_1305.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_ORDER_ABU_DHABI,name_mismatch,reports/references/files/fg_delivery_order_abudhabi_rpm_ref_808.pdf,low,name overlap 0.71 with fg_delivery_order_abudhabi_rpm_ref_808.pdf
+FG_DELIVERY_ORDER_AIR_USA,name_mismatch,reports/references/files/fg_delivery_order_air_usa_rpm_ref_650.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_ORDER_FORMAT_8,name_mismatch,reports/references/files/fg_delivery_order_format8_rpm_ref_777.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_10,name_mismatch,reports/references/files/fg_delivery_order_sea_format10_rpm_ref_1395.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_3,name_mismatch,reports/references/files/fg_delivery_order_sea_format3_rpm_ref_560.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_5,name_mismatch,reports/references/files/fg_delivery_order_sea_format5_rpm_ref_628.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_6,name_mismatch,reports/references/files/fg_delivery_order_sea_format6_rpm_ref_668.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_DELIVERY_ORDER_SEA_FORMAT_7,name_mismatch,reports/references/files/fg_delivery_order_sea_format7_rpm_ref_755.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_E_DELIVERY_ORDER,name_mismatch,reports/references/files/fg_edelivery_order_rpm_ref_837.pdf,low,name overlap 0.67 with fg_edelivery_order_rpm_ref_837.pdf
+FG_E_DELIVERY_ORDER_SEA_FORMAT_1,name_mismatch,reports/references/files/fg_e_delivery_order_sea_format1_rpm_ref_1147.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_EXPORT_DELIVERY_ORDER,name_mismatch,reports/references/files/fg_export_delivery_order_rpm_ref_1209.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_NOTICE_OF_DELIVERY,name_mismatch,reports/references/files/fg_notice_of_delivery_rpm_ref_905.pdf,high,normalized_name: filename matches the code or catalogue name
+FG_PROOF_OF_DELIVERY,name_mismatch,reports/references/files/fg_proof_of_delivery_rpm_ref_847.pdf,high,normalized_name: filename matches the code or catalogue name
+HAWB_DRAFT_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_17,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_18,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_19,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_20,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_21,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_22,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_23,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_24,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_25,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_26,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_27,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+HAWB_DRAFT_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_21,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_22,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_24,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_28,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_30,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_31,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_32,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_34,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_35,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_37,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_38,no_reference,,,no pinned file has a close name
+HBL_DRAFT_REPORT_FORMAT_39,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_22,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_23,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_24,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_25,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_26,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_27,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_28,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_29,name_mismatch,reports/references/files/land_freight_transportation_invoice_rpm_ref_525.pdf,medium,name overlap 1.00 with land_freight_transportation_invoice_rpm_ref_525.pdf
+INVOICE_REPORT_FORMAT_30,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_34,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_35,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_36,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_37,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_38,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_39,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_40,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_41,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_42,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_43,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_44,name_mismatch,reports/references/files/standard_invoice_fcy_rpm_ref_486.pdf,medium,name overlap 0.75 with standard_invoice_fcy_rpm_ref_486.pdf
+INVOICE_REPORT_FORMAT_45,name_mismatch,reports/references/files/standard_invoice_fcy_rpm_ref_486.pdf,low,name overlap 0.60 with standard_invoice_fcy_rpm_ref_486.pdf
+INVOICE_REPORT_FORMAT_46,name_mismatch,reports/references/files/standard_invoice_fcy_rpm_ref_486.pdf,low,name overlap 0.60 with standard_invoice_fcy_rpm_ref_486.pdf
+INVOICE_REPORT_FORMAT_47,name_mismatch,reports/references/files/standard_invoice_kampala_rpm_ref_879.pdf,medium,name overlap 0.75 with standard_invoice_kampala_rpm_ref_879.pdf
+INVOICE_REPORT_FORMAT_48,name_mismatch,reports/references/files/standard_invoiceusa_rpm_ref_412.pdf,low,name overlap 0.60 with standard_invoiceusa_rpm_ref_412.pdf
+INVOICE_REPORT_FORMAT_49,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_50,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_51,name_mismatch,reports/references/files/standard_invoiceusa_rpm_ref_412.pdf,low,name overlap 0.50 with standard_invoiceusa_rpm_ref_412.pdf
+INVOICE_REPORT_FORMAT_52,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_53,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_54,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_55,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_56,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_57,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_58,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_59,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_60,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_61,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_62,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_63,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_64,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_65,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_66,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_67,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_68,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_69,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_70,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_71,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_72,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_73,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_74,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_75,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_76,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_77,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_78,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_79,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_80,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_81,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_82,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_83,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_84,no_reference,,,no pinned file has a close name
+INVOICE_REPORT_FORMAT_85,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_1,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_17,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_18,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_19,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_20,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+JOB_STATUS_LIST_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+JOURNAL_VOUCHER_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+LEFTOVER_HBL_DRAFT_JASPER,unknown,reports/references/files/fg_hbl_format14_rpm_ref_505.pdf,low,also close to reports/references/files/fg_hbl_format16_rpm_ref_556.pdf
+LEFTOVER_HBL_DRAFT_JASPER_FORMAT_1,unknown,reports/references/files/fg_hbl_format14_rpm_ref_505.pdf,low,also close to reports/references/files/fg_hbl_format16_rpm_ref_556.pdf
+LEFTOVER_INVOICE_FORMAT1_JASPER,name_mismatch,reports/references/files/fg_invoice_format1_rpm_ref_443.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT12_JASPER,name_mismatch,reports/references/files/fg_invoice_format12_rpm_ref_1199.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT14_JASPER,name_mismatch,reports/references/files/fg_invoice_format14_rpm_ref_1325.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT15_JASPER_PREPRINTED,name_mismatch,reports/references/files/fg_invoice_format15_rpm_ref_1384.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT15_JASPER_STANDARD,name_mismatch,reports/references/files/fg_invoice_format15_standard_rpm_ref_1394.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT2_FCY_JASPER,name_mismatch,reports/references/files/fg_invoice_format2_fcy_rpm_ref_490.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT3_FCY_WITH_QRIRN_JASPER,name_mismatch,reports/references/files/fg_invoice_format3_fcy_rpm_ref_1012.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT3_JASPER,name_mismatch,reports/references/files/fg_invoice_format3_rpm_ref_478.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT4_FCY_JASPER,name_mismatch,reports/references/files/fg_invoice_format4_fcy_rpm_ref_1433.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT5_JASPER,name_mismatch,reports/references/files/fg_invoice_format5_rpm_ref_672.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT6,name_mismatch,reports/references/files/fg_invoice_format6_rpm_ref_691.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT7_JASPER_INDIA,name_mismatch,reports/references/files/fg_invoice_format7_inr_rpm_ref_897.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT7_JASPER_USA,name_mismatch,reports/references/files/fg_invoice_format7_rpm_ref_894.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT8_WITH_QRIRN_JASPER,name_mismatch,reports/references/files/fg_invoice_format8_rpm_ref_1011.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_FORMAT9_WITH_QRIRN_JASPER,name_mismatch,reports/references/files/fg_invoice_format9_rpm_ref_1055.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_INVOICE_SINGAPORE_JASPER,name_mismatch,reports/references/files/fg_invoice_singapore_rpm_ref_1069.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_LAND_FREIGHT_TRANSPORTATION_INVOICE_FORMAT_1,name_mismatch,reports/references/files/land_freight_transportation_invoiceformat1_rpm_ref_1485.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_OVERSEAS_DEBIT_NOTE_EXPORT_INVOICE_JASPER_FORMAT2,name_mismatch,reports/references/files/fg_overseas_debit_note_format2_rpm_ref_1343.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_PROFORMA_INVOICE_FORMAT_1,name_mismatch,reports/references/files/proforma_invoice_format_1_rpm_ref_815.pdf,high,normalized_name: filename matches the code or catalogue name
+LEFTOVER_SAUDI_TAX_INVOICE_ARABIC_JASPER,name_mismatch,reports/references/files/fg_ksa_invoice_arabic_rpm_ref_1161.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_INDIA,name_mismatch,reports/references/files/simple_invoice_india_rpm_ref_575.pdf,high,normalized_name: filename matches the code or catalogue name
+LEFTOVER_SIMPLE_INVOICE_INDIA_JASPER,name_mismatch,reports/references/files/fg_simple_invoice_india_rpm_ref_862.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_INDIA_WITH_OS,name_mismatch,reports/references/files/simple_invoice_india_with_os_rpm_ref_767.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_JASPER,name_mismatch,reports/references/files/fg_simple_invoice_rpm_ref_861.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_US_JASPER,name_mismatch,reports/references/files/fg_simple_invoice_usa_rpm_ref_1274.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICE_WITH_OS,name_mismatch,reports/references/files/simple_invoice_with_os_rpm_ref_76.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_SIMPLE_INVOICEVAT,name_mismatch,reports/references/files/simple_invoicevat_rpm_ref_673.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_3_DECIMAL,name_mismatch,reports/references/files/fg_standard_invoice_format2_rpm_ref_778.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER,name_mismatch,reports/references/files/fg_standard_invoice_arabic_rpm_ref_464.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER_FORMAT1,name_mismatch,reports/references/files/fg_standard_invoice_arabic_format1_rpm_ref_939.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_JASPER_FORMAT1_WITH_LETTER_HEAD,name_mismatch,reports/references/files/fg_standard_invoice_arabic_format1_rpm_ref_941.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_OMAN_JASPER,name_mismatch,reports/references/files/fg_standard_invoice_arabic_oman_rpm_ref_747.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT2,name_mismatch,reports/references/files/fg_standard_invoice_arabic_format2_rpm_ref_1171.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT3,name_mismatch,reports/references/files/fg_standard_invoice_arabic_format3_rpm_ref_1183.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT4,name_mismatch,reports/references/files/fg_standard_invoice_arabic_format4_rpm_ref_1215.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT5,name_mismatch,reports/references/files/fg_standard_invoice_arabic_format5_rpm_ref_1385.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_ARABIC_WITH_QR_CODE_JASPER_FORMAT7,name_mismatch,reports/references/files/fg_standard_invoice_arabic_format7_rpm_ref_1400.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_COURIER_JASPER,name_mismatch,reports/references/files/fg_standard_courier_invoice_rpm_ref_773.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_CUM_ARRIVAL_NOTICE_JASPER_FORMAT16,name_mismatch,reports/references/files/fg_standard_tax_invoice_format16_cum_an_rpm_ref_1186.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_FCY_FORMAT2,name_mismatch,reports/references/files/standard_invoice_fcy_format2_rpm_ref_850.pdf,high,normalized_name: filename matches the code or catalogue name
+LEFTOVER_STANDARD_INVOICE_FCY_WITH_QRIRN_JASPER,name_mismatch,reports/references/files/fg_standard_invoice_fcy_rpm_ref_1029.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER,name_mismatch,reports/references/files/fg_standard_invoice_rpm_ref_217.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT10,name_mismatch,reports/references/files/fg_standard_tax_invoice_format10_rpm_ref_801.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT12_LETTERHEAD,name_mismatch,reports/references/files/fg_standard_tax_invoice_format12_letterhead_rpm_ref_869.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT13,name_mismatch,reports/references/files/fg_standard_tax_invoice_format13_rpm_ref_882.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT14_QR_CODE,name_mismatch,reports/references/files/fg_standard_tax_invoice_format14_rpm_ref_921.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT15,name_mismatch,reports/references/files/fg_standard_tax_invoice_format15_rpm_ref_997.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT16,name_mismatch,reports/references/files/fg_standard_tax_invoice_format16_rpm_ref_1170.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT17_WITH_HOLDING_TAX,name_mismatch,reports/references/files/fg_standard_tax_invoice_format17_rpm_ref_1309.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT18,name_mismatch,reports/references/files/fg_standard_tax_invoice_format18_rpm_ref_1319.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT19,name_mismatch,reports/references/files/fg_standard_tax_invoice_format19_rpm_ref_1344.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT20_UAE_LOCAL_CURRENCY,name_mismatch,reports/references/files/fg_standard_tax_invoice_format20_rpm_ref_1345.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT21_WITH_HOLDING_TAX,name_mismatch,reports/references/files/fg_standard_tax_invoice_format21_rpm_ref_1407.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT22,name_mismatch,reports/references/files/fg_standard_tax_invoice_format22_rpm_ref_1425.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT3,name_mismatch,reports/references/files/fg_standard_tax_invoice_format3_rpm_ref_687.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT4,name_mismatch,reports/references/files/fg_standard_invoice_format4_rpm_ref_1419.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT5,name_mismatch,reports/references/files/fg_standard_tax_invoice_format5_rpm_ref_699.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT6,name_mismatch,reports/references/files/fg_standard_tax_invoice_format6_rpm_ref_751.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_FORMAT9,name_mismatch,reports/references/files/fg_standard_tax_invoice_format9_rpm_ref_799.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_JASPER_TANZANIA,name_mismatch,reports/references/files/fg_standard_invoice_tanzania_rpm_ref_1431.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_LAND,name_mismatch,reports/references/files/standard_invoiceland_rpm_ref_419.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_MALAYSIA,name_mismatch,reports/references/files/standard_invoicemalaysia_rpm_ref_611.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_INVOICE_USA_FORMAT_2,name_mismatch,reports/references/files/standard_invoiceusa_format_2_rpm_ref_698.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_STANDARD_TAX_INVOICE_JASPER,name_mismatch,reports/references/files/fg_standard_tax_invoice_rpm_ref_385.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA,name_mismatch,reports/references/files/tax_invoice_india_rpm_ref_351.pdf,high,normalized_name: filename matches the code or catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT1,name_mismatch,reports/references/files/tax_invoice_india_format1_rpm_ref_458.pdf,high,normalized_name: filename matches the code or catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT2,name_mismatch,reports/references/files/tax_invoice_india_format2_rpm_ref_449.pdf,high,normalized_name: filename matches the code or catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT2_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_india_format2_rpm_ref_911.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT6_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_india_format6_rpm_ref_1059.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT7_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_india_format7_rpm_ref_1067.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_FORMAT8_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_india_format8_rpm_ref_1159.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_india_rpm_ref_237.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_JASPER_FORMAT1,name_mismatch,reports/references/files/fg_tax_invoice_india_format1_rpm_ref_796.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_INDIA_REIMBURSEMENT_BILL,name_mismatch,reports/references/files/tax_invoice_india_(reimbursement_bill)_rpm_ref_713.pdf,high,normalized_name: filename matches the code or catalogue name
+LEFTOVER_TAX_INVOICE_MALAYSIA_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_malaysia_rpm_ref_736.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_SINGAPORE_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_singapore_rpm_ref_737.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_WITH_QR_INDIA_FORMAT3_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_india_format3_rpm_ref_977.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_WITH_QRIRN_INDIA_FORMAT4_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_india_format4_rpm_ref_1007.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_TAX_INVOICE_WITH_QRIRN_INDIA_FORMAT5_JASPER,name_mismatch,reports/references/files/fg_tax_invoice_india_format5_rpm_ref_1009.pdf,high,normalized_name: link text matches the catalogue name
+LEFTOVER_VIETNAM_INVOICE,no_reference,,,no pinned file has a close name
+LEFTOVER_WAREHOUSE_INVOICE_INDIA_FORMAT,name_mismatch,reports/references/files/warehouse_invoice_india_format_rpm_ref_1109.pdf,high,normalized_name: filename matches the code or catalogue name
+MAWB_DRAFT_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+MAWB_DRAFT_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_17,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_18,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_19,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_20,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+OUTSTANDING_LETTER_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+PAYMENT_VOUCHER_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+PAYMENT_VOUCHER_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+PAYMENT_VOUCHER_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+PAYMENT_VOUCHER_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+PAYMENT_VOUCHER_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+PAYMENT_VOUCHER_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+PAYMENT_VOUCHER_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_1,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_17,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_18,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_19,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_20,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_21,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_22,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_23,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_24,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_25,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+PENDING_SHIPMENTS_LIST_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_1,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+PRE_ALERT_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+PROFIT_AND_LOSS_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_17,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+PROFORMA_INVOICE_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+PROOF_OF_DELIVERY_RPM_SAMPLE,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_1,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+QUOTATION_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+SEA_ARRIVAL_NOTICE_LCL_VIETNAM,name_mismatch,reports/references/files/sea_arrival_notice_lcl_vietnam_rpm_ref_422.pdf,high,normalized_name: filename matches the code or catalogue name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_16,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+TRIAL_BALANCE_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_1,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+WMS_GDO_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_1,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+WMS_GRN_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_1,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_10,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_11,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_12,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_13,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_14,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_15,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_2,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_3,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_4,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_5,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_6,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_7,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_8,no_reference,,,no pinned file has a close name
+WMS_STOCK_REPORT_FORMAT_9,no_reference,,,no pinned file has a close name

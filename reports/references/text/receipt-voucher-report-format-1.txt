@@ -1,0 +1,27 @@
+  2/4/2019                                                       Receipt Voucher-MAABR1900093
+                                                                                         FRESA DEMO INDIA PVT LTD
+                                                                                                                                Chennai- 600 100
+                                                                                                                                Tamil Nadu, India
+                                                                                                                 WEB : www.fresatechnologies.com
+
+                                                RECEIPT VOUCHER - MAABR1900093
+              Received From : 4G LOGISTICS INDIA PVT LTD                                  Receipt No : MAABR1900093
+                  A/C Name : KOTAK MAHINDRA BANK                                                Date : 29-JAN-19 ( CREATED )
+                       Type : CASH                                                     Cheque/Ref.No :
+                                                   Description                                                                   Amount
+4G LOGISTICS INDIA PVT LTD                                                                                                                    17,384.00
+                                                            Rupee Seventeen Thousand Three Hundred Eighty-Four Only                           17,384.00
+
+
+
+
+                      Accountant                                     Checked by                                     Receiver's Signature
+                        ( Ram )
+
+
+
+
+             User : ram@fresatechnologies.com               04-Feb-19 03:46:PM Asia/Kolkata                   Powered by Fresa Technologies
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:8110548164641:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                   1/1
+

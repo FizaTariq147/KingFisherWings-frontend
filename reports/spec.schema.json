@@ -1,0 +1,152 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://kingfisherwings.local/reports/spec.schema.json",
+  "title": "Report layout spec",
+  "type": "object",
+  "required": ["code", "source", "page", "fonts", "lines", "rects", "spans", "images", "bands", "slots", "bindings", "formatRules", "overflowRules"],
+  "additionalProperties": true,
+  "properties": {
+    "code": { "type": "string", "minLength": 1 },
+    "source": { "type": "string" },
+    "page": {
+      "type": "object",
+      "required": ["width", "height", "orientation"],
+      "properties": {
+        "width": { "type": "number", "exclusiveMinimum": 0 },
+        "height": { "type": "number", "exclusiveMinimum": 0 },
+        "orientation": { "enum": ["portrait", "landscape"] }
+      }
+    },
+    "fonts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "mappedTo"],
+        "properties": {
+          "name": { "type": "string" },
+          "mappedTo": { "type": "string" },
+          "referenceCount": { "type": "number" }
+        }
+      }
+    },
+    "lines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["x1", "y1", "x2", "y2", "width", "color"],
+        "properties": {
+          "x1": { "type": "number" },
+          "y1": { "type": "number" },
+          "x2": { "type": "number" },
+          "y2": { "type": "number" },
+          "width": { "type": "number" },
+          "color": { "type": "string" }
+        }
+      }
+    },
+    "rects": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["x", "y", "width", "height"],
+        "properties": {
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number" },
+          "height": { "type": "number" },
+          "strokeWidth": { "type": "number" },
+          "stroke": { "type": ["string", "null"] },
+          "fill": { "type": ["string", "null"] }
+        }
+      }
+    },
+    "spans": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "text", "font", "size", "color", "x", "y", "width", "anchor", "alignment", "role"],
+        "properties": {
+          "id": { "type": "string" },
+          "text": { "type": "string" },
+          "font": { "type": "string" },
+          "size": { "type": "number" },
+          "color": { "type": "string" },
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number" },
+          "anchor": { "enum": ["left", "center", "right"] },
+          "alignment": { "enum": ["left", "center", "right"] },
+          "role": { "enum": ["static", "dynamic"] },
+          "binding": { "type": "string" },
+          "slot": { "type": "string" }
+        }
+      }
+    },
+    "images": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["x", "y", "width", "height"],
+        "properties": {
+          "x": { "type": "number" },
+          "y": { "type": "number" },
+          "width": { "type": "number" },
+          "height": { "type": "number" },
+          "format": { "type": "string" },
+          "slot": { "type": "string" }
+        }
+      }
+    },
+    "bands": {
+      "type": "object",
+      "required": ["header", "title", "detail", "summary", "footer"],
+      "additionalProperties": {
+        "type": "object",
+        "required": ["yMin", "yMax"],
+        "properties": {
+          "yMin": { "type": "number" },
+          "yMax": { "type": "number" }
+        }
+      }
+    },
+    "slots": {
+      "type": "object",
+      "required": ["logo", "company"],
+      "properties": {
+        "logo": { "type": ["object", "null"] },
+        "company": { "type": ["object", "null"] }
+      }
+    },
+    "bindings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["id", "path"],
+        "properties": {
+          "id": { "type": "string" },
+          "path": { "type": "string" }
+        }
+      }
+    },
+    "formatRules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["path", "format"],
+        "properties": {
+          "path": { "type": "string" },
+          "format": { "enum": ["date", "number", "currency", "indian-grouping", "amount-words", "text"] }
+        }
+      }
+    },
+    "overflowRules": {
+      "type": "object",
+      "required": ["default"],
+      "properties": {
+        "default": { "enum": ["clip", "wrap", "shrink", "grow"] },
+        "text": { "enum": ["clip", "wrap", "shrink", "grow"] },
+        "maxLines": { "type": "number" }
+      }
+    }
+  }
+}

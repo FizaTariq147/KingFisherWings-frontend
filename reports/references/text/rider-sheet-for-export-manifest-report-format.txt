@@ -1,0 +1,30 @@
+  1/25/2019                                                 Rider Sheet for Export Manifest - CCDXBSI18000060
+                                                                                   FRESA DEMO COMPANY LIMITED
+                                                                                                                            Al Khabeeshi Building,
+                                                                                                                            Mezzanine Floor 03/5,
+                                                                                                                          Salahuddin Road, Deira,
+                                                                                                                                     Dubai, U.A.E.
+                                                                                                                  WEB : www.fresatechnologies.com
+
+
+
+                     RIDER SHEET FOR EXPORT MANIFEST / JOB NO - CCDXBSI18000060
+
+                                                  Job No    :   CCDXBSI18000060 / 23-NOV-18
+                                          Port of Loading   :   CHENNAI (EX MADRAS), INDIA
+                                       Port of Discharge    :   JEBEL ALI, UAE
+                                                  Carrier   :   CMA CGM & ANL LLC
+                                          Vessel / Voyage   :   MAERSK CHARLIE / V033
+
+        Container No                        Container Type                     Actual Seal                      Description
+MAEU9876543                        20' STANDARD                                        SL001234 CONSOLE CONTAINER
+
+
+
+          User : ram.ae@fresatechnologies.com                      25-Jan-19 07:36:PM Asia/Kolkata              Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…                  1/1
+

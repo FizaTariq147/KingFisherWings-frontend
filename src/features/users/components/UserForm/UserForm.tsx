@@ -58,6 +58,8 @@ interface UserFormProps {
 }
 
 function formatFlagLabel(key: string) {
+  if (key === 'can_see_sales') return 'Can see sales (job costing sale side)';
+  if (key === 'can_see_cost') return 'Can see cost (job costing cost side)';
   return key
     .replace(/^can_see_/, 'Can see ')
     .replace(/^is_/, '')

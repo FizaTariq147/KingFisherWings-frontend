@@ -1,0 +1,72 @@
+               COMBINED TRANSPORT DOCUMENT BILL OF LADING                                                                                                         DRAFT
+Shipper's Name and Address                                                                        Reference #                                      Bill of Lading No.
+4G LOGISTICS INDIA PVT LTD                                                                                                                         PLMAAJEA00081
+10 DBS CENTRE
+NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM
+CHENNAI, TAMILNADU, INDIA 600084
+EMAIL: RAM@FRESATECHNOLOGIES.COM
+
+
+Consignee ( Negotiable only if consigned 'To Order', 'To Order of' )
+AL NASER TRADING COMPANY LLC
+POST BOX : 12356 30 AL MAKTHOOM BUILDING
+NEAR MUBARAK CENTRE ROUND ABOUT AL NABHA
+SHARJAH, SHARJAH, UAE
+                                                                                                  FILE #
+
+
+Notify Party (see clause 22)
+AL NASER TRADING COMPANY LLC
+POST BOX : 12356 30 AL MAKTHOOM BUILDING
+NEAR MUBARAK CENTRE ROUND ABOUT AL NABHA
+SHARJAH, SHARJAH, UAE
+                                                                                                  Delivery Agent
+                                                                                                  FRESA DEMO DUBAI UAE LLC
+Pre-Carriage                                    Place Receipt                                     DUBAI, UAE
+                                                CHENNAI (EX MADRAS), INDIA                        TEL: 04-2339876
+                                                                                                  EMAIL: USER@FRESADEMOCOMPANY.COM
+
+Ocean Vessel                                    Voyage No.
+CMA CGM                                         9887
+
+
+Port of Loading                                 Port of Discharge                                 Place of Delivery
+CHENNAI (EX MADRAS), INDIA                      JEBEL ALI, UNITED ARAB EMIRATES JEBEL ALI, UNITED ARAB EMIRATES
+
+
+Container No.(s) /                    Marks and Numbers                                 Number of Packages / Kind of Packages                           Gross Weight          Measurement
+Seal No.                                                                                   General Description of Goods                                    (KGS)                (CBM)
+ABCU9877666 - 20' DC                  NIL MARKS                              STC: VALVE MATERIALS FOR MACHINERY PARTS                                  18,000.000 KGS           24.000 CBM
+Seal No: SL345566
+                                                                             FREIGHT PREPAID
+                                                                             ALL DESTINATION CHARGES ARE CONSIGNEE'S
+                                                                             ACCOUNT
+                                                                                                                                                         Net Weight
+                                                                                                                                                       17,000.000 KGS
+
+
+
+
+FCL
+FREIGHT PREPAID
+
+
+
+
+Above particulars as declared by shipper, but without responsibility of or representation by Carrier (see clause 14)
+
+Received by the carrier in apparent good order and condition unless otherwise stated here in the total no of Container / Packages or units indicated in the box entitled Carrier's Receipt for
+carriage subject to all the terms and conditions hereof from the Place of Receipt or Port of Loading to the Port of Discharge or Place of Delivery, whichever is applicable IN ACCEPTING
+THIS BILL OF LADING THE MERCHANT EXPRESSLY ACCEPTS AND AGREES TO ALL THE TERMS AND CONDITION, WHETHER PRINTED STAMPED OR OTHERWISE
+INCORPORATED ON THIS SIDE AND ON THE REVERSE SIDE OF THIS BILL OF LADING AND THE TERMS AND CONDITION OF THE CARRIER'S APPLICABLE TARRIF AS IF
+THEY WERE ALL SIGNED BY THE MERCHANT.
+If this is a negotiable (To Order/ of) Bill of Lading, one original Bill of Lading duly endorsed must be surrendered by the Merchant to the Carrier(together with outstanding Freight and
+charges) in exchange for the goods or a Delivery Order. If this is a non-negotiable (straight) Bill of Lading, the carrier shall deliver the goods or such a Delivery Order (after payment of
+outstanding freight and charges) against the surrender of one original Bill of Lading or in accordance with National law at the port of discharge or place of delivery whichever is applicable.
+IN WITNESS whereof teh Carrier, Master or their Agent has signed the number of original Bills of Lading stated below right, all of the hence and date wherever, one original.
+
+Number & sequence of Original B/L(s)                 Place of Issue of B/L                              Date of Issue of B/L
+                    ZERO (0)                                           CHENNAI                                                    28-JANUARY-2019
+CARRIER'S RECEIPT (No. of Containers, or Pkgs, recv by Carrier-see clause 14.1)                         For FRESA DEMO INDIA PVT LTD
+1 X 20' DC / 125 PACKAGES
+

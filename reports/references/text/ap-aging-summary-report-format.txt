@@ -1,0 +1,17 @@
+                                                  FRESA DEMO INDIA PVT LTD
+                                                           A/P Aging Summary
+  Branch Name : ALL                                                                                                                                                To Date : 14-FEB-19
+    COA Name : SUNDRY CREDITORS
+Organization                      Salesperson           O/S       0 to 30      31 To 60      61 To 90   91 To 120   121 To 150     151 Above Comments                  Credit         Credit
+                                                     Amount                                                                                                            Days          Amount
+3M LOGISTICS SERVICE              ARUL SELVAN       3,850.00                                             3,850.00
+4G LOGISTICS INDIA PVT LTD        RAM                 200.00                                               200.00
+ABC INDIA PVT LTD                 K N PRAVIN      956,913.40                                            23,930.00     1,152.40     931,831.00
+                                  KUMAR
+                                  Total Amount:   960,963.40                                            27,980.00     1,152.40     931,831.00
+
+
+
+
+Printed By :   RAM                                             Printed Date :14-Feb-19 06:17PM                                   Powered By : Fresa Technologies       Page 1 of 1
+

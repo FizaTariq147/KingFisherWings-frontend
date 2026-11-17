@@ -1,0 +1,51 @@
+                                                               PRE ALERT
+TO                                                                   HOUSE B/L NO.                          EXPORT MANIFEST NO.
+BLUEMAX SHIPPING SERVICES PVT. LTD.                                  JEA/MAA/1800033                        CCDXBSE18000045
+CHENNAI INDIA                                                        IMPORT HOUSE DOC. NO.                  IMPORT FILE NO.
+PHONE: 4556785445
+                                                                     BDXBSE180055                           CCDXBSE18000045
+                                                                     MASTER B/L NO.                         AMS REF NO.
+                                                                     987877777
+BROKER                                                               DOCUMENT NO.
+BLUE MOON LOGISTICS FZE
+UNITED STATES OF AMERICA                                             CARRIER
+                                                                     MAERSK LINE
+                                                                     VESSEL / VOYAGE
+                                                                     MAERSK BLUR MOON / V032
+                                                                     PORT OF LOADING                        PLACE OF RECEIPT
+                                                                     JEBEL ALI                              JEBEL ALI, DUBAI
+SHIPPER                                                              PORT OF DISCHARGE                      ETA PORT OF DISCHARGE
+CLARION SHIPPING SERVICES LLC                                        CHENNAI (EX MADRAS)                    30-NOV-18
+NOTIFY PARTY                                                         FINAL PLACE OF DELIVERY                ETA FINAL PLACE OF DELIVERY
+SAME AS CONSIGNEE                                                    CHENNAI                                30-NOV-18
+FREIGHT LOCATION                                                     LAST FREE DATE                         G.O. DATE
+
+                                                                     I.T. No.                               I.T. DATE
+
+                                                                     I.T. City                              I.T. DESTINATION
+
+                                                                     SERVICE TYPE                           DELIVERY MODE
+                                                                     FCL
+CONTAINER RETURN DEPOT                                               PICK UP NO.                            LOAD NO.
+CHENNAI (EX MADRAS)
+REMARKS                                                              TERMS
+SURRENDER BL REQUIRED                                                 √ Freight PREPAID                      √ EXPRESS
+
+
+
+Container No.    Type           Actual Seal   Commodity Desc                               No of Pcs   No of Pallet       G.Weight          Volume
+MAEU9876543      20' STANDARD   SL001234      STC: PRINTING PRESS MATERIALS                     150                      18,000.000          18.000
+
+                                              HS CODE: 9600000
+                                              EXPRESS RELEASE
+                                              ALL DESTINATION CHARGES ARE
+                                              CONSIGNEE'S A/C
+
+                                              FREIGHT PREPAID
+                                                                                 Total :        150                     18,000.000          18.000
+
+
+
+
+Printed By : RAM.AE@FRESATECHNOLOGIES.COM             Printed Date :25-JAN-19 06:21PM            Powered By : Fresa Technologies   Page 1 of 1
+

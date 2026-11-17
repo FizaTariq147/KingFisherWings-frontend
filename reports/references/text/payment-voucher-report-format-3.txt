@@ -1,0 +1,38 @@
+ 1/29/2019                                                          Payment Voucher-MAABP1900066
+                                                                                              FRESA DEMO INDIA PVT LTD
+                                                                                                                                         Chennai- 600 100
+                                                                                                                                         Tamil Nadu, India
+                                                                                                                          WEB : www.fresatechnologies.com
+
+                                             BANK PAYMENT - MAABP1900066
+                  Paid To : CMA CGM                                                                Payment No : MAABP1900066
+                      Date : 28-JAN-19 (CREATED)                                                      GL Date : 28-JAN-19
+                Paid From : HDFC BANK                                                                    Type : CHEQUE Ref : 987777 / 29-JAN-19
+
+                            Phone : N/A
+                 Job No : CEXP190148                                                                    Client : 4G LOGISTICS INDIA PVT LTD
+      Reference No./ Date : MAABP19000667 / 22-JAN-19                                                Narration : DUBAI SHIPMENT
+                                                                                                                                                        Local
+                                               Description                                                                  Shipment/Job No
+                                                                                                                                                       Amount
+                                                                                                                       B/EXP/19/0251 /
+SEA FREIGHT FCL COST AGENCY FEES                                                                                                                       3,000.00
+                                                                                                                       CEXP190148
+IGST COST A/C I/U GST 18%                                                                                                                               540.00
+TDS PAYABLE TDS PAYABLES 2%                                                                                                                             -60.00
+                                                                            Rupee Three Thousand Four Hundred Eighty Only                              3,480.00
+    Against V.No         Date       EF_NO          Description           Dr/Cr       Curr            FCY Amount           Amount
+
+
+
+
+                   Accountant                                         Checked by                                         Receiver's Signature
+                     ( Ram )
+
+
+
+
+         User : ram@fresatechnologies.com                        29-Jan-19 11:19:AM Asia/Kolkata                       Powered by Fresa Technologies
+
+ http://demo.fresagold.com:19786/ords/f?p=127:3002:117062835811:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NA…                            1/1
+

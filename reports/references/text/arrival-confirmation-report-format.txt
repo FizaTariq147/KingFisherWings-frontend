@@ -1,0 +1,35 @@
+  2/18/2019                                                             Arrival Confirmation-CAI190005
+                                                                                                FRESA DEMO INDIA PVT LTD
+                                                                                                                                          Chennai- 600 100
+                                                                                                                                          Tamil Nadu, India
+                                                                                                                           WEB : www.fresatechnologies.com
+
+
+                                        ARRIVAL CONFIRMATION / BL NO - AWB91384768
+
+                    MBL No : MAWB98777777 / 18-FEB-19                                                HBL No : AWB91384768 / 18-FEB-19
+                        ETD : 18-FEB-19                                                                 ETA : 19-FEB-19
+                  Container :                                                               Vessel / Voyage : EK / 176
+               Shipment No : B/AI/19/0041 / 18-FEB-19                                                 Job No : CAI190005 / 19-FEB-19
+            Place of Receipt : DUBAI                                                         Port of Receipt : DUBAI INTERNATIONAL AIRPORT, UNITED A
+                                                                                                               RAB EMIRATES
+             Port of Loading : DUBAI INTERNATIONAL AIRPORT, UNITED A                       Port of Discharge : CHENNAI, INDIA
+                                RAB EMIRATES
+    Port of Final Destination : CHENNAI, INDIA                                              Place of Delivery : CHENNAI AIRPORT
+                      Carrier : EMIRATES                                                     Movement Type : PORT TO PORT
+                       PP/CC : PREPAID
+
+Dear Sir,
+We are pleased to announce the arrival of your shipment in CHENNAI, INDIA on transit clearance formalities, surrender progress and we will revert with
+dispatch details soon.
+
+
+
+
+            User : ram@fresatechnologies.com                       18-Feb-19 05:52:PM Asia/Kolkata                      Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:3516041250116:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                           1/1
+

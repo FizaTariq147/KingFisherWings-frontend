@@ -1,0 +1,46 @@
+                                                                         TAX INVOICE
+Client                : DEMO LOGISTICS INDIA PVT LTD                                     Invoice No.                 : BOMINV230500382
+                          21, PORT BLAIR, KRISHNA ST, MANNARGUDI, TAMIL NADU,
+                                                                              Date                                   : 17-MAY-23 (POSTED)
+                          INDIA, 676876
+                          Phone : 798798798                                   Job No.                                :
+                          Fax : 9879878                                       Shipment No.                           : BOM/EXP/23/05/B/0709
+TRN No.               : 888329087642356                                                  Department                  : FCL EXPORT
+MBL No.               :                                                                  HBL No.                     : NSAJED85630124277
+Shipper               : DEMO-SHIPPER ENGG COMPANY                                        Origin                      : NHAVA SHEVA, INDIA
+Consignee             : DEMO STEEL FACTORY CO. LTD.                                      Destination                 : JEDDAH, SAUDI ARABIA
+BOE No.               :                                                                  Volume                      :
+No of PCS             : 3 PACKAGES                                                       Reference No.               :
+G Weight              : 22700 KGS                                                        Place of Delivery           : JEDDAH SAUDI ARABIA
+Chg.Weight            : 23 KGS                                                           Nature of Goods             : GENERAL CARGO
+Remarks               :                                                                  Narration                   : MBL NO... / HBL NO. NSAJED85630124277 / JOB NO.
+
+
+Charge                                                                Qty Cur.      Amount / Qty Tax %                   Amount          VAT                Amount (INR)
+FREIGHT CHARGE                                                        1.00 INR             1,500.00    18.00             1,500.00                                  1,500.00
+LOCAL CHARGES                                                         1.00 INR               800.00    18.00              800.00                                     800.00
+SEA FREIGHT CHARGE                                                    1.00 INR               900.00    18.00              900.00                                     900.00
+CONTAINER CLEANING FEE                                                1.00 INR             1,000.00    15.00             1,000.00                                  1,000.00
+
+                                                                                                                                         Sub Total :               4,200.00
+
+                                                          Rupee Four Thousand Seven Hundred Seventy-Six Only                   Total :                      INR 4,776.00
+Container Details
+TTNU0712894
+.Terms
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank                  : HDFC
+A/c No                : XXXXXXXXXXX
+IBAN Code : ABA:XXXXXX
+Swift Code            : XXXXXX
+Address               : MUMBAI.
+
+
+
+
+                                             This is a computer generated document and does not require a signature
+Printed By : shanmugam@fresa.io                                       Printed Date :17-MAY-2023 12:12PM                  Powered By : Fresa Technologies   Page 1 of 1
+

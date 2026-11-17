@@ -1,0 +1,41 @@
+                                                             INVOICE
+Invoice To :     DEMO LOGISTICS INDIA PVT LTD                         Invoice No. :          BOMINV230500382
+                 21, PORT BLAIR, KRISHNA ST,                          Date :                 17-May-23    Due Date : 17-May-23
+                                                                      Job No. :
+                 MANNARGUDI, TAMIL NADU, INDIA,
+                                                                      Shipment No. :         BOM/EXP/23/05/B/0709 / 16-MAY-23
+                 676876
+                                                                      Department :           FCL EXPORT
+MBL No. :                                                             HBL No. :              NSAJED85630124277
+Shipper :        DEMO-SHIPPER ENGG COMPANY                            Origin :               NHAVA SHEVA, INDIA
+Consignee :      DEMO STEEL FACTORY CO. LTD.                          Destination :          JEDDAH, SAUDI ARABIA
+ETD :            01-MAR-23                                            Vessel /Voyage :       CAP SAN JUAN / 310W
+ETA :            20-MAR-23                                            Container No :         TTNU0712894
+Remarks :                                                             Pieces :               3.00 PACKAGES
+                                                                      Gross weight :         22,700.00
+                                                                      Chargeable unit :      23
+                                                                      Narration :            MBL NO... / HBL NO.
+                                                                                             NSAJED85630124277 / JOB NO.
+Charge                                               Qty Cur.    Ex.Rate      Amount / Qty       ITBM    FCY Amount        Amount (INR)
+FREIGHT CHARGE                                      1.00 INR     1.00000        1,500.000        18.00      1,500.00          1,500.00
+LOCAL CHARGES                                       1.00 INR     1.00000          800.000        18.00        800.00            800.00
+SEA FREIGHT CHARGE                                  1.00 INR     1.00000          900.000        18.00        900.00            900.00
+CONTAINER CLEANING FEE                              1.00 INR     1.00000        1,000.000        15.00      1,000.00          1,000.00
+                                                                                                            Sub Total :         4,200.00
+                                        Rupee Four Thousand Seven Hundred Seventy-Six Only          Total        INR            4,776.00
+ .Terms
+ 1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+ Bank Details
+ Beneficiary Name: YOUR COMPANY NAME
+ Bank               : HDFC
+ A/c No             : XXXXXXXXXXX
+ IBAN Code          : ABA:XXXXXX
+ Swift Code         : XXXXXX
+ Address            : MUMBAI.
+
+
+
+
+Printed By shanmugam@fresa.io                      Printed Date :17-MAY-2023 11:35AM      Powered By : Fresa Technologies Page 1 of 1
+

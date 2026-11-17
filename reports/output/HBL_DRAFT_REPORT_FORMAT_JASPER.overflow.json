@@ -1,0 +1,238 @@
+{
+  "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+  "maxLines": 3,
+  "spans": [
+    {
+      "id": "p1s2",
+      "mode": "clip",
+      "size": 5,
+      "lines": 1,
+      "box": 128.3,
+      "clipped": true
+    },
+    {
+      "id": "p1s15",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 3,
+      "box": 137.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s16",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 2,
+      "box": 272.7,
+      "clipped": false
+    },
+    {
+      "id": "p1s17",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 3,
+      "box": 217.6,
+      "clipped": false
+    },
+    {
+      "id": "p1s18",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 3,
+      "box": 137.2,
+      "clipped": true
+    },
+    {
+      "id": "p1s19",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 3,
+      "box": 179.9,
+      "clipped": false
+    },
+    {
+      "id": "p1s20",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 3,
+      "box": 160.3,
+      "clipped": false
+    },
+    {
+      "id": "p1s21",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 3,
+      "box": 39.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s23",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 115,
+      "clipped": true
+    },
+    {
+      "id": "p1s24",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 123.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s26",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 116.3,
+      "clipped": true
+    },
+    {
+      "id": "p1s27",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 96.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s28",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 116.3,
+      "clipped": true
+    },
+    {
+      "id": "p1s29",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 96.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s31",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 3,
+      "box": 114.1,
+      "clipped": true
+    },
+    {
+      "id": "p1s32",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 2,
+      "box": 252.2,
+      "clipped": false
+    },
+    {
+      "id": "p1s33",
+      "mode": "wrap",
+      "size": 8,
+      "lines": 3,
+      "box": 136.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s36",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 101.9,
+      "clipped": true
+    },
+    {
+      "id": "p1s38",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 112.9,
+      "clipped": true
+    },
+    {
+      "id": "p1s40",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 240.7,
+      "clipped": true
+    },
+    {
+      "id": "p1s49",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 35.6,
+      "clipped": true
+    },
+    {
+      "id": "p1s50",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 24.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s51",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 191.8,
+      "clipped": true
+    },
+    {
+      "id": "p1s53",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 229.3,
+      "clipped": true
+    },
+    {
+      "id": "p1s55",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 140,
+      "clipped": true
+    },
+    {
+      "id": "p1s78",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 91.5,
+      "clipped": true
+    },
+    {
+      "id": "p1s80",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 116,
+      "clipped": true
+    },
+    {
+      "id": "p1s82",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 111.4,
+      "clipped": true
+    },
+    {
+      "id": "p1s85",
+      "mode": "clip",
+      "size": 8,
+      "lines": 1,
+      "box": 129.9,
+      "clipped": true
+    }
+  ]
+}

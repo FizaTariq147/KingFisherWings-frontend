@@ -3,6 +3,10 @@ import { reportFamilyLabel } from '../../types/reportCatalog.types';
 import { REPORT_TEMPLATE_FAMILY_ENUM } from '../../api/reportCatalog.api';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
+import {
+  reportConformanceLabel,
+  reportConformanceStatus,
+} from '../../utils/reportConformanceStatus';
 
 /** Invoice formats by Format-N; everything else A–Z by name. */
 function compareCatalogItems(a: ReportTemplate, b: ReportTemplate): number {
@@ -202,6 +206,10 @@ export function ReportCatalogBrowseList({
                     </p>
                     <p className="mt-0.5 line-clamp-2 pl-1.5 text-[11px] font-medium leading-snug text-[var(--color-neutral-800)]">
                       {t.name}
+                    </p>
+                    <p className="mt-1 pl-1.5 text-[9px] font-semibold uppercase tracking-wide text-amber-800">
+                      {reportConformanceLabel(reportConformanceStatus(t.code))}
+                      {reportConformanceStatus(t.code) === 'accepted' ? '' : ' · approximate, not final'}
                     </p>
                     {sharedHint ? (
                       <p className="mt-1 line-clamp-2 pl-1.5 text-[9px] font-medium leading-snug text-[var(--color-neutral-500)]">

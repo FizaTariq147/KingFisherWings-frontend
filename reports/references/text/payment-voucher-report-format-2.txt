@@ -1,0 +1,30 @@
+                                              PAYMENT VOUCHER
+Paid To      : CMA CGM
+GL Date               : 28-JAN-19                                   Payment No          : MAABP1900066
+Paid From             : HDFC BANK - INR                             Date                : 28-JAN-19 (APPROVED)
+Job No.               : CEXP190148                                  Type                : CHEQUE Ref : 987777 / 29-JAN-19
+Client                : MAABP19000667 / 22-JAN-19                   Narration           : DUBAI SHIPMENT B/EXP/19/0251
+Remarks               : DUBAI SHIPMENT                              Reference No./      : MAABP19000667 / 22-JAN-19
+
+No. A/C Name                                                               Job No              Shipment No                      Amount INR
+10    SEA FREIGHT FCL COST AGENCY FEES                                     CEXP190148          B/EXP/19/0251                         3,000.00
+
+
+
+20    IGST COST A/C I/U GST 18%                                                                                                        540.00
+
+
+
+
+                                                          Rupee Three Thousand Five Hundred Forty Only            INR               3,540.00
+
+
+
+
+             Accountant                                      Checked by                                      Receiver's Signature
+
+
+
+
+Printed By   ram@fresatechnologies.com              Printed Date : 04-FEB-19 03:40PM         Powered By : Fresa Technologies   Page 1 of 1
+

@@ -1,0 +1,74 @@
+  1/28/2019                                                              TAX_INVOICE_MAAINV1900717
+                                                                                                  FRESA DEMO INDIA PVT LTD
+                                                                                                                                            Chennai- 600 100
+                                                                                                                                            Tamil Nadu, India
+                                                                                                                             WEB : www.fresatechnologies.com
+
+                                                       TAX INVOICE - MAAINV1900717
+ Bill To                        : 4G LOGISTICS INDIA PVT LTD            Invoice No.                : MAAINV1900717 / 28-JAN-19 (CREATED)
+                                  10, DBS CENTRE, NUNGAMBAKKAM HIGH
+                                  ROAD, NUNGAMBAKKAM, CHENNAI, TAMI
+                                  LNADU, INDIA, 600084
+                                  Phone : N/A
+                                  GSTIN No. : GSTNO9876666554
+                                  Credit Term : CASH
+ Shipper                        : 4G LOGISTICS INDIA PVT LTD            Consignee                  : AL NASER TRADING COMPANY LLC
+ Job No.                        : CEXP190148 / 28-JAN-19                Shipment No.               : B/EXP/19/0251 / 22-JAN-19
+ MBL / MAWB No.                 : MBLC9878909999 / 21-JAN-19            HBL / HAWB No.             : PLMAAJEA00080 / 23-JAN-19
+ Place of Receipt               : CHENNAI                               Port of Loading            : CHENNAI (EX MADRAS), INDIA
+ Port of Discharge              : JEBEL ALI, UNITED ARAB EMIRATES       Place of Delivery          : JEBEL ALI FZE
+ Vessel / Voyage                : MSC MARINA / 876                      ETD                        : 28-JAN-19
+ Narration                      : B/EXP/19/0251 MBL NO. MBLC9878909999 ETA                         : 05-FEB-19
+                                  / HBL NO. PLMAAJEA00080 / JOB NO.CEX
+                                  P190148
+ Reference No.                  : REFE NO. 987890 / 22-JAN-19           Currency                   : INR 1.000000
+ IGM No.                        : 8987777 / 25-JAN-19                   Line / Subline No.         : 128 / 12
+ INCO Terms                     : CFR                                   SB / BOE No.               : SB - 234567 / 17-JAN-19
+ PO No.                         : 987898
+ Remarks                           1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019
+ Container No.       Type                       Description                                        No of Pcs      Gross Weight        Volume   Volume Weight
+                            STC: VALVE MATERIALS HS 76890000 EXPRESS RELEASE
+ TCNU9876543         20' DC    ALL DESTINATION CHARGES ARE IN CONSIGNEES                        125 PACKAGES       18,000.000 K       20.000
+                                        ACCOUNT FREIGHT PREPAID
+                                                                                     Non                                       Total
+                            SAC          Amount /                   FCY    Taxable          SGST      CGST      I/UGST
+           Charges               Qty              Currency Ex.Rate                 Taxable       SGST      CGST        I/UGST Amount
+                            Code           Qty                     Amount Amount             %         %           %
+                                                                                   Amount                                      (INR)
+FREIGHT CHARGE                         1   100.00   USD    70.00000 100.00         7,000.00                                   7,000.00
+TERMINAL HANDLING
+                                       1    5,500.00   INR      1.00000 5,500.00 5,500.00                9.00 495.00    9.00 495.00                        5,500.00
+CHARGES 20"GP
+SEAL FEE                               1      300.00   INR      1.00000 300.00 300.00                    9.00 27.00     9.00 27.00                           300.00
+BILL OF LADING                         1    3,000.00   INR      1.00000 3,000.00 3,000.00                9.00 270.00    9.00 270.00                        3,000.00
+                                                                                     8,800.00 7,000.00         792.00            792.00                   15,800.00
+                                                                                                                                Tax               Amount (INR)
+                                                                                                                         GST18-SGST9%                   792.00
+                                                                                                                         GST18-CGST9%                   792.00
+                                                                    Rupee Seventeen Thousand Three Hundred Eighty-Four Only                               17,384.00
+Terms
+
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.
+
+Bank Details
+
+Beneficiary Name: YOUR COMPANY NAME
+Bank            : HDFC
+A/c No          : XXXXXXXXXXX
+IBAN Code       : ABA:XXXXXX
+Swift Code      : XXXXXX
+Address         : CHENNAI.
+
+                                           This is a computer generated document and does not require a signature
+
+Created By : ram@fresatechnologies.com
+
+
+
+
+             User : ram@fresatechnologies.com                        28-Jan-19 01:56:PM Asia/Kolkata                      Powered by Fresa Technologies
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:6858750222047:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                               1/1
+

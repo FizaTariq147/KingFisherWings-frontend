@@ -1,0 +1,135 @@
+ 2/7/2019                                                                         Freight Manifest-98000001
+                                                                                              FRESA DEMO COMPANY LIMITED
+                                                                                                                                                Al Khabeeshi Building,
+                                                                                                                                                Mezzanine Floor 03/5,
+                                                                                                                                              Salahuddin Road, Deira,
+                                                                                                                                                         Dubai, U.A.E.
+                                                                                                                                      WEB : www.fresatechnologies.com
+
+
+
+                                                  FREIGHT MANIFEST / MBL No - 98000001
+
+                   Consignee : TEAM SHIPPING CO LLC                                                       Origin Agent : FRESA DEMO COMPANY LIMITED
+                               DUBAI                                                                                     DUBAI UNITED ARAB EMIRATES
+                                                                                                                         PHONE: NA
+               Delivery Agent : FRESA DEMO COMPANY LIMITED
+                                473A SAI SHAHI, 10TH STREET KAMAKOT
+                                TI NAGAR PALLIKARANAI CHENNAI TAMIL
+                                NADU 600 100 INDIA EMAIL: sales@fresatec
+                                hnologies.com
+                      Job No : CCDXBSI18000060 / 23-NOV-18                                                    MBL No : 98000001 / 14-NOV-18
+                     HBL No : 50013805264 / 17-NOV-18                                                Place of Receipt : CHENNAI
+             Port of Loading : CHENNAI (EX MADRAS), INDIA                                           Port of Discharge : JEBEL ALI, UAE
+    Port of Final Destination : JEBEL ALI, UAE                                                      Place of Delivery : JEBEL ALI, UAE
+                         ETD : 17-NOV-18                                                                         ETA : 23-NOV-18
+                      Carrier : CMA CGM & ANL LLC                                                    Vessel / Voyage : MAERSK CHARLIE / V033
+                Service Type : LCL                                                                             PP/CC : PREPAID
+   Container No                  Type                 Seal No
+MAEU9876543              20' STANDARD              SL001234
+
+                                                                                         No of Volume
+       BL No          Origin Destination          Shipper / Consignee / Notify                                Weight         Charges (USD)                   Remarks
+                                                                                          Pcs (CBM)
+                                                                                                                         Total Charges: 861.00(820+
+                                                                                                                         VAT 41.00)
+                                                 (CO) MOONSTAR LOGISTICS DUBAI                                           DELIVERY ORDER CHARGES
+                                                 LLC                                                                     : 275.00
+MAA/JEA/1800006 INMAA                  AEJEA DUB UNITED ARAB EMIRATES                            17     4.60 4,500.00 CFS CHARGE : 100.00
+                                                 MOBILE:971 50 3190752 EMAIL:                                            DOCUMENTATION CHARGES :
+                                                 USER@MOONSTARSHIPPING.COM                                               100.00
+                                                                                                                         THC CHARGES : 115.00
+                                                                                                                         LCL CHARGES : 230.00
+MAA/JEA/1800011 INMAA                  AEJEA (CO) OBAID CLEARING AND CARGO                       18     5.30 5,000.00 Total Charges: 43.63(0+ VAT
+                                                 UNITED ARAB EMIRATES EMAIL:                                             43.63)
+                                                 USER@CUSTOMERCONSIGNEE.COM                                              DELIVERY ORDER CHARGES
+ http://demo.fresagold.com:19786/ords/f?p=127:3002:17125209057458:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NAME,P3002_TABLE_ID,P3002_FORMAT,P3002_REP…   1/3
+                                                                                                                         : 275.00
+2/7/2019                                                                         Freight Manifest-98000001
+                                                                                                                      CFS CHARGE : 100.00
+                                                                                                                      DOCUMENTATION CHARGES :
+                                                                                                                      100.00
+                                                                                                                      THC CHARGES : 132.50
+                                                                                                                      LCL CHARGES : 265.00
+                                                                                                                      ON FORWARDING CHARGE :
+                                                                                                                      -872.50
+                                                                                                                      Total Charges: 727.13(692.5+
+                                                                                                                      VAT 34.63)
+                                          (CO) TITAN INTERNATIONAL                                                    DELIVERY ORDER CHARGES
+                                          SHIPPING LLC                                                                : 275.00
+                                                                                                                                                   TRANSSHIPMENT
+MAA/JEA/1800007 INMAA          BHBAH      DUBAI UNITED ARAB EMIRATES                      12      2.90       2,800.00 CFS CHARGE : 100.00
+                                                                                                                                                   DO
+                                          EMAIL:                                                                      DOCUMENTATION CHARGES :
+                                          TITANUSER@TITANSHIPPING.NET                                                 100.00
+                                                                                                                      THC CHARGES : 72.50
+                                                                                                                      LCL CHARGES : 145.00
+                                          (CO) AL SHARQI SHIPPING CO LLC
+                                          SUITE 104, FIRST FLOOR, AL SAFA
+                                                                                                                      Total Charges: 750.75(715+
+                                          TOWER C, KHALID BIN WALID ROAD,
+                                                                                                                      VAT 35.75)
+                                          BUR JUMAN METRO STATION
+                                                                                                                      DELIVERY ORDER CHARGES
+                                          ENTRANCE A, BUR DUBAI DUBAI
+                                                                                                                      : 275.00
+                                          UNITED ARAB EMIRATES
+MAA/JEA/1800010 INMAA          AEJEA                                                      14      3.20       3,000.00 CFS CHARGE : 100.00
+                                          PHONE: SUITE 104, FIRST FLOOR, AL
+                                                                                                                      DOCUMENTATION CHARGES :
+                                          SAFA TOWER C, BUR JUMAN METRO
+                                                                                                                      100.00
+                                          STATION ENTRANCE A, KHALID BIN
+                                                                                                                      THC CHARGES : 80.00
+                                          WALID ROAD,
+                                                                                                                      LCL CHARGES : 160.00
+                                          MOBILE:971 4 523 3999 EMAIL:
+                                          INFO@ALSHARQI.CO
+                                                                                                                 Total Charges: 758.63(722.5+
+                                     (CO) CLARION SHIPPING SERVICES
+                                                                                                                 VAT 36.13)
+                                     LLC
+                                                                                                                 DELIVERY ORDER CHARGES
+                                     PALCE TOWER 1, OFFICE 1802 AND
+                                                                                                                 : 275.00
+                                     1803 DUBAI، ACADEMIC CITY RD -                                                                           TRANSSHIPMENT
+MAA/JEA/1800008 INMAA          OMSOH                                                      15     3.30 3,200.00 CFS CHARGE : 100.00
+                                     UNITED ARAB EMIRATES UNITED                                                                              DO
+                                                                                                                 DOCUMENTATION CHARGES :
+                                     ARAB EMIRATES
+                                                                                                                 100.00
+                                     PHONE: 971 4 333 3852 EMAIL:
+                                                                                                                 THC CHARGES : 82.50
+                                     USER@CUSTOMERCONSIGNEE.COM
+                                                                                                                 LCL CHARGES : 165.00
+                                                                                                                 Total Charges: 955.50(910+
+                                                                                                                 VAT 45.50)
+                                          (CO) CARGO GATE MIDDLE EAST
+                                                                                                                 DELIVERY ORDER CHARGES
+                                          OFFICE #10 DAFZA/DNATA FG5,
+                                                                                                                 : 275.00
+                                          UNITED ARAB EMIRATES                                                                                TRANSSHIPMENT
+MAA/JEA/1800009 INMAA          KWKWI                                                      19     5.80 5,500.00 CFS CHARGE : 100.00
+                                          PHONE: +971 4 2992202 FAX: +971 4                                                                   DO
+                                                                                                                 DOCUMENTATION CHARGES :
+                                          2992203 EMAIL:
+                                                                                                                 100.00
+                                          USER@CUSTOMERCONSIGNEE.COM
+                                                                                                                 THC CHARGES : 145.00
+                                                                                                                 LCL CHARGES : 290.00
+                                                                                          95     25.10 24,000.00
+http://demo.fresagold.com:19786/ords/f?p=127:3002:17125209057458:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NAME,P3002_TABLE_ID,P3002_FORMAT,P3002_REP…   2/3
+2/7/2019
+                                                                                    Dirham Three Thousand Eight Hundred Sixty Only
+                                                                                 Freight Manifest-98000001
+                                                                                                                                                                   3,860.00
+                    Remarks :
+
+
+            User : ram.ae@fresatechnologies.com                            07-Feb-19 12:03:PM Asia/Kolkata                         Powered by Fresa Technologies
+
+
+
+
+http://demo.fresagold.com:19786/ords/f?p=127:3002:17125209057458:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_NAME,P3002_TABLE_ID,P3002_FORMAT,P3002_REP…   3/3
+

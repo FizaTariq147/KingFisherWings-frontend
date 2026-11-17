@@ -1,6 +1,11 @@
 /** Jobs REST paths — Swagger tag Jobs (Bearer JWT). */
 export const JOB_API = {
   list: '/jobs',
+  /**
+   * GET /jobs/accounts — Accounts tab aggregate (COMPLETED / DELIVERED / CLOSED).
+   * Requires jobs.accounts.view (Tenant Admin via full pack).
+   */
+  accounts: '/jobs/accounts',
   /** Job create wizard draft (opaque FE payload). */
   createDrafts: '/jobs/create-drafts',
   createDraftCurrent: '/jobs/create-drafts/current',

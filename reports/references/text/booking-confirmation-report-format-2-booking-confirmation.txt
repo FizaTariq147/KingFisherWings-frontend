@@ -1,0 +1,47 @@
+  2/8/2019                                                       Booking Confirmation -B/EXP/19/0257
+                                                                                             FRESA DEMO INDIA PVT LTD
+                                                                                                                                      Chennai- 600 100
+                                                                                                                                      Tamil Nadu, India
+                                                                                                                       WEB : www.fresatechnologies.com
+
+
+                                  BOOKING CONFIRMATION - Shipment No - B/EXP/19/0257
+
+                      Shipper : 4G LOGISTICS INDIA PVT LTD                                        Consignee : AL NASER TRADING COMPANY LLC
+                                10 DBS CENTRE NUNGAMBAKKAM HIGH                                               30 AL MAKTHOOM BUILDING NEAR MUBA
+                                ROAD NUNGAMBAKKAM CHENNAI TAMIL                                               RAK CENTRE ROUND ABOUT AL NABHA
+                                NADU 600084 INDIA EMAIL: ram@fresatech                                        SHARJAH SHARJAH UNITED ARAB EMIRA
+                                nologies.com                                                                  TES
+                Origin Agent : FRESA DEMO INDIA PVT LTD                                    Delivery Agent : FRESA DEMO DUBAI UAE LLC
+                               NO. 178, 2ND STREET, MOORE STREET N                                          DUBAI UNITED ARAB EMIRATES
+                               EAR NEHRU PARK, PARRY CORNER CHE                                             PHONE: 04-2339876 EMAIL: user@fresade
+                               NNAI TAMIL NADU 600001 INDIA                                                 mocompany.com
+                               PHONE: 9884124194 EMAIL: demo@fresate
+                               chnologies.com, user@fresatechnologies.co
+                               m
+              Shipment No : B/EXP/19/0257 / 07-FEB-19                                              Job No : CEXP190152 / 15-FEB-19
+                   MBL No : 07-FEB-19 / MBLNO12347890                                             HBL No : PLMAAJEA00044
+          Place of Receipt : CHENNAI                                                      Port of Loading : CHENNAI (EX MADRAS), INDIA
+         Port of Discharge : JEBEL ALI, UNITED ARAB EMIRATES                     Port of Final Destination : JEBEL ALI, UNITED ARAB EMIRATES
+         Place of Delivery : JEBEL ALI, UNITED ARAB EMIRATES                                          ETD : 08-FEB-19
+                 CARRIER : SAFMARINE                                                                  ETA : 25-FEB-19
+          Vessel / Voyage : 987W / MSC MARINA                                             Movement Type : LCL
+                    PP/CC : PREPAID
+
+Booking Container
+                                                                                                                    Gross               Volume       Net
+Container Type                                    Description                                          No of Pcs             Volume
+                                                                                                                   Weight               Weight      Weight
+                 STC: VALVE MATERIALS FREIGHT PREPAID ALL DESTINATION CHARGES ARE                            15    2,400.000
+                                                                                                                               3.500
+                 CONSIGNEE ACCOUNT                                                                     PACKAGES         KGS
+
+
+
+             User : ram@fresatechnologies.com                   08-Feb-19 02:26:PM Asia/Kolkata                     Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:4948205312565:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                       1/1
+

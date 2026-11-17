@@ -1,0 +1,64 @@
+ INVOICE MAAINV1900716                                                                                                                         Page 1 of 1
+
+4G LOGISTICS INDIA PVT LTD                                                                      INVOICE DATE 28-JAN-19
+10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD, NUNGAMBAKKAM, CHENNAI,
+TAMILNADU, INDIA, 600084
+                                                                                                CUSTOMER ID 4GLOGIST001
+Phone : N/A                                                                                          SHIPMENT B/EXP/19/0251
+GSTIN No. : GSTNO9876666554
+                                                                                                     DUE DATE 28-JAN-19
+                                                                                                         TERMS CASH
+                                                                                                 JOB NUMBER CEXP190148
+SHIPMENT DETAILS
+SHIPPER                                                                               CONSIGNEE
+4G LOGISTICS INDIA PVT LTD                                                            AL NASER TRADING COMPANY LLC
+SHIPPERS REFERENCE                                                                    DEPARTMENT                   FCL EXPORT
+REFERENCE NO / DATE REFE NO. 987890/17-JAN-19
+GOODS DESCRIPTION
+STC: VALVE MATERIALS HS 76890000 EXPRESS RELEASE ALL DESTINATION CHARGES ARE IN CONSIGNEES ACCOUNT FREIGHT PREPAID
+CUSTOMS BROKER                                            GROSS WEIGHT                CHARGEABLE                    PACKAGES                     VOLUME
+                                                              18,000.000 KGS                             125 PACKAGES             20.000 CBM
+VESSEL / VOYAGE / IMO(LLOYDS)                                                         OCEAN BILL OF LADING        HOUSE BILL OF LADING
+MSC MARINA 876                                                                        MBLC9878909999                               PLMAAJEA00080
+ORIGIN                                                   ETD                          DESTINATION                                                ETA
+INMAA - CHENNAI (EX MADRAS), INDIA                       28-JAN-19                    AEJEA - JEBEL ALI, UNITED ARAB EMIRATES 05-FEB-19
+CONTAINERS
+TCNU9876543 / 20' DC
+CHARGES
+           Charge Details                 SAC     Cur. Rate/Unit Qty Cur Amount Ex.Rate              Amount        SGST%     SGST       CGST %     CGST         Total Amt
+                                                                                                                                                                    (INR)
+FREIGHT CHARGE                                    USD        100.00    1          100.00 70.00000       7,000.00                                                      7,000.00
+TERMINAL HANDLING CHARGES 20"                     INR       5,500.00   1        5,500.00 1.00000        5,500.00     9        495.00       9           495.00         6,490.00
+GP
+SEAL FEE                                          INR        300.00    1          300.00 1.00000         300.00      9         27.00       9            27.00          354.00
+BILL OF LADING                                    INR       3,000.00   1        3,000.00 1.00000        3,000.00     9        270.00       9           270.00         3,540.00
+                                                                              SubTotal :              15,800.00               792.00                   792.00        17,384.00
+
+
+
+
+                                                Rupee Seventeen Thousand Three Hundred Eighty-Four Only                      Total :             INR            17,384.00
+Terms & conditions
+1. Kindly arrange DD, Cheques, Online payments favouring ”FRESA DEMO INDIA PVT LTD”.
+2. Any discrepancies in the invoices to be notified to “FRESA DEMO INDIA PVT LTD” within 7 working days from the date of invoice
+and in absence of such notification the invoice will be presumed as correct in all aspects.
+3. Interest is chargeable on all overdue invoices at 18% p.a. if payments not received within the stipulated credit period.
+4. For Air and Ocean Import shipments, cargo has not been checked while issuing this invoice. Delivery order will be issued only
+after cargo is checked and handed over to the custodian.
+5. Kindly produce proper authorization letter while approaching us for documents collection.
+6. Exchange rate applied is subject to upward revisions.
+7. All transactions are governed under FRESA DEMO INDIA PVT LTD., terms and conditions.
+
+
+
+E&OE
+Transfer Funds To :
+Terms
+1. Payment to be made by cash. The company is not responsible
+for any cash settlement without an official receipt.
+2. Any discrepancy should be notified to us in writing within 15
+days from the invoice date after which NONE will be accepted.
+Bank Details                                                                                                                  For FRESA DEMO INDIA PVT LTD
+                                                    This is a computer generated document and does not require a signature
+Printed By : ram@fresatechnologies.com                                  Printed Date :28-Jan-19 11:26AM                            Powered By : Fresa Technologies
+

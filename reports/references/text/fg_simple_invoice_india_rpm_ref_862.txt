@@ -1,0 +1,46 @@
+                                  TAX INVOICE - BOMINV230500382
+Client             : DEMO LOGISTICS INDIA PVT LTD                             Invoice No.        : BOMINV230500382 / 17-MAY-23 (POSTED)
+                     21, PORT BLAIR,                                          Currency           : INR 1.000000
+                     KRISHNA ST, MANNARGUDI,
+                     TAMIL NADU, INDIA, 676876                                Reference No. :
+                     Phone : 798798798
+                     Fax : 9879878
+                     Email:aaa@fresa.io
+                     VAT No. : 68768978898098
+                     Credit Term : CASH
+                     VAT No. : 888329087642356
+Narration          : MBL NO... / HBL NO. NSAJED85630124277 / JOB NO.
+Remarks            :
+Charges                                   SAC        Taxable   SGST         SGST          CGST   CGST        I/UGST     I/UGST        Amount (INR)
+                                                     Amount     %                          %                    %
+FREIGHT CHARGE                                        1,500.00                                                   18       270.00            1,500.00
+LOCAL CHARGES                                           800.00                                                   18       144.00              800.00
+SEA FREIGHT CHARGE                                      900.00                                                   18       162.00              900.00
+CONTAINER CLEANING FEE                                1,000.00                                                    0         0.00            1,000.00
+Total                                                 4,200.00                                                            576.00            4,200.00
+                                                                                                                      Tax       Amount (INR)
+                                                                                                                      GST18-I/U       576.00
+                                                                                                                        GST18%
+                                           Rupee Four Thousand Seven Hundred Seventy-Six Only                                             4,776.00
+
+
+
+
+ .Terms
+ 1. Payment to be made by cash. The company is not responsible for any cash settlement without an
+ official receipt.
+
+ Bank Details
+ Beneficiary Name: YOUR COMPANY NAME
+ Bank               : HDFC
+ A/c No             : XXXXXXXXXXX
+ IBAN Code          : ABA:XXXXXX
+ Swift Code         : XXXXXX
+ Address            : MUMBAI.
+
+
+
+
+                                    This is a computer generated document and does not require a signature
+Printed By : shanmugam@fresa.io                         Printed Date :17-MAY-23 09:45AM             Powered By : Fresa Technologies   Page 1 of 1
+

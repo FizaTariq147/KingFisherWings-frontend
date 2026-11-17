@@ -1,0 +1,35 @@
+                                                                           FRESA DEMO INDIA PVT LTD
+                                                                                                                   Chennai- 600 100
+                                                                                                                  Tamil Nadu, India
+                                                                                                    WEB : www.fresatechnologies.com
+
+
+                                                    LỆNH GIAO HÀNG
+
+                                HẢI QUAN KHU VỰC CÁT LÁI
+       Kính gửi             :
+                                PHÒNG KHAI THÁC CẢNG CÁT LÁI
+                                                                                                                         Job : CEXP190150
+Kính đề nghị giao cho       : AL NASER TRADING COMPANY LLC
+(To)                          30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT AL NABHA SHARJAH
+                              SHARJAH UAE
+Tên tàu / Chuyến                : CMA CGM / 9887                        Ngày cập cảng (ETA)   : 07-FEB-2019
+Số MB/L (MBL No.)               : MBLCOPY87667888                       Số HBL (HBL No.)      : PLMAAJEA00081
+Số lượng (Volume)               : 1 X 20' DC                            Ghi chú (Note)        : FCL
+                                                                                                           TRỌNG                     SỐ KHỐI
+ SỐ CONT/SEAL          SỐ LƯỢNG                              TÊN HÀNG HÓA
+                                                                                                         LƯỢNG(KGS)                   (CBM)
+                         STC: VALVE MATERIALS FOR MACHINERY PARTS FREIGHT
+ABCU9877666 /        125
+                         PREPAID ALL DESTINATION CHARGES ARE CONSIGNEE'S                                            18,000.00           24.000
+SL345566       PACKAGES
+                         ACCOUNT
+                     125                                                                                                                24.000
+     TỔNG CỘNG                                                                                               18,000.00 KGS
+               PACKAGES                                                                                                                  CBM
+
+
+
+
+          User : shanmugam@fresa.io                  17-May-23 02:51:PM Asia/Calcutta                Powered by Fresa Technologies
+

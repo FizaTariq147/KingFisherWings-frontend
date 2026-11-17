@@ -1,0 +1,50 @@
+                                                                             INVOICE
+Client              : DEMO LOGISTICS INDIA PVT LTD                                       Invoice No.                 : BOMINV230500382
+                      VAT/TRN No : 888329087642356                                       Date                        : 17-MAY-23
+                      21, PORT BLAIR KRISHNA ST MANNARGUDI
+                                                                                         Job No.                     :
+                      TAMIL NADU INDIA 676876
+                      Phone : 798798798                                                  Payment Due Date            : 17-MAY-23
+                                                                                         Place of Receipt            : INMAA-CHENNAI
+Department          : FCL EXPORT                                                         Port of Loading             : NHAVA SHEVA, INDIA
+Shipper             : DEMO-SHIPPER ENGG COMPANY                                          Port of Discharge           : JEDDAH, SAUDI ARABIA
+Consignee           : DEMO STEEL FACTORY CO. LTD.                                        Place of Delivery           : JEDDAH SAUDI ARABIA
+MBL No.             :                                                                    Vessel /Voyage              :
+ETD                 : 01-MAR-23                                                          Reference No.               :
+ETA                 : 20-MAR-23                                                          HBL No.                     : NSAJED85630124277
+Remarks             :                                                                    Narration                 : MBL NO... / HBL NO. NSAJED85630124277 /
+                                                                                                                     JOB NO.
+Container No.      Type                  Descripiton                                                       No. of Pcs         G.Weight    Volume      V.Weight
+TTNU0712894        40' FLAT              GENERAL CARGO                                                 3 PACKAGES           22,700.000 KGS                       22,700.000
+
+Charge                                                                                                             Qty                Amount / Qty            Amount (INR)
+FREIGHT CHARGE                                                                                                           1.000              1,500.00                1,500.00
+LOCAL CHARGES                                                                                                            1.000                 800.00                 800.00
+SEA FREIGHT CHARGE                                                                                                       1.000                 900.00                 900.00
+CONTAINER CLEANING FEE                                                                                                   1.000              1,000.00                1,000.00
+
+                                                    Rupee Four Thousand Seven Hundred Seventy-Six Only                           Total :           INR              4,776.00
+.Terms
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank                : HDFC
+A/c No              : XXXXXXXXXXX
+IBAN Code           : ABA:XXXXXX
+Swift Code : XXXXXX
+Address             : MUMBAI.
+
+
+
+
+                                                                                                                                 For FRESA DEMO INDIA PVT LTD
+
+
+
+
+                              The invoice is considered correct, if no written objection is received within 7 days from the date of this invoice
+                                                This is a computer generated document and does not require a signature
+
+Printed By : shanmugam@fresa.io                                      Printed Date :17-MAY-23 10:46AM                       Powered By : Fresa Technologies   Page 1 of 1
+

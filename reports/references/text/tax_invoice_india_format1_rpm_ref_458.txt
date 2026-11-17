@@ -1,0 +1,77 @@
+                                                                                                FRESA DEMO INDIA PVT LTD
+                                                                                                                              473A - SAI SHAHI, 10TH STREET
+                                                                                                                                                     MUMBAI.
+                                                                                                                                      MAHARASTRA- 600 100
+                                                                                                                              WEB : www.fresatechnologies.com
+
+
+
+                                                                       INVOICE
+
+ Bill To                       : DEMO LOGISTICS INDIA PVT LTD                   Invoice No.                    : BOMINV230500382 / 17-MAY-23 (POSTED)
+                                 21, PORT BLAIR, KRISHNA ST, MANNARGU
+                                 DI, TAMIL NADU, INDIA, 676876
+                                 Phone : 798798798
+                                 Fax : 9879878
+                                 VAT No. : 68768978898098
+ Shipper                       : DEMO-SHIPPER ENGG COMPANY                      Consignee                      : DEMO STEEL FACTORY CO. LTD.
+ Job No.                       :                                                Shipment No.                   : BOM/EXP/23/05/B/0709 / 16-MAY-23
+ MBL / MAWB No.                :                                                HBL / HAWB No.                 : NSAJED85630124277
+ Place of Receipt              : INMAA-CHENNAI                                  Port of Loading                : NHAVA SHEVA, INDIA
+ Port of Discharge             : JEDDAH, SAUDI ARABIA                           Place of Delivery              : JEDDAH SAUDI ARABIA
+ Vessel / Voyage               :                                                ETD                            : 01-MAR-23
+ Narration                     : MBL NO... / HBL NO. NSAJED85630124277 /        ETA                            : 20-MAR-23
+                                 JOB NO.
+ Reference No.                 :                                                Currency                       : INR 1.000000
+ IGM No.                       :                                                Line / Subline No.             :
+ INCO Terms                    : FOB                                            PO No.                         :
+ Remarks
+                                                                                                                             Non                Total
+                                                   SAC                 Amount /                           FCY      Taxable               Tax
+              Charges                    Unit                Qty                Currency Ex.Rate                           Taxable Tax%        Amount
+                                                   Code                  Qty                             Amount    Amount               Amount
+                                                                                                                           Amount               (INR)
+                                       1 TON OR
+FREIGHT CHARGE                         1/2                         1 1,500.00        INR       1.00000 1,500.00 1,500.00              18.00   270.00 1,770.00
+                                       MEASURE
+LOCAL CHARGES                                                      1     800.00      INR       1.00000    800.00    800.00            18.00   144.00    944.00
+                                       1 TON OR
+SEA FREIGHT CHARGE                     1/2                         1     900.00      INR       1.00000    900.00    900.00            18.00   162.00 1,062.00
+                                       MEASURE
+                                       1 TON OR
+CONTAINER CLEANING FEE                 1/2                         1 1,000.00        INR       1.00000 1,000.00 1,000.00              15.00      0.00 1,000.00
+                                       MEASURE
+                                                                                                                   4,200.00                   576.00 4,776.00
+
+                                                                                                                                Tax              Amount (INR)
+                                                                                                                        GST18-I/U GST18%               576.00
+                                                                         Rupee Four Thousand Seven Hundred Seventy-Six Only                            4,776.00
+Container No. Type                                 No. of Pkgs                              Gross Weight Volume (CBM) Volume Weight Chargeable Weight
+TTNU0712894 40' FLAT                              3 PACKAGES                               22,700.000 KGS              22,700.000        23.000
+
+.Terms
+
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+
+
+Bank Details
+
+Beneficiary Name: YOUR COMPANY NAME
+Bank            : HDFC
+A/c No          : XXXXXXXXXXX
+IBAN Code       : ABA:XXXXXX
+Swift Code      : XXXXXX
+Address         : MUMBAI.
+
+
+
+
+                                        This is a computer generated document and does not require a signature
+
+Created By : parthiban.in@fresatechnologies.com
+
+
+
+
+           User : shanmugam@fresa.io                        17-May-23 11:22:AM Asia/Calcutta                           Powered by Fresa Technologies
+

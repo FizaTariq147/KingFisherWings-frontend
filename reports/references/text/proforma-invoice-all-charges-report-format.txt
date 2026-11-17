@@ -1,0 +1,70 @@
+  2/18/2019                                                                Proforma Invoice-CAE190028
+                                                                                                   FRESA DEMO INDIA PVT LTD
+                                                                                                                                              Chennai- 600 100
+                                                                                                                                              Tamil Nadu, India
+                                                                                                                               WEB : www.fresatechnologies.com
+
+
+                                                               PROFORMA INVOICE
+
+                      Bill To : 4G LOGISTICS INDIA PVT LTD                                             Shipper : BABU SECTOR PTLTD
+                                10 DBS CENTRE NUNGAMBAKKAM HIGH                                                  144/78B GKM TOWERS MUTHUSAMY STR
+                                ROAD NUNGAMBAKKAM CHENNAI TAMIL                                                  EET, NEAR A2B SIGNAL, NEELANKARAI C
+                                NADU 600084 EMAIL: ram@fresatechnologi                                           HENNAI TAMILNADU INDIA
+                                es.com
+                  Consignee : AL NASER TRADING COMPANY LLC                                             Notify1 : AL NASER TRADING COMPANY LLC
+                              30 AL MAKTHOOM BUILDING NEAR MUBA                                                  30 AL MAKTHOOM BUILDING NEAR MUBA
+                              RAK CENTRE ROUND ABOUT AL NABHA                                                    RAK CENTRE ROUND ABOUT AL NABHA
+                              SHARJAH UNITED ARAB EMIRATES                                                       SHARJAH UNITED ARAB EMIRATES
+                     Job No : CAE190028 / 20-FEB-19                                               Shipment No : B/AE/19/0112 / 18-FEB-19
+           MAWB / MBL No : 17623456882 / 18-FEB-19                                             HAWB / HBL No : MAA/DXB/1900014 / 18-FEB-19
+           Place of Receipt : CHENNAI                                                          Port of Loading : CHENNAI, INDIA
+          Port of Discharge : DUBAI INTERNATIONAL AIRPORT, UNITED A                   Port of Final Destination : DUBAI INTERNATIONAL AIRPORT
+                               RAB EMIRATES
+           Place of Delivery : DUBAI                                                                        ETD : 20-FEB-19
+                        ETA : 20-FEB-19                                                         Airline / Carrier : EMIRATES
+ Vessel / Voyage / Flight Na : EK9876 / EK9876                                                    Service Type : AIR
+                         me
+                    PP / CC : PREPAID                                                                  IGM No. : 45677 /
+          Line / Subline No. : 123567 / 2345
+                                                                                                                                     Volume
+Container               Type                           Description                  No of Pcs      Gross Weight      Volume                           Net Weight
+                                                                                                                                     Weight
+                                           STC: PAPER CUPS                                   100       1,250.000           1.000      1,250.000            1,238.000
+                                                                   FCY                                               Taxable   Tax Tax                   Local
+       Charge             Unit   PP/CC Currency Amount/Unit Qty           Ex.Rate                      Amount
+                                                                 Amount                                              Amount Group Amount                Amount
+FREIGHT CHARGE         PER KGS COLLECT USD             2.00 1250 2,500.00 73.00000                     182,500.00         0.00       0.00               182,500.00
+                       PER
+AIR WAY BILL                    COLLECT  INR       1,500.00 1    1,500.00 1.00000                         1,500.00    1,500.00 GST18         270.00         1,770.00
+                       SHIPMENT
+HANDLING               PER
+                                COLLECT  INR       2,500.00 1    2,500.00 1.00000                         2,500.00    2,500.00 GST18         450.00         2,950.00
+CHARGES                SHIPMENT
+TRANSPORTATION         PER
+                                COLLECT  INR       5,500.00 1    5,500.00 1.00000                         5,500.00    5,500.00 GST18         990.00         6,490.00
+CHARGES                SHIPMENT
+SECURITY               PER
+                                COLLECT  INR       2,500.00 1    2,500.00 1.00000                         2,500.00    2,500.00 GST18         450.00         2,950.00
+SURCHARGE              SHIPMENT
+                                                                                           Total : 194,500.00 12,000.00                  2,160.00 196,660.00
+                                                              Rupee One Hundred Ninety-Six Thousand Six Hundred Sixty Only                             196,660.00
+
+Terms
+
+
+1. Cheques should be in favour of FRESA DEMO INDIA PVT LTD and crossed A/C payee. The company is not responsible for any cash settlement without an
+official receipt.
+
+2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.
+
+
+
+
+            User : ram@fresatechnologies.com                         18-Feb-19 08:16:PM Asia/Kolkata                       Powered by Fresa Technologies
+
+
+
+
+  http://demo.fresagold.com:19786/ords/f?p=127:3002:3516041250116:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_N…                                1/1
+

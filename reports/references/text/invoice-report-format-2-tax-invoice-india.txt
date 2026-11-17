@@ -1,0 +1,42 @@
+                                                                                                      TAX INVOICE
+Client : 4G LOGISTICS INDIA PVT LTD                            Invoice No.       : MAAINV1900717 / 28-JAN-19 (CREATED)                                          Shipper               : 4G LOGISTICS INDIA PVT LTD
+         10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,               Job No.           : CEXP190148 / 28-JAN-19                                                       Consignee             : AL NASER TRADING COMPANY LLC
+         NUNGAMBAKKAM, CHENNAI, TAMILNADU, INDIA, 600084       Shipment No.      : B/EXP/19/0251 / 22-JAN-19                                                    Origin                : CHENNAI (EX MADRAS), INDIA
+         Phone : N/A                                           MBL / MAWB No. : MBLC9878909999 / 21-JAN-19                                                      Destination           : JEBEL ALI, UNITED ARAB EMIRATES
+         GSTIN No. : GSTNO9876666554                           HBL / HAWB No. : PLMAAJEA00080 / 23-JAN-19                                                       Currency              : INR 1.00000
+         Credit Term : CASH                                    Vessel / Voyage : MSC MARINA / 876                                                               Reference No.         : 987898 / 17-JAN-19
+                                                               ETD               : 28-JAN-19                                                                    IGM No.               : 8987777 / 25-JAN-19
+                                                               ETA               : 05-FEB-19                                                                    Line / Subline No.    : 128 / 12
+                                                               INCO Terms        : CFR                                                                          PO No.                : 987898
+ Remarks : 1X20: SHIPMENT TO JEBEL ALI - CMA CGM - PO NO. 9877777 DATE: 17/01/2019
+                   Charges                  SAC Code     Qty       Amount / Qty    Curr.   Ex.Rate    FCY Amount      Taxable        Non Taxable     SGST %       SGST      CGST %     CGST       I/UGST %    I/UGST      Total Amount (INR)
+FREIGHT CHARGE                                                 1          100.00   USD     70.00000         100.00                        7,000.00                                                                                     7,000.00
+TERMINAL HANDLING CHARGES 20"GP                                1        5,500.00   INR      1.00000       5,500.00        5,500.00                      9.00       495.00      9.00      495.00                                        6,490.00
+SEAL FEE                                                       1          300.00   INR      1.00000         300.00         300.00                       9.00        27.00      9.00       27.00                                         354.00
+BILL OF LADING                                                 1        3,000.00   INR      1.00000       3,000.00        3,000.00                      9.00       270.00      9.00      270.00                                        3,540.00
+                                                                                                        Total :           8,800.00        7,000.00                                                                                    17,384.00
+
+                                                                                                                                                                                  Tax                                        Amount (INR)
+                                                                                                                                                                        GST18-CGST9%                                              792.00
+                                                                                                                                                                        GST18-SGST9%                                              792.00
+
+                                                                                                                                Rupee Seventeen Thousand Three Hundred Eighty-Four Only                                              17,384.00
+Container No.                     Type                    No. of Pcs Pack Type                            G.Weight Unit                              Volume (CBM)
+TCNU9876543                       20' DC                       125.00 PACKAGES                           18,000.000 K                                          20.000
+Terms
+1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.
+2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.
+Bank Details
+Beneficiary Name: YOUR COMPANY NAME
+Bank                 : HDFC
+A/c No               : XXXXXXXXXXX
+IBAN Code            : ABA:XXXXXX
+Swift Code           : XXXXXX
+Address              : CHENNAI.
+
+
+
+
+                                                                             This is a computer generated document and does not require a signature
+Printed By : RAM                                            Created By : RAM                                              Printed Date :28-Jan-19 01:57PM                   Powered By : Fresa Technologies            Page 1 of 1
+

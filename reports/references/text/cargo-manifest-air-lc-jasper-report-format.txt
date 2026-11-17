@@ -1,0 +1,21 @@
+                                                                        AIR CARGO MANIFEST
+OWNER OPERATOR       : EMIRATES                                                        FLIGHT NO. / DATE    : EK9876EK9876 20-FEB-19
+PORT OF LOADING      : CHENNAI, INDIA                                                  PORT OF UNLOADING    : DUBAI INTERNATIONAL AIRPORT, UNITED ARAB EMIRATES
+CONSOLIDATOR         : FRESA DEMO INDIA PVT LTD                                        DE-CONSOLIDATOR      : FRESA DEMO DUBAI UAE LLC
+                       NO. 178, 2ND STREET, MOORE STREET NEAR NEHRU PARK, PARRY                               DUBAI UNITED ARAB EMIRATES
+                       CORNER CHENNAI TAMIL NADU 600001 INDIA                                                 PHONE: 04-2339876 EMAIL: user@fresademocompany.com
+
+
+MAWB NO.             : 17623456882 / 18-FEB-19                                         JOB NO.              : CAE190028 / 20-FEB-19
+HAWB NO.        NO OF PCS WT.IN KG/LB SHIPPER NAME & ADDRESS                      NOTIFY PARTY NAME & ADDRESS             NATURE OF GOODS / LIC NO.      AGENT / DEST.
+MAA/DXB/19000         100     1,250.000 BABU SECTOR PTLTD                         AL NASER TRADING COMPANY LLC            STC: PAPER CUPS                FRESA DEMO DUBAI
+14                                      144/78B GKM TOWERS MUTHUSAMY STREET,      30 AL MAKTHOOM BUILDING NEAR MUBARAK                                   UAE LLC
+                                        NEAR A2B SIGNAL, NEELANKARAI CHENNAI      CENTRE ROUND ABOUT AL NABHA SHARJAH
+                                        TAMILNADU INDIA                           UNITED ARAB EMIRATES                                                   DXB
+       TOTAL:         100     1,250.000          TOTAL NO OF HAWB : 1
+
+
+
+
+                                                                                                                                                        Page 1 of 1
+

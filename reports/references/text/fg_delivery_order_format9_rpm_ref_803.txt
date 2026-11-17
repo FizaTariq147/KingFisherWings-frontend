@@ -1,0 +1,65 @@
+                                                           DELIVERY ORDER
+DELIVERY INSTRUCTIONS BY                                            REF                                      DATE
+FRESA DEMO INDIA PVT LTD                                            B/EXP/19/0254
+MUMBAI--1111
+INDIA                                                               CUSTOMER REF
+Level-1 : +91 7806805429
+support@fresatechnologies.com
+                                                                    ISSUING OFFICE
+
+                                                                    FRESA DEMO INDIA PVT LTD
+CONSIGNEE                                                           MUMBAI--1111
+AL NASER TRADING COMPANY LLC                                        INDIA
+                                                                    Level-1 : +91 7806805429
+FOR DELIVERY TO                                                     support@fresatechnologies.com
+
+
+
+
+                                                                                      THE MERCHANDISE DESCRIBED BELOW WILL BE
+                                                                                        ENTERED AND FORWARDED AS FOLLOWS:
+
+
+FREIGHT LOCATION                       FIRMS CODE                   MASTER BL                                HOUSE BL
+CHENNAI                                                             MBLCOPY87667888                          PLMAAJEA00081
+
+                                       AVAILABLE DATE               IMPORTING CARRIER                        FLIGHT
+                                                                                                             CMA CGM
+
+                                                                    PORT OF LOADING                          ETS
+CONTAINER RETURN LOCATION
+                                                                    CHENNAI (EX MADRAS), INDIA               29-JAN-19
+
+                                                                    PORT OF DISCHARGE                        ETA
+                                                                    JEBEL ALI, UNITED ARAB EMIRATES          07-FEB-19
+
+                                                                    LAST FREE DAY                            ENTRY NUMBER
+
+
+LOCAL DELIVERY OR TRANSFER BY (DELIVERY ORDER ISSUED                AMS AWB
+                                                                                                                          ORIGINAL
+ MARKS & NOS. /CONTAINER NOS.         NO. OF                 MARKS & NOS. /CONTAINER NOS.                   GROSS WEIGHT        MEASUREMENT
+                                      PKGS.
+ABCU9877666                         125            STC: VALVE MATERIALS FOR MACHINERY PARTS               18,000.000KGS       24.000CBM
+NIL MARKS
+                                                   FREIGHT PREPAID
+                                                   ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT
+
+
+
+
+REMARKS :
+
+
+
+
+                                          PREPAID/COLLECT                   Received in Good Order By :
+INLANDFREIGHT
+                                                 PREPAID
+
+
+
+                                                                                                DELIVERY CLERK : DELIVER TO
+                                                                                                  CARRIER SHOWN ABOVE
+PREPARED BY                 shanmugam@fresa.io
+
