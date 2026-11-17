@@ -278,3 +278,15 @@ export const JOB_TERMINAL_STATUSES: JobStatus[] = [
   'CLOSED',
   'CANCELLED',
 ];
+
+/** Catalog / change-status code that auto-passes the job to Transport. */
+export const PASS_TO_TRANSPORT_STATUS = 'PASS_TO_TRANSPORT';
+
+/** True when status/catalog code is Pass to Transport (requires branch + assignee). */
+export function isPassToTransportStatus(status?: string | null): boolean {
+  const raw = String(status ?? '')
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+  return raw === 'PASS_TO_TRANSPORT' || raw === 'PASS_TO_TRANSPORTATION';
+}

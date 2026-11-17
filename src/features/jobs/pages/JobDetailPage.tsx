@@ -101,7 +101,7 @@ import {
   isHandoffLimitedJob,
   isJobHardClosed,
 } from '../utils/isHandoffLimitedJob';
-import { isPassToTransportStatus } from '../types/job.types';
+import { isPassToTransportStatus } from '../constants/job.constants';
 import { useJobLookupsDropdowns } from '../hooks/useJobs';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';

@@ -25,29 +25,2326 @@
   "geometry": {
     "pass": true,
     "unmatchedLines": 0,
-    "unmatchedRects": 0
+    "unmatchedRects": 0,
+    "unmatchedPaths": 0,
+    "uncaptured": 0,
+    "uncapturedByPage": [
+      {
+        "curves": 0,
+        "nonAxisPaths": 0,
+        "xobjects": 0,
+        "shading": 0,
+        "opacity": 0,
+        "undecodedText": 0,
+        "textRenderMode": 0,
+        "unknown": 0,
+        "total": 0
+      }
+    ]
   },
   "staticText": {
-    "pass": true,
+    "pass": false,
     "spans": 171,
-    "failures": []
+    "failures": [
+      {
+        "layer": "static",
+        "id": "p1s211",
+        "text": "Rupee Seventeen Thousand Three Hundred Eighty-Four Only",
+        "cause": "width",
+        "reference": 247.3,
+        "rendered": 247.9
+      },
+      {
+        "layer": "static",
+        "id": "p1s215",
+        "text": "1. Payment to be made by cash. The company is not responsible for any cash settlement without an of",
+        "cause": "width",
+        "reference": 358.5,
+        "rendered": 357.9
+      },
+      {
+        "layer": "static",
+        "id": "p1s216",
+        "text": "2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.",
+        "cause": "width",
+        "reference": 438.1,
+        "rendered": 437.4
+      },
+      {
+        "layer": "static",
+        "id": "p1s218",
+        "text": "Beneficiary Name: YOUR COMPANY NAME",
+        "cause": "width",
+        "reference": 152.3,
+        "rendered": 165.9
+      },
+      {
+        "layer": "static",
+        "id": "p1s219",
+        "text": "Bank",
+        "cause": "width",
+        "reference": 21.8,
+        "rendered": 23.7
+      },
+      {
+        "layer": "static",
+        "id": "p1s220",
+        "text": ": HDFC",
+        "cause": "width",
+        "reference": 26.1,
+        "rendered": 28.4
+      },
+      {
+        "layer": "static",
+        "id": "p1s221",
+        "text": "A/c No",
+        "cause": "width",
+        "reference": 30.5,
+        "rendered": 33.2
+      },
+      {
+        "layer": "static",
+        "id": "p1s222",
+        "text": ": XXXXXXXXXXX",
+        "cause": "width",
+        "reference": 56.6,
+        "rendered": 61.6
+      },
+      {
+        "layer": "static",
+        "id": "p1s223",
+        "text": "IBAN Code",
+        "cause": "width",
+        "reference": 43.5,
+        "rendered": 47.4
+      },
+      {
+        "layer": "static",
+        "id": "p1s224",
+        "text": ": ABA:XXXXXX",
+        "cause": "width",
+        "reference": 52.2,
+        "rendered": 56.9
+      },
+      {
+        "layer": "static",
+        "id": "p1s225",
+        "text": "Swift Code",
+        "cause": "width",
+        "reference": 47.9,
+        "rendered": 52.1
+      },
+      {
+        "layer": "static",
+        "id": "p1s226",
+        "text": ": XXXXXX",
+        "cause": "width",
+        "reference": 39.2,
+        "rendered": 42.7
+      },
+      {
+        "layer": "static",
+        "id": "p1s227",
+        "text": "Address",
+        "cause": "width",
+        "reference": 39.2,
+        "rendered": 42.7
+      },
+      {
+        "layer": "static",
+        "id": "p1s228",
+        "text": ": CHENNAI.",
+        "cause": "width",
+        "reference": 43.5,
+        "rendered": 47.4
+      }
+    ]
   },
   "dynamicText": {
     "pass": true,
     "spans": 65,
     "failures": [],
-    "overflow": "wrap, clip, and shrink are implemented; the golden render uses the reference demo strings"
+    "overflow": "wrap, clip, and shrink are implemented; the golden render uses the reference demo strings",
+    "naturalWidth": {
+      "spans": [
+        {
+          "id": "p1s1",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 35.6,
+          "natural": 35.6,
+          "delta": 0,
+          "percent": 0.0002852879213483545
+        },
+        {
+          "id": "p1s2",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 23.1,
+          "natural": 23.1,
+          "delta": 0,
+          "percent": 0.0012513528138527522
+        },
+        {
+          "id": "p1s3",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 66.3,
+          "natural": 66.3,
+          "delta": 0,
+          "percent": 0.0006952300150829135
+        },
+        {
+          "id": "p1s4",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 483.2,
+          "natural": 483.2,
+          "delta": 0,
+          "percent": 0.000054972061258301676
+        },
+        {
+          "id": "p1s5",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 8,
+          "natural": 8,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "id": "p1s6",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 4.4,
+          "natural": 4.4,
+          "delta": 0,
+          "percent": 0.011186079545454464
+        },
+        {
+          "id": "p1s7",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 2.2,
+          "natural": 2.2,
+          "delta": 0,
+          "percent": 0.010298295454545373
+        },
+        {
+          "id": "p1s8",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 4.4,
+          "natural": 4.4,
+          "delta": 0,
+          "percent": 0.011186079545454464
+        },
+        {
+          "id": "p1s9",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 4.8,
+          "natural": 4.8,
+          "delta": 0,
+          "percent": 0.005340576171875186
+        },
+        {
+          "id": "p1s10",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 8.8,
+          "natural": 8.8,
+          "delta": 0,
+          "percent": 0.0014537464488636766
+        },
+        {
+          "id": "p1s11",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 51,
+          "natural": 50.9,
+          "delta": -0.1,
+          "percent": 0.0019866344975488803
+        },
+        {
+          "id": "p1s12",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 60.7,
+          "natural": 60.6,
+          "delta": -0.1,
+          "percent": 0.0019000334637561543
+        },
+        {
+          "id": "p1s13",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s14",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 61.1,
+          "natural": 61,
+          "delta": -0.1,
+          "percent": 0.001300218647708651
+        },
+        {
+          "id": "p1s15",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s16",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 202.3,
+          "natural": 201.9,
+          "delta": -0.4,
+          "percent": 0.001989812469105205
+        },
+        {
+          "id": "p1s17",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 62.9,
+          "natural": 62.8,
+          "delta": -0.1,
+          "percent": 0.0014244770965817632
+        },
+        {
+          "id": "p1s18",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 4.8,
+          "natural": 4.8,
+          "delta": 0,
+          "percent": 0.005340576171875186
+        },
+        {
+          "id": "p1s19",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 57.2,
+          "natural": 57.1,
+          "delta": -0.1,
+          "percent": 0.001993246011800699
+        },
+        {
+          "id": "p1s20",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 41.8,
+          "natural": 41.7,
+          "delta": -0.1,
+          "percent": 0.002514998878588381
+        },
+        {
+          "id": "p1s21",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 81.4,
+          "natural": 81.2,
+          "delta": -0.2,
+          "percent": 0.0019987139127763077
+        },
+        {
+          "id": "p1s22",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 7.3,
+          "natural": 7.3,
+          "delta": 0,
+          "percent": 0.004247377996575221
+        },
+        {
+          "id": "p1s23",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 68.6,
+          "natural": 68.8,
+          "delta": 0.2,
+          "percent": 0.002446388711734777
+        },
+        {
+          "id": "p1s24",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 19.3,
+          "natural": 19.3,
+          "delta": 0,
+          "percent": 0.0005312904792746113
+        },
+        {
+          "id": "p1s25",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 4.8,
+          "natural": 4.8,
+          "delta": 0,
+          "percent": 0.005340576171875186
+        },
+        {
+          "id": "p1s26",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s27",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 102.5,
+          "natural": 102.3,
+          "delta": -0.2,
+          "percent": 0.0020755525914633315
+        },
+        {
+          "id": "p1s28",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 10.5,
+          "natural": 10.5,
+          "delta": 0,
+          "percent": 0.002929687500000169
+        },
+        {
+          "id": "p1s29",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 158.8,
+          "natural": 158.5,
+          "delta": -0.3,
+          "percent": 0.0020985639365554156
+        },
+        {
+          "id": "p1s30",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 144.7,
+          "natural": 144.4,
+          "delta": -0.3,
+          "percent": 0.0020020543581545677
+        },
+        {
+          "id": "p1s31",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 14.1,
+          "natural": 14,
+          "delta": -0.1,
+          "percent": 0.003909712987588577
+        },
+        {
+          "id": "p1s32",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 83.1,
+          "natural": 83,
+          "delta": -0.1,
+          "percent": 0.0013408637936220395
+        },
+        {
+          "id": "p1s33",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 42.7,
+          "natural": 42.6,
+          "delta": -0.1,
+          "percent": 0.002400239680913282
+        },
+        {
+          "id": "p1s34",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 117.4,
+          "natural": 117.2,
+          "delta": -0.2,
+          "percent": 0.0013745907421209539
+        },
+        {
+          "id": "p1s35",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 61.6,
+          "natural": 61.5,
+          "delta": -0.1,
+          "percent": 0.002267812753652528
+        },
+        {
+          "id": "p1s36",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s37",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 132.4,
+          "natural": 132.2,
+          "delta": -0.2,
+          "percent": 0.0017901187216766083
+        },
+        {
+          "id": "p1s38",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 34.3,
+          "natural": 34.2,
+          "delta": -0.1,
+          "percent": 0.0016812249453351529
+        },
+        {
+          "id": "p1s39",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s40",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 37.8,
+          "natural": 37.8,
+          "delta": 0,
+          "percent": 0.001050192212301437
+        },
+        {
+          "id": "p1s41",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 29.5,
+          "natural": 29.4,
+          "delta": -0.1,
+          "percent": 0.003085275423728717
+        },
+        {
+          "id": "p1s42",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s43",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 102.5,
+          "natural": 102.3,
+          "delta": -0.2,
+          "percent": 0.0020755525914633315
+        },
+        {
+          "id": "p1s44",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 40.5,
+          "natural": 40.4,
+          "delta": -0.1,
+          "percent": 0.002880256558641905
+        },
+        {
+          "id": "p1s45",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s46",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 102.9,
+          "natural": 102.7,
+          "delta": -0.2,
+          "percent": 0.0017936862244897957
+        },
+        {
+          "id": "p1s47",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 33,
+          "natural": 32.9,
+          "delta": -0.1,
+          "percent": 0.0020966500946969268
+        },
+        {
+          "id": "p1s48",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 29,
+          "natural": 29,
+          "delta": 0,
+          "percent": 0.0011937634698274881
+        },
+        {
+          "id": "p1s49",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s50",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 92.4,
+          "natural": 92.2,
+          "delta": -0.2,
+          "percent": 0.0019547103287337352
+        },
+        {
+          "id": "p1s51",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 51,
+          "natural": 50.9,
+          "delta": -0.1,
+          "percent": 0.0017597273284312611
+        },
+        {
+          "id": "p1s52",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s53",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 98.5,
+          "natural": 98.4,
+          "delta": -0.1,
+          "percent": 0.0013389316307105446
+        },
+        {
+          "id": "p1s54",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 36,
+          "natural": 36,
+          "delta": 0,
+          "percent": 0.0004991319444442865
+        },
+        {
+          "id": "p1s55",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 28.1,
+          "natural": 28.1,
+          "delta": 0,
+          "percent": 0.0006394572953735896
+        },
+        {
+          "id": "p1s56",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s57",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 110.4,
+          "natural": 110.2,
+          "delta": -0.2,
+          "percent": 0.0015426856884057456
+        },
+        {
+          "id": "p1s58",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 34.3,
+          "natural": 34.2,
+          "delta": -0.1,
+          "percent": 0.002018608782798668
+        },
+        {
+          "id": "p1s59",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 28.1,
+          "natural": 28.1,
+          "delta": 0,
+          "percent": 0.0006394572953735896
+        },
+        {
+          "id": "p1s60",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s61",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 107.8,
+          "natural": 107.6,
+          "delta": -0.2,
+          "percent": 0.002008385030148265
+        },
+        {
+          "id": "p1s62",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 61.1,
+          "natural": 61,
+          "delta": -0.1,
+          "percent": 0.0011739527925531449
+        },
+        {
+          "id": "p1s63",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s64",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 35.6,
+          "natural": 35.6,
+          "delta": 0,
+          "percent": 0.0012961398349719102
+        },
+        {
+          "id": "p1s65",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 17.2,
+          "natural": 17.1,
+          "delta": -0.1,
+          "percent": 0.004695448764534719
+        },
+        {
+          "id": "p1s66",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s67",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 25.1,
+          "natural": 25,
+          "delta": -0.1,
+          "percent": 0.003217598356573733
+        },
+        {
+          "id": "p1s68",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 16.3,
+          "natural": 16.2,
+          "delta": -0.1,
+          "percent": 0.003696558665644215
+        },
+        {
+          "id": "p1s69",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s70",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 25.1,
+          "natural": 25,
+          "delta": -0.1,
+          "percent": 0.003217598356573733
+        },
+        {
+          "id": "p1s71",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 17.2,
+          "natural": 17.1,
+          "delta": -0.1,
+          "percent": 0.004695448764534719
+        },
+        {
+          "id": "p1s72",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s73",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 25.1,
+          "natural": 25,
+          "delta": -0.1,
+          "percent": 0.0029102340637449913
+        },
+        {
+          "id": "p1s74",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 63.3,
+          "natural": 63.2,
+          "delta": -0.1,
+          "percent": 0.0010313302231436251
+        },
+        {
+          "id": "p1s75",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s76",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 55.4,
+          "natural": 55.3,
+          "delta": -0.1,
+          "percent": 0.0014569113831226412
+        },
+        {
+          "id": "p1s77",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 5.3,
+          "natural": 5.3,
+          "delta": 0,
+          "percent": 0.005804097877358323
+        },
+        {
+          "id": "p1s78",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 31.7,
+          "natural": 31.6,
+          "delta": -0.1,
+          "percent": 0.0024244627365929703
+        },
+        {
+          "id": "p1s79",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 22.9,
+          "natural": 22.8,
+          "delta": -0.1,
+          "percent": 0.0029659354530565825
+        },
+        {
+          "id": "p1s80",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s81",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 70.4,
+          "natural": 70.2,
+          "delta": -0.2,
+          "percent": 0.0022756403142756084
+        },
+        {
+          "id": "p1s82",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 15.8,
+          "natural": 15.8,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "id": "p1s83",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s84",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 37.8,
+          "natural": 37.8,
+          "delta": 0,
+          "percent": 0.001050192212301437
+        },
+        {
+          "id": "p1s85",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 35.2,
+          "natural": 35.1,
+          "delta": -0.1,
+          "percent": 0.0023304332386363635
+        },
+        {
+          "id": "p1s86",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s87",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 157.1,
+          "natural": 156.8,
+          "delta": -0.3,
+          "percent": 0.0020302056810946995
+        },
+        {
+          "id": "p1s88",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 156.1,
+          "natural": 155.9,
+          "delta": -0.2,
+          "percent": 0.0015183325992952144
+        },
+        {
+          "id": "p1s89",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 31.7,
+          "natural": 31.6,
+          "delta": -0.1,
+          "percent": 0.002181092271293241
+        },
+        {
+          "id": "p1s90",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 10.1,
+          "natural": 10.1,
+          "delta": 0,
+          "percent": 0.0005076191212869529
+        },
+        {
+          "id": "p1s91",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 5.7,
+          "natural": 5.7,
+          "delta": 0,
+          "percent": 0.0008994654605263158
+        },
+        {
+          "id": "p1s92",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s93",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 38.3,
+          "natural": 38.2,
+          "delta": -0.1,
+          "percent": 0.002609691171670796
+        },
+        {
+          "id": "p1s94",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 53.2,
+          "natural": 53.1,
+          "delta": -0.1,
+          "percent": 0.0014207882988720734
+        },
+        {
+          "id": "p1s95",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s96",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 110.4,
+          "natural": 110.2,
+          "delta": -0.2,
+          "percent": 0.001717387766077847
+        },
+        {
+          "id": "p1s97",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 34.7,
+          "natural": 34.7,
+          "delta": 0,
+          "percent": 0.00040525936599427725
+        },
+        {
+          "id": "p1s98",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s99",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 15.8,
+          "natural": 13.6,
+          "delta": -2.2,
+          "percent": 0.13891601562499994
+        },
+        {
+          "id": "p1s100",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 33,
+          "natural": 33,
+          "delta": 0,
+          "percent": 0.0015121922348484418
+        },
+        {
+          "id": "p1s101",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 29.9,
+          "natural": 29.8,
+          "delta": -0.1,
+          "percent": 0.0019727215719061645
+        },
+        {
+          "id": "p1s102",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s103",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 75.2,
+          "natural": 75.1,
+          "delta": -0.1,
+          "percent": 0.0013278393035239362
+        },
+        {
+          "id": "p1s104",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 26.8,
+          "natural": 26.8,
+          "delta": 0,
+          "percent": 0.0011004547574625806
+        },
+        {
+          "id": "p1s105",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 18.9,
+          "natural": 18.9,
+          "delta": 0,
+          "percent": 0.0007440476190475064
+        },
+        {
+          "id": "p1s106",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 2.6,
+          "natural": 2.6,
+          "delta": 0,
+          "percent": 0.011831430288461538
+        },
+        {
+          "id": "p1s107",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 16.3,
+          "natural": 16.2,
+          "delta": -0.1,
+          "percent": 0.003933210314417047
+        },
+        {
+          "id": "p1s108",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 33.4,
+          "natural": 33.4,
+          "delta": 0,
+          "percent": 0.0006505543600297274
+        },
+        {
+          "id": "p1s109",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 71.2,
+          "natural": 71.1,
+          "delta": -0.1,
+          "percent": 0.0011877852879212285
+        },
+        {
+          "id": "p1s110",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 175.9,
+          "natural": 175.6,
+          "delta": -0.3,
+          "percent": 0.0017632532689026564
+        },
+        {
+          "id": "p1s111",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 51.9,
+          "natural": 51.8,
+          "delta": -0.1,
+          "percent": 0.002124352721579852
+        },
+        {
+          "id": "p1s112",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 4.8,
+          "natural": 4.8,
+          "delta": 0,
+          "percent": 0.005340576171875186
+        },
+        {
+          "id": "p1s113",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 13.6,
+          "natural": 13.6,
+          "delta": 0,
+          "percent": 0.0009442497702206928
+        },
+        {
+          "id": "p1s114",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 36.5,
+          "natural": 36.4,
+          "delta": -0.1,
+          "percent": 0.001826038099314874
+        },
+        {
+          "id": "p1s115",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 32.5,
+          "natural": 32.5,
+          "delta": 0,
+          "percent": 0.0005123197115383303
+        },
+        {
+          "id": "p1s116",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 18.9,
+          "natural": 18.9,
+          "delta": 0,
+          "percent": 0.0015604332010580508
+        },
+        {
+          "id": "p1s117",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 5.3,
+          "natural": 5.3,
+          "delta": 0,
+          "percent": 0.005804097877358323
+        },
+        {
+          "id": "p1s118",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 23.3,
+          "natural": 23.3,
+          "delta": 0,
+          "percent": 0.0015402863465665236
+        },
+        {
+          "id": "p1s119",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 5.3,
+          "natural": 5.3,
+          "delta": 0,
+          "percent": 0.005804097877358323
+        },
+        {
+          "id": "p1s120",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 33,
+          "natural": 32.9,
+          "delta": -0.1,
+          "percent": 0.002564216382575585
+        },
+        {
+          "id": "p1s121",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 18.9,
+          "natural": 18.9,
+          "delta": 0,
+          "percent": 0.0015604332010580508
+        },
+        {
+          "id": "p1s122",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 52.8,
+          "natural": 52.7,
+          "delta": -0.1,
+          "percent": 0.001965147076230926
+        },
+        {
+          "id": "p1s123",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 23.9,
+          "natural": 23.9,
+          "delta": 0,
+          "percent": 0.00002451621338921053
+        },
+        {
+          "id": "p1s124",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 20.7,
+          "natural": 20.6,
+          "delta": -0.1,
+          "percent": 0.0026607789855071437
+        },
+        {
+          "id": "p1s125",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 38.3,
+          "natural": 38.2,
+          "delta": -0.1,
+          "percent": 0.002710407147519471
+        },
+        {
+          "id": "p1s126",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 47.1,
+          "natural": 47,
+          "delta": -0.1,
+          "percent": 0.0020661242701697307
+        },
+        {
+          "id": "p1s127",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s128",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 31.7,
+          "natural": 31.6,
+          "delta": -0.1,
+          "percent": 0.0027895184345424523
+        },
+        {
+          "id": "p1s129",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 16.7,
+          "natural": 16.7,
+          "delta": 0,
+          "percent": 0.0012280127245506856
+        },
+        {
+          "id": "p1s130",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 19.8,
+          "natural": 19.8,
+          "delta": 0,
+          "percent": 0.0025252525252523815
+        },
+        {
+          "id": "p1s131",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 13.2,
+          "natural": 13.2,
+          "delta": 0,
+          "percent": 0.002330433238636229
+        },
+        {
+          "id": "p1s132",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 34.3,
+          "natural": 34.2,
+          "delta": -0.1,
+          "percent": 0.002131070061953104
+        },
+        {
+          "id": "p1s133",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 13.2,
+          "natural": 13.2,
+          "delta": 0,
+          "percent": 0.002330433238636229
+        },
+        {
+          "id": "p1s134",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 34.7,
+          "natural": 34.7,
+          "delta": 0,
+          "percent": 0.00040525936599427725
+        },
+        {
+          "id": "p1s135",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 29,
+          "natural": 29,
+          "delta": 0,
+          "percent": 0.0006617052801723403
+        },
+        {
+          "id": "p1s136",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 15.8,
+          "natural": 15.8,
+          "delta": 0,
+          "percent": 0
+        },
+        {
+          "id": "p1s137",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 29.9,
+          "natural": 29.8,
+          "delta": -0.1,
+          "percent": 0.0021017323369563554
+        },
+        {
+          "id": "p1s138",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 4.8,
+          "natural": 4.8,
+          "delta": 0,
+          "percent": 0.005340576171875186
+        },
+        {
+          "id": "p1s139",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 24.6,
+          "natural": 24.6,
+          "delta": 0,
+          "percent": 0.00020642784552848416
+        },
+        {
+          "id": "p1s140",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 29.9,
+          "natural": 29.8,
+          "delta": -0.1,
+          "percent": 0.0021017323369563554
+        },
+        {
+          "id": "p1s141",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 15.4,
+          "natural": 15.4,
+          "delta": 0,
+          "percent": 0.0028313971185064705
+        },
+        {
+          "id": "p1s142",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 4.8,
+          "natural": 4.8,
+          "delta": 0,
+          "percent": 0.005340576171875186
+        },
+        {
+          "id": "p1s143",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 24.6,
+          "natural": 24.6,
+          "delta": 0,
+          "percent": 0.00020642784552848416
+        },
+        {
+          "id": "p1s144",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 29.9,
+          "natural": 29.8,
+          "delta": -0.1,
+          "percent": 0.0021017323369563554
+        },
+        {
+          "id": "p1s145",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 21.5,
+          "natural": 21.5,
+          "delta": 0,
+          "percent": 0.00041787790697677725
+        },
+        {
+          "id": "p1s146",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 7,
+          "natural": 7,
+          "delta": 0,
+          "percent": 0.0034807477678572445
+        },
+        {
+          "id": "p1s147",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 21.5,
+          "natural": 21.5,
+          "delta": 0,
+          "percent": 0.00041787790697677725
+        },
+        {
+          "id": "p1s148",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 22,
+          "natural": 21.9,
+          "delta": -0.1,
+          "percent": 0.00250577059659078
+        },
+        {
+          "id": "p1s149",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 7,
+          "natural": 7,
+          "delta": 0,
+          "percent": 0.0034807477678572445
+        },
+        {
+          "id": "p1s150",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 22,
+          "natural": 21.9,
+          "delta": -0.1,
+          "percent": 0.00250577059659078
+        },
+        {
+          "id": "p1s151",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 26.4,
+          "natural": 26.3,
+          "delta": -0.1,
+          "percent": 0.0024765477035983774
+        },
+        {
+          "id": "p1s152",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 7,
+          "natural": 7,
+          "delta": 0,
+          "percent": 0.0034807477678572445
+        },
+        {
+          "id": "p1s153",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 26.4,
+          "natural": 26.3,
+          "delta": -0.1,
+          "percent": 0.0024765477035983774
+        },
+        {
+          "id": "p1s154",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 4.8,
+          "natural": 4.8,
+          "delta": 0,
+          "percent": 0.005340576171875186
+        },
+        {
+          "id": "p1s155",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 14.1,
+          "natural": 14,
+          "delta": -0.1,
+          "percent": 0.003909712987588577
+        },
+        {
+          "id": "p1s156",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 29.9,
+          "natural": 29.8,
+          "delta": -0.1,
+          "percent": 0.0021017323369563554
+        },
+        {
+          "id": "p1s157",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 18.9,
+          "natural": 18.9,
+          "delta": 0,
+          "percent": 0.001764529596560734
+        },
+        {
+          "id": "p1s158",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 34.7,
+          "natural": 34.7,
+          "delta": 0,
+          "percent": 0.0008499189481267191
+        },
+        {
+          "id": "p1s159",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 33.9,
+          "natural": 33.8,
+          "delta": -0.1,
+          "percent": 0.002987301806784577
+        },
+        {
+          "id": "p1s160",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 4.4,
+          "natural": 4.4,
+          "delta": 0,
+          "percent": 0.0014537464488636766
+        },
+        {
+          "id": "p1s161",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s162",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 16.7,
+          "natural": 16.7,
+          "delta": 0,
+          "percent": 0.0012280127245506856
+        },
+        {
+          "id": "p1s163",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 33,
+          "natural": 33,
+          "delta": 0,
+          "percent": 0.0015121922348484418
+        },
+        {
+          "id": "p1s164",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s165",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s166",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s167",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 40,
+          "natural": 39.9,
+          "delta": -0.1,
+          "percent": 0.0014099121093748223
+        },
+        {
+          "id": "p1s168",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 40.9,
+          "natural": 40.8,
+          "delta": -0.1,
+          "percent": 0.001880300657090291
+        },
+        {
+          "id": "p1s169",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 39.1,
+          "natural": 39.1,
+          "delta": 0,
+          "percent": 0.0008192135549871032
+        },
+        {
+          "id": "p1s170",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 23,
+          "natural": 23,
+          "delta": 0,
+          "percent": 0.0002462635869566453
+        },
+        {
+          "id": "p1s171",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 4.4,
+          "natural": 4.4,
+          "delta": 0,
+          "percent": 0.0014537464488636766
+        },
+        {
+          "id": "p1s172",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s173",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 13.6,
+          "natural": 13.6,
+          "delta": 0,
+          "percent": 0.0003769818474266012
+        },
+        {
+          "id": "p1s174",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 28.6,
+          "natural": 28.6,
+          "delta": 0,
+          "percent": 0.0015211838942307443
+        },
+        {
+          "id": "p1s175",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s176",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s177",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 15.4,
+          "natural": 15.4,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s178",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s179",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 15.4,
+          "natural": 15.4,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s180",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s181",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s182",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 37.8,
+          "natural": 37.8,
+          "delta": 0,
+          "percent": 0.001050192212301437
+        },
+        {
+          "id": "p1s183",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 4.4,
+          "natural": 4.4,
+          "delta": 0,
+          "percent": 0.0014537464488636766
+        },
+        {
+          "id": "p1s184",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s185",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 13.6,
+          "natural": 13.6,
+          "delta": 0,
+          "percent": 0.0003769818474266012
+        },
+        {
+          "id": "p1s186",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 28.6,
+          "natural": 28.6,
+          "delta": 0,
+          "percent": 0.0015211838942307443
+        },
+        {
+          "id": "p1s187",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s188",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s189",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 15.4,
+          "natural": 15.4,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s190",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 19.8,
+          "natural": 19.8,
+          "delta": 0,
+          "percent": 0.0015511560921715735
+        },
+        {
+          "id": "p1s191",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 15.4,
+          "natural": 15.4,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s192",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 19.8,
+          "natural": 19.8,
+          "delta": 0,
+          "percent": 0.0015511560921715735
+        },
+        {
+          "id": "p1s193",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s194",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 61.1,
+          "natural": 61,
+          "delta": -0.1,
+          "percent": 0.00123708572013084
+        },
+        {
+          "id": "p1s195",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 4.4,
+          "natural": 4.4,
+          "delta": 0,
+          "percent": 0.0014537464488636766
+        },
+        {
+          "id": "p1s196",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s197",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 13.6,
+          "natural": 13.6,
+          "delta": 0,
+          "percent": 0.0003769818474266012
+        },
+        {
+          "id": "p1s198",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 28.6,
+          "natural": 28.6,
+          "delta": 0,
+          "percent": 0.0015211838942307443
+        },
+        {
+          "id": "p1s199",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s200",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s201",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 15.4,
+          "natural": 15.4,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s202",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s203",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 15.4,
+          "natural": 15.4,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s204",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s205",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s206",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s207",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 30.8,
+          "natural": 30.8,
+          "delta": 0,
+          "percent": 0.0015789874188311458
+        },
+        {
+          "id": "p1s208",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s209",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 24.2,
+          "natural": 24.2,
+          "delta": 0,
+          "percent": 0.0015334452479337376
+        },
+        {
+          "id": "p1s210",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 35.2,
+          "natural": 35.1,
+          "delta": -0.1,
+          "percent": 0.0015633322975851867
+        },
+        {
+          "id": "p1s211",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 247.3,
+          "natural": 247.9,
+          "delta": 0.6,
+          "percent": 0.002605482966033227
+        },
+        {
+          "id": "p1s212",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 37.7,
+          "natural": 37.8,
+          "delta": 0.1,
+          "percent": 0.003029416031167033
+        },
+        {
+          "id": "p1s213",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 4.8,
+          "natural": 4.8,
+          "delta": 0,
+          "percent": 0.005340576171875186
+        },
+        {
+          "id": "p1s214",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 18.9,
+          "natural": 18.9,
+          "delta": 0,
+          "percent": 0.0007440476190475064
+        },
+        {
+          "id": "p1s215",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 358.5,
+          "natural": 357.9,
+          "delta": -0.6,
+          "percent": 0.0017078266649231647
+        },
+        {
+          "id": "p1s216",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 438.1,
+          "natural": 437.4,
+          "delta": -0.7,
+          "percent": 0.001692879229913158
+        },
+        {
+          "id": "p1s217",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 47.5,
+          "natural": 47.4,
+          "delta": -0.1,
+          "percent": 0.0016992187499998803
+        },
+        {
+          "id": "p1s218",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 152.3,
+          "natural": 165.9,
+          "delta": 13.6,
+          "percent": 0.08947473376969807
+        },
+        {
+          "id": "p1s219",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 21.8,
+          "natural": 19,
+          "delta": -2.8,
+          "percent": 0.1301336725917431
+        },
+        {
+          "id": "p1s220",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 26.1,
+          "natural": 28.4,
+          "delta": 2.3,
+          "percent": 0.0898325251436782
+        },
+        {
+          "id": "p1s221",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 30.5,
+          "natural": 28.4,
+          "delta": -2.1,
+          "percent": 0.0673892161885245
+        },
+        {
+          "id": "p1s222",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 56.6,
+          "natural": 61.6,
+          "delta": 5,
+          "percent": 0.08886977556316267
+        },
+        {
+          "id": "p1s223",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 43.5,
+          "natural": 42.7,
+          "delta": -0.8,
+          "percent": 0.019150727370689558
+        },
+        {
+          "id": "p1s224",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 52.2,
+          "natural": 56.9,
+          "delta": 4.7,
+          "percent": 0.0898325251436782
+        },
+        {
+          "id": "p1s225",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 47.9,
+          "natural": 47.4,
+          "delta": -0.5,
+          "percent": 0.01027735190501026
+        },
+        {
+          "id": "p1s226",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 39.2,
+          "natural": 37.9,
+          "delta": -1.3,
+          "percent": 0.032495615433673505
+        },
+        {
+          "id": "p1s227",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 39.2,
+          "natural": 33.2,
+          "delta": -6,
+          "percent": 0.1534336635044642
+        },
+        {
+          "id": "p1s228",
+          "font": "Consolas",
+          "mapped": "Liberation Mono|regular",
+          "glyphWidth": 43.5,
+          "natural": 47.4,
+          "delta": 3.9,
+          "percent": 0.08983252514367833
+        },
+        {
+          "id": "p1s229",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 274.9,
+          "natural": 274.4,
+          "delta": -0.5,
+          "percent": 0.001967512334030474
+        },
+        {
+          "id": "p1s230",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 46.2,
+          "natural": 43.9,
+          "delta": -2.3,
+          "percent": 0.04958802590638522
+        },
+        {
+          "id": "p1s231",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 108.4,
+          "natural": 108.2,
+          "delta": -0.2,
+          "percent": 0.001447276435654929
+        },
+        {
+          "id": "p1s232",
+          "font": "Arial-BoldMT",
+          "mapped": "Arimo|bold",
+          "glyphWidth": 21.1,
+          "natural": 19.3,
+          "delta": -1.8,
+          "percent": 0.08652066054502376
+        },
+        {
+          "id": "p1s233",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 86.4,
+          "natural": 86.7,
+          "delta": 0.3,
+          "percent": 0.0028957790798609137
+        },
+        {
+          "id": "p1s234",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 101.1,
+          "natural": 101.3,
+          "delta": 0.2,
+          "percent": 0.0020052856083086616
+        },
+        {
+          "id": "p1s235",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 61.1,
+          "natural": 61.2,
+          "delta": 0.1,
+          "percent": 0.0020170570785596914
+        },
+        {
+          "id": "p1s236",
+          "font": "ArialMT",
+          "mapped": "Arimo|regular",
+          "glyphWidth": 36.2,
+          "natural": 36.3,
+          "delta": 0.1,
+          "percent": 0.0026059651243093528
+        }
+      ],
+      "fontsOverHalfPercent": [
+        {
+          "font": "Consolas -> Liberation Mono|regular",
+          "spans": 11,
+          "meanPercent": 0.0782
+        }
+      ]
+    }
+  },
+  "images": [
+    {
+      "page": 1,
+      "x": 27.4,
+      "y": 784.6,
+      "width": 82,
+      "height": 39.6,
+      "proposedClass": "logo",
+      "demoValue": ""
+    }
+  ],
+  "allowedDifferenceProposal": {
+    "logo": "already masked; proposed allowed",
+    "barcode": "generated from the demo value; proposed allowed",
+    "qr": "generated from the demo value; proposed allowed",
+    "decorative Fresa branding": "Fresa identity; proposed allowed",
+    "other": "proposed not allowed"
   },
   "raster": {
     "measured": true,
     "pass": false,
-    "mismatches": 30390,
-    "ratio": 0.014,
+    "mismatches": 37068,
+    "ratio": 0.0171,
     "rasterizer": "pdftoppm",
     "dpi": 150,
     "heatmaps": [
       "reports/output/raster/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA-page-1-diff.png"
-    ]
+    ],
+    "causes": {
+      "text glyph": 29998,
+      "text position": 1204,
+      "vector": 5866,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 0
+    },
+    "causeShare": {
+      "text glyph": 0.8093,
+      "text position": 0.0325,
+      "vector": 0.1582,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 0
+    }
   },
   "pagination": {
     "pass": false,
@@ -60,9 +2357,10 @@
         "p1s236"
       ],
       "headerPresent": true,
-      "summaryAfterLastRow": true,
-      "lastRowY": 427.9,
-      "summaryTop": 230.6
+      "summaryAfterLastRow": null,
+      "lastRowY": 399.6,
+      "summaryTop": 230.6,
+      "layoutKind": "form"
     },
     "multiPage": null
   }

@@ -61,6 +61,7 @@
     "magic-string": "^1.4.5",
     "maplibre-gl": "^6.17.0",
     "pdf-lib": "^1.17.1",
+    "qrcode": "^1.5.4",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-hook-form": "^7.80.0",

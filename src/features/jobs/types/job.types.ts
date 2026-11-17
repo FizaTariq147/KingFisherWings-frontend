@@ -1055,17 +1055,6 @@ export interface ChangeJobStatusDto {
   notes?: string | null;
 }
 
-/** Catalog / change-status code that auto-passes the job to Transport. */
-export const PASS_TO_TRANSPORT_STATUS = 'PASS_TO_TRANSPORT';
-
-export function isPassToTransportStatus(status?: string | null): boolean {
-  const raw = String(status ?? '')
-    .trim()
-    .toUpperCase()
-    .replace(/[\s-]+/g, '_');
-  return raw === 'PASS_TO_TRANSPORT' || raw === 'PASS_TO_TRANSPORTATION';
-}
-
 /** GET /jobs/accounts — finance/accounts aggregate (COMPLETED / DELIVERED / CLOSED). */
 export interface AccountsJobListParams {
   page?: number;
