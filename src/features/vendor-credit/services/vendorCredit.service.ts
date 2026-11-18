@@ -1,7 +1,6 @@
 import { VendorApiError, vendorApiClient } from '@/lib/vendorApiClient';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
-import { statementPdfBranding } from '@/features/files/utils/pdfBranding';
-import { triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { generateAccountStatementPdf } from '@/features/shared/account-statement/generateAccountStatementPdf';
 import { VENDOR_CREDIT_API } from '../api/vendorCredit.api';
 import type { VendorAgingResult, VendorStatementResult } from '../types/vendorCredit.types';
@@ -40,7 +39,7 @@ async function buildClientStatementPdf(
         : [];
 
   const blob = await generateAccountStatementPdf({
-    title: 'Account Statement',
+    title: 'Vendor Statement',
     subtitle: [
       'Vendor AP ledger — full history',
       `${statement.lines.length} transaction(s)`,
@@ -59,6 +58,7 @@ async function buildClientStatementPdf(
     lines: statement.lines,
     agingBuckets,
     agingTotal,
+    company: meta.companyName ? { name: meta.companyName } : undefined,
   });
 
   const reference = `Vendor-AP-${resolvedAsOf || new Date().toISOString().slice(0, 10)}`;
@@ -78,24 +78,17 @@ export const vendorCreditService = {
   },
 
   /**
-   * Generate ledger body locally, then apply the same KingFisher PDF branding
-   * used for quotations / invoices / HR letters (logo header + footer).
+   * Generate statement locally with KingFisher invoice header/footer chrome.
    * Never downloads `/vendor/credit/statement.pdf` (returns JSON summary).
    */
   async downloadStatementPdf(asOf?: string, meta: VendorStatementPdfMeta = {}): Promise<void> {
-    const { blob, asOf: resolvedAsOf, reference } = await buildClientStatementPdf(asOf, meta);
+    const { blob, reference } = await buildClientStatementPdf(asOf, meta);
     const typed = new Blob([await blob.arrayBuffer()], { type: 'application/pdf' });
 
     if (!(await blobLooksLikePdf(typed))) {
       throw new VendorApiError('Failed to generate statement PDF.', 500);
     }
 
-    const filename = `${reference}.pdf`;
-    await triggerBrandedPdfDownload(typed, filename, {
-      filename,
-      branding: statementPdfBranding(reference, resolvedAsOf, {
-        companyName: meta.companyName,
-      }),
-    });
+    triggerBlobDownload(typed, `${reference}.pdf`);
   },
 };

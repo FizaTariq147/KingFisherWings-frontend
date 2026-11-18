@@ -4,6 +4,7 @@ import type { PortalShipmentDetail } from '@/features/portal-shipments/types/por
 import type { Invoice, InvoiceLine } from '../types/invoice.types';
 import { invoiceDisplayNumber } from './normalizeInvoice';
 import type {
+  InvoicePdfBillTo,
   InvoicePdfChargeLine,
   InvoicePdfCompany,
   InvoicePdfModel,
@@ -317,6 +318,11 @@ export function portalInvoiceToPdfModel(
     detailsSectionTitle?: string;
     numberLabel?: string;
     dateLabel?: string;
+    dueDateLabel?: string;
+    jobRefLabel?: string;
+    layout?: InvoicePdfModel['layout'];
+    hideAdvanceBalance?: boolean;
+    shipTo?: InvoicePdfBillTo;
     shipment?: InvoicePdfShipment | null;
   } = {},
 ): InvoicePdfModel {
@@ -335,6 +341,13 @@ export function portalInvoiceToPdfModel(
         ? Math.round((vatAmount / subtotal) * 1000) / 10
         : 0;
 
+  const billTo = {
+    client: enrichment.clientName || '—',
+    attn: enrichment.attn,
+    phone: enrichment.phone,
+    email: enrichment.email,
+  };
+
   return {
     invoiceNumber: detail.number,
     invoiceDate: detail.invoiceDate,
@@ -348,12 +361,12 @@ export function portalInvoiceToPdfModel(
     detailsSectionTitle: enrichment.detailsSectionTitle,
     numberLabel: enrichment.numberLabel,
     dateLabel: enrichment.dateLabel,
-    billTo: {
-      client: enrichment.clientName || '—',
-      attn: enrichment.attn,
-      phone: enrichment.phone,
-      email: enrichment.email,
-    },
+    dueDateLabel: enrichment.dueDateLabel,
+    jobRefLabel: enrichment.jobRefLabel,
+    layout: enrichment.layout,
+    hideAdvanceBalance: enrichment.hideAdvanceBalance,
+    billTo,
+    shipTo: enrichment.shipTo ?? (enrichment.layout === 'commercial_note' ? billTo : undefined),
     shipment: enrichment.shipment ?? undefined,
     lines: (detail.lines ?? []).map((line) => ({
       description: line.description || 'Charge',

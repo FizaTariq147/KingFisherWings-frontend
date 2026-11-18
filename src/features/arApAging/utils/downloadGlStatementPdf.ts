@@ -1,14 +1,15 @@
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
-import { statementPdfBranding } from '@/features/files/utils/pdfBranding';
-import { triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
+import { organizationService } from '@/features/organization/services/organization.service';
 import { generateAccountStatementPdf } from '@/features/shared/account-statement/generateAccountStatementPdf';
 import type { StatementReportResult } from '../types/arApAging.types';
 
 export type GlStatementPdfKind = 'ar' | 'ap';
 
 /**
- * Download a branded account-statement PDF from a loaded GL AR/AP statement report.
- * Matches the on-screen StatementTable columns (date, type, reference, description, debit/credit/balance).
+ * Download a KingFisher-branded account-statement PDF from a loaded GL AR/AP statement.
+ * Header/footer match invoice Generate PDF; ledger body stays landscape.
  */
 export async function downloadGlStatementPdf(
   report: StatementReportResult,
@@ -28,9 +29,14 @@ export async function downloadGlStatementPdf(
     .replace(/[/\\?%*:|"<>]/g, '-')
     .replace(/\s+/g, '-')
     .slice(0, 48);
-  // Keep branding header/footer labels short to avoid collisions with logo/company text.
-  const reference = `${kind === 'ar' ? 'AR' : 'AP'}-STMT-${safeParty}-${asOf}`;
   const filename = `${kind === 'ar' ? 'Customer' : 'Vendor'}-Statement-${safeParty}-${asOf}.pdf`;
+
+  let profile = null;
+  try {
+    profile = await organizationService.getProfile();
+  } catch {
+    profile = null;
+  }
 
   const blob = await generateAccountStatementPdf({
     title,
@@ -52,6 +58,10 @@ export async function downloadGlStatementPdf(
       credit: line.credit,
       balance: line.balance,
     })),
+    company: resolveInvoicePdfCompany({
+      profile,
+      companyName: options?.companyName,
+    }),
   });
 
   const typed = new Blob([await blob.arrayBuffer()], { type: 'application/pdf' });
@@ -59,10 +69,6 @@ export async function downloadGlStatementPdf(
     throw new Error('Failed to generate statement PDF.');
   }
 
-  await triggerBrandedPdfDownload(typed, filename, {
-    filename,
-    branding: statementPdfBranding(reference, asOf, {
-      companyName: options?.companyName,
-    }),
-  });
+  // Self-contained KingFisher chrome — do not stamp a second header/footer.
+  triggerBlobDownload(typed, filename);
 }

@@ -87,22 +87,26 @@ function labelsFor(kind: CommercialNoteKind) {
       documentTitle: 'DEBIT NOTE',
       documentSubtitle: 'DEBIT NOTE / STATEMENT OF CHARGES',
       detailsSectionTitle: 'DEBIT NOTE DETAILS',
-      numberLabel: 'Debit Note No.',
-      dateLabel: 'Debit Date',
+      numberLabel: 'Debit Note #',
+      dateLabel: 'Debit Note Date',
+      dueDateLabel: 'Due Date',
+      jobRefLabel: 'P.O.#',
     };
   }
   return {
     documentTitle: 'CREDIT NOTE',
     documentSubtitle: 'CREDIT NOTE / STATEMENT OF CHARGES',
     detailsSectionTitle: 'CREDIT NOTE DETAILS',
-    numberLabel: 'Credit Note No.',
-    dateLabel: 'Credit Date',
+    numberLabel: 'Credit Note #',
+    dateLabel: 'Credit Note Date',
+    dueDateLabel: 'Due Date',
+    jobRefLabel: 'P.O.#',
   };
 }
 
 /**
- * Map staff credit/debit note → shared KingFisher invoice PDF face
- * (same layout as Generate PDF on invoice detail).
+ * Map staff credit/debit note → KingFisher commercial-note body
+ * (invoice header/footer + CUSTOMER / SHIP TO / QTY table face).
  */
 export function commercialNoteToPdfModel(
   note: CommercialNotePdfSource,
@@ -129,6 +133,34 @@ export function commercialNoteToPdfModel(
       : note.credit_note_number || note.invoice_number) ||
     note.id;
 
+  const addressLines = party?.address
+    ? [party.address]
+    : party?.addresses?.[0]
+      ? ([
+          party.addresses[0].address_line1,
+          party.addresses[0].address_line2,
+          [party.addresses[0].city, party.addresses[0].country_code]
+            .filter(Boolean)
+            .join(', '),
+        ].filter(Boolean) as string[])
+      : undefined;
+
+  const billTo = {
+    client: party?.name || note.party_name || '—',
+    attn: attn || contact?.name || undefined,
+    phone: party?.phone || contact?.phone || contact?.mobile || undefined,
+    email: party?.email || contact?.email || undefined,
+    vatNumber: party?.vat_number,
+    addressLines,
+  };
+
+  const shipment = shipmentOverride ?? shipmentFromJob(job);
+  const shipToAddress = [
+    shipment?.pod,
+    shipment?.pol ? `From ${shipment.pol}` : '',
+    shipment?.containerNo ? `Container ${shipment.containerNo}` : '',
+  ].filter(Boolean) as string[];
+
   return {
     invoiceNumber: number,
     invoiceDate: note.invoice_date,
@@ -142,29 +174,22 @@ export function commercialNoteToPdfModel(
     currencyCode: note.currency_code || 'AED',
     vatRate,
     copyLabel: 'ORIGINAL',
+    layout: 'commercial_note',
+    hideAdvanceBalance: true,
     ...labels,
-    jobRefLabel: note.credited_invoice_number || note.credited_invoice_id
-      ? 'Related Invoice'
-      : 'Job / Ref No.',
-    billTo: {
-      client: party?.name || note.party_name || '—',
-      attn: attn || contact?.name || undefined,
-      phone: party?.phone || contact?.phone || contact?.mobile || undefined,
-      email: party?.email || contact?.email || undefined,
-      vatNumber: party?.vat_number,
-      addressLines: party?.address
-        ? [party.address]
-        : party?.addresses?.[0]
-          ? ([
-              party.addresses[0].address_line1,
-              party.addresses[0].address_line2,
-              [party.addresses[0].city, party.addresses[0].country_code]
-                .filter(Boolean)
-                .join(', '),
-            ].filter(Boolean) as string[])
-          : undefined,
+    jobRefLabel:
+      note.credited_invoice_number || note.credited_invoice_id
+        ? 'Related Invoice'
+        : labels.jobRefLabel,
+    billTo,
+    shipTo: {
+      client: billTo.client,
+      attn: billTo.attn,
+      phone: billTo.phone,
+      email: billTo.email,
+      addressLines: shipToAddress.length ? shipToAddress : addressLines,
     },
-    shipment: shipmentOverride ?? shipmentFromJob(job),
+    shipment,
     lines: chargeLines(note, job),
     subtotal,
     discount: 0,
