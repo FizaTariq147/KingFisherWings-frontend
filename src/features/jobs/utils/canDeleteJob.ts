@@ -5,6 +5,7 @@ import { effectiveListJobTypes } from './deptAccessFromStaffGrants';
 import { filterJobTypesByStaffAccess } from './filterJobTypesByStaffAccess';
 import { isHandoffLimitedJob } from './isHandoffLimitedJob';
 import { isOpsUnrestrictedUser } from './isOpsUnrestrictedUser';
+import { isTransportHandoffOnly } from './isTransportHandoffOnly';
 import { jobEditable } from './jobRoute';
 
 type AccessActor = Pick<
@@ -37,6 +38,8 @@ export function jobTypeIsVisible(
 ): boolean {
   if (!user) return false;
   if (isOpsUnrestrictedUser(user)) return true;
+  // Handoff-only assignees open any job_type when BE allows via ops_user_id=me.
+  if (isTransportHandoffOnly(user)) return true;
 
   const type = canonicalizeJobType(job.job_type);
   const effective = effectiveListJobTypes(

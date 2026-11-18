@@ -405,11 +405,12 @@ export function invoiceFormatToInvoicePdfModel(
       `KingFisher layout for Format-${preview.formatNumber} (${formatLabel}). ` +
       'This is a computer-generated tax invoice / statement of charges. Payment is due by the due date.',
     company: {
-      name: 'KingFisher Logistic',
+      name: data.companyName || 'KingFisher Logistic',
       tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
-      phone: '+971 55 5355 286',
-      email: 'inquiry@kingfishertec.com',
-      website: 'www.kingfisherwingsgroup.com',
+      phone: data.companyPhone || undefined,
+      email: data.companyEmail || undefined,
+      website: data.companyWeb || undefined,
+      logoUrl: data.logoUrl || undefined,
     },
   };
 }

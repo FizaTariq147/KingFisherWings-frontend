@@ -5,6 +5,8 @@ import { StoredFileLink } from '@/features/files/components/StoredFileLink';
 import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { quotationPdfBranding } from '@/features/files/utils/pdfBranding';
+import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
+import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
 import { useAuthStore } from '@/store/authStore';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { PDF_MODES, type PdfMode } from '../../constants/quotation.constants';
@@ -67,6 +69,7 @@ export function QuotationPdfModal({
 }: QuotationPdfModalProps) {
   const user = useAuthStore((s) => s.user);
   const { data: companies = [] } = useTenantCompanies(true);
+  const { data: orgProfile } = useOrganizationProfile();
   const [mode, setMode] = useState<PdfMode>('CUSTOMER');
   const [poll, setPoll] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -135,15 +138,11 @@ export function QuotationPdfModal({
     const match =
       companies.find((c) => c.id && quotation?.company_id && c.id === quotation.company_id) ||
       companies[0];
-    return {
-      name: match?.name || 'KingFisher Wings Group',
-      tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
-      phone: '+971 55 5355 286',
-      email: 'inquiry@kingfishertec.com',
-      website: 'www.kingfisherwingsgroup.com',
-      addressLines: [] as string[],
-    };
-  }, [companies, quotation?.company_id]);
+    return resolveInvoicePdfCompany({
+      profile: orgProfile,
+      companyName: match?.name,
+    });
+  }, [companies, orgProfile, quotation?.company_id]);
 
   const closeReady = () => {
     setReadyOpen(false);
@@ -183,8 +182,8 @@ export function QuotationPdfModal({
           ) : null}
 
           <p className="text-xs text-[var(--color-neutral-500)]">
-            Generates the KingFisher quotation layout from live quote data, stores it for the
-            customer portal, and opens the same PDF here.
+            Generates the KingFisher QUOTATION / STATEMENT OF CHARGES layout (same face as invoice)
+            from live quote data, stores it for the customer portal, and opens the same PDF here.
           </p>
 
           <label className="block space-y-1">

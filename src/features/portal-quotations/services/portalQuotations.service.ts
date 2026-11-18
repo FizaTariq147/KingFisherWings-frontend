@@ -326,11 +326,8 @@ export const portalQuotationsService = {
       const blob = await generateQuotationPdf({
         quotation,
         company: {
-          name: user?.tenantName || 'KingFisher Wings Group',
+          name: user?.tenantName || undefined,
           tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
-          phone: '+971 55 5355 286',
-          email: 'inquiry@kingfishertec.com',
-          website: 'www.kingfisherwingsgroup.com',
         },
         generatedBy: user?.email || user?.fullName,
         confirmNote: 'Please confirm the quote.',

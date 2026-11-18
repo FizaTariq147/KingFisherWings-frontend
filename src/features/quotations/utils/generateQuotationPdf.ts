@@ -15,6 +15,8 @@ export type QuotationPdfCompany = {
   phone?: string;
   email?: string;
   website?: string;
+  /** Tenant organization logo URL (preferred over bundled product asset). */
+  logoUrl?: string;
 };
 
 export type QuotationPdfOptions = {
@@ -101,6 +103,7 @@ function toCompany(company?: QuotationPdfCompany): InvoicePdfCompany | undefined
     phone: company.phone,
     email: company.email,
     website: company.website,
+    logoUrl: company.logoUrl,
   };
 }
 
@@ -164,7 +167,7 @@ export function quotationToInvoicePdfModel(options: QuotationPdfOptions): Invoic
     vatRate,
     copyLabel: 'ORIGINAL',
     documentTitle: 'QUOTATION',
-    documentSubtitle: 'FREIGHT QUOTATION / RATE PROPOSAL',
+    documentSubtitle: 'QUOTATION / STATEMENT OF CHARGES',
     detailsSectionTitle: 'QUOTATION DETAILS',
     numberLabel: 'Quotation No.',
     dateLabel: 'Quote Date',
@@ -193,29 +196,11 @@ export function quotationToInvoicePdfModel(options: QuotationPdfOptions): Invoic
 }
 
 /**
- * Client-side KingFisher quotation PDF — same layout/design as the invoice PDF.
- * Self-contained header/footer — use skipBranding when previewing/downloading.
+ * Client-side KingFisher quotation PDF — same TAX INVOICE / STATEMENT OF CHARGES
+ * face as invoice Generate PDF (dynamic logo, company, quote lines).
+ * Catalogue Formats still open FCL / other measured layouts separately.
  */
-const NATIVE_QUOTATION_CODE = 'FCL_QUOTATION_REPORT_FORMAT';
-
 export async function generateQuotationPdf(options: QuotationPdfOptions): Promise<Blob> {
   const model = quotationToInvoicePdfModel(options);
-  const { generateOfficialMeasuredPdf, isOfficialMeasuredNativeCode } = await import(
-    '@/features/reports/templates/official'
-  );
-  if (isOfficialMeasuredNativeCode(NATIVE_QUOTATION_CODE)) {
-    const { blob } = await generateOfficialMeasuredPdf(NATIVE_QUOTATION_CODE, {
-      companyName: model.company?.name,
-      companyPhone: model.company?.phone,
-      companyEmail: model.company?.email,
-      referenceNo: model.invoiceNumber,
-      jobNumber: model.jobRef,
-      shipperLines: [model.billTo.client, ...(model.billTo.addressLines || [])].filter(
-        (line): line is string => Boolean(line),
-      ),
-      entityBound: true,
-    });
-    return blob;
-  }
   return generateInvoicePdf({ ...model, skipNativeFresaFace: true });
 }

@@ -9,9 +9,7 @@ import { PageBackLink } from '@/components/ui/PageBackLink';
 import { EmptyState, ErrorState } from '@/components/erp';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
 import { useMasterOptions } from '@/features/masters/hooks/useMasterResource';
-import { jobService } from '@/features/jobs/services/job.service';
 import { getErrorMessage } from '@/features/jobs/utils/getErrorMessage';
-import { jobDetailPath } from '@/features/jobs/utils/jobRoute';
 import { isUuid } from '@/lib/isUuid';
 import { transportService, type TransportRequestRow } from '../services/transport.service';
 
@@ -82,44 +80,19 @@ export default function TransportRequestsPage() {
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const allJobIds = useMemo(() => {
-    const ids = new Set<string>();
+  /** Deep-link handoff — no getById (avoids job_type 403 toast for handoff-only users). */
+  const jobMetaById = useMemo(() => {
+    const map: Record<string, { job_number: string; path: string }> = {};
     for (const row of list.data ?? []) {
-      if (row.job_id && isUuid(row.job_id)) ids.add(row.job_id);
+      if (!row.job_id || !isUuid(row.job_id)) continue;
+      const number = String(row.job_number ?? '').trim();
+      map[row.job_id] = {
+        job_number: number && !isUuid(number) ? number : '',
+        path: `/jobs/${row.job_id}?tab=handoff`,
+      };
     }
-    return [...ids].sort();
+    return map;
   }, [list.data]);
-
-  const jobMetaQuery = useQuery({
-    queryKey: ['transport-requests', 'job-meta', allJobIds],
-    enabled: allJobIds.length > 0,
-    staleTime: 60_000,
-    queryFn: async () => {
-      const entries = await Promise.all(
-        allJobIds.map(async (id) => {
-          try {
-            const job = await jobService.getById(id);
-            const number = String(job.job_number ?? '').trim();
-            return [
-              id,
-              {
-                job_number: number && !isUuid(number) ? number : '',
-                path: jobDetailPath({ id: job.id, job_type: job.job_type }),
-              },
-            ] as const;
-          } catch {
-            return [id, { job_number: '', path: '' }] as const;
-          }
-        }),
-      );
-      return Object.fromEntries(entries) as Record<
-        string,
-        { job_number: string; path: string }
-      >;
-    },
-  });
-
-  const jobMetaById = jobMetaQuery.data ?? {};
 
   const truckerOptions = useMemo(
     () =>
@@ -172,7 +145,7 @@ export default function TransportRequestsPage() {
     : '';
   const currentJobPath =
     currentJobMeta?.path ||
-    (current?.job_id ? `/jobs/road-freight/${current.job_id}` : '');
+    (current?.job_id ? `/jobs/${current.job_id}?tab=handoff` : '');
 
   return (
     <div className={listShell.page}>

@@ -1,4 +1,7 @@
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
+import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
+import { organizationService } from '@/features/organization/services/organization.service';
+import type { OrganizationProfile } from '@/features/organization/types/organization.types';
 import { partyService } from '@/features/parties/services/party.service';
 import { isUuid } from '@/lib/isUuid';
 import type { Quotation } from '../types/quotation.types';
@@ -12,13 +15,14 @@ export type EnsuredQuotationEmailPdf = {
 };
 
 /**
- * Build the KingFisher formatted quotation PDF blob for email.
+ * Build the KingFisher QUOTATION / STATEMENT OF CHARGES PDF blob for email.
  * Attached on send-email via multipart file / pdf_base64 (live OpenAPI).
  */
 export async function ensureQuotationEmailPdf(opts: {
   quotation: Quotation;
   mode?: 'CUSTOMER' | 'INTERNAL';
   companyName?: string;
+  orgProfile?: OrganizationProfile | null;
 }): Promise<EnsuredQuotationEmailPdf> {
   const mode = opts.mode === 'INTERNAL' ? 'INTERNAL' : 'CUSTOMER';
   let quotation = opts.quotation;
@@ -34,9 +38,21 @@ export async function ensureQuotationEmailPdf(opts: {
     }
   }
 
+  let profile = opts.orgProfile ?? null;
+  if (!profile) {
+    try {
+      profile = await organizationService.getProfile();
+    } catch {
+      profile = null;
+    }
+  }
+
   const blob = await generateQuotationPdf({
     quotation,
-    company: opts.companyName ? { name: opts.companyName } : undefined,
+    company: resolveInvoicePdfCompany({
+      profile,
+      companyName: opts.companyName,
+    }),
   });
   const fileName = formatPdfFilename(quotationDisplayNumber(quotation), 'quotation');
 

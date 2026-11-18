@@ -57,6 +57,8 @@ export type InvoicePdfCompany = {
   phone?: string;
   email?: string;
   website?: string;
+  /** Tenant organization logo URL (preferred over bundled product asset). */
+  logoUrl?: string;
 };
 
 export type InvoicePdfModel = {
@@ -316,12 +318,17 @@ function labeledValue(
   drawText(page, fit(fontBold, value || '—', 8, valueMaxW), x + labelW, y, 8, fontBold, TEXT);
 }
 
-async function embedLogo(doc: PDFDocument): Promise<{
+async function embedLogo(
+  doc: PDFDocument,
+  preferredLogoUrl?: string | null,
+): Promise<{
   image: PDFImage | null;
   width: number;
   height: number;
 }> {
+  const preferred = String(preferredLogoUrl ?? '').trim();
   const candidates = [
+    preferred || undefined,
     typeof logoAsset === 'string' ? logoAsset : undefined,
     '/kingfisher-logo.png',
     typeof window !== 'undefined'
@@ -335,7 +342,7 @@ async function embedLogo(doc: PDFDocument): Promise<{
         raw.startsWith('data:') || /^https?:\/\//i.test(raw) || raw.startsWith('blob:')
           ? raw
           : new URL(raw, window.location.origin).href;
-      const res = await fetch(url);
+      const res = await fetch(url, preferred && raw === preferred ? { mode: 'cors' } : undefined);
       if (!res.ok) continue;
       const bytes = await res.arrayBuffer();
       let image: PDFImage;
@@ -387,36 +394,16 @@ function drawMiniIcon(
 }
 
 /**
- * Client-side KingFisher tax invoice PDF (portrait A4 or Letter).
- * Layout mirrors the FRESA / KingFisher tax-invoice snippet.
- * Self-contained — use skipBranding when previewing/downloading.
+ * Client-side KingFisher tax invoice PDF (portrait A4).
+ * Default Generate PDF face: TAX INVOICE / STATEMENT OF CHARGES
+ * (logo, company, bill-to, shipment, charges, totals from live record + org profile).
+ * Catalogue Formats still open India / other measured layouts separately.
  */
-const NATIVE_TAX_INVOICE_CODE = 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA';
-
 export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> {
-  if (!model.skipNativeFresaFace) {
-    const { generateOfficialMeasuredPdf, isOfficialMeasuredNativeCode } = await import(
-      '@/features/reports/templates/official'
-    );
-    if (isOfficialMeasuredNativeCode(NATIVE_TAX_INVOICE_CODE)) {
-      const { blob } = await generateOfficialMeasuredPdf(NATIVE_TAX_INVOICE_CODE, {
-        companyName: model.company?.name,
-        companyPhone: model.company?.phone,
-        companyEmail: model.company?.email,
-        invoiceNumber: model.invoiceNumber,
-        jobNumber: model.jobRef,
-        shipperLines: [model.billTo.client, ...(model.billTo.addressLines || [])].filter(
-          (line): line is string => Boolean(line),
-        ),
-        entityBound: true,
-      });
-      return blob;
-    }
-  }
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
-  const logo = await embedLogo(doc);
+  const logo = await embedLogo(doc, model.company?.logoUrl);
 
   const PAGE_W = model.pageSize === 'Letter' ? LETTER_W : A4_W;
   const PAGE_H = model.pageSize === 'Letter' ? LETTER_H : A4_H;
@@ -427,8 +414,9 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   const tagline = safePdfText(
     model.company?.tagline || 'FREIGHT - LOGISTICS - GENERAL TRADING',
   ).toUpperCase();
+  // Prefer org profile; soft template defaults keep the reference face when profile fields are empty.
   const companyPhone = safePdfText(model.company?.phone || '+971 55 5355 286');
-  const companyEmail = safePdfText(model.company?.email || 'inquiry@kingfishertec.com');
+  const companyEmail = safePdfText(model.company?.email || 'info@kingfisherwingsgroup.com');
   const companyWeb = safePdfText(model.company?.website || 'www.kingfisherwingsgroup.com');
   const copyLabel = safePdfText(model.copyLabel || 'ORIGINAL');
   const vatPct =
