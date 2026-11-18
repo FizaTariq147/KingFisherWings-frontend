@@ -280,12 +280,12 @@ export const createJobContainerSchema = z
     gross_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
     vgm_weight: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
     cbm: amountField({ required: false, min: 0, allowNegative: false, maxDecimals: 3 }),
-    /**
-     * JobContainer.status Prisma enum (OpenAPI CreateJobContainerDto).
-     * Custom catalog codes belong on show-all primary_container_status, not here.
-     */
+    /** Catalog / system container status code (custom codes allowed). */
     status: z
-      .enum(['EMPTY', 'STUFFED', 'GATED_IN', 'LOADED', 'IN_TRANSIT', 'DISCHARGED', 'RETURNED'])
+      .string()
+      .trim()
+      .min(1)
+      .transform((v) => v.toUpperCase().replace(/[\s-]+/g, '_'))
       .default('EMPTY'),
     gate_in_at: optionalTextUndef({ max: 32 }),
     is_soc: z.boolean().optional(),

@@ -24,6 +24,7 @@ import {
   useJobCargo,
   useJobContainers,
   useJobContainersFill,
+  usePatchJobShowAll,
 } from '../../hooks/useJobs';
 import type { UpdateJobContainerDto } from '../../types/job.types';
 import {
@@ -72,41 +73,52 @@ export function JobContainersPanel({
   });
   const mutations = useJobSubresourceMutations(jobId);
   const actions = useJobActions(jobId);
+  const patchShowAll = usePatchJobShowAll(jobId);
   const {
     data: statusCatalog = [],
     refetch: refetchStatusCatalog,
   } = useContainerStatusCatalog();
   const [addStatusOpen, setAddStatusOpen] = useState(false);
-  /**
-   * JobContainer create/update `status` is still a Prisma enum
-   * (EMPTY|STUFFED|GATED_IN|LOADED|IN_TRANSIT|DISCHARGED|RETURNED).
-   * Catalog may include PICKED / customs for show-all — those are not valid here.
-   */
-  const allowedContainerStatuses = useMemo(
-    () => new Set<string>(CONTAINER_STATUSES),
-    [],
-  );
+  /** Full catalog + system seeds — custom codes must be selectable and saveable. */
   const statusOptions = useMemo(() => {
-    const fromCatalog = statusCatalog
-      .filter((row) => allowedContainerStatuses.has(row.code.toUpperCase()))
-      .map((row) => ({
-        code: row.code.toUpperCase(),
-        label: row.label || row.code.replaceAll('_', ' '),
-      }));
-    if (fromCatalog.length) {
-      const seen = new Set(fromCatalog.map((r) => r.code));
-      for (const s of CONTAINER_STATUSES) {
-        if (!seen.has(s)) {
-          fromCatalog.push({ code: s, label: s.replaceAll('_', ' ') });
-        }
-      }
-      return fromCatalog;
-    }
-    return CONTAINER_STATUSES.map((s) => ({
-      code: s,
-      label: s.replaceAll('_', ' '),
+    const rows = statusCatalog.map((row) => ({
+      code: row.code.toUpperCase(),
+      label: row.label || row.code.replaceAll('_', ' '),
     }));
-  }, [statusCatalog, allowedContainerStatuses]);
+    const seen = new Set(rows.map((r) => r.code));
+    for (const s of CONTAINER_STATUSES) {
+      if (!seen.has(s)) {
+        rows.push({ code: s, label: s.replaceAll('_', ' ') });
+        seen.add(s);
+      }
+    }
+    for (const extra of [status, editDraft.status]) {
+      const code = String(extra || '')
+        .trim()
+        .toUpperCase()
+        .replace(/[\s-]+/g, '_');
+      if (code && !seen.has(code)) {
+        rows.push({ code, label: code.replaceAll('_', ' ') });
+        seen.add(code);
+      }
+    }
+    return rows.length
+      ? rows
+      : CONTAINER_STATUSES.map((s) => ({
+          code: s,
+          label: s.replaceAll('_', ' '),
+        }));
+  }, [statusCatalog, status, editDraft.status]);
+
+  const syncJobContainerStatus = async (code: string) => {
+    const normalized = code.trim().toUpperCase().replace(/[\s-]+/g, '_');
+    if (!normalized) return;
+    try {
+      await patchShowAll.mutateAsync({ container_status: normalized });
+    } catch {
+      /* container row already saved — show-all sync is best-effort for dashboard */
+    }
+  };
   const containerTypeOptions = useMemo(
     () => containerTypeSelectOptions(containerTypes),
     [containerTypes],
@@ -226,6 +238,10 @@ export function JobContainersPanel({
       },
       async (dto) => {
         await mutations.createContainer.mutateAsync(dto);
+        const savedStatus = String(dto.status || status || 'EMPTY')
+          .trim()
+          .toUpperCase();
+        await syncJobContainerStatus(savedStatus);
         setContainerTypeId('');
         setContainerNumber('');
         setSealNumber('');
@@ -284,8 +300,10 @@ export function JobContainersPanel({
   };
 
   const startEditContainer = (c: JobContainer) => {
-    const raw = String(c.status_code || c.status || 'EMPTY').toUpperCase();
-    const status = allowedContainerStatuses.has(raw) ? raw : 'EMPTY';
+    const status = String(c.status_code || c.status || 'EMPTY')
+      .trim()
+      .toUpperCase()
+      .replace(/[\s-]+/g, '_') || 'EMPTY';
     setEditId(containerRouteKey(c));
     setEditDraft({
       container_number: c.container_number ?? '',
@@ -308,13 +326,9 @@ export function JobContainersPanel({
         const n = Number(t);
         return Number.isFinite(n) ? n : undefined;
       };
-      const statusRaw = editDraft.status.trim().toUpperCase() || 'EMPTY';
-      if (!allowedContainerStatuses.has(statusRaw)) {
-        throw new Error(
-          'Container status must be EMPTY, STUFFED, GATED_IN, LOADED, IN_TRANSIT, DISCHARGED, or RETURNED.',
-        );
-      }
-      // BE UpdateJobContainerDto rejects unknown props like status_code.
+      const statusRaw =
+        editDraft.status.trim().toUpperCase().replace(/[\s-]+/g, '_') || 'EMPTY';
+      // BE UpdateJobContainerDto rejects unknown props like status_code — send status only.
       const dto: UpdateJobContainerDto = {
         container_number: editDraft.container_number.trim() || undefined,
         seal_number: editDraft.seal_number.trim() || undefined,
@@ -327,6 +341,7 @@ export function JobContainersPanel({
         cbm: toNum(editDraft.cbm),
       };
       await mutations.updateContainer.mutateAsync({ containerId, dto });
+      await syncJobContainerStatus(statusRaw);
       setEditId(null);
     }, 'Container updated.');
 
@@ -539,7 +554,8 @@ export function JobContainersPanel({
                     <p className="font-medium">{title}</p>
                     <p className="text-xs text-[var(--color-neutral-400)]">
                       Type: {typeName} · Seal: {c.seal_number || '—'} · Status:{' '}
-                      {c.status || 'EMPTY'} · Fill: {formatFillPercent(fillRow?.fill_percent)}
+                      {c.status_code || c.status || 'EMPTY'} · Fill:{' '}
+                      {formatFillPercent(fillRow?.fill_percent)}
                     </p>
                     <p className="text-xs text-[var(--color-neutral-400)]">
                       Updated: {formatUpdatedAt(c.updated_at)}
@@ -1226,8 +1242,11 @@ export function JobContainersPanel({
         entity="container-statuses"
         nested={false}
         onCreated={(code) => {
-          setStatus(code);
+          const normalized = code.trim().toUpperCase().replace(/[\s-]+/g, '_');
+          setStatus(normalized);
+          setEditDraft((prev) => ({ ...prev, status: normalized }));
           void refetchStatusCatalog();
+          void syncJobContainerStatus(normalized);
         }}
       />
     </div>

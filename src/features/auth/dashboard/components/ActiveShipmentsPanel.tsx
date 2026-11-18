@@ -558,18 +558,18 @@ export function ActiveShipmentsPanel({
                   job.containers?.length
                     ? job.containers
                     : containersByJobId.get(job.id);
-                const container = pickJobContainerDisplay(hydratedContainers, {
-                  number: job.primary_container_number,
-                  status:
-                    job.primary_container_status ||
-                    job.primary_container_status_code,
-                });
-                const containerNumber = container?.number || '';
-                const containerStatus =
-                  container?.status ||
+                const jobContainerStatus =
                   job.primary_container_status ||
                   job.primary_container_status_code ||
                   '';
+                const container = pickJobContainerDisplay(hydratedContainers, {
+                  number: job.primary_container_number,
+                  status: jobContainerStatus,
+                });
+                const containerNumber = container?.number || '';
+                // Prefer job show-all / primary status so custom catalog codes win over enum defaults.
+                const containerStatus =
+                  jobContainerStatus || container?.status || '';
                 const containerPending =
                   !containerNumber &&
                   !containerStatus &&
