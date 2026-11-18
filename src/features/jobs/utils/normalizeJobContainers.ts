@@ -169,8 +169,9 @@ export function pickJobContainerDisplay(
     picked?.container_number?.trim() ||
     fallback?.number?.trim() ||
     '';
+  // Prefer catalog status_code, then enum status, then job-level fallback (show-all).
   const status =
-    String(picked?.status ?? '').trim() ||
+    String(picked?.status_code ?? picked?.status ?? '').trim() ||
     fallback?.status?.trim() ||
     '';
 

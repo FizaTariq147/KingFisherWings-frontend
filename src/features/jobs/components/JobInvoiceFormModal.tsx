@@ -50,28 +50,45 @@ function asSaveDto(
   }
   const defaultDrCr = kind === 'purchase' ? 'DR' : 'CR';
   const lines = Array.isArray(raw.lines)
-    ? raw.lines.map((line) => ({
-        job_charge_id: isUuid(String(line.job_charge_id ?? '').trim())
-          ? String(line.job_charge_id).trim()
-          : undefined,
-        charge_code_id: isUuid(String(line.charge_code_id ?? '').trim())
-          ? String(line.charge_code_id).trim()
-          : undefined,
-        description: line.description ?? '',
-        shipment_no: line.shipment_no ?? '',
-        unit: line.unit ?? '',
-        quantity: Number(line.quantity ?? 1) || 1,
-        currency_code: line.currency_code ?? raw.currency_code ?? 'AED',
-        exchange_rate: Number(line.exchange_rate ?? raw.exchange_rate ?? 1) || 1,
-        dr_cr:
-          line.dr_cr === 'DR' || line.dr_cr === 'CR' ? line.dr_cr : defaultDrCr,
-        amount: Number(line.amount ?? 0) || 0,
-        fcy_amount: line.fcy_amount != null ? Number(line.fcy_amount) : undefined,
-        tax_rate_id: isUuid(String(line.tax_rate_id ?? '').trim())
-          ? String(line.tax_rate_id).trim()
-          : undefined,
-        pp_cc: line.pp_cc === 'PP' || line.pp_cc === 'CC' ? line.pp_cc : undefined,
-      }))
+    ? raw.lines.map((line) => {
+        const qty = Number(line.quantity ?? 1) || 1;
+        const rec = line as JobInvoiceFormLineDto & {
+          unit_price?: number;
+          unitPrice?: number;
+          rate?: number;
+        };
+        const unitPrice = Number(
+          rec.unit_price ?? rec.unitPrice ?? rec.rate ?? NaN,
+        );
+        const rawAmount = Number(line.amount ?? 0) || 0;
+        // Amount = Qty × rate when BE sends unit_price/rate; otherwise keep amount.
+        const amount =
+          Number.isFinite(unitPrice) && unitPrice >= 0
+            ? Math.round(qty * unitPrice * 100) / 100
+            : rawAmount;
+        return {
+          job_charge_id: isUuid(String(line.job_charge_id ?? '').trim())
+            ? String(line.job_charge_id).trim()
+            : undefined,
+          charge_code_id: isUuid(String(line.charge_code_id ?? '').trim())
+            ? String(line.charge_code_id).trim()
+            : undefined,
+          description: line.description ?? '',
+          shipment_no: line.shipment_no ?? '',
+          unit: line.unit ?? '',
+          quantity: qty,
+          currency_code: line.currency_code ?? raw.currency_code ?? 'AED',
+          exchange_rate: Number(line.exchange_rate ?? raw.exchange_rate ?? 1) || 1,
+          dr_cr:
+            line.dr_cr === 'DR' || line.dr_cr === 'CR' ? line.dr_cr : defaultDrCr,
+          amount,
+          fcy_amount: line.fcy_amount != null ? Number(line.fcy_amount) : undefined,
+          tax_rate_id: isUuid(String(line.tax_rate_id ?? '').trim())
+            ? String(line.tax_rate_id).trim()
+            : undefined,
+          pp_cc: line.pp_cc === 'PP' || line.pp_cc === 'CC' ? line.pp_cc : undefined,
+        };
+      })
     : [];
   const partyId = isUuid(String(raw.party_id ?? '').trim())
     ? String(raw.party_id).trim()
@@ -137,9 +154,20 @@ function updateLine(
   index: number,
   patch: Partial<JobInvoiceFormLineDto>,
 ): JobInvoiceFormLineDto[] {
-  return lines.map((line, i) =>
-    i === index ? { ...line, ...patch, amount: Number(patch.amount ?? line.amount) || 0 } : line,
-  );
+  return lines.map((line, i) => {
+    if (i !== index) return line;
+    const next: JobInvoiceFormLineDto = { ...line, ...patch };
+    if (patch.quantity != null && patch.amount == null) {
+      const prevQty = Number(line.quantity ?? 1) || 1;
+      const prevAmount = Number(line.amount ?? 0) || 0;
+      const rate = prevQty > 0 ? prevAmount / prevQty : prevAmount;
+      const qty = Number(patch.quantity) || 0;
+      next.amount = Math.round(qty * rate * 100) / 100;
+    } else {
+      next.amount = Number(patch.amount ?? line.amount) || 0;
+    }
+    return next;
+  });
 }
 
 function costingEntrySummary(entry: unknown): string[] {
@@ -563,13 +591,18 @@ export function JobInvoiceFormModal({
                               type="number"
                               className="h-8 w-20 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2"
                               value={line.quantity ?? 1}
-                              onChange={(e) =>
+                              onChange={(e) => {
+                                const lines = updateLine(form.lines ?? [], index, {
+                                  quantity: Number(e.target.value) || 0,
+                                });
                                 patch({
-                                  lines: updateLine(form.lines ?? [], index, {
-                                    quantity: Number(e.target.value) || 0,
-                                  }),
-                                })
-                              }
+                                  lines,
+                                  bill_amount: lines.reduce(
+                                    (sum, l) => sum + (Number(l.amount) || 0),
+                                    0,
+                                  ),
+                                });
+                              }}
                             />
                           </td>
                           <td className="px-2 py-1">
@@ -577,13 +610,18 @@ export function JobInvoiceFormModal({
                               type="number"
                               className="h-8 w-28 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2"
                               value={line.amount ?? 0}
-                              onChange={(e) =>
+                              onChange={(e) => {
+                                const lines = updateLine(form.lines ?? [], index, {
+                                  amount: Number(e.target.value) || 0,
+                                });
                                 patch({
-                                  lines: updateLine(form.lines ?? [], index, {
-                                    amount: Number(e.target.value) || 0,
-                                  }),
-                                })
-                              }
+                                  lines,
+                                  bill_amount: lines.reduce(
+                                    (sum, l) => sum + (Number(l.amount) || 0),
+                                    0,
+                                  ),
+                                });
+                              }}
                             />
                           </td>
                           <td className="px-2 py-1">
