@@ -1,0 +1,24 @@
+{
+  "outFile": "D:\\KingFisherWings-frontend\\reports\\full-run-track-a-last.csv",
+  "documents": 399,
+  "regressions": 0,
+  "regressionCodes": [],
+  "totals": {
+    "extractMs": 27220,
+    "renderMs": 311463,
+    "rasterReferenceMs": 4217,
+    "rasterRenderedMs": 395678,
+    "diffMs": 1134745,
+    "specHit": 396,
+    "specMiss": 0,
+    "goldenHit": 396,
+    "goldenMiss": 0
+  },
+  "version": {
+    "id": "track-a-speed-1",
+    "extract": "e1-class-order",
+    "render": "r3-glyph-advances",
+    "checker": "c2-nontxt-diagnose",
+    "raster": "pdftoppm-150"
+  }
+}

@@ -9,6 +9,7 @@ import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import fontkit from '@pdf-lib/fontkit';
 import { PDFDocument, rgb } from 'pdf-lib';
+import { applyAdvanceTable, baseFontName, embedReferenceFont, referenceFontSnapshots, widthTables } from './reference-font.mjs';
 
 const require = createRequire(import.meta.url);
 const {
@@ -23,8 +24,13 @@ const {
   popGraphicsState,
   pushGraphicsState,
   restoreDashPattern,
+  beginText,
+  endText,
   setCharacterSpacing,
   setCharacterSqueeze,
+  setFontAndSize,
+  setTextMatrix,
+  showText,
   setDashPattern,
   setFillingRgbColor,
   setLineCap,
@@ -39,6 +45,49 @@ const CODE128AUTO = require('jsbarcode/bin/barcodes/CODE128/CODE128_AUTO.js').de
 const QRCode = require('qrcode');
 import { fontFile, mapFont } from './font-map.mjs';
 
+const CHAR_FALLBACK = JSON.parse(fs.readFileSync(path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), 'reports/char-fallback.json'), 'utf8'));
+
+function parseCodepoint(token) {
+  return Number.parseInt(String(token).replace(/^U\+/i, ''), 16);
+}
+
+function arabicFallbackCodepoints() {
+  const set = new Set((CHAR_FALLBACK.codepoints || []).map(parseCodepoint));
+  for (const range of CHAR_FALLBACK.ranges || []) {
+    const from = parseCodepoint(range.from);
+    const to = parseCodepoint(range.to);
+    for (let code = from; code <= to; code += 1) set.add(code);
+  }
+  return set;
+}
+
+const ARABIC_FALLBACK_CODES = arabicFallbackCodepoints();
+
+// Test-only local fonts. Never copied into the repo. --system-fonts reads them for the outline diagnostic.
+const SYSTEM_ARIAL = 'C:/Windows/Fonts/arial.ttf';
+const SYSTEM_ARIAL_BOLD = 'C:/Windows/Fonts/arialbd.ttf';
+const SYSTEM_CONSOLAS = 'C:/Windows/Fonts/consola.ttf';
+// Consolas embeds 1126 units at 2048 per em (549.8/1000). Liberation Mono embeds 1229 (600.1/1000).
+const CONSOLAS_ADVANCE = 1126;
+const LIBERATION_MONO_ADVANCE = 1229;
+const FONT_UPM = 2048;
+
+export function fontPathFor(spanFont, systemFonts = false) {
+  const mapped = mapFont(spanFont);
+  if (!systemFonts) return fontFile(mapped);
+  if (/consolas/i.test(spanFont || '')) return SYSTEM_CONSOLAS;
+  if (/arial/i.test(spanFont || '') && !/unicode/i.test(spanFont || '')) {
+    return /bold|black|semibold|heavy/i.test(spanFont || '') ? SYSTEM_ARIAL_BOLD : SYSTEM_ARIAL;
+  }
+  return fontFile(mapped);
+}
+
+export function characterSpacingFor(span, systemFonts = false) {
+  const base = span.charSpacing || 0;
+  if (systemFonts || !/consolas/i.test(span.font || '')) return base;
+  return base + ((CONSOLAS_ADVANCE - LIBERATION_MONO_ADVANCE) / FONT_UPM) * (span.size || 8);
+}
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const longValues = JSON.parse(fs.readFileSync(path.join(root, 'reports/fixtures/long-values.json'), 'utf8'));
 
@@ -49,7 +98,13 @@ function parseColor(hex) {
 }
 
 function formatFor(span, spec) {
-  return spec.formatRules.find((rule) => rule.path === span.binding)?.format || '';
+  const bound = spec.formatRules.find((rule) => rule.path === span.binding)?.format;
+  if (bound) return bound;
+  if (/amount|total|qty|rate|price|tax|debit|credit|balance|number|qty/i.test(span.binding || '')) return 'number';
+  if (/date|validity|eta|etd/i.test(span.binding || '')) return 'date';
+  if (/address|party|shipper|consignee|notify|description|name|remarks|cargo/i.test(span.binding || '')) return 'text';
+  if (/address|party|shipper|consignee|notify|description|name|remarks|cargo/i.test(span.text || '')) return 'text';
+  return '';
 }
 
 function replacement(span, spec) {
@@ -63,9 +118,20 @@ function replacement(span, spec) {
 function overflowMode(span, spec) {
   if (span.role !== 'dynamic') return 'none';
   const format = formatFor(span, spec);
-  if (format === 'number' || format === 'currency' || format === 'date') return spec.overflowRules.number || 'shrink';
-  if (format === 'text' || format === 'amount-words') return spec.overflowRules.text || 'wrap';
-  return spec.overflowRules.default || 'clip';
+  if (format === 'number' || format === 'currency' || format === 'date') return 'shrink-clip';
+  if (format === 'text' || format === 'amount-words') return 'wrap-shrink-clip';
+  // Heuristic for unbound dynamic fields.
+  if (/^\(?-?[0-9]/.test(String(span.text || '').trim())) return 'shrink-clip';
+  return 'wrap-shrink-clip';
+}
+
+function maxLinesFor(span, spec) {
+  const size = span.size || 8;
+  const boxHeight = Math.max(span.height || 0, size);
+  const fromBox = Math.max(1, Math.floor(boxHeight / (size * 1.15)));
+  const cap = spec.overflowRules?.maxLines;
+  // Prefer box-derived lines; optional rule is only an upper bound.
+  return cap ? Math.min(fromBox, cap) : fromBox;
 }
 
 function wrapLines(text, font, size, maxWidth) {
@@ -83,23 +149,43 @@ function wrapLines(text, font, size, maxWidth) {
   return lines.length ? lines : [''];
 }
 
-async function embedBundles(doc) {
+async function embedBundles(doc, options = {}, pages = [], snapshots = new Map()) {
   const cache = new Map();
-  async function embed(file) {
-    if (!cache.has(file)) cache.set(file, await doc.embedFont(fs.readFileSync(file), { subset: true }));
-    return cache.get(file);
+  const features = options.systemFonts ? undefined : { kern: false, liga: false, clig: false };
+  const widths = widthTables(pages);
+  const outlines = [];
+  const references = new Map();
+  async function embed(file, fontName) {
+    const key = `${fontName || ''}|${file}|${features ? 'nokern' : 'default'}`;
+    if (!cache.has(key)) {
+      const font = await doc.embedFont(fs.readFileSync(file), { subset: true, features });
+      cache.set(key, font);
+      if (fontName && widths.has(fontName)) outlines.push({ font, widths: widths.get(fontName) });
+    }
+    return cache.get(key);
   }
   return {
     embed,
+    systemFonts: Boolean(options.systemFonts),
+    referenceFont(span) {
+      const key = baseFontName(span.font);
+      if (!references.has(key)) references.set(key, embedReferenceFont(doc, span.font, snapshots.get(key)));
+      return references.get(key);
+    },
+    applyWidths() {
+      let patched = 0;
+      for (const entry of outlines) patched += applyAdvanceTable(entry.font, entry.widths);
+      return patched;
+    },
     async forSpan(span, text) {
       const mapped = mapFont(span.font);
-      const primary = await embed(fontFile(mapped));
+      const primary = await embed(fontPathFor(span.font, options.systemFonts), span.font);
       try {
         primary.encodeText(text);
         return { font: primary, mapped, fallback: false };
       } catch {
         const fallback = mapFont(mapped.weight === 'bold' ? 'Noto Sans Bold' : 'Noto Sans');
-        return { font: await embed(fontFile(fallback)), mapped: fallback, fallback: true };
+        return { font: await embed(fontFile(fallback), `${span.font}|fallback`), mapped: fallback, fallback: true };
       }
     },
   };
@@ -127,43 +213,104 @@ function rgbParts(hex) {
   return [((value >> 16) & 255) / 255, ((value >> 8) & 255) / 255, (value & 255) / 255];
 }
 
-function drawPositioned(page, span, pieces, size, color) {
+function drawPositioned(page, span, pieces, size, color, spacing) {
   const stroke = rgbParts(span.stroke || span.color || '#000000');
+  const fill = rgbParts(span.color || '#000000');
+  const arabic = [...String(span.text || '')].some((char) => ARABIC_FALLBACK_CODES.has(char.codePointAt(0)));
+  // Arabic: never apply horizontal scaling; match width with character spacing only.
+  const scaleX = arabic ? 1 : (Number(span.horizontalScale) || 1);
+  const scaled = !arabic && Math.abs(scaleX - 1) > 0.0005;
   page.pushOperators(
     pushGraphicsState(),
-    setCharacterSpacing(span.charSpacing || 0),
+    setCharacterSpacing(spacing),
     setWordSpacing(span.wordSpacing || 0),
-    setCharacterSqueeze(span.hScale || 100),
+    setCharacterSqueeze(arabic ? 100 : (span.hScale || 100)),
     setLineWidth(span.strokeWidth || 0.6),
     setStrokingRgbColor(...stroke),
+    setFillingRgbColor(...fill),
     setTextRenderingMode(span.renderMode || 0),
   );
   for (const piece of pieces) {
     if (!piece.text) continue;
-    page.drawText(piece.text, { x: piece.x, y: piece.y, size, font: piece.font, color });
+    // pdf-lib drawText only fills; keep Tr/stroke from the outer text state.
+    const { newFontKey } = page.setOrEmbedFont(piece.font);
+    page.pushOperators(
+      beginText(),
+      setFontAndSize(newFontKey, size),
+      setTextMatrix(scaled ? scaleX : 1, 0, 0, 1, piece.x, piece.y),
+      showText(piece.font.encodeText(piece.text)),
+      endText(),
+    );
   }
   page.pushOperators(popGraphicsState());
 }
 
+function isArabicPresentation(char) {
+  return ARABIC_FALLBACK_CODES.has(char.codePointAt(0));
+}
+
+function placeArabicGlyphs(font, span, text, x, y) {
+  const source = String(span.glyphText || text);
+  const chars = [...source];
+  const advances = span.advances || [];
+  if (!advances.length || advances.length < chars.length) return null;
+  const size = span.size || 8;
+  const lead = source.startsWith(text) ? 0 : Math.max(0, source.indexOf(text));
+  const wanted = [...text].length;
+  const pieces = [];
+  let cursor = x;
+  for (let index = 0; index < chars.length; index += 1) {
+    const char = chars[index];
+    const inRun = index >= lead && index < lead + wanted;
+    if (inRun && char.trim()) {
+      pieces.push({ text: char, font, x: cursor, y, fallback: true, arabic: true, placed: true });
+    }
+    const advance = ((Number(advances[index]) || 0) / 1000) * size;
+    const spacing = (span.charSpacing || 0) + (char === ' ' ? (span.wordSpacing || 0) : 0);
+    cursor += advance + spacing;
+  }
+  return pieces.length ? pieces : null;
+}
+
 async function piecesFor(bundles, span, text, x, y) {
+  const chars = [...String(text)];
+  const allArabic = chars.length > 0 && chars.every((char) => isArabicPresentation(char) || /\s/.test(char));
+  if (allArabic && !bundles.systemFonts) {
+    const naskh = await bundles.embed(fontFile(mapFont('Noto Naskh Arabic')), 'NotoNaskhArabic');
+    const placed = placeArabicGlyphs(naskh, span, text, x, y);
+    if (placed) return placed;
+    return [{ text, font: naskh, x, y, fallback: true, arabic: true }];
+  }
+  if (span.fontEmbedded === false && !bundles.systemFonts && !chars.some(isArabicPresentation)) {
+    return [{ text, font: bundles.referenceFont(span), x, y, fallback: false }];
+  }
   const mapped = mapFont(span.font);
-  const primaryFile = fontFile(mapped);
-  const primary = await bundles.embed(primaryFile);
+  const primaryFile = fontPathFor(span.font, bundles.systemFonts);
+  const primary = span.fontEmbedded === false && !bundles.systemFonts
+    ? bundles.referenceFont(span)
+    : await bundles.embed(primaryFile, span.font);
   const fallbackName = mapped.weight === 'bold' ? 'Noto Sans Bold' : 'Noto Sans';
-  const fallback = await bundles.embed(fontFile(mapFont(fallbackName)));
+  const fallback = await bundles.embed(fontFile(mapFont(fallbackName)), `${span.font}|fallback`);
+  const naskh = await bundles.embed(fontFile(mapFont('Noto Naskh Arabic')), 'NotoNaskhArabic');
   const runs = [];
   let current = '';
   let useFallback = null;
+  let useNaskh = null;
   function push() {
     if (!current) return;
-    runs.push({ text: current, font: useFallback ? fallback : primary, fallback: useFallback });
+    const font = useNaskh ? naskh : useFallback ? fallback : primary;
+    runs.push({ text: current, font, fallback: Boolean(useFallback || useNaskh), arabic: Boolean(useNaskh) });
     current = '';
   }
-  for (const char of String(text)) {
+  for (const char of chars) {
+    const arabicChar = isArabicPresentation(char);
     let fallbackChar = false;
-    try { primary.encodeText(char); } catch { fallbackChar = true; }
-    if (useFallback !== null && fallbackChar !== useFallback) push();
+    if (!arabicChar) {
+      try { primary.encodeText(char); } catch { fallbackChar = true; }
+    }
+    if (useFallback !== null && (fallbackChar !== useFallback || arabicChar !== useNaskh)) push();
     useFallback = fallbackChar;
+    useNaskh = arabicChar;
     current += char;
   }
   push();
@@ -266,12 +413,13 @@ export async function renderSpec(code, options = {}) {
   const spec = JSON.parse(fs.readFileSync(path.join(root, 'reports/specs', `${code}.json`), 'utf8'));
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
-  const bundles = await embedBundles(doc);
   let pages = spec.pages?.length ? spec.pages : [spec];
   if (options.live) {
     const blank = (source) => !(source.spans || []).length && !(source.lines || []).length && !(source.rects || []).length && !(source.paths || []).length && !(source.images || []).length && !(source.table?.rows || []).length;
     while (pages.length > 1 && blank(pages.at(-1))) pages = pages.slice(0, -1);
   }
+  const snapshots = options.systemFonts ? new Map() : await referenceFontSnapshots(path.join(root, spec.source));
+  const bundles = await embedBundles(doc, options, pages, snapshots);
   const overflowLog = [];
   for (const source of pages) {
     const page = doc.addPage([source.width || spec.page.width, source.height || spec.page.height]);
@@ -291,15 +439,17 @@ export async function renderSpec(code, options = {}) {
       if (rect.dash?.length) page.pushOperators(restoreDashPattern());
     }
     for (const line of source.lines || []) {
-      page.pushOperators(setLineCap(line.lineCap || 0), setLineJoin(line.lineJoin || 0));
-      if (line.dash?.length) page.pushOperators(setDashPattern(line.dash, line.dashPhase || 0));
+      page.pushOperators(pushGraphicsState(), setLineJoin(line.lineJoin || 0));
       page.drawLine({
         start: { x: line.x1, y: line.y1 },
         end: { x: line.x2, y: line.y2 },
         thickness: line.width || 0.4,
         color: parseColor(line.color),
+        lineCap: line.lineCap == null ? 0 : line.lineCap,
+        dashArray: line.dash?.length ? line.dash : undefined,
+        dashPhase: line.dash?.length ? (line.dashPhase || 0) : undefined,
       });
-      if (line.dash?.length) page.pushOperators(restoreDashPattern());
+      page.pushOperators(popGraphicsState());
     }
     for (const path of source.paths || []) drawPath(page, path);
     for (const image of source.images || []) {
@@ -318,46 +468,98 @@ export async function renderSpec(code, options = {}) {
       const color = parseColor(span.color);
       const box = Math.max(span.width, 1);
       let size = span.size || 8;
+      const originalSize = size;
       const probe = await piecesFor(bundles, span, text, span.x, span.y);
       const probeFont = probe[0]?.font;
-      if (mode === 'shrink' && probeFont) {
-        while (size > 4 && probeFont.widthOfTextAtSize(text, size) > box + 0.5) size -= 0.25;
+      const pageWidth = source.width || spec.page.width;
+      const visibleSegments = (span.segments || []).filter((segment) => segment.x < pageWidth);
+      let spacing = span.advances?.length || span.fontEmbedded === false
+        ? (span.charSpacing || 0)
+        : characterSpacingFor(span, options.systemFonts);
+      if (probe.some((piece) => piece.placed)) {
+        spacing = 0;
+      } else if (probe[0]?.arabic && probeFont) {
+        const chars = [...String(text)];
+        const natural = probeFont.widthOfTextAtSize(text, size);
+        const target = span.width || natural;
+        spacing = chars.length > 1 ? (target - natural) / (chars.length - 1) : 0;
       }
-      const positioned = span.segments?.length && mode === 'none'
-        ? (await Promise.all(span.segments.map(async (segment) => piecesFor(bundles, { ...span, size }, segment.text, segment.x, segment.y)))).flat()
-        : await piecesFor(bundles, { ...span, size }, text, span.x, span.y);
-      const draw = () => drawPositioned(page, span, positioned, size, color);
-      if (mode === 'wrap' && probeFont) {
-        const lines = wrapLines(text, probeFont, size, box).slice(0, spec.overflowRules.maxLines || 3);
-        for (let index = 0; index < lines.length; index += 1) {
-          const linePieces = await piecesFor(bundles, { ...span, size }, lines[index], span.x, span.y - index * size * 1.15);
-          drawPositioned(page, span, linePieces, size, color);
+      const maxLines = maxLinesFor(span, spec);
+      const minSize = originalSize * 0.7;
+
+      if (mode === 'wrap-shrink-clip' && probeFont) {
+        const words = String(text).replace(/\s+/g, ' ').trim().split(' ').filter(Boolean);
+        function pack(atSize) {
+          const lines = wrapLines(text, probeFont, atSize, box).slice(0, maxLines);
+          const packed = lines.join(' ').split(/\s+/).filter(Boolean);
+          const widthOk = lines.every((line) => probeFont.widthOfTextAtSize(line, atSize) <= box + 0.5);
+          return { lines, fitted: widthOk && packed.length >= words.length };
         }
-        overflowLog.push({ id: span.id, mode, size, lines: lines.length, box });
+        let packed = pack(size);
+        if (!packed.fitted) {
+          while (size > minSize + 0.01) {
+            size -= 0.25;
+            packed = pack(size);
+            if (packed.fitted) break;
+          }
+        }
+        if (!packed.fitted) {
+          overflowLog.push({ id: span.id, mode: 'clip', warning: 'text overflow clipped after wrap/shrink', size, lines: packed.lines.length, box });
+          const clipped = packed.lines[0] || text;
+          const linePieces = await piecesFor(bundles, { ...span, size }, clipped, span.x, span.y);
+          drawClipped(page, span, () => drawPositioned(page, span, linePieces, size, color, spacing));
+          continue;
+        }
+        for (let index = 0; index < packed.lines.length; index += 1) {
+          const linePieces = await piecesFor(bundles, { ...span, size }, packed.lines[index], span.x, span.y - index * size * 1.15);
+          drawPositioned(page, span, linePieces, size, color, spacing);
+        }
+        overflowLog.push({ id: span.id, mode: size < originalSize ? 'wrap-shrink' : 'wrap', size, lines: packed.lines.length, box });
         continue;
       }
-      if (mode === 'clip') {
-        drawClipped(page, span, draw);
-        overflowLog.push({ id: span.id, mode, size, lines: 1, box });
+
+      if (mode === 'shrink-clip' && probeFont) {
+        while (size > minSize + 0.01 && probeFont.widthOfTextAtSize(text, size) > box + 0.5) size -= 0.25;
+        const positioned = await piecesFor(bundles, { ...span, size }, text, span.x, span.y);
+        if (probeFont.widthOfTextAtSize(text, size) > box + 0.5) {
+          overflowLog.push({ id: span.id, mode: 'clip', warning: 'number overflow clipped after shrink', size, lines: 1, box });
+          drawClipped(page, span, () => drawPositioned(page, span, positioned, size, color, spacing));
+        } else {
+          drawPositioned(page, span, positioned, size, color, spacing);
+          overflowLog.push({ id: span.id, mode: size < originalSize ? 'shrink' : 'fit', size, lines: 1, box });
+        }
         continue;
       }
-      draw();
-      if (mode === 'shrink') overflowLog.push({ id: span.id, mode, size, lines: 1, box });
+
+      const positioned = span.segments?.length && mode === 'none'
+        ? (await Promise.all(visibleSegments.map(async (segment) => piecesFor(bundles, { ...span, size }, segment.text, segment.x, segment.y)))).flat()
+        : (span.x >= pageWidth ? [] : await piecesFor(bundles, { ...span, size }, text, span.x, span.y));
+      if (!positioned.length) continue;
+      drawPositioned(page, span, positioned, size, color, spacing);
     }
   }
+  const patchedAdvances = bundles.applyWidths();
   const bytes = await doc.save();
   const outDir = path.join(root, 'reports/output');
   fs.mkdirSync(outDir, { recursive: true });
   const suffix = options.overflow ? '.overflow' : '';
-  const outPath = path.join(outDir, `${code}${suffix}.pdf`);
+  const outPath = options.outputPath || path.join(outDir, `${code}${suffix}.pdf`);
   fs.writeFileSync(outPath, bytes);
-  if (options.overflow) {
-    fs.writeFileSync(path.join(outDir, `${code}.overflow.json`), `${JSON.stringify({ code, maxLines: spec.overflowRules.maxLines, spans: overflowLog }, null, 2)}\n`);
+  fs.writeFileSync(path.join(outDir, `${code}.advances.json`), `${JSON.stringify({ code, patchedAdvances }, null, 2)}\n`);
+  const warnings = overflowLog.filter((entry) => entry.warning);
+  if (options.overflow || warnings.length) {
+    fs.writeFileSync(path.join(outDir, `${code}.overflow.json`), `${JSON.stringify({ code, maxLines: spec.overflowRules?.maxLines, spans: overflowLog, warnings }, null, 2)}\n`);
   }
-  return outPath;
+  return { outPath, overflowLog, warnings };
 }
 
 const code = process.argv[2];
 if (code && process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  console.log(await renderSpec(code, { overflow: process.argv.includes('--overflow'), live: process.argv.includes('--live') }));
+  const outFlag = process.argv.indexOf('--out');
+  console.log(await renderSpec(code, {
+    overflow: process.argv.includes('--overflow'),
+    live: process.argv.includes('--live'),
+    systemFonts: process.argv.includes('--system-fonts'),
+    outputPath: outFlag >= 0 ? process.argv[outFlag + 1] : undefined,
+  }));
 }

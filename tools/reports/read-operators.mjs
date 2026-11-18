@@ -13,6 +13,10 @@ function round2(value) {
   return Math.round(Number(value) * 100) / 100;
 }
 
+function round4(value) {
+  return Math.round(Number(value) * 10000) / 10000;
+}
+
 function hex(color) {
   const raw = [...(color || [0, 0, 0])];
   while (raw.length < 3) raw.push(raw[0] || 0);
@@ -146,6 +150,15 @@ function glyphsOf(arg) {
   return glyphs;
 }
 
+function fontIsEmbedded(page, fontId) {
+  try {
+    if (page?.commonObjs?.has?.(fontId)) return !page.commonObjs.get(fontId).missingFile;
+  } catch {
+    return false;
+  }
+  return false;
+}
+
 function fontNameOf(page, fontId) {
   try {
     if (page?.commonObjs?.has?.(fontId)) {
@@ -191,7 +204,10 @@ function strokeStyle(style) {
 function pushBox(rects, lines, minX, minY, maxX, maxY, style) {
   const width = maxX - minX;
   const height = maxY - minY;
-  if (width > 2 && height > 2) {
+  const filled = style.paint === 'fill' || style.paint === 'both';
+  // Keep filled micro-rects as rects. Converting them to strokes drops the
+  // near-white 2 pt bars used as cell backgrounds.
+  if ((width > 2 && height > 2) || (filled && width >= 1 && height >= 1)) {
     rects.push({
       x: round1(minX),
       y: round1(minY),
@@ -202,7 +218,8 @@ function pushBox(rects, lines, minX, minY, maxX, maxY, style) {
       fill: style.paint === 'stroke' ? null : style.fill,
       ...strokeStyle(style),
     });
-  } else if (width > 4 && height >= 0.15 && height <= 2.5) {
+  } else if (width > 2 && height >= 0.15 && height <= 2.5) {
+    // Short rules (length <= 4) still count; the previous >4 cutoff dropped them.
     lines.push({
       x1: round1(minX),
       y1: round1(minY + height / 2),
@@ -212,7 +229,7 @@ function pushBox(rects, lines, minX, minY, maxX, maxY, style) {
       color: style.stroke || style.fill || '#000000',
       ...strokeStyle(style),
     });
-  } else if (height > 4 && width >= 0.15 && width <= 2.5) {
+  } else if (height > 2 && width >= 0.15 && width <= 2.5) {
     lines.push({
       x1: round1(minX + width / 2),
       y1: round1(minY),
@@ -379,7 +396,7 @@ function argumentHasGlyphs(arg) {
   });
 }
 
-function showSpan(state, arg, page, uncaptured) {
+function showSpan(state, arg, page, uncaptured, pageBox, droppedPast) {
   const glyphs = glyphsOf(arg);
   if (!glyphs.length) {
     if (argumentHasGlyphs(arg)) uncaptured.undecodedText += 1;
@@ -389,18 +406,33 @@ function showSpan(state, arg, page, uncaptured) {
   const baseTextScale = Math.hypot(state.textMatrix[2], state.textMatrix[3]) || 1;
   const baseCombined = multiply(state.ctm, state.textMatrix);
   const userSize = (state.fontSize * Math.hypot(baseCombined[2], baseCombined[3])) / baseTextScale;
+  const axisAligned = Math.abs(state.textMatrix[1]) < 1e-4 && Math.abs(state.textMatrix[2]) < 1e-4
+    && Math.abs(state.ctm[1]) < 1e-4 && Math.abs(state.ctm[2]) < 1e-4;
+  const horizontal = state.fontSize * Math.hypot(baseCombined[0], baseCombined[1]);
+  const horizontalScale = axisAligned && userSize ? horizontal / userSize : 1;
   let cursor = 0;
   let glyphWidth = 0;
   let segmentStart = 0;
   let segmentText = '';
   const segments = [];
+  const advances = [];
+  let segmentAdvance = 0;
   function closeSegment() {
     if (!segmentText) {
       segmentStart = cursor;
+      segmentAdvance = advances.length;
       return;
     }
     const origin = textPoint(state, segmentStart);
     const end = textPoint(state, cursor);
+    if (pageBox && origin[0] >= pageBox.width) {
+      advances.splice(segmentAdvance);
+      droppedPast?.push({ text: segmentText, x: round1(origin[0]), y: round1(origin[1]) });
+      segmentText = '';
+      segmentStart = cursor;
+      segmentAdvance = advances.length;
+      return;
+    }
     segments.push({
       text: segmentText,
       x: round1(origin[0]),
@@ -409,6 +441,7 @@ function showSpan(state, arg, page, uncaptured) {
     });
     segmentText = '';
     segmentStart = cursor;
+    segmentAdvance = advances.length;
   }
   for (const glyph of glyphs) {
     if (typeof glyph === 'number') {
@@ -420,6 +453,7 @@ function showSpan(state, arg, page, uncaptured) {
     const unicode = glyph.unicode == null ? '' : String(glyph.unicode);
     const advance = ((Number(glyph.width) || 0) / 1000) * state.fontSize;
     glyphWidth += ((Number(glyph.width) || 0) / 1000) * userSize;
+    if (unicode) advances.push(round4(Number(glyph.width) || 0));
     if (!segmentText) segmentStart = cursor;
     segmentText += unicode;
     cursor += (advance + state.charSpacing + (unicode === ' ' ? state.wordSpacing : 0)) * scale;
@@ -430,7 +464,6 @@ function showSpan(state, arg, page, uncaptured) {
   state.textMatrix = translateText(state.textMatrix, cursor, 0);
   const combined = multiply(state.ctm, state.textMatrix);
   const textScale = Math.hypot(state.textMatrix[2], state.textMatrix[3]) || 1;
-  const size = round1((state.fontSize * Math.hypot(combined[2], combined[3])) / textScale);
   const text = segments.map((segment) => segment.text).join('');
   if (!text.replace(/\s+/g, '').length) return { empty: true };
   return {
@@ -438,7 +471,7 @@ function showSpan(state, arg, page, uncaptured) {
     glyphText: text,
     segments,
     font: fontNameOf(page, state.fontId),
-    size: size || round1(state.fontSize),
+    size: round4((state.fontSize * Math.hypot(combined[2], combined[3])) / textScale) || round4(state.fontSize),
     color: hex(state.fill),
     colorSource: state.fillSource,
     x: round1(start[0]),
@@ -447,9 +480,12 @@ function showSpan(state, arg, page, uncaptured) {
     anchor: 'left',
     alignment: 'left',
     hScale: state.hScale,
+    horizontalScale: round4(horizontalScale) || 1,
     charSpacing: state.charSpacing,
     wordSpacing: state.wordSpacing,
     glyphWidth: round2(glyphWidth),
+    advances,
+    fontEmbedded: fontIsEmbedded(page, state.fontId),
     renderMode: state.textRenderMode || 0,
     stroke: hex(state.stroke),
     strokeWidth: round2(state.lineWidth),
@@ -477,6 +513,7 @@ export function readOperators(ops, page, pageBox) {
     unknownOps: {},
   };
   const dropped = { count: 0 };
+  const droppedPast = [];
   const rects = [];
   const lines = [];
   const paths = [];
@@ -606,7 +643,7 @@ export function readOperators(ops, page, pageBox) {
         if (keepBox({ minX: Math.min(...xs), minY: Math.min(...ys), maxX: Math.max(...xs), maxY: Math.max(...ys) }, pageBox, dropped)) paths.push(path);
       }
     } else if (show.has(fn)) {
-      const span = showSpan(state, args[i], page, uncaptured);
+      const span = showSpan(state, args[i], page, uncaptured, pageBox, droppedPast);
       if (!span) continue;
       if (span.empty) {
         empty += 1;
@@ -642,7 +679,7 @@ export function readOperators(ops, page, pageBox) {
     } else if (fn === OPS.paintXObject) uncaptured.xobjects += 1;
   }
 
-  return { spans, rects, lines, paths, images, shadings, fontNames, empty, uncaptured, droppedOutside: dropped.count };
+  return { spans, rects, lines, paths, images, shadings, fontNames, empty, uncaptured, droppedOutside: dropped.count, droppedPastEdge: droppedPast };
 }
 
 export function countFeatures(ops) {

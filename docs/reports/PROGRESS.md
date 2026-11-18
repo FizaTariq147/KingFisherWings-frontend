@@ -48,7 +48,7 @@ This workspace is the React frontend. There is no NestJS app and no PostgreSQL s
 |---|---|
 | 0 Inventory and clustering | Done. |
 | 0.5 Code map, status file, layout recount | Done. |
-| 1 Pilot extraction | Four pilots through round 4. None accepted. Other layouts not started. |
+| 1 Pilot extraction | Four pilots through round 8. None accepted. Full remesure after mask and pagination checker changes. |
 | 2–8 | Not started. |
 
 Counts from `reports/references/summary.json`:
@@ -370,4 +370,318 @@ Pagination on the reference: trial balance passes, including the ignored trailin
 Label inventory is 1,242 after dropping currency codes and bare numbers. Resolved 200, unresolved 211 against the top 300. Contract proposals, not wired, are in `src/features/reports/contracts/proposals/`. Arrival notice and quotation had no label whose main family was that document. Fields with no current source include `party.notify`, `shipment.freightTerms`, `shipment.igmNo`, `shipment.referenceNo`, `ledger.openingBalance`, and `ledger.closingBalance`.
 
 `reports/ci-baseline.json` is the round 4 layer result.
+
+## Pilot round 5
+
+Same four pilots. Nothing accepted. No threshold was loosened. `reports/allowed-differences.md` was not in the repo, so no extra boxes were added from it.
+
+Checker changes:
+
+- Natural width is the unkerned advance (`kern: false`). The 0.5% group listing and the 0.5 pt width failure limit are unchanged. Drawing already used glyph advance widths rather than GPOS x-advances; the flag makes that explicit.
+- The full-page raster also masks branding span boxes and the letterhead image, and will mask boxes from `reports/allowed-differences.md` when that file exists. The 0.5% limit is unchanged. Mask rectangles are outlined on the heatmaps. The blurred text measurement is taken before those extra masks.
+- MuPDF is a second raster measurement. The pass/fail layer is still Poppler at 150 dpi.
+
+Renderer change, not a checker change: Consolas spans add Tc of `(1126 − 1229) / 2048 × size` so Liberation Mono advances at 549.8 units per em. Horizontal scale stays 100.
+
+System-font diagnostic, Poppler, logo and company masks only. Windows Arial, Arial Bold, and Consolas were read for the render and were not copied. HBL and arrival have no Arial or Consolas spans, so those two numbers did not move.
+
+| Pilot | Full page | Blurred text |
+|---|---|---|
+| Invoice | 28,705 px, 1.32% | 9.65% |
+| HBL | 23,046 px, 1.06% | 7.94% |
+| Arrival | 34,346 px, 1.58% | 11.97% |
+| Trial balance | 27,280 px, 0.42% | 2.34% |
+
+The invoice text-only heatmap is glyph-edge antialiasing, solid red on omitted Fresa lines, and solid red on the three long lines whose advance is 0.5–0.8 pt off the embedded Arial. Text-position pixels are 3.9% of that diff. Table rules are a separate 20% vector difference. Trial balance with real Arial falls under 0.5% full-page; the remaining blur is the same edge effect.
+
+Kerning off did not remove the width misses. Unkerned Arial-to-Arimo is 0.57% (313 spans); the kerned figure is 0.50%. Arial Unicode-to-Arimo is 0.52% unkerned and 0.64% kerned. The reference font's advance is the part that disagrees.
+
+Consolas Tc at 7.9 pt is −0.3973. All 11 invoice spans are within 0.3 pt: Beneficiary Name 152.3/152, Bank 21.8/21.7, `: HDFC` 26.1/26.1, A/c No 30.5/30.4, `: XXXXXXXXXXX` 56.6/56.5, IBAN Code 43.5/43.4, `: ABA:XXXXXX` 52.2/52.1, Swift Code 47.9/47.8, `: XXXXXX` 39.2/39.1, Address 39.2/39.1, `: CHENNAI.` 43.5/43.4.
+
+MuPDF versus Poppler, same masks: invoice 1.35% versus 1.49%, HBL 0.86% versus 0.87%, arrival 1.56% versus 1.35%, trial balance 0.55% versus 0.57%. None pass. Poppler's Symbol and Arial Unicode warnings are not the raster gap. Arial Unicode is embedded on HBL (41 spans), arrival (66), and the trial balance (261). Symbol is not a text font in these four files. Non-embedded text fonts: HBL Helvetica 40 and Helvetica Bold 7; arrival Helvetica 26 and Helvetica Bold 34; trial balance Arial 313 and Arial Bold 50. Invoice Arial, Arial Bold, and Consolas are embedded.
+
+Official layers after kerning off, Consolas Tc, and the new masks: invoice static 3 width, raster 1.49%; HBL text pass, raster 0.87%; arrival static 2 width, raster 1.35%; trial balance static 1 and dynamic 11, all width, raster 0.57%, pagination pass. Geometry uncaptured is 0 on all four.
+
+Rehearsal, seed 5, 20 PDFs, not the pilots. Multi-page 3, nonzero text render mode 11, families sea docs, commercial, ops list, finance, other, air docs, quotation, wms. No fixes. Failure classes: raster 15 documents, pagination 3 (the multi-page forms), static width 3 documents / 7 spans, dynamic width 3/3, geometry mismatch 1, static position or string 1 document / 2 spans. Four documents had none of those classes. `reports/output/rehearsal/summary.json`.
+
+`reports/ci-baseline.json` is the round 5 layer result. The raster ratios and the invoice static count went down. The 0.5% limit did not.
+
+Verification: `node --test tools/reports/round5.test.mjs tools/reports/round3.test.mjs` (4 passed), `node tools/reports/round5-measure.mjs`, `node tools/reports/rehearse.mjs`.
+
+## Pilot round 6
+
+Same four pilots, plus the rehearsal set. Nothing accepted. No threshold was loosened. `reports/allowed-differences.md` was not created: the draft was not in the request and it is not in the repo.
+
+Checker changes:
+
+- Multi-page forms use a continuation-page model. An empty header band is allowed. A non-empty header must contain the strings shared by every non-empty header. A page-number footer is required on every page only when the form prints page numbers. Tables keep the header, footer, row-break, and summary rules. The 0.1 pt, 0.5 pt, and 0.5% limits are unchanged. A single page still does not pass pagination.
+- The blurred text measurement is also reported split by spans on embedded fonts and spans on non-embedded fonts. There is no new threshold.
+- Font size is stored to 0.0001 pt. The 0.5 pt size limit is unchanged. Rounding the size to 0.1 pt was stretching a long line by about 0.6 pt after the advance table already matched.
+
+Renderer changes, not checker changes: a span whose reference font is not embedded is written with that BaseFont, no font file, and the reference Widths. A standard-14 name uses the standard widths for a character the reference never showed. Arimo is not embedded for those spans. A span whose reference font is embedded is drawn with Arimo outlines, and the glyph positions come from the reference advance table. Tz is not used. The Consolas Tc adjustment is not applied when that table is present.
+
+Font census, 401 PDFs, 0 files failed: 40,474 spans on embedded fonts, 30,660 spans on non-embedded fonts. The non-embedded share is 43.1%. `reports/font-census.csv` has one row per font and file (987 rows).
+
+Width misses over 0.5 pt on the four pilots: none.
+
+Official layers, Poppler at 150 dpi. The pass/fail rasterizer is still Poppler.
+
+| Pilot | Page | Geometry | Static | Dynamic | Raster | Non-text | Pagination |
+|---|---|---|---|---|---|---|---|
+| Invoice | pass | pass, uncaptured 0 | pass | pass | 25,445 px, 1.17% | 0.28% | single page |
+| HBL | pass | pass, uncaptured 0 | pass | pass | 10,980 px, 0.50%, does not pass | 0.02% | single page |
+| Arrival | pass | pass, uncaptured 0 | pass | pass | 21,634 px, 0.99% | 0.03% | single page |
+| Trial balance | pass | pass, uncaptured 0 | pass | pass | 25,094 px, 0.38% | 0.04% | pass |
+
+Blurred text, Poppler, no threshold. Invoice has no spans on a non-embedded font.
+
+| Pilot | All text | Embedded spans | Non-embedded spans |
+|---|---|---|---|
+| Invoice | 9.55% | 9.55% (42,152 / 441,420) | none |
+| HBL | 6.67% | 10.76% (21,577 / 200,564) | 2.44% (4,729 / 194,058) |
+| Arrival | 9.61% | 10.29% (23,769 / 231,087) | 8.13% (8,488 / 104,431) |
+| Trial balance | 2.50% | 3.47% (14,897 / 428,931) | 1.74% (9,525 / 547,004) |
+
+MuPDF, same masks, not the pass/fail engine.
+
+| Pilot | Full page | Non-text | Blur, embedded | Blur, non-embedded |
+|---|---|---|---|---|
+| Invoice | 22,997 px, 1.06% | 0.18% | 9.19% | none |
+| HBL | 9,880 px, 0.45% | 0.01% | 8.64% | 3.35% |
+| Arrival | 25,242 px, 1.16% | 0.30% | 8.49% | 4.58% |
+| Trial balance | 0.37% | 0.05% | 3.62% | 1.37% |
+
+The three multi-page HBL references now pass the form rules. HBL Draft 122 continuation pages are 2 and 3: page 2 is a container annex with its own header, page 3 has an empty header. HBL Draft 142 and 52 continuation page is 2, the back page. None of the three prints a page number, so the footer rule passes. The trial balance is a table and still passes header, footer, row break, and summary. No reference failure remains on these four files.
+
+Rehearsal causes, not fixed. `INVOICE_REPORT_FORMAT_14_INVOICE` has one geometry mismatch: the line from (20, 95.5) to (573, 95.5) is dashed 2.5 on, 1.5 off in the reference and solid in the render. Coordinates, width, and color match. `drawLine` clears the dash inside its own graphics state, so the dash set immediately before the call does not reach the stroke. `HBL_DRAFT_REPORT_FORMAT_148` has two static position-or-string failures, spans p1s80 and p1s81. The detention sentence starts at x 22. The tail segments " tue", " per", " day", " until", and " returned." start past the 595 pt page edge. They are drawn as separate text objects and dropped on re-extraction, so the checker cannot find them.
+
+Seed 5, the same 20 PDFs, after the font change. Multi-page 3, text render modes 11. Eleven documents had no failing class. `reports/output/rehearsal/seed-5.json`.
+
+| Failure class | Documents | Instances |
+|---|---|---|
+| raster | 8 | 8 |
+| geometry mismatch | 1 | 1 |
+| static position or string | 1 | 2 |
+
+Seed 6, 20 further PDFs, pilots and the seed 5 codes excluded. Multi-page 5, text render modes 8. Four documents had no failing class. None of the five multi-page files failed pagination. `reports/output/rehearsal/seed-6.json`.
+
+| Failure class | Documents | Instances |
+|---|---|---|
+| raster | 14 | 14 |
+| static width | 3 | 45 |
+| dynamic width | 2 | 6 |
+| geometry mismatch | 2 | 2 |
+
+`reports/ci-baseline.json` is the round 6 layer result. The text failure counts went to zero and the raster ratios went down. The 0.5% limit did not. The trial balance passes all six layers and is not accepted.
+
+## Pilot round 7
+
+Nothing is accepted. Thresholds are unchanged: geometry 0.1 pt, text 0.5 pt, raster 0.5% at 150 dpi Poppler. `reports/allowed-differences.md` is the mask policy. It is pending client confirmation and contains no coordinate boxes, so the checker added no new rectangles. Logo, letterhead, and branding masks remain. Live values and barcodes stay in the golden comparison.
+
+Checker changes, and nothing else in the checker:
+
+1. A text piece whose origin is at or past the page's right edge is dropped on both sides of the text comparison, the same way a fully off-page element is dropped. The 0.5 pt tolerance is unchanged.
+2. Three report-only numbers were added. They do not pass or fail a document: image/barcode pixel count, branding-mask pixel count, and text-ink difference (differing pixels in non-branding text regions divided by reference ink pixels in those regions).
+
+Renderer changes:
+
+- `drawLine` receives the dash array and dash phase, so a dash set for that stroke is not cleared inside pdf-lib's graphics state.
+- Line join is set inside a graphics-state pair around `drawLine`. Straight rules on the trial balance were extracted with join 1 and drawn with join 0 until this.
+- A non-embedded font copies the reference FontDescriptor (no FontFile), Encoding including Differences, FirstChar, LastChar, Widths, and ToUnicode. A font with none of those is the standard face of the same name.
+- Where the text matrix horizontal scale is not the vertical font size, the draw uses that scale in the text matrix and keeps the stored font size. `Tz` is not used.
+- Pieces that start past the right edge are not drawn.
+
+`INVOICE_REPORT_FORMAT_14_INVOICE` geometry, static text, and dynamic text pass. The dashed rule matches. Raster passes, 7,024 px, 0.32%.
+
+`HBL_DRAFT_REPORT_FORMAT_148` static text passes. Five pieces were dropped, all from the detention sentence: " tue" at (603.8, 112.2), " per" at (614.7, 112.2), " day" at (625.8, 112.2), " until" at (637.7, 112.2), " returned." at (598.5, 106.2). Page width is 595.
+
+Non-embedded blur on the four pilots did not approach 0. Poppler, same masks as round 6:
+
+| Pilot | Full page | Non-text | Embedded blur | Non-embedded blur | Text-ink difference |
+|---|---|---|---|---|---|
+| Invoice | 25,445 px, 1.17% | 0.28% | 9.55% (42,152 / 441,420) | none | 0.1559 |
+| HBL | 10,980 px, 0.50%, does not pass | 0.02% | 10.76% (21,577 / 200,564) | 2.44% (4,729 / 194,058) | 0.0673 |
+| Arrival | 21,634 px, 0.99% | 0.03% | 10.29% (23,769 / 231,087) | 8.13% (8,488 / 104,431) | 0.1251 |
+| Trial balance | 25,094 px, 0.38% | 0.04% | 3.47% (14,897 / 428,931) | 1.74% (9,525 / 547,004) | 0.1402 |
+
+The trial balance was drawn again after the line-join fix and has no failing class. It is not accepted. The baseline ratios did not move.
+
+One span, HBL `BILL OF LADING`, Helvetica-Bold 11 pt. Both sides are Type 1, WinAnsi, not embedded, with no descriptor, widths, or FontFile. The span crop differs by 0 pixels. Poppler is given the same face on both sides.
+
+One span, trial balance `p1s404` `(2,924,913.22)`, Arial,Bold 6.96 pt. pdffonts shows TrueType, WinAnsi, not embedded on the reference. The copied dictionary and Windows Arial Bold are the same 490 ink pixels, so Poppler substitutes Arial Bold for that dictionary. The reference crop matches that face after a 1 px (0.48 pt) downward shift, with 33 antialias pixels left. On other files Poppler logs `Couldn't find a font for 'ArialUnicodeMS', subst is 'Helvetica'`.
+
+Seed 6 width misses, before the fix: 51 instances, all simple WinAnsi. No CID Identity-H. No symbolic font. `HBL_DRAFT_REPORT_FORMAT_15` was ArialUnicodeMS, 32 instances. `LETTER_OF_GUARANTEE_REPORT_FORMAT` was Helvetica, 1 instance. Both cleared when the reference dictionary was copied. `AIR_QUOTATION_REPORT_FORMAT` was Arial, 7, and Arial,Bold, 11. The font size is the vertical scale; the text matrix X scale is 0.9667, 0.9688, 1.0161, or 1.0217. Drawing that scale cleared them. The grouper then reported no misses on the three documents.
+
+The 40 rehearsal documents are in `reports/rehearsal-raster.csv`. `BARCODE_AWB_REPORT_FORMAT` is one of the 40 and is the scanned file, so it has no ratios. No new threshold. Text-ink difference is above 1 on three documents because the differing pixels exceed the reference ink in the text boxes: container outturn 3.9389, freight manifest LCL exports 2.8826, container load plan 2.7135.
+
+`reports/full-run.csv` is the 401-file run. Excel stayed out. `BARCODE_AWB_REPORT_FORMAT` and `STANDARD_INVOICE_RPM_REF_79` are marked out of scope. The other 399 were extracted, rendered, and verified. 193 have no failing class. Page passes on all 399.
+
+| Failure class | Documents | Instances |
+|---|---|---|
+| raster | 200 | 200 |
+| static position or string | 15 | 318 |
+| dynamic position or string | 9 | 11 |
+| pagination | 4 | 4 |
+| geometry mismatch | 3 | 3 |
+
+Those five are every cause the run produced. Layer results on the 399: geometry 396 pass / 3 fail, static 384 / 15, dynamic 390 / 9, raster 199 / 200. Pagination: 75 multi-page pass, 320 single-page, 4 multi-page fail. Nothing found in this run was fixed. Nothing is accepted.
+
+## Pilot round 8
+
+Nothing is accepted. Geometry 0.1 pt, text 0.5 pt, and raster 0.5% are unchanged.
+
+### Checker changes
+
+1. Raster now records `maskedFraction` (masked pixels over page pixels, all pages) and fails when that fraction exceeds 25%. The 0.5% differing-pixel limit is unchanged.
+2. Page-number detection no longer matches the substring inside words such as "stoppage". Forms ignore textless pages when checking footer page numbers.
+3. Table header repeats use label-like header texts only (`:` labels and "TRIAL BALANCE"), and join adjacent same-line segments so split labels such as `F` + `ROM DATE :` still match.
+
+### Renderer change (named for text-ink investigation)
+
+`drawText` is no longer used for positioned spans. Drawing goes through `showText` so the outer text render mode and stroke survive. Re-measure of the three high text-ink docs did not improve; no further fix.
+
+### Mask integrity
+
+`HBL_DRAFT_REPORT_FORMAT_122`: logo slot = largest page-1 image, 554×780.1 pt near-full-page form background, also classed decorative Fresa branding because y is in the bottom 16%. The slot is applied on all three pages → about 5.64M masked pixels (fraction 0.8643). Output draws neither decorative branding nor non-barcode images, so that area is blank.
+
+Documents with masked fraction over 15% (all over 25%, all raster-fail): HBL 127, 130, 118, 132, FG_HBL_FORMAT10_RPM_REF_472, HBL 122, MAWB_DRAFT_REPORT_FORMAT, HBL 129.
+
+### Raster split
+
+R1 (non-text > 0.5%): 48. R2 (non-text passes; T unset): 157. Heatmaps for the 10 worst R1 are under `reports/output/round8/r1/`. Dominant causes: tall form/branding strips not drawn; other unmasked artwork; fills/strokes.
+
+### High text-ink trio
+
+`CONTAINER_OUTTURN_REPORT_FORMAT`, `FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT`, `CONTAINER_LOAD_PLAN_REPORT_FORMAT` share a 58.9×799 left-edge image (logo slot + decorative branding), renderMode 2 titles, and non-embedded ArialUnicodeMS. Poppler logs `Couldn't find a font for 'ArialUnicodeMS', subst is 'Helvetica'`. Crops are in `reports/output/round8/*-region-*.png`. No general fix applied; numbers unchanged after the showText path.
+
+### Text-ink calibration
+
+Seed 8, 20 documents across font families. Values and crops in `reports/output/round8/calibration.json` and `reports/output/round8/calibration/`. T is not set.
+
+### Arabic (12 documents)
+
+Reference: embedded CID `ArialUnicodeMS` Identity-H plus simple Helvetica. Output: Arimo CID for embedded runs, Helvetica / copied simple faces for the rest. Extracted Arabic strings are presentation forms (e.g. U+FE70–U+FEFF), not base letters. Proposal only: keep reference positions for golden compares; for live Arabic, shape with an open Arabic font or draw the presentation forms; never copy FontFile.
+
+### Pagination, geometry, dynamic
+
+All four former pagination failures pass against the reference after the checker fixes. Geometry: Daily Status and Consol IGM miss three near-white 2 pt filled rects; Advance Shipping Note misses one short vertical rule (cap 2). Dynamic: seven confirmation/manifest docs fail on address lines with Arabic comma `،`; two Arabic invoices fail on bilingual title/labels.
+
+### Live overflow renders
+
+Ten documents rendered with `long-values.json` overflow (no raster compare). Page counts unchanged. Almost all stressed fields clip (default overflow rule). Invoice 1 shrinks two number fields; air quotation shrinks four; HBL 15 wraps one field to maxLines. Outputs in `reports/output/round8/live/`.
+
+### Full remesure
+
+`reports/full-run.csv` and `reports/rehearsal-raster.csv` include `masked_fraction`. Clean on all layers: 188 of 399. Summary: `reports/full-run-summary.md`.
+
+
+Verification: remesure via `node tools/reports/_r8-remeasure.mjs`, R1 heatmaps, calibration seed 8, live overflow renders, Arabic font dump.
+
+## Track A
+
+Nothing is accepted. `reports/signoff.csv` was not edited. Geometry 0.1 pt, text 0.5 pt, raster non-text 0.5%, text-ink T = 0.40, and masked fraction 25% are unchanged. The in-flight full remesure was already stopped before the speedups; Vite was left running.
+
+### Speedups
+
+Cache directory `reports/cache/objects/<sha256>/` stores the spec, the reference text regions, golden reference PNGs, and the rendered PDF. The key is the reference SHA-256 plus `tools/reports/pipeline-version.mjs`. A spec or text-region hit requires the extract version. A golden PNG hit requires the raster version. A rendered PDF hit requires the extract and render versions. Checker-only changes do not invalidate those artifacts. Form backgrounds are overlaid at compare time and are not copied into shipped output.
+
+Verify runs in a worker pool (`tools/reports/verify-pool.mjs`), one document per worker, temp PNGs under `reports/cache/work/<workerId>/`. This machine used 6 workers. Iterations use the fixed 80-document list in `reports/cache/subset-80.json` (four pilots, baseline failures, seed-8 family fill). The full 399 ran for the final report.
+
+Final full-run timings (summed across documents, wall clock 371 s): extract 336 s, render 240 s, reference raster 400 s, rendered raster 412 s, diff 1531 s. Cache on that run: spec 88 hit / 311 miss, golden PNG 88 hit / 311 miss.
+
+### Setup (kept)
+
+T = 0.40 and the image classes are in `reports/allowed-differences.md`, still pending client confirmation. Image census: 399 PDFs, 447 images (`reports/image-census.csv`). Classes: logo 215, letterhead 123, other 38, form_background 30 images in 18 documents, barcode 27, qr 12, decorative 2. Documents with an `other` image are listed in `reports/image-census-other.md`.
+
+The >40% rule matches 18 documents, not 8. All 18 pass page, geometry, static, dynamic, and raster when the reference background is composited under both rasters for verification only (`reports/output/track-a/overlay-form-background.json`). The background is not shipped.
+
+Filled rectangles at least 1×1 pt stay rectangles. Horizontal and vertical rules longer than 2 pt stay lines, so the short Advance Shipping Note rule is kept. Daily Status and Consol IGM geometry pass after re-extract.
+
+Noto Naskh Arabic (OFL) is bundled. Presentation forms and the Arabic punctuation in `reports/char-fallback.json` are drawn with it. Horizontal scale is forced to 1 for those runs. Overflow for live text is wrap, then shrink to 70% of size, then clip with a warning. Numbers shrink, then clip with a warning. The 10-record live render wrote `reports/output/track-a/overflow-warnings.json` (346 clip warnings on the stressed values).
+
+### Loop
+
+Baseline is `reports/full-run-track-a.csv` (not the partial iter1 file).
+
+| | Documents | Clean | R1 | R2 |
+|---|---|---|---|---|
+| First run | 399 | 332 | 41 | 9 |
+| Last run | 399 | 334 | 41 | 7 |
+
+First-run class counts: raster R1 41, raster R2 9, static position or string 14, dynamic position or string 9, static font family or weight 1, static width 1.
+
+Last-run class counts: raster R1 41, static width 13, static position or string 12, raster R2 7, dynamic width 4, dynamic position or string 1.
+
+No previously clean document failed a layer. Gained clean: `FCR_DOCUMENT_REPORT_FORMAT`, `PRE_ALERT_TO_CLIENT_REPORT_FORMAT`.
+
+Iteration 1 kept: draw Arabic presentation forms with Noto Naskh, accept NFKC / visual-order Arabic and joined mixed-script runs in the checker, and classify a narrow tall edge strip as decorative before the logo slot.
+
+Iteration 2 reverted: a uniform 0.0082 pt-per-glyph spacing bias. It pulled some small labels inside 0.5 pt and left titles outside. None of the 20 rechecked text-failure documents became clean.
+
+Stopped after that revert. The class that affects the most documents is raster R1, and it has no general fix inside the current thresholds. What remains is deferred or needs a decision.
+
+### Checker changes
+
+1. Text-ink limit T = 0.40, from the 20-document calibration (drop HBL 33 at 1.17, ceiling of the rest).
+2. Raster passes only when non-text ≤ 0.5%, text-ink ≤ T, and masked fraction ≤ 25%.
+3. `form_background` is copied from the reference raster onto the render for the compare only. It is not added to the masked fraction.
+4. Logo, letterhead, and decorative images are masked. The logo slot is only a logo-class image.
+5. Arabic text matches after NFKC, after reversing Arabic runs, and with whitespace ignored. Mixed-script pieces on one baseline are joined when the gap is at most 8 pt.
+6. A non-Latin run drawn in Noto Naskh Arabic is accepted when the reference face maps to Arimo or Noto Sans.
+7. The pool can skip heatmaps, Gaussian text blur, and natural-width deviation. Those skips do not change the pass rule. The single-document CLI still writes heatmaps and computes deviation.
+
+### Deferred
+
+- Arabic spacing bias. It did not clear three documents.
+- Vietnam delivery-order static position misses (2 documents).
+- Stuffing-report font family / width (1 document).
+- Confirmation-address Arabic-comma width (4 documents), same width limit as the Arabic decision below.
+
+### Decisions needed
+
+Raster R1, 41 documents. Geometry already passes. The remaining pixels sit outside text boxes and allowed images, and several of these documents also have text-ink above 1 because the open font is heavier than the reference (examples: container outturn non-text 0.0403 and text-ink 3.94; GL voucher non-text 0.0485 and text-ink 3.64). Moving either limit would be a threshold change.
+
+Arabic width, 13 static and 4 dynamic documents. Noto Naskh at the reference origin, with uniform character spacing and no horizontal scale, still misses the 0.5 pt width limit on some titles (standard Arabic invoice title 72.49 pt reference vs 73.9 pt rendered before the reverted bias). Presentation forms and logical Arabic already compare as the same string.
+
+### Crops
+
+Ten reference/render pairs, top of page 1, are in `reports/output/track-a/crops/`: invoice, HBL Jasper, HBL 122 (form background), arrival notice, air quotation, advance shipping note, daily status, container outturn, Arabic invoice, carting confirmation.
+
+Verification: `node tools/reports/verify-pool.mjs subset`, then `node tools/reports/verify-pool.mjs full`. Last run file: `reports/full-run-track-a-last.csv`.
+
+## Track A2
+
+Nothing is accepted. `reports/signoff.csv` was not edited. No threshold, status value, mask, or limit changed.
+
+Before is `reports/full-run-track-a-before-a2.csv` (the Track A last run). After is `reports/full-run-track-a-last.csv`.
+
+| | Documents | Clean | R1 | R2 | Static position | Static width | Dynamic width |
+|---|---:|---:|---:|---:|---:|---:|---:|
+| Before | 399 | 334 | 41 | 7 | 12 | 13 | 4 |
+| After | 399 | 334 | 41 | 7 | 13 | 13 | 4 |
+
+No previously clean document failed a layer. Two file-lock errors during the pool (HBL Jasper, and two of four duplicate trucker rows) were remeasured or restored from the passing measurement of the same file. HBL Jasper is still clean.
+
+### R1 histograms
+
+Report only. `diagnoseNonText` records distance of each differing non-text pixel to the nearest text span box and to the nearest allowed image box. Totals: 0-1 px 66,175; 2-3 px 99,245; 4-8 px 224,804; over 8 px 2,068,544. Far-pixel causes: fills 62,694, strokes 800,458, clip 0, images 0, other 1,205,392. Clip stays 0 because clip paths are not in the spec. Table: `reports/output/track-a2/r1-histogram.md`. Ten worst crops: `reports/output/track-a2/r1/worst/`.
+
+### Arabic
+
+Each presentation-form glyph is placed at its reference x using that glyph's advance. No uniform spacing and no scale. Joins break on all 12 documents (max interior gap 2.7 pt to 8.92 pt). The standard invoice title moved from 73.9 pt under uniform spacing to 71.9 pt against a 72.5 pt reference, and it is still outside 0.5 pt. Invoice 8 lost its static position failure. FORMAT1 939 and 941 gained one. Widths and crops: `reports/output/track-a2/arabic/`.
+
+### Non-Arabic fixes
+
+Not applied. The 4 dynamic width failures are Arabic-comma addresses, so they are exceptions, not a general width fix. Of the static position failures, the only non-Arabic documents are the two Vietnam delivery orders. Noto Sans drops U+1ECB. Routing those spans to Arimo was tried and reverted: font family, width, and raster then failed.
+
+### Checker changes
+
+Items 1-7 are the Track A list above. Item 8 is new:
+
+8. `diagnoseNonText` writes distance histograms for a report. It does not change the mask, the whitening, or the pass rule.
+
+### Exceptions
+
+`reports/exceptions.md` lists every document that cannot pass, with the reason: Arabic joins and widths, Arabic-comma dynamic widths, the two Vietnam delivery orders, the 41 R1 documents, the 7 R2 text-ink documents, the 18 form-background overlays, and proof of delivery.
+
 

@@ -651,13 +651,25 @@ function cluster(values, tolerance) {
   return groups;
 }
 
-function proposeImageClass(image, pageHeight, pageWidth) {
+export function proposeImageClass(image, pageHeight, pageWidth) {
+  const width = pageWidth || 595;
+  const height = pageHeight || 842;
+  const area = Math.max(image.width, 0) * Math.max(image.height, 0);
+  const pageArea = width * height;
+  const fraction = pageArea ? area / pageArea : 0;
   const aspect = image.height > 0 ? image.width / image.height : 0;
   if (aspect >= 3.5 && image.height <= 40) return 'barcode';
   if (aspect >= 0.8 && aspect <= 1.25 && image.width >= 28 && image.width <= 140) return 'qr';
-  if (image.y >= pageHeight * 0.72 && image.height >= 24 && pageWidth && image.width >= pageWidth * 0.55) return 'letterhead';
-  if (image.y >= pageHeight * 0.72 && image.height >= 24) return 'logo';
-  if (image.y <= pageHeight * 0.16) return 'decorative Fresa branding';
+  if (fraction > 0.4) return 'form_background';
+  // Narrow tall edge strip / Fresa side artwork — before top-band logo so
+  // full-height edge strips are not mistaken for the logo slot.
+  if (image.width <= width * 0.18 && image.height >= height * 0.55) return 'decorative';
+  // Top band: origin in the upper 28% of the page (PDF y grows up).
+  if (image.y + image.height >= height * 0.72 && image.height >= 24 && image.width >= width * 0.55) return 'letterhead';
+  if (image.y + image.height >= height * 0.72 && image.height >= 24 && image.width <= width * 0.35) return 'logo';
+  // Low / footer Fresa artwork.
+  if (image.y <= height * 0.16) return 'decorative';
+  if (image.width <= 140 && image.height <= 140) return 'logo';
   return 'other';
 }
 
@@ -741,10 +753,13 @@ function tableTemplate(page) {
       font: cell.font,
       color: cell.color,
       hScale: cell.hScale,
+      horizontalScale: cell.horizontalScale || 1,
       charSpacing: cell.charSpacing || 0,
       wordSpacing: cell.wordSpacing || 0,
       glyphWidth: cell.glyphWidth,
       glyphText: cell.glyphText,
+      advances: cell.advances || [],
+      fontEmbedded: cell.fontEmbedded !== false,
       segments: cell.segments,
       renderMode: cell.renderMode || 0,
       stroke: cell.stroke,
@@ -769,12 +784,15 @@ function tableTemplate(page) {
 }
 
 function codeToFile(code) {
-  const text = fs.readFileSync(path.join(root, 'reports/references/code-map.csv'), 'utf8');
-  const line = text.split(/\r?\n/).find((row) => row.startsWith(`${code},`));
-  if (!line) throw new Error(`No code-map row for ${code}`);
-  const match = line.match(/reports\/references\/files\/[^,]+/);
-  if (!match) throw new Error(`No reference file for ${code}`);
-  return match[0];
+  const mapped = fs.readFileSync(path.join(root, 'reports/references/code-map.csv'), 'utf8');
+  const line = mapped.split(/\r?\n/).find((row) => row.startsWith(`${code},`));
+  const mappedFile = line?.match(/reports\/references\/files\/[^,]+/)?.[0];
+  if (mappedFile) return mappedFile;
+  const census = fs.readFileSync(path.join(root, 'reports/capability-census.csv'), 'utf8');
+  const censusRow = census.split(/\r?\n/).find((row) => row.startsWith(`${code},`));
+  const censusFile = censusRow?.split(',')[1];
+  if (censusFile?.endsWith('.pdf')) return censusFile;
+  throw new Error(`No reference file for ${code}`);
 }
 
 function csv(value) {
@@ -812,6 +830,7 @@ function pageSpec(read, pageIndex) {
     layoutKind: layoutOf(read.height, spans).kind,
     uncaptured: read.uncaptured,
     droppedOutside: read.droppedOutside,
+    droppedPastEdge: read.droppedPastEdge || [],
     emptyTextItems: read.empty,
   };
 }
@@ -847,8 +866,17 @@ export async function extractSpec(code) {
     page.table = tableTemplate(page);
   }
   const layoutKind = pages.some((page) => page.layoutKind === 'table') ? 'table' : 'form';
-  const logo = [...first.images].sort((a, b) => b.width * b.height - a.width * a.height)[0];
-  if (logo) logo.slot = 'logo';
+  const logo = first.images
+    .filter((image) => image.proposedClass === 'logo')
+    .sort((a, b) => b.width * b.height - a.width * a.height)[0]
+    || first.images
+      .filter((image) => !['form_background', 'decorative', 'barcode', 'qr', 'letterhead'].includes(image.proposedClass))
+      .sort((a, b) => a.width * a.height - b.width * b.height)[0];
+  if (logo && logo.proposedClass === 'logo') logo.slot = 'logo';
+  else if (logo && logo.proposedClass !== 'form_background' && logo.proposedClass !== 'decorative') {
+    logo.proposedClass = 'logo';
+    logo.slot = 'logo';
+  }
   const company = first.spans
     .filter((span) => span.y > first.height * 0.7 && /PVT LTD|LLC|LIMITED|FRESA/i.test(span.text))
     .sort((a, b) => b.size - a.size)[0];
@@ -897,13 +925,14 @@ export async function extractSpec(code) {
       { path: 'party.notify', format: 'text' },
       { path: 'cargo.description', format: 'text' },
     ],
-    overflowRules: { default: 'clip', text: 'wrap', number: 'shrink', maxLines: 3 },
+    overflowRules: { default: 'wrap-shrink-clip', text: 'wrap-shrink-clip', number: 'shrink-clip', maxLines: 3 },
     extraction: {
       pageCount: pages.length,
       textItems: allSpans.length + pages.reduce((sum, page) => sum + page.emptyTextItems, 0),
       emptyTextItems: pages.reduce((sum, page) => sum + page.emptyTextItems, 0),
       characters: allSpans.reduce((sum, span) => sum + span.text.length, 0),
       droppedOutside: pages.reduce((sum, page) => sum + page.droppedOutside, 0),
+      droppedPastEdge: pages.flatMap((page) => page.droppedPastEdge || []),
       uncaptured: pages.map((page) => page.uncaptured),
       pdftotextWordsMissing: missingWords.length,
       pdftotextWordsMissingSample: missingWords.slice(0, 12),

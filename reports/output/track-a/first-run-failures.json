@@ -1,0 +1,304 @@
+{
+  "r1Count": 41,
+  "r2Count": 9,
+  "staticCount": 15,
+  "dynCount": 9,
+  "r1Top": [
+    {
+      "code": "OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER",
+      "nonText": 0.0959,
+      "textInk": 2.6199,
+      "masked": 0.0823,
+      "cls": "raster R1"
+    },
+    {
+      "code": "GL_REPORT_VOUCHER_REPORT_FORMAT",
+      "nonText": 0.0485,
+      "textInk": 3.6388,
+      "masked": 0.0092,
+      "cls": "raster R1"
+    },
+    {
+      "code": "CONTAINER_OUTTURN_REPORT_FORMAT",
+      "nonText": 0.0403,
+      "textInk": 3.9389,
+      "masked": 0.0681,
+      "cls": "raster R1"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "nonText": 0.0357,
+      "textInk": 3.7578,
+      "masked": 0.0672,
+      "cls": "raster R1"
+    },
+    {
+      "code": "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+      "nonText": 0.0352,
+      "textInk": 2.7391,
+      "masked": 0.0784,
+      "cls": "dynamic position or string | raster R1"
+    },
+    {
+      "code": "FG_TAX_INVOICE_INDIA_RPM_REF_237",
+      "nonText": 0.0329,
+      "textInk": 4.6426,
+      "masked": 0.069,
+      "cls": "raster R1"
+    },
+    {
+      "code": "GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT",
+      "nonText": 0.0323,
+      "textInk": 2.6605,
+      "masked": 0.007,
+      "cls": "raster R1"
+    },
+    {
+      "code": "CARGO_MANIFEST_REPORT_FORMAT",
+      "nonText": 0.0298,
+      "textInk": 3.1219,
+      "masked": 0.0782,
+      "cls": "raster R1"
+    },
+    {
+      "code": "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT",
+      "nonText": 0.0297,
+      "textInk": 2.8826,
+      "masked": 0.0782,
+      "cls": "raster R1"
+    },
+    {
+      "code": "CONTAINER_LOAD_PLAN_REPORT_FORMAT",
+      "nonText": 0.0278,
+      "textInk": 2.7135,
+      "masked": 0.0731,
+      "cls": "raster R1"
+    },
+    {
+      "code": "CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT",
+      "nonText": 0.0276,
+      "textInk": 3.4762,
+      "masked": 0.0744,
+      "cls": "raster R1"
+    },
+    {
+      "code": "FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796",
+      "nonText": 0.0256,
+      "textInk": 4.5644,
+      "masked": 0.069,
+      "cls": "raster R1"
+    },
+    {
+      "code": "FG_PROOF_OF_DELIVERY_RPM_REF_847",
+      "nonText": 0.0254,
+      "textInk": 2.855,
+      "masked": 0.0716,
+      "cls": "static position or string | raster R1"
+    },
+    {
+      "code": "PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE",
+      "nonText": 0.0247,
+      "textInk": 7.2105,
+      "masked": 0.0052,
+      "cls": "raster R1"
+    },
+    {
+      "code": "PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE",
+      "nonText": 0.024,
+      "textInk": 3.8419,
+      "masked": 0.007,
+      "cls": "raster R1"
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE_LOCATION_WISE",
+      "nonText": 0.0227,
+      "textInk": 0.0954,
+      "masked": 0.0204,
+      "cls": "raster R1"
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1",
+      "nonText": 0.0227,
+      "textInk": 0.0957,
+      "masked": 0.0204,
+      "cls": "raster R1"
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE",
+      "nonText": 0.0221,
+      "textInk": 0.1104,
+      "masked": 0.0204,
+      "cls": "raster R1"
+    },
+    {
+      "code": "SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",
+      "nonText": 0.0205,
+      "textInk": 0.1621,
+      "masked": 0.0277,
+      "cls": "raster R1"
+    },
+    {
+      "code": "CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT",
+      "nonText": 0.02,
+      "textInk": 5.0175,
+      "masked": 0.0744,
+      "cls": "raster R1"
+    }
+  ],
+  "r2": [
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_148",
+      "nonText": 0,
+      "textInk": 0.5256,
+      "masked": 0.0376
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939",
+      "nonText": 0.0027,
+      "textInk": 0.4786,
+      "masked": 0.0962
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941",
+      "nonText": 0.0027,
+      "textInk": 0.4786,
+      "masked": 0.0106
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_25",
+      "nonText": 0,
+      "textInk": 0.4451,
+      "masked": 0.0294
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_29",
+      "nonText": 0.0039,
+      "textInk": 0.9942,
+      "masked": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_33",
+      "nonText": 0.0019,
+      "textInk": 1.1714,
+      "masked": 0.0016
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_97",
+      "nonText": 0,
+      "textInk": 0.4411,
+      "masked": 0.0676
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_141",
+      "nonText": 0,
+      "textInk": 0.4753,
+      "masked": 0.0775
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_151",
+      "nonText": 0,
+      "textInk": 0.4765,
+      "masked": 0.0813
+    }
+  ],
+  "staticFail": [
+    {
+      "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "cls": "static position or string"
+    },
+    {
+      "code": "STUFFING_REPORT_FORMAT",
+      "cls": "static font family or weight | static width | raster R1"
+    },
+    {
+      "code": "FG_KSA_INVOICE_ARABIC_RPM_REF_1161",
+      "cls": "static position or string"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_RPM_REF_464",
+      "cls": "static position or string"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939",
+      "cls": "static position or string | dynamic position or string | raster R2"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941",
+      "cls": "static position or string | dynamic position or string | raster R2"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_OMAN_RPM_REF_747",
+      "cls": "static position or string"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT2_RPM_REF_1171",
+      "cls": "static position or string"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT3_RPM_REF_1183",
+      "cls": "static position or string"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT4_RPM_REF_1215",
+      "cls": "static position or string"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT5_RPM_REF_1385",
+      "cls": "static position or string"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT7_RPM_REF_1400",
+      "cls": "static position or string"
+    },
+    {
+      "code": "D_O_FCL_VIETNAM_RPM_REF_411",
+      "cls": "static position or string"
+    },
+    {
+      "code": "D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427",
+      "cls": "static position or string"
+    },
+    {
+      "code": "FG_PROOF_OF_DELIVERY_RPM_REF_847",
+      "cls": "static position or string | raster R1"
+    }
+  ],
+  "dynFail": [
+    {
+      "code": "FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT",
+      "cls": "dynamic position or string"
+    },
+    {
+      "code": "CARTING_CONFIRMATION_REPORT_FORMAT",
+      "cls": "dynamic position or string"
+    },
+    {
+      "code": "FCR_DOCUMENT_REPORT_FORMAT",
+      "cls": "dynamic position or string"
+    },
+    {
+      "code": "LOADING_CONFIRMATION_REPORT_FORMAT",
+      "cls": "dynamic position or string"
+    },
+    {
+      "code": "PICKUP_CONFIRMATION_REPORT_FORMAT",
+      "cls": "dynamic position or string"
+    },
+    {
+      "code": "PRE_ALERT_TO_CLIENT_REPORT_FORMAT",
+      "cls": "dynamic position or string"
+    },
+    {
+      "code": "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+      "cls": "dynamic position or string | raster R1"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939",
+      "cls": "static position or string | dynamic position or string | raster R2"
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941",
+      "cls": "static position or string | dynamic position or string | raster R2"
+    }
+  ]
+}

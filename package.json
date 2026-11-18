@@ -85,6 +85,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
+    "mupdf": "^1.28.6",
     "@chromatic-com/storybook": "^5.2.1",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.61.0",

@@ -1,0 +1,19 @@
+{
+  "description": "Characters routed to the Arabic-capable fallback font (Noto Naskh Arabic). PENDING CLIENT CONFIRMATION.",
+  "font": "Noto Naskh Arabic",
+  "codepoints": [
+    "U+060C",
+    "U+061B",
+    "U+061F",
+    "U+060D",
+    "U+066A",
+    "U+066B",
+    "U+066C",
+    "U+06D4"
+  ],
+  "ranges": [
+    { "from": "U+0600", "to": "U+06FF", "note": "Arabic block including punctuation" },
+    { "from": "U+FB50", "to": "U+FDFF", "note": "Arabic presentation forms-A" },
+    { "from": "U+FE70", "to": "U+FEFF", "note": "Arabic presentation forms-B" }
+  ]
+}

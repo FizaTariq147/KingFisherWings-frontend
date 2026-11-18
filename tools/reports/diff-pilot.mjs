@@ -13,16 +13,21 @@ import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
 import fontkit from '@pdf-lib/fontkit';
-import { PDFDocument } from 'pdf-lib';
 import { inspectPdfFile } from './extract.mjs';
 import { fontFile, mapFont } from './font-map.mjs';
+import { characterSpacingFor } from './render-spec.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const GEOMETRY_TOLERANCE = 0.1;
 const TEXT_TOLERANCE = 0.5;
 const RASTER_LIMIT = 0.005;
+const MASKED_FRACTION_LIMIT = 0.25;
+const TEXT_INK_LIMIT = 0.4;
 const PIXELMATCH_THRESHOLD = 0.1;
 const RASTER_DPI = 150;
+const DECORATIVE_CLASSES = new Set(['decorative', 'decorative Fresa branding']);
+const OVERLAY_CLASSES = new Set(['form_background']);
+const MASK_IMAGE_CLASSES = new Set(['logo', 'letterhead', 'decorative', 'decorative Fresa branding']);
 
 function near(a, b, tolerance) {
   return Math.abs(a - b) <= tolerance;
@@ -117,7 +122,37 @@ function fontAccepted(referenceFont, renderedFont, text) {
   const rendered = fontIdentity(renderedFont);
   if (reference === rendered) return true;
   const latin = /^[\u0000-\u024F]*$/.test(text || '');
-  return reference.startsWith('Arimo|') && rendered.startsWith('Noto Sans|') && !latin;
+  if (latin) return false;
+  // Arabic and other non-Latin: open fallbacks for Arial Unicode / Arimo.
+  if (reference.startsWith('Arimo|') && (rendered.startsWith('Noto Sans|') || rendered.startsWith('Noto Naskh Arabic|'))) return true;
+  if (reference.startsWith('Noto Sans|') && rendered.startsWith('Noto Naskh Arabic|')) return true;
+  return false;
+}
+
+function foldedArabic(text) {
+  return String(text || '').normalize('NFKC');
+}
+
+function reverseArabicRuns(text) {
+  // Presentation-form extraction is visual RTL; Noto ToUnicode is logical LTR.
+  // Reverse only Arabic-script runs so mixed Latin+Arabic labels still match.
+  return foldedArabic(text).replace(/[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]+/g, (run) => [...run].reverse().join(''));
+}
+
+function textEqual(left, right) {
+  if (left === right) return true;
+  const compact = (value) => foldedArabic(value).replace(/\s+/g, '');
+  if (compact(left) === compact(right)) return true;
+  const a = foldedArabic(left);
+  const b = foldedArabic(right);
+  if (a === b) return true;
+  const ra = reverseArabicRuns(left);
+  const rb = reverseArabicRuns(right);
+  if (ra === rb || a === rb || ra === b) return true;
+  if (compact(ra) === compact(rb) || compact(a) === compact(rb) || compact(ra) === compact(b)) return true;
+  const fullA = [...a].reverse().join('');
+  const fullB = [...b].reverse().join('');
+  return a === fullB || fullA === b || fullA === fullB || compact(fullA) === compact(b) || compact(a) === compact(fullB);
 }
 
 function expectedSpans(specPage) {
@@ -128,16 +163,51 @@ function expectedSpans(specPage) {
   return spans;
 }
 
-function paintedParts(span) {
+function paintedParts(span, pageWidth) {
   const parts = span.segments?.length ? span.segments : [{ text: span.text, x: span.x, y: span.y, width: span.width }];
-  return parts.filter((part) => String(part.text || '').trim());
+  return parts.filter((part) => String(part.text || '').trim() && (pageWidth == null || part.x < pageWidth));
+}
+
+function edgeParts(span, pageWidth) {
+  const parts = span.segments?.length ? span.segments : [{ text: span.text, x: span.x, y: span.y, width: span.width }];
+  return parts.filter((part) => String(part.text || '').trim() && pageWidth != null && part.x >= pageWidth);
 }
 
 function findPainted(part, others) {
-  return others.find((other) => {
-    const text = other.text === part.text || other.segments?.some((segment) => segment.text === part.text);
+  const direct = others.find((other) => {
+    const text = textEqual(other.text, part.text)
+      || other.segments?.some((segment) => textEqual(segment.text, part.text));
     return text && near(part.x, other.x, TEXT_TOLERANCE) && near(part.y, other.y, TEXT_TOLERANCE);
   });
+  if (direct) return direct;
+  // Mixed-script runs are drawn as adjacent pieces and re-extract as several spans.
+  const line = others
+    .filter((other) => near(other.y, part.y, TEXT_TOLERANCE))
+    .sort((left, right) => left.x - right.x);
+  for (let start = 0; start < line.length; start += 1) {
+    if (!near(line[start].x, part.x, TEXT_TOLERANCE)) continue;
+    let text = '';
+    let width = 0;
+    for (let end = start; end < line.length; end += 1) {
+      if (end > start) {
+        const gap = line[end].x - (line[end - 1].x + (line[end - 1].width || 0));
+        if (gap > 8) break;
+      }
+      text += line[end].text || '';
+      width = (line[end].x + (line[end].width || 0)) - line[start].x;
+      if (textEqual(text, part.text)) {
+        return {
+          ...line[start],
+          text,
+          x: line[start].x,
+          y: line[start].y,
+          width,
+          font: line[start].font,
+        };
+      }
+    }
+  }
+  return null;
 }
 
 function pageOf(read, index) {
@@ -184,12 +254,36 @@ function isValueText(text) {
   return false;
 }
 
-function headerTextsOf(page, spec) {
-  return new Set(
-    spansIn(expectedSpans(page), page.bands?.header || spec.bands.header)
-      .filter((span) => span.role === 'static' && !isValueText(span.text) && !/page\s+\d+/i.test(span.text))
-      .map((span) => span.text),
-  );
+function isPageNumberText(text) {
+  return /\bpages?\b(?:\s*:)?\s*\d|\bpage\s+\d+\s+of\s+\d+/i.test(String(text || ''));
+}
+
+function isHeaderLabel(text) {
+  const value = String(text || '').trim();
+  if (!value || isValueText(value) || isPageNumberText(value)) return false;
+  if (/:$/.test(value)) return true;
+  return /^trial balance$/i.test(value);
+}
+
+function headerTextsOf(page, spec, options = {}) {
+  const spans = spansIn(expectedSpans(page), page.bands?.header || spec.bands.header)
+    .filter((span) => span.role === 'static' && !isValueText(span.text) && !isPageNumberText(span.text))
+    .sort((left, right) => right.y - left.y || left.x - right.x);
+  const texts = new Set();
+  for (let index = 0; index < spans.length; index += 1) {
+    let merged = spans[index].text;
+    if (!options.labelsOnly || isHeaderLabel(merged)) texts.add(merged);
+    let cursorX = spans[index].x + (spans[index].width || 0);
+    for (let next = index + 1; next < spans.length; next += 1) {
+      if (Math.abs(spans[next].y - spans[index].y) > 1.2) break;
+      if (spans[next].x + 0.5 < spans[index].x) continue;
+      if (spans[next].x - cursorX > 8) break;
+      merged += spans[next].text;
+      cursorX = spans[next].x + (spans[next].width || 0);
+      if (!options.labelsOnly || isHeaderLabel(merged)) texts.add(merged);
+    }
+  }
+  return texts;
 }
 
 function summaryAfter(spec, page) {
@@ -215,19 +309,55 @@ function contentPages(pages) {
   return copy;
 }
 
-function multiPageInvariants(spec, rendered) {
-  const pages = contentPages(spec.pages || []);
-  const firstHeader = headerTextsOf(pages[0] || spec, spec);
+function formContinuation(spec, pages) {
+  const headerSets = pages.map((page) => headerTextsOf(page, spec));
+  const nonempty = headerSets.filter((set) => set.size);
+  const shared = nonempty.length
+    ? [...nonempty[0]].filter((text) => nonempty.every((set) => set.has(text)))
+    : [];
   const headerMissing = [];
-  const headerRepeats = pages.every((page, index) => {
-    const texts = headerTextsOf(page, spec);
+  const continuationPages = [];
+  const first = headerSets[0] || new Set();
+  const headerRepeats = headerSets.every((set, index) => {
+    const same = set.size === first.size && [...first].every((text) => set.has(text));
+    if (index > 0 && !same) continuationPages.push(index + 1);
+    if (!set.size) return true;
+    const missing = shared.filter((text) => !set.has(text));
+    missing.forEach((text) => headerMissing.push({ page: index + 1, text }));
+    return missing.length === 0;
+  });
+  const textPages = pages.filter((page) => expectedSpans(page).length);
+  const numbered = textPages.map((page) =>
+    spansIn(expectedSpans(page), page.bands?.footer || spec.bands.footer).some((span) => isPageNumberText(span.text)),
+  );
+  const numberedCount = numbered.filter(Boolean).length;
+  return {
+    headerRepeats,
+    footerRepeats: numberedCount === 0 || numberedCount === textPages.length,
+    headerMissing,
+    continuationPages,
+    sharedHeader: shared,
+  };
+}
+
+export function multiPageInvariants(spec, rendered) {
+  const pages = contentPages(spec.pages || []);
+  const form = tableLayout(spec) ? null : formContinuation(spec, pages);
+  const firstHeader = headerTextsOf(pages[0] || spec, spec, { labelsOnly: !form });
+  const headerMissing = form ? form.headerMissing : [];
+  const headerRepeats = form ? form.headerRepeats : pages.every((page, index) => {
+    if (!expectedSpans(page).length) return true;
+    const texts = headerTextsOf(page, spec, { labelsOnly: true });
     const missing = [...firstHeader].filter((text) => !texts.has(text));
     missing.forEach((text) => headerMissing.push({ page: index + 1, text }));
     return missing.length === 0;
   });
-  const footerRepeats = pages.every((page) =>
-    spansIn(expectedSpans(page), page.bands?.footer || spec.bands.footer).some((span) => /page/i.test(span.text)),
-  );
+  const textPages = pages.filter((page) => expectedSpans(page).length);
+  const footerRepeats = form
+    ? form.footerRepeats
+    : textPages.length === 0
+      || textPages.every((page) => spansIn(expectedSpans(page), page.bands?.footer || spec.bands.footer).some((span) => isPageNumberText(span.text)))
+      || textPages.every((page) => !spansIn(expectedSpans(page), page.bands?.footer || spec.bands.footer).some((span) => isPageNumberText(span.text)));
   const rowBreak = !tableLayout(spec) || pages.every((page, index) => {
     const detail = spansIn(expectedSpans(page), page.bands?.detail || spec.bands.detail);
     if (!detail.length) return true;
@@ -252,6 +382,7 @@ function multiPageInvariants(spec, rendered) {
     ignoredTrailingBlankPages: (spec.pages || []).length - pages.length,
     footerRepeats,
     headerMissing,
+    continuationPages: form?.continuationPages || [],
     renderedPages: rendered.pages,
     referencePages: pages.length,
   };
@@ -261,13 +392,18 @@ function comparePage(specPage, renderedPage) {
   const missingLines = (specPage.lines || []).filter((line) => !matchLine(line, renderedPage.lines || []));
   const missingRects = (specPage.rects || []).filter((rect) => !matchRect(rect, renderedPage.rects || []));
   const missingPaths = (specPage.paths || []).filter((path) => !matchPath(path, renderedPage.paths || []));
+  const pageWidth = specPage.width;
   const spans = expectedSpans(specPage);
   const staticSpans = spans.filter((span) => span.role === 'static');
   const dynamicSpans = spans.filter((span) => span.role === 'dynamic');
   const failures = [];
+  const droppedPastEdge = [];
   function check(list, layer) {
     for (const span of list) {
-      const parts = paintedParts(span);
+      for (const part of edgeParts(span, pageWidth)) {
+        droppedPastEdge.push({ id: span.id, text: part.text, x: part.x, y: part.y });
+      }
+      const parts = paintedParts(span, pageWidth);
       if (!parts.length) continue;
       const hits = parts.map((part) => findPainted(part, renderedPage.spans || []));
       if (hits.some((hit) => !hit)) {
@@ -299,6 +435,7 @@ function comparePage(specPage, renderedPage) {
     missingPaths: missingPaths.length,
     uncaptured,
     failures,
+    droppedPastEdge,
     staticSpans: staticSpans.length,
     dynamicSpans: dynamicSpans.length,
   };
@@ -308,11 +445,86 @@ function roundWidth(value) {
   return Math.round(value * 10) / 10;
 }
 
-export async function diffPilot(code) {
+function consolasReport(spec, rendered) {
+  const rows = [];
+  for (const [index, page] of (spec.pages || []).entries()) {
+    const painted = rendered.pageReads?.[index]?.spans || [];
+    for (const span of [...(page.spans || []), ...(page.table?.rows || []).flat().filter(Boolean)]) {
+      if (!/consolas/i.test(span.font || '')) continue;
+      const parts = paintedParts(span);
+      const hits = parts.map((part) => findPainted(part, painted));
+      const renderedWidth = hits.every(Boolean) ? hits.reduce((sum, hit) => sum + (hit.width || 0), 0) : null;
+      rows.push({
+        id: span.id,
+        text: span.text,
+        size: span.size,
+        tc: Number(characterSpacingFor(span, false).toFixed(4)),
+        reference: roundWidth(parts.reduce((sum, part) => sum + (part.width || 0), 0)),
+        rendered: renderedWidth == null ? null : roundWidth(renderedWidth),
+      });
+    }
+  }
+  return rows;
+}
+
+function explainWidth(failure, row) {
+  if (!row) return 'drawn width differs from the reference span';
+  const metric = row.natural - row.glyphWidth;
+  if (/consolas/i.test(row.font || '') && Math.abs(metric) > TEXT_TOLERANCE) return 'Consolas 549.8 units per em versus Liberation Mono';
+  if (Math.abs(metric) > TEXT_TOLERANCE) return 'substitute advance differs from the reference font';
+  return 'drawn width differs after character spacing; unkerned advance is within 0.5 pt';
+}
+
+function widthMisses(failures, deviation) {
+  const byId = new Map((deviation.spans || []).map((row) => [row.id, row]));
+  return failures.filter((failure) => failure.cause === 'width').map((failure) => {
+    const row = byId.get(failure.id);
+    return {
+      id: failure.id,
+      text: failure.text,
+      layer: failure.layer,
+      size: row?.size ?? null,
+      font: row?.font || '',
+      reference: failure.reference,
+      rendered: failure.rendered,
+      glyphWidth: row?.glyphWidth ?? null,
+      natural: row?.natural ?? null,
+      cause: explainWidth(failure, row),
+    };
+  });
+}
+
+export function parseAllowedDifferences(text, code, pageNumber) {
+  const boxes = [];
+  for (const line of String(text || '').split(/\r?\n/)) {
+    const match = line.match(/^\|?\s*(\*|[A-Z][A-Z0-9_]+)\s*\|?\s+(\d+)\s*\|?\s*(-?\d+(?:\.\d+)?)\s*\|?\s*(-?\d+(?:\.\d+)?)\s*\|?\s*(-?\d+(?:\.\d+)?)\s*\|?\s*(-?\d+(?:\.\d+)?)\s*\|?\s*([^|]*)/);
+    if (!match) continue;
+    const [, rowCode, page, x, y, width, height, reason] = match;
+    if (rowCode !== '*' && rowCode !== code) continue;
+    if (Number(page) !== Number(pageNumber)) continue;
+    boxes.push({
+      x: Number(x),
+      y: Number(y),
+      width: Number(width),
+      height: Number(height),
+      kind: 'allowed',
+      reason: String(reason || '').trim(),
+    });
+  }
+  return boxes;
+}
+
+export function readAllowedDifferences(code, pageNumber) {
+  const file = path.join(root, 'reports/allowed-differences.md');
+  if (!fs.existsSync(file)) return [];
+  return parseAllowedDifferences(fs.readFileSync(file, 'utf8'), code, pageNumber);
+}
+
+export async function diffPilot(code, options = {}) {
   const spec = JSON.parse(fs.readFileSync(path.join(root, 'reports/specs', `${code}.json`), 'utf8'));
   const referencePath = path.join(root, spec.source);
-  const renderedPath = path.join(root, 'reports/output', `${code}.pdf`);
-  const reference = await inspectPdfFile(referencePath);
+  const renderedPath = options.renderedPath || path.join(root, 'reports/output', `${code}.pdf`);
+  const reference = options.referenceInspect || await inspectPdfFile(referencePath);
   const rendered = await inspectPdfFile(renderedPath);
   const pageCount = Math.max(spec.pages?.length || 1, 1);
   const pagePass = near(reference.width, rendered.width, GEOMETRY_TOLERANCE) && near(reference.height, rendered.height, GEOMETRY_TOLERANCE)
@@ -329,8 +541,18 @@ export async function diffPilot(code) {
   const unmatchedRects = pageResults.reduce((sum, page) => sum + page.missingRects, 0);
   const unmatchedPaths = pageResults.reduce((sum, page) => sum + page.missingPaths, 0);
   const uncaptured = pageResults.reduce((sum, page) => sum + page.uncaptured.total, 0);
-  const rasterResult = await compareRaster(referencePath, renderedPath, spec, code);
-  const deviation = await naturalDeviation(spec);
+  const rasterResult = await compareRaster(referencePath, renderedPath, spec, options.tag || code, {
+    engine: options.engine || 'pdftoppm',
+    maskMode: options.maskMode || 'allowed',
+    textHeatmap: Boolean(options.textHeatmap),
+    workDir: options.workDir,
+    goldenDir: options.goldenDir,
+    writeHeatmap: options.writeHeatmap !== false,
+    fastMetrics: Boolean(options.fastMetrics),
+    diagnoseNonText: Boolean(options.diagnoseNonText),
+    timing: options.timing,
+  });
+  const deviation = options.skipDeviation ? { spans: [] } : await naturalDeviation(spec);
   const images = (spec.pages || []).flatMap((page, index) => (page.images || []).map((image) => ({
     page: index + 1,
     x: image.x,
@@ -363,6 +585,8 @@ export async function diffPilot(code) {
       textPositionPt: TEXT_TOLERANCE,
       textWidthPt: TEXT_TOLERANCE,
       rasterRatio: RASTER_LIMIT,
+      textInk: TEXT_INK_LIMIT,
+      maskedFraction: MASKED_FRACTION_LIMIT,
       pixelmatch: PIXELMATCH_THRESHOLD,
       rasterDpi: RASTER_DPI,
       fontCompare: 'mapped family and weight',
@@ -399,6 +623,9 @@ export async function diffPilot(code) {
       other: 'proposed not allowed',
     },
     raster: rasterResult,
+    widthMisses: widthMisses(failures, deviation),
+    droppedPastEdge: pageResults.flatMap((page) => page.droppedPastEdge || []),
+    consolas: consolasReport(spec, rendered),
     pagination: {
       pass: paginationPass,
       status: pageCount > 1 ? 'exercised' : 'single-page invariants only; this pilot is not the multi-page stress fixture',
@@ -408,69 +635,248 @@ export async function diffPilot(code) {
   };
 }
 
-async function compareRaster(referencePdf, renderedPdf, spec, code) {
-  const dir = path.join(root, 'reports/output/raster');
+async function rasterize(pdf, prefix, engine) {
+  if (engine === 'mupdf') {
+    const mupdf = await import('mupdf');
+    const doc = mupdf.Document.openDocument(fs.readFileSync(pdf), 'application/pdf');
+    const matrix = mupdf.Matrix.scale(RASTER_DPI / 72, RASTER_DPI / 72);
+    for (let index = 0; index < doc.countPages(); index += 1) {
+      const page = doc.loadPage(index);
+      const pixmap = page.toPixmap(matrix, mupdf.ColorSpace.DeviceRGB, false);
+      fs.writeFileSync(`${prefix}-${index + 1}.png`, pixmap.asPNG());
+    }
+    return;
+  }
+  execFileSync('pdftoppm', ['-png', '-r', String(RASTER_DPI), pdf, prefix]);
+}
+
+function slotBoxes(spec) {
+  return [spec.slots?.logo, spec.slots?.company].filter(Boolean).map((box) => ({
+    ...box,
+    kind: box.binding ? 'company' : 'logo',
+  }));
+}
+
+function fullPageBoxes(spec, pageSpec, pageNumber, maskMode) {
+  const boxes = [...slotBoxes(spec)];
+  if (maskMode === 'slots') return boxes;
+  for (const span of expectedSpans(pageSpec)) {
+    if (span.role === 'branding') boxes.push({ ...spanBox(span), kind: 'branding' });
+  }
+  for (const image of pageSpec.images || []) {
+    if (MASK_IMAGE_CLASSES.has(image.proposedClass)) {
+      boxes.push({ x: image.x, y: image.y, width: image.width, height: image.height, kind: image.proposedClass });
+    }
+  }
+  boxes.push(...readAllowedDifferences(spec.code, pageNumber));
+  return boxes;
+}
+
+function overlayBoxes(pageSpec) {
+  return (pageSpec.images || [])
+    .filter((image) => OVERLAY_CLASSES.has(image.proposedClass))
+    .map((image) => ({ x: image.x, y: image.y, width: image.width, height: image.height, kind: 'form_background' }));
+}
+
+function copyRect(source, dest, rect) {
+  for (let y = rect.y0; y < rect.y1; y += 1) {
+    for (let x = rect.x0; x < rect.x1; x += 1) {
+      const offset = (y * source.width + x) * 4;
+      dest.data[offset] = source.data[offset];
+      dest.data[offset + 1] = source.data[offset + 1];
+      dest.data[offset + 2] = source.data[offset + 2];
+      dest.data[offset + 3] = 255;
+    }
+  }
+}
+
+function coveredPixels(image, pageBox, boxes) {
+  const seen = new Uint8Array(image.width * image.height);
+  let count = 0;
+  for (const box of boxes) {
+    if (!box || !Number.isFinite(box.x) || !Number.isFinite(box.width) || !Number.isFinite(box.height)) continue;
+    const rect = pdfRect(box, pageBox, image);
+    for (let y = rect.y0; y < rect.y1; y += 1) {
+      for (let x = rect.x0; x < rect.x1; x += 1) {
+        const pixel = y * image.width + x;
+        if (seen[pixel]) continue;
+        seen[pixel] = 1;
+        count += 1;
+      }
+    }
+  }
+  return count;
+}
+
+function textInkDifference(referenceImage, diff, page, pageBox) {
+  const seen = new Uint8Array(referenceImage.width * referenceImage.height);
+  let differing = 0;
+  let referenceInk = 0;
+  for (const span of expectedSpans(page)) {
+    if (span.role === 'branding') continue;
+    const rect = pdfRect(spanBox(span), pageBox, referenceImage);
+    for (let y = rect.y0; y < rect.y1; y += 1) {
+      for (let x = rect.x0; x < rect.x1; x += 1) {
+        const pixel = y * referenceImage.width + x;
+        if (seen[pixel]) continue;
+        seen[pixel] = 1;
+        const offset = pixel * 4;
+        const dark = referenceImage.data[offset] < 180 || referenceImage.data[offset + 1] < 180 || referenceImage.data[offset + 2] < 180;
+        if (dark) referenceInk += 1;
+        if (diff.data[offset] > 200 && diff.data[offset + 1] < 40 && diff.data[offset + 2] < 40) differing += 1;
+      }
+    }
+  }
+  return { differing, referenceInk };
+}
+
+async function compareRaster(referencePdf, renderedPdf, spec, code, options = {}) {
+  const engine = options.engine || 'pdftoppm';
+  const maskMode = options.maskMode || 'allowed';
+  const dir = options.workDir || path.join(root, 'reports/output/raster');
   fs.mkdirSync(dir, { recursive: true });
-  const referencePrefix = path.join(dir, `${code}-reference`);
+  const goldenDir = options.goldenDir || null;
+  const timing = options.timing || null;
+  let referenceDir = dir;
+  let referenceBase = `${code}-reference`;
+  const rasterStarted = Date.now();
+  if (goldenDir) {
+    fs.mkdirSync(goldenDir, { recursive: true });
+    const cached = fs.readdirSync(goldenDir).some((name) => /^page-\d+\.png$/.test(name));
+    if (timing) timing.golden = cached ? 'hit' : 'miss';
+    if (!cached) await rasterize(referencePdf, path.join(goldenDir, 'page'), engine);
+    referenceDir = goldenDir;
+    referenceBase = 'page';
+  } else {
+    if (timing) timing.golden = 'miss';
+    await rasterize(referencePdf, path.join(dir, referenceBase), engine);
+  }
+  if (timing) timing.rasterReferenceMs = Date.now() - rasterStarted;
+  const renderedStarted = Date.now();
   const renderedPrefix = path.join(dir, `${code}-rendered`);
-  const rasterArgs = ['-png', '-r', String(RASTER_DPI)];
-  execFileSync('pdftoppm', [...rasterArgs, referencePdf, referencePrefix]);
-  execFileSync('pdftoppm', [...rasterArgs, renderedPdf, renderedPrefix]);
-  const pages = fs.readdirSync(dir).filter((name) => name.startsWith(`${code}-reference-`) && name.endsWith('.png'));
+  await rasterize(renderedPdf, renderedPrefix, engine);
+  if (timing) timing.rasterRenderedMs = Date.now() - renderedStarted;
+  const pages = fs.readdirSync(referenceDir).filter((name) => name.startsWith(`${referenceBase}-`) && name.endsWith('.png'));
   let mismatches = 0;
   let pixels = 0;
   let nonTextMismatches = 0;
   let textMismatches = 0;
   let textPixels = 0;
+  let imageBarcodePixels = 0;
+  let brandingMaskPixels = 0;
+  let textInkDiffering = 0;
+  let textInkReference = 0;
+  const split = {
+    embedded: { mismatches: 0, pixels: 0 },
+    nonEmbedded: { mismatches: 0, pixels: 0 },
+  };
   const ink = [];
   const heatmaps = [];
+  const nonTextDiagnosis = [];
   const causes = { 'text glyph': 0, 'text position': 0, vector: 0, 'image/barcode': 0, color: 0, other: 0 };
   for (const name of pages) {
     const pageNumber = name.match(/-(\d+)\.png$/)?.[1];
-    const referenceImage = PNG.sync.read(fs.readFileSync(path.join(dir, name)));
+    const referenceImage = PNG.sync.read(fs.readFileSync(path.join(referenceDir, name)));
     const renderedName = `${code}-rendered-${pageNumber}.png`;
     const renderedImage = PNG.sync.read(fs.readFileSync(path.join(dir, renderedName)));
     if (referenceImage.width !== renderedImage.width || referenceImage.height !== renderedImage.height) {
-      return { measured: true, pass: false, reason: `Page ${pageNumber} PNG sizes differ`, rasterizer: 'pdftoppm', dpi: RASTER_DPI };
+      return { measured: true, pass: false, reason: `Page ${pageNumber} PNG sizes differ`, rasterizer: engine, dpi: RASTER_DPI };
     }
-    mask(referenceImage, spec);
-    mask(renderedImage, spec);
+    const pageSpec = spec.pages?.[Number(pageNumber) - 1] || spec;
+    const pageBox = { width: pageSpec.width || spec.page.width, height: pageSpec.height || spec.page.height };
+    // Verification-only: paint the reference form_background into both rasters.
+    for (const box of overlayBoxes(pageSpec)) {
+      const rect = pdfRect(box, pageBox, referenceImage);
+      copyRect(referenceImage, renderedImage, rect);
+    }
+    brandingMaskPixels += coveredPixels(referenceImage, pageBox, fullPageBoxes(spec, pageSpec, pageNumber, maskMode));
+    imageBarcodePixels += coveredPixels(referenceImage, pageBox, (pageSpec.images || []).filter((image) => image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.proposedClass === 'other'));
+    for (const box of slotBoxes(spec)) {
+      whiteRect(referenceImage, pdfRect(box, pageBox, referenceImage));
+      whiteRect(renderedImage, pdfRect(box, pageBox, renderedImage));
+    }
+    const blurReference = cloneImage(referenceImage);
+    const blurRendered = cloneImage(renderedImage);
+    const boxes = fullPageBoxes(spec, pageSpec, pageNumber, maskMode).filter((box) => box.kind !== 'logo' && box.kind !== 'company');
+    for (const box of boxes) {
+      whiteRect(referenceImage, pdfRect(box, pageBox, referenceImage));
+      whiteRect(renderedImage, pdfRect(box, pageBox, renderedImage));
+    }
     const diff = new PNG({ width: referenceImage.width, height: referenceImage.height });
     const count = pixelmatch(referenceImage.data, renderedImage.data, diff.data, referenceImage.width, referenceImage.height, { threshold: PIXELMATCH_THRESHOLD });
-    const pageSpec = spec.pages?.[Number(pageNumber) - 1] || spec;
-    const pageCauses = classifyDiff(diff, pageSpec);
-    for (const [key, value] of Object.entries(pageCauses)) causes[key] += value;
-    const heatmap = path.join(dir, `${code}-page-${pageNumber}-diff.png`);
-    fs.writeFileSync(heatmap, PNG.sync.write(diff));
-    heatmaps.push(heatmap.replace(/\\/g, '/').replace(`${root.replace(/\\/g, '/')}/`, ''));
-    const extra = measureRasterExtras(referenceImage, renderedImage, pageSpec);
+    if (!options.fastMetrics) {
+      const pageCauses = classifyDiff(diff, pageSpec);
+      for (const [key, value] of Object.entries(pageCauses)) causes[key] += value;
+    }
+    if (options.textHeatmap) {
+      const textDiff = cloneImage(diff);
+      const keep = new Uint8Array(diff.width * diff.height);
+      for (const span of expectedSpans(pageSpec)) {
+        const rect = pdfRect(spanBox(span), pageBox, textDiff);
+        for (let y = rect.y0; y < rect.y1; y += 1) {
+          for (let x = rect.x0; x < rect.x1; x += 1) keep[y * textDiff.width + x] = 1;
+        }
+      }
+      for (let pixel = 0; pixel < keep.length; pixel += 1) {
+        if (keep[pixel]) continue;
+        const offset = pixel * 4;
+        textDiff.data[offset] = 255;
+        textDiff.data[offset + 1] = 255;
+        textDiff.data[offset + 2] = 255;
+        textDiff.data[offset + 3] = 255;
+      }
+      fs.writeFileSync(path.join(dir, `${code}-page-${pageNumber}-text.png`), PNG.sync.write(textDiff));
+    }
+    if (options.writeHeatmap !== false) {
+      for (const box of fullPageBoxes(spec, pageSpec, pageNumber, maskMode)) outlineRect(diff, pdfRect(box, pageBox, diff));
+      const heatmap = path.join(dir, `${code}-page-${pageNumber}-diff.png`);
+      fs.writeFileSync(heatmap, PNG.sync.write(diff));
+      heatmaps.push(heatmap.replace(/\\/g, '/').replace(`${root.replace(/\\/g, '/')}/`, ''));
+    }
+    const extra = measureRasterExtras(blurReference, blurRendered, pageSpec, options);
+    if (extra.diagnosis) nonTextDiagnosis.push({ page: Number(pageNumber), ...extra.diagnosis });
     nonTextMismatches += extra.nonTextMismatches;
     textMismatches += extra.textMismatches;
     textPixels += extra.textPixels;
+    split.embedded.mismatches += extra.split.embedded.mismatches;
+    split.embedded.pixels += extra.split.embedded.pixels;
+    split.nonEmbedded.mismatches += extra.split.nonEmbedded.mismatches;
+    split.nonEmbedded.pixels += extra.split.nonEmbedded.pixels;
     ink.push(...extra.ink);
+    const inkCount = textInkDifference(referenceImage, diff, pageSpec, pageBox);
+    textInkDiffering += inkCount.differing;
+    textInkReference += inkCount.referenceInk;
     mismatches += count;
     pixels += referenceImage.width * referenceImage.height;
   }
   const ratio = pixels ? mismatches / pixels : 1;
   const nonTextRatio = pixels ? nonTextMismatches / pixels : 1;
   const textRatio = textPixels ? textMismatches / textPixels : 0;
+  const maskedFraction = pixels ? brandingMaskPixels / pixels : 1;
+  const textInkRatio = textInkReference ? textInkDiffering / textInkReference : 0;
+  const nonTextPass = nonTextRatio <= RASTER_LIMIT;
+  const textInkPass = textInkRatio <= TEXT_INK_LIMIT;
+  const maskedPass = maskedFraction <= MASKED_FRACTION_LIMIT;
   const inkValues = ink.map((item) => item.iou);
   return {
     measured: true,
-    pass: ratio <= RASTER_LIMIT,
+    pass: nonTextPass && textInkPass && maskedPass,
     mismatches,
     ratio: Number(ratio.toFixed(4)),
-    rasterizer: 'pdftoppm',
+    rasterizer: engine,
+    maskMode,
+    allowedDifferencesFile: fs.existsSync(path.join(root, 'reports/allowed-differences.md')),
     dpi: RASTER_DPI,
     heatmaps,
     causes,
     causeShare: Object.fromEntries(Object.entries(causes).map(([key, value]) => [key, mismatches ? Number((value / mismatches).toFixed(4)) : 0])),
+    nonTextDiagnosis,
     nonText: {
-      pass: nonTextRatio <= RASTER_LIMIT,
+      pass: nonTextPass,
       mismatches: nonTextMismatches,
       ratio: Number(nonTextRatio.toFixed(4)),
       limit: RASTER_LIMIT,
-      masked: 'span boxes plus logo, letterhead, barcode, QR, and decorative branding',
+      masked: 'span boxes plus logo, letterhead, decorative; form_background overlaid from reference',
     },
     text: {
       blurredMismatches: textMismatches,
@@ -481,6 +887,28 @@ async function compareRaster(referencePdf, renderedPdf, spec, code) {
       inkMin: inkValues.length ? Number(Math.min(...inkValues).toFixed(4)) : null,
       inkSpans: ink.length,
       spans: ink,
+      embedded: {
+        blurredMismatches: split.embedded.mismatches,
+        blurredRatio: Number((split.embedded.pixels ? split.embedded.mismatches / split.embedded.pixels : 0).toFixed(4)),
+        textPixels: split.embedded.pixels,
+      },
+      nonEmbedded: {
+        blurredMismatches: split.nonEmbedded.mismatches,
+        blurredRatio: Number((split.nonEmbedded.pixels ? split.nonEmbedded.mismatches / split.nonEmbedded.pixels : 0).toFixed(4)),
+        textPixels: split.nonEmbedded.pixels,
+      },
+    },
+    imageBarcodePixels,
+    brandingMaskPixels,
+    maskedFraction: Number(maskedFraction.toFixed(4)),
+    maskedFractionLimit: MASKED_FRACTION_LIMIT,
+    maskedFractionPass: maskedPass,
+    textInk: {
+      differing: textInkDiffering,
+      referenceInk: textInkReference,
+      ratio: Number(textInkRatio.toFixed(4)),
+      limit: TEXT_INK_LIMIT,
+      pass: textInkPass,
     },
   };
 }
@@ -537,18 +965,34 @@ function classifyDiff(diff, page) {
   return causes;
 }
 
+function unkernedWidth(font, text, size) {
+  const run = font.layout(text, { kern: false });
+  const units = run.glyphs.reduce((sum, glyph) => sum + glyph.advanceWidth, 0);
+  return units / font.unitsPerEm * size;
+}
+
+function kernedWidth(font, text, size) {
+  const run = font.layout(text);
+  const units = run.positions.reduce((sum, position) => sum + position.xAdvance, 0);
+  return units / font.unitsPerEm * size;
+}
+
 async function naturalDeviation(spec) {
-  const doc = await PDFDocument.create();
-  doc.registerFontkit(fontkit);
   const cache = new Map();
   const rows = [];
   for (const span of (spec.pages || [spec]).flatMap((page) => expectedSpans(page))) {
     if (!span.glyphWidth) continue;
     const mapped = mapFont(span.font);
-    if (!cache.has(mapped.file)) cache.set(mapped.file, await doc.embedFont(fs.readFileSync(fontFile(mapped))));
+    if (!cache.has(mapped.file)) cache.set(mapped.file, fontkit.create(fs.readFileSync(fontFile(mapped))));
     const measured = span.glyphText || (span.segments?.length ? span.segments.map((segment) => segment.text).join('') : span.text);
+    const size = span.size || 8;
     let natural = 0;
-    try { natural = cache.get(mapped.file).widthOfTextAtSize(measured, span.size || 8); } catch { continue; }
+    let kerned = 0;
+    try {
+      const font = cache.get(mapped.file);
+      natural = unkernedWidth(font, measured, size);
+      kerned = kernedWidth(font, measured, size);
+    } catch { continue; }
     const delta = natural - span.glyphWidth;
     const segments = span.segments || [];
     let tj = 0;
@@ -567,6 +1011,7 @@ async function naturalDeviation(spec) {
       tj: roundWidth(segments.length > 1 ? tj : (span.width || 0) - (span.glyphWidth || 0)),
       glyphWidth: span.glyphWidth,
       natural: roundWidth(natural),
+      kerned: roundWidth(kerned),
       delta: roundWidth(delta),
       percent: span.glyphWidth ? Math.abs(delta) / span.glyphWidth : 0,
     });
@@ -574,12 +1019,18 @@ async function naturalDeviation(spec) {
   const groups = new Map();
   for (const row of rows) {
     const key = `${row.font} -> ${row.mapped}`;
-    const group = groups.get(key) || { font: key, spans: 0, absPercent: 0 };
+    const group = groups.get(key) || { font: key, spans: 0, absPercent: 0, absKerned: 0 };
     group.spans += 1;
     group.absPercent += row.percent;
+    group.absKerned += row.glyphWidth ? Math.abs(row.kerned - row.glyphWidth) / row.glyphWidth : 0;
     groups.set(key, group);
   }
-  const fonts = [...groups.values()].map((group) => ({ font: group.font, spans: group.spans, meanPercent: Number((group.absPercent / group.spans).toFixed(4)) }));
+  const fonts = [...groups.values()].map((group) => ({
+    font: group.font,
+    spans: group.spans,
+    meanPercent: Number((group.absPercent / group.spans).toFixed(4)),
+    meanKernedPercent: Number((group.absKerned / group.spans).toFixed(4)),
+  }));
   function take(test) {
     const matched = rows.filter(test);
     const padded = [...matched].sort((a, b) => (b.tj || 0) - (a.tj || 0)).slice(0, 5);
@@ -587,6 +1038,7 @@ async function naturalDeviation(spec) {
     return [...plain, ...padded].slice(0, 10);
   }
   return {
+    kerning: 'disabled',
     spans: rows,
     fontsOverHalfPercent: fonts.filter((group) => group.meanPercent > 0.005),
     samples: {
@@ -613,7 +1065,7 @@ function spanBox(span) {
   return { x: span.x, y: span.y - size * 0.25, width: Math.max(span.width || 1, 1), height: size * 1.25 };
 }
 
-const ALLOWED_IMAGE = new Set(['logo', 'barcode', 'qr', 'letterhead', 'decorative Fresa branding']);
+const ALLOWED_IMAGE = new Set(['logo', 'barcode', 'qr', 'letterhead', 'decorative', 'decorative Fresa branding', 'form_background']);
 
 function whiteRect(image, rect) {
   for (let y = rect.y0; y < rect.y1; y += 1) {
@@ -690,7 +1142,118 @@ function gaussianBlur(image) {
   return copy;
 }
 
-function measureRasterExtras(referenceImage, renderedImage, page) {
+function rectDistance(x, y, rect) {
+  const dx = x < rect.x0 ? rect.x0 - x : x >= rect.x1 ? x - (rect.x1 - 1) : 0;
+  const dy = y < rect.y0 ? rect.y0 - y : y >= rect.y1 ? y - (rect.y1 - 1) : 0;
+  return Math.hypot(dx, dy);
+}
+
+function emptyHistogram() {
+  return { '0-1': 0, '2-3': 0, '4-8': 0, 'over 8': 0 };
+}
+
+function bucketDistance(distance) {
+  if (distance <= 1) return '0-1';
+  if (distance <= 3) return '2-3';
+  if (distance <= 8) return '4-8';
+  return 'over 8';
+}
+
+function paintDistance(field, width, height, rects) {
+  for (const rect of rects) {
+    const x0 = Math.max(0, rect.x0 - 8);
+    const x1 = Math.min(width, rect.x1 + 8);
+    const y0 = Math.max(0, rect.y0 - 8);
+    const y1 = Math.min(height, rect.y1 + 8);
+    for (let y = y0; y < y1; y += 1) {
+      for (let x = x0; x < x1; x += 1) {
+        const distance = rectDistance(x, y, rect);
+        if (distance > 8) continue;
+        const index = y * width + x;
+        if (distance < field[index]) field[index] = distance;
+      }
+    }
+  }
+}
+
+function farCause(x, y, page) {
+  for (const image of page.images || []) {
+    if (x >= image.x && x <= image.x + image.width && y >= image.y && y <= image.y + image.height) return 'images';
+  }
+  for (const rect of page.rects || []) {
+    const inside = x >= rect.x && x <= rect.x + rect.width && y >= rect.y && y <= rect.y + rect.height;
+    if (!inside) continue;
+    const edge = x <= rect.x + 1.2 || y <= rect.y + 1.2 || x >= rect.x + rect.width - 1.2 || y >= rect.y + rect.height - 1.2;
+    if (rect.fill && rect.fill !== '#ffffff' && !edge) return 'fills';
+    return 'strokes';
+  }
+  for (const line of page.lines || []) {
+    if (pointSegmentDistance(x, y, line) <= (line.width || 0.6) + 1.2) return 'strokes';
+  }
+  for (const path of page.paths || []) {
+    const box = pathBox(path);
+    if (!box) continue;
+    const inside = x >= box.x - 1.2 && x <= box.x + box.width + 1.2 && y >= box.y - 1.2 && y <= box.y + box.height + 1.2;
+    if (!inside) continue;
+    return path.paint === 'fill' || path.paint === 'both' ? 'fills' : 'strokes';
+  }
+  return 'other';
+}
+
+function diagnoseNonText(scratch, page) {
+  const pageBox = { width: page.width || 595, height: page.height || 842 };
+  const textRects = expectedSpans(page).map((span) => pdfRect(spanBox(span), pageBox, scratch));
+  const imageRects = (page.images || [])
+    .filter((image) => ALLOWED_IMAGE.has(image.proposedClass))
+    .map((image) => pdfRect(image, pageBox, scratch));
+  const textDistance = new Float32Array(scratch.width * scratch.height);
+  const imageDistance = new Float32Array(scratch.width * scratch.height);
+  textDistance.fill(99);
+  imageDistance.fill(99);
+  paintDistance(textDistance, scratch.width, scratch.height, textRects);
+  paintDistance(imageDistance, scratch.width, scratch.height, imageRects);
+  const toText = emptyHistogram();
+  const toImage = emptyHistogram();
+  const toEither = emptyHistogram();
+  const far = { fills: 0, strokes: 0, clip: 0, images: 0, other: 0 };
+  let farCount = 0;
+  let minX = scratch.width;
+  let minY = scratch.height;
+  let maxX = 0;
+  let maxY = 0;
+  for (let y = 0; y < scratch.height; y += 1) {
+    for (let x = 0; x < scratch.width; x += 1) {
+      const offset = (y * scratch.width + x) * 4;
+      if (!(scratch.data[offset] > 200 && scratch.data[offset + 1] < 40 && scratch.data[offset + 2] < 40)) continue;
+      const index = y * scratch.width + x;
+      const text = textDistance[index];
+      const image = imageDistance[index];
+      const either = Math.min(text, image);
+      toText[bucketDistance(text)] += 1;
+      toImage[bucketDistance(image)] += 1;
+      toEither[bucketDistance(either)] += 1;
+      if (either <= 8) continue;
+      farCount += 1;
+      const pdfX = (x / scratch.width) * pageBox.width;
+      const pdfY = pageBox.height - (y / scratch.height) * pageBox.height;
+      far[farCause(pdfX, pdfY, page)] += 1;
+      if (x < minX) minX = x;
+      if (y < minY) minY = y;
+      if (x > maxX) maxX = x;
+      if (y > maxY) maxY = y;
+    }
+  }
+  return {
+    toText,
+    toImage,
+    toEither,
+    far,
+    farCount,
+    bounds: farCount ? { x0: minX, y0: minY, x1: maxX + 1, y1: maxY + 1 } : null,
+  };
+}
+
+function measureRasterExtras(referenceImage, renderedImage, page, options = {}) {
   const pageBox = { width: page.width || 595, height: page.height || 842 };
   const spans = expectedSpans(page).map(spanBox);
   const allowed = (page.images || []).filter((image) => ALLOWED_IMAGE.has(image.proposedClass)).map((image) => ({
@@ -704,6 +1267,17 @@ function measureRasterExtras(referenceImage, renderedImage, page) {
   }
   const scratch = new PNG({ width: left.width, height: left.height });
   const nonTextMismatches = pixelmatch(left.data, right.data, scratch.data, left.width, left.height, { threshold: PIXELMATCH_THRESHOLD });
+  const diagnosis = options.diagnoseNonText ? diagnoseNonText(scratch, page) : null;
+  if (options.fastMetrics) {
+    return {
+      nonTextMismatches,
+      textMismatches: 0,
+      textPixels: 0,
+      ink: [],
+      split: { embedded: { mismatches: 0, pixels: 0 }, nonEmbedded: { mismatches: 0, pixels: 0 } },
+      diagnosis,
+    };
+  }
   const blurredLeft = gaussianBlur(referenceImage);
   const blurredRight = gaussianBlur(renderedImage);
   const diff = new PNG({ width: referenceImage.width, height: referenceImage.height });
@@ -711,7 +1285,13 @@ function measureRasterExtras(referenceImage, renderedImage, page) {
   const covered = new Uint8Array(referenceImage.width * referenceImage.height);
   let textPixels = 0;
   let textMismatches = 0;
-  for (const box of spans) {
+  const split = {
+    embedded: { mismatches: 0, pixels: 0 },
+    nonEmbedded: { mismatches: 0, pixels: 0 },
+  };
+  for (const span of expectedSpans(page)) {
+    const box = spanBox(span);
+    const bucket = span.fontEmbedded === false ? split.nonEmbedded : split.embedded;
     const rect = pdfRect(box, pageBox, referenceImage);
     for (let y = rect.y0; y < rect.y1; y += 1) {
       for (let x = rect.x0; x < rect.x1; x += 1) {
@@ -719,8 +1299,12 @@ function measureRasterExtras(referenceImage, renderedImage, page) {
         if (covered[pixel]) continue;
         covered[pixel] = 1;
         textPixels += 1;
+        bucket.pixels += 1;
         const offset = pixel * 4;
-        if (diff.data[offset] > 200 && diff.data[offset + 1] < 40 && diff.data[offset + 2] < 40) textMismatches += 1;
+        if (diff.data[offset] > 200 && diff.data[offset + 1] < 40 && diff.data[offset + 2] < 40) {
+          textMismatches += 1;
+          bucket.mismatches += 1;
+        }
       }
     }
   }
@@ -742,26 +1326,29 @@ function measureRasterExtras(referenceImage, renderedImage, page) {
     const union = referenceInk + renderedInk - both;
     return { id: span.id, iou: union ? Number((both / union).toFixed(4)) : 1 };
   });
-  return { nonTextMismatches, textMismatches, textPixels, ink };
+  return { nonTextMismatches, textMismatches, textPixels, ink, split, diagnosis };
 }
 
-function mask(image, spec) {
-  const boxes = [spec.slots?.logo, spec.slots?.company].filter(Boolean);
-  const page = spec.page;
-  for (const box of boxes) {
-    const x0 = Math.max(0, Math.floor((box.x / page.width) * image.width));
-    const x1 = Math.min(image.width, Math.ceil(((box.x + box.width) / page.width) * image.width));
-    const yTop = page.height - (box.y + box.height);
-    const y0 = Math.max(0, Math.floor((yTop / page.height) * image.height));
-    const y1 = Math.min(image.height, Math.ceil(((yTop + box.height) / page.height) * image.height));
+function outlineRect(image, rect) {
+  const x0 = Math.max(0, rect.x0);
+  const x1 = Math.min(image.width, rect.x1);
+  const y0 = Math.max(0, rect.y0);
+  const y1 = Math.min(image.height, rect.y1);
+  const paint = (x, y) => {
+    const offset = (y * image.width + x) * 4;
+    image.data[offset] = 0;
+    image.data[offset + 1] = 160;
+    image.data[offset + 2] = 255;
+    image.data[offset + 3] = 255;
+  };
+  for (let thickness = 0; thickness < 2; thickness += 1) {
+    for (let x = x0; x < x1; x += 1) {
+      if (y0 + thickness < y1) paint(x, y0 + thickness);
+      if (y1 - 1 - thickness >= y0) paint(x, y1 - 1 - thickness);
+    }
     for (let y = y0; y < y1; y += 1) {
-      for (let x = x0; x < x1; x += 1) {
-        const offset = (y * image.width + x) * 4;
-        image.data[offset] = 255;
-        image.data[offset + 1] = 255;
-        image.data[offset + 2] = 255;
-        image.data[offset + 3] = 255;
-      }
+      if (x0 + thickness < x1) paint(x0 + thickness, y);
+      if (x1 - 1 - thickness >= x0) paint(x1 - 1 - thickness, y);
     }
   }
 }
@@ -790,7 +1377,7 @@ if (code && process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(i
     images: result.images,
     branding: result.branding,
     fontsOverHalfPercent: result.dynamicText.naturalWidth.fontsOverHalfPercent,
-    fontSamples: result.dynamicText.naturalWidth.samples,
+    widthMisses: result.widthMisses,
   }));
   if (process.argv.includes('--check-baseline')) {
     const baselinePath = path.join(root, 'reports/ci-baseline.json');

@@ -14,10 +14,16 @@
       "family": "Liberation Mono",
       "regular": "reports/fonts/LiberationMono-Regular.ttf",
       "bold": "reports/fonts/LiberationMono-Bold.ttf"
+    },
+    "NotoNaskhArabic": {
+      "family": "Noto Naskh Arabic",
+      "regular": "reports/fonts/NotoNaskhArabic-Regular.ttf",
+      "bold": "reports/fonts/NotoNaskhArabic-Regular.ttf"
     }
   },
   "rules": [
     { "match": "consolas|courier|liberation\\s*mono|monospace", "bundle": "LiberationMono" },
+    { "match": "naskh|arabic", "bundle": "NotoNaskhArabic" },
     { "match": "arial\\s*unicode", "bundle": "Arimo" },
     { "match": "noto|dejavu|freesans|symbol", "bundle": "NotoSans" },
     { "match": "arial|helvetica|arimo", "bundle": "Arimo" },

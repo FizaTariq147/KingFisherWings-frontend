@@ -1,0 +1,512 @@
+{
+  "rows": [
+    {
+      "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 72.5,
+          "rendered": 71.9
+        },
+        {
+          "layer": "static",
+          "id": "p1s99",
+          "text": "ﺮﻌﺳ",
+          "cause": "width",
+          "reference": 12.3,
+          "rendered": 11.5
+        }
+      ],
+      "maxInteriorGapPt": 4.3,
+      "gapsOverPoint8": 33,
+      "joinsBroken": true
+    },
+    {
+      "code": "STUFFING_REPORT_FORMAT",
+      "static": false,
+      "dynamic": true,
+      "raster": false,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s321",
+          "text": "،",
+          "cause": "width",
+          "reference": 2.6,
+          "rendered": 1.7
+        }
+      ],
+      "maxInteriorGapPt": 3.1,
+      "gapsOverPoint8": 1,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_KSA_INVOICE_ARABIC_RPM_REF_1161",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s1",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 72.5,
+          "rendered": 71.9
+        },
+        {
+          "layer": "static",
+          "id": "p1s5",
+          "text": ":ﺓﺭﻮﺗﺎﻔﻟﺍ ﺭﺍﺪﺻﺇ ﺦﻳﺭﺎﺗ",
+          "cause": "width",
+          "reference": 62.8,
+          "rendered": 60.2
+        },
+        {
+          "layer": "static",
+          "id": "p1s8",
+          "text": ":ﺪﻳﺭﻮﺘﻟﺍ ﺦﻳﺭﺎﺗ",
+          "cause": "width",
+          "reference": 38.6,
+          "rendered": 39.7
+        },
+        {
+          "layer": "static",
+          "id": "p1s18",
+          "text": "ﺕﺎﻣﺪﺨﻟﺍ ﻭﺃ ﻊﻠﺴﻟﺍ ﺔﻌﻴﺒﻃ",
+          "cause": "width",
+          "reference": 63.1,
+          "rendered": 62.5
+        },
+        {
+          "layer": "static",
+          "id": "p1s20",
+          "text": "ﺓﺪﺣﻮﻟﺍ ﺮﻌﺳ",
+          "cause": "width",
+          "reference": 32.4,
+          "rendered": 31.6
+        },
+        {
+          "layer": "static",
+          "id": "p1s32",
+          "text": "ﺎًﻨﻤﻀﺘﻣ) ﺪﻨﺒﻠﻟ ﻲﻋﺮﻔﻟﺍ ﻉﻮﻤﺠﻤﻟﺍ",
+          "cause": "width",
+          "reference": 67.8,
+          "rendered": 64.8
+        },
+        {
+          "layer": "static",
+          "id": "p1s33",
+          "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ)",
+          "cause": "width",
+          "reference": 50.7,
+          "rendered": 48.3
+        },
+        {
+          "layer": "static",
+          "id": "p1s103",
+          "text": ":ﻢﺳﺍ",
+          "cause": "width",
+          "reference": 15.4,
+          "rendered": 13.6
+        }
+      ],
+      "maxInteriorGapPt": 8.92,
+      "gapsOverPoint8": 100,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_RPM_REF_464",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 72.5,
+          "rendered": 71.9
+        },
+        {
+          "layer": "static",
+          "id": "p1s92",
+          "text": "ﺮﻌﺳ",
+          "cause": "width",
+          "reference": 12.3,
+          "rendered": 11.5
+        }
+      ],
+      "maxInteriorGapPt": 4.3,
+      "gapsOverPoint8": 42,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "Invoice Receiver ﻰﻟﺇ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 93.3,
+          "rendered": 90.5
+        },
+        {
+          "layer": "static",
+          "id": "p1s10",
+          "text": "Job No ﺔﻔﻴﻇﻮﻟﺍ ﻢﻗﺭ",
+          "cause": "width",
+          "reference": 65.3,
+          "rendered": 62.8
+        },
+        {
+          "layer": "static",
+          "id": "p1s12",
+          "text": "Invoice No ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "cause": "width",
+          "reference": 77.9,
+          "rendered": 74
+        },
+        {
+          "layer": "static",
+          "id": "p1s15",
+          "text": "PO/BL No. ﺀﺍﺮﺷ ﺮﻣﺃ",
+          "cause": "width",
+          "reference": 67.7,
+          "rendered": 65.4
+        },
+        {
+          "layer": "static",
+          "id": "p1s25",
+          "text": "VAT No. ﻲﺒﻳﺮﻀﻟﺍ ﻢﻗﺮﻟﺍ",
+          "cause": "width",
+          "reference": 75.8,
+          "rendered": 72.7
+        },
+        {
+          "layer": "static",
+          "id": "p1s27",
+          "text": "Place of Loading ﻞﯿﻤﺤﺘﻟﺍ ﻥﺎﻜﻣ",
+          "cause": "width",
+          "reference": 102.7,
+          "rendered": 100.8
+        },
+        {
+          "layer": "static",
+          "id": "p1s31",
+          "text": "ETD ﺓﺭﺩﺎﻐﻤﻟﺍ ﺪﻋﻮﻣ",
+          "cause": "width",
+          "reference": 62.2,
+          "rendered": 57.5
+        },
+        {
+          "layer": "static",
+          "id": "p1s33",
+          "text": "Place of Delivery ﻞﯿﺻﻮﺘﻟﺍ ﻥﺎﻜﻣ",
+          "cause": "width",
+          "reference": 104,
+          "rendered": 102.6
+        }
+      ],
+      "maxInteriorGapPt": 3.87,
+      "gapsOverPoint8": 27,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "Invoice Receiver ﻰﻟﺇ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 93.3,
+          "rendered": 90.5
+        },
+        {
+          "layer": "static",
+          "id": "p1s10",
+          "text": "Job No ﺔﻔﻴﻇﻮﻟﺍ ﻢﻗﺭ",
+          "cause": "width",
+          "reference": 65.3,
+          "rendered": 62.8
+        },
+        {
+          "layer": "static",
+          "id": "p1s12",
+          "text": "Invoice No ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "cause": "width",
+          "reference": 77.9,
+          "rendered": 74
+        },
+        {
+          "layer": "static",
+          "id": "p1s15",
+          "text": "PO/BL No. ﺀﺍﺮﺷ ﺮﻣﺃ",
+          "cause": "width",
+          "reference": 67.7,
+          "rendered": 65.4
+        },
+        {
+          "layer": "static",
+          "id": "p1s25",
+          "text": "VAT No. ﻲﺒﻳﺮﻀﻟﺍ ﻢﻗﺮﻟﺍ",
+          "cause": "width",
+          "reference": 75.8,
+          "rendered": 72.7
+        },
+        {
+          "layer": "static",
+          "id": "p1s27",
+          "text": "Place of Loading ﻞﯿﻤﺤﺘﻟﺍ ﻥﺎﻜﻣ",
+          "cause": "width",
+          "reference": 102.7,
+          "rendered": 100.8
+        },
+        {
+          "layer": "static",
+          "id": "p1s31",
+          "text": "ETD ﺓﺭﺩﺎﻐﻤﻟﺍ ﺪﻋﻮﻣ",
+          "cause": "width",
+          "reference": 62.2,
+          "rendered": 57.5
+        },
+        {
+          "layer": "static",
+          "id": "p1s33",
+          "text": "Place of Delivery ﻞﯿﺻﻮﺘﻟﺍ ﻥﺎﻜﻣ",
+          "cause": "width",
+          "reference": 104,
+          "rendered": 102.6
+        }
+      ],
+      "maxInteriorGapPt": 3.87,
+      "gapsOverPoint8": 27,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_OMAN_RPM_REF_747",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 33.8,
+          "rendered": 33.1
+        },
+        {
+          "layer": "static",
+          "id": "p1s92",
+          "text": "ﺮﻌﺳ",
+          "cause": "width",
+          "reference": 12.3,
+          "rendered": 11.5
+        }
+      ],
+      "maxInteriorGapPt": 2.7,
+      "gapsOverPoint8": 41,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT2_RPM_REF_1171",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 72.5,
+          "rendered": 71.9
+        },
+        {
+          "layer": "static",
+          "id": "p1s92",
+          "text": "ﺮﻌﺳ",
+          "cause": "width",
+          "reference": 12.3,
+          "rendered": 11.5
+        }
+      ],
+      "maxInteriorGapPt": 4.3,
+      "gapsOverPoint8": 42,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT3_RPM_REF_1183",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 72.5,
+          "rendered": 71.9
+        },
+        {
+          "layer": "static",
+          "id": "p1s35",
+          "text": "ﻒﻠﻤﻟﺍ",
+          "cause": "width",
+          "reference": 19.8,
+          "rendered": 17.5
+        },
+        {
+          "layer": "static",
+          "id": "p1s49",
+          "text": "ﻲﺴﻴﺋﺮﻟﺍ ﺔﺼﻴﻟﻮﺑ",
+          "cause": "width",
+          "reference": 49.2,
+          "rendered": 46.9
+        },
+        {
+          "layer": "static",
+          "id": "p1s56",
+          "text": "ﻲﺋﺎﻬﻨﻟﺍ ﻝﻮﺻﻮﻟﺍ",
+          "cause": "width",
+          "reference": 47.9,
+          "rendered": 45.7
+        },
+        {
+          "layer": "static",
+          "id": "p1s57",
+          "text": "ﻰﻠﺧﺍﺪﻟﺍ ﺔﺼﻴﻟﻮﺑ",
+          "cause": "width",
+          "reference": 48,
+          "rendered": 45.8
+        },
+        {
+          "layer": "static",
+          "id": "p1s63",
+          "text": "ﻥﺍﺮﻴﻄﻟﺍ / ﺓﺮﺧﺎﺒﻟﺍ",
+          "cause": "width",
+          "reference": 50.5,
+          "rendered": 48
+        },
+        {
+          "layer": "static",
+          "id": "p1s90",
+          "text": "ﺮﻌﺳ",
+          "cause": "width",
+          "reference": 12.3,
+          "rendered": 11.5
+        },
+        {
+          "layer": "static",
+          "id": "p1s150",
+          "text": "Container Details ﺔﻳﻭﺎﺤﻟﺍ ﻞﻴﺻﺎﻔﺗ",
+          "cause": "width",
+          "reference": 113.4,
+          "rendered": 112.6
+        }
+      ],
+      "maxInteriorGapPt": 4.3,
+      "gapsOverPoint8": 69,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT4_RPM_REF_1215",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 72.5,
+          "rendered": 71.9
+        },
+        {
+          "layer": "static",
+          "id": "p1s94",
+          "text": "ﺮﻌﺳ",
+          "cause": "width",
+          "reference": 12.3,
+          "rendered": 11.5
+        }
+      ],
+      "maxInteriorGapPt": 4.3,
+      "gapsOverPoint8": 42,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT5_RPM_REF_1385",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 72.5,
+          "rendered": 71.9
+        },
+        {
+          "layer": "static",
+          "id": "p1s51",
+          "text": "ﺮﻌﺳ",
+          "cause": "width",
+          "reference": 12.3,
+          "rendered": 11.5
+        }
+      ],
+      "maxInteriorGapPt": 4.3,
+      "gapsOverPoint8": 42,
+      "joinsBroken": true
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT7_RPM_REF_1400",
+      "static": false,
+      "dynamic": true,
+      "raster": true,
+      "widthFailures": [
+        {
+          "layer": "static",
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "cause": "width",
+          "reference": 72.5,
+          "rendered": 71.9
+        },
+        {
+          "layer": "static",
+          "id": "p1s53",
+          "text": "ﺮﻌﺳ",
+          "cause": "width",
+          "reference": 12.3,
+          "rendered": 11.5
+        }
+      ],
+      "maxInteriorGapPt": 4.3,
+      "gapsOverPoint8": 42,
+      "joinsBroken": true
+    }
+  ]
+}
