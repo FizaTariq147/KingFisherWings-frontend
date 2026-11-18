@@ -102,6 +102,7 @@ import {
   isJobHardClosed,
 } from '../utils/isHandoffLimitedJob';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
+import { isTransportHandoffOnly } from '../utils/isTransportHandoffOnly';
 import { isPassToTransportStatus } from '../constants/job.constants';
 import { useJobLookupsDropdowns } from '../hooks/useJobs';
 import { MASTER_PATHS } from '@/features/masters/api/masterPaths';
@@ -582,15 +583,22 @@ export default function JobDetailPage() {
     );
   }
 
+  const transportHandoffOnly = isTransportHandoffOnly(user);
   const editable = canEditJob(job, user) && !handoffLimited;
   const canDelete = !handoffLimited && canDeleteJob(job, user);
   const fclActions = job.actions;
   const hardClosed = isJobHardClosed(job);
   // CLOSED: changeStatus must not leave CLOSED except via approved reopen.
+  // Transport handoff-only keeps change-status + custom status on the handoff surface.
   const canChangeStatus =
     !hardClosed &&
-    !handoffLimited &&
-    fclActions?.can_change_status !== false;
+    fclActions?.can_change_status !== false &&
+    (!handoffLimited || transportHandoffOnly);
+  const canCreateCustomStatus =
+    canChangeStatus &&
+    (transportHandoffOnly ||
+      fclActions?.can_create_custom_status === true ||
+      (fclActions?.can_create_custom_status !== false && !handoffLimited));
   const canStop =
     !handoffLimited &&
     fclActions?.can_stop !== false &&
@@ -798,8 +806,9 @@ export default function JobDetailPage() {
                   className="rounded-sm border border-sky-200 bg-sky-50 px-3 py-2 text-[13px] text-sky-900"
                 >
                   Transport handoff view — one Handoff tab only. You can update containers, assign
-                  trucker, generate/confirm port token, and upload documents. Costing, pass, close,
-                  and full ops tabs stay with Tenant Admin / Branch Manager.
+                  trucker, generate/confirm port token, upload documents
+                  {transportHandoffOnly ? ', and change / create custom status' : ''}. Costing,
+                  pass, close, and full ops tabs stay with Tenant Admin / Branch Manager.
                 </div>
               ) : null}
               {(actionError || costingWarningMessage) && (
@@ -1565,19 +1574,22 @@ export default function JobDetailPage() {
                     {opt.is_custom ? ' (custom)' : ''}
                   </option>
                 ))}
-                {!statusCatalog.some((o) => isPassToTransportStatus(o.value)) ? (
+                {!handoffLimited &&
+                !statusCatalog.some((o) => isPassToTransportStatus(o.value)) ? (
                   <option value="PASS_TO_TRANSPORT">Pass to Transport</option>
                 ) : null}
               </select>
-              <button
-                type="button"
-                title="Add custom status"
-                aria-label="Add custom status"
-                onClick={() => setAddStatusOpen(true)}
-                className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)]"
-              >
-                <Plus className="h-4 w-4" aria-hidden />
-              </button>
+              {canCreateCustomStatus ? (
+                <button
+                  type="button"
+                  title="Add custom status"
+                  aria-label="Add custom status"
+                  onClick={() => setAddStatusOpen(true)}
+                  className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-sm bg-[var(--color-primary-600)] text-white hover:bg-[var(--color-primary-700)]"
+                >
+                  <Plus className="h-4 w-4" aria-hidden />
+                </button>
+              ) : null}
             </div>
           </label>
           {passToTransport ? (

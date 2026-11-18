@@ -1,0 +1,305 @@
+[
+  {
+    "code": "ADVANCE_SHIPPING_NOTE",
+    "page": true,
+    "geometry": true,
+    "static": true,
+    "staticFailures": [],
+    "dynamic": true,
+    "dynamicFailures": [],
+    "raster": false,
+    "nonText": {
+      "pass": false,
+      "mismatches": 47924,
+      "ratio": 0.0221,
+      "limit": 0.005,
+      "masked": "span boxes plus logo, letterhead, decorative; form_background overlaid from reference"
+    },
+    "textInk": {
+      "differing": 20708,
+      "referenceInk": 187643,
+      "ratio": 0.1104,
+      "limit": 0.4,
+      "pass": true
+    },
+    "masked": 0.0204,
+    "causes": {
+      "text glyph": 17593,
+      "text position": 5923,
+      "vector": 45104,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 0
+    },
+    "causeShare": {
+      "text glyph": 0.2564,
+      "text position": 0.0863,
+      "vector": 0.6573,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 0
+    }
+  },
+  {
+    "code": "GL_REPORT_VOUCHER_REPORT_FORMAT",
+    "page": true,
+    "geometry": true,
+    "static": true,
+    "staticFailures": [],
+    "dynamic": true,
+    "dynamicFailures": [],
+    "raster": false,
+    "nonText": {
+      "pass": false,
+      "mismatches": 211146,
+      "ratio": 0.0485,
+      "limit": 0.005,
+      "masked": "span boxes plus logo, letterhead, decorative; form_background overlaid from reference"
+    },
+    "textInk": {
+      "differing": 44361,
+      "referenceInk": 12191,
+      "ratio": 3.6388,
+      "limit": 0.4,
+      "pass": false
+    },
+    "masked": 0.0092,
+    "causes": {
+      "text glyph": 39882,
+      "text position": 7519,
+      "vector": 71606,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 136533
+    },
+    "causeShare": {
+      "text glyph": 0.1561,
+      "text position": 0.0294,
+      "vector": 0.2802,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 0.5343
+    }
+  },
+  {
+    "code": "CONTAINER_OUTTURN_REPORT_FORMAT",
+    "page": true,
+    "geometry": true,
+    "static": true,
+    "staticFailures": [],
+    "dynamic": true,
+    "dynamicFailures": [],
+    "raster": false,
+    "nonText": {
+      "pass": false,
+      "mismatches": 87602,
+      "ratio": 0.0403,
+      "limit": 0.005,
+      "masked": "span boxes plus logo, letterhead, decorative; form_background overlaid from reference"
+    },
+    "textInk": {
+      "differing": 24220,
+      "referenceInk": 6149,
+      "ratio": 3.9389,
+      "limit": 0.4,
+      "pass": false
+    },
+    "masked": 0.0681,
+    "causes": {
+      "text glyph": 22022,
+      "text position": 2515,
+      "vector": 23551,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 63721
+    },
+    "causeShare": {
+      "text glyph": 0.197,
+      "text position": 0.0225,
+      "vector": 0.2106,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 0.5699
+    }
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+    "page": true,
+    "geometry": true,
+    "static": false,
+    "staticFailures": [
+      {
+        "layer": "static",
+        "id": "p1s2",
+        "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s14",
+        "text": "ﻞﻴﻤﻌﻟﺍ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s15",
+        "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s19",
+        "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s20",
+        "text": "ﺦﻳﺭﺎﺗ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s24",
+        "text": "ﻊﻓﺪﻠﻟ ﻕﺎﻘﺤﺘﺳﻻﺍ ﺦﻳﺭﺎﺗ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s88",
+        "text": "ﻡﻮﺳﺮﻟﺍ ﻥﺎﻴﺑ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s90",
+        "text": "ﺔﻠﻤﻌﻟﺍ",
+        "cause": "position or string"
+      }
+    ],
+    "dynamic": true,
+    "dynamicFailures": [],
+    "raster": true,
+    "nonText": {
+      "pass": true,
+      "mismatches": 37,
+      "ratio": 0,
+      "limit": 0.005,
+      "masked": "span boxes plus logo, letterhead, decorative; form_background overlaid from reference"
+    },
+    "textInk": {
+      "differing": 14196,
+      "referenceInk": 91255,
+      "ratio": 0.1556,
+      "limit": 0.4,
+      "pass": true
+    },
+    "masked": 0.0983,
+    "causes": {
+      "text glyph": 13394,
+      "text position": 761,
+      "vector": 39,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 21
+    },
+    "causeShare": {
+      "text glyph": 0.9422,
+      "text position": 0.0535,
+      "vector": 0.0027,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 0.0015
+    }
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_RPM_REF_464",
+    "page": true,
+    "geometry": true,
+    "static": false,
+    "staticFailures": [
+      {
+        "layer": "static",
+        "id": "p1s2",
+        "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s16",
+        "text": "ﻞﻴﻤﻌﻟﺍ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s19",
+        "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s22",
+        "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s25",
+        "text": "ﺦﻳﺭﺎﺗ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s28",
+        "text": "ﻊﻓﺪﻠﻟ ﻕﺎﻘﺤﺘﺳﻻﺍ ﺦﻳﺭﺎﺗ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s81",
+        "text": "ﻡﻮﺳﺮﻟﺍ ﻥﺎﻴﺑ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s83",
+        "text": "ﺔﻠﻤﻌﻟﺍ",
+        "cause": "position or string"
+      }
+    ],
+    "dynamic": true,
+    "dynamicFailures": [],
+    "raster": true,
+    "nonText": {
+      "pass": true,
+      "mismatches": 37,
+      "ratio": 0,
+      "limit": 0.005,
+      "masked": "span boxes plus logo, letterhead, decorative; form_background overlaid from reference"
+    },
+    "textInk": {
+      "differing": 13398,
+      "referenceInk": 71957,
+      "ratio": 0.1862,
+      "limit": 0.4,
+      "pass": true
+    },
+    "masked": 0.0952,
+    "causes": {
+      "text glyph": 12533,
+      "text position": 819,
+      "vector": 41,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 23
+    },
+    "causeShare": {
+      "text glyph": 0.9342,
+      "text position": 0.061,
+      "vector": 0.0031,
+      "image/barcode": 0,
+      "color": 0,
+      "other": 0.0017
+    }
+  }
+]

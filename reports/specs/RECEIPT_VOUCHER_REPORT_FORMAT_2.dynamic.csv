@@ -1,0 +1,10 @@
+id,page,text,binding,reason
+p1s1,1,2/5/2019,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s17,1,RECEIPT VOUCHER - MAABR1900096,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s43,1,"25,658.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s52,1,29-,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s54,1,19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s58,1,NO.CEXP190150 B/EXP/19/0254 CEXP190150,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s59,1,"25,658.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s60,1,"25,658.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s63,1,"25,658.00",,"matches a demo value (number, date, party, or Fresa sample text)"

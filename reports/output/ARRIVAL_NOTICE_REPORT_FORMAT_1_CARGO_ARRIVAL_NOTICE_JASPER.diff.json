@@ -43,26 +43,9 @@
     ]
   },
   "staticText": {
-    "pass": false,
+    "pass": true,
     "spans": 85,
-    "failures": [
-      {
-        "layer": "static",
-        "id": "p1s113",
-        "text": "2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.",
-        "cause": "width",
-        "reference": 257.7,
-        "rendered": 258.4
-      },
-      {
-        "layer": "static",
-        "id": "p1s116",
-        "text": "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days",
-        "cause": "width",
-        "reference": 318,
-        "rendered": 319.2
-      }
-    ]
+    "failures": []
   },
   "dynamicText": {
     "pass": true,
@@ -70,6 +53,7 @@
     "failures": [],
     "overflow": "wrap, clip, and shrink are implemented; the golden render uses the reference demo strings",
     "naturalWidth": {
+      "kerning": "disabled",
       "spans": [
         {
           "id": "p1s1",
@@ -82,6 +66,7 @@
           "tj": 0,
           "glyphWidth": 136,
           "natural": 136,
+          "kerned": 134.2,
           "delta": 0,
           "percent": 0
         },
@@ -96,6 +81,7 @@
           "tj": 0,
           "glyphWidth": 125.95,
           "natural": 126.1,
+          "kerned": 126.1,
           "delta": 0.1,
           "percent": 0.0009397330289797313
         },
@@ -110,6 +96,7 @@
           "tj": 0,
           "glyphWidth": 140.76,
           "natural": 140.9,
+          "kerned": 140.9,
           "delta": 0.1,
           "percent": 0.000695582241048658
         },
@@ -124,6 +111,7 @@
           "tj": 0,
           "glyphWidth": 120.08,
           "natural": 120.2,
+          "kerned": 119.2,
           "delta": 0.1,
           "percent": 0.000939965804047316
         },
@@ -138,6 +126,7 @@
           "tj": 0,
           "glyphWidth": 275.11,
           "natural": 275.4,
+          "kerned": 273.6,
           "delta": 0.3,
           "percent": 0.0009898739367888711
         },
@@ -152,6 +141,7 @@
           "tj": 0,
           "glyphWidth": 153.87,
           "natural": 154,
+          "kerned": 153.1,
           "delta": 0.2,
           "percent": 0.0010003625219340707
         },
@@ -166,6 +156,7 @@
           "tj": 0,
           "glyphWidth": 99.84,
           "natural": 100,
+          "kerned": 98.9,
           "delta": 0.1,
           "percent": 0.0012553288386417927
         },
@@ -180,6 +171,7 @@
           "tj": 0,
           "glyphWidth": 254.14,
           "natural": 254.4,
+          "kerned": 254.4,
           "delta": 0.2,
           "percent": 0.0009131593314708966
         },
@@ -194,6 +186,7 @@
           "tj": 0,
           "glyphWidth": 202.26,
           "natural": 202.4,
+          "kerned": 201.5,
           "delta": 0.1,
           "percent": 0.0007182509517453233
         },
@@ -208,6 +201,7 @@
           "tj": 0,
           "glyphWidth": 99.84,
           "natural": 100,
+          "kerned": 98.9,
           "delta": 0.1,
           "percent": 0.0012553288386417927
         },
@@ -222,6 +216,7 @@
           "tj": 0,
           "glyphWidth": 254.14,
           "natural": 254.4,
+          "kerned": 254.4,
           "delta": 0.2,
           "percent": 0.0009131593314708966
         },
@@ -236,6 +231,7 @@
           "tj": 0,
           "glyphWidth": 86.3,
           "natural": 86.4,
+          "kerned": 85.8,
           "delta": 0.1,
           "percent": 0.0007559023754345637
         },
@@ -250,6 +246,7 @@
           "tj": 0,
           "glyphWidth": 29.78,
           "natural": 29.8,
+          "kerned": 29.8,
           "delta": 0,
           "percent": 0.00004197447951641582
         },
@@ -264,6 +261,7 @@
           "tj": 0,
           "glyphWidth": 40.9,
           "natural": 40.9,
+          "kerned": 40.9,
           "delta": 0,
           "percent": 0.00013371026894862053
         },
@@ -278,6 +276,7 @@
           "tj": 0,
           "glyphWidth": 29.34,
           "natural": 29.3,
+          "kerned": 29.3,
           "delta": 0,
           "percent": 0.00013846284935241506
         },
@@ -292,6 +291,7 @@
           "tj": 0,
           "glyphWidth": 32.44,
           "natural": 32.4,
+          "kerned": 32.1,
           "delta": 0,
           "percent": 0.00007706535141793239
         },
@@ -306,6 +306,7 @@
           "tj": 0,
           "glyphWidth": 31.55,
           "natural": 31.6,
+          "kerned": 31.3,
           "delta": 0,
           "percent": 0.000024762282091895068
         },
@@ -320,6 +321,7 @@
           "tj": 0,
           "glyphWidth": 38.67,
           "natural": 38.7,
+          "kerned": 38.1,
           "delta": 0,
           "percent": 0.00005252779932768827
         },
@@ -334,6 +336,7 @@
           "tj": 0,
           "glyphWidth": 75.59,
           "natural": 75.6,
+          "kerned": 74.7,
           "delta": 0,
           "percent": 0.000002067072364114441
         },
@@ -348,6 +351,7 @@
           "tj": 0,
           "glyphWidth": 59.11,
           "natural": 59.1,
+          "kerned": 59.1,
           "delta": 0,
           "percent": 0.0001427423447809073
         },
@@ -362,6 +366,7 @@
           "tj": 0,
           "glyphWidth": 66.68,
           "natural": 66.7,
+          "kerned": 66.7,
           "delta": 0,
           "percent": 0.000004686562687564805
         },
@@ -376,6 +381,7 @@
           "tj": 0,
           "glyphWidth": 64.46,
           "natural": 64.4,
+          "kerned": 64.4,
           "delta": 0,
           "percent": 0.0001672548867513768
         },
@@ -390,6 +396,7 @@
           "tj": 0,
           "glyphWidth": 52.01,
           "natural": 52,
+          "kerned": 51.9,
           "delta": 0,
           "percent": 0.00011716496827529342
         },
@@ -404,6 +411,7 @@
           "tj": 0,
           "glyphWidth": 51.57,
           "natural": 51.6,
+          "kerned": 51.6,
           "delta": 0,
           "percent": 0.00008180628272250758
         },
@@ -418,6 +426,7 @@
           "tj": 0,
           "glyphWidth": 39.12,
           "natural": 39.1,
+          "kerned": 39.1,
           "delta": 0,
           "percent": 0.00007189417177907572
         },
@@ -432,6 +441,7 @@
           "tj": 0,
           "glyphWidth": 27.11,
           "natural": 27.1,
+          "kerned": 27.1,
           "delta": 0,
           "percent": 0.000023054223533730415
         },
@@ -446,6 +456,7 @@
           "tj": 0,
           "glyphWidth": 37.34,
           "natural": 37.3,
+          "kerned": 37,
           "delta": 0,
           "percent": 0.0001087975361543495
         },
@@ -460,6 +471,7 @@
           "tj": 0,
           "glyphWidth": 73.35,
           "natural": 73.3,
+          "kerned": 72.3,
           "delta": 0,
           "percent": 0.000031952965235096334
         },
@@ -474,6 +486,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -488,6 +501,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -502,6 +516,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -516,6 +531,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -530,6 +546,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -544,6 +561,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -558,6 +576,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -572,6 +591,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -586,6 +606,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -600,6 +621,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -614,6 +636,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -628,6 +651,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -642,6 +666,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -656,6 +681,7 @@
           "tj": 0,
           "glyphWidth": 104.6,
           "natural": 104.7,
+          "kerned": 104.7,
           "delta": 0.1,
           "percent": 0.0006544649259082762
         },
@@ -670,6 +696,7 @@
           "tj": 0,
           "glyphWidth": 95.26,
           "natural": 95.3,
+          "kerned": 95.3,
           "delta": 0.1,
           "percent": 0.0007048964675624069
         },
@@ -684,6 +711,7 @@
           "tj": 0,
           "glyphWidth": 70.77,
           "natural": 70.8,
+          "kerned": 70.8,
           "delta": 0,
           "percent": 0.0005177423343225093
         },
@@ -698,6 +726,7 @@
           "tj": 0,
           "glyphWidth": 61.02,
           "natural": 61.1,
+          "kerned": 60.7,
           "delta": 0.1,
           "percent": 0.0009125466035725478
         },
@@ -712,6 +741,7 @@
           "tj": 0,
           "glyphWidth": 122.38,
           "natural": 122.5,
+          "kerned": 121,
           "delta": 0.2,
           "percent": 0.0012319146817290779
         },
@@ -726,6 +756,7 @@
           "tj": 0,
           "glyphWidth": 101.79,
           "natural": 101.9,
+          "kerned": 101.9,
           "delta": 0.1,
           "percent": 0.0010796968636407676
         },
@@ -740,6 +771,7 @@
           "tj": 0,
           "glyphWidth": 101.79,
           "natural": 101.9,
+          "kerned": 101.9,
           "delta": 0.1,
           "percent": 0.0010796968636407676
         },
@@ -754,6 +786,7 @@
           "tj": 0,
           "glyphWidth": 31.12,
           "natural": 31.1,
+          "kerned": 31.1,
           "delta": 0,
           "percent": 0.0006784473409382713
         },
@@ -768,6 +801,7 @@
           "tj": 0,
           "glyphWidth": 21.4,
           "natural": 21.4,
+          "kerned": 21.4,
           "delta": 0,
           "percent": 0.00047459112149539356
         },
@@ -782,6 +816,7 @@
           "tj": 0,
           "glyphWidth": 11.68,
           "natural": 11.7,
+          "kerned": 11.7,
           "delta": 0,
           "percent": 0.00006856003852737292
         },
@@ -796,6 +831,7 @@
           "tj": 0,
           "glyphWidth": 30.7,
           "natural": 30.7,
+          "kerned": 30.2,
           "delta": 0,
           "percent": 0.0010083723534202187
         },
@@ -810,6 +846,7 @@
           "tj": 0,
           "glyphWidth": 33.42,
           "natural": 33.4,
+          "kerned": 32.9,
           "delta": 0,
           "percent": 0.0008450684470376509
         },
@@ -824,6 +861,7 @@
           "tj": 0,
           "glyphWidth": 16.87,
           "natural": 16.9,
+          "kerned": 16.9,
           "delta": 0,
           "percent": 0.0014541345583876113
         },
@@ -838,6 +876,7 @@
           "tj": 0,
           "glyphWidth": 17.77,
           "natural": 17.8,
+          "kerned": 17.8,
           "delta": 0,
           "percent": 0.00041326674169951753
         },
@@ -852,6 +891,7 @@
           "tj": 0,
           "glyphWidth": 2.22,
           "natural": 2.2,
+          "kerned": 2.2,
           "delta": 0,
           "percent": 0.001196509009008921
         },
@@ -866,6 +906,7 @@
           "tj": 0,
           "glyphWidth": 51.56,
           "natural": 51.6,
+          "kerned": 51.6,
           "delta": 0,
           "percent": 0.00010303529868119227
         },
@@ -880,6 +921,7 @@
           "tj": 0,
           "glyphWidth": 83.97,
           "natural": 84,
+          "kerned": 84,
           "delta": 0.1,
           "percent": 0.0008864307937358716
         },
@@ -894,6 +936,7 @@
           "tj": 0,
           "glyphWidth": 23.12,
           "natural": 23.1,
+          "kerned": 23.1,
           "delta": 0,
           "percent": 0.00021626297577850368
         },
@@ -908,6 +951,7 @@
           "tj": 0,
           "glyphWidth": 81.34,
           "natural": 81.3,
+          "kerned": 81.3,
           "delta": 0,
           "percent": 0.00004994467666588899
         },
@@ -922,6 +966,7 @@
           "tj": 0,
           "glyphWidth": 55.96,
           "natural": 56,
+          "kerned": 56,
           "delta": 0,
           "percent": 0.0008369538509649597
         },
@@ -936,6 +981,7 @@
           "tj": 0,
           "glyphWidth": 52.45,
           "natural": 52.4,
+          "kerned": 52.4,
           "delta": 0,
           "percent": 0.00008937082936135065
         },
@@ -950,6 +996,7 @@
           "tj": 0,
           "glyphWidth": 18.67,
           "natural": 18.7,
+          "kerned": 18.2,
           "delta": 0,
           "percent": 0.00010042849491153158
         },
@@ -964,6 +1011,7 @@
           "tj": 0,
           "glyphWidth": 43.13,
           "natural": 43.1,
+          "kerned": 43.1,
           "delta": 0,
           "percent": 0.00002535937862282768
         },
@@ -978,6 +1026,7 @@
           "tj": 0,
           "glyphWidth": 65.34,
           "natural": 65.3,
+          "kerned": 65.3,
           "delta": 0,
           "percent": 0.00011717554331185475
         },
@@ -992,6 +1041,7 @@
           "tj": 0,
           "glyphWidth": 39.12,
           "natural": 39.1,
+          "kerned": 39.1,
           "delta": 0,
           "percent": 0.00007189417177907572
         },
@@ -1006,6 +1056,7 @@
           "tj": 0,
           "glyphWidth": 22.66,
           "natural": 22.7,
+          "kerned": 22.7,
           "delta": 0,
           "percent": 0.000006895410414821619
         },
@@ -1020,6 +1071,7 @@
           "tj": 0,
           "glyphWidth": 25.79,
           "natural": 25.8,
+          "kerned": 25.8,
           "delta": 0,
           "percent": 0.0001151124466847946
         },
@@ -1034,6 +1086,7 @@
           "tj": 0,
           "glyphWidth": 35.11,
           "natural": 35.1,
+          "kerned": 35,
           "delta": 0,
           "percent": 0.00012905867274279212
         },
@@ -1048,6 +1101,7 @@
           "tj": 0,
           "glyphWidth": 28.9,
           "natural": 28.9,
+          "kerned": 28.5,
           "delta": 0,
           "percent": 0.0001892301038061792
         },
@@ -1062,6 +1116,7 @@
           "tj": 0,
           "glyphWidth": 46.3,
           "natural": 46.3,
+          "kerned": 46.3,
           "delta": 0,
           "percent": 0.00014342602591798796
         },
@@ -1076,6 +1131,7 @@
           "tj": 0,
           "glyphWidth": 21.18,
           "natural": 21.2,
+          "kerned": 21.2,
           "delta": 0,
           "percent": 0.00010697001888572785
         },
@@ -1090,6 +1146,7 @@
           "tj": 0,
           "glyphWidth": 31.91,
           "natural": 31.9,
+          "kerned": 31.9,
           "delta": 0,
           "percent": 0.0003262349185208354
         },
@@ -1104,6 +1161,7 @@
           "tj": 0,
           "glyphWidth": 82.08,
           "natural": 82.1,
+          "kerned": 80.5,
           "delta": 0,
           "percent": 0.000010945875974638093
         },
@@ -1118,6 +1176,7 @@
           "tj": 0,
           "glyphWidth": 11.68,
           "natural": 11.7,
+          "kerned": 11.7,
           "delta": 0,
           "percent": 0.00006856003852737292
         },
@@ -1132,6 +1191,7 @@
           "tj": 0,
           "glyphWidth": 35.03,
           "natural": 35,
+          "kerned": 35,
           "delta": 0,
           "percent": 0.00011931737082497467
         },
@@ -1146,6 +1206,7 @@
           "tj": 0,
           "glyphWidth": 21.41,
           "natural": 21.4,
+          "kerned": 21.4,
           "delta": 0,
           "percent": 0.0000072979915927070475
         },
@@ -1160,6 +1221,7 @@
           "tj": 0,
           "glyphWidth": 24,
           "natural": 24,
+          "kerned": 23.1,
           "delta": 0,
           "percent": 0.00016276041666666666
         },
@@ -1174,6 +1236,7 @@
           "tj": 0,
           "glyphWidth": 13.34,
           "natural": 13.3,
+          "kerned": 13.3,
           "delta": 0,
           "percent": 0.0005739317841079567
         },
@@ -1188,6 +1251,7 @@
           "tj": 0,
           "glyphWidth": 40.03,
           "natural": 40,
+          "kerned": 40,
           "delta": 0,
           "percent": 0.00022639270547086842
         },
@@ -1202,6 +1266,7 @@
           "tj": 0,
           "glyphWidth": 24.46,
           "natural": 24.5,
+          "kerned": 24.5,
           "delta": 0,
           "percent": 0.00035772690106292506
         },
@@ -1216,6 +1281,7 @@
           "tj": 0,
           "glyphWidth": 68.45,
           "natural": 68.5,
+          "kerned": 68.5,
           "delta": 0,
           "percent": 0.0003880569758947722
         },
@@ -1230,6 +1296,7 @@
           "tj": 0,
           "glyphWidth": 12.43,
           "natural": 12.4,
+          "kerned": 12.4,
           "delta": 0,
           "percent": 0.0012318986323411332
         },
@@ -1244,6 +1311,7 @@
           "tj": 0,
           "glyphWidth": 32.45,
           "natural": 32.5,
+          "kerned": 32.5,
           "delta": 0,
           "percent": 0.0000963020030815765
         },
@@ -1258,6 +1326,7 @@
           "tj": 0,
           "glyphWidth": 28.43,
           "natural": 28.5,
+          "kerned": 28.5,
           "delta": 0,
           "percent": 0.0009508002110446811
         },
@@ -1272,6 +1341,7 @@
           "tj": 0,
           "glyphWidth": 42.2,
           "natural": 42.2,
+          "kerned": 42.2,
           "delta": 0,
           "percent": 0.0009071386255923497
         },
@@ -1286,6 +1356,7 @@
           "tj": 0,
           "glyphWidth": 45.75,
           "natural": 45.8,
+          "kerned": 45.2,
           "delta": 0,
           "percent": 0.000939207650273224
         },
@@ -1300,6 +1371,7 @@
           "tj": 0,
           "glyphWidth": 48.89,
           "natural": 48.9,
+          "kerned": 48.5,
           "delta": 0,
           "percent": 0.0005720750664757503
         },
@@ -1314,6 +1386,7 @@
           "tj": 0,
           "glyphWidth": 125.69,
           "natural": 125.8,
+          "kerned": 125.5,
           "delta": 0.1,
           "percent": 0.0008503063091733811
         },
@@ -1328,6 +1401,7 @@
           "tj": 0,
           "glyphWidth": 4.45,
           "natural": 4.4,
+          "kerned": 4.4,
           "delta": 0,
           "percent": 0.0001755617977528489
         },
@@ -1342,6 +1416,7 @@
           "tj": 0,
           "glyphWidth": 13.77,
           "natural": 13.8,
+          "kerned": 13.8,
           "delta": 0,
           "percent": 0.0005333151779230521
         },
@@ -1356,6 +1431,7 @@
           "tj": 0,
           "glyphWidth": 28.9,
           "natural": 28.9,
+          "kerned": 28.9,
           "delta": 0,
           "percent": 0.000621756055363371
         },
@@ -1370,6 +1446,7 @@
           "tj": 0,
           "glyphWidth": 31.12,
           "natural": 31.1,
+          "kerned": 31.1,
           "delta": 0,
           "percent": 0.0006627570694087084
         },
@@ -1384,6 +1461,7 @@
           "tj": 0,
           "glyphWidth": 31.12,
           "natural": 31.1,
+          "kerned": 31.1,
           "delta": 0,
           "percent": 0.0006627570694087084
         },
@@ -1398,6 +1476,7 @@
           "tj": 0,
           "glyphWidth": 31.12,
           "natural": 31.1,
+          "kerned": 31.1,
           "delta": 0,
           "percent": 0.0006627570694087084
         },
@@ -1412,6 +1491,7 @@
           "tj": 0,
           "glyphWidth": 88.37,
           "natural": 88.5,
+          "kerned": 88.2,
           "delta": 0.1,
           "percent": 0.0010732573271471705
         },
@@ -1426,6 +1506,7 @@
           "tj": 0,
           "glyphWidth": 4.45,
           "natural": 4.4,
+          "kerned": 4.4,
           "delta": 0,
           "percent": 0.0001755617977528489
         },
@@ -1440,6 +1521,7 @@
           "tj": 0,
           "glyphWidth": 13.77,
           "natural": 13.8,
+          "kerned": 13.8,
           "delta": 0,
           "percent": 0.0005333151779230521
         },
@@ -1454,6 +1536,7 @@
           "tj": 0,
           "glyphWidth": 28.9,
           "natural": 28.9,
+          "kerned": 28.9,
           "delta": 0,
           "percent": 0.000621756055363371
         },
@@ -1468,6 +1551,7 @@
           "tj": 0,
           "glyphWidth": 31.12,
           "natural": 31.1,
+          "kerned": 31.1,
           "delta": 0,
           "percent": 0.0006627570694087084
         },
@@ -1482,6 +1566,7 @@
           "tj": 0,
           "glyphWidth": 31.12,
           "natural": 31.1,
+          "kerned": 31.1,
           "delta": 0,
           "percent": 0.0006627570694087084
         },
@@ -1496,6 +1581,7 @@
           "tj": 0,
           "glyphWidth": 31.12,
           "natural": 31.1,
+          "kerned": 31.1,
           "delta": 0,
           "percent": 0.0006627570694087084
         },
@@ -1510,6 +1596,7 @@
           "tj": 0,
           "glyphWidth": 90.15,
           "natural": 90.2,
+          "kerned": 89.2,
           "delta": 0.1,
           "percent": 0.0009792706600110295
         },
@@ -1524,6 +1611,7 @@
           "tj": 0,
           "glyphWidth": 4.45,
           "natural": 4.4,
+          "kerned": 4.4,
           "delta": 0,
           "percent": 0.0001755617977528489
         },
@@ -1538,6 +1626,7 @@
           "tj": 0,
           "glyphWidth": 13.77,
           "natural": 13.8,
+          "kerned": 13.8,
           "delta": 0,
           "percent": 0.0005333151779230521
         },
@@ -1552,6 +1641,7 @@
           "tj": 0,
           "glyphWidth": 28.9,
           "natural": 28.9,
+          "kerned": 28.9,
           "delta": 0,
           "percent": 0.000621756055363371
         },
@@ -1566,6 +1656,7 @@
           "tj": 0,
           "glyphWidth": 24.46,
           "natural": 24.5,
+          "kerned": 24.5,
           "delta": 0,
           "percent": 0.00035772690106292506
         },
@@ -1580,6 +1671,7 @@
           "tj": 0,
           "glyphWidth": 24.46,
           "natural": 24.5,
+          "kerned": 24.5,
           "delta": 0,
           "percent": 0.00035772690106292506
         },
@@ -1594,6 +1686,7 @@
           "tj": 0,
           "glyphWidth": 24.46,
           "natural": 24.5,
+          "kerned": 24.5,
           "delta": 0,
           "percent": 0.00035772690106292506
         },
@@ -1608,6 +1701,7 @@
           "tj": 0,
           "glyphWidth": 22.2,
           "natural": 22.2,
+          "kerned": 21.3,
           "delta": 0,
           "percent": 0.0013724662162162482
         },
@@ -1622,6 +1716,7 @@
           "tj": 0,
           "glyphWidth": 35.57,
           "natural": 35.6,
+          "kerned": 35.6,
           "delta": 0,
           "percent": 0.0005578788304751115
         },
@@ -1636,6 +1731,7 @@
           "tj": 0,
           "glyphWidth": 285.19,
           "natural": 285.4,
+          "kerned": 284.6,
           "delta": 0.2,
           "percent": 0.0008678424909709396
         },
@@ -1650,6 +1746,7 @@
           "tj": 0,
           "glyphWidth": 257.67,
           "natural": 258.4,
+          "kerned": 257.9,
           "delta": 0.7,
           "percent": 0.00266025827608951
         },
@@ -1664,6 +1761,7 @@
           "tj": 0,
           "glyphWidth": 190.52,
           "natural": 190.7,
+          "kerned": 189.7,
           "delta": 0.2,
           "percent": 0.0010637006613478362
         },
@@ -1678,6 +1776,7 @@
           "tj": 0,
           "glyphWidth": 150.6,
           "natural": 150.7,
+          "kerned": 150.7,
           "delta": 0.1,
           "percent": 0.0009700780212483777
         },
@@ -1692,6 +1791,7 @@
           "tj": 0,
           "glyphWidth": 318.02,
           "natural": 319.2,
+          "kerned": 318.9,
           "delta": 1.2,
           "percent": 0.0036465866926608964
         },
@@ -1706,6 +1806,7 @@
           "tj": 0,
           "glyphWidth": 172.39,
           "natural": 172.5,
+          "kerned": 172.1,
           "delta": 0.1,
           "percent": 0.0008420224490980547
         },
@@ -1720,6 +1821,7 @@
           "tj": 0,
           "glyphWidth": 70.52,
           "natural": 70.5,
+          "kerned": 69.7,
           "delta": 0,
           "percent": 0.00020051935621094756
         },
@@ -1734,8 +1836,9 @@
           "tj": 0,
           "glyphWidth": 125.37,
           "natural": 125.5,
+          "kerned": 123.7,
           "delta": 0.1,
-          "percent": 0.0011693512203875028
+          "percent": 0.0011693512203876163
         },
         {
           "id": "p1s120",
@@ -1748,6 +1851,7 @@
           "tj": 0,
           "glyphWidth": 13.6,
           "natural": 13.6,
+          "kerned": 13.6,
           "delta": 0,
           "percent": 0.0015151079963235555
         },
@@ -1762,6 +1866,7 @@
           "tj": 0,
           "glyphWidth": 36.18,
           "natural": 36.2,
+          "kerned": 36.2,
           "delta": 0,
           "percent": 0.00007233796296297082
         },
@@ -1776,6 +1881,7 @@
           "tj": 0,
           "glyphWidth": 63.81,
           "natural": 63.8,
+          "kerned": 63.8,
           "delta": 0,
           "percent": 9.182534085210196e-7
         },
@@ -1790,6 +1896,7 @@
           "tj": 0,
           "glyphWidth": 42.8,
           "natural": 42.8,
+          "kerned": 42.8,
           "delta": 0,
           "percent": 0.000004563376168157894
         },
@@ -1804,6 +1911,7 @@
           "tj": 0,
           "glyphWidth": 119.9,
           "natural": 119.9,
+          "kerned": 119.4,
           "delta": 0,
           "percent": 0.00003746611759804574
         },
@@ -1818,6 +1926,7 @@
           "tj": 0,
           "glyphWidth": 22.17,
           "natural": 22.2,
+          "kerned": 22.2,
           "delta": 0,
           "percent": 0.0007232817433467882
         },
@@ -1832,6 +1941,7 @@
           "tj": 0,
           "glyphWidth": 105.04,
           "natural": 105.1,
+          "kerned": 104.1,
           "delta": 0,
           "percent": 0.00010728799742949111
         }
@@ -1933,56 +2043,58 @@
   "raster": {
     "measured": true,
     "pass": false,
-    "mismatches": 34346,
-    "ratio": 0.0158,
+    "mismatches": 21634,
+    "ratio": 0.0099,
     "rasterizer": "pdftoppm",
+    "maskMode": "allowed",
+    "allowedDifferencesFile": false,
     "dpi": 150,
     "heatmaps": [
       "reports/output/raster/ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER-page-1-diff.png"
     ],
     "causes": {
-      "text glyph": 20730,
-      "text position": 125,
+      "text glyph": 8103,
+      "text position": 40,
       "vector": 949,
       "image/barcode": 12542,
       "color": 0,
       "other": 0
     },
     "causeShare": {
-      "text glyph": 0.6036,
-      "text position": 0.0036,
-      "vector": 0.0276,
-      "image/barcode": 0.3652,
+      "text glyph": 0.3745,
+      "text position": 0.0018,
+      "vector": 0.0439,
+      "image/barcode": 0.5797,
       "color": 0,
       "other": 0
     },
     "nonText": {
       "pass": true,
-      "mismatches": 745,
+      "mismatches": 743,
       "ratio": 0.0003,
       "limit": 0.005,
       "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
     },
     "text": {
-      "blurredMismatches": 40176,
-      "blurredRatio": 0.1197,
+      "blurredMismatches": 32257,
+      "blurredRatio": 0.0961,
       "textPixels": 335518,
       "sigmaPx": 1,
-      "inkMean": 0.784,
+      "inkMean": 0.834,
       "inkMin": 0,
       "inkSpans": 126,
       "spans": [
         {
           "id": "p1s1",
-          "iou": 0.8521
+          "iou": 0.8114
         },
         {
           "id": "p1s2",
-          "iou": 0.8468
+          "iou": 0.8857
         },
         {
           "id": "p1s3",
-          "iou": 0.8631
+          "iou": 0.9012
         },
         {
           "id": "p1s4",
@@ -1990,15 +2102,15 @@
         },
         {
           "id": "p1s5",
-          "iou": 0.7151
+          "iou": 0.8341
         },
         {
           "id": "p1s6",
-          "iou": 0.7579
+          "iou": 0.8231
         },
         {
           "id": "p1s7",
-          "iou": 0.7975
+          "iou": 0.831
         },
         {
           "id": "p1s8",
@@ -2010,79 +2122,79 @@
         },
         {
           "id": "p1s10",
-          "iou": 0.7975
+          "iou": 0.831
         },
         {
           "id": "p1s11",
-          "iou": 0.6983
+          "iou": 0.8344
         },
         {
           "id": "p1s12",
-          "iou": 0.8072
+          "iou": 0.8832
         },
         {
           "id": "p1s13",
-          "iou": 0.9246
+          "iou": 1
         },
         {
           "id": "p1s14",
-          "iou": 0.9104
+          "iou": 1
         },
         {
           "id": "p1s15",
-          "iou": 0.8552
+          "iou": 1
         },
         {
           "id": "p1s16",
-          "iou": 0.9263
+          "iou": 1
         },
         {
           "id": "p1s17",
-          "iou": 0.8825
+          "iou": 1
         },
         {
           "id": "p1s18",
-          "iou": 0.8927
+          "iou": 1
         },
         {
           "id": "p1s19",
-          "iou": 0.8952
+          "iou": 1
         },
         {
           "id": "p1s20",
-          "iou": 0.9195
+          "iou": 1
         },
         {
           "id": "p1s21",
-          "iou": 0.9198
+          "iou": 1
         },
         {
           "id": "p1s22",
-          "iou": 0.9021
+          "iou": 1
         },
         {
           "id": "p1s23",
-          "iou": 0.6186
+          "iou": 0.6359
         },
         {
           "id": "p1s24",
-          "iou": 0.8812
+          "iou": 1
         },
         {
           "id": "p1s25",
-          "iou": 0.9292
+          "iou": 1
         },
         {
           "id": "p1s26",
-          "iou": 0.8915
+          "iou": 1
         },
         {
           "id": "p1s27",
-          "iou": 0.9019
+          "iou": 1
         },
         {
           "id": "p1s28",
-          "iou": 0.9202
+          "iou": 1
         },
         {
           "id": "p1s29",
@@ -2138,35 +2250,35 @@
         },
         {
           "id": "p1s42",
-          "iou": 0.7815
+          "iou": 0.8059
         },
         {
           "id": "p1s43",
-          "iou": 0.8168
+          "iou": 0.828
         },
         {
           "id": "p1s44",
-          "iou": 0.7883
+          "iou": 0.8039
         },
         {
           "id": "p1s45",
-          "iou": 0.7817
+          "iou": 0.836
         },
         {
           "id": "p1s46",
-          "iou": 0.6902
+          "iou": 0.8029
         },
         {
           "id": "p1s47",
-          "iou": 0.8166
+          "iou": 0.85
         },
         {
           "id": "p1s48",
-          "iou": 0.8166
+          "iou": 0.85
         },
         {
           "id": "p1s49",
-          "iou": 0.8108
+          "iou": 0.8136
         },
         {
           "id": "p1s50",
@@ -2198,107 +2310,107 @@
         },
         {
           "id": "p1s57",
-          "iou": 0.9118
+          "iou": 1
         },
         {
           "id": "p1s58",
-          "iou": 0.7797
+          "iou": 0.8048
         },
         {
           "id": "p1s59",
-          "iou": 0.9136
+          "iou": 1
         },
         {
           "id": "p1s60",
-          "iou": 0.9077
+          "iou": 1
         },
         {
           "id": "p1s61",
-          "iou": 0.8346
+          "iou": 0.8352
         },
         {
           "id": "p1s62",
-          "iou": 0.8941
+          "iou": 1
         },
         {
           "id": "p1s63",
-          "iou": 0.8838
+          "iou": 1
         },
         {
           "id": "p1s64",
-          "iou": 0.8982
+          "iou": 1
         },
         {
           "id": "p1s65",
-          "iou": 0.9133
+          "iou": 1
         },
         {
           "id": "p1s66",
-          "iou": 0.8921
+          "iou": 0.9509
         },
         {
           "id": "p1s67",
-          "iou": 0.888
+          "iou": 0.9959
         },
         {
           "id": "p1s68",
-          "iou": 0.9019
+          "iou": 1
         },
         {
           "id": "p1s69",
-          "iou": 0.8884
+          "iou": 0.9938
         },
         {
           "id": "p1s70",
-          "iou": 0.9052
+          "iou": 1
         },
         {
           "id": "p1s71",
-          "iou": 0.7885
+          "iou": 1
         },
         {
           "id": "p1s72",
-          "iou": 0.8389
+          "iou": 1
         },
         {
           "id": "p1s73",
-          "iou": 0.8187
+          "iou": 1
         },
         {
           "id": "p1s74",
-          "iou": 0.7989
+          "iou": 1
         },
         {
           "id": "p1s75",
-          "iou": 0.8288
+          "iou": 0.934
         },
         {
           "id": "p1s76",
-          "iou": 0.7788
+          "iou": 0.9259
         },
         {
           "id": "p1s77",
-          "iou": 0.878
+          "iou": 1
         },
         {
           "id": "p1s78",
-          "iou": 0.9146
+          "iou": 1
         },
         {
           "id": "p1s79",
-          "iou": 0.81
+          "iou": 0.9297
         },
         {
           "id": "p1s80",
-          "iou": 0.825
+          "iou": 0.9382
         },
         {
           "id": "p1s81",
-          "iou": 0.8847
+          "iou": 0.9469
         },
         {
           "id": "p1s82",
-          "iou": 0.8845
+          "iou": 0.8795
         },
         {
           "id": "p1s83",
@@ -2306,27 +2418,27 @@
         },
         {
           "id": "p1s84",
-          "iou": 0.8558
+          "iou": 0.8601
         },
         {
           "id": "p1s85",
-          "iou": 0.8602
+          "iou": 0.8513
         },
         {
           "id": "p1s86",
-          "iou": 0.8645
+          "iou": 0.8631
         },
         {
           "id": "p1s87",
-          "iou": 0.8648
+          "iou": 0.8507
         },
         {
           "id": "p1s88",
-          "iou": 0.8896
+          "iou": 0.9059
         },
         {
           "id": "p1s89",
-          "iou": 0.8215
+          "iou": 0.875
         },
         {
           "id": "p1s90",
@@ -2354,7 +2466,7 @@
         },
         {
           "id": "p1s96",
-          "iou": 0.6155
+          "iou": 0.6195
         },
         {
           "id": "p1s97",
@@ -2382,7 +2494,7 @@
         },
         {
           "id": "p1s103",
-          "iou": 0.8571
+          "iou": 0.8787
         },
         {
           "id": "p1s104",
@@ -2410,19 +2522,19 @@
         },
         {
           "id": "p1s110",
-          "iou": 0.9011
+          "iou": 0.8971
         },
         {
           "id": "p1s111",
-          "iou": 0.7813
+          "iou": 0.7775
         },
         {
           "id": "p1s112",
-          "iou": 0.5114
+          "iou": 0.5561
         },
         {
           "id": "p1s113",
-          "iou": 0.4472
+          "iou": 0.8629
         },
         {
           "id": "p1s114",
@@ -2430,19 +2542,19 @@
         },
         {
           "id": "p1s115",
-          "iou": 0.7917
+          "iou": 0.8392
         },
         {
           "id": "p1s116",
-          "iou": 0.3901
+          "iou": 0.8515
         },
         {
           "id": "p1s117",
-          "iou": 0.8041
+          "iou": 0.8554
         },
         {
           "id": "p1s118",
-          "iou": 0.9243
+          "iou": 1
         },
         {
           "id": "p1s119",
@@ -2454,15 +2566,15 @@
         },
         {
           "id": "p1s121",
-          "iou": 0.5037
+          "iou": 0.5561
         },
         {
           "id": "p1s122",
-          "iou": 0.3897
+          "iou": 0.5199
         },
         {
           "id": "p1s123",
-          "iou": 0.5144
+          "iou": 0.5455
         },
         {
           "id": "p1s124",
@@ -2476,9 +2588,21 @@
           "id": "p1s126",
           "iou": 0
         }
-      ]
+      ],
+      "embedded": {
+        "blurredMismatches": 23769,
+        "blurredRatio": 0.1029,
+        "textPixels": 231087
+      },
+      "nonEmbedded": {
+        "blurredMismatches": 8488,
+        "blurredRatio": 0.0813,
+        "textPixels": 104431
+      }
     }
   },
+  "widthMisses": [],
+  "consolas": [],
   "pagination": {
     "pass": false,
     "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
@@ -2492,5 +2616,6 @@
       "layoutKind": "form"
     },
     "multiPage": null
-  }
+  },
+  "patchedAdvances": 65
 }

@@ -1,0 +1,8 @@
+id,page,text,binding,reason
+p1s1,1,BOM/EXP/23/05/B/0709,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s3,1,"P.O BOX 11700, 8100 UNIT NO 2 JEDDAH SAUDI ARABIA SAUDI",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s7,1,"JEDDAH, SAUDI ARABIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s8,1,JEDDAH SAUDI ARABIA,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s13,1,MTO/DGS/1544/MAR/2022,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s14,1,22700,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s15,1,TTNU0712894 - 40' FLAT,,"matches a demo value (number, date, party, or Fresa sample text)"

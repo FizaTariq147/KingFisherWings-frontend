@@ -1,0 +1,7 @@
+id,page,text,binding,reason
+p1s1,1,TRUCKER’S WORK ORDER,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s15,1,9887,shipment.voyage,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s17,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s20,1,10 DBS CENTRE NUNGAMBAKKAM HIGH,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s21,1,ROAD NUNGAMBAKKAM CHENNAI,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s22,1,TAMILNADU 600084 INDIA EMAIL:,,"matches a demo value (number, date, party, or Fresa sample text)"

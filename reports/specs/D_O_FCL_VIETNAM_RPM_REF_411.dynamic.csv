@@ -1,0 +1,9 @@
+id,page,text,binding,reason
+p1s28,1,30,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s30,1,MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s66,1,125,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s73,1,TERIALS FOR MACHINER,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s85,1,"18,000.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s86,1,24.000,party.consignee,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s87,1,125,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s91,1,24.000,,"matches a demo value (number, date, party, or Fresa sample text)"

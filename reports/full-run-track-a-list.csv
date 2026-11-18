@@ -1,0 +1,21 @@
+code,pages,page,geometry,static,dynamic,raster,pagination,failure_class,cause_counts,non_text,text_ink,masked_fraction
+D_O_FCL_VIETNAM_RPM_REF_411,1,pass,pass,fail,pass,pass,single-page,static position or string,static position or string=1,0.0019,0.3884,0.0126
+D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427,1,pass,pass,fail,pass,pass,single-page,static position or string,static position or string=1,0.0021,0.3791,0.0126
+STUFFING_REPORT_JASPER_REPORT_FORMAT,2,pass,pass,pass,fail,fail,pass,dynamic position or string | raster R1,dynamic position or string=1; raster R1=1,0.0351,2.7348,0.0784
+FG_PROOF_OF_DELIVERY_RPM_REF_847,1,pass,pass,fail,pass,fail,single-page,static width | static position or string | raster R1,static width=1; static position or string=1; raster R1=1,0.0255,2.8153,0.0716
+FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939,1,pass,pass,fail,pass,pass,single-page,static width,static width=1,0,0.2277,0.0962
+FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941,1,pass,pass,fail,pass,pass,single-page,static width,static width=1,0,0.2277,0.0106
+FG_STANDARD_INVOICE_ARABIC_FORMAT3_RPM_REF_1183,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.2616,0.0952
+FG_STANDARD_INVOICE_ARABIC_FORMAT4_RPM_REF_1215,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1791,0.0952
+FG_STANDARD_INVOICE_ARABIC_RPM_REF_464,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1835,0.0952
+FG_STANDARD_INVOICE_ARABIC_OMAN_RPM_REF_747,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.175,0.0939
+INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1545,0.0983
+FG_STANDARD_INVOICE_ARABIC_FORMAT2_RPM_REF_1171,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.176,0.0952
+FG_KSA_INVOICE_ARABIC_RPM_REF_1161,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.2668,0.0911
+CARTING_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0024,0.0886,0.03
+LOADING_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0037,0.0972,0.0352
+PICKUP_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0024,0.0857,0.0353
+FG_STANDARD_INVOICE_ARABIC_FORMAT5_RPM_REF_1385,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1915,0.0952
+FG_STANDARD_INVOICE_ARABIC_FORMAT7_RPM_REF_1400,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1934,0.0962
+FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT,3,pass,pass,pass,fail,pass,pass,dynamic width,dynamic width=1,0.0039,0.1381,0.0474
+STUFFING_REPORT_FORMAT,2,pass,pass,fail,pass,fail,pass,static width | raster R1,static width=1; raster R1=1,0.0065,0.043,0.0185

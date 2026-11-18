@@ -1,0 +1,1152 @@
+{
+  "approach": [
+    "Keep reference glyph positions and advances from the extracted segments; do not reshape in the golden compare path.",
+    "For live Arabic output, shape with an open Arabic-capable font (for example Noto Naskh Arabic) using a shaper, then place runs at the reference segment origins when the layout matches, or fall back to the reference presentation-form codepoints when ToUnicode already supplies them.",
+    "If ToUnicode maps to presentation forms, draw those codepoints with a font that contains the forms (or map forms back to base letters before shaping).",
+    "If ToUnicode maps to base letters, shape with the open font and use reference advances only as a width budget / clip box.",
+    "Do not copy embedded FontFile streams from the reference."
+  ],
+  "documents": [
+    {
+      "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "UVBNUY+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-974",
+          "stripped": "Arimo-Regular-974",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "UVBNUY+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s14",
+          "text": "ﻞﻴﻤﻌﻟﺍ",
+          "font": "UVBNUY+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s15",
+          "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+          "font": "UVBNUY+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s19",
+          "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "UVBNUY+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s20",
+          "text": "ﺦﻳﺭﺎﺗ",
+          "font": "UVBNUY+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "STUFFING_REPORT_FORMAT",
+      "referenceFonts": [
+        {
+          "baseFont": "Times New Roman",
+          "stripped": "Times New Roman",
+          "subtype": "TrueType",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "Arial",
+          "stripped": "Arial",
+          "subtype": "TrueType",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "Arial,Bold",
+          "stripped": "Arial,Bold",
+          "subtype": "TrueType",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arial",
+          "stripped": "Arial",
+          "subtype": "TrueType",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "Arimo-Regular-3441",
+          "stripped": "Arimo-Regular-3441",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Arial,Bold",
+          "stripped": "Arial,Bold",
+          "subtype": "TrueType",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s321",
+          "text": "،",
+          "font": "Arial",
+          "embedded": true,
+          "size": 8.04
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_KSA_INVOICE_ARABIC_RPM_REF_1161",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "OIGNMC+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-1367",
+          "stripped": "Arimo-Regular-1367",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s1",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "OIGNMC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s5",
+          "text": ":ﺓﺭﻮﺗﺎﻔﻟﺍ ﺭﺍﺪﺻﺇ ﺦﻳﺭﺎﺗ",
+          "font": "OIGNMC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s8",
+          "text": ":ﺪﻳﺭﻮﺘﻟﺍ ﺦﻳﺭﺎﺗ",
+          "font": "OIGNMC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s13",
+          "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "OIGNMC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s16",
+          "text": "ﺩﻮﻨﺒﻟﺍ",
+          "font": "OIGNMC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 7
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_RPM_REF_464",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "WLBQZS+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-5223",
+          "stripped": "Arimo-Regular-5223",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "WLBQZS+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s16",
+          "text": "ﻞﻴﻤﻌﻟﺍ",
+          "font": "WLBQZS+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s19",
+          "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+          "font": "WLBQZS+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s22",
+          "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "WLBQZS+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s25",
+          "text": "ﺦﻳﺭﺎﺗ",
+          "font": "WLBQZS+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "JONRQM+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-6679",
+          "stripped": "Arimo-Regular-6679",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s1",
+          "text": "TAX INVOICE ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "JONRQM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s2",
+          "text": "Invoice Receiver ﻰﻟﺇ ﺓﺭﻮﺗﺎﻓ",
+          "font": "JONRQM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s10",
+          "text": "Job No ﺔﻔﻴﻇﻮﻟﺍ ﻢﻗﺭ",
+          "font": "JONRQM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s12",
+          "text": "Invoice No ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "JONRQM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s13",
+          "text": "Invoice Date ﺦﻳﺭﺎﺗ",
+          "font": "JONRQM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "HASVQQ+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-6679",
+          "stripped": "Arimo-Regular-6679",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s1",
+          "text": "TAX INVOICE ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "HASVQQ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s2",
+          "text": "Invoice Receiver ﻰﻟﺇ ﺓﺭﻮﺗﺎﻓ",
+          "font": "HASVQQ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s10",
+          "text": "Job No ﺔﻔﻴﻇﻮﻟﺍ ﻢﻗﺭ",
+          "font": "HASVQQ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s12",
+          "text": "Invoice No ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "HASVQQ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s13",
+          "text": "Invoice Date ﺦﻳﺭﺎﺗ",
+          "font": "HASVQQ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_OMAN_RPM_REF_747",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "MKMKOX+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-1893",
+          "stripped": "Arimo-Regular-1893",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s2",
+          "text": "ﺓﺭﻮﺗﺎﻓ",
+          "font": "MKMKOX+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s16",
+          "text": "ﻞﻴﻤﻌﻟﺍ",
+          "font": "MKMKOX+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s19",
+          "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+          "font": "MKMKOX+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s22",
+          "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "MKMKOX+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s25",
+          "text": "ﺦﻳﺭﺎﺗ",
+          "font": "MKMKOX+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT2_RPM_REF_1171",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "BZCIDJ+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-1367",
+          "stripped": "Arimo-Regular-1367",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "BZCIDJ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s16",
+          "text": "ﻞﻴﻤﻌﻟﺍ",
+          "font": "BZCIDJ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s19",
+          "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+          "font": "BZCIDJ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s22",
+          "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "BZCIDJ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s25",
+          "text": "ﺦﻳﺭﺎﺗ",
+          "font": "BZCIDJ+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT3_RPM_REF_1183",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "QSHUFC+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-8978",
+          "stripped": "Arimo-Regular-8978",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "TrueType",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "QSHUFC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s16",
+          "text": "ﻞﻴﻤﻌﻟﺍ",
+          "font": "QSHUFC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s19",
+          "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+          "font": "QSHUFC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s22",
+          "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "QSHUFC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s25",
+          "text": "ﺦﻳﺭﺎﺗ",
+          "font": "QSHUFC+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT4_RPM_REF_1215",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "YSTHHM+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-3005",
+          "stripped": "Arimo-Regular-3005",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "TrueType",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "YSTHHM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s16",
+          "text": "ﻞﻴﻤﻌﻟﺍ",
+          "font": "YSTHHM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s19",
+          "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+          "font": "YSTHHM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s22",
+          "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "YSTHHM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s25",
+          "text": "ﺦﻳﺭﺎﺗ",
+          "font": "YSTHHM+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT5_RPM_REF_1385",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "SCHSXH+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-58",
+          "stripped": "Arimo-Regular-58",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "SCHSXH+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s16",
+          "text": "ﻞﻴﻤﻌﻟﺍ",
+          "font": "SCHSXH+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s19",
+          "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+          "font": "SCHSXH+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s22",
+          "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "SCHSXH+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s25",
+          "text": "ﺦﻳﺭﺎﺗ",
+          "font": "SCHSXH+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT7_RPM_REF_1400",
+      "referenceFonts": [
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        },
+        {
+          "baseFont": "HUNUPF+ArialUnicodeMS",
+          "stripped": "ArialUnicodeMS",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        }
+      ],
+      "outputFonts": [
+        {
+          "baseFont": "Arimo-Regular-7966",
+          "stripped": "Arimo-Regular-7966",
+          "subtype": "Type0",
+          "encoding": "Identity-H",
+          "cid": true,
+          "embedded": true,
+          "toUnicode": {
+            "present": true,
+            "sampleCount": 0,
+            "samples": [],
+            "hasPresentationForms": false,
+            "hasBaseArabicLetters": false,
+            "guess": "undetermined"
+          }
+        },
+        {
+          "baseFont": "Helvetica",
+          "stripped": "Helvetica",
+          "subtype": "Type1",
+          "encoding": "WinAnsiEncoding",
+          "cid": false,
+          "embedded": null,
+          "toUnicode": "absent"
+        }
+      ],
+      "arabicSpanSamples": [
+        {
+          "id": "p1s2",
+          "text": "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+          "font": "HUNUPF+ArialUnicodeMS",
+          "embedded": true,
+          "size": 14
+        },
+        {
+          "id": "p1s17",
+          "text": "ﻞﻴﻤﻌﻟﺍ",
+          "font": "HUNUPF+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s20",
+          "text": "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ",
+          "font": "HUNUPF+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s24",
+          "text": "ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+          "font": "HUNUPF+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        },
+        {
+          "id": "p1s28",
+          "text": "ﺦﻳﺭﺎﺗ",
+          "font": "HUNUPF+ArialUnicodeMS",
+          "embedded": true,
+          "size": 8
+        }
+      ],
+      "staticFailures": null
+    }
+  ]
+}

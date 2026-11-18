@@ -889,6 +889,8 @@ export interface JobPnl {
 /** Fresa GET /jobs/:id/detail action flags. */
 export interface JobActions {
   can_change_status?: boolean;
+  /** Transport handoff / jobs.update — POST /jobs/status-catalog (custom status). */
+  can_create_custom_status?: boolean;
   /**
    * Direct POST /jobs/:id/reopen — Tenant Admin only.
    * Staff use can_request_reopen → reopen-requests instead.

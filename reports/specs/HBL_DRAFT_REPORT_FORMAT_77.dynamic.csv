@@ -1,0 +1,10 @@
+id,page,text,binding,reason
+p1s8,1,POST BOX : 12356 30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s11,1,POST BOX : 12356 30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s14,1,"CHENNAI (EX MADRAS),",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s35,1,MULTIMODAL TRANSPORT DOCUMENT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s36,1,MTO/DGS/1544/MAR/2022,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s51,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s55,1,STC: VALVE MATERIALS FOR MACHINERY PARTS,cargo.marks,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s57,1,ALL DESTINATION CHARGES ARE CONSIGNEE'S,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s62,1,ABCU9877666 - 20' DC,,"matches a demo value (number, date, party, or Fresa sample text)"

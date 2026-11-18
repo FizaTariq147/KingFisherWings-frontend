@@ -1,0 +1,491 @@
+{
+  "seed": 5,
+  "selected": [
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_122",
+      "family": "sea_docs",
+      "pages": 3,
+      "renderModes": 1
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_142",
+      "family": "sea_docs",
+      "pages": 2,
+      "renderModes": 38
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_52",
+      "family": "sea_docs",
+      "pages": 2,
+      "renderModes": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_68",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 3
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+      "family": "commercial",
+      "pages": 1,
+      "renderModes": 6
+    },
+    {
+      "code": "TRANSSHIPMENT_LIST_REPORT_FORMAT",
+      "family": "ops_list",
+      "pages": 1,
+      "renderModes": 0
+    },
+    {
+      "code": "JOURNAL_VOUCHER_REPORT_FORMAT_2",
+      "family": "finance",
+      "pages": 1,
+      "renderModes": 0
+    },
+    {
+      "code": "CONTAINER_OUTTURN_REPORT_FORMAT",
+      "family": "other",
+      "pages": 1,
+      "renderModes": 1
+    },
+    {
+      "code": "BARCODE_AWB_REPORT_FORMAT",
+      "family": "air_docs",
+      "pages": 1,
+      "renderModes": 0
+    },
+    {
+      "code": "AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT",
+      "family": "quotation",
+      "pages": 1,
+      "renderModes": 0
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE",
+      "family": "wms",
+      "pages": 1,
+      "renderModes": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_26",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 3
+    },
+    {
+      "code": "PURCHASE_INVOICE_REPORT_FORMAT_1",
+      "family": "commercial",
+      "pages": 1,
+      "renderModes": 0
+    },
+    {
+      "code": "ARRIVAL_CONFIRMATION",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_148",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 41
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_43",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 31
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_14",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 34
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_8",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 4
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+      "family": "commercial",
+      "pages": 1,
+      "renderModes": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_9",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 2
+    }
+  ],
+  "multiPage": 3,
+  "textRenderModes": 11,
+  "families": [
+    "sea_docs",
+    "commercial",
+    "ops_list",
+    "finance",
+    "other",
+    "air_docs",
+    "quotation",
+    "wms"
+  ],
+  "grouped": {
+    "raster": {
+      "documents": 8,
+      "instances": 8
+    },
+    "geometry mismatch": {
+      "documents": 1,
+      "instances": 1
+    },
+    "static position or string": {
+      "documents": 1,
+      "instances": 2
+    }
+  },
+  "documents": [
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_122",
+      "family": "sea_docs",
+      "pages": 3,
+      "renderModes": 1,
+      "pagesExtracted": 3,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0,
+      "paginationPass": true,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_142",
+      "family": "sea_docs",
+      "pages": 2,
+      "renderModes": 38,
+      "pagesExtracted": 2,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.085,
+      "paginationPass": true,
+      "classes": [
+        "raster"
+      ],
+      "classCounts": {
+        "raster": 1
+      }
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_52",
+      "family": "sea_docs",
+      "pages": 2,
+      "renderModes": 0,
+      "pagesExtracted": 2,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.103,
+      "paginationPass": true,
+      "classes": [
+        "raster"
+      ],
+      "classCounts": {
+        "raster": 1
+      }
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_68",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 3,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0016,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+      "family": "commercial",
+      "pages": 1,
+      "renderModes": 6,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0034,
+      "paginationPass": false,
+      "classes": [
+        "geometry mismatch"
+      ],
+      "classCounts": {
+        "geometry mismatch": 1
+      }
+    },
+    {
+      "code": "TRANSSHIPMENT_LIST_REPORT_FORMAT",
+      "family": "ops_list",
+      "pages": 1,
+      "renderModes": 0,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0045,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "JOURNAL_VOUCHER_REPORT_FORMAT_2",
+      "family": "finance",
+      "pages": 1,
+      "renderModes": 0,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0049,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "CONTAINER_OUTTURN_REPORT_FORMAT",
+      "family": "other",
+      "pages": 1,
+      "renderModes": 1,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0514,
+      "paginationPass": false,
+      "classes": [
+        "raster"
+      ],
+      "classCounts": {
+        "raster": 1
+      }
+    },
+    {
+      "code": "BARCODE_AWB_REPORT_FORMAT",
+      "family": "air_docs",
+      "pages": 1,
+      "renderModes": 0,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT",
+      "family": "quotation",
+      "pages": 1,
+      "renderModes": 0,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0146,
+      "paginationPass": false,
+      "classes": [
+        "raster"
+      ],
+      "classCounts": {
+        "raster": 1
+      }
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE",
+      "family": "wms",
+      "pages": 1,
+      "renderModes": 0,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0311,
+      "paginationPass": false,
+      "classes": [
+        "raster"
+      ],
+      "classCounts": {
+        "raster": 1
+      }
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_26",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 3,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0043,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "PURCHASE_INVOICE_REPORT_FORMAT_1",
+      "family": "commercial",
+      "pages": 1,
+      "renderModes": 0,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0001,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "ARRIVAL_CONFIRMATION",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 0,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0074,
+      "paginationPass": false,
+      "classes": [
+        "raster"
+      ],
+      "classCounts": {
+        "raster": 1
+      }
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_148",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 41,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 2,
+      "dynamicFailures": 0,
+      "raster": 0.0306,
+      "paginationPass": false,
+      "classes": [
+        "static position or string",
+        "raster"
+      ],
+      "classCounts": {
+        "static position or string": 2,
+        "raster": 1
+      }
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_43",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 31,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0023,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_14",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 34,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0019,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_8",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 4,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0025,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+      "family": "commercial",
+      "pages": 1,
+      "renderModes": 0,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0142,
+      "paginationPass": false,
+      "classes": [
+        "raster"
+      ],
+      "classCounts": {
+        "raster": 1
+      }
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_9",
+      "family": "sea_docs",
+      "pages": 1,
+      "renderModes": 2,
+      "pagesExtracted": 1,
+      "layoutKind": "form",
+      "uncaptured": 0,
+      "staticFailures": 0,
+      "dynamicFailures": 0,
+      "raster": 0.0024,
+      "paginationPass": false,
+      "classes": [],
+      "classCounts": {}
+    }
+  ]
+}

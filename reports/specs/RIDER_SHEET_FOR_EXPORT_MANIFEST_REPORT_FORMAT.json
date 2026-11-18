@@ -1,0 +1,7662 @@
+{
+  "code": "RIDER_SHEET_FOR_EXPORT_MANIFEST_REPORT_FORMAT",
+  "source": "reports/references/files/rider-sheet-for-export-manifest-report-format.pdf",
+  "page": {
+    "width": 594,
+    "height": 841.9,
+    "orientation": "portrait",
+    "rotate": 0,
+    "mediaBox": [
+      0,
+      0,
+      594,
+      841.92
+    ],
+    "cropBox": null,
+    "userUnit": 1
+  },
+  "fonts": [
+    {
+      "name": "ArialMT",
+      "referenceCount": 35,
+      "mappedTo": "Arimo",
+      "family": "Arimo",
+      "weight": "regular"
+    },
+    {
+      "name": "Arial-BoldMT",
+      "referenceCount": 15,
+      "mappedTo": "Arimo",
+      "family": "Arimo",
+      "weight": "bold"
+    }
+  ],
+  "lines": [
+    {
+      "x1": 163.5887,
+      "y1": 762.2787,
+      "x2": 577.9551,
+      "y2": 762.2787,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 2
+    },
+    {
+      "x1": 16.0448,
+      "y1": 762.2787,
+      "x2": 163.5887,
+      "y2": 762.2787,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 3
+    },
+    {
+      "x1": 372.1851,
+      "y1": 615.8654,
+      "x2": 577.9551,
+      "y2": 615.8654,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 10
+    },
+    {
+      "x1": 577.6724,
+      "y1": 615.5828,
+      "x2": 577.6724,
+      "y2": 626.8888,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 11
+    },
+    {
+      "x1": 276.0838,
+      "y1": 615.8654,
+      "x2": 372.7504,
+      "y2": 615.8654,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 12
+    },
+    {
+      "x1": 372.4678,
+      "y1": 616.1481,
+      "x2": 372.4678,
+      "y2": 626.8888,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 13
+    },
+    {
+      "x1": 143.2378,
+      "y1": 615.8654,
+      "x2": 276.6491,
+      "y2": 615.8654,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 14
+    },
+    {
+      "x1": 276.3664,
+      "y1": 616.1481,
+      "x2": 276.3664,
+      "y2": 626.8888,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 15
+    },
+    {
+      "x1": 16.0448,
+      "y1": 615.8654,
+      "x2": 143.8031,
+      "y2": 615.8654,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 16
+    },
+    {
+      "x1": 16.3275,
+      "y1": 615.5828,
+      "x2": 16.3275,
+      "y2": 626.8888,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 17
+    },
+    {
+      "x1": 143.5204,
+      "y1": 616.1481,
+      "x2": 143.5204,
+      "y2": 626.8888,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 18
+    },
+    {
+      "x1": 372.1851,
+      "y1": 637.3469,
+      "x2": 577.9551,
+      "y2": 637.3469,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 19
+    },
+    {
+      "x1": 372.1851,
+      "y1": 626.6062,
+      "x2": 577.3898,
+      "y2": 626.6062,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 20
+    },
+    {
+      "x1": 577.6724,
+      "y1": 626.3235,
+      "x2": 577.6724,
+      "y2": 637.6296,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 21
+    },
+    {
+      "x1": 276.0838,
+      "y1": 637.3469,
+      "x2": 372.7504,
+      "y2": 637.3469,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 22
+    },
+    {
+      "x1": 276.0838,
+      "y1": 626.6062,
+      "x2": 372.7504,
+      "y2": 626.6062,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 23
+    },
+    {
+      "x1": 372.4678,
+      "y1": 626.3235,
+      "x2": 372.4678,
+      "y2": 637.0643,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 24
+    },
+    {
+      "x1": 143.2378,
+      "y1": 637.3469,
+      "x2": 276.6491,
+      "y2": 637.3469,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 25
+    },
+    {
+      "x1": 143.2378,
+      "y1": 626.6062,
+      "x2": 276.6491,
+      "y2": 626.6062,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 26
+    },
+    {
+      "x1": 276.3664,
+      "y1": 626.3235,
+      "x2": 276.3664,
+      "y2": 637.0643,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 27
+    },
+    {
+      "x1": 16.0448,
+      "y1": 637.3469,
+      "x2": 143.8031,
+      "y2": 637.3469,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 28
+    },
+    {
+      "x1": 16.6101,
+      "y1": 626.6062,
+      "x2": 143.8031,
+      "y2": 626.6062,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 29
+    },
+    {
+      "x1": 16.3275,
+      "y1": 626.3235,
+      "x2": 16.3275,
+      "y2": 637.6296,
+      "width": 0.5653,
+      "color": "0.062745,0.062745,0.062745",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 30
+    },
+    {
+      "x1": 143.5204,
+      "y1": 626.3235,
+      "x2": 143.5204,
+      "y2": 637.0643,
+      "width": 0.5653,
+      "color": "0.396078,0.396078,0.396078",
+      "source": "rect",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 31
+    }
+  ],
+  "rects": [
+    {
+      "x": 0,
+      "y": -280.0799,
+      "width": 791.9999,
+      "height": 1121.9999,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "1.000000,1.000000,1.000000",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 0
+    },
+    {
+      "x": 7,
+      "y": 8.4484,
+      "width": 579.9999,
+      "height": 826.4716,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "1.000000,1.000000,1.000000",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 1
+    },
+    {
+      "x": 16.0448,
+      "y": 716.7718,
+      "width": 561.9103,
+      "height": 38.4405,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.152941,0.533333,0.788235",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 4
+    },
+    {
+      "x": 16.0448,
+      "y": 626.8888,
+      "width": 127.193,
+      "height": 10.7407,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.133333,0.521569,0.784314",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 6
+    },
+    {
+      "x": 143.2378,
+      "y": 626.8888,
+      "width": 132.846,
+      "height": 10.7407,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.133333,0.521569,0.784314",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 7
+    },
+    {
+      "x": 276.0838,
+      "y": 626.8888,
+      "width": 96.1014,
+      "height": 10.7407,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.133333,0.521569,0.784314",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 8
+    },
+    {
+      "x": 372.1851,
+      "y": 626.8888,
+      "width": 205.2047,
+      "height": 10.7407,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.133333,0.521569,0.784314",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 9
+    },
+    {
+      "x": 14.3489,
+      "y": 826.4404,
+      "width": 565.3021,
+      "height": 1.1306,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.396078,0.396078,0.396078",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 32
+    },
+    {
+      "x": 14.3489,
+      "y": 599.189,
+      "width": 565.3021,
+      "height": 1.1306,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.396078,0.396078,0.396078",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 33
+    },
+    {
+      "x": 14.3489,
+      "y": 599.189,
+      "width": 1.1306,
+      "height": 228.382,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.396078,0.396078,0.396078",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 34
+    },
+    {
+      "x": 578.5204,
+      "y": 599.189,
+      "width": 1.1306,
+      "height": 228.382,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.396078,0.396078,0.396078",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 35
+    },
+    {
+      "x": 14.3489,
+      "y": 579.4034,
+      "width": 209.7271,
+      "height": 16.9591,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.058824,0.301961,0.588235",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 36
+    },
+    {
+      "x": 224.076,
+      "y": 579.4034,
+      "width": 181.462,
+      "height": 16.9591,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.968627,0.635294,0.109804",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 37
+    },
+    {
+      "x": 405.538,
+      "y": 579.4034,
+      "width": 174.113,
+      "height": 16.9591,
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.870588,0.121569,0.149020",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 38
+    }
+  ],
+  "spans": [
+    {
+      "id": "p1s1",
+      "text": "1/25/2019",
+      "glyphText": "1/25/2019",
+      "segments": [
+        {
+          "text": "1/25/2019",
+          "x": 26.5,
+          "y": 819.9,
+          "width": 35.59
+        }
+      ],
+      "font": "ArialMT",
+      "size": 8,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 26.5,
+      "y": 819.9,
+      "width": 35.59,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 35.59,
+      "advances": [
+        556.1523,
+        277.832,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "dynamic",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s2",
+      "text": "Rider Sheet for Export Manifest - CCDXBSI18000060",
+      "glyphText": "Rider Sheet for Export Manifest - CCDXBSI18000060",
+      "segments": [
+        {
+          "text": "Rider Sheet for Export Manifest - CCDXBSI18000060",
+          "x": 235,
+          "y": 819.9,
+          "width": 189.87
+        }
+      ],
+      "font": "ArialMT",
+      "size": 8,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 235,
+      "y": 819.9,
+      "width": 189.87,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 189.87,
+      "advances": [
+        722.168,
+        222.168,
+        556.1523,
+        556.1523,
+        333.0078,
+        277.832,
+        666.9922,
+        556.1523,
+        556.1523,
+        556.1523,
+        277.832,
+        277.832,
+        277.832,
+        556.1523,
+        333.0078,
+        277.832,
+        666.9922,
+        500,
+        556.1523,
+        556.1523,
+        333.0078,
+        277.832,
+        277.832,
+        833.0078,
+        556.1523,
+        556.1523,
+        222.168,
+        277.832,
+        556.1523,
+        500,
+        277.832,
+        277.832,
+        333.0078,
+        277.832,
+        722.168,
+        722.168,
+        722.168,
+        666.9922,
+        666.9922,
+        666.9922,
+        277.832,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s3",
+      "text": "http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",
+      "glyphText": "http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",
+      "segments": [
+        {
+          "text": "http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",
+          "x": 26.5,
+          "y": 16.9,
+          "width": 487.68
+        }
+      ],
+      "font": "ArialMT",
+      "size": 8,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 26.5,
+      "y": 16.9,
+      "width": 487.68,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 487.68,
+      "advances": [
+        556.1523,
+        277.832,
+        277.832,
+        556.1523,
+        277.832,
+        277.832,
+        277.832,
+        556.1523,
+        556.1523,
+        833.0078,
+        556.1523,
+        277.832,
+        277.832,
+        333.0078,
+        556.1523,
+        500,
+        556.1523,
+        556.1523,
+        556.1523,
+        222.168,
+        556.1523,
+        277.832,
+        500,
+        556.1523,
+        833.0078,
+        277.832,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        333.0078,
+        556.1523,
+        500,
+        277.832,
+        277.832,
+        556.1523,
+        556.1523,
+        583.9844,
+        556.1523,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        277.832,
+        277.832,
+        277.832,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        277.832,
+        666.9922,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        722.168,
+        666.9922,
+        666.9922,
+        556.1523,
+        277.832,
+        722.168,
+        277.832,
+        666.9922,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        722.168,
+        666.9922,
+        722.168,
+        556.1523,
+        277.832,
+        722.168,
+        277.832,
+        666.9922,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        722.168,
+        666.9922,
+        833.0078,
+        556.1523,
+        277.832,
+        722.168,
+        277.832,
+        666.9922,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        610.8398
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "branding",
+      "brandingKind": "name",
+      "binding": ""
+    },
+    {
+      "id": "p1s4",
+      "text": "…",
+      "glyphText": "…",
+      "segments": [
+        {
+          "text": "…",
+          "x": 538.4,
+          "y": 17,
+          "width": 8
+        }
+      ],
+      "font": "ArialMT",
+      "size": 8,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 538.4,
+      "y": 17,
+      "width": 8,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 8,
+      "advances": [
+        1000
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s5",
+      "text": "1",
+      "glyphText": "1",
+      "segments": [
+        {
+          "text": "1",
+          "x": 556.4,
+          "y": 16.9,
+          "width": 4.45
+        }
+      ],
+      "font": "ArialMT",
+      "size": 8,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 556.4,
+      "y": 16.9,
+      "width": 4.45,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 4.45,
+      "advances": [
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s6",
+      "text": "/",
+      "glyphText": "/",
+      "segments": [
+        {
+          "text": "/",
+          "x": 560.8,
+          "y": 16.9,
+          "width": 2.22
+        }
+      ],
+      "font": "ArialMT",
+      "size": 8,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 560.8,
+      "y": 16.9,
+      "width": 2.22,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 2.22,
+      "advances": [
+        277.832
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s7",
+      "text": "1",
+      "glyphText": "1",
+      "segments": [
+        {
+          "text": "1",
+          "x": 563.1,
+          "y": 16.9,
+          "width": 4.45
+        }
+      ],
+      "font": "ArialMT",
+      "size": 8,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 563.1,
+      "y": 16.9,
+      "width": 4.45,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 4.45,
+      "advances": [
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s8",
+      "text": "FRESA DEMO COMP",
+      "glyphText": "FRESA DEMO COMP",
+      "segments": [
+        {
+          "text": "FRESA DEMO COMP",
+          "x": 317.8,
+          "y": 811.7,
+          "width": 157.41
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 15.8285,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 317.8,
+      "y": 811.7,
+      "width": 157.41,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 157.41,
+      "advances": [
+        610.8398,
+        722.168,
+        666.9922,
+        666.9922,
+        722.168,
+        277.832,
+        722.168,
+        666.9922,
+        833.0078,
+        777.832,
+        277.832,
+        722.168,
+        777.832,
+        833.0078,
+        666.9922
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "branding",
+      "brandingKind": "name",
+      "binding": "",
+      "slot": "company"
+    },
+    {
+      "id": "p1s9",
+      "text": "Al Khabeeshi Building,",
+      "glyphText": "Al Khabeeshi Building,",
+      "segments": [
+        {
+          "text": "Al Khabeeshi Building,",
+          "x": 495.9,
+          "y": 800.4,
+          "width": 79.2
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 495.9,
+      "y": 800.4,
+      "width": 79.2,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 79.2,
+      "advances": [
+        666.9922,
+        222.168,
+        277.832,
+        666.9922,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        500,
+        556.1523,
+        222.168,
+        277.832,
+        666.9922,
+        556.1523,
+        222.168,
+        222.168,
+        556.1523,
+        222.168,
+        556.1523,
+        556.1523,
+        277.832
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "branding",
+      "brandingKind": "address",
+      "binding": ""
+    },
+    {
+      "id": "p1s10",
+      "text": "Mezzanine Floor 03/5,",
+      "glyphText": "Mezzanine Floor 03/5,",
+      "segments": [
+        {
+          "text": "Mezzanine Floor 03/5,",
+          "x": 496.8,
+          "y": 791.4,
+          "width": 78.3
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 496.8,
+      "y": 791.4,
+      "width": 78.3,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 78.3,
+      "advances": [
+        833.0078,
+        556.1523,
+        500,
+        500,
+        556.1523,
+        556.1523,
+        222.168,
+        556.1523,
+        556.1523,
+        277.832,
+        610.8398,
+        222.168,
+        556.1523,
+        556.1523,
+        333.0078,
+        277.832,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        277.832
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "branding",
+      "brandingKind": "address",
+      "binding": ""
+    },
+    {
+      "id": "p1s11",
+      "text": "Salahuddin Road, Deira,",
+      "glyphText": "Salahuddin Road, Deira,",
+      "segments": [
+        {
+          "text": "Salahuddin Road, Deira,",
+          "x": 488.9,
+          "y": 782.3,
+          "width": 86.23
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 488.9,
+      "y": 782.3,
+      "width": 86.23,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 86.23,
+      "advances": [
+        666.9922,
+        556.1523,
+        222.168,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        222.168,
+        556.1523,
+        277.832,
+        722.168,
+        556.1523,
+        556.1523,
+        556.1523,
+        277.832,
+        277.832,
+        722.168,
+        556.1523,
+        222.168,
+        333.0078,
+        556.1523,
+        277.832
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "branding",
+      "brandingKind": "address",
+      "binding": ""
+    },
+    {
+      "id": "p1s12",
+      "text": "Dubai,",
+      "glyphText": "Dubai, ",
+      "segments": [
+        {
+          "text": "Dubai, ",
+          "x": 527.2,
+          "y": 773.3,
+          "width": 25.08
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 527.2,
+      "y": 773.3,
+      "width": 25.08,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 25.08,
+      "advances": [
+        722.168,
+        556.1523,
+        556.1523,
+        556.1523,
+        222.168,
+        277.832,
+        277.832
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s13",
+      "text": "U.A.E.",
+      "glyphText": "U.A.E.",
+      "segments": [
+        {
+          "text": "U.A.E.",
+          "x": 552.3,
+          "y": 773.3,
+          "width": 22.87
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 552.3,
+      "y": 773.3,
+      "width": 22.87,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 22.87,
+      "advances": [
+        722.168,
+        277.832,
+        666.9922,
+        277.832,
+        666.9922,
+        277.832
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s14",
+      "text": "WEB : www",
+      "glyphText": "WEB : www",
+      "segments": [
+        {
+          "text": "WEB : www",
+          "x": 452.4,
+          "y": 764.3,
+          "width": 41.77
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 452.4,
+      "y": 764.3,
+      "width": 41.77,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 41.77,
+      "advances": [
+        943.8477,
+        666.9922,
+        666.9922,
+        277.832,
+        277.832,
+        277.832,
+        722.168,
+        722.168,
+        722.168
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s15",
+      "text": ".fresatechnologies.com",
+      "glyphText": ".fresatechnologies.com",
+      "segments": [
+        {
+          "text": ".fresatechnologies.com",
+          "x": 535.5,
+          "y": 764.3,
+          "width": 81.38
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 535.5,
+      "y": 764.3,
+      "width": 81.38,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 81.38,
+      "advances": [
+        277.832,
+        277.832,
+        333.0078,
+        556.1523,
+        500,
+        556.1523,
+        277.832,
+        556.1523,
+        500,
+        556.1523,
+        556.1523,
+        556.1523,
+        222.168,
+        556.1523,
+        556.1523,
+        222.168,
+        556.1523,
+        500,
+        277.832,
+        500,
+        556.1523,
+        833.0078
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "branding",
+      "brandingKind": "name",
+      "binding": ""
+    },
+    {
+      "id": "p1s16",
+      "text": "RIDER SHEET FOR EXPORT MANIFEST / JOB NO - CCDXBSI18000060",
+      "glyphText": "RIDER SHEET FOR EXPORT MANIFEST / JOB NO - CCDXBSI18000060",
+      "segments": [
+        {
+          "text": "RIDER SHEET FOR EXPORT MANIFEST / JOB NO - CCDXBSI18000060",
+          "x": 98.8,
+          "y": 732,
+          "width": 396.46
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 11.8713,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 98.8,
+      "y": 732,
+      "width": 396.46,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 396.46,
+      "advances": [
+        722.168,
+        277.832,
+        722.168,
+        666.9922,
+        722.168,
+        277.832,
+        666.9922,
+        722.168,
+        666.9922,
+        666.9922,
+        610.8398,
+        277.832,
+        610.8398,
+        777.832,
+        722.168,
+        277.832,
+        666.9922,
+        666.9922,
+        666.9922,
+        777.832,
+        722.168,
+        610.8398,
+        277.832,
+        833.0078,
+        722.168,
+        722.168,
+        277.832,
+        610.8398,
+        666.9922,
+        666.9922,
+        610.8398,
+        277.832,
+        277.832,
+        277.832,
+        556.1523,
+        777.832,
+        722.168,
+        277.832,
+        722.168,
+        777.832,
+        277.832,
+        333.0078,
+        277.832,
+        722.168,
+        722.168,
+        722.168,
+        666.9922,
+        722.168,
+        666.9922,
+        277.832,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "dynamic",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s17",
+      "text": "Job No",
+      "glyphText": "Job No",
+      "segments": [
+        {
+          "text": "Job No",
+          "x": 200.1,
+          "y": 703.8,
+          "width": 26.82
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 200.1,
+      "y": 703.8,
+      "width": 26.82,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 26.82,
+      "advances": [
+        556.1523,
+        610.8398,
+        610.8398,
+        277.832,
+        722.168,
+        610.8398
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s18",
+      "text": ":",
+      "glyphText": ":",
+      "segments": [
+        {
+          "text": ":",
+          "x": 236.3,
+          "y": 703.8,
+          "width": 2.64
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 236.3,
+      "y": 703.8,
+      "width": 2.64,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 2.64,
+      "advances": [
+        333.0078
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s19",
+      "text": "CCDXBSI18000060 / 23-NOV",
+      "glyphText": "CCDXBSI18000060 / 23-NOV",
+      "segments": [
+        {
+          "text": "CCDXBSI18000060 / 23-NOV",
+          "x": 248.4,
+          "y": 703.8,
+          "width": 105.58
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 248.4,
+      "y": 703.8,
+      "width": 105.58,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 105.58,
+      "advances": [
+        722.168,
+        722.168,
+        722.168,
+        666.9922,
+        666.9922,
+        666.9922,
+        277.832,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        277.832,
+        277.832,
+        277.832,
+        556.1523,
+        556.1523,
+        333.0078,
+        722.168,
+        777.832,
+        666.9922
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "dynamic",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s20",
+      "text": "-18",
+      "glyphText": "-18",
+      "segments": [
+        {
+          "text": "-18",
+          "x": 459.1,
+          "y": 703.8,
+          "width": 11.44
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 459.1,
+      "y": 703.8,
+      "width": 11.44,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 11.44,
+      "advances": [
+        333.0078,
+        556.1523,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s21",
+      "text": "Port of Loading",
+      "glyphText": "Port of Loading",
+      "segments": [
+        {
+          "text": "Port of Loading",
+          "x": 168.4,
+          "y": 689.1,
+          "width": 58.47
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 168.4,
+      "y": 689.1,
+      "width": 58.47,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 58.47,
+      "advances": [
+        666.9922,
+        610.8398,
+        389.1602,
+        333.0078,
+        277.832,
+        610.8398,
+        333.0078,
+        277.832,
+        610.8398,
+        610.8398,
+        556.1523,
+        610.8398,
+        277.832,
+        610.8398,
+        610.8398
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s22",
+      "text": ":",
+      "glyphText": ":",
+      "segments": [
+        {
+          "text": ":",
+          "x": 236.3,
+          "y": 689.1,
+          "width": 2.64
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 236.3,
+      "y": 689.1,
+      "width": 2.64,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 2.64,
+      "advances": [
+        333.0078
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s23",
+      "text": "CHENNAI (EX MADRAS), INDIA",
+      "glyphText": "CHENNAI (EX MADRAS), INDIA",
+      "segments": [
+        {
+          "text": "CHENNAI (EX MADRAS), INDIA",
+          "x": 248.4,
+          "y": 689.1,
+          "width": 115.21
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 248.4,
+      "y": 689.1,
+      "width": 115.21,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 115.21,
+      "advances": [
+        722.168,
+        722.168,
+        666.9922,
+        722.168,
+        722.168,
+        666.9922,
+        277.832,
+        277.832,
+        333.0078,
+        666.9922,
+        666.9922,
+        277.832,
+        833.0078,
+        666.9922,
+        722.168,
+        722.168,
+        666.9922,
+        666.9922,
+        333.0078,
+        277.832,
+        277.832,
+        277.832,
+        722.168,
+        722.168,
+        277.832,
+        666.9922
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "dynamic",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s24",
+      "text": "Port of Discharge",
+      "glyphText": "Port of Discharge",
+      "segments": [
+        {
+          "text": "Port of Discharge",
+          "x": 160.9,
+          "y": 674.4,
+          "width": 65.96
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 160.9,
+      "y": 674.4,
+      "width": 65.96,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 65.96,
+      "advances": [
+        666.9922,
+        610.8398,
+        389.1602,
+        333.0078,
+        277.832,
+        610.8398,
+        333.0078,
+        277.832,
+        722.168,
+        277.832,
+        556.1523,
+        556.1523,
+        610.8398,
+        556.1523,
+        389.1602,
+        610.8398,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s25",
+      "text": ":",
+      "glyphText": ":",
+      "segments": [
+        {
+          "text": ":",
+          "x": 236.3,
+          "y": 674.4,
+          "width": 2.64
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 236.3,
+      "y": 674.4,
+      "width": 2.64,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 2.64,
+      "advances": [
+        333.0078
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s26",
+      "text": "JEBEL ALI, UAE",
+      "glyphText": "JEBEL ALI, UAE",
+      "segments": [
+        {
+          "text": "JEBEL ALI, UAE",
+          "x": 248.4,
+          "y": 674.4,
+          "width": 58.94
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 248.4,
+      "y": 674.4,
+      "width": 58.94,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 58.94,
+      "advances": [
+        500,
+        666.9922,
+        666.9922,
+        666.9922,
+        556.1523,
+        277.832,
+        666.9922,
+        556.1523,
+        277.832,
+        277.832,
+        277.832,
+        722.168,
+        666.9922,
+        666.9922
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s27",
+      "text": "Carrier",
+      "glyphText": "Carrier",
+      "segments": [
+        {
+          "text": "Carrier",
+          "x": 201,
+          "y": 659.7,
+          "width": 25.96
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 201,
+      "y": 659.7,
+      "width": 25.96,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 25.96,
+      "advances": [
+        722.168,
+        556.1523,
+        389.1602,
+        389.1602,
+        277.832,
+        556.1523,
+        389.1602
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s28",
+      "text": ":",
+      "glyphText": ":",
+      "segments": [
+        {
+          "text": ":",
+          "x": 236.3,
+          "y": 659.7,
+          "width": 2.64
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 236.3,
+      "y": 659.7,
+      "width": 2.64,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 2.64,
+      "advances": [
+        333.0078
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s29",
+      "text": "CMA CGM & ANL LLC",
+      "glyphText": "CMA CGM & ANL LLC",
+      "segments": [
+        {
+          "text": "CMA CGM & ANL LLC",
+          "x": 248.4,
+          "y": 659.7,
+          "width": 80.04
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 248.4,
+      "y": 659.7,
+      "width": 80.04,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 80.04,
+      "advances": [
+        722.168,
+        833.0078,
+        666.9922,
+        277.832,
+        722.168,
+        777.832,
+        833.0078,
+        277.832,
+        666.9922,
+        277.832,
+        666.9922,
+        722.168,
+        556.1523,
+        277.832,
+        556.1523,
+        556.1523,
+        722.168
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s30",
+      "text": "V",
+      "glyphText": "V",
+      "segments": [
+        {
+          "text": "V",
+          "x": 168.1,
+          "y": 645,
+          "width": 5.28
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 168.1,
+      "y": 645,
+      "width": 5.28,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 5.28,
+      "advances": [
+        666.9922
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s31",
+      "text": "essel / V",
+      "glyphText": "essel / V",
+      "segments": [
+        {
+          "text": "essel / V",
+          "x": 178.2,
+          "y": 645,
+          "width": 31.68
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 178.2,
+      "y": 645,
+      "width": 31.68,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 31.68,
+      "advances": [
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        277.832,
+        277.832,
+        277.832,
+        277.832,
+        666.9922
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s32",
+      "text": "oyage",
+      "glyphText": "oyage",
+      "segments": [
+        {
+          "text": "oyage",
+          "x": 241,
+          "y": 645,
+          "width": 22.87
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 241,
+      "y": 645,
+      "width": 22.87,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 22.87,
+      "advances": [
+        610.8398,
+        556.1523,
+        556.1523,
+        610.8398,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s33",
+      "text": ":",
+      "glyphText": ":",
+      "segments": [
+        {
+          "text": ":",
+          "x": 236.3,
+          "y": 645,
+          "width": 2.64
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 236.3,
+      "y": 645,
+      "width": 2.64,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 2.64,
+      "advances": [
+        333.0078
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s34",
+      "text": "MAERSK CHARLIE / V033",
+      "glyphText": "MAERSK CHARLIE / V033",
+      "segments": [
+        {
+          "text": "MAERSK CHARLIE / V033",
+          "x": 248.4,
+          "y": 645,
+          "width": 95.01
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 248.4,
+      "y": 645,
+      "width": 95.01,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 95.01,
+      "advances": [
+        833.0078,
+        666.9922,
+        666.9922,
+        722.168,
+        666.9922,
+        666.9922,
+        277.832,
+        722.168,
+        722.168,
+        666.9922,
+        722.168,
+        556.1523,
+        277.832,
+        666.9922,
+        277.832,
+        277.832,
+        277.832,
+        666.9922,
+        556.1523,
+        556.1523,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "dynamic",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s35",
+      "text": "Container No",
+      "glyphText": "Container No",
+      "segments": [
+        {
+          "text": "Container No",
+          "x": 56.6,
+          "y": 629.2,
+          "width": 46.63
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 56.6,
+      "y": 629.2,
+      "width": 46.63,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 46.63,
+      "advances": [
+        722.168,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        222.168,
+        556.1523,
+        556.1523,
+        333.0078,
+        277.832,
+        722.168,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s36",
+      "text": "Container T",
+      "glyphText": "Container T",
+      "segments": [
+        {
+          "text": "Container T",
+          "x": 183.1,
+          "y": 629.2,
+          "width": 41.35
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 183.1,
+      "y": 629.2,
+      "width": 41.35,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 41.35,
+      "advances": [
+        722.168,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        222.168,
+        556.1523,
+        556.1523,
+        333.0078,
+        277.832,
+        610.8398
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s37",
+      "text": "ype",
+      "glyphText": "ype",
+      "segments": [
+        {
+          "text": "ype",
+          "x": 265.4,
+          "y": 629.2,
+          "width": 12.76
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 265.4,
+      "y": 629.2,
+      "width": 12.76,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 12.76,
+      "advances": [
+        500,
+        556.1523,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s38",
+      "text": "Actual Seal",
+      "glyphText": "Actual Seal",
+      "segments": [
+        {
+          "text": "Actual Seal",
+          "x": 304.4,
+          "y": 629.2,
+          "width": 40.03
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 304.4,
+      "y": 629.2,
+      "width": 40.03,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 40.03,
+      "advances": [
+        666.9922,
+        500,
+        277.832,
+        556.1523,
+        556.1523,
+        222.168,
+        277.832,
+        666.9922,
+        556.1523,
+        556.1523,
+        222.168
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s39",
+      "text": "Description",
+      "glyphText": "Description",
+      "segments": [
+        {
+          "text": "Description",
+          "x": 455.3,
+          "y": 629.2,
+          "width": 39.59
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 455.3,
+      "y": 629.2,
+      "width": 39.59,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 39.59,
+      "advances": [
+        722.168,
+        556.1523,
+        500,
+        500,
+        333.0078,
+        222.168,
+        556.1523,
+        277.832,
+        222.168,
+        556.1523,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s40",
+      "text": "MAEU9876543",
+      "glyphText": "MAEU9876543",
+      "segments": [
+        {
+          "text": "MAEU9876543",
+          "x": 17.2,
+          "y": 618.4,
+          "width": 53.68
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 17.2,
+      "y": 618.4,
+      "width": 53.68,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 53.68,
+      "advances": [
+        833.0078,
+        666.9922,
+        666.9922,
+        722.168,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s41",
+      "text": "20' ST",
+      "glyphText": "20' ST",
+      "segments": [
+        {
+          "text": "20' ST",
+          "x": 144.4,
+          "y": 618.4,
+          "width": 22.63
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 144.4,
+      "y": 618.4,
+      "width": 22.63,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 22.63,
+      "advances": [
+        556.1523,
+        556.1523,
+        190.918,
+        277.832,
+        666.9922,
+        610.8398
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s42",
+      "text": "ANDARD",
+      "glyphText": "ANDARD",
+      "segments": [
+        {
+          "text": "ANDARD",
+          "x": 189,
+          "y": 618.4,
+          "width": 33.42
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 189,
+      "y": 618.4,
+      "width": 33.42,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 33.42,
+      "advances": [
+        666.9922,
+        722.168,
+        722.168,
+        666.9922,
+        722.168,
+        722.168
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s43",
+      "text": "SL001234",
+      "glyphText": "SL001234",
+      "segments": [
+        {
+          "text": "SL001234",
+          "x": 335.5,
+          "y": 618.4,
+          "width": 36.09
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 335.5,
+      "y": 618.4,
+      "width": 36.09,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 36.09,
+      "advances": [
+        666.9922,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s44",
+      "text": "CONSOLE CONT",
+      "glyphText": "CONSOLE CONT",
+      "segments": [
+        {
+          "text": "CONSOLE CONT",
+          "x": 373.3,
+          "y": 618.4,
+          "width": 63.32
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 373.3,
+      "y": 618.4,
+      "width": 63.32,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 63.32,
+      "advances": [
+        722.168,
+        777.832,
+        722.168,
+        666.9922,
+        777.832,
+        556.1523,
+        666.9922,
+        277.832,
+        722.168,
+        777.832,
+        722.168,
+        610.8398
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s45",
+      "text": "AINER",
+      "glyphText": "AINER",
+      "segments": [
+        {
+          "text": "AINER",
+          "x": 499.4,
+          "y": 618.4,
+          "width": 24.19
+        }
+      ],
+      "font": "ArialMT",
+      "size": 7.9142,
+      "color": "#000000",
+      "colorSource": "rgb",
+      "x": 499.4,
+      "y": 618.4,
+      "width": 24.19,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 24.19,
+      "advances": [
+        666.9922,
+        277.832,
+        722.168,
+        666.9922,
+        722.168
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#000000",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s46",
+      "text": "User :",
+      "glyphText": "User : ",
+      "segments": [
+        {
+          "text": "User : ",
+          "x": 60.7,
+          "y": 585.6,
+          "width": 21.11
+        }
+      ],
+      "font": "Arial-BoldMT",
+      "size": 6.7836,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 60.7,
+      "y": 585.6,
+      "width": 21.11,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 21.11,
+      "advances": [
+        722.168,
+        556.1523,
+        556.1523,
+        389.1602,
+        277.832,
+        333.0078,
+        277.832
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s47",
+      "text": "ram.ae@fresatechnologies.com",
+      "glyphText": "ram.ae@fresatechnologies.com",
+      "segments": [
+        {
+          "text": "ram.ae@fresatechnologies.com",
+          "x": 81.8,
+          "y": 585.6,
+          "width": 95.87
+        }
+      ],
+      "font": "ArialMT",
+      "size": 6.7836,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 81.8,
+      "y": 585.6,
+      "width": 95.87,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 95.87,
+      "advances": [
+        333.0078,
+        556.1523,
+        833.0078,
+        277.832,
+        556.1523,
+        556.1523,
+        1015.1367,
+        277.832,
+        333.0078,
+        556.1523,
+        500,
+        556.1523,
+        277.832,
+        556.1523,
+        500,
+        556.1523,
+        556.1523,
+        556.1523,
+        222.168,
+        556.1523,
+        556.1523,
+        222.168,
+        556.1523,
+        500,
+        277.832,
+        500,
+        556.1523,
+        833.0078
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "branding",
+      "brandingKind": "name",
+      "binding": ""
+    },
+    {
+      "id": "p1s48",
+      "text": "25-Jan-19 07:36:PM Asia/Kolkata",
+      "glyphText": "25-Jan-19 07:36:PM Asia/Kolkata",
+      "segments": [
+        {
+          "text": "25-Jan-19 07:36:PM Asia/Kolkata",
+          "x": 264.3,
+          "y": 585.6,
+          "width": 101.06
+        }
+      ],
+      "font": "ArialMT",
+      "size": 6.7836,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 264.3,
+      "y": 585.6,
+      "width": 101.06,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 101.06,
+      "advances": [
+        556.1523,
+        556.1523,
+        333.0078,
+        500,
+        556.1523,
+        556.1523,
+        333.0078,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        556.1523,
+        277.832,
+        666.9922,
+        833.0078,
+        277.832,
+        666.9922,
+        500,
+        222.168,
+        556.1523,
+        277.832,
+        666.9922,
+        556.1523,
+        222.168,
+        500,
+        556.1523,
+        277.832,
+        556.1523
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    },
+    {
+      "id": "p1s49",
+      "text": "Powered by Fresa T",
+      "glyphText": "Powered by Fresa T",
+      "segments": [
+        {
+          "text": "Powered by Fresa T",
+          "x": 444.3,
+          "y": 585.6,
+          "width": 61.08
+        }
+      ],
+      "font": "ArialMT",
+      "size": 6.7836,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 444.3,
+      "y": 585.6,
+      "width": 61.08,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 61.08,
+      "advances": [
+        666.9922,
+        556.1523,
+        722.168,
+        556.1523,
+        333.0078,
+        556.1523,
+        556.1523,
+        277.832,
+        556.1523,
+        500,
+        277.832,
+        610.8398,
+        333.0078,
+        556.1523,
+        500,
+        556.1523,
+        277.832,
+        610.8398
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "branding",
+      "brandingKind": "name",
+      "binding": ""
+    },
+    {
+      "id": "p1s50",
+      "text": "echnologies",
+      "glyphText": "echnologies",
+      "segments": [
+        {
+          "text": "echnologies",
+          "x": 565.7,
+          "y": 585.6,
+          "width": 36.21
+        }
+      ],
+      "font": "ArialMT",
+      "size": 6.7836,
+      "color": "#ffffff",
+      "colorSource": "rgb",
+      "x": 565.7,
+      "y": 585.6,
+      "width": 36.21,
+      "anchor": "left",
+      "alignment": "left",
+      "hScale": 100,
+      "horizontalScale": 1,
+      "charSpacing": 0,
+      "wordSpacing": 0,
+      "glyphWidth": 36.21,
+      "advances": [
+        556.1523,
+        500,
+        556.1523,
+        556.1523,
+        556.1523,
+        222.168,
+        556.1523,
+        556.1523,
+        222.168,
+        556.1523,
+        500
+      ],
+      "fontEmbedded": true,
+      "renderMode": 0,
+      "stroke": "#ffffff",
+      "strokeWidth": 0.6,
+      "role": "static",
+      "brandingKind": "",
+      "binding": ""
+    }
+  ],
+  "images": [
+    {
+      "x": 27.4,
+      "y": 775.6,
+      "width": 82,
+      "height": 39.6,
+      "format": "unknown",
+      "slot": "logo",
+      "proposedClass": "logo",
+      "demoValue": "",
+      "barcode": null
+    }
+  ],
+  "shadings": [],
+  "pages": [
+    {
+      "width": 594,
+      "height": 841.9,
+      "pageBox": {
+        "rotate": 0,
+        "mediaBox": [
+          0,
+          0,
+          594,
+          841.92
+        ],
+        "cropBox": null,
+        "userUnit": 1
+      },
+      "lines": [
+        {
+          "x1": 163.5887,
+          "y1": 762.2787,
+          "x2": 577.9551,
+          "y2": 762.2787,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 2
+        },
+        {
+          "x1": 16.0448,
+          "y1": 762.2787,
+          "x2": 163.5887,
+          "y2": 762.2787,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 3
+        },
+        {
+          "x1": 372.1851,
+          "y1": 615.8654,
+          "x2": 577.9551,
+          "y2": 615.8654,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 10
+        },
+        {
+          "x1": 577.6724,
+          "y1": 615.5828,
+          "x2": 577.6724,
+          "y2": 626.8888,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 11
+        },
+        {
+          "x1": 276.0838,
+          "y1": 615.8654,
+          "x2": 372.7504,
+          "y2": 615.8654,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 12
+        },
+        {
+          "x1": 372.4678,
+          "y1": 616.1481,
+          "x2": 372.4678,
+          "y2": 626.8888,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 13
+        },
+        {
+          "x1": 143.2378,
+          "y1": 615.8654,
+          "x2": 276.6491,
+          "y2": 615.8654,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 14
+        },
+        {
+          "x1": 276.3664,
+          "y1": 616.1481,
+          "x2": 276.3664,
+          "y2": 626.8888,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 15
+        },
+        {
+          "x1": 16.0448,
+          "y1": 615.8654,
+          "x2": 143.8031,
+          "y2": 615.8654,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 16
+        },
+        {
+          "x1": 16.3275,
+          "y1": 615.5828,
+          "x2": 16.3275,
+          "y2": 626.8888,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 17
+        },
+        {
+          "x1": 143.5204,
+          "y1": 616.1481,
+          "x2": 143.5204,
+          "y2": 626.8888,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 18
+        },
+        {
+          "x1": 372.1851,
+          "y1": 637.3469,
+          "x2": 577.9551,
+          "y2": 637.3469,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 19
+        },
+        {
+          "x1": 372.1851,
+          "y1": 626.6062,
+          "x2": 577.3898,
+          "y2": 626.6062,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 20
+        },
+        {
+          "x1": 577.6724,
+          "y1": 626.3235,
+          "x2": 577.6724,
+          "y2": 637.6296,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 21
+        },
+        {
+          "x1": 276.0838,
+          "y1": 637.3469,
+          "x2": 372.7504,
+          "y2": 637.3469,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 22
+        },
+        {
+          "x1": 276.0838,
+          "y1": 626.6062,
+          "x2": 372.7504,
+          "y2": 626.6062,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 23
+        },
+        {
+          "x1": 372.4678,
+          "y1": 626.3235,
+          "x2": 372.4678,
+          "y2": 637.0643,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 24
+        },
+        {
+          "x1": 143.2378,
+          "y1": 637.3469,
+          "x2": 276.6491,
+          "y2": 637.3469,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 25
+        },
+        {
+          "x1": 143.2378,
+          "y1": 626.6062,
+          "x2": 276.6491,
+          "y2": 626.6062,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 26
+        },
+        {
+          "x1": 276.3664,
+          "y1": 626.3235,
+          "x2": 276.3664,
+          "y2": 637.0643,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 27
+        },
+        {
+          "x1": 16.0448,
+          "y1": 637.3469,
+          "x2": 143.8031,
+          "y2": 637.3469,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 28
+        },
+        {
+          "x1": 16.6101,
+          "y1": 626.6062,
+          "x2": 143.8031,
+          "y2": 626.6062,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 29
+        },
+        {
+          "x1": 16.3275,
+          "y1": 626.3235,
+          "x2": 16.3275,
+          "y2": 637.6296,
+          "width": 0.5653,
+          "color": "0.062745,0.062745,0.062745",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 30
+        },
+        {
+          "x1": 143.5204,
+          "y1": 626.3235,
+          "x2": 143.5204,
+          "y2": 637.0643,
+          "width": 0.5653,
+          "color": "0.396078,0.396078,0.396078",
+          "source": "rect",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 31
+        }
+      ],
+      "rects": [
+        {
+          "x": 0,
+          "y": -280.0799,
+          "width": 791.9999,
+          "height": 1121.9999,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "1.000000,1.000000,1.000000",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 0
+        },
+        {
+          "x": 7,
+          "y": 8.4484,
+          "width": 579.9999,
+          "height": 826.4716,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "1.000000,1.000000,1.000000",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 1
+        },
+        {
+          "x": 16.0448,
+          "y": 716.7718,
+          "width": 561.9103,
+          "height": 38.4405,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.152941,0.533333,0.788235",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 4
+        },
+        {
+          "x": 16.0448,
+          "y": 626.8888,
+          "width": 127.193,
+          "height": 10.7407,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.133333,0.521569,0.784314",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 6
+        },
+        {
+          "x": 143.2378,
+          "y": 626.8888,
+          "width": 132.846,
+          "height": 10.7407,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.133333,0.521569,0.784314",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 7
+        },
+        {
+          "x": 276.0838,
+          "y": 626.8888,
+          "width": 96.1014,
+          "height": 10.7407,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.133333,0.521569,0.784314",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 8
+        },
+        {
+          "x": 372.1851,
+          "y": 626.8888,
+          "width": 205.2047,
+          "height": 10.7407,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.133333,0.521569,0.784314",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 9
+        },
+        {
+          "x": 14.3489,
+          "y": 826.4404,
+          "width": 565.3021,
+          "height": 1.1306,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.396078,0.396078,0.396078",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 32
+        },
+        {
+          "x": 14.3489,
+          "y": 599.189,
+          "width": 565.3021,
+          "height": 1.1306,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.396078,0.396078,0.396078",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 33
+        },
+        {
+          "x": 14.3489,
+          "y": 599.189,
+          "width": 1.1306,
+          "height": 228.382,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.396078,0.396078,0.396078",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 34
+        },
+        {
+          "x": 578.5204,
+          "y": 599.189,
+          "width": 1.1306,
+          "height": 228.382,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.396078,0.396078,0.396078",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 35
+        },
+        {
+          "x": 14.3489,
+          "y": 579.4034,
+          "width": 209.7271,
+          "height": 16.9591,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.058824,0.301961,0.588235",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 36
+        },
+        {
+          "x": 224.076,
+          "y": 579.4034,
+          "width": 181.462,
+          "height": 16.9591,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.968627,0.635294,0.109804",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 37
+        },
+        {
+          "x": 405.538,
+          "y": 579.4034,
+          "width": 174.113,
+          "height": 16.9591,
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.870588,0.121569,0.149020",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 38
+        }
+      ],
+      "spans": [
+        {
+          "id": "p1s1",
+          "text": "1/25/2019",
+          "glyphText": "1/25/2019",
+          "segments": [
+            {
+              "text": "1/25/2019",
+              "x": 26.5,
+              "y": 819.9,
+              "width": 35.59
+            }
+          ],
+          "font": "ArialMT",
+          "size": 8,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 26.5,
+          "y": 819.9,
+          "width": 35.59,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 35.59,
+          "advances": [
+            556.1523,
+            277.832,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "dynamic",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s2",
+          "text": "Rider Sheet for Export Manifest - CCDXBSI18000060",
+          "glyphText": "Rider Sheet for Export Manifest - CCDXBSI18000060",
+          "segments": [
+            {
+              "text": "Rider Sheet for Export Manifest - CCDXBSI18000060",
+              "x": 235,
+              "y": 819.9,
+              "width": 189.87
+            }
+          ],
+          "font": "ArialMT",
+          "size": 8,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 235,
+          "y": 819.9,
+          "width": 189.87,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 189.87,
+          "advances": [
+            722.168,
+            222.168,
+            556.1523,
+            556.1523,
+            333.0078,
+            277.832,
+            666.9922,
+            556.1523,
+            556.1523,
+            556.1523,
+            277.832,
+            277.832,
+            277.832,
+            556.1523,
+            333.0078,
+            277.832,
+            666.9922,
+            500,
+            556.1523,
+            556.1523,
+            333.0078,
+            277.832,
+            277.832,
+            833.0078,
+            556.1523,
+            556.1523,
+            222.168,
+            277.832,
+            556.1523,
+            500,
+            277.832,
+            277.832,
+            333.0078,
+            277.832,
+            722.168,
+            722.168,
+            722.168,
+            666.9922,
+            666.9922,
+            666.9922,
+            277.832,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s3",
+          "text": "http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",
+          "glyphText": "http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",
+          "segments": [
+            {
+              "text": "http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",
+              "x": 26.5,
+              "y": 16.9,
+              "width": 487.68
+            }
+          ],
+          "font": "ArialMT",
+          "size": 8,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 26.5,
+          "y": 16.9,
+          "width": 487.68,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 487.68,
+          "advances": [
+            556.1523,
+            277.832,
+            277.832,
+            556.1523,
+            277.832,
+            277.832,
+            277.832,
+            556.1523,
+            556.1523,
+            833.0078,
+            556.1523,
+            277.832,
+            277.832,
+            333.0078,
+            556.1523,
+            500,
+            556.1523,
+            556.1523,
+            556.1523,
+            222.168,
+            556.1523,
+            277.832,
+            500,
+            556.1523,
+            833.0078,
+            277.832,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            333.0078,
+            556.1523,
+            500,
+            277.832,
+            277.832,
+            556.1523,
+            556.1523,
+            583.9844,
+            556.1523,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            277.832,
+            277.832,
+            277.832,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            277.832,
+            666.9922,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            722.168,
+            666.9922,
+            666.9922,
+            556.1523,
+            277.832,
+            722.168,
+            277.832,
+            666.9922,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            722.168,
+            666.9922,
+            722.168,
+            556.1523,
+            277.832,
+            722.168,
+            277.832,
+            666.9922,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            722.168,
+            666.9922,
+            833.0078,
+            556.1523,
+            277.832,
+            722.168,
+            277.832,
+            666.9922,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            610.8398
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "branding",
+          "brandingKind": "name",
+          "binding": ""
+        },
+        {
+          "id": "p1s4",
+          "text": "…",
+          "glyphText": "…",
+          "segments": [
+            {
+              "text": "…",
+              "x": 538.4,
+              "y": 17,
+              "width": 8
+            }
+          ],
+          "font": "ArialMT",
+          "size": 8,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 538.4,
+          "y": 17,
+          "width": 8,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 8,
+          "advances": [
+            1000
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s5",
+          "text": "1",
+          "glyphText": "1",
+          "segments": [
+            {
+              "text": "1",
+              "x": 556.4,
+              "y": 16.9,
+              "width": 4.45
+            }
+          ],
+          "font": "ArialMT",
+          "size": 8,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 556.4,
+          "y": 16.9,
+          "width": 4.45,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 4.45,
+          "advances": [
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s6",
+          "text": "/",
+          "glyphText": "/",
+          "segments": [
+            {
+              "text": "/",
+              "x": 560.8,
+              "y": 16.9,
+              "width": 2.22
+            }
+          ],
+          "font": "ArialMT",
+          "size": 8,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 560.8,
+          "y": 16.9,
+          "width": 2.22,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 2.22,
+          "advances": [
+            277.832
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s7",
+          "text": "1",
+          "glyphText": "1",
+          "segments": [
+            {
+              "text": "1",
+              "x": 563.1,
+              "y": 16.9,
+              "width": 4.45
+            }
+          ],
+          "font": "ArialMT",
+          "size": 8,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 563.1,
+          "y": 16.9,
+          "width": 4.45,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 4.45,
+          "advances": [
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s8",
+          "text": "FRESA DEMO COMP",
+          "glyphText": "FRESA DEMO COMP",
+          "segments": [
+            {
+              "text": "FRESA DEMO COMP",
+              "x": 317.8,
+              "y": 811.7,
+              "width": 157.41
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 15.8285,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 317.8,
+          "y": 811.7,
+          "width": 157.41,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 157.41,
+          "advances": [
+            610.8398,
+            722.168,
+            666.9922,
+            666.9922,
+            722.168,
+            277.832,
+            722.168,
+            666.9922,
+            833.0078,
+            777.832,
+            277.832,
+            722.168,
+            777.832,
+            833.0078,
+            666.9922
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "branding",
+          "brandingKind": "name",
+          "binding": "",
+          "slot": "company"
+        },
+        {
+          "id": "p1s9",
+          "text": "Al Khabeeshi Building,",
+          "glyphText": "Al Khabeeshi Building,",
+          "segments": [
+            {
+              "text": "Al Khabeeshi Building,",
+              "x": 495.9,
+              "y": 800.4,
+              "width": 79.2
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 495.9,
+          "y": 800.4,
+          "width": 79.2,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 79.2,
+          "advances": [
+            666.9922,
+            222.168,
+            277.832,
+            666.9922,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            500,
+            556.1523,
+            222.168,
+            277.832,
+            666.9922,
+            556.1523,
+            222.168,
+            222.168,
+            556.1523,
+            222.168,
+            556.1523,
+            556.1523,
+            277.832
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "branding",
+          "brandingKind": "address",
+          "binding": ""
+        },
+        {
+          "id": "p1s10",
+          "text": "Mezzanine Floor 03/5,",
+          "glyphText": "Mezzanine Floor 03/5,",
+          "segments": [
+            {
+              "text": "Mezzanine Floor 03/5,",
+              "x": 496.8,
+              "y": 791.4,
+              "width": 78.3
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 496.8,
+          "y": 791.4,
+          "width": 78.3,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 78.3,
+          "advances": [
+            833.0078,
+            556.1523,
+            500,
+            500,
+            556.1523,
+            556.1523,
+            222.168,
+            556.1523,
+            556.1523,
+            277.832,
+            610.8398,
+            222.168,
+            556.1523,
+            556.1523,
+            333.0078,
+            277.832,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            277.832
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "branding",
+          "brandingKind": "address",
+          "binding": ""
+        },
+        {
+          "id": "p1s11",
+          "text": "Salahuddin Road, Deira,",
+          "glyphText": "Salahuddin Road, Deira,",
+          "segments": [
+            {
+              "text": "Salahuddin Road, Deira,",
+              "x": 488.9,
+              "y": 782.3,
+              "width": 86.23
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 488.9,
+          "y": 782.3,
+          "width": 86.23,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 86.23,
+          "advances": [
+            666.9922,
+            556.1523,
+            222.168,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            222.168,
+            556.1523,
+            277.832,
+            722.168,
+            556.1523,
+            556.1523,
+            556.1523,
+            277.832,
+            277.832,
+            722.168,
+            556.1523,
+            222.168,
+            333.0078,
+            556.1523,
+            277.832
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "branding",
+          "brandingKind": "address",
+          "binding": ""
+        },
+        {
+          "id": "p1s12",
+          "text": "Dubai,",
+          "glyphText": "Dubai, ",
+          "segments": [
+            {
+              "text": "Dubai, ",
+              "x": 527.2,
+              "y": 773.3,
+              "width": 25.08
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 527.2,
+          "y": 773.3,
+          "width": 25.08,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 25.08,
+          "advances": [
+            722.168,
+            556.1523,
+            556.1523,
+            556.1523,
+            222.168,
+            277.832,
+            277.832
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s13",
+          "text": "U.A.E.",
+          "glyphText": "U.A.E.",
+          "segments": [
+            {
+              "text": "U.A.E.",
+              "x": 552.3,
+              "y": 773.3,
+              "width": 22.87
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 552.3,
+          "y": 773.3,
+          "width": 22.87,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 22.87,
+          "advances": [
+            722.168,
+            277.832,
+            666.9922,
+            277.832,
+            666.9922,
+            277.832
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s14",
+          "text": "WEB : www",
+          "glyphText": "WEB : www",
+          "segments": [
+            {
+              "text": "WEB : www",
+              "x": 452.4,
+              "y": 764.3,
+              "width": 41.77
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 452.4,
+          "y": 764.3,
+          "width": 41.77,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 41.77,
+          "advances": [
+            943.8477,
+            666.9922,
+            666.9922,
+            277.832,
+            277.832,
+            277.832,
+            722.168,
+            722.168,
+            722.168
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s15",
+          "text": ".fresatechnologies.com",
+          "glyphText": ".fresatechnologies.com",
+          "segments": [
+            {
+              "text": ".fresatechnologies.com",
+              "x": 535.5,
+              "y": 764.3,
+              "width": 81.38
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 535.5,
+          "y": 764.3,
+          "width": 81.38,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 81.38,
+          "advances": [
+            277.832,
+            277.832,
+            333.0078,
+            556.1523,
+            500,
+            556.1523,
+            277.832,
+            556.1523,
+            500,
+            556.1523,
+            556.1523,
+            556.1523,
+            222.168,
+            556.1523,
+            556.1523,
+            222.168,
+            556.1523,
+            500,
+            277.832,
+            500,
+            556.1523,
+            833.0078
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "branding",
+          "brandingKind": "name",
+          "binding": ""
+        },
+        {
+          "id": "p1s16",
+          "text": "RIDER SHEET FOR EXPORT MANIFEST / JOB NO - CCDXBSI18000060",
+          "glyphText": "RIDER SHEET FOR EXPORT MANIFEST / JOB NO - CCDXBSI18000060",
+          "segments": [
+            {
+              "text": "RIDER SHEET FOR EXPORT MANIFEST / JOB NO - CCDXBSI18000060",
+              "x": 98.8,
+              "y": 732,
+              "width": 396.46
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 11.8713,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 98.8,
+          "y": 732,
+          "width": 396.46,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 396.46,
+          "advances": [
+            722.168,
+            277.832,
+            722.168,
+            666.9922,
+            722.168,
+            277.832,
+            666.9922,
+            722.168,
+            666.9922,
+            666.9922,
+            610.8398,
+            277.832,
+            610.8398,
+            777.832,
+            722.168,
+            277.832,
+            666.9922,
+            666.9922,
+            666.9922,
+            777.832,
+            722.168,
+            610.8398,
+            277.832,
+            833.0078,
+            722.168,
+            722.168,
+            277.832,
+            610.8398,
+            666.9922,
+            666.9922,
+            610.8398,
+            277.832,
+            277.832,
+            277.832,
+            556.1523,
+            777.832,
+            722.168,
+            277.832,
+            722.168,
+            777.832,
+            277.832,
+            333.0078,
+            277.832,
+            722.168,
+            722.168,
+            722.168,
+            666.9922,
+            722.168,
+            666.9922,
+            277.832,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "dynamic",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s17",
+          "text": "Job No",
+          "glyphText": "Job No",
+          "segments": [
+            {
+              "text": "Job No",
+              "x": 200.1,
+              "y": 703.8,
+              "width": 26.82
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 200.1,
+          "y": 703.8,
+          "width": 26.82,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 26.82,
+          "advances": [
+            556.1523,
+            610.8398,
+            610.8398,
+            277.832,
+            722.168,
+            610.8398
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s18",
+          "text": ":",
+          "glyphText": ":",
+          "segments": [
+            {
+              "text": ":",
+              "x": 236.3,
+              "y": 703.8,
+              "width": 2.64
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 236.3,
+          "y": 703.8,
+          "width": 2.64,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 2.64,
+          "advances": [
+            333.0078
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s19",
+          "text": "CCDXBSI18000060 / 23-NOV",
+          "glyphText": "CCDXBSI18000060 / 23-NOV",
+          "segments": [
+            {
+              "text": "CCDXBSI18000060 / 23-NOV",
+              "x": 248.4,
+              "y": 703.8,
+              "width": 105.58
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 248.4,
+          "y": 703.8,
+          "width": 105.58,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 105.58,
+          "advances": [
+            722.168,
+            722.168,
+            722.168,
+            666.9922,
+            666.9922,
+            666.9922,
+            277.832,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            277.832,
+            277.832,
+            277.832,
+            556.1523,
+            556.1523,
+            333.0078,
+            722.168,
+            777.832,
+            666.9922
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "dynamic",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s20",
+          "text": "-18",
+          "glyphText": "-18",
+          "segments": [
+            {
+              "text": "-18",
+              "x": 459.1,
+              "y": 703.8,
+              "width": 11.44
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 459.1,
+          "y": 703.8,
+          "width": 11.44,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 11.44,
+          "advances": [
+            333.0078,
+            556.1523,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s21",
+          "text": "Port of Loading",
+          "glyphText": "Port of Loading",
+          "segments": [
+            {
+              "text": "Port of Loading",
+              "x": 168.4,
+              "y": 689.1,
+              "width": 58.47
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 168.4,
+          "y": 689.1,
+          "width": 58.47,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 58.47,
+          "advances": [
+            666.9922,
+            610.8398,
+            389.1602,
+            333.0078,
+            277.832,
+            610.8398,
+            333.0078,
+            277.832,
+            610.8398,
+            610.8398,
+            556.1523,
+            610.8398,
+            277.832,
+            610.8398,
+            610.8398
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s22",
+          "text": ":",
+          "glyphText": ":",
+          "segments": [
+            {
+              "text": ":",
+              "x": 236.3,
+              "y": 689.1,
+              "width": 2.64
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 236.3,
+          "y": 689.1,
+          "width": 2.64,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 2.64,
+          "advances": [
+            333.0078
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s23",
+          "text": "CHENNAI (EX MADRAS), INDIA",
+          "glyphText": "CHENNAI (EX MADRAS), INDIA",
+          "segments": [
+            {
+              "text": "CHENNAI (EX MADRAS), INDIA",
+              "x": 248.4,
+              "y": 689.1,
+              "width": 115.21
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 248.4,
+          "y": 689.1,
+          "width": 115.21,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 115.21,
+          "advances": [
+            722.168,
+            722.168,
+            666.9922,
+            722.168,
+            722.168,
+            666.9922,
+            277.832,
+            277.832,
+            333.0078,
+            666.9922,
+            666.9922,
+            277.832,
+            833.0078,
+            666.9922,
+            722.168,
+            722.168,
+            666.9922,
+            666.9922,
+            333.0078,
+            277.832,
+            277.832,
+            277.832,
+            722.168,
+            722.168,
+            277.832,
+            666.9922
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "dynamic",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s24",
+          "text": "Port of Discharge",
+          "glyphText": "Port of Discharge",
+          "segments": [
+            {
+              "text": "Port of Discharge",
+              "x": 160.9,
+              "y": 674.4,
+              "width": 65.96
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 160.9,
+          "y": 674.4,
+          "width": 65.96,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 65.96,
+          "advances": [
+            666.9922,
+            610.8398,
+            389.1602,
+            333.0078,
+            277.832,
+            610.8398,
+            333.0078,
+            277.832,
+            722.168,
+            277.832,
+            556.1523,
+            556.1523,
+            610.8398,
+            556.1523,
+            389.1602,
+            610.8398,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s25",
+          "text": ":",
+          "glyphText": ":",
+          "segments": [
+            {
+              "text": ":",
+              "x": 236.3,
+              "y": 674.4,
+              "width": 2.64
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 236.3,
+          "y": 674.4,
+          "width": 2.64,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 2.64,
+          "advances": [
+            333.0078
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s26",
+          "text": "JEBEL ALI, UAE",
+          "glyphText": "JEBEL ALI, UAE",
+          "segments": [
+            {
+              "text": "JEBEL ALI, UAE",
+              "x": 248.4,
+              "y": 674.4,
+              "width": 58.94
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 248.4,
+          "y": 674.4,
+          "width": 58.94,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 58.94,
+          "advances": [
+            500,
+            666.9922,
+            666.9922,
+            666.9922,
+            556.1523,
+            277.832,
+            666.9922,
+            556.1523,
+            277.832,
+            277.832,
+            277.832,
+            722.168,
+            666.9922,
+            666.9922
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s27",
+          "text": "Carrier",
+          "glyphText": "Carrier",
+          "segments": [
+            {
+              "text": "Carrier",
+              "x": 201,
+              "y": 659.7,
+              "width": 25.96
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 201,
+          "y": 659.7,
+          "width": 25.96,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 25.96,
+          "advances": [
+            722.168,
+            556.1523,
+            389.1602,
+            389.1602,
+            277.832,
+            556.1523,
+            389.1602
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s28",
+          "text": ":",
+          "glyphText": ":",
+          "segments": [
+            {
+              "text": ":",
+              "x": 236.3,
+              "y": 659.7,
+              "width": 2.64
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 236.3,
+          "y": 659.7,
+          "width": 2.64,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 2.64,
+          "advances": [
+            333.0078
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s29",
+          "text": "CMA CGM & ANL LLC",
+          "glyphText": "CMA CGM & ANL LLC",
+          "segments": [
+            {
+              "text": "CMA CGM & ANL LLC",
+              "x": 248.4,
+              "y": 659.7,
+              "width": 80.04
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 248.4,
+          "y": 659.7,
+          "width": 80.04,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 80.04,
+          "advances": [
+            722.168,
+            833.0078,
+            666.9922,
+            277.832,
+            722.168,
+            777.832,
+            833.0078,
+            277.832,
+            666.9922,
+            277.832,
+            666.9922,
+            722.168,
+            556.1523,
+            277.832,
+            556.1523,
+            556.1523,
+            722.168
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s30",
+          "text": "V",
+          "glyphText": "V",
+          "segments": [
+            {
+              "text": "V",
+              "x": 168.1,
+              "y": 645,
+              "width": 5.28
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 168.1,
+          "y": 645,
+          "width": 5.28,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 5.28,
+          "advances": [
+            666.9922
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s31",
+          "text": "essel / V",
+          "glyphText": "essel / V",
+          "segments": [
+            {
+              "text": "essel / V",
+              "x": 178.2,
+              "y": 645,
+              "width": 31.68
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 178.2,
+          "y": 645,
+          "width": 31.68,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 31.68,
+          "advances": [
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            277.832,
+            277.832,
+            277.832,
+            277.832,
+            666.9922
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s32",
+          "text": "oyage",
+          "glyphText": "oyage",
+          "segments": [
+            {
+              "text": "oyage",
+              "x": 241,
+              "y": 645,
+              "width": 22.87
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 241,
+          "y": 645,
+          "width": 22.87,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 22.87,
+          "advances": [
+            610.8398,
+            556.1523,
+            556.1523,
+            610.8398,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s33",
+          "text": ":",
+          "glyphText": ":",
+          "segments": [
+            {
+              "text": ":",
+              "x": 236.3,
+              "y": 645,
+              "width": 2.64
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 236.3,
+          "y": 645,
+          "width": 2.64,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 2.64,
+          "advances": [
+            333.0078
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s34",
+          "text": "MAERSK CHARLIE / V033",
+          "glyphText": "MAERSK CHARLIE / V033",
+          "segments": [
+            {
+              "text": "MAERSK CHARLIE / V033",
+              "x": 248.4,
+              "y": 645,
+              "width": 95.01
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 248.4,
+          "y": 645,
+          "width": 95.01,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 95.01,
+          "advances": [
+            833.0078,
+            666.9922,
+            666.9922,
+            722.168,
+            666.9922,
+            666.9922,
+            277.832,
+            722.168,
+            722.168,
+            666.9922,
+            722.168,
+            556.1523,
+            277.832,
+            666.9922,
+            277.832,
+            277.832,
+            277.832,
+            666.9922,
+            556.1523,
+            556.1523,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "dynamic",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s35",
+          "text": "Container No",
+          "glyphText": "Container No",
+          "segments": [
+            {
+              "text": "Container No",
+              "x": 56.6,
+              "y": 629.2,
+              "width": 46.63
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 56.6,
+          "y": 629.2,
+          "width": 46.63,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 46.63,
+          "advances": [
+            722.168,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            222.168,
+            556.1523,
+            556.1523,
+            333.0078,
+            277.832,
+            722.168,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s36",
+          "text": "Container T",
+          "glyphText": "Container T",
+          "segments": [
+            {
+              "text": "Container T",
+              "x": 183.1,
+              "y": 629.2,
+              "width": 41.35
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 183.1,
+          "y": 629.2,
+          "width": 41.35,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 41.35,
+          "advances": [
+            722.168,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            222.168,
+            556.1523,
+            556.1523,
+            333.0078,
+            277.832,
+            610.8398
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s37",
+          "text": "ype",
+          "glyphText": "ype",
+          "segments": [
+            {
+              "text": "ype",
+              "x": 265.4,
+              "y": 629.2,
+              "width": 12.76
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 265.4,
+          "y": 629.2,
+          "width": 12.76,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 12.76,
+          "advances": [
+            500,
+            556.1523,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s38",
+          "text": "Actual Seal",
+          "glyphText": "Actual Seal",
+          "segments": [
+            {
+              "text": "Actual Seal",
+              "x": 304.4,
+              "y": 629.2,
+              "width": 40.03
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 304.4,
+          "y": 629.2,
+          "width": 40.03,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 40.03,
+          "advances": [
+            666.9922,
+            500,
+            277.832,
+            556.1523,
+            556.1523,
+            222.168,
+            277.832,
+            666.9922,
+            556.1523,
+            556.1523,
+            222.168
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s39",
+          "text": "Description",
+          "glyphText": "Description",
+          "segments": [
+            {
+              "text": "Description",
+              "x": 455.3,
+              "y": 629.2,
+              "width": 39.59
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 455.3,
+          "y": 629.2,
+          "width": 39.59,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 39.59,
+          "advances": [
+            722.168,
+            556.1523,
+            500,
+            500,
+            333.0078,
+            222.168,
+            556.1523,
+            277.832,
+            222.168,
+            556.1523,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s40",
+          "text": "MAEU9876543",
+          "glyphText": "MAEU9876543",
+          "segments": [
+            {
+              "text": "MAEU9876543",
+              "x": 17.2,
+              "y": 618.4,
+              "width": 53.68
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 17.2,
+          "y": 618.4,
+          "width": 53.68,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 53.68,
+          "advances": [
+            833.0078,
+            666.9922,
+            666.9922,
+            722.168,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s41",
+          "text": "20' ST",
+          "glyphText": "20' ST",
+          "segments": [
+            {
+              "text": "20' ST",
+              "x": 144.4,
+              "y": 618.4,
+              "width": 22.63
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 144.4,
+          "y": 618.4,
+          "width": 22.63,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 22.63,
+          "advances": [
+            556.1523,
+            556.1523,
+            190.918,
+            277.832,
+            666.9922,
+            610.8398
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s42",
+          "text": "ANDARD",
+          "glyphText": "ANDARD",
+          "segments": [
+            {
+              "text": "ANDARD",
+              "x": 189,
+              "y": 618.4,
+              "width": 33.42
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 189,
+          "y": 618.4,
+          "width": 33.42,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 33.42,
+          "advances": [
+            666.9922,
+            722.168,
+            722.168,
+            666.9922,
+            722.168,
+            722.168
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s43",
+          "text": "SL001234",
+          "glyphText": "SL001234",
+          "segments": [
+            {
+              "text": "SL001234",
+              "x": 335.5,
+              "y": 618.4,
+              "width": 36.09
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 335.5,
+          "y": 618.4,
+          "width": 36.09,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 36.09,
+          "advances": [
+            666.9922,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s44",
+          "text": "CONSOLE CONT",
+          "glyphText": "CONSOLE CONT",
+          "segments": [
+            {
+              "text": "CONSOLE CONT",
+              "x": 373.3,
+              "y": 618.4,
+              "width": 63.32
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 373.3,
+          "y": 618.4,
+          "width": 63.32,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 63.32,
+          "advances": [
+            722.168,
+            777.832,
+            722.168,
+            666.9922,
+            777.832,
+            556.1523,
+            666.9922,
+            277.832,
+            722.168,
+            777.832,
+            722.168,
+            610.8398
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s45",
+          "text": "AINER",
+          "glyphText": "AINER",
+          "segments": [
+            {
+              "text": "AINER",
+              "x": 499.4,
+              "y": 618.4,
+              "width": 24.19
+            }
+          ],
+          "font": "ArialMT",
+          "size": 7.9142,
+          "color": "#000000",
+          "colorSource": "rgb",
+          "x": 499.4,
+          "y": 618.4,
+          "width": 24.19,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 24.19,
+          "advances": [
+            666.9922,
+            277.832,
+            722.168,
+            666.9922,
+            722.168
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#000000",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s46",
+          "text": "User :",
+          "glyphText": "User : ",
+          "segments": [
+            {
+              "text": "User : ",
+              "x": 60.7,
+              "y": 585.6,
+              "width": 21.11
+            }
+          ],
+          "font": "Arial-BoldMT",
+          "size": 6.7836,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 60.7,
+          "y": 585.6,
+          "width": 21.11,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 21.11,
+          "advances": [
+            722.168,
+            556.1523,
+            556.1523,
+            389.1602,
+            277.832,
+            333.0078,
+            277.832
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s47",
+          "text": "ram.ae@fresatechnologies.com",
+          "glyphText": "ram.ae@fresatechnologies.com",
+          "segments": [
+            {
+              "text": "ram.ae@fresatechnologies.com",
+              "x": 81.8,
+              "y": 585.6,
+              "width": 95.87
+            }
+          ],
+          "font": "ArialMT",
+          "size": 6.7836,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 81.8,
+          "y": 585.6,
+          "width": 95.87,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 95.87,
+          "advances": [
+            333.0078,
+            556.1523,
+            833.0078,
+            277.832,
+            556.1523,
+            556.1523,
+            1015.1367,
+            277.832,
+            333.0078,
+            556.1523,
+            500,
+            556.1523,
+            277.832,
+            556.1523,
+            500,
+            556.1523,
+            556.1523,
+            556.1523,
+            222.168,
+            556.1523,
+            556.1523,
+            222.168,
+            556.1523,
+            500,
+            277.832,
+            500,
+            556.1523,
+            833.0078
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "branding",
+          "brandingKind": "name",
+          "binding": ""
+        },
+        {
+          "id": "p1s48",
+          "text": "25-Jan-19 07:36:PM Asia/Kolkata",
+          "glyphText": "25-Jan-19 07:36:PM Asia/Kolkata",
+          "segments": [
+            {
+              "text": "25-Jan-19 07:36:PM Asia/Kolkata",
+              "x": 264.3,
+              "y": 585.6,
+              "width": 101.06
+            }
+          ],
+          "font": "ArialMT",
+          "size": 6.7836,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 264.3,
+          "y": 585.6,
+          "width": 101.06,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 101.06,
+          "advances": [
+            556.1523,
+            556.1523,
+            333.0078,
+            500,
+            556.1523,
+            556.1523,
+            333.0078,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            556.1523,
+            277.832,
+            666.9922,
+            833.0078,
+            277.832,
+            666.9922,
+            500,
+            222.168,
+            556.1523,
+            277.832,
+            666.9922,
+            556.1523,
+            222.168,
+            500,
+            556.1523,
+            277.832,
+            556.1523
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        },
+        {
+          "id": "p1s49",
+          "text": "Powered by Fresa T",
+          "glyphText": "Powered by Fresa T",
+          "segments": [
+            {
+              "text": "Powered by Fresa T",
+              "x": 444.3,
+              "y": 585.6,
+              "width": 61.08
+            }
+          ],
+          "font": "ArialMT",
+          "size": 6.7836,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 444.3,
+          "y": 585.6,
+          "width": 61.08,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 61.08,
+          "advances": [
+            666.9922,
+            556.1523,
+            722.168,
+            556.1523,
+            333.0078,
+            556.1523,
+            556.1523,
+            277.832,
+            556.1523,
+            500,
+            277.832,
+            610.8398,
+            333.0078,
+            556.1523,
+            500,
+            556.1523,
+            277.832,
+            610.8398
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "branding",
+          "brandingKind": "name",
+          "binding": ""
+        },
+        {
+          "id": "p1s50",
+          "text": "echnologies",
+          "glyphText": "echnologies",
+          "segments": [
+            {
+              "text": "echnologies",
+              "x": 565.7,
+              "y": 585.6,
+              "width": 36.21
+            }
+          ],
+          "font": "ArialMT",
+          "size": 6.7836,
+          "color": "#ffffff",
+          "colorSource": "rgb",
+          "x": 565.7,
+          "y": 585.6,
+          "width": 36.21,
+          "anchor": "left",
+          "alignment": "left",
+          "hScale": 100,
+          "horizontalScale": 1,
+          "charSpacing": 0,
+          "wordSpacing": 0,
+          "glyphWidth": 36.21,
+          "advances": [
+            556.1523,
+            500,
+            556.1523,
+            556.1523,
+            556.1523,
+            222.168,
+            556.1523,
+            556.1523,
+            222.168,
+            556.1523,
+            500
+          ],
+          "fontEmbedded": true,
+          "renderMode": 0,
+          "stroke": "#ffffff",
+          "strokeWidth": 0.6,
+          "role": "static",
+          "brandingKind": "",
+          "binding": ""
+        }
+      ],
+      "paths": [
+        {
+          "commands": [
+            {
+              "op": "m",
+              "p": [
+                16.0448,
+                646.1091
+              ]
+            },
+            {
+              "op": "l",
+              "p": [
+                16.0448,
+                708.2923
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  16.0448,
+                  708.6635
+                ],
+                [
+                  16.081,
+                  709.0311
+                ],
+                [
+                  16.1535,
+                  709.3952
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  16.2259,
+                  709.7592
+                ],
+                [
+                  16.3331,
+                  710.1127
+                ],
+                [
+                  16.4751,
+                  710.4556
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  16.6172,
+                  710.7986
+                ],
+                [
+                  16.7913,
+                  711.1244
+                ],
+                [
+                  16.9975,
+                  711.433
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  17.2038,
+                  711.7416
+                ],
+                [
+                  17.4381,
+                  712.0272
+                ],
+                [
+                  17.7006,
+                  712.2896
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  17.963,
+                  712.5521
+                ],
+                [
+                  18.2486,
+                  712.7864
+                ],
+                [
+                  18.5572,
+                  712.9926
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  18.8658,
+                  713.1989
+                ],
+                [
+                  19.1916,
+                  713.373
+                ],
+                [
+                  19.5345,
+                  713.515
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  19.8775,
+                  713.6571
+                ],
+                [
+                  20.231,
+                  713.7643
+                ],
+                [
+                  20.595,
+                  713.8367
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  20.9591,
+                  713.9091
+                ],
+                [
+                  21.3267,
+                  713.9453
+                ],
+                [
+                  21.6979,
+                  713.9453
+                ]
+              ]
+            },
+            {
+              "op": "l",
+              "p": [
+                572.3021,
+                713.9453
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  572.6732,
+                  713.9453
+                ],
+                [
+                  573.0408,
+                  713.9091
+                ],
+                [
+                  573.4049,
+                  713.8367
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  573.7689,
+                  713.7643
+                ],
+                [
+                  574.1224,
+                  713.6571
+                ],
+                [
+                  574.4653,
+                  713.515
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  574.8083,
+                  713.373
+                ],
+                [
+                  575.134,
+                  713.1989
+                ],
+                [
+                  575.4427,
+                  712.9926
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  575.7513,
+                  712.7864
+                ],
+                [
+                  576.0368,
+                  712.5521
+                ],
+                [
+                  576.2993,
+                  712.2896
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  576.5618,
+                  712.0272
+                ],
+                [
+                  576.7961,
+                  711.7416
+                ],
+                [
+                  577.0023,
+                  711.433
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  577.2085,
+                  711.1244
+                ],
+                [
+                  577.3827,
+                  710.7986
+                ],
+                [
+                  577.5247,
+                  710.4556
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  577.6668,
+                  710.1127
+                ],
+                [
+                  577.774,
+                  709.7592
+                ],
+                [
+                  577.8464,
+                  709.3952
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  577.9188,
+                  709.0311
+                ],
+                [
+                  577.9551,
+                  708.6635
+                ],
+                [
+                  577.9551,
+                  708.2923
+                ]
+              ]
+            },
+            {
+              "op": "l",
+              "p": [
+                577.9551,
+                646.1091
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  577.9551,
+                  645.7379
+                ],
+                [
+                  577.9188,
+                  645.3703
+                ],
+                [
+                  577.8464,
+                  645.0063
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  577.774,
+                  644.6422
+                ],
+                [
+                  577.6668,
+                  644.2887
+                ],
+                [
+                  577.5247,
+                  643.9458
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  577.3827,
+                  643.6029
+                ],
+                [
+                  577.2085,
+                  643.2771
+                ],
+                [
+                  577.0023,
+                  642.9685
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  576.7961,
+                  642.6598
+                ],
+                [
+                  576.5618,
+                  642.3743
+                ],
+                [
+                  576.2993,
+                  642.1118
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  576.0368,
+                  641.8493
+                ],
+                [
+                  575.7513,
+                  641.615
+                ],
+                [
+                  575.4426,
+                  641.4088
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  575.134,
+                  641.2026
+                ],
+                [
+                  574.8083,
+                  641.0284
+                ],
+                [
+                  574.4653,
+                  640.8864
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  574.1224,
+                  640.7443
+                ],
+                [
+                  573.7689,
+                  640.6371
+                ],
+                [
+                  573.4049,
+                  640.5647
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  573.0408,
+                  640.4923
+                ],
+                [
+                  572.6732,
+                  640.4561
+                ],
+                [
+                  572.3021,
+                  640.4561
+                ]
+              ]
+            },
+            {
+              "op": "l",
+              "p": [
+                21.6979,
+                640.4561
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  21.3267,
+                  640.4561
+                ],
+                [
+                  20.9591,
+                  640.4923
+                ],
+                [
+                  20.595,
+                  640.5647
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  20.231,
+                  640.6371
+                ],
+                [
+                  19.8775,
+                  640.7443
+                ],
+                [
+                  19.5345,
+                  640.8864
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  19.1916,
+                  641.0284
+                ],
+                [
+                  18.8658,
+                  641.2026
+                ],
+                [
+                  18.5572,
+                  641.4088
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  18.2486,
+                  641.615
+                ],
+                [
+                  17.963,
+                  641.8493
+                ],
+                [
+                  17.7006,
+                  642.1118
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  17.4381,
+                  642.3743
+                ],
+                [
+                  17.2038,
+                  642.6598
+                ],
+                [
+                  16.9975,
+                  642.9685
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  16.7913,
+                  643.2771
+                ],
+                [
+                  16.6172,
+                  643.6029
+                ],
+                [
+                  16.4751,
+                  643.9458
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  16.3331,
+                  644.2887
+                ],
+                [
+                  16.2259,
+                  644.6422
+                ],
+                [
+                  16.1535,
+                  645.0063
+                ]
+              ]
+            },
+            {
+              "op": "c",
+              "p": [
+                [
+                  16.081,
+                  645.3703
+                ],
+                [
+                  16.0448,
+                  645.7379
+                ],
+                [
+                  16.0448,
+                  646.1091
+                ]
+              ]
+            },
+            {
+              "op": "h"
+            }
+          ],
+          "strokeWidth": 0.6,
+          "stroke": null,
+          "fill": "0.917647,0.917647,0.917647",
+          "paint": "fill",
+          "lineCap": 0,
+          "lineJoin": 0,
+          "miterLimit": 10,
+          "dash": [],
+          "dashPhase": 0,
+          "order": 5
+        }
+      ],
+      "images": [
+        {
+          "x": 27.4,
+          "y": 775.6,
+          "width": 82,
+          "height": 39.6,
+          "format": "unknown",
+          "slot": "logo",
+          "proposedClass": "logo",
+          "demoValue": "",
+          "barcode": null
+        }
+      ],
+      "shadings": [],
+      "bands": {
+        "header": {
+          "yMin": 690.4,
+          "yMax": 841.9
+        },
+        "title": {
+          "yMin": 623,
+          "yMax": 724
+        },
+        "detail": {
+          "yMin": 210.5,
+          "yMax": 631.4
+        },
+        "summary": {
+          "yMin": 84.2,
+          "yMax": 235.7
+        },
+        "footer": {
+          "yMin": 0,
+          "yMax": 84.2
+        }
+      },
+      "layoutKind": "form",
+      "uncaptured": {
+        "curves": 0,
+        "nonAxisPaths": 0,
+        "shading": 0,
+        "cmyk": 0,
+        "opacity": 0,
+        "xobjects": 0,
+        "lineStyle": 0,
+        "markedContent": 0,
+        "undecodedText": 0,
+        "textRenderMode": 0,
+        "unknownOps": {}
+      },
+      "droppedOutside": 0,
+      "droppedPastEdge": [
+        {
+          "text": "ABLE_",
+          "x": 1001.2,
+          "y": 16.9
+        },
+        {
+          "text": "ANY LIMITED",
+          "x": 631.4,
+          "y": 811.7
+        }
+      ],
+      "emptyTextItems": 8,
+      "table": null
+    }
+  ],
+  "layoutKind": "form",
+  "bands": {
+    "header": {
+      "yMin": 690.4,
+      "yMax": 841.9
+    },
+    "title": {
+      "yMin": 623,
+      "yMax": 724
+    },
+    "detail": {
+      "yMin": 210.5,
+      "yMax": 631.4
+    },
+    "summary": {
+      "yMin": 84.2,
+      "yMax": 235.7
+    },
+    "footer": {
+      "yMin": 0,
+      "yMax": 84.2
+    }
+  },
+  "paths": [
+    {
+      "commands": [
+        {
+          "op": "m",
+          "p": [
+            16.0448,
+            646.1091
+          ]
+        },
+        {
+          "op": "l",
+          "p": [
+            16.0448,
+            708.2923
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              16.0448,
+              708.6635
+            ],
+            [
+              16.081,
+              709.0311
+            ],
+            [
+              16.1535,
+              709.3952
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              16.2259,
+              709.7592
+            ],
+            [
+              16.3331,
+              710.1127
+            ],
+            [
+              16.4751,
+              710.4556
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              16.6172,
+              710.7986
+            ],
+            [
+              16.7913,
+              711.1244
+            ],
+            [
+              16.9975,
+              711.433
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              17.2038,
+              711.7416
+            ],
+            [
+              17.4381,
+              712.0272
+            ],
+            [
+              17.7006,
+              712.2896
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              17.963,
+              712.5521
+            ],
+            [
+              18.2486,
+              712.7864
+            ],
+            [
+              18.5572,
+              712.9926
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              18.8658,
+              713.1989
+            ],
+            [
+              19.1916,
+              713.373
+            ],
+            [
+              19.5345,
+              713.515
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              19.8775,
+              713.6571
+            ],
+            [
+              20.231,
+              713.7643
+            ],
+            [
+              20.595,
+              713.8367
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              20.9591,
+              713.9091
+            ],
+            [
+              21.3267,
+              713.9453
+            ],
+            [
+              21.6979,
+              713.9453
+            ]
+          ]
+        },
+        {
+          "op": "l",
+          "p": [
+            572.3021,
+            713.9453
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              572.6732,
+              713.9453
+            ],
+            [
+              573.0408,
+              713.9091
+            ],
+            [
+              573.4049,
+              713.8367
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              573.7689,
+              713.7643
+            ],
+            [
+              574.1224,
+              713.6571
+            ],
+            [
+              574.4653,
+              713.515
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              574.8083,
+              713.373
+            ],
+            [
+              575.134,
+              713.1989
+            ],
+            [
+              575.4427,
+              712.9926
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              575.7513,
+              712.7864
+            ],
+            [
+              576.0368,
+              712.5521
+            ],
+            [
+              576.2993,
+              712.2896
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              576.5618,
+              712.0272
+            ],
+            [
+              576.7961,
+              711.7416
+            ],
+            [
+              577.0023,
+              711.433
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              577.2085,
+              711.1244
+            ],
+            [
+              577.3827,
+              710.7986
+            ],
+            [
+              577.5247,
+              710.4556
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              577.6668,
+              710.1127
+            ],
+            [
+              577.774,
+              709.7592
+            ],
+            [
+              577.8464,
+              709.3952
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              577.9188,
+              709.0311
+            ],
+            [
+              577.9551,
+              708.6635
+            ],
+            [
+              577.9551,
+              708.2923
+            ]
+          ]
+        },
+        {
+          "op": "l",
+          "p": [
+            577.9551,
+            646.1091
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              577.9551,
+              645.7379
+            ],
+            [
+              577.9188,
+              645.3703
+            ],
+            [
+              577.8464,
+              645.0063
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              577.774,
+              644.6422
+            ],
+            [
+              577.6668,
+              644.2887
+            ],
+            [
+              577.5247,
+              643.9458
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              577.3827,
+              643.6029
+            ],
+            [
+              577.2085,
+              643.2771
+            ],
+            [
+              577.0023,
+              642.9685
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              576.7961,
+              642.6598
+            ],
+            [
+              576.5618,
+              642.3743
+            ],
+            [
+              576.2993,
+              642.1118
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              576.0368,
+              641.8493
+            ],
+            [
+              575.7513,
+              641.615
+            ],
+            [
+              575.4426,
+              641.4088
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              575.134,
+              641.2026
+            ],
+            [
+              574.8083,
+              641.0284
+            ],
+            [
+              574.4653,
+              640.8864
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              574.1224,
+              640.7443
+            ],
+            [
+              573.7689,
+              640.6371
+            ],
+            [
+              573.4049,
+              640.5647
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              573.0408,
+              640.4923
+            ],
+            [
+              572.6732,
+              640.4561
+            ],
+            [
+              572.3021,
+              640.4561
+            ]
+          ]
+        },
+        {
+          "op": "l",
+          "p": [
+            21.6979,
+            640.4561
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              21.3267,
+              640.4561
+            ],
+            [
+              20.9591,
+              640.4923
+            ],
+            [
+              20.595,
+              640.5647
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              20.231,
+              640.6371
+            ],
+            [
+              19.8775,
+              640.7443
+            ],
+            [
+              19.5345,
+              640.8864
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              19.1916,
+              641.0284
+            ],
+            [
+              18.8658,
+              641.2026
+            ],
+            [
+              18.5572,
+              641.4088
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              18.2486,
+              641.615
+            ],
+            [
+              17.963,
+              641.8493
+            ],
+            [
+              17.7006,
+              642.1118
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              17.4381,
+              642.3743
+            ],
+            [
+              17.2038,
+              642.6598
+            ],
+            [
+              16.9975,
+              642.9685
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              16.7913,
+              643.2771
+            ],
+            [
+              16.6172,
+              643.6029
+            ],
+            [
+              16.4751,
+              643.9458
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              16.3331,
+              644.2887
+            ],
+            [
+              16.2259,
+              644.6422
+            ],
+            [
+              16.1535,
+              645.0063
+            ]
+          ]
+        },
+        {
+          "op": "c",
+          "p": [
+            [
+              16.081,
+              645.3703
+            ],
+            [
+              16.0448,
+              645.7379
+            ],
+            [
+              16.0448,
+              646.1091
+            ]
+          ]
+        },
+        {
+          "op": "h"
+        }
+      ],
+      "strokeWidth": 0.6,
+      "stroke": null,
+      "fill": "0.917647,0.917647,0.917647",
+      "paint": "fill",
+      "lineCap": 0,
+      "lineJoin": 0,
+      "miterLimit": 10,
+      "dash": [],
+      "dashPhase": 0,
+      "order": 5
+    }
+  ],
+  "table": null,
+  "slots": {
+    "logo": {
+      "x": 27.4,
+      "y": 775.6,
+      "width": 82,
+      "height": 39.6
+    },
+    "company": {
+      "x": 317.8,
+      "y": 811.7,
+      "width": 157.41,
+      "height": 15.8285,
+      "binding": "company.name"
+    }
+  },
+  "bindings": [],
+  "formatRules": [
+    {
+      "path": "invoice.date",
+      "format": "date"
+    },
+    {
+      "path": "invoice.total",
+      "format": "number"
+    },
+    {
+      "path": "invoice.tax",
+      "format": "number"
+    },
+    {
+      "path": "invoice.amount",
+      "format": "number"
+    },
+    {
+      "path": "party.shipper",
+      "format": "text"
+    },
+    {
+      "path": "party.consignee",
+      "format": "text"
+    },
+    {
+      "path": "party.notify",
+      "format": "text"
+    },
+    {
+      "path": "cargo.description",
+      "format": "text"
+    }
+  ],
+  "overflowRules": {
+    "default": "wrap-shrink-clip",
+    "text": "wrap-shrink-clip",
+    "number": "shrink-clip",
+    "maxLines": 3
+  },
+  "extraction": {
+    "pageCount": 1,
+    "textItems": 58,
+    "emptyTextItems": 8,
+    "characters": 722,
+    "droppedOutside": 0,
+    "droppedPastEdge": [
+      {
+        "text": "ABLE_",
+        "x": 1001.2,
+        "y": 16.9
+      },
+      {
+        "text": "ANY LIMITED",
+        "x": 631.4,
+        "y": 811.7
+      }
+    ],
+    "uncaptured": [
+      {
+        "curves": 0,
+        "nonAxisPaths": 0,
+        "shading": 0,
+        "cmyk": 0,
+        "opacity": 0,
+        "xobjects": 0,
+        "lineStyle": 0,
+        "markedContent": 0,
+        "undecodedText": 0,
+        "textRenderMode": 0,
+        "unknownOps": {}
+      }
+    ],
+    "pdftotextWordsMissing": 12,
+    "pdftotextWordsMissingSample": [
+      "COMPANY",
+      "LIMITED",
+      "www.fresatechnologies.com",
+      "23-NOV-18",
+      "Vessel",
+      "Voyage",
+      "Type",
+      "STANDARD",
+      "CONTAINER",
+      "Technologies",
+      "http://demo.fresagold.com:19786/ords/f?p=127:3002:15597028320559:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_TABLE_…",
+      "1/1"
+    ],
+    "textFillColors": [
+      "#000000",
+      "#ffffff"
+    ],
+    "warnings": []
+  }
+}

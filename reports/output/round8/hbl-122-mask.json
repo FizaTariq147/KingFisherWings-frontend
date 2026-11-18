@@ -1,0 +1,70 @@
+{
+  "code": "HBL_DRAFT_REPORT_FORMAT_122",
+  "finding": "The logo slot is the largest page-1 image: a near-full-page form background (554x780.1 pt) classified decorative Fresa branding because its origin y is in the bottom 16%. slotBoxes applies that logo rectangle on every page, so three pages at 150 dpi make about 5.64M masked pixels. The renderer does not draw decorative branding or other images; only barcode/QR are drawn. The golden output leaves that area blank.",
+  "pages": [
+    {
+      "page": 1,
+      "rasterSize": [
+        1240,
+        1754
+      ],
+      "logoSlot": {
+        "x": 20,
+        "y": 41.9,
+        "width": 554,
+        "height": 780.1
+      },
+      "images": [
+        {
+          "class": "decorative Fresa branding",
+          "x": 20,
+          "y": 41.9,
+          "width": 554,
+          "height": 780.1,
+          "areaPt": 432175.4,
+          "approxPx": 1875761
+        }
+      ],
+      "brandingSpans": [
+        {
+          "id": "p1s5",
+          "text": "TEL: +966",
+          "x": 37,
+          "y": 662.3,
+          "width": 37.1,
+          "size": 8
+        }
+      ]
+    },
+    {
+      "page": 2,
+      "rasterSize": [
+        1240,
+        1754
+      ],
+      "logoSlot": "slots applied on every page from page-1 logo",
+      "images": [],
+      "brandingSpans": []
+    },
+    {
+      "page": 3,
+      "rasterSize": [
+        1240,
+        1754
+      ],
+      "logoSlot": "slots applied on every page from page-1 logo",
+      "images": [
+        {
+          "class": "decorative Fresa branding",
+          "x": 20,
+          "y": 42,
+          "width": 554,
+          "height": 780,
+          "areaPt": 432120,
+          "approxPx": 1875521
+        }
+      ],
+      "brandingSpans": []
+    }
+  ]
+}

@@ -31,7 +31,8 @@ export function useDashboardActiveJobs(options?: {
   rowLimit?: number;
 }) {
   const accessToken = useAuthStore((s) => s.accessToken);
-  const { scopeTypes, probeTypes, kind } = useVisibleJobListScope();
+  const { scopeTypes, probeTypes, kind, assigneeOnly, assigneeUserId } =
+    useVisibleJobListScope();
   const rowLimit = options?.rowLimit ?? 500;
   const jobType = options?.jobType?.trim() || undefined;
   const branchId = options?.branchId?.trim() || undefined;
@@ -46,6 +47,8 @@ export function useDashboardActiveJobs(options?: {
       branchId,
       rowLimit,
       kind,
+      assigneeOnly ? 'assignee' : 'scoped',
+      assigneeUserId ?? '',
       scopeTypes === null ? 'admin' : scopeTypes.slice().sort().join(','),
       probeTypes.slice().sort().join(','),
     ],
@@ -92,13 +95,22 @@ export function useDashboardActiveJobs(options?: {
         expectedTotal,
       };
 
+      const assigneeParams = {
+        ...(branchId ? { branch_id: branchId } : {}),
+        department_id: undefined as undefined,
+        ...(assigneeOnly && assigneeUserId
+          ? { ops_user_id: assigneeUserId }
+          : {}),
+        // Transport handoff-only: never send job_type (BE assignee-only where).
+        ...(assigneeOnly ? { job_type: undefined, job_types: undefined } : {}),
+      };
+
       const collected = await jobService.listVisibleJobs(
         {
           page: 1,
           limit: 100,
           order: 'desc',
-          ...(branchId ? { branch_id: branchId } : {}),
-          department_id: undefined,
+          ...assigneeParams,
         },
         listOpts,
       );
@@ -112,8 +124,7 @@ export function useDashboardActiveJobs(options?: {
             page,
             limit: 100,
             order: 'desc',
-            ...(branchId ? { branch_id: branchId } : {}),
-            department_id: undefined,
+            ...assigneeParams,
           },
           listOpts,
         );
@@ -123,14 +134,18 @@ export function useDashboardActiveJobs(options?: {
       }
 
       // Still short of job_count — one more recovery pass with staff probes.
-      if (expectedTotal > byId.size && listProbes.length > 0) {
+      // Skip for transport handoff-only (no ops job-type grants / probes).
+      if (
+        expectedTotal > byId.size &&
+        listProbes.length > 0 &&
+        !assigneeOnly
+      ) {
         const catchUp = await jobService.listVisibleJobs(
           {
             page: 1,
             limit: Math.min(rowLimit, 100),
             order: 'desc',
-            ...(branchId ? { branch_id: branchId } : {}),
-            department_id: undefined,
+            ...assigneeParams,
           },
           {
             scopeTypes: listProbes,

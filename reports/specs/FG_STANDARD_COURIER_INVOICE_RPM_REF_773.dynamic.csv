@@ -1,0 +1,9 @@
+id,page,text,binding,reason
+p1s7,1,"21, PORT BLAIR KRISHNA ST MANNARGUDI",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s8,1,TAMIL NADU INDIA 676876,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s37,1,"1,500.00",cargo.pieces,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s43,1,800.00,cargo.pieces,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s49,1,900.00,cargo.pieces,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s51,1,CONTAINER CLEANING FEE,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s55,1,"1,000.00",cargo.pieces,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s57,1,"4,776.00",invoice.amount,"matches a demo value (number, date, party, or Fresa sample text)"

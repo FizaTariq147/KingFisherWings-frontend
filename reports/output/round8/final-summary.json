@@ -1,0 +1,101 @@
+{
+  "verified": 399,
+  "clean": 188,
+  "layers": {
+    "page": {
+      "pass": 399,
+      "fail": 0
+    },
+    "geometry": {
+      "pass": 396,
+      "fail": 3
+    },
+    "static": {
+      "pass": 384,
+      "fail": 15
+    },
+    "dynamic": {
+      "pass": 390,
+      "fail": 9
+    },
+    "raster": {
+      "pass": 191,
+      "fail": 208
+    }
+  },
+  "pagination": {
+    "pass": 79,
+    "single-page": 320
+  },
+  "classes": [
+    {
+      "name": "static position or string",
+      "documents": 15,
+      "instances": 318
+    },
+    {
+      "name": "raster",
+      "documents": 208,
+      "instances": 208
+    },
+    {
+      "name": "dynamic position or string",
+      "documents": 9,
+      "instances": 11
+    },
+    {
+      "name": "geometry mismatch",
+      "documents": 3,
+      "instances": 3
+    }
+  ],
+  "rasterSplit": {
+    "r1": 48,
+    "r2": 157,
+    "rasterFailures": 205
+  },
+  "maskedOver15": [
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_127",
+      "maskedFraction": 0.8887
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_130",
+      "maskedFraction": 0.8887
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_118",
+      "maskedFraction": 0.8791
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_132",
+      "maskedFraction": 0.8685
+    },
+    {
+      "code": "FG_HBL_FORMAT10_RPM_REF_472",
+      "maskedFraction": 0.868
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_122",
+      "maskedFraction": 0.8643
+    },
+    {
+      "code": "MAWB_DRAFT_REPORT_FORMAT",
+      "maskedFraction": 0.8402
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_129",
+      "maskedFraction": 0.7798
+    }
+  ],
+  "maskedOver25Fail": [
+    "HBL_DRAFT_REPORT_FORMAT_122",
+    "MAWB_DRAFT_REPORT_FORMAT",
+    "HBL_DRAFT_REPORT_FORMAT_118",
+    "HBL_DRAFT_REPORT_FORMAT_127",
+    "HBL_DRAFT_REPORT_FORMAT_129",
+    "HBL_DRAFT_REPORT_FORMAT_130",
+    "HBL_DRAFT_REPORT_FORMAT_132",
+    "FG_HBL_FORMAT10_RPM_REF_472"
+  ]
+}

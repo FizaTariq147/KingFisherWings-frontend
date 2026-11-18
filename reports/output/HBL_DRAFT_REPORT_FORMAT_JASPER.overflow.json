@@ -5,234 +5,324 @@
     {
       "id": "p1s2",
       "mode": "clip",
-      "size": 5,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 3.5,
       "lines": 1,
-      "box": 128.3,
-      "clipped": true
-    },
-    {
-      "id": "p1s15",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 3,
-      "box": 137.2,
-      "clipped": true
+      "box": 128.29
     },
     {
       "id": "p1s16",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 2,
-      "box": 272.7,
-      "clipped": false
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 272.67
     },
     {
       "id": "p1s17",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 3,
-      "box": 217.6,
-      "clipped": false
-    },
-    {
-      "id": "p1s18",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 3,
-      "box": 137.2,
-      "clipped": true
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 217.59
     },
     {
       "id": "p1s19",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 3,
-      "box": 179.9,
-      "clipped": false
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 179.87
     },
     {
       "id": "p1s20",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 3,
-      "box": 160.3,
-      "clipped": false
-    },
-    {
-      "id": "p1s21",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 3,
-      "box": 39.5,
-      "clipped": true
-    },
-    {
-      "id": "p1s23",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 115,
-      "clipped": true
+      "box": 160.31
     },
     {
       "id": "p1s24",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 123.4,
-      "clipped": true
+      "box": 123.43
     },
     {
       "id": "p1s26",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 116.3,
-      "clipped": true
+      "box": 116.34
     },
     {
       "id": "p1s27",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 96.8,
-      "clipped": true
+      "box": 96.8
     },
     {
       "id": "p1s28",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 116.3,
-      "clipped": true
+      "box": 116.34
     },
     {
       "id": "p1s29",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 96.8,
-      "clipped": true
-    },
-    {
-      "id": "p1s31",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 3,
-      "box": 114.1,
-      "clipped": true
+      "box": 96.8
     },
     {
       "id": "p1s32",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 2,
-      "box": 252.2,
-      "clipped": false
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 252.25
     },
     {
       "id": "p1s33",
-      "mode": "wrap",
-      "size": 8,
-      "lines": 3,
-      "box": 136.8,
-      "clipped": true
-    },
-    {
-      "id": "p1s36",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 101.9,
-      "clipped": true
-    },
-    {
-      "id": "p1s38",
-      "mode": "clip",
-      "size": 8,
-      "lines": 1,
-      "box": 112.9,
-      "clipped": true
-    },
-    {
-      "id": "p1s40",
-      "mode": "clip",
-      "size": 8,
-      "lines": 1,
-      "box": 240.7,
-      "clipped": true
+      "box": 136.82
     },
     {
       "id": "p1s49",
       "mode": "clip",
-      "size": 8,
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 35.6,
-      "clipped": true
+      "box": 35.57
     },
     {
       "id": "p1s50",
       "mode": "clip",
-      "size": 8,
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 24.5,
-      "clipped": true
+      "box": 24.46
     },
     {
       "id": "p1s51",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 191.8,
-      "clipped": true
+      "box": 191.82
     },
     {
       "id": "p1s53",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 229.3,
-      "clipped": true
+      "box": 229.32
     },
     {
       "id": "p1s55",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 140,
-      "clipped": true
+      "box": 139.96
     },
     {
       "id": "p1s78",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 91.5,
-      "clipped": true
+      "box": 91.46
     },
     {
       "id": "p1s80",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 116,
-      "clipped": true
-    },
-    {
-      "id": "p1s82",
-      "mode": "clip",
-      "size": 8,
-      "lines": 1,
-      "box": 111.4,
-      "clipped": true
+      "box": 116.02
     },
     {
       "id": "p1s85",
       "mode": "clip",
-      "size": 8,
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
       "lines": 1,
-      "box": 129.9,
-      "clipped": true
+      "box": 129.88
+    }
+  ],
+  "warnings": [
+    {
+      "id": "p1s2",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 3.5,
+      "lines": 1,
+      "box": 128.29
+    },
+    {
+      "id": "p1s16",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 272.67
+    },
+    {
+      "id": "p1s17",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 217.59
+    },
+    {
+      "id": "p1s19",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 179.87
+    },
+    {
+      "id": "p1s20",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 160.31
+    },
+    {
+      "id": "p1s24",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 123.43
+    },
+    {
+      "id": "p1s26",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 116.34
+    },
+    {
+      "id": "p1s27",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 96.8
+    },
+    {
+      "id": "p1s28",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 116.34
+    },
+    {
+      "id": "p1s29",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 96.8
+    },
+    {
+      "id": "p1s32",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 252.25
+    },
+    {
+      "id": "p1s33",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 136.82
+    },
+    {
+      "id": "p1s49",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 35.57
+    },
+    {
+      "id": "p1s50",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 24.46
+    },
+    {
+      "id": "p1s51",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 191.82
+    },
+    {
+      "id": "p1s53",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 229.32
+    },
+    {
+      "id": "p1s55",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 139.96
+    },
+    {
+      "id": "p1s78",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 91.46
+    },
+    {
+      "id": "p1s80",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 116.02
+    },
+    {
+      "id": "p1s85",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 129.88
     }
   ]
 }

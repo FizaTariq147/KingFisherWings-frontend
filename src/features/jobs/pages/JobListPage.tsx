@@ -114,15 +114,27 @@ export default function JobListPage() {
       currentUserId,
     });
     // Department pages scope to segment job types; never org department_id.
-    if (!applied.jobType?.trim()) {
+    // Transport handoff-only: assignee queue — no job_type fan-out.
+    if (fullScope.assigneeOnly) {
+      params.job_type = undefined;
+      params.job_types = undefined;
+    } else if (!applied.jobType?.trim()) {
       params.job_type = undefined;
       params.job_types = [...allowedSegmentTypes];
     }
     return staffAlignedJobListParams(params, {
       isStaff: true,
       allowAdminDepartment: false,
+      assigneeOnly: Boolean(fullScope.assigneeOnly),
+      assigneeUserId: fullScope.assigneeUserId ?? currentUserId,
     });
-  }, [applied, allowedSegmentTypes, currentUserId]);
+  }, [
+    applied,
+    allowedSegmentTypes,
+    currentUserId,
+    fullScope.assigneeOnly,
+    fullScope.assigneeUserId,
+  ]);
 
   const listQuery = useQuery({
     queryKey: [

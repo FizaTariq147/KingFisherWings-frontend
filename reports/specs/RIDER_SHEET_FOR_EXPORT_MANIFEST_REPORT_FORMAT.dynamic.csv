@@ -1,0 +1,6 @@
+id,page,text,binding,reason
+p1s1,1,1/25/2019,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s16,1,RIDER SHEET FOR EXPORT MANIFEST / JOB NO - CCDXBSI18000060,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s19,1,CCDXBSI18000060 / 23-NOV,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s23,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s34,1,MAERSK CHARLIE / V033,,"matches a demo value (number, date, party, or Fresa sample text)"

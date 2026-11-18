@@ -1,0 +1,5 @@
+id,page,text,binding,reason
+p1s1,1,2/8/2019,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s46,1,987877777 /,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s50,1,150,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s58,1,TMENT 10 STREET KAMAKOTTI,,"matches a demo value (number, date, party, or Fresa sample text)"

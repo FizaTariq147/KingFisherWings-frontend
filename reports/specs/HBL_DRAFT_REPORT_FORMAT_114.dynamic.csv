@@ -1,0 +1,10 @@
+id,page,text,binding,reason
+p1s6,1,"P.O BOX 11700, 8100 UNIT NO 2 JEDDAH SAUDI ARABIA SAUDI",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s10,1,PARTICLUARS FURNISHED BY SHIPPER-CARRIER/AGENT NOT RESPONSIBLE,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s22,1,"JEDDAH, SAUDI ARABIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s25,1,JEDDAH SAUDI ARABIA,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s27,1,JEDDAH SAUDI ARABIA,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s34,1,TTNU0712894 - 40' FLAT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s42,1,TTNU0712894/40' FLAT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s44,1,"22,700.000",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s61,1,SHIPPER'S LOAD AND COUNT AND SEAL,,"matches a demo value (number, date, party, or Fresa sample text)"

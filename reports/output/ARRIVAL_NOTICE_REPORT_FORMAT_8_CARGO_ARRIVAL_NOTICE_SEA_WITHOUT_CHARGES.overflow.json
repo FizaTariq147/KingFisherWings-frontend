@@ -1,0 +1,280 @@
+{
+  "code": "ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+  "maxLines": 3,
+  "spans": [
+    {
+      "id": "p1s1",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 31.14
+    },
+    {
+      "id": "p1s4",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 294.87
+    },
+    {
+      "id": "p1s21",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 158.32
+    },
+    {
+      "id": "p1s23",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 158.75
+    },
+    {
+      "id": "p1s28",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 154.35
+    },
+    {
+      "id": "p1s37",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 154.35
+    },
+    {
+      "id": "p1s38",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 138.07
+    },
+    {
+      "id": "p1s43",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 88.86
+    },
+    {
+      "id": "p1s46",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 118.34
+    },
+    {
+      "id": "p1s49",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 107.78
+    },
+    {
+      "id": "p1s55",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 123.14
+    },
+    {
+      "id": "p1s59",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 115.21
+    },
+    {
+      "id": "p1s62",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 115.21
+    },
+    {
+      "id": "p1s91",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 79.64
+    },
+    {
+      "id": "p1s112",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 13.2
+    },
+    {
+      "id": "p1s113",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 19.8
+    },
+    {
+      "id": "p1s114",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 35.21
+    }
+  ],
+  "warnings": [
+    {
+      "id": "p1s1",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 31.14
+    },
+    {
+      "id": "p1s4",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.5,
+      "lines": 1,
+      "box": 294.87
+    },
+    {
+      "id": "p1s21",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 158.32
+    },
+    {
+      "id": "p1s23",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 158.75
+    },
+    {
+      "id": "p1s28",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 154.35
+    },
+    {
+      "id": "p1s37",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 154.35
+    },
+    {
+      "id": "p1s38",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 138.07
+    },
+    {
+      "id": "p1s43",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 88.86
+    },
+    {
+      "id": "p1s46",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 118.34
+    },
+    {
+      "id": "p1s49",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 107.78
+    },
+    {
+      "id": "p1s55",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 123.14
+    },
+    {
+      "id": "p1s59",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 115.21
+    },
+    {
+      "id": "p1s62",
+      "mode": "clip",
+      "warning": "text overflow clipped after wrap/shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 115.21
+    },
+    {
+      "id": "p1s91",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 79.64
+    },
+    {
+      "id": "p1s112",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 13.2
+    },
+    {
+      "id": "p1s113",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 19.8
+    },
+    {
+      "id": "p1s114",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.4142,
+      "lines": 1,
+      "box": 35.21
+    }
+  ]
+}

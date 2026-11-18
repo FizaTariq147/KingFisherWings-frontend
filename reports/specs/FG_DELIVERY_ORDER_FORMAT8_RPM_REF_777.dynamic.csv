@@ -1,0 +1,11 @@
+id,page,text,binding,reason
+p1s1,1,DELIVERY ORDER / GATE PASS,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s4,1,"18,000.0",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s13,1,24.000,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s18,1,"CHENNAI (EX MADRAS),",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s28,1,9887,shipment.voyage,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s30,1,"CHENNAI (EX MADRAS),",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s34,1,STC: VALVE MATERIALS FOR,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s37,1,ALL DESTINATION CHARGES ARE,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s38,1,CONSIGNEE'S ACCOUNT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s39,1,125,cargo.marks,"matches a demo value (number, date, party, or Fresa sample text)"

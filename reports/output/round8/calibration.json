@@ -1,0 +1,206 @@
+{
+  "seed": 8,
+  "tUnset": true,
+  "documents": [
+    {
+      "code": "FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778",
+      "family": "ArialUnicodeMS",
+      "textInk": 0.0868,
+      "fullPage": 0.0024,
+      "nonText": 0,
+      "maskedFraction": 0.0924,
+      "crop": "reports/output/round8/calibration/FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778.png",
+      "heatmap": "reports/output/raster/FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778-page-1-diff.png"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_52",
+      "family": "Helvetica-Bold",
+      "textInk": 0.0412,
+      "fullPage": 0.103,
+      "nonText": 0,
+      "maskedFraction": 0.019,
+      "crop": "reports/output/round8/calibration/HBL_DRAFT_REPORT_FORMAT_52.png",
+      "heatmap": "reports/output/raster/HBL_DRAFT_REPORT_FORMAT_52-page-1-diff.png"
+    },
+    {
+      "code": "D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427",
+      "family": "TimesNewRomanPS-BoldMT",
+      "textInk": 0.3832,
+      "fullPage": 0.0144,
+      "nonText": 0.0032,
+      "maskedFraction": 0.0126,
+      "crop": "reports/output/round8/calibration/D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427.png",
+      "heatmap": "reports/output/raster/D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427-page-1-diff.png"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_33",
+      "family": "Calibri",
+      "textInk": 1.1714,
+      "fullPage": 0.0126,
+      "nonText": 0.0019,
+      "maskedFraction": 0.0016,
+      "crop": "reports/output/round8/calibration/HBL_DRAFT_REPORT_FORMAT_33.png",
+      "heatmap": "reports/output/raster/HBL_DRAFT_REPORT_FORMAT_33-page-1-diff.png"
+    },
+    {
+      "code": "TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED",
+      "family": "\"ABCDEE+Arial Unicode MS",
+      "textInk": 0.1402,
+      "fullPage": 0.0038,
+      "nonText": 0.0004,
+      "maskedFraction": 0.0067,
+      "crop": "reports/output/round8/calibration/TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED.png",
+      "heatmap": "reports/output/raster/TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED-page-1-diff.png"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_12",
+      "family": "Helvetica",
+      "textInk": 0.0508,
+      "fullPage": 0.0019,
+      "nonText": 0,
+      "maskedFraction": 0.0563,
+      "crop": "reports/output/round8/calibration/HBL_DRAFT_REPORT_FORMAT_12.png",
+      "heatmap": "reports/output/raster/HBL_DRAFT_REPORT_FORMAT_12-page-1-diff.png"
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA",
+      "family": "ArialMT",
+      "textInk": 0.19,
+      "fullPage": 0.0147,
+      "nonText": 0.0028,
+      "maskedFraction": 0.0502,
+      "crop": "reports/output/round8/calibration/ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA.png",
+      "heatmap": "reports/output/raster/ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA-page-1-diff.png"
+    },
+    {
+      "code": "DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT",
+      "family": "Arial-BoldMT",
+      "textInk": 0.2378,
+      "fullPage": 0.0102,
+      "nonText": 0.0029,
+      "maskedFraction": 0.0171,
+      "crop": "reports/output/round8/calibration/DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT.png",
+      "heatmap": "reports/output/raster/DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT-page-1-diff.png"
+    },
+    {
+      "code": "TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT",
+      "family": "\"Arial",
+      "textInk": 0.088,
+      "fullPage": 0.0153,
+      "nonText": 0.0119,
+      "maskedFraction": 0.0469,
+      "crop": "reports/output/round8/calibration/TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT.png",
+      "heatmap": "reports/output/raster/TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT-page-1-diff.png"
+    },
+    {
+      "code": "EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT",
+      "family": "fill",
+      "textInk": 0.0872,
+      "fullPage": 0.0055,
+      "nonText": 0.0041,
+      "maskedFraction": 0.0237,
+      "crop": "reports/output/round8/calibration/EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT.png",
+      "heatmap": "reports/output/raster/EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT-page-1-diff.png"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_87",
+      "family": "fill",
+      "textInk": 0.2462,
+      "fullPage": 0.0072,
+      "nonText": 0,
+      "maskedFraction": 0.0333,
+      "crop": "reports/output/round8/calibration/HBL_DRAFT_REPORT_FORMAT_87.png",
+      "heatmap": "reports/output/raster/HBL_DRAFT_REPORT_FORMAT_87-page-1-diff.png"
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA",
+      "family": "fill",
+      "textInk": 0.1578,
+      "fullPage": 0.0114,
+      "nonText": 0.0027,
+      "maskedFraction": 0.0363,
+      "crop": "reports/output/round8/calibration/ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA.png",
+      "heatmap": "reports/output/raster/ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA-page-1-diff.png"
+    },
+    {
+      "code": "MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT",
+      "family": "fill",
+      "textInk": 0.0264,
+      "fullPage": 0.0002,
+      "nonText": 0,
+      "maskedFraction": 0.0119,
+      "crop": "reports/output/round8/calibration/MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT.png",
+      "heatmap": "reports/output/raster/MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT-page-1-diff.png"
+    },
+    {
+      "code": "STANDARD_INVOICE_FCY_RPM_REF_486",
+      "family": "fill",
+      "textInk": 0.2296,
+      "fullPage": 0.0122,
+      "nonText": 0.0029,
+      "maskedFraction": 0.0197,
+      "crop": "reports/output/round8/calibration/STANDARD_INVOICE_FCY_RPM_REF_486.png",
+      "heatmap": "reports/output/raster/STANDARD_INVOICE_FCY_RPM_REF_486-page-1-diff.png"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+      "family": "fill",
+      "textInk": 0.0081,
+      "fullPage": 0.0003,
+      "nonText": 0,
+      "maskedFraction": 0.0152,
+      "crop": "reports/output/round8/calibration/INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED.png",
+      "heatmap": "reports/output/raster/INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED-page-1-diff.png"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "family": "fill",
+      "textInk": 3.7578,
+      "fullPage": 0.052,
+      "nonText": 0.0357,
+      "maskedFraction": 0.0672,
+      "crop": "reports/output/round8/calibration/INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA.png",
+      "heatmap": "reports/output/raster/INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA-page-1-diff.png"
+    },
+    {
+      "code": "SHIPPING_INSTRUCTION_REPORT_FORMAT",
+      "family": "fill",
+      "textInk": 0.1441,
+      "fullPage": 0.0144,
+      "nonText": 0.0049,
+      "maskedFraction": 0.0423,
+      "crop": "reports/output/round8/calibration/SHIPPING_INSTRUCTION_REPORT_FORMAT.png",
+      "heatmap": "reports/output/raster/SHIPPING_INSTRUCTION_REPORT_FORMAT-page-1-diff.png"
+    },
+    {
+      "code": "FG_DELIVERY_ORDER_SEA_FORMAT10_RPM_REF_1395",
+      "family": "fill",
+      "textInk": 0.0417,
+      "fullPage": 0.0011,
+      "nonText": 0,
+      "maskedFraction": 0.0921,
+      "crop": "reports/output/round8/calibration/FG_DELIVERY_ORDER_SEA_FORMAT10_RPM_REF_1395.png",
+      "heatmap": "reports/output/raster/FG_DELIVERY_ORDER_SEA_FORMAT10_RPM_REF_1395-page-1-diff.png"
+    },
+    {
+      "code": "MAWB_DRAFT_REPORT_FORMAT",
+      "family": "fill",
+      "textInk": 0,
+      "fullPage": 0,
+      "nonText": 0,
+      "maskedFraction": 0.8402,
+      "crop": "reports/output/round8/calibration/MAWB_DRAFT_REPORT_FORMAT.png",
+      "heatmap": "reports/output/raster/MAWB_DRAFT_REPORT_FORMAT-page-1-diff.png"
+    },
+    {
+      "code": "FG_INVOICE_FORMAT3_RPM_REF_478",
+      "family": "fill",
+      "textInk": 0.0635,
+      "fullPage": 0.0025,
+      "nonText": 0,
+      "maskedFraction": 0.0957,
+      "crop": "reports/output/round8/calibration/FG_INVOICE_FORMAT3_RPM_REF_478.png",
+      "heatmap": "reports/output/raster/FG_INVOICE_FORMAT3_RPM_REF_478-page-1-diff.png"
+    }
+  ]
+}

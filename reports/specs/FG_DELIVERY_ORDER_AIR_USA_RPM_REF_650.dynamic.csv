@@ -1,0 +1,7 @@
+id,page,text,binding,reason
+p1s9,1,"18,000.000",cargo.marks,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s19,1,STC: VALVE MATERIALS FOR MACHINERY PARTS,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s20,1,PLEASE SCHEDULE APPOINTMENT :,,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s9,2,"18,000.000",cargo.marks,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s19,2,STC: VALVE MATERIALS FOR MACHINERY PARTS,,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s20,2,PLEASE SCHEDULE APPOINTMENT :,,"matches a demo value (number, date, party, or Fresa sample text)"

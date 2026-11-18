@@ -1,0 +1,577 @@
+{
+  "source": "reports/fixtures/long-values.json plus overflowRules; app sanitized fixtures supply the field shapes but the renderer binds by formatRules/overflow only",
+  "documents": [
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "referencePages": 1,
+      "outputPages": 1,
+      "pageCountChanged": false,
+      "overflowSpans": 56,
+      "clipped": 54,
+      "wrapped": 0,
+      "shrunk": 2,
+      "wrapHitMaxLines": 0,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s1",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 35.59
+        },
+        {
+          "id": "p1s29",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 158.75
+        },
+        {
+          "id": "p1s30",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 144.67
+        },
+        {
+          "id": "p1s32",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 83.14
+        },
+        {
+          "id": "p1s37",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 132.4
+        }
+      ],
+      "sampleWrapped": [],
+      "sampleShrunk": [
+        {
+          "id": "p1s13",
+          "mode": "shrink",
+          "size": 3.9142,
+          "lines": 1,
+          "box": 24.21
+        },
+        {
+          "id": "p1s15",
+          "mode": "shrink",
+          "size": 3.9142,
+          "lines": 1,
+          "box": 24.21
+        }
+      ],
+      "outputPath": "reports/output/round8/live/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA.pdf"
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+      "referencePages": 1,
+      "outputPages": 1,
+      "pageCountChanged": false,
+      "overflowSpans": 43,
+      "clipped": 43,
+      "wrapped": 0,
+      "shrunk": 0,
+      "wrapHitMaxLines": 0,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s4",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 263.83
+        },
+        {
+          "id": "p1s5",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 90.17
+        },
+        {
+          "id": "p1s35",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 148.74
+        },
+        {
+          "id": "p1s48",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 172.27
+        },
+        {
+          "id": "p1s49",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 84.18
+        }
+      ],
+      "sampleWrapped": [],
+      "sampleShrunk": [],
+      "outputPath": "reports/output/round8/live/INVOICE_REPORT_FORMAT_14_INVOICE.pdf"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "referencePages": 1,
+      "outputPages": 1,
+      "pageCountChanged": false,
+      "overflowSpans": 20,
+      "clipped": 20,
+      "wrapped": 0,
+      "shrunk": 0,
+      "wrapHitMaxLines": 0,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s2",
+          "mode": "clip",
+          "size": 5,
+          "lines": 1,
+          "box": 128.29
+        },
+        {
+          "id": "p1s16",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 272.67
+        },
+        {
+          "id": "p1s17",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 217.59
+        },
+        {
+          "id": "p1s19",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 179.87
+        },
+        {
+          "id": "p1s20",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 160.31
+        }
+      ],
+      "sampleWrapped": [],
+      "sampleShrunk": [],
+      "outputPath": "reports/output/round8/live/HBL_DRAFT_REPORT_FORMAT_JASPER.pdf"
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_15",
+      "referencePages": 2,
+      "outputPages": 2,
+      "pageCountChanged": false,
+      "overflowSpans": 33,
+      "clipped": 32,
+      "wrapped": 1,
+      "shrunk": 0,
+      "wrapHitMaxLines": 1,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s1",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 101.79
+        },
+        {
+          "id": "p1s6",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 101.79
+        },
+        {
+          "id": "p1s7",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 122.38
+        },
+        {
+          "id": "p1s9",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 122.38
+        },
+        {
+          "id": "p1s38",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 275.51
+        }
+      ],
+      "sampleWrapped": [
+        {
+          "id": "p2s356",
+          "mode": "wrap",
+          "size": 4,
+          "lines": 3,
+          "box": 46.24
+        }
+      ],
+      "sampleShrunk": [],
+      "outputPath": "reports/output/round8/live/HBL_DRAFT_REPORT_FORMAT_15.pdf"
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+      "referencePages": 1,
+      "outputPages": 1,
+      "pageCountChanged": false,
+      "overflowSpans": 35,
+      "clipped": 35,
+      "wrapped": 0,
+      "shrunk": 0,
+      "wrapHitMaxLines": 0,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s6",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 153.87
+        },
+        {
+          "id": "p1s11",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 254.14
+        },
+        {
+          "id": "p1s12",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 86.3
+        },
+        {
+          "id": "p1s42",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 104.6
+        },
+        {
+          "id": "p1s43",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 95.26
+        }
+      ],
+      "sampleWrapped": [],
+      "sampleShrunk": [],
+      "outputPath": "reports/output/round8/live/ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER.pdf"
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+      "referencePages": 1,
+      "outputPages": 1,
+      "pageCountChanged": false,
+      "overflowSpans": 17,
+      "clipped": 17,
+      "wrapped": 0,
+      "shrunk": 0,
+      "wrapHitMaxLines": 0,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s1",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 31.14
+        },
+        {
+          "id": "p1s4",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 294.87
+        },
+        {
+          "id": "p1s21",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 158.32
+        },
+        {
+          "id": "p1s23",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 158.75
+        },
+        {
+          "id": "p1s28",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 154.35
+        }
+      ],
+      "sampleWrapped": [],
+      "sampleShrunk": [],
+      "outputPath": "reports/output/round8/live/ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES.pdf"
+    },
+    {
+      "code": "AIR_QUOTATION_REPORT_FORMAT",
+      "referencePages": 1,
+      "outputPages": 1,
+      "pageCountChanged": false,
+      "overflowSpans": 55,
+      "clipped": 51,
+      "wrapped": 0,
+      "shrunk": 4,
+      "wrapHitMaxLines": 0,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s1",
+          "mode": "clip",
+          "size": 8.04,
+          "lines": 1,
+          "box": 244.5
+        },
+        {
+          "id": "p1s8",
+          "mode": "clip",
+          "size": 8.04,
+          "lines": 1,
+          "box": 11.18
+        },
+        {
+          "id": "p1s17",
+          "mode": "clip",
+          "size": 8.04,
+          "lines": 1,
+          "box": 13.32
+        },
+        {
+          "id": "p1s18",
+          "mode": "clip",
+          "size": 8.04,
+          "lines": 1,
+          "box": 12.96
+        },
+        {
+          "id": "p1s43",
+          "mode": "clip",
+          "size": 8.04,
+          "lines": 1,
+          "box": 8.88
+        }
+      ],
+      "sampleWrapped": [],
+      "sampleShrunk": [
+        {
+          "id": "p1s240",
+          "mode": "shrink",
+          "size": 3.789999999999999,
+          "lines": 1,
+          "box": 24.5
+        },
+        {
+          "id": "p1s253",
+          "mode": "shrink",
+          "size": 3.789999999999999,
+          "lines": 1,
+          "box": 24.5
+        },
+        {
+          "id": "p1s269",
+          "mode": "shrink",
+          "size": 3.789999999999999,
+          "lines": 1,
+          "box": 24.5
+        },
+        {
+          "id": "p1s282",
+          "mode": "shrink",
+          "size": 3.789999999999999,
+          "lines": 1,
+          "box": 24.5
+        }
+      ],
+      "outputPath": "reports/output/round8/live/AIR_QUOTATION_REPORT_FORMAT.pdf"
+    },
+    {
+      "code": "AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT",
+      "referencePages": 1,
+      "outputPages": 1,
+      "pageCountChanged": false,
+      "overflowSpans": 27,
+      "clipped": 27,
+      "wrapped": 0,
+      "shrunk": 0,
+      "wrapHitMaxLines": 0,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s1",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 35.59
+        },
+        {
+          "id": "p1s16",
+          "mode": "clip",
+          "size": 11.8713,
+          "lines": 1,
+          "box": 215.69
+        },
+        {
+          "id": "p1s22",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 108.18
+        },
+        {
+          "id": "p1s31",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 105.14
+        },
+        {
+          "id": "p1s35",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 85.77
+        }
+      ],
+      "sampleWrapped": [],
+      "sampleShrunk": [],
+      "outputPath": "reports/output/round8/live/AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT.pdf"
+    },
+    {
+      "code": "JOB_CARD_REPORT_FORMAT",
+      "referencePages": 1,
+      "outputPages": 1,
+      "pageCountChanged": false,
+      "overflowSpans": 46,
+      "clipped": 46,
+      "wrapped": 0,
+      "shrunk": 0,
+      "wrapHitMaxLines": 0,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s1",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 35.59
+        },
+        {
+          "id": "p1s11",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 15.4
+        },
+        {
+          "id": "p1s15",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 24.21
+        },
+        {
+          "id": "p1s19",
+          "mode": "clip",
+          "size": 7.9142,
+          "lines": 1,
+          "box": 30.81
+        },
+        {
+          "id": "p1s26",
+          "mode": "clip",
+          "size": 11.8713,
+          "lines": 1,
+          "box": 187.36
+        }
+      ],
+      "sampleWrapped": [],
+      "sampleShrunk": [],
+      "outputPath": "reports/output/round8/live/JOB_CARD_REPORT_FORMAT.pdf"
+    },
+    {
+      "code": "PURCHASE_INVOICE_REPORT_FORMAT_1",
+      "referencePages": 1,
+      "outputPages": 1,
+      "pageCountChanged": false,
+      "overflowSpans": 15,
+      "clipped": 15,
+      "wrapped": 0,
+      "shrunk": 0,
+      "wrapHitMaxLines": 0,
+      "emptyDynamicInSpec": 0,
+      "sampleClipped": [
+        {
+          "id": "p1s7",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 84.01
+        },
+        {
+          "id": "p1s24",
+          "mode": "clip",
+          "size": 8,
+          "lines": 1,
+          "box": 98.28
+        },
+        {
+          "id": "p1s37",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 83.24
+        },
+        {
+          "id": "p1s41",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 27.24
+        },
+        {
+          "id": "p1s42",
+          "mode": "clip",
+          "size": 7,
+          "lines": 1,
+          "box": 83.24
+        }
+      ],
+      "sampleWrapped": [],
+      "sampleShrunk": [],
+      "outputPath": "reports/output/round8/live/PURCHASE_INVOICE_REPORT_FORMAT_1.pdf"
+    }
+  ]
+}

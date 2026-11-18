@@ -1,0 +1,24 @@
+{
+  "outFile": "D:\\KingFisherWings-frontend\\reports\\full-run-track-a-list.csv",
+  "documents": 20,
+  "regressions": 0,
+  "regressionCodes": [],
+  "totals": {
+    "extractMs": 755,
+    "renderMs": 41879,
+    "rasterReferenceMs": 25,
+    "rasterRenderedMs": 19466,
+    "diffMs": 83845,
+    "specHit": 20,
+    "specMiss": 0,
+    "goldenHit": 20,
+    "goldenMiss": 0
+  },
+  "version": {
+    "id": "track-a-speed-1",
+    "extract": "e1-class-order",
+    "render": "r2-arabic-spacing",
+    "checker": "c1-textequal-fast",
+    "raster": "pdftoppm-150"
+  }
+}

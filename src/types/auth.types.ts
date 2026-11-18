@@ -56,6 +56,12 @@ export type PermissionKey =
   /** Accounts aggregate jobs list — GET /jobs/accounts */
   | 'jobs.accounts.view'
   | 'finance.accounts.view'
+  /**
+   * Transport-only handoff assignee queue — GET /jobs scoped to ops_user_id=me.
+   * Do not pair with operations_*.see job-type grants.
+   */
+  | 'jobs.transport.handoff'
+  | 'transport.handoff'
   // Quote Requests Integration (website KFPP bridge)
   | 'integrations.quote_requests.view'
   | 'integrations.quote_requests.manage_connection'

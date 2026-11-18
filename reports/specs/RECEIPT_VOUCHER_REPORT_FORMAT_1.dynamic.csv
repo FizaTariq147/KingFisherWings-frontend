@@ -1,0 +1,6 @@
+id,page,text,binding,reason
+p1s1,1,2/4/2019,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s5,1,"10548164641:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s16,1,RECEIPT VOUCHER - MAABR1900093,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s42,1,"17,384.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s44,1,"17,384.00",,"matches a demo value (number, date, party, or Fresa sample text)"

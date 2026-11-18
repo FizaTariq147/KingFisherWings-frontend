@@ -2,9 +2,9 @@
   "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA": {
     "page": { "pass": true },
     "geometry": { "pass": true, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 0 },
-    "staticText": { "pass": false, "failures": 14 },
+    "staticText": { "pass": true, "failures": 0 },
     "dynamicText": { "pass": true, "failures": 0 },
-    "raster": { "ratio": 0.0165 },
+    "raster": { "ratio": 0.0117 },
     "pagination": { "pass": false }
   },
   "HBL_DRAFT_REPORT_FORMAT_JASPER": {
@@ -12,23 +12,23 @@
     "geometry": { "pass": true, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 0 },
     "staticText": { "pass": true, "failures": 0 },
     "dynamicText": { "pass": true, "failures": 0 },
-    "raster": { "ratio": 0.0106 },
+    "raster": { "ratio": 0.005 },
     "pagination": { "pass": false }
   },
   "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER": {
     "page": { "pass": true },
     "geometry": { "pass": true, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 0 },
-    "staticText": { "pass": false, "failures": 2 },
+    "staticText": { "pass": true, "failures": 0 },
     "dynamicText": { "pass": true, "failures": 0 },
-    "raster": { "ratio": 0.0158 },
+    "raster": { "ratio": 0.0099 },
     "pagination": { "pass": false }
   },
   "TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY": {
     "page": { "pass": true },
     "geometry": { "pass": true, "unmatchedLines": 0, "unmatchedRects": 0, "unmatchedPaths": 0, "uncaptured": 0 },
-    "staticText": { "pass": false, "failures": 1 },
-    "dynamicText": { "pass": false, "failures": 11 },
-    "raster": { "ratio": 0.0058 },
+    "staticText": { "pass": true, "failures": 0 },
+    "dynamicText": { "pass": true, "failures": 0 },
+    "raster": { "ratio": 0.0038 },
     "pagination": { "pass": true }
   }
 }

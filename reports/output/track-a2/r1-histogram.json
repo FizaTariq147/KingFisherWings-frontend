@@ -1,0 +1,1329 @@
+{
+  "note": "Distances are in raster pixels at 150 dpi. Masks and limits are unchanged. over 8 is farther than 8 px from both the nearest text span box and the nearest allowed image box. clip is 0 because the spec does not record clip paths.",
+  "documents": [
+    {
+      "code": "GL_REPORT_VOUCHER_REPORT_FORMAT",
+      "nonText": 0.0485,
+      "textInk": 3.6388,
+      "toText": {
+        "0-1": 2081,
+        "2-3": 3320,
+        "4-8": 9224,
+        "over 8": 196521
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 211146
+      },
+      "toEither": {
+        "0-1": 2081,
+        "2-3": 3320,
+        "4-8": 9224,
+        "over 8": 196521
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 66502,
+        "clip": 0,
+        "images": 0,
+        "other": 130019
+      },
+      "seconds": 1.8,
+      "boundsPage": 1
+    },
+    {
+      "code": "OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER",
+      "nonText": 0.0959,
+      "textInk": 2.6199,
+      "toText": {
+        "0-1": 1235,
+        "2-3": 2804,
+        "4-8": 8214,
+        "over 8": 196384
+      },
+      "toImage": {
+        "0-1": 188,
+        "2-3": 659,
+        "4-8": 2530,
+        "over 8": 205260
+      },
+      "toEither": {
+        "0-1": 1423,
+        "2-3": 3463,
+        "4-8": 10744,
+        "over 8": 193007
+      },
+      "far": {
+        "fills": 35127,
+        "strokes": 51203,
+        "clip": 0,
+        "images": 0,
+        "other": 106677
+      },
+      "seconds": 4.6,
+      "boundsPage": 1
+    },
+    {
+      "code": "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+      "nonText": 0.0351,
+      "textInk": 2.7348,
+      "toText": {
+        "0-1": 1484,
+        "2-3": 1899,
+        "4-8": 4220,
+        "over 8": 145379
+      },
+      "toImage": {
+        "0-1": 2364,
+        "2-3": 210,
+        "4-8": 265,
+        "over 8": 150143
+      },
+      "toEither": {
+        "0-1": 3848,
+        "2-3": 2109,
+        "4-8": 4485,
+        "over 8": 142540
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 29644,
+        "clip": 0,
+        "images": 0,
+        "other": 112896
+      },
+      "seconds": 2.1,
+      "boundsPage": 1
+    },
+    {
+      "code": "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT",
+      "nonText": 0.0297,
+      "textInk": 2.8826,
+      "toText": {
+        "0-1": 478,
+        "2-3": 1037,
+        "4-8": 5197,
+        "over 8": 122625
+      },
+      "toImage": {
+        "0-1": 50,
+        "2-3": 362,
+        "4-8": 331,
+        "over 8": 128594
+      },
+      "toEither": {
+        "0-1": 528,
+        "2-3": 1399,
+        "4-8": 5528,
+        "over 8": 121882
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 16695,
+        "clip": 0,
+        "images": 0,
+        "other": 105187
+      },
+      "seconds": 5,
+      "boundsPage": 1
+    },
+    {
+      "code": "CARGO_MANIFEST_REPORT_FORMAT",
+      "nonText": 0.0298,
+      "textInk": 3.1219,
+      "toText": {
+        "0-1": 511,
+        "2-3": 1361,
+        "4-8": 5862,
+        "over 8": 121938
+      },
+      "toImage": {
+        "0-1": 52,
+        "2-3": 370,
+        "4-8": 381,
+        "over 8": 128869
+      },
+      "toEither": {
+        "0-1": 563,
+        "2-3": 1731,
+        "4-8": 6243,
+        "over 8": 121135
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 16650,
+        "clip": 0,
+        "images": 0,
+        "other": 104485
+      },
+      "seconds": 2.3,
+      "boundsPage": 1
+    },
+    {
+      "code": "CONTAINER_LOAD_PLAN_REPORT_FORMAT",
+      "nonText": 0.0278,
+      "textInk": 2.7135,
+      "toText": {
+        "0-1": 1032,
+        "2-3": 2274,
+        "4-8": 5065,
+        "over 8": 112745
+      },
+      "toImage": {
+        "0-1": 50,
+        "2-3": 86,
+        "4-8": 167,
+        "over 8": 120813
+      },
+      "toEither": {
+        "0-1": 1082,
+        "2-3": 2360,
+        "4-8": 5232,
+        "over 8": 112442
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 18053,
+        "clip": 0,
+        "images": 0,
+        "other": 94389
+      },
+      "seconds": 3.7,
+      "boundsPage": 1
+    },
+    {
+      "code": "FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796",
+      "nonText": 0.0256,
+      "textInk": 4.5644,
+      "toText": {
+        "0-1": 605,
+        "2-3": 2062,
+        "4-8": 3219,
+        "over 8": 105512
+      },
+      "toImage": {
+        "0-1": 177,
+        "2-3": 446,
+        "4-8": 608,
+        "over 8": 110167
+      },
+      "toEither": {
+        "0-1": 782,
+        "2-3": 2508,
+        "4-8": 3827,
+        "over 8": 104281
+      },
+      "far": {
+        "fills": 1448,
+        "strokes": 24010,
+        "clip": 0,
+        "images": 0,
+        "other": 78823
+      },
+      "seconds": 6.7,
+      "boundsPage": 1
+    },
+    {
+      "code": "CONTAINER_OUTTURN_REPORT_FORMAT",
+      "nonText": 0.0403,
+      "textInk": 3.9389,
+      "toText": {
+        "0-1": 584,
+        "2-3": 1240,
+        "4-8": 2706,
+        "over 8": 83072
+      },
+      "toImage": {
+        "0-1": 1150,
+        "2-3": 139,
+        "4-8": 200,
+        "over 8": 86113
+      },
+      "toEither": {
+        "0-1": 1734,
+        "2-3": 1379,
+        "4-8": 2906,
+        "over 8": 81583
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 20908,
+        "clip": 0,
+        "images": 0,
+        "other": 60675
+      },
+      "seconds": 0.9,
+      "boundsPage": 1
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "nonText": 0.0357,
+      "textInk": 3.7578,
+      "toText": {
+        "0-1": 664,
+        "2-3": 1458,
+        "4-8": 4750,
+        "over 8": 70739
+      },
+      "toImage": {
+        "0-1": 106,
+        "2-3": 1271,
+        "4-8": 568,
+        "over 8": 75666
+      },
+      "toEither": {
+        "0-1": 770,
+        "2-3": 2729,
+        "4-8": 5318,
+        "over 8": 68794
+      },
+      "far": {
+        "fills": 1603,
+        "strokes": 16038,
+        "clip": 0,
+        "images": 0,
+        "other": 51153
+      },
+      "seconds": 3.5,
+      "boundsPage": 1
+    },
+    {
+      "code": "GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT",
+      "nonText": 0.0323,
+      "textInk": 2.6605,
+      "toText": {
+        "0-1": 615,
+        "2-3": 874,
+        "4-8": 2943,
+        "over 8": 65926
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 70358
+      },
+      "toEither": {
+        "0-1": 615,
+        "2-3": 874,
+        "4-8": 2943,
+        "over 8": 65926
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 11943,
+        "clip": 0,
+        "images": 0,
+        "other": 53983
+      },
+      "seconds": 1.1,
+      "boundsPage": 1
+    },
+    {
+      "code": "FG_TAX_INVOICE_INDIA_RPM_REF_237",
+      "nonText": 0.0329,
+      "textInk": 4.6426,
+      "toText": {
+        "0-1": 314,
+        "2-3": 876,
+        "4-8": 3115,
+        "over 8": 67184
+      },
+      "toImage": {
+        "0-1": 54,
+        "2-3": 1291,
+        "4-8": 663,
+        "over 8": 69481
+      },
+      "toEither": {
+        "0-1": 368,
+        "2-3": 2167,
+        "4-8": 3778,
+        "over 8": 65176
+      },
+      "far": {
+        "fills": 863,
+        "strokes": 13039,
+        "clip": 0,
+        "images": 0,
+        "other": 51274
+      },
+      "seconds": 1.8,
+      "boundsPage": 1
+    },
+    {
+      "code": "CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT",
+      "nonText": 0.0276,
+      "textInk": 3.4762,
+      "toText": {
+        "0-1": 242,
+        "2-3": 563,
+        "4-8": 1895,
+        "over 8": 57408
+      },
+      "toImage": {
+        "0-1": 39,
+        "2-3": 104,
+        "4-8": 2413,
+        "over 8": 57552
+      },
+      "toEither": {
+        "0-1": 281,
+        "2-3": 667,
+        "4-8": 4308,
+        "over 8": 54852
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 10546,
+        "clip": 0,
+        "images": 0,
+        "other": 44306
+      },
+      "seconds": 1.1,
+      "boundsPage": 1
+    },
+    {
+      "code": "PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE",
+      "nonText": 0.0247,
+      "textInk": 7.2105,
+      "toText": {
+        "0-1": 164,
+        "2-3": 1035,
+        "4-8": 1519,
+        "over 8": 51103
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 53821
+      },
+      "toEither": {
+        "0-1": 164,
+        "2-3": 1035,
+        "4-8": 1519,
+        "over 8": 51103
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 15322,
+        "clip": 0,
+        "images": 0,
+        "other": 35781
+      },
+      "seconds": 0.7,
+      "boundsPage": 1
+    },
+    {
+      "code": "TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT",
+      "nonText": 0.0127,
+      "textInk": 0.0972,
+      "toText": {
+        "0-1": 208,
+        "2-3": 848,
+        "4-8": 1534,
+        "over 8": 50733
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 53323
+      },
+      "toEither": {
+        "0-1": 208,
+        "2-3": 848,
+        "4-8": 1534,
+        "over 8": 50733
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 50733,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 1.5,
+      "boundsPage": 1
+    },
+    {
+      "code": "PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE",
+      "nonText": 0.024,
+      "textInk": 3.8419,
+      "toText": {
+        "0-1": 259,
+        "2-3": 726,
+        "4-8": 1296,
+        "over 8": 49909
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 52190
+      },
+      "toEither": {
+        "0-1": 259,
+        "2-3": 726,
+        "4-8": 1296,
+        "over 8": 49909
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 11164,
+        "clip": 0,
+        "images": 0,
+        "other": 38745
+      },
+      "seconds": 0.8,
+      "boundsPage": 1
+    },
+    {
+      "code": "FG_PROOF_OF_DELIVERY_RPM_REF_847",
+      "nonText": 0.0255,
+      "textInk": 2.8291,
+      "toText": {
+        "0-1": 645,
+        "2-3": 1584,
+        "4-8": 3395,
+        "over 8": 49856
+      },
+      "toImage": {
+        "0-1": 27,
+        "2-3": 202,
+        "4-8": 2483,
+        "over 8": 52768
+      },
+      "toEither": {
+        "0-1": 672,
+        "2-3": 1786,
+        "4-8": 5878,
+        "over 8": 47144
+      },
+      "far": {
+        "fills": 429,
+        "strokes": 6060,
+        "clip": 0,
+        "images": 0,
+        "other": 40655
+      },
+      "seconds": 1.4,
+      "boundsPage": 1
+    },
+    {
+      "code": "CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT",
+      "nonText": 0.02,
+      "textInk": 5.0175,
+      "toText": {
+        "0-1": 243,
+        "2-3": 588,
+        "4-8": 1769,
+        "over 8": 40999
+      },
+      "toImage": {
+        "0-1": 36,
+        "2-3": 66,
+        "4-8": 1277,
+        "over 8": 42220
+      },
+      "toEither": {
+        "0-1": 279,
+        "2-3": 654,
+        "4-8": 3046,
+        "over 8": 39620
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 5409,
+        "clip": 0,
+        "images": 0,
+        "other": 34211
+      },
+      "seconds": 0.9,
+      "boundsPage": 1
+    },
+    {
+      "code": "AR_AGING_SUMMARY_REPORT_FORMAT",
+      "nonText": 0.0175,
+      "textInk": 7.5977,
+      "toText": {
+        "0-1": 102,
+        "2-3": 192,
+        "4-8": 823,
+        "over 8": 37058
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 38175
+      },
+      "toEither": {
+        "0-1": 102,
+        "2-3": 192,
+        "4-8": 823,
+        "over 8": 37058
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 7301,
+        "clip": 0,
+        "images": 0,
+        "other": 29757
+      },
+      "seconds": 0.9,
+      "boundsPage": 1
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1",
+      "nonText": 0.0227,
+      "textInk": 0.0957,
+      "toText": {
+        "0-1": 1264,
+        "2-3": 2882,
+        "4-8": 11379,
+        "over 8": 33703
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 49228
+      },
+      "toEither": {
+        "0-1": 1264,
+        "2-3": 2882,
+        "4-8": 11379,
+        "over 8": 33703
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 33703,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 0.8,
+      "boundsPage": 1
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE_LOCATION_WISE",
+      "nonText": 0.0227,
+      "textInk": 0.0954,
+      "toText": {
+        "0-1": 1265,
+        "2-3": 2892,
+        "4-8": 11401,
+        "over 8": 33700
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 49258
+      },
+      "toEither": {
+        "0-1": 1265,
+        "2-3": 2892,
+        "4-8": 11401,
+        "over 8": 33700
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 33700,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 0.9,
+      "boundsPage": 1
+    },
+    {
+      "code": "AP_AGING_SUMMARY_REPORT_FORMAT",
+      "nonText": 0.0155,
+      "textInk": 17.0569,
+      "toText": {
+        "0-1": 133,
+        "2-3": 144,
+        "4-8": 578,
+        "over 8": 32778
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 33633
+      },
+      "toEither": {
+        "0-1": 133,
+        "2-3": 144,
+        "4-8": 578,
+        "over 8": 32778
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 7306,
+        "clip": 0,
+        "images": 0,
+        "other": 25472
+      },
+      "seconds": 0.9,
+      "boundsPage": 1
+    },
+    {
+      "code": "DELIVERY_ORDER_REPORT_FORMAT_13",
+      "nonText": 0.0159,
+      "textInk": 0.1311,
+      "toText": {
+        "0-1": 451,
+        "2-3": 1817,
+        "4-8": 3694,
+        "over 8": 28728
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 1,
+        "over 8": 34689
+      },
+      "toEither": {
+        "0-1": 451,
+        "2-3": 1817,
+        "4-8": 3695,
+        "over 8": 28727
+      },
+      "far": {
+        "fills": 23224,
+        "strokes": 5503,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 1.4,
+      "boundsPage": 1
+    },
+    {
+      "code": "SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",
+      "nonText": 0.0205,
+      "textInk": 0.1621,
+      "toText": {
+        "0-1": 4856,
+        "2-3": 4889,
+        "4-8": 7786,
+        "over 8": 26908
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 44439
+      },
+      "toEither": {
+        "0-1": 4856,
+        "2-3": 4889,
+        "4-8": 7786,
+        "over 8": 26908
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 26908,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 1.2,
+      "boundsPage": 1
+    },
+    {
+      "code": "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",
+      "nonText": 0.0196,
+      "textInk": 0.2966,
+      "toText": {
+        "0-1": 5903,
+        "2-3": 4222,
+        "4-8": 6797,
+        "over 8": 25718
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 42640
+      },
+      "toEither": {
+        "0-1": 5903,
+        "2-3": 4222,
+        "4-8": 6797,
+        "over 8": 25718
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 25718,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 1.1,
+      "boundsPage": 1
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE",
+      "nonText": 0.0221,
+      "textInk": 0.1104,
+      "toText": {
+        "0-1": 1850,
+        "2-3": 3940,
+        "4-8": 16956,
+        "over 8": 25178
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 47924
+      },
+      "toEither": {
+        "0-1": 1850,
+        "2-3": 3940,
+        "4-8": 16956,
+        "over 8": 25178
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 25178,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 0.9,
+      "boundsPage": 1
+    },
+    {
+      "code": "ADVANCE_SHIPPING_NOTE_SUMMARY",
+      "nonText": 0.0192,
+      "textInk": 0.1168,
+      "toText": {
+        "0-1": 1498,
+        "2-3": 3304,
+        "4-8": 13088,
+        "over 8": 23724
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 41614
+      },
+      "toEither": {
+        "0-1": 1498,
+        "2-3": 3304,
+        "4-8": 13088,
+        "over 8": 23724
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 23724,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 2.5,
+      "boundsPage": 1
+    },
+    {
+      "code": "DAILY_STATUS_REPORT_FORMAT_2",
+      "nonText": 0.0162,
+      "textInk": 0.0251,
+      "toText": {
+        "0-1": 2060,
+        "2-3": 5530,
+        "4-8": 3350,
+        "over 8": 23047
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 33987
+      },
+      "toEither": {
+        "0-1": 2060,
+        "2-3": 5530,
+        "4-8": 3350,
+        "over 8": 23047
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 21400,
+        "clip": 0,
+        "images": 0,
+        "other": 1647
+      },
+      "seconds": 4.7,
+      "boundsPage": 1
+    },
+    {
+      "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT",
+      "nonText": 0.0086,
+      "textInk": 0.1054,
+      "toText": {
+        "0-1": 6913,
+        "2-3": 5053,
+        "4-8": 3760,
+        "over 8": 21861
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 37587
+      },
+      "toEither": {
+        "0-1": 6913,
+        "2-3": 5053,
+        "4-8": 3760,
+        "over 8": 21861
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 21861,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 18.4,
+      "boundsPage": 1
+    },
+    {
+      "code": "STUFFING_REPORT_FORMAT",
+      "nonText": 0.0065,
+      "textInk": 0.043,
+      "toText": {
+        "0-1": 3231,
+        "2-3": 2756,
+        "4-8": 1872,
+        "over 8": 20425
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 28284
+      },
+      "toEither": {
+        "0-1": 3231,
+        "2-3": 2756,
+        "4-8": 1872,
+        "over 8": 20425
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 20354,
+        "clip": 0,
+        "images": 0,
+        "other": 71
+      },
+      "seconds": 13.2,
+      "boundsPage": 1
+    },
+    {
+      "code": "DAILY_STATUS_REPORT_FORMAT_1",
+      "nonText": 0.0077,
+      "textInk": 0.0365,
+      "toText": {
+        "0-1": 1614,
+        "2-3": 8238,
+        "4-8": 2455,
+        "over 8": 19968
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 32275
+      },
+      "toEither": {
+        "0-1": 1614,
+        "2-3": 8238,
+        "4-8": 2455,
+        "over 8": 19968
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 19831,
+        "clip": 0,
+        "images": 0,
+        "other": 137
+      },
+      "seconds": 4.6,
+      "boundsPage": 1
+    },
+    {
+      "code": "CARGO_ARRIVAL_NOTICE_SEA_RPM_REF_27",
+      "nonText": 0.0065,
+      "textInk": 0.3487,
+      "toText": {
+        "0-1": 430,
+        "2-3": 1937,
+        "4-8": 8231,
+        "over 8": 17640
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 28238
+      },
+      "toEither": {
+        "0-1": 430,
+        "2-3": 1937,
+        "4-8": 8231,
+        "over 8": 17640
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 17640,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 3.2,
+      "boundsPage": 1
+    },
+    {
+      "code": "CARGO_ARRIVAL_NOTICE_AIR_RPM_REF_49",
+      "nonText": 0.0064,
+      "textInk": 0.355,
+      "toText": {
+        "0-1": 747,
+        "2-3": 1744,
+        "4-8": 8110,
+        "over 8": 17242
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 27843
+      },
+      "toEither": {
+        "0-1": 747,
+        "2-3": 1744,
+        "4-8": 8110,
+        "over 8": 17242
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 17242,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 2.6,
+      "boundsPage": 1
+    },
+    {
+      "code": "JOB_CARD_REPORT_FORMAT",
+      "nonText": 0.0117,
+      "textInk": 0.1755,
+      "toText": {
+        "0-1": 1882,
+        "2-3": 2241,
+        "4-8": 4433,
+        "over 8": 16906
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 25462
+      },
+      "toEither": {
+        "0-1": 1882,
+        "2-3": 2241,
+        "4-8": 4433,
+        "over 8": 16906
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 16906,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 1.6,
+      "boundsPage": 1
+    },
+    {
+      "code": "CARGO_ARRIVAL_NOTICE_SEA_FORMAT2_RPM_REF_592",
+      "nonText": 0.006,
+      "textInk": 0.3752,
+      "toText": {
+        "0-1": 1095,
+        "2-3": 1734,
+        "4-8": 7599,
+        "over 8": 15695
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 26123
+      },
+      "toEither": {
+        "0-1": 1095,
+        "2-3": 1734,
+        "4-8": 7599,
+        "over 8": 15695
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 15695,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 2.9,
+      "boundsPage": 1
+    },
+    {
+      "code": "CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3_RPM_REF_1376",
+      "nonText": 0.0063,
+      "textInk": 0.366,
+      "toText": {
+        "0-1": 1208,
+        "2-3": 1852,
+        "4-8": 8603,
+        "over 8": 15582
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 27245
+      },
+      "toEither": {
+        "0-1": 1208,
+        "2-3": 1852,
+        "4-8": 8603,
+        "over 8": 15582
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 15582,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 2.4,
+      "boundsPage": 1
+    },
+    {
+      "code": "ARRIVAL_INFORMATION_RPM_REF_839",
+      "nonText": 0.0058,
+      "textInk": 0.3967,
+      "toText": {
+        "0-1": 385,
+        "2-3": 1595,
+        "4-8": 8687,
+        "over 8": 14600
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 25267
+      },
+      "toEither": {
+        "0-1": 385,
+        "2-3": 1595,
+        "4-8": 8687,
+        "over 8": 14600
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 14600,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 3.1,
+      "boundsPage": 1
+    },
+    {
+      "code": "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1",
+      "nonText": 0.0113,
+      "textInk": 0.2648,
+      "toText": {
+        "0-1": 3383,
+        "2-3": 2704,
+        "4-8": 4734,
+        "over 8": 13752
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 24573
+      },
+      "toEither": {
+        "0-1": 3383,
+        "2-3": 2704,
+        "4-8": 4734,
+        "over 8": 13752
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 13752,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 1.2,
+      "boundsPage": 1
+    },
+    {
+      "code": "AIR_QUOTATION_REPORT_FORMAT",
+      "nonText": 0.0069,
+      "textInk": 0.0549,
+      "toText": {
+        "0-1": 2368,
+        "2-3": 1482,
+        "4-8": 879,
+        "over 8": 10308
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 15037
+      },
+      "toEither": {
+        "0-1": 2368,
+        "2-3": 1482,
+        "4-8": 879,
+        "over 8": 10308
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 10308,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 5.8,
+      "boundsPage": 1
+    },
+    {
+      "code": "OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS",
+      "nonText": 0.0087,
+      "textInk": 0.1231,
+      "toText": {
+        "0-1": 5098,
+        "2-3": 2029,
+        "4-8": 1445,
+        "over 8": 10281
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 18853
+      },
+      "toEither": {
+        "0-1": 5098,
+        "2-3": 2029,
+        "4-8": 1445,
+        "over 8": 10281
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 10281,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 6,
+      "boundsPage": 1
+    },
+    {
+      "code": "SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT",
+      "nonText": 0.0057,
+      "textInk": 0.108,
+      "toText": {
+        "0-1": 112,
+        "2-3": 881,
+        "4-8": 1809,
+        "over 8": 9260
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 12062
+      },
+      "toEither": {
+        "0-1": 112,
+        "2-3": 881,
+        "4-8": 1809,
+        "over 8": 9260
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 9260,
+        "clip": 0,
+        "images": 0,
+        "other": 0
+      },
+      "seconds": 1.4,
+      "boundsPage": 1
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_36",
+      "nonText": 0.0113,
+      "textInk": 0.7214,
+      "toText": {
+        "0-1": 2670,
+        "2-3": 5432,
+        "4-8": 8525,
+        "over 8": 7835
+      },
+      "toImage": {
+        "0-1": 0,
+        "2-3": 0,
+        "4-8": 0,
+        "over 8": 24462
+      },
+      "toEither": {
+        "0-1": 2670,
+        "2-3": 5432,
+        "4-8": 8525,
+        "over 8": 7835
+      },
+      "far": {
+        "fills": 0,
+        "strokes": 2786,
+        "clip": 0,
+        "images": 0,
+        "other": 5049
+      },
+      "seconds": 4,
+      "boundsPage": 1
+    }
+  ],
+  "worst10": [
+    "GL_REPORT_VOUCHER_REPORT_FORMAT",
+    "OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER",
+    "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+    "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT",
+    "CARGO_MANIFEST_REPORT_FORMAT",
+    "CONTAINER_LOAD_PLAN_REPORT_FORMAT",
+    "FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796",
+    "CONTAINER_OUTTURN_REPORT_FORMAT",
+    "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+    "GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT"
+  ]
+}

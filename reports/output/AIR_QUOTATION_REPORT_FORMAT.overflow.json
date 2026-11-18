@@ -1,0 +1,888 @@
+{
+  "code": "AIR_QUOTATION_REPORT_FORMAT",
+  "maxLines": 3,
+  "spans": [
+    {
+      "id": "p1s1",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 244.5
+    },
+    {
+      "id": "p1s8",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 11.18
+    },
+    {
+      "id": "p1s17",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 13.32
+    },
+    {
+      "id": "p1s18",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 12.96
+    },
+    {
+      "id": "p1s43",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 8.88
+    },
+    {
+      "id": "p1s53",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 26.64
+    },
+    {
+      "id": "p1s90",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 111.14
+    },
+    {
+      "id": "p1s94",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 9.12
+    },
+    {
+      "id": "p1s98",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 8.88
+    },
+    {
+      "id": "p1s100",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 8.88
+    },
+    {
+      "id": "p1s104",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 8.88
+    },
+    {
+      "id": "p1s156",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 13.32
+    },
+    {
+      "id": "p1s159",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s160",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 35.65
+    },
+    {
+      "id": "p1s162",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 35.65
+    },
+    {
+      "id": "p1s164",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 28.94
+    },
+    {
+      "id": "p1s218",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 13.32
+    },
+    {
+      "id": "p1s220",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s221",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 15.23
+    },
+    {
+      "id": "p1s222",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.38
+    },
+    {
+      "id": "p1s223",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 15.34
+    },
+    {
+      "id": "p1s224",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 15.23
+    },
+    {
+      "id": "p1s225",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 35.65
+    },
+    {
+      "id": "p1s235",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s236",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s237",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s238",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s240",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s241",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.21
+    },
+    {
+      "id": "p1s248",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s249",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s250",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s251",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s253",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s254",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.21
+    },
+    {
+      "id": "p1s264",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s265",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s266",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s267",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s269",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s270",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.21
+    },
+    {
+      "id": "p1s277",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s278",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s279",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s280",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s282",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s283",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.21
+    },
+    {
+      "id": "p1s295",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.77,
+      "lines": 1,
+      "box": 37.59
+    },
+    {
+      "id": "p1s300",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s323",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s343",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s359",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s373",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s392",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 4.48,
+      "lines": 1,
+      "box": 7.2
+    },
+    {
+      "id": "p1s396",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 4.48,
+      "lines": 1,
+      "box": 7.2
+    }
+  ],
+  "warnings": [
+    {
+      "id": "p1s1",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 244.5
+    },
+    {
+      "id": "p1s8",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 11.18
+    },
+    {
+      "id": "p1s17",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 13.32
+    },
+    {
+      "id": "p1s18",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 12.96
+    },
+    {
+      "id": "p1s43",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 8.88
+    },
+    {
+      "id": "p1s53",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 26.64
+    },
+    {
+      "id": "p1s90",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 111.14
+    },
+    {
+      "id": "p1s94",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 9.12
+    },
+    {
+      "id": "p1s98",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 8.88
+    },
+    {
+      "id": "p1s100",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 8.88
+    },
+    {
+      "id": "p1s104",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 8.88
+    },
+    {
+      "id": "p1s156",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 13.32
+    },
+    {
+      "id": "p1s159",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s160",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 35.65
+    },
+    {
+      "id": "p1s162",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 35.65
+    },
+    {
+      "id": "p1s164",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 28.94
+    },
+    {
+      "id": "p1s218",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 13.32
+    },
+    {
+      "id": "p1s220",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s221",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 15.23
+    },
+    {
+      "id": "p1s222",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.38
+    },
+    {
+      "id": "p1s223",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 15.34
+    },
+    {
+      "id": "p1s224",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 15.23
+    },
+    {
+      "id": "p1s225",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 35.65
+    },
+    {
+      "id": "p1s235",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s236",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s237",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s238",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s240",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s241",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.21
+    },
+    {
+      "id": "p1s248",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s249",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s250",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s251",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s253",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s254",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.21
+    },
+    {
+      "id": "p1s264",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s265",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s266",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s267",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s269",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s270",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.21
+    },
+    {
+      "id": "p1s277",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 20.06
+    },
+    {
+      "id": "p1s278",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s279",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s280",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.09
+    },
+    {
+      "id": "p1s282",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 24.5
+    },
+    {
+      "id": "p1s283",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 31.21
+    },
+    {
+      "id": "p1s295",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.77,
+      "lines": 1,
+      "box": 37.59
+    },
+    {
+      "id": "p1s300",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s323",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s343",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s359",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s373",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 5.539999999999999,
+      "lines": 1,
+      "box": 6.64
+    },
+    {
+      "id": "p1s392",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 4.48,
+      "lines": 1,
+      "box": 7.2
+    },
+    {
+      "id": "p1s396",
+      "mode": "clip",
+      "warning": "number overflow clipped after shrink",
+      "size": 4.48,
+      "lines": 1,
+      "box": 7.2
+    }
+  ]
+}

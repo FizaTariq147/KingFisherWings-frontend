@@ -1,0 +1,6 @@
+id,page,text,binding,reason
+p1s6,1,"P.O BOX 11700, 8100 UNIT NO 2 JEDDAH SAUDI ARABIA SAUDI",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s12,1,"JEDDAH, SAUDI ARABIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s36,1,PARTICULARS DECLARED BY THE SHIPPER BUT NOT ACKNOWLEDGED BY THE CARRIER,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s45,1,3 PACKAGES OF GENERAL CARGO,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s65,1,JURISDICTION AND LAW CLAUSE,,"matches a demo value (number, date, party, or Fresa sample text)"

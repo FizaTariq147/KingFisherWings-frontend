@@ -1,0 +1,8 @@
+id,page,text,binding,reason
+p1s1,1,2/8/2019,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s6,1,1 1,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s18,1,"03/5,",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s32,1,11,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s36,1,19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s126,1,08,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s130,1,19,,"matches a demo value (number, date, party, or Fresa sample text)"

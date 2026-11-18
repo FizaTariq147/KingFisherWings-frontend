@@ -164,11 +164,20 @@ export default function HubAllJobsPage({ variant, backTo, title, subtitle }: Hub
     delete params.job_types;
     delete params.job_type;
     // Match BE: staff never sends org department_id; admin MIS may.
+    // Transport handoff-only: force ops_user_id=me (assignee queue).
     return staffAlignedJobListParams(params, {
       isStaff: isStaffScoped,
       allowAdminDepartment: !isStaffScoped && Boolean(applied.departmentId?.trim()),
+      assigneeOnly: Boolean(staffScope.assigneeOnly),
+      assigneeUserId: staffScope.assigneeUserId ?? currentUserId,
     });
-  }, [applied, isStaffScoped, currentUserId]);
+  }, [
+    applied,
+    isStaffScoped,
+    currentUserId,
+    staffScope.assigneeOnly,
+    staffScope.assigneeUserId,
+  ]);
 
   const categoryFilter = applied.category.trim();
   const useCategoryList = Boolean(categoryFilter) && variant !== 'documentation';

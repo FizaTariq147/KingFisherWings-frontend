@@ -522,6 +522,15 @@ const OPERATIONS_EXTRA_NAV_ITEMS: NavItem[] = [
     matrixModule: 'transport',
   },
   {
+    label: 'Assigned jobs',
+    path: '/jobs/all',
+    Icon: ClipboardCheck,
+    // Transport handoff-only assignee queue (jobs.transport.handoff) — no ops_*.see grants.
+    permission: 'jobs.transport.handoff',
+    permissionAny: ['jobs.transport.handoff', 'transport.handoff'],
+    matrixModule: 'transport',
+  },
+  {
     label: 'Ops reports',
     path: '/operations/reports',
     Icon: FileText,

@@ -33,7 +33,8 @@
     "report:extract": "node tools/reports/extract.mjs",
     "report:validate-spec": "node tools/reports/validate-spec.mjs",
     "report:render-spec": "node tools/reports/render-spec.mjs",
-    "report:diff-pilot": "node tools/reports/diff-pilot.mjs"
+    "report:diff-pilot": "node tools/reports/diff-pilot.mjs",
+    "report:signoff": "node tools/reports/signoff.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",
@@ -85,6 +86,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
+    "mupdf": "^1.28.6",
     "@chromatic-com/storybook": "^5.2.1",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.61.0",

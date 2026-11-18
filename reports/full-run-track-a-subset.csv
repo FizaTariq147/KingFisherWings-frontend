@@ -1,0 +1,85 @@
+code,pages,page,geometry,static,dynamic,raster,pagination,failure_class,cause_counts,non_text,text_ink,masked_fraction
+ADVANCE_SHIPPING_NOTE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0221,0.1104,0.0204
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,,,,,extract or render error,"Error: UNKNOWN: unknown error, open 'D:\KingFisherWings-frontend\reports\specs\ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER.json'
+    at Object.writeFileSync (node:fs:2422:20)
+    at extractSpec (file:///D:/KingFisherWings-frontend/tools/reports/extract.mjs:945:6)
+    at async verify (file:///D:/KingFisherWings-frontend/tools/reports/verify-worker.mjs:90:5)
+    at async MessagePort.<anonymous> (file:///D:/KingFisherWings-frontend/tools/reports/verify-worker.mjs:171:17)",
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0227,0.0954,0.0204
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0227,0.0957,0.0204
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,pass,single-page,,,0.0028,0.1559,0.0318
+ADVANCE_SHIPPING_NOTE_SUMMARY,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0192,0.1168,0.0204
+AP_AGING_SUMMARY_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0155,17.0569,0.0071
+AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0196,0.2966,0.0294
+AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0113,0.2648,0.0294
+HBL_DRAFT_REPORT_FORMAT_JASPER,1,pass,pass,pass,pass,pass,single-page,,,0,0.0673,0.0415
+AR_AGING_SUMMARY_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0175,7.5977,0.0071
+ARRIVAL_INFORMATION_RPM_REF_839,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0058,0.3967,0.013
+CARGO_ARRIVAL_NOTICE_AIR_RPM_REF_49,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0064,0.355,0.0134
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3_RPM_REF_1376,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0063,0.366,0.0131
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT2_RPM_REF_592,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.006,0.3752,0.0106
+AIR_QUOTATION_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0069,0.0549,0.0245
+CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0276,3.4762,0.0744
+CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.02,5.0175,0.0744
+CONTAINER_OUTTURN_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0403,3.9389,0.0681
+CARGO_MANIFEST_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0298,3.1219,0.0782
+CARGO_ARRIVAL_NOTICE_SEA_RPM_REF_27,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0065,0.3487,0.0134
+CONTAINER_LOAD_PLAN_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0278,2.7135,0.0731
+DELIVERY_ORDER_REPORT_FORMAT_13,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0159,0.1311,0.0986
+FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0256,4.5644,0.069
+DAILY_STATUS_REPORT_FORMAT_1,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0077,0.0365,0.0131
+FG_PROOF_OF_DELIVERY_RPM_REF_847,1,pass,pass,fail,pass,fail,single-page,static width | static position or string | raster R1,static width=1; static position or string=1; raster R1=1,0.0255,2.8291,0.0716
+DAILY_STATUS_REPORT_FORMAT_2,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0162,0.0251,0.0294
+FG_TAX_INVOICE_INDIA_RPM_REF_237,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0329,4.6426,0.069
+GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0323,2.6605,0.007
+GL_REPORT_VOUCHER_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0485,3.6388,0.0092
+FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0297,2.8826,0.0782
+INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0357,3.7578,0.0672
+JOB_CARD_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0117,0.1755,0.0593
+PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0247,7.2105,0.0052
+OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0959,2.6199,0.0823
+HBL_DRAFT_REPORT_FORMAT_36,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0113,0.7214,0.0259
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,3,pass,pass,pass,pass,pass,pass,,,0.0004,0.1402,0.0067
+PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.024,3.8419,0.007
+SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0205,0.1621,0.0277
+SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0057,0.108,0.039
+STUFFING_REPORT_JASPER_REPORT_FORMAT,2,pass,pass,pass,fail,fail,pass,dynamic position or string | raster R1,dynamic position or string=1; raster R1=1,0.0351,2.7348,0.0784
+TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0127,0.0972,0.0418
+HBL_DRAFT_REPORT_FORMAT_141,1,pass,pass,pass,pass,fail,single-page,raster R2,raster R2=1,0,0.4753,0.0775
+FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939,1,pass,pass,fail,pass,pass,single-page,static width,static width=1,0,0.2278,0.0962
+OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0087,0.1231,0.024
+HBL_DRAFT_REPORT_FORMAT_148,1,pass,pass,pass,pass,fail,single-page,raster R2,raster R2=1,0,0.5256,0.0376
+HBL_DRAFT_REPORT_FORMAT_151,2,pass,pass,pass,pass,fail,pass,raster R2,raster R2=1,0,0.4765,0.0813
+STUFFING_REPORT_FORMAT,2,pass,pass,fail,pass,fail,pass,static width | raster R1,static width=1; raster R1=1,0.0065,0.043,0.0185
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0086,0.1054,0.0154
+HBL_DRAFT_REPORT_FORMAT_33,1,pass,pass,pass,pass,fail,single-page,raster R2,raster R2=1,0.0019,1.1714,0.0016
+HBL_DRAFT_REPORT_FORMAT_25,2,pass,pass,pass,pass,fail,pass,raster R2,raster R2=1,0,0.4451,0.0294
+D_O_FCL_VIETNAM_RPM_REF_411,1,pass,pass,fail,pass,pass,single-page,static position or string,static position or string=1,0.0019,0.3884,0.0126
+D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427,1,pass,pass,fail,pass,pass,single-page,static position or string,static position or string=1,0.0021,0.3791,0.0126
+HBL_DRAFT_REPORT_FORMAT_97,1,pass,pass,pass,pass,fail,single-page,raster R2,raster R2=1,0,0.4411,0.0676
+FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941,1,pass,pass,fail,pass,pass,single-page,static width,static width=1,0,0.2278,0.0106
+FG_KSA_INVOICE_ARABIC_RPM_REF_1161,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.2645,0.0911
+FG_STANDARD_INVOICE_ARABIC_FORMAT3_RPM_REF_1183,1,pass,pass,fail,pass,pass,single-page,static position or string | static width,static position or string=1; static width=1,0,0.2578,0.0952
+FG_STANDARD_INVOICE_ARABIC_FORMAT2_RPM_REF_1171,1,pass,pass,fail,pass,pass,single-page,static position or string | static width,static position or string=1; static width=1,0,0.1735,0.0952
+FG_STANDARD_INVOICE_ARABIC_FORMAT4_RPM_REF_1215,1,pass,pass,fail,pass,pass,single-page,static position or string | static width,static position or string=1; static width=1,0,0.1766,0.0952
+INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC,1,pass,pass,fail,pass,pass,single-page,static position or string | static width,static position or string=1; static width=1,0,0.1519,0.0983
+FG_STANDARD_INVOICE_ARABIC_RPM_REF_464,1,pass,pass,fail,pass,pass,single-page,static position or string | static width,static position or string=1; static width=1,0,0.1808,0.0952
+FG_STANDARD_INVOICE_ARABIC_OMAN_RPM_REF_747,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1743,0.0939
+HBL_DRAFT_REPORT_FORMAT_29,2,pass,pass,pass,pass,fail,pass,raster R2,raster R2=1,0.0039,0.9942,0
+FG_STANDARD_INVOICE_ARABIC_FORMAT5_RPM_REF_1385,1,pass,pass,fail,pass,pass,single-page,static position or string | static width,static position or string=1; static width=1,0,0.1885,0.0952
+CARTING_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0024,0.0886,0.03
+FCR_DOCUMENT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0816,0.0541
+LOADING_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0037,0.0972,0.0352
+PICKUP_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0024,0.0857,0.0353
+PRE_ALERT_TO_CLIENT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0972,0.0997
+FG_STANDARD_INVOICE_ARABIC_FORMAT7_RPM_REF_1400,1,pass,pass,fail,pass,pass,single-page,static position or string | static width,static position or string=1; static width=1,0,0.1905,0.0962
+HBL_DRAFT_REPORT_FORMAT_70,2,pass,pass,pass,pass,pass,pass,,,0,0.0389,0.0098
+FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT,3,pass,pass,pass,fail,pass,pass,dynamic width,dynamic width=1,0.0039,0.1381,0.0474
+SIMPLE_INVOICE_INDIA_RPM_REF_575,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.2525,0.0182
+CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_RPM_REF_363,1,pass,pass,pass,pass,pass,single-page,,,0.0044,0.2837,0.0188
+FG_ARRIVAL_NOTICE_FORMAT2_RPM_REF_593,1,pass,pass,pass,pass,pass,single-page,,,0,0.0095,0.1039
+HBL_DRAFT_REPORT_FORMAT_11,1,pass,pass,pass,pass,pass,single-page,,,0,0.0422,0.0323
+FG_TAX_INVOICE_MALAYSIA_RPM_REF_736,1,pass,pass,pass,pass,pass,single-page,,,0,0.0517,0.0934
+JOURNAL_VOUCHER_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0.0012,0.1292,0.0229
+HBL_DRAFT_REPORT_FORMAT_15,2,pass,pass,pass,pass,pass,pass,,,0,0.052,0.024
+FG_HBL_HKG,1,pass,pass,pass,pass,pass,single-page,,,0,0.0683,0.0385
