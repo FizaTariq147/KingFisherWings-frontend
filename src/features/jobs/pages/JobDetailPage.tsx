@@ -1502,8 +1502,8 @@ export default function JobDetailPage() {
                   pending ||
                   !changeStatusValue ||
                   (passToTransport &&
-                    !(passBranchId.trim() || passBranchName.trim()) ||
-                    !(passUserId.trim() || passUserName.trim()))
+                    (!(passBranchId.trim() || passBranchName.trim()) ||
+                      !(passUserId.trim() || passUserName.trim())))
                 }
                 onClick={() =>
                   void run(async () => {

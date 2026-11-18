@@ -35,6 +35,24 @@ type Props = {
   source?: JobInvoiceFormSource;
 };
 
+/** UI `amount` = unit rate; extended line total = Qty × Amount. */
+function lineUnitRate(line: Pick<JobInvoiceFormLineDto, 'amount'>): number {
+  return Number(line.amount ?? 0) || 0;
+}
+
+function lineExtendedTotal(
+  line: Pick<JobInvoiceFormLineDto, 'quantity' | 'amount'>,
+): number {
+  const qty = Number(line.quantity ?? 1) || 0;
+  return Math.round(qty * lineUnitRate(line) * 100) / 100;
+}
+
+function linesBillTotal(lines: JobInvoiceFormLineDto[]): number {
+  return Math.round(
+    lines.reduce((sum, line) => sum + lineExtendedTotal(line), 0) * 100,
+  ) / 100;
+}
+
 function asSaveDto(
   raw: JobInvoiceFormPreview | null,
   source?: JobInvoiceFormSource,
@@ -49,22 +67,44 @@ function asSaveDto(
     };
   }
   const defaultDrCr = kind === 'purchase' ? 'DR' : 'CR';
-  const lines = Array.isArray(raw.lines)
-    ? raw.lines.map((line) => {
+  const rawLines = Array.isArray(raw.lines) ? raw.lines : [];
+  // Prefill often stores unit rate in `amount`; after save BE stores extended total.
+  // If bill_amount ≈ Σ(amount) and differs from Σ(qty×amount), treat amounts as totals.
+  const sumAmounts = rawLines.reduce(
+    (s, l) => s + (Number(l.amount ?? 0) || 0),
+    0,
+  );
+  const sumQtyTimesAmount = rawLines.reduce((s, l) => {
+    const q = Number(l.quantity ?? 1) || 1;
+    return s + q * (Number(l.amount ?? 0) || 0);
+  }, 0);
+  const beBill = raw.bill_amount != null ? Number(raw.bill_amount) : NaN;
+  const amountsLookExtended =
+    Number.isFinite(beBill) &&
+    Math.abs(beBill - sumAmounts) < 0.02 &&
+    Math.abs(beBill - sumQtyTimesAmount) > 0.02;
+
+  const lines = rawLines.map((line) => {
         const qty = Number(line.quantity ?? 1) || 1;
         const rec = line as JobInvoiceFormLineDto & {
           unit_price?: number;
           unitPrice?: number;
           rate?: number;
+          amount_per_qty?: number;
         };
         const unitPrice = Number(
-          rec.unit_price ?? rec.unitPrice ?? rec.rate ?? NaN,
+          rec.unit_price ??
+            rec.unitPrice ??
+            rec.rate ??
+            rec.amount_per_qty ??
+            NaN,
         );
         const rawAmount = Number(line.amount ?? 0) || 0;
-        // Amount = Qty × rate when BE sends unit_price/rate; otherwise keep amount.
-        const amount =
-          Number.isFinite(unitPrice) && unitPrice >= 0
-            ? Math.round(qty * unitPrice * 100) / 100
+        // Amount column = unit rate.
+        const rate = Number.isFinite(unitPrice) && unitPrice >= 0
+          ? unitPrice
+          : amountsLookExtended && qty > 0
+            ? Math.round((rawAmount / qty) * 100) / 100
             : rawAmount;
         return {
           job_charge_id: isUuid(String(line.job_charge_id ?? '').trim())
@@ -81,15 +121,14 @@ function asSaveDto(
           exchange_rate: Number(line.exchange_rate ?? raw.exchange_rate ?? 1) || 1,
           dr_cr:
             line.dr_cr === 'DR' || line.dr_cr === 'CR' ? line.dr_cr : defaultDrCr,
-          amount,
+          amount: rate,
           fcy_amount: line.fcy_amount != null ? Number(line.fcy_amount) : undefined,
           tax_rate_id: isUuid(String(line.tax_rate_id ?? '').trim())
             ? String(line.tax_rate_id).trim()
             : undefined,
           pp_cc: line.pp_cc === 'PP' || line.pp_cc === 'CC' ? line.pp_cc : undefined,
         };
-      })
-    : [];
+      });
   const partyId = isUuid(String(raw.party_id ?? '').trim())
     ? String(raw.party_id).trim()
     : undefined;
@@ -129,10 +168,8 @@ function asSaveDto(
     v_date: String(raw.v_date ?? raw.invoice_date ?? '').slice(0, 10) || undefined,
     gl_date: String(raw.gl_date ?? '').slice(0, 10) || undefined,
     exchange_rate: Number(raw.exchange_rate ?? 1) || 1,
-    bill_amount:
-      raw.bill_amount != null
-        ? Number(raw.bill_amount)
-        : lines.reduce((sum, l) => sum + (Number(l.amount) || 0), 0),
+    // Always prefer Σ(Qty × Amount); ignore stale BE bill_amount that skipped qty.
+    bill_amount: linesBillTotal(lines),
     remarks: raw.remarks != null ? String(raw.remarks) : undefined,
     books: raw.books != null ? String(raw.books) : undefined,
     address: raw.address != null ? String(raw.address) : undefined,
@@ -156,17 +193,14 @@ function updateLine(
 ): JobInvoiceFormLineDto[] {
   return lines.map((line, i) => {
     if (i !== index) return line;
-    const next: JobInvoiceFormLineDto = { ...line, ...patch };
-    if (patch.quantity != null && patch.amount == null) {
-      const prevQty = Number(line.quantity ?? 1) || 1;
-      const prevAmount = Number(line.amount ?? 0) || 0;
-      const rate = prevQty > 0 ? prevAmount / prevQty : prevAmount;
-      const qty = Number(patch.quantity) || 0;
-      next.amount = Math.round(qty * rate * 100) / 100;
-    } else {
-      next.amount = Number(patch.amount ?? line.amount) || 0;
-    }
-    return next;
+    return {
+      ...line,
+      ...patch,
+      quantity:
+        patch.quantity != null ? Number(patch.quantity) || 0 : line.quantity,
+      amount:
+        patch.amount != null ? Number(patch.amount) || 0 : Number(line.amount) || 0,
+    };
   });
 }
 
@@ -462,12 +496,10 @@ export function JobInvoiceFormModal({
               <Input
                 label="Bill amount"
                 type="number"
-                value={form.bill_amount != null ? String(form.bill_amount) : ''}
-                onChange={(e) =>
-                  patch({
-                    bill_amount: e.target.value === '' ? undefined : Number(e.target.value),
-                  })
-                }
+                readOnly
+                value={String(linesBillTotal(form.lines ?? []))}
+                title="Sum of Qty × Amount on pricing lines"
+                className="bg-[var(--color-neutral-50)]"
               />
               <Input
                 label="Books"
@@ -531,21 +563,23 @@ export function JobInvoiceFormModal({
                   type="button"
                   size="sm"
                   variant="secondary"
-                  onClick={() =>
+                  onClick={() => {
+                    const lines = [
+                      ...(form.lines ?? []),
+                      {
+                        description: '',
+                        quantity: 1,
+                        amount: 0,
+                        currency_code: form.currency_code || 'AED',
+                        exchange_rate: form.exchange_rate || 1,
+                        dr_cr: kind === 'sale' ? 'CR' : 'DR',
+                      },
+                    ];
                     patch({
-                      lines: [
-                        ...(form.lines ?? []),
-                        {
-                          description: '',
-                          quantity: 1,
-                          amount: 0,
-                          currency_code: form.currency_code || 'AED',
-                          exchange_rate: form.exchange_rate || 1,
-                          dr_cr: kind === 'sale' ? 'CR' : 'DR',
-                        },
-                      ],
-                    })
-                  }
+                      lines,
+                      bill_amount: linesBillTotal(lines),
+                    });
+                  }}
                 >
                   Add line
                 </Button>
@@ -562,6 +596,7 @@ export function JobInvoiceFormModal({
                         <th className="px-2 py-1.5 font-medium">Description</th>
                         <th className="px-2 py-1.5 font-medium">Qty</th>
                         <th className="px-2 py-1.5 font-medium">Amount</th>
+                        <th className="px-2 py-1.5 font-medium">Total</th>
                         <th className="px-2 py-1.5 font-medium">CCY</th>
                         <th className="px-2 py-1.5 font-medium">Dr/Cr</th>
                         <th className="px-2 py-1.5 font-medium" />
@@ -597,10 +632,7 @@ export function JobInvoiceFormModal({
                                 });
                                 patch({
                                   lines,
-                                  bill_amount: lines.reduce(
-                                    (sum, l) => sum + (Number(l.amount) || 0),
-                                    0,
-                                  ),
+                                  bill_amount: linesBillTotal(lines),
                                 });
                               }}
                             />
@@ -610,19 +642,20 @@ export function JobInvoiceFormModal({
                               type="number"
                               className="h-8 w-28 rounded-sm border border-[var(--fresa-border,#C9D3DF)] px-2"
                               value={line.amount ?? 0}
+                              title="Unit amount (rate)"
                               onChange={(e) => {
                                 const lines = updateLine(form.lines ?? [], index, {
                                   amount: Number(e.target.value) || 0,
                                 });
                                 patch({
                                   lines,
-                                  bill_amount: lines.reduce(
-                                    (sum, l) => sum + (Number(l.amount) || 0),
-                                    0,
-                                  ),
+                                  bill_amount: linesBillTotal(lines),
                                 });
                               }}
                             />
+                          </td>
+                          <td className="px-2 py-1 tabular-nums text-[var(--color-neutral-800)]">
+                            {lineExtendedTotal(line).toFixed(2)}
                           </td>
                           <td className="px-2 py-1">
                             <input
@@ -662,11 +695,15 @@ export function JobInvoiceFormModal({
                             <button
                               type="button"
                               className="text-[var(--color-danger-600)] underline"
-                              onClick={() =>
+                              onClick={() => {
+                                const lines = (form.lines ?? []).filter(
+                                  (_, i) => i !== index,
+                                );
                                 patch({
-                                  lines: (form.lines ?? []).filter((_, i) => i !== index),
-                                })
-                              }
+                                  lines,
+                                  bill_amount: linesBillTotal(lines),
+                                });
+                              }}
                             >
                               Remove
                             </button>

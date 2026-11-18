@@ -285,8 +285,8 @@ export const createJobContainerSchema = z
       .string()
       .trim()
       .min(1)
-      .transform((v) => v.toUpperCase().replace(/[\s-]+/g, '_'))
-      .default('EMPTY'),
+      .default('EMPTY')
+      .transform((v) => v.toUpperCase().replace(/[\s-]+/g, '_')),
     gate_in_at: optionalTextUndef({ max: 32 }),
     is_soc: z.boolean().optional(),
   })
