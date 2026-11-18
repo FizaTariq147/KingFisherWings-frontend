@@ -1,0 +1,6 @@
+id,page,text,binding,reason
+p1s30,1,STC: VALVE MATERIALS FOR MACHINERY,cargo.pieces,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s31,1,PARTS FREIGHT PREPAID ALL DESTINATION,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s32,1,CHARGES ARE CONSIGNEE'S ACCOUNT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s33,1,"18,000.000",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s34,1,24.000,,"matches a demo value (number, date, party, or Fresa sample text)"

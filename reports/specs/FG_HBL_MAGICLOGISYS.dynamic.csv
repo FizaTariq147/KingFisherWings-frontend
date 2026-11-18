@@ -1,0 +1,7 @@
+id,page,text,binding,reason
+p1s1,1,MULTIMODAL TRANSPORT DOCUMENT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s14,1,"P.O BOX 11700, 8100 UNIT NO 2 JEDDAH SAUDI ARABIA 21463",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s16,1,"JEDDAH, SAUDI ARABIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s17,1,JEDDAH SAUDI ARABIA,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s54,1,(TERMS CONTINUED ON BACK HEREOF),,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s71,1,(THREE) PACKAGES ONLY,,"matches a demo value (number, date, party, or Fresa sample text)"

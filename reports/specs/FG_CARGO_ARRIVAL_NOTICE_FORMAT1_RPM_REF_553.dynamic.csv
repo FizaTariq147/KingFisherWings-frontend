@@ -1,0 +1,13 @@
+id,page,text,binding,reason
+p1s1,1,EXPORT CONTAINER RELEASE ORDER,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s11,1,10 DBS CENTRE NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s16,1,STC: VALVE MATERIALS FOR MACHINERY PARTS FREIGHT PREPAID,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s22,1,"CHENNAI (EX MADRAS), INDIA",shipment.pol,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s24,1,"JEBEL ALI, UNITED ARAB EMIRATES",shipment.pod,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s26,1,"JEBEL ALI, UNITED ARAB EMIRATES",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s30,1,9887,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s41,1,ABCU9877666(20' DC) / SL345566,cargo.containerNo,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s43,1,SUB: CONTAINER RELEASE ORDER,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s82,1,THIS IS A SYSTEM GENERATED DOCUMENT AND DOES NOT REQUIRE ANY SIGNATURE.,,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s1,2,EXPORT CONTAINER RELEASE ORDER,,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s27,2,THIS IS A SYSTEM GENERATED DOCUMENT AND DOES NOT REQUIRE ANY SIGNATURE.,,"matches a demo value (number, date, party, or Fresa sample text)"

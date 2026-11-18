@@ -1,0 +1,24 @@
+{
+  "outFile": "D:\\KingFisherWings-frontend\\reports\\full-run-track-a-subset.csv",
+  "documents": 80,
+  "regressions": 0,
+  "regressionCodes": [],
+  "totals": {
+    "extractMs": 159993,
+    "renderMs": 117687,
+    "rasterReferenceMs": 121543,
+    "rasterRenderedMs": 102711,
+    "diffMs": 467820,
+    "specHit": 1,
+    "specMiss": 78,
+    "goldenHit": 1,
+    "goldenMiss": 78
+  },
+  "version": {
+    "id": "track-a-speed-1",
+    "extract": "e1-class-order",
+    "render": "r1-naskh-overflow",
+    "checker": "c1-textequal-fast",
+    "raster": "pdftoppm-150"
+  }
+}

@@ -1,0 +1,13 @@
+id,page,text,binding,reason
+p1s1,1,MULTIMODAL TRANSPORT DOCUMENT / BILL OF LADING,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s4,1,SHIPMENT REFERENCE NO :,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s10,1,"JEBEL ALI, UNITED ARAB",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s13,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s14,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s17,1,CHENNAI TAMILNADU INDIA600084 EMAIL:,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s19,1,"JEBEL ALI, UNITED ARAB",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s20,1,"JEBEL ALI, UNITED ARAB",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s22,1,POST BOX : 12356 30 AL MAKTHOOM BUILDING NEAR MUBARAK,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s24,1,POST BOX : 12356 30 AL MAKTHOOM BUILDING NEAR MUBARAK,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s42,1,STC: VALVE MATERIALS FOR MACHINERY PARTS,cargo.pieces,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s44,1,ALL DESTINATION CHARGES ARE CONSIGNEE'S,,"matches a demo value (number, date, party, or Fresa sample text)"

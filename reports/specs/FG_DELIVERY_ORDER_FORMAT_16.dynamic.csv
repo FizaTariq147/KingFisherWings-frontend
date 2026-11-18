@@ -1,0 +1,7 @@
+id,page,text,binding,reason
+p1s4,1,NUNGAMBAKKAM HIGH ROAD NUNGAMBAKKAM CHENNAI,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s11,1,FROM PORT OF /ORIGIN PORT OF AIRPORT,shipment.voyage,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s17,1,9887,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s18,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s24,1,LOCAL DELIVERY OR TRANSFER BY(DELIVERY,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s49,1,17-MAY-2023 03:04PM,,"matches a demo value (number, date, party, or Fresa sample text)"

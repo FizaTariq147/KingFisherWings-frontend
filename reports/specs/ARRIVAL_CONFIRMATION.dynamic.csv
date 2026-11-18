@@ -1,0 +1,7 @@
+id,page,text,binding,reason
+p1s1,1,2/18/2019,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s4,1,"16:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s22,1,WB98777777 / 18-FEB-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s26,1,WB91384768 / 18-FEB-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s43,1,B/AI/19/0041 / 18-FEB-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s46,1,CAI190005 / 19-FEB-19,,"matches a demo value (number, date, party, or Fresa sample text)"

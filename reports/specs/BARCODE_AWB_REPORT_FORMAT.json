@@ -1,0 +1,191 @@
+{
+  "code": "BARCODE_AWB_REPORT_FORMAT",
+  "source": "reports/references/files/barcode-awb-report-format.pdf",
+  "page": {
+    "width": 1012.5,
+    "height": 399.8,
+    "orientation": "landscape"
+  },
+  "fonts": [],
+  "lines": [],
+  "rects": [],
+  "spans": [],
+  "images": [
+    {
+      "x": 0,
+      "y": 0,
+      "width": 1012.5,
+      "height": 399.8,
+      "format": "unknown",
+      "slot": "logo",
+      "proposedClass": "decorative Fresa branding",
+      "demoValue": "",
+      "barcode": null
+    }
+  ],
+  "shadings": [],
+  "pages": [
+    {
+      "width": 1012.5,
+      "height": 399.8,
+      "lines": [],
+      "rects": [],
+      "spans": [],
+      "paths": [],
+      "images": [
+        {
+          "x": 0,
+          "y": 0,
+          "width": 1012.5,
+          "height": 399.8,
+          "format": "unknown",
+          "slot": "logo",
+          "proposedClass": "decorative Fresa branding",
+          "demoValue": "",
+          "barcode": null
+        }
+      ],
+      "shadings": [],
+      "bands": {
+        "header": {
+          "yMin": 327.8,
+          "yMax": 399.8
+        },
+        "title": {
+          "yMin": 295.9,
+          "yMax": 343.8
+        },
+        "detail": {
+          "yMin": 100,
+          "yMax": 299.9
+        },
+        "summary": {
+          "yMin": 40,
+          "yMax": 111.9
+        },
+        "footer": {
+          "yMin": 0,
+          "yMax": 40
+        }
+      },
+      "layoutKind": "form",
+      "uncaptured": {
+        "curves": 0,
+        "nonAxisPaths": 0,
+        "shading": 0,
+        "cmyk": 0,
+        "opacity": 0,
+        "xobjects": 0,
+        "lineStyle": 0,
+        "markedContent": 0,
+        "undecodedText": 0,
+        "textRenderMode": 0,
+        "unknownOps": {}
+      },
+      "droppedOutside": 0,
+      "emptyTextItems": 0,
+      "table": null
+    }
+  ],
+  "layoutKind": "form",
+  "bands": {
+    "header": {
+      "yMin": 327.8,
+      "yMax": 399.8
+    },
+    "title": {
+      "yMin": 295.9,
+      "yMax": 343.8
+    },
+    "detail": {
+      "yMin": 100,
+      "yMax": 299.9
+    },
+    "summary": {
+      "yMin": 40,
+      "yMax": 111.9
+    },
+    "footer": {
+      "yMin": 0,
+      "yMax": 40
+    }
+  },
+  "paths": [],
+  "table": null,
+  "slots": {
+    "logo": {
+      "x": 0,
+      "y": 0,
+      "width": 1012.5,
+      "height": 399.8
+    },
+    "company": null
+  },
+  "bindings": [],
+  "formatRules": [
+    {
+      "path": "invoice.date",
+      "format": "date"
+    },
+    {
+      "path": "invoice.total",
+      "format": "number"
+    },
+    {
+      "path": "invoice.tax",
+      "format": "number"
+    },
+    {
+      "path": "invoice.amount",
+      "format": "number"
+    },
+    {
+      "path": "party.shipper",
+      "format": "text"
+    },
+    {
+      "path": "party.consignee",
+      "format": "text"
+    },
+    {
+      "path": "party.notify",
+      "format": "text"
+    },
+    {
+      "path": "cargo.description",
+      "format": "text"
+    }
+  ],
+  "overflowRules": {
+    "default": "clip",
+    "text": "wrap",
+    "number": "shrink",
+    "maxLines": 3
+  },
+  "extraction": {
+    "pageCount": 1,
+    "textItems": 0,
+    "emptyTextItems": 0,
+    "characters": 0,
+    "droppedOutside": 0,
+    "uncaptured": [
+      {
+        "curves": 0,
+        "nonAxisPaths": 0,
+        "shading": 0,
+        "cmyk": 0,
+        "opacity": 0,
+        "xobjects": 0,
+        "lineStyle": 0,
+        "markedContent": 0,
+        "undecodedText": 0,
+        "textRenderMode": 0,
+        "unknownOps": {}
+      }
+    ],
+    "pdftotextWordsMissing": 0,
+    "pdftotextWordsMissingSample": [],
+    "textFillColors": [],
+    "warnings": []
+  }
+}

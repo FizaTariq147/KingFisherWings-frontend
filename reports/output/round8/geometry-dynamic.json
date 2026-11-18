@@ -1,0 +1,793 @@
+[
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_2",
+    "geometry": {
+      "pass": false,
+      "unmatchedLines": 0,
+      "unmatchedRects": 3,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 153.4,
+        "summaryTop": 170.2,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": false,
+      "ratio": 0.0231,
+      "nonText": 0.0211,
+      "textInk": 0.0322,
+      "maskedFraction": 0.0294,
+      "brandingMaskPixels": 61749,
+      "causes": {
+        "text glyph": 2523,
+        "text position": 8569,
+        "vector": 37540,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 45
+      },
+      "heatmaps": [
+        "reports/output/raster/DAILY_STATUS_REPORT_FORMAT_2-page-1-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "CONSOL_IGM_FILLING_LETTER_JASPER_REPORT_FORMAT",
+    "geometry": {
+      "pass": false,
+      "unmatchedLines": 0,
+      "unmatchedRects": 3,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 520.8,
+        "summaryTop": 505.8,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": true,
+      "ratio": 0.0043,
+      "nonText": 0.0022,
+      "textInk": 0.0988,
+      "maskedFraction": 0.0951,
+      "brandingMaskPixels": 207023,
+      "causes": {
+        "text glyph": 4577,
+        "text position": 1675,
+        "vector": 3203,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 0
+      },
+      "heatmaps": [
+        "reports/output/raster/CONSOL_IGM_FILLING_LETTER_JASPER_REPORT_FORMAT-page-1-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_FORMAT_1",
+    "geometry": {
+      "pass": false,
+      "unmatchedLines": 1,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 529.5,
+        "summaryTop": 516.5,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": false,
+      "ratio": 0.0079,
+      "nonText": 0.0002,
+      "textInk": 0.0802,
+      "maskedFraction": 0.0904,
+      "brandingMaskPixels": 196794,
+      "causes": {
+        "text glyph": 2673,
+        "text position": 3,
+        "vector": 421,
+        "image/barcode": 14199,
+        "color": 0,
+        "other": 0
+      },
+      "heatmaps": [
+        "reports/output/raster/ADVANCE_SHIPPING_NOTE_FORMAT_1-page-1-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT",
+    "geometry": {
+      "pass": true,
+      "unmatchedLines": 0,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [
+      {
+        "layer": "dynamic",
+        "id": "p2s120",
+        "text": "1803 DUBAI، ACADEMIC CITY RD -",
+        "cause": "position or string"
+      }
+    ],
+    "pagination": {
+      "pass": true,
+      "status": "exercised",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 156.3,
+        "summaryTop": 170.5,
+        "layoutKind": "form"
+      },
+      "multiPage": {
+        "headerRepeats": true,
+        "rowBreak": true,
+        "summaryAfterLastRow": null,
+        "layoutKind": "form",
+        "ignoredTrailingBlankPages": 0,
+        "footerRepeats": true,
+        "headerMissing": [],
+        "continuationPages": [
+          2,
+          3
+        ],
+        "renderedPages": 3,
+        "referencePages": 3
+      }
+    },
+    "raster": {
+      "pass": false,
+      "ratio": 0.0114,
+      "nonText": 0.0039,
+      "textInk": 0.1375,
+      "maskedFraction": 0.0474,
+      "brandingMaskPixels": 298088,
+      "causes": {
+        "text glyph": 45382,
+        "text position": 2514,
+        "vector": 23702,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 0
+      },
+      "heatmaps": [
+        "reports/output/raster/FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT-page-1-diff.png",
+        "reports/output/raster/FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT-page-2-diff.png",
+        "reports/output/raster/FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT-page-3-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "CARTING_CONFIRMATION_REPORT_FORMAT",
+    "geometry": {
+      "pass": true,
+      "unmatchedLines": 0,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [
+      {
+        "layer": "dynamic",
+        "id": "p1s25",
+        "text": "DUBAI، ACADEMIC CITY RD - UNITED ARA",
+        "cause": "position or string"
+      }
+    ],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 405.3,
+        "summaryTop": null,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": false,
+      "ratio": 0.0078,
+      "nonText": 0.0024,
+      "textInk": 0.0875,
+      "maskedFraction": 0.03,
+      "brandingMaskPixels": 65038,
+      "causes": {
+        "text glyph": 11604,
+        "text position": 562,
+        "vector": 4841,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 0
+      },
+      "heatmaps": [
+        "reports/output/raster/CARTING_CONFIRMATION_REPORT_FORMAT-page-1-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "FCR_DOCUMENT_REPORT_FORMAT",
+    "geometry": {
+      "pass": true,
+      "unmatchedLines": 0,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [
+      {
+        "layer": "dynamic",
+        "id": "p1s16",
+        "text": "PALCE TOWER 1, OFFICE 1802 AND 1803 DUBAI، ACADEMIC CITY RD -",
+        "cause": "position or string"
+      }
+    ],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 357.5,
+        "summaryTop": 193.7,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": true,
+      "ratio": 0.003,
+      "nonText": 0,
+      "textInk": 0.0855,
+      "maskedFraction": 0.0541,
+      "brandingMaskPixels": 117653,
+      "causes": {
+        "text glyph": 6433,
+        "text position": 6,
+        "vector": 2,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 3
+      },
+      "heatmaps": [
+        "reports/output/raster/FCR_DOCUMENT_REPORT_FORMAT-page-1-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "LOADING_CONFIRMATION_REPORT_FORMAT",
+    "geometry": {
+      "pass": true,
+      "unmatchedLines": 0,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [
+      {
+        "layer": "dynamic",
+        "id": "p1s26",
+        "text": "DUBAI، ACADEMIC CITY RD - UNITED ARA",
+        "cause": "position or string"
+      }
+    ],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 382.1,
+        "summaryTop": null,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": false,
+      "ratio": 0.0106,
+      "nonText": 0.0038,
+      "textInk": 0.0962,
+      "maskedFraction": 0.0352,
+      "brandingMaskPixels": 76380,
+      "causes": {
+        "text glyph": 14737,
+        "text position": 550,
+        "vector": 7781,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 0
+      },
+      "heatmaps": [
+        "reports/output/raster/LOADING_CONFIRMATION_REPORT_FORMAT-page-1-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "PICKUP_CONFIRMATION_REPORT_FORMAT",
+    "geometry": {
+      "pass": true,
+      "unmatchedLines": 0,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [
+      {
+        "layer": "dynamic",
+        "id": "p1s24",
+        "text": "DUBAI، ACADEMIC CITY RD - UNITED ARA",
+        "cause": "position or string"
+      }
+    ],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 405.3,
+        "summaryTop": null,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": false,
+      "ratio": 0.0077,
+      "nonText": 0.0024,
+      "textInk": 0.0846,
+      "maskedFraction": 0.0353,
+      "brandingMaskPixels": 76588,
+      "causes": {
+        "text glyph": 11225,
+        "text position": 548,
+        "vector": 4841,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 0
+      },
+      "heatmaps": [
+        "reports/output/raster/PICKUP_CONFIRMATION_REPORT_FORMAT-page-1-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "PRE_ALERT_TO_CLIENT_REPORT_FORMAT",
+    "geometry": {
+      "pass": true,
+      "unmatchedLines": 0,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [
+      {
+        "layer": "dynamic",
+        "id": "p1s23",
+        "text": "PALCE TOWER 1, OFFICE 1802 AND 1803 DUBAI، ACADEMIC CITY",
+        "cause": "position or string"
+      },
+      {
+        "layer": "dynamic",
+        "id": "p1s27",
+        "text": "PALCE TOWER 1, OFFICE 1802 AND 1803 DUBAI، ACADEMIC CITY",
+        "cause": "position or string"
+      }
+    ],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 286.4,
+        "summaryTop": null,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": true,
+      "ratio": 0.0022,
+      "nonText": 0,
+      "textInk": 0.1136,
+      "maskedFraction": 0.0997,
+      "brandingMaskPixels": 217023,
+      "causes": {
+        "text glyph": 4814,
+        "text position": 17,
+        "vector": 2,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 28
+      },
+      "heatmaps": [
+        "reports/output/raster/PRE_ALERT_TO_CLIENT_REPORT_FORMAT-page-1-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+    "geometry": {
+      "pass": true,
+      "unmatchedLines": 0,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [],
+    "dynamicFailures": [
+      {
+        "layer": "dynamic",
+        "id": "p1s88",
+        "text": "1803 DUBAI، ACADEMIC CITY RD -",
+        "cause": "position or string"
+      },
+      {
+        "layer": "dynamic",
+        "id": "p1s95",
+        "text": "1803 DUBAI، ACADEMIC CITY RD -",
+        "cause": "position or string"
+      }
+    ],
+    "pagination": {
+      "pass": true,
+      "status": "exercised",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 108,
+        "summaryTop": 104,
+        "layoutKind": "form"
+      },
+      "multiPage": {
+        "headerRepeats": true,
+        "rowBreak": true,
+        "summaryAfterLastRow": null,
+        "layoutKind": "form",
+        "ignoredTrailingBlankPages": 0,
+        "footerRepeats": true,
+        "headerMissing": [],
+        "continuationPages": [
+          2
+        ],
+        "renderedPages": 2,
+        "referencePages": 2
+      }
+    },
+    "raster": {
+      "pass": false,
+      "ratio": 0.043,
+      "nonText": 0.0351,
+      "textInk": 2.7348,
+      "maskedFraction": 0.0784,
+      "brandingMaskPixels": 341064,
+      "causes": {
+        "text glyph": 30023,
+        "text position": 6203,
+        "vector": 33826,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 117073
+      },
+      "heatmaps": [
+        "reports/output/raster/STUFFING_REPORT_JASPER_REPORT_FORMAT-page-1-diff.png",
+        "reports/output/raster/STUFFING_REPORT_JASPER_REPORT_FORMAT-page-2-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939",
+    "geometry": {
+      "pass": true,
+      "unmatchedLines": 0,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [
+      {
+        "layer": "static",
+        "id": "p1s2",
+        "text": "Invoice Receiver ﻰﻟﺇ ﺓﺭﻮﺗﺎﻓ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s10",
+        "text": "Job No ﺔﻔﻴﻇﻮﻟﺍ ﻢﻗﺭ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s12",
+        "text": "Invoice No ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s13",
+        "text": "Invoice Date ﺦﻳﺭﺎﺗ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s15",
+        "text": "PO/BL No. ﺀﺍﺮﺷ ﺮﻣﺃ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s18",
+        "text": "Attention ﻩﺎﺒﺘﻧﺍ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s25",
+        "text": "VAT No. ﻲﺒﻳﺮﻀﻟﺍ ﻢﻗﺮﻟﺍ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s27",
+        "text": "Place of Loading ﻞﯿﻤﺤﺘﻟﺍ ﻥﺎﻜﻣ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s31",
+        "text": "ETD ﺓﺭﺩﺎﻐﻤﻟﺍ ﺪﻋﻮﻣ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s33",
+        "text": "Place of Delivery ﻞﯿﺻﻮﺘﻟﺍ ﻥﺎﻜﻣ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s37",
+        "text": "ETA ﻝﻮﺻﻮﻟﺍ ﺪﻋﻮﻣ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s39",
+        "text": "Shipper ﻦﺣﺎﺸﻟﺍ",
+        "cause": "position or string"
+      }
+    ],
+    "dynamicFailures": [
+      {
+        "layer": "dynamic",
+        "id": "p1s1",
+        "text": "TAX INVOICE ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+        "cause": "position or string"
+      }
+    ],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 453.5,
+        "summaryTop": 444.1,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": false,
+      "ratio": 0.0188,
+      "nonText": 0.0019,
+      "textInk": 0.2604,
+      "maskedFraction": 0.0962,
+      "brandingMaskPixels": 209418,
+      "causes": {
+        "text glyph": 15302,
+        "text position": 1062,
+        "vector": 711,
+        "image/barcode": 20508,
+        "color": 0,
+        "other": 3250
+      },
+      "heatmaps": [
+        "reports/output/raster/FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939-page-1-diff.png"
+      ]
+    }
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941",
+    "geometry": {
+      "pass": true,
+      "unmatchedLines": 0,
+      "unmatchedRects": 0,
+      "unmatchedPaths": 0,
+      "uncaptured": 0
+    },
+    "staticFailures": [
+      {
+        "layer": "static",
+        "id": "p1s2",
+        "text": "Invoice Receiver ﻰﻟﺇ ﺓﺭﻮﺗﺎﻓ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s10",
+        "text": "Job No ﺔﻔﻴﻇﻮﻟﺍ ﻢﻗﺭ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s12",
+        "text": "Invoice No ﺓﺭﻮﺗﺎﻔﻟﺍ ﻢﻗﺭ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s13",
+        "text": "Invoice Date ﺦﻳﺭﺎﺗ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s15",
+        "text": "PO/BL No. ﺀﺍﺮﺷ ﺮﻣﺃ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s18",
+        "text": "Attention ﻩﺎﺒﺘﻧﺍ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s25",
+        "text": "VAT No. ﻲﺒﻳﺮﻀﻟﺍ ﻢﻗﺮﻟﺍ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s27",
+        "text": "Place of Loading ﻞﯿﻤﺤﺘﻟﺍ ﻥﺎﻜﻣ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s31",
+        "text": "ETD ﺓﺭﺩﺎﻐﻤﻟﺍ ﺪﻋﻮﻣ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s33",
+        "text": "Place of Delivery ﻞﯿﺻﻮﺘﻟﺍ ﻥﺎﻜﻣ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s37",
+        "text": "ETA ﻝﻮﺻﻮﻟﺍ ﺪﻋﻮﻣ",
+        "cause": "position or string"
+      },
+      {
+        "layer": "static",
+        "id": "p1s39",
+        "text": "Shipper ﻦﺣﺎﺸﻟﺍ",
+        "cause": "position or string"
+      }
+    ],
+    "dynamicFailures": [
+      {
+        "layer": "dynamic",
+        "id": "p1s1",
+        "text": "TAX INVOICE ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+        "cause": "position or string"
+      }
+    ],
+    "pagination": {
+      "pass": false,
+      "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+      "singlePage": {
+        "noOverflow": true,
+        "overflowSpans": [],
+        "headerPresent": true,
+        "summaryAfterLastRow": null,
+        "lastRowY": 453.5,
+        "summaryTop": 444.1,
+        "layoutKind": "form"
+      },
+      "multiPage": null
+    },
+    "raster": {
+      "pass": false,
+      "ratio": 0.0093,
+      "nonText": 0.0019,
+      "textInk": 0.2604,
+      "maskedFraction": 0.03,
+      "brandingMaskPixels": 65348,
+      "causes": {
+        "text glyph": 15302,
+        "text position": 1062,
+        "vector": 711,
+        "image/barcode": 0,
+        "color": 0,
+        "other": 3215
+      },
+      "heatmaps": [
+        "reports/output/raster/FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941-page-1-diff.png"
+      ]
+    }
+  }
+]

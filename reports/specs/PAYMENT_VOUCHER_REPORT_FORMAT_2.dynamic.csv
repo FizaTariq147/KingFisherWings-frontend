@@ -1,0 +1,12 @@
+id,page,text,binding,reason
+p1s9,1,DUBAI SHIPMENT B/EXP/19/0251,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s11,1,28-JAN-19 (APPROVED),,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s30,1,MAABP19000667 / 22-JAN-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s33,1,MAABP19000667 / 22-JAN-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s36,1,"3,000.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s38,1,SEA FREIGHT FCL COST AGENCY FEES,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s39,1,10,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s45,1,540.00,invoice.tax,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s46,1,IGST COST A/C I/U GST 18%,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s47,1,20,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s48,1,"3,540.00",,"matches a demo value (number, date, party, or Fresa sample text)"

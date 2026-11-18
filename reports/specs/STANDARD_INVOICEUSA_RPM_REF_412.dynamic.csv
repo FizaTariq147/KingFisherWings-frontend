@@ -1,0 +1,13 @@
+id,page,text,binding,reason
+p1s10,1,400001,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s55,1,"4,200.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s60,1,NSAJED85630124277 /,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s80,1,"1,500.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s81,1,"1,500.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s85,1,800.00,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s86,1,800.00,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s91,1,900.00,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s92,1,900.00,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s96,1,"1,000.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s97,1,"1,000.00",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s100,1,"4,200.00",,"matches a demo value (number, date, party, or Fresa sample text)"

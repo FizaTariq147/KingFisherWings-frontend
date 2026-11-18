@@ -165,7 +165,7 @@ export function mergeStaffPermissions(opts: {
   const { fromMe, fromJwt, fromStaffFlags, staffFlagsPresent, isTenantAdmin } = opts;
 
   if (isTenantAdmin) {
-    // Tenant Admin full pack — include Accounts aggregate even when JWT role presets lag.
+    // Tenant Admin full pack — include Accounts + transport handoff even when JWT role presets lag.
     return [
       ...new Set([
         ...fromMe,
@@ -173,6 +173,7 @@ export function mergeStaffPermissions(opts: {
         ...fromStaffFlags,
         'jobs.accounts.view',
         'finance.accounts.view',
+        'jobs.transport.handoff',
         'menu_accounts',
         'menu_finance',
       ]),

@@ -1,0 +1,9 @@
+id,page,text,binding,reason
+p1s2,1,"CHENNAI (EX MADRAS), INDIA",shipment.pol,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s9,1,9887,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s26,1,ABCU9877666 / 20' DC,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s29,1,STC: VALVE MATERIALS FOR MACHINERY PARTS,cargo.pieces,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s30,1,FREIGHT PREPAID ALL DESTINATION CHARGES ARE,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s31,1,CONSIGNEE'S ACCOUNT,cargo.marks,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s42,1,17-MAY-2023 03:04PM,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s44,1,AUTHORISED SIGNATORY,,"matches a demo value (number, date, party, or Fresa sample text)"

@@ -1,0 +1,12 @@
+id,page,text,binding,reason
+p1s8,1,POST BOX : 12356 30 AL MAKTHOOM BUILDING NEAR MUBARAK,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s11,1,30 AL MAKTHOOM BUILDING NEAR MUBARAK CENTRE ROUND ABOUT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s14,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s19,1,"JEBEL ALI, UNITED ARAB EMIRATES",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s22,1,NUMBER AND KIND OF PACKAGES/DESCRIPTION OF,cargo.marks,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s27,1,DATOS DEL TRANPORTISTA,shipment.pol,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s32,1,STC: VALVE MATERIALS FOR MACHINERY PARTS,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s34,1,ALL DESTINATION CHARGES ARE CONSIGNEE'S ACCOUNT,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s43,1,"CHENNAI (EX MADRAS), INDIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s44,1,PLACE(S) OF ACCEPTANCE,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s48,1,FREIGHT AND CHARGES,,"matches a demo value (number, date, party, or Fresa sample text)"

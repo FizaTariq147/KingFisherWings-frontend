@@ -1,0 +1,8 @@
+id,page,text,binding,reason
+p1s1,1,INFORMATION ABOUT VERIFIED GROSS MASS OF CONTAINER,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s5,1,CLARION SHIPPING SERVICES LLC,party.shipper,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s9,1,1200,cargo.containerNo,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s44,1,16,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s45,1,15,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s47,1,CONTAINER TARE WT:1250,cargo.containerNo,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s52,1,01/25/2019,,"matches a demo value (number, date, party, or Fresa sample text)"

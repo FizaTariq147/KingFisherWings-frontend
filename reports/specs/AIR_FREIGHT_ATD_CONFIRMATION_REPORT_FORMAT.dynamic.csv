@@ -1,0 +1,12 @@
+id,page,text,binding,reason
+p1s1,1,2/18/2019,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s5,1,"16:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s23,1,NUNGAMBAKKAM CHENNAI T,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s32,1,OWERS MUTHUSAMY STREET,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s33,1,"NEAR A2B SIGNAL, NEELANKARAI CHENNAI",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s47,1,12,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s50,1,CAE190028 / 20-FEB-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s54,1,17623456882 / 18-FEB-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s58,1,MAA/DXB/1900014 / 18-FEB-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s78,1,1250,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s83,1,1250,,"matches a demo value (number, date, party, or Fresa sample text)"

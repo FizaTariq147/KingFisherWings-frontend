@@ -1,0 +1,11 @@
+id,page,text,binding,reason
+p1s14,1,30 AL MAKTHOOM BUILDING,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s23,1,"18,000.000",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s25,1,TRANSPORTATION CHARGES,cargo.description,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s26,1,25609,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s39,1,KRYPTON LOGISTICS PVT LTD,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s45,1,KRYPTON LOGISTICS PVT LTD,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s61,1,30 AL MAKTHOOM BUILDING,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s70,1,"18,000.000",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s72,1,TRANSPORTATION CHARGES,cargo.description,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s73,1,25609,,"matches a demo value (number, date, party, or Fresa sample text)"

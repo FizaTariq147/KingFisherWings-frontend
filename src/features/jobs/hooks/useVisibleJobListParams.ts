@@ -10,6 +10,7 @@ import { JOB_TYPES, type JobType } from '../constants/job.constants';
 import type { JobListParams } from '../types/job.types';
 import { filterJobTypesByStaffAccess } from '../utils/filterJobTypesByStaffAccess';
 import { isOpsUnrestrictedUser } from '../utils/isOpsUnrestrictedUser';
+import { isTransportHandoffOnly } from '../utils/isTransportHandoffOnly';
 import { resolveClientVisibleJobTypes } from '../utils/resolveClientVisibleJobTypes';
 import { resolveStaffListJobTypes } from '../utils/resolveStaffListJobTypes';
 
@@ -35,6 +36,13 @@ export type VisibleJobListScope = {
    * Department UIs should client-filter, not send job_type.
    */
   listScopeParams: Pick<JobListParams, 'job_types' | 'job_type'>;
+  /**
+   * Transport handoff-only (`jobs.transport.handoff`): BE list = ops_user_id=me.
+   * FE must not fan-out job_type probes / ops matrix grants.
+   */
+  assigneeOnly?: boolean;
+  /** Current user id when assigneeOnly — for ops_user_id query. */
+  assigneeUserId?: string;
 };
 
 function intersectCandidates(
@@ -89,6 +97,21 @@ export function useVisibleJobListScope(
         scopeConfident: true,
         probeTypes: [],
         listScopeParams: {},
+      };
+    }
+
+    // Transport handoff assignee queue — no ops job-type grants / typed fan-out.
+    if (isTransportHandoffOnly(user)) {
+      const uid = String(user?.id ?? '').trim();
+      return {
+        kind: 'staff' as const,
+        scopeTypes: [],
+        scopeConfident: true,
+        probeTypes: [],
+        jobTypes: [],
+        listScopeParams: {},
+        assigneeOnly: true,
+        ...(uid ? { assigneeUserId: uid } : {}),
       };
     }
 
@@ -148,6 +171,7 @@ export function useVisibleJobListScope(
     };
   }, [
     user,
+    user?.id,
     user?.unrestrictedOps,
     user?.role,
     user?.permissions,

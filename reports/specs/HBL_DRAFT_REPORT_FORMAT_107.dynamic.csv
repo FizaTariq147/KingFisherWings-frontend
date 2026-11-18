@@ -1,0 +1,6 @@
+id,page,text,binding,reason
+p1s4,1,"JEDDAH, SAUDI ARABIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s6,1,JEDDAH SAUDI ARABIA,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s28,1,"P.O BOX 11700, 8100 UNIT NO 2 JEDDAH SAUDI ARABIA SAUDI ARABIA21463",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s66,1,"JEDDAH, SAUDI ARABIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s67,1,LAW AND JURISDICTION CLAUSE,,"matches a demo value (number, date, party, or Fresa sample text)"

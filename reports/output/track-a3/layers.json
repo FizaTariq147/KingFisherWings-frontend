@@ -1,0 +1,1768 @@
+[
+  {
+    "code": "GL_REPORT_VOUCHER_REPORT_FORMAT",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 178283,
+      "pixels": 4352400,
+      "ratio": 0.040962,
+      "pages": 2
+    },
+    "text": {
+      "mismatches": 86761,
+      "pixels": 4352400,
+      "ratio": 0.019934,
+      "pages": 2
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 280,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 56
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 193.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 5172
+      },
+      {
+        "page": 1,
+        "referenceY": 503,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3658
+      },
+      {
+        "page": 1,
+        "referenceY": 489,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3658
+      },
+      {
+        "page": 1,
+        "referenceY": 477.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3658
+      },
+      {
+        "page": 1,
+        "referenceY": 459.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3658
+      },
+      {
+        "page": 1,
+        "referenceY": 441.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3658
+      },
+      {
+        "page": 1,
+        "referenceY": 423.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3658
+      },
+      {
+        "page": 1,
+        "referenceY": 342.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3648
+      },
+      {
+        "page": 1,
+        "referenceY": 270.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3648
+      },
+      {
+        "page": 1,
+        "referenceY": 258.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3648
+      },
+      {
+        "page": 1,
+        "referenceY": 528,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3622
+      },
+      {
+        "page": 1,
+        "referenceY": 542,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3598
+      },
+      {
+        "page": 1,
+        "referenceY": 396.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3598
+      },
+      {
+        "page": 1,
+        "referenceY": 360.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3598
+      },
+      {
+        "page": 1,
+        "referenceY": 324.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3598
+      },
+      {
+        "page": 1,
+        "referenceY": 288.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3598
+      },
+      {
+        "page": 1,
+        "referenceY": 240.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3598
+      },
+      {
+        "page": 1,
+        "referenceY": 228.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3598
+      },
+      {
+        "page": 1,
+        "referenceY": 132.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3598
+      },
+      {
+        "page": 1,
+        "referenceY": 120.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3598
+      }
+    ]
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 205343,
+      "pixels": 2176200,
+      "ratio": 0.094359,
+      "pages": 1
+    },
+    "text": {
+      "mismatches": 63400,
+      "pixels": 2176200,
+      "ratio": 0.029133,
+      "pages": 1
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 1525,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 242
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 493,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 5398
+      },
+      {
+        "page": 1,
+        "referenceY": 511,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3899
+      },
+      {
+        "page": 1,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3821
+      },
+      {
+        "page": 1,
+        "referenceY": 372,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2304
+      },
+      {
+        "page": 1,
+        "referenceY": 372,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2304
+      },
+      {
+        "page": 1,
+        "referenceY": 384,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2298
+      },
+      {
+        "page": 1,
+        "referenceY": 20,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 1330
+      },
+      {
+        "page": 1,
+        "referenceY": 372,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1000
+      },
+      {
+        "page": 1,
+        "referenceY": 372,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1000
+      },
+      {
+        "page": 1,
+        "referenceY": 384,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 994
+      },
+      {
+        "page": 1,
+        "referenceY": 360,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      },
+      {
+        "page": 1,
+        "referenceY": 360,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      },
+      {
+        "page": 1,
+        "referenceY": 348,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      },
+      {
+        "page": 1,
+        "referenceY": 348,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      },
+      {
+        "page": 1,
+        "referenceY": 336,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      },
+      {
+        "page": 1,
+        "referenceY": 336,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      },
+      {
+        "page": 1,
+        "referenceY": 324,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      },
+      {
+        "page": 1,
+        "referenceY": 324,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      },
+      {
+        "page": 1,
+        "referenceY": 312,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      },
+      {
+        "page": 1,
+        "referenceY": 312,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 954
+      }
+    ]
+  },
+  {
+    "code": "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 96897,
+      "pixels": 4352400,
+      "ratio": 0.022263,
+      "pages": 2
+    },
+    "text": {
+      "mismatches": 106088,
+      "pixels": 4352400,
+      "ratio": 0.024375,
+      "pages": 2
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 100,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 20
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 181,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 5094
+      },
+      {
+        "page": 1,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3469
+      },
+      {
+        "page": 1,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3469
+      },
+      {
+        "page": 1,
+        "referenceY": 410.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3468
+      },
+      {
+        "page": 1,
+        "referenceY": 424.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3468
+      },
+      {
+        "page": 1,
+        "referenceY": 345,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3468
+      },
+      {
+        "page": 1,
+        "referenceY": 268,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3468
+      },
+      {
+        "page": 1,
+        "referenceY": 94,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3468
+      },
+      {
+        "page": 1,
+        "referenceY": 444,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3467
+      },
+      {
+        "page": 1,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3466
+      },
+      {
+        "page": 2,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3414
+      },
+      {
+        "page": 2,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3414
+      },
+      {
+        "page": 2,
+        "referenceY": 430,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3413
+      },
+      {
+        "page": 2,
+        "referenceY": 353,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3413
+      },
+      {
+        "page": 2,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3411
+      },
+      {
+        "page": 1,
+        "referenceY": 20,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 1132
+      },
+      {
+        "page": 2,
+        "referenceY": 20,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 1088
+      },
+      {
+        "page": 1,
+        "referenceY": 297.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 81
+      },
+      {
+        "page": 2,
+        "referenceY": 297.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 47
+      },
+      {
+        "page": 1,
+        "referenceY": 434.75,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 13
+      }
+    ]
+  },
+  {
+    "code": "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 52285,
+      "pixels": 4352400,
+      "ratio": 0.012013,
+      "pages": 2
+    },
+    "text": {
+      "mismatches": 133464,
+      "pixels": 4352400,
+      "ratio": 0.030664,
+      "pages": 2
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 125,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 25
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1722
+      },
+      {
+        "page": 1,
+        "referenceY": 406,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1719
+      },
+      {
+        "page": 1,
+        "referenceY": 33,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 392,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 272,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 185,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 76,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 406,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1714
+      },
+      {
+        "page": 2,
+        "referenceY": 33,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 392,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 305,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 186,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 1,
+        "referenceY": 444,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 561
+      },
+      {
+        "page": 2,
+        "referenceY": 444,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 561
+      },
+      {
+        "page": 1,
+        "referenceY": 425.6,
+        "outputY": 421.05,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 88
+      }
+    ]
+  },
+  {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 52285,
+      "pixels": 4352400,
+      "ratio": 0.012013,
+      "pages": 2
+    },
+    "text": {
+      "mismatches": 132717,
+      "pixels": 4352400,
+      "ratio": 0.030493,
+      "pages": 2
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 125,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 25
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1722
+      },
+      {
+        "page": 1,
+        "referenceY": 406,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1719
+      },
+      {
+        "page": 1,
+        "referenceY": 33,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 392,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 272,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 185,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 76,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 406,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1714
+      },
+      {
+        "page": 2,
+        "referenceY": 33,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 392,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 305,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 2,
+        "referenceY": 186,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1712
+      },
+      {
+        "page": 1,
+        "referenceY": 444,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 561
+      },
+      {
+        "page": 2,
+        "referenceY": 444,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 561
+      },
+      {
+        "page": 1,
+        "referenceY": 425.6,
+        "outputY": 421.05,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 88
+      }
+    ]
+  },
+  {
+    "code": "CONTAINER_LOAD_PLAN_REPORT_FORMAT",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 51871,
+      "pixels": 4352400,
+      "ratio": 0.011918,
+      "pages": 2
+    },
+    "text": {
+      "mismatches": 123593,
+      "pixels": 4352400,
+      "ratio": 0.028397,
+      "pages": 2
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 105,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 21
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 307,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 3384
+      },
+      {
+        "page": 1,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1722
+      },
+      {
+        "page": 1,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1722
+      },
+      {
+        "page": 1,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1722
+      },
+      {
+        "page": 1,
+        "referenceY": 440,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1722
+      },
+      {
+        "page": 1,
+        "referenceY": 426,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1722
+      },
+      {
+        "page": 1,
+        "referenceY": 221,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1722
+      },
+      {
+        "page": 1,
+        "referenceY": 113,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1722
+      },
+      {
+        "page": 2,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 440,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 426,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 383,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 265,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 265,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 2,
+        "referenceY": 248,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1717
+      },
+      {
+        "page": 1,
+        "referenceY": 20,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 546
+      },
+      {
+        "page": 2,
+        "referenceY": 20,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 543
+      },
+      {
+        "page": 1,
+        "referenceY": 297.45,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 31
+      }
+    ]
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 68165,
+      "pixels": 4352400,
+      "ratio": 0.015661,
+      "pages": 2
+    },
+    "text": {
+      "mismatches": 89425,
+      "pixels": 4352400,
+      "ratio": 0.020546,
+      "pages": 2
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 2290,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 367
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 367,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 8094
+      },
+      {
+        "page": 2,
+        "referenceY": 367,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 3368
+      },
+      {
+        "page": 1,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2220
+      },
+      {
+        "page": 1,
+        "referenceY": 515,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2220
+      },
+      {
+        "page": 1,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2220
+      },
+      {
+        "page": 2,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1702
+      },
+      {
+        "page": 2,
+        "referenceY": 515,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1702
+      },
+      {
+        "page": 2,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1702
+      },
+      {
+        "page": 1,
+        "referenceY": 367,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1627
+      },
+      {
+        "page": 1,
+        "referenceY": 353,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1307
+      },
+      {
+        "page": 1,
+        "referenceY": 353,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1307
+      },
+      {
+        "page": 1,
+        "referenceY": 309,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1307
+      },
+      {
+        "page": 1,
+        "referenceY": 309,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1307
+      },
+      {
+        "page": 1,
+        "referenceY": 297,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1304
+      },
+      {
+        "page": 1,
+        "referenceY": 282,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      },
+      {
+        "page": 1,
+        "referenceY": 282,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      },
+      {
+        "page": 1,
+        "referenceY": 243,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      },
+      {
+        "page": 1,
+        "referenceY": 243,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      },
+      {
+        "page": 1,
+        "referenceY": 215,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      },
+      {
+        "page": 1,
+        "referenceY": 215,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      }
+    ]
+  },
+  {
+    "code": "CONTAINER_OUTTURN_REPORT_FORMAT",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 64017,
+      "pixels": 2176200,
+      "ratio": 0.029417,
+      "pages": 1
+    },
+    "text": {
+      "mismatches": 49951,
+      "pixels": 2176200,
+      "ratio": 0.022953,
+      "pages": 1
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 100,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 20
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 424.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 4072
+      },
+      {
+        "page": 1,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3479
+      },
+      {
+        "page": 1,
+        "referenceY": 494,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3479
+      },
+      {
+        "page": 1,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3476
+      },
+      {
+        "page": 1,
+        "referenceY": 444,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3464
+      },
+      {
+        "page": 1,
+        "referenceY": 401.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3463
+      },
+      {
+        "page": 1,
+        "referenceY": 347,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3463
+      },
+      {
+        "page": 1,
+        "referenceY": 281,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3463
+      },
+      {
+        "page": 1,
+        "referenceY": 215,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3463
+      },
+      {
+        "page": 1,
+        "referenceY": 160,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3463
+      },
+      {
+        "page": 1,
+        "referenceY": 20,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 1128
+      },
+      {
+        "page": 1,
+        "referenceY": 424,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 941
+      },
+      {
+        "page": 1,
+        "referenceY": 424,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 921
+      },
+      {
+        "page": 1,
+        "referenceY": 413,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 624
+      },
+      {
+        "page": 1,
+        "referenceY": 413,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 617
+      },
+      {
+        "page": 1,
+        "referenceY": 418.5,
+        "outputY": 421,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 134
+      },
+      {
+        "page": 1,
+        "referenceY": 418.5,
+        "outputY": 421,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 129
+      },
+      {
+        "page": 1,
+        "referenceY": 418.5,
+        "outputY": 421,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 99
+      },
+      {
+        "page": 1,
+        "referenceY": 297.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 78
+      },
+      {
+        "page": 1,
+        "referenceY": 434.75,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 13
+      }
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 48738,
+      "pixels": 2176200,
+      "ratio": 0.022396,
+      "pages": 1
+    },
+    "text": {
+      "mismatches": 65899,
+      "pixels": 2176200,
+      "ratio": 0.030282,
+      "pages": 1
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 2070,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 330
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 378,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 6730
+      },
+      {
+        "page": 1,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2215
+      },
+      {
+        "page": 1,
+        "referenceY": 33,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2215
+      },
+      {
+        "page": 1,
+        "referenceY": 514,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2215
+      },
+      {
+        "page": 1,
+        "referenceY": 492,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 2215
+      },
+      {
+        "page": 1,
+        "referenceY": 364,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1307
+      },
+      {
+        "page": 1,
+        "referenceY": 364,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1307
+      },
+      {
+        "page": 1,
+        "referenceY": 320,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1307
+      },
+      {
+        "page": 1,
+        "referenceY": 320,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1307
+      },
+      {
+        "page": 1,
+        "referenceY": 378,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1305
+      },
+      {
+        "page": 1,
+        "referenceY": 308,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1304
+      },
+      {
+        "page": 1,
+        "referenceY": 293,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      },
+      {
+        "page": 1,
+        "referenceY": 293,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      },
+      {
+        "page": 1,
+        "referenceY": 237,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      },
+      {
+        "page": 1,
+        "referenceY": 237,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1023
+      },
+      {
+        "page": 1,
+        "referenceY": 250,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1020
+      },
+      {
+        "page": 1,
+        "referenceY": 305,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 1019
+      },
+      {
+        "page": 1,
+        "referenceY": 250,
+        "outputY": 249,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 811
+      },
+      {
+        "page": 1,
+        "referenceY": 237,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 797
+      },
+      {
+        "page": 1,
+        "referenceY": 237,
+        "outputY": null,
+        "width": 0.5,
+        "kind": "stroke",
+        "mismatches": 797
+      }
+    ]
+  },
+  {
+    "code": "GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT",
+    "carrier": "geometry",
+    "geometry": {
+      "mismatches": 35852,
+      "pixels": 2176200,
+      "ratio": 0.016475,
+      "pages": 1
+    },
+    "text": {
+      "mismatches": 77746,
+      "pixels": 2176200,
+      "ratio": 0.035726,
+      "pages": 1
+    },
+    "precision": {
+      "maxDecimals": 1,
+      "samples": 35,
+      "colorDigits": 8
+    },
+    "referenceLines": {
+      "rectConverted": 0,
+      "stroke": 7
+    },
+    "topLines": [
+      {
+        "page": 1,
+        "referenceY": 493,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 5064
+      },
+      {
+        "page": 1,
+        "referenceY": 542,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3418
+      },
+      {
+        "page": 1,
+        "referenceY": 530,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3418
+      },
+      {
+        "page": 1,
+        "referenceY": 506,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3418
+      },
+      {
+        "page": 1,
+        "referenceY": 575,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 3416
+      },
+      {
+        "page": 1,
+        "referenceY": 20,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 1086
+      },
+      {
+        "page": 1,
+        "referenceY": 297.5,
+        "outputY": null,
+        "width": 1,
+        "kind": "stroke",
+        "mismatches": 44
+      }
+    ]
+  }
+]

@@ -1,0 +1,11 @@
+id,page,text,binding,reason
+p1s3,1,"P.O BOX 11700, 8100 UNIT NO 2 JEDDAH SAUDI ARABIA SAUDI",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s9,1,"JEDDAH, SAUDI ARABIA",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s13,1,JEDDAH SAUDI ARABIA,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s20,1,AS PER ANNEXURE ATTACHED,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s22,1,CONTR NO / SIZE / SEAL NO / PKGS / GR WT / VOLUME,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s23,1,AS PER ANNEXURE ATTACHED,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s24,1,DESCRIPTION OF GOODS,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s25,1,DESCRIPTION OF GOODS,cargo.marks,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s1,2,ANNEXURE FOR BL NO : NSAJED85630124277 /VSL: CAP SAN JUAN310W,,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s13,2,"22,700.000",cargo.pieces,"matches a demo value (number, date, party, or Fresa sample text)"

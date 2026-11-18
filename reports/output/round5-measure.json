@@ -1,0 +1,1580 @@
+{
+  "diagnostic": [
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "page": {
+        "pass": true,
+        "reference": [
+          594,
+          841.9,
+          1
+        ],
+        "rendered": [
+          594,
+          841.9,
+          1
+        ]
+      },
+      "geometry": {
+        "pass": true,
+        "unmatchedLines": 0,
+        "unmatchedRects": 0,
+        "unmatchedPaths": 0,
+        "uncaptured": 0,
+        "uncapturedByPage": [
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          }
+        ]
+      },
+      "staticText": {
+        "pass": false,
+        "spans": 173,
+        "failures": 3
+      },
+      "dynamicText": {
+        "pass": true,
+        "spans": 56,
+        "failures": 0
+      },
+      "raster": {
+        "pass": false,
+        "mismatches": 28705,
+        "ratio": 0.0132,
+        "rasterizer": "pdftoppm",
+        "maskMode": "slots",
+        "allowedDifferencesFile": false,
+        "causes": {
+          "text glyph": 21829,
+          "text position": 1113,
+          "vector": 5763,
+          "image/barcode": 0,
+          "color": 0,
+          "other": 0
+        },
+        "causeShare": {
+          "text glyph": 0.7605,
+          "text position": 0.0388,
+          "vector": 0.2008,
+          "image/barcode": 0,
+          "color": 0,
+          "other": 0
+        },
+        "nonText": {
+          "pass": true,
+          "mismatches": 6188,
+          "ratio": 0.0028,
+          "limit": 0.005,
+          "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
+        },
+        "text": {
+          "blurredMismatches": 42488,
+          "blurredRatio": 0.0965,
+          "textPixels": 440498,
+          "inkMean": 0.8258,
+          "inkMin": 0,
+          "inkSpans": 236
+        },
+        "heatmaps": [
+          "reports/output/raster/diag-INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA-page-1-diff.png"
+        ]
+      },
+      "pagination": {
+        "pass": false,
+        "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+        "singlePage": {
+          "noOverflow": true,
+          "overflowSpans": [],
+          "headerPresent": true,
+          "summaryAfterLastRow": null,
+          "lastRowY": 399.6,
+          "summaryTop": 383.2,
+          "layoutKind": "form"
+        },
+        "multiPage": null
+      },
+      "fontsOverHalfPercent": [
+        {
+          "font": "Consolas -> Liberation Mono|regular",
+          "spans": 11,
+          "meanPercent": 0.0895,
+          "meanKernedPercent": 0.0894
+        }
+      ],
+      "widthMisses": [
+        {
+          "id": "p1s211",
+          "text": "Rupee Seventeen Thousand Three Hundred Eighty-Four Only",
+          "layer": "static",
+          "size": 8.5,
+          "font": "Arial-BoldMT",
+          "reference": 247.4,
+          "rendered": 247.9,
+          "glyphWidth": 247.35,
+          "natural": 247.9,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s215",
+          "text": "1. Payment to be made by cash. The company is not responsible for any cash settlement without an of",
+          "layer": "static",
+          "size": 7.9,
+          "font": "ArialMT",
+          "reference": 358.5,
+          "rendered": 357.9,
+          "glyphWidth": 358.53,
+          "natural": 357.9,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s216",
+          "text": "2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.",
+          "layer": "static",
+          "size": 7.9,
+          "font": "ArialMT",
+          "reference": 438.2,
+          "rendered": 437.4,
+          "glyphWidth": 438.15,
+          "natural": 437.4,
+          "cause": "substitute advance differs from the reference font"
+        }
+      ],
+      "consolas": [
+        {
+          "id": "p1s218",
+          "text": "Beneficiary Name: YOUR COMPANY NAME",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 152.3,
+          "rendered": 152
+        },
+        {
+          "id": "p1s219",
+          "text": "Bank",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 21.8,
+          "rendered": 21.7
+        },
+        {
+          "id": "p1s220",
+          "text": ": HDFC",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 26.1,
+          "rendered": 26.1
+        },
+        {
+          "id": "p1s221",
+          "text": "A/c No",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 30.5,
+          "rendered": 30.4
+        },
+        {
+          "id": "p1s222",
+          "text": ": XXXXXXXXXXX",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 56.6,
+          "rendered": 56.5
+        },
+        {
+          "id": "p1s223",
+          "text": "IBAN Code",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 43.5,
+          "rendered": 43.4
+        },
+        {
+          "id": "p1s224",
+          "text": ": ABA:XXXXXX",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 52.2,
+          "rendered": 52.1
+        },
+        {
+          "id": "p1s225",
+          "text": "Swift Code",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 47.9,
+          "rendered": 47.8
+        },
+        {
+          "id": "p1s226",
+          "text": ": XXXXXX",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 39.2,
+          "rendered": 39.1
+        },
+        {
+          "id": "p1s227",
+          "text": "Address",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 39.2,
+          "rendered": 39.1
+        },
+        {
+          "id": "p1s228",
+          "text": ": CHENNAI.",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 43.5,
+          "rendered": 43.4
+        }
+      ]
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "page": {
+        "pass": true,
+        "reference": [
+          595,
+          842,
+          1
+        ],
+        "rendered": [
+          595,
+          842,
+          1
+        ]
+      },
+      "geometry": {
+        "pass": true,
+        "unmatchedLines": 0,
+        "unmatchedRects": 0,
+        "unmatchedPaths": 0,
+        "uncaptured": 0,
+        "uncapturedByPage": [
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          }
+        ]
+      },
+      "staticText": {
+        "pass": true,
+        "spans": 62,
+        "failures": 0
+      },
+      "dynamicText": {
+        "pass": true,
+        "spans": 20,
+        "failures": 0
+      },
+      "raster": {
+        "pass": false,
+        "mismatches": 23046,
+        "ratio": 0.0106,
+        "rasterizer": "pdftoppm",
+        "maskMode": "slots",
+        "allowedDifferencesFile": false,
+        "causes": {
+          "text glyph": 17212,
+          "text position": 63,
+          "vector": 546,
+          "image/barcode": 5225,
+          "color": 0,
+          "other": 0
+        },
+        "causeShare": {
+          "text glyph": 0.7469,
+          "text position": 0.0027,
+          "vector": 0.0237,
+          "image/barcode": 0.2267,
+          "color": 0,
+          "other": 0
+        },
+        "nonText": {
+          "pass": true,
+          "mismatches": 419,
+          "ratio": 0.0002,
+          "limit": 0.005,
+          "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
+        },
+        "text": {
+          "blurredMismatches": 31326,
+          "blurredRatio": 0.0794,
+          "textPixels": 394622,
+          "inkMean": 0.7839,
+          "inkMin": 0,
+          "inkSpans": 88
+        },
+        "heatmaps": [
+          "reports/output/raster/diag-HBL_DRAFT_REPORT_FORMAT_JASPER-page-1-diff.png"
+        ]
+      },
+      "pagination": {
+        "pass": false,
+        "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+        "singlePage": {
+          "noOverflow": true,
+          "overflowSpans": [],
+          "headerPresent": true,
+          "summaryAfterLastRow": null,
+          "lastRowY": 410.3,
+          "summaryTop": 194.7,
+          "layoutKind": "form"
+        },
+        "multiPage": null
+      },
+      "fontsOverHalfPercent": [],
+      "widthMisses": [],
+      "consolas": []
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+      "page": {
+        "pass": true,
+        "reference": [
+          595,
+          842,
+          1
+        ],
+        "rendered": [
+          595,
+          842,
+          1
+        ]
+      },
+      "geometry": {
+        "pass": true,
+        "unmatchedLines": 0,
+        "unmatchedRects": 0,
+        "unmatchedPaths": 0,
+        "uncaptured": 0,
+        "uncapturedByPage": [
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          }
+        ]
+      },
+      "staticText": {
+        "pass": false,
+        "spans": 85,
+        "failures": 2
+      },
+      "dynamicText": {
+        "pass": true,
+        "spans": 35,
+        "failures": 0
+      },
+      "raster": {
+        "pass": false,
+        "mismatches": 34346,
+        "ratio": 0.0158,
+        "rasterizer": "pdftoppm",
+        "maskMode": "slots",
+        "allowedDifferencesFile": false,
+        "causes": {
+          "text glyph": 20730,
+          "text position": 125,
+          "vector": 949,
+          "image/barcode": 12542,
+          "color": 0,
+          "other": 0
+        },
+        "causeShare": {
+          "text glyph": 0.6036,
+          "text position": 0.0036,
+          "vector": 0.0276,
+          "image/barcode": 0.3652,
+          "color": 0,
+          "other": 0
+        },
+        "nonText": {
+          "pass": true,
+          "mismatches": 745,
+          "ratio": 0.0003,
+          "limit": 0.005,
+          "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
+        },
+        "text": {
+          "blurredMismatches": 40176,
+          "blurredRatio": 0.1197,
+          "textPixels": 335518,
+          "inkMean": 0.784,
+          "inkMin": 0,
+          "inkSpans": 126
+        },
+        "heatmaps": [
+          "reports/output/raster/diag-ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER-page-1-diff.png"
+        ]
+      },
+      "pagination": {
+        "pass": false,
+        "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+        "singlePage": {
+          "noOverflow": true,
+          "overflowSpans": [],
+          "headerPresent": true,
+          "summaryAfterLastRow": null,
+          "lastRowY": 361.5,
+          "summaryTop": 348.5,
+          "layoutKind": "form"
+        },
+        "multiPage": null
+      },
+      "fontsOverHalfPercent": [],
+      "widthMisses": [
+        {
+          "id": "p1s113",
+          "text": "2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.",
+          "layer": "static",
+          "size": 8,
+          "font": "NODUGB+ArialUnicodeMS",
+          "reference": 257.7,
+          "rendered": 258.4,
+          "glyphWidth": 257.67,
+          "natural": 258.4,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s116",
+          "text": "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days",
+          "layer": "static",
+          "size": 8,
+          "font": "NODUGB+ArialUnicodeMS",
+          "reference": 318,
+          "rendered": 319.2,
+          "glyphWidth": 318.02,
+          "natural": 319.2,
+          "cause": "substitute advance differs from the reference font"
+        }
+      ],
+      "consolas": []
+    },
+    {
+      "code": "TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY",
+      "page": {
+        "pass": true,
+        "reference": [
+          595,
+          842,
+          3
+        ],
+        "rendered": [
+          595,
+          842,
+          3
+        ]
+      },
+      "geometry": {
+        "pass": true,
+        "unmatchedLines": 0,
+        "unmatchedRects": 0,
+        "unmatchedPaths": 0,
+        "uncaptured": 0,
+        "uncapturedByPage": [
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          },
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          },
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          }
+        ]
+      },
+      "staticText": {
+        "pass": false,
+        "spans": 257,
+        "failures": 1
+      },
+      "dynamicText": {
+        "pass": false,
+        "spans": 365,
+        "failures": 11
+      },
+      "raster": {
+        "pass": true,
+        "mismatches": 27280,
+        "ratio": 0.0042,
+        "rasterizer": "pdftoppm",
+        "maskMode": "slots",
+        "allowedDifferencesFile": false,
+        "causes": {
+          "text glyph": 24691,
+          "text position": 301,
+          "vector": 2288,
+          "image/barcode": 0,
+          "color": 0,
+          "other": 0
+        },
+        "causeShare": {
+          "text glyph": 0.9051,
+          "text position": 0.011,
+          "vector": 0.0839,
+          "image/barcode": 0,
+          "color": 0,
+          "other": 0
+        },
+        "nonText": {
+          "pass": true,
+          "mismatches": 2288,
+          "ratio": 0.0004,
+          "limit": 0.005,
+          "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
+        },
+        "text": {
+          "blurredMismatches": 22930,
+          "blurredRatio": 0.0234,
+          "textPixels": 981522,
+          "inkMean": 0.8431,
+          "inkMin": 0,
+          "inkSpans": 624
+        },
+        "heatmaps": [
+          "reports/output/raster/diag-TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-1-diff.png",
+          "reports/output/raster/diag-TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-2-diff.png",
+          "reports/output/raster/diag-TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-3-diff.png"
+        ]
+      },
+      "pagination": {
+        "pass": true,
+        "status": "exercised",
+        "singlePage": {
+          "noOverflow": true,
+          "overflowSpans": [],
+          "headerPresent": true,
+          "summaryAfterLastRow": true,
+          "lastRowY": 150,
+          "summaryTop": 140.2,
+          "layoutKind": "table"
+        },
+        "multiPage": {
+          "headerRepeats": true,
+          "rowBreak": true,
+          "summaryAfterLastRow": true,
+          "layoutKind": "table",
+          "ignoredTrailingBlankPages": 1,
+          "footerRepeats": true,
+          "headerMissing": [],
+          "renderedPages": 3,
+          "referencePages": 2
+        }
+      },
+      "fontsOverHalfPercent": [
+        {
+          "font": "ABCDEE+Arial Unicode MS -> Arimo|regular",
+          "spans": 261,
+          "meanPercent": 0.0052,
+          "meanKernedPercent": 0.0064
+        },
+        {
+          "font": "Arial -> Arimo|regular",
+          "spans": 313,
+          "meanPercent": 0.0057,
+          "meanKernedPercent": 0.005
+        }
+      ],
+      "widthMisses": [
+        {
+          "id": "p1s22",
+          "text": "CASH AT BANK AND IN HAND",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 96.3,
+          "rendered": 96.8,
+          "glyphWidth": 100.16,
+          "natural": 100.7,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s418",
+          "text": "SEA FREIGHT FCL REVENUE",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 95.1,
+          "rendered": 95.7,
+          "glyphWidth": 97.07,
+          "natural": 97.6,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s425",
+          "text": "SEA FREIGHT GROUPAGE REVENUE",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 124.1,
+          "rendered": 124.9,
+          "glyphWidth": 124.15,
+          "natural": 124.9,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s440",
+          "text": "SEA EXPORT CLEARANCE",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 88.9,
+          "rendered": 89.5,
+          "glyphWidth": 88.96,
+          "natural": 89.5,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s317",
+          "text": "TRADE CREDITORS CONTROL",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 102.5,
+          "rendered": 103.1,
+          "glyphWidth": 102.47,
+          "natural": 103.1,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s140",
+          "text": "I & M BANK RWANDA LTD(USD)",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 102.5,
+          "rendered": 103.1,
+          "glyphWidth": 104.41,
+          "natural": 105,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s61",
+          "text": "TRADE DEBTORS CONTROL",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 95.1,
+          "rendered": 95.7,
+          "glyphWidth": 97.06,
+          "natural": 97.6,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s54",
+          "text": "TRADE DEBTORS CONTROL",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 95.1,
+          "rendered": 95.7,
+          "glyphWidth": 95.13,
+          "natural": 95.7,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p2s98",
+          "text": "DOCUMENTATION CHGS",
+          "layer": "static",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 83.5,
+          "rendered": 84,
+          "glyphWidth": 253.79,
+          "natural": 255.1,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p2s23",
+          "text": "SEA IMPORT CLEARANCE",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 87.4,
+          "rendered": 87.9,
+          "glyphWidth": 87.4,
+          "natural": 87.9,
+          "cause": "drawn width differs after character spacing; unkerned advance is within 0.5 pt"
+        },
+        {
+          "id": "p2s56",
+          "text": "DUBAI TRANSPORT INCOME",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 95.9,
+          "rendered": 96.5,
+          "glyphWidth": 95.9,
+          "natural": 96.5,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p2s91",
+          "text": "SEA FREIGHT GROUPAGE COST",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 109.8,
+          "rendered": 110.5,
+          "glyphWidth": 177.56,
+          "natural": 178.5,
+          "cause": "substitute advance differs from the reference font"
+        }
+      ],
+      "consolas": []
+    }
+  ],
+  "official": [
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "page": {
+        "pass": true,
+        "reference": [
+          594,
+          841.9,
+          1
+        ],
+        "rendered": [
+          594,
+          841.9,
+          1
+        ]
+      },
+      "geometry": {
+        "pass": true,
+        "unmatchedLines": 0,
+        "unmatchedRects": 0,
+        "unmatchedPaths": 0,
+        "uncaptured": 0,
+        "uncapturedByPage": [
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          }
+        ]
+      },
+      "staticText": {
+        "pass": false,
+        "spans": 173,
+        "failures": 3
+      },
+      "dynamicText": {
+        "pass": true,
+        "spans": 56,
+        "failures": 0
+      },
+      "raster": {
+        "pass": false,
+        "mismatches": 32266,
+        "ratio": 0.0149,
+        "rasterizer": "pdftoppm",
+        "maskMode": "allowed",
+        "allowedDifferencesFile": false,
+        "causes": {
+          "text glyph": 25449,
+          "text position": 1054,
+          "vector": 5763,
+          "image/barcode": 0,
+          "color": 0,
+          "other": 0
+        },
+        "causeShare": {
+          "text glyph": 0.7887,
+          "text position": 0.0327,
+          "vector": 0.1786,
+          "image/barcode": 0,
+          "color": 0,
+          "other": 0
+        },
+        "nonText": {
+          "pass": true,
+          "mismatches": 6188,
+          "ratio": 0.0028,
+          "limit": 0.005,
+          "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
+        },
+        "text": {
+          "blurredMismatches": 52923,
+          "blurredRatio": 0.1201,
+          "textPixels": 440498,
+          "inkMean": 0.7667,
+          "inkMin": 0,
+          "inkSpans": 236
+        },
+        "heatmaps": [
+          "reports/output/raster/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA-page-1-diff.png"
+        ]
+      },
+      "pagination": {
+        "pass": false,
+        "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+        "singlePage": {
+          "noOverflow": true,
+          "overflowSpans": [],
+          "headerPresent": true,
+          "summaryAfterLastRow": null,
+          "lastRowY": 399.6,
+          "summaryTop": 383.2,
+          "layoutKind": "form"
+        },
+        "multiPage": null
+      },
+      "fontsOverHalfPercent": [
+        {
+          "font": "Consolas -> Liberation Mono|regular",
+          "spans": 11,
+          "meanPercent": 0.0895,
+          "meanKernedPercent": 0.0894
+        }
+      ],
+      "widthMisses": [
+        {
+          "id": "p1s211",
+          "text": "Rupee Seventeen Thousand Three Hundred Eighty-Four Only",
+          "layer": "static",
+          "size": 8.5,
+          "font": "Arial-BoldMT",
+          "reference": 247.4,
+          "rendered": 247.9,
+          "glyphWidth": 247.35,
+          "natural": 247.9,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s215",
+          "text": "1. Payment to be made by cash. The company is not responsible for any cash settlement without an of",
+          "layer": "static",
+          "size": 7.9,
+          "font": "ArialMT",
+          "reference": 358.5,
+          "rendered": 357.9,
+          "glyphWidth": 358.53,
+          "natural": 357.9,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s216",
+          "text": "2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.",
+          "layer": "static",
+          "size": 7.9,
+          "font": "ArialMT",
+          "reference": 438.2,
+          "rendered": 437.4,
+          "glyphWidth": 438.15,
+          "natural": 437.4,
+          "cause": "substitute advance differs from the reference font"
+        }
+      ],
+      "consolas": [
+        {
+          "id": "p1s218",
+          "text": "Beneficiary Name: YOUR COMPANY NAME",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 152.3,
+          "rendered": 152
+        },
+        {
+          "id": "p1s219",
+          "text": "Bank",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 21.8,
+          "rendered": 21.7
+        },
+        {
+          "id": "p1s220",
+          "text": ": HDFC",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 26.1,
+          "rendered": 26.1
+        },
+        {
+          "id": "p1s221",
+          "text": "A/c No",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 30.5,
+          "rendered": 30.4
+        },
+        {
+          "id": "p1s222",
+          "text": ": XXXXXXXXXXX",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 56.6,
+          "rendered": 56.5
+        },
+        {
+          "id": "p1s223",
+          "text": "IBAN Code",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 43.5,
+          "rendered": 43.4
+        },
+        {
+          "id": "p1s224",
+          "text": ": ABA:XXXXXX",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 52.2,
+          "rendered": 52.1
+        },
+        {
+          "id": "p1s225",
+          "text": "Swift Code",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 47.9,
+          "rendered": 47.8
+        },
+        {
+          "id": "p1s226",
+          "text": ": XXXXXX",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 39.2,
+          "rendered": 39.1
+        },
+        {
+          "id": "p1s227",
+          "text": "Address",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 39.2,
+          "rendered": 39.1
+        },
+        {
+          "id": "p1s228",
+          "text": ": CHENNAI.",
+          "size": 7.9,
+          "tc": -0.3973,
+          "reference": 43.5,
+          "rendered": 43.4
+        }
+      ]
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "page": {
+        "pass": true,
+        "reference": [
+          595,
+          842,
+          1
+        ],
+        "rendered": [
+          595,
+          842,
+          1
+        ]
+      },
+      "geometry": {
+        "pass": true,
+        "unmatchedLines": 0,
+        "unmatchedRects": 0,
+        "unmatchedPaths": 0,
+        "uncaptured": 0,
+        "uncapturedByPage": [
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          }
+        ]
+      },
+      "staticText": {
+        "pass": true,
+        "spans": 62,
+        "failures": 0
+      },
+      "dynamicText": {
+        "pass": true,
+        "spans": 20,
+        "failures": 0
+      },
+      "raster": {
+        "pass": false,
+        "mismatches": 18968,
+        "ratio": 0.0087,
+        "rasterizer": "pdftoppm",
+        "maskMode": "allowed",
+        "allowedDifferencesFile": false,
+        "causes": {
+          "text glyph": 13165,
+          "text position": 32,
+          "vector": 546,
+          "image/barcode": 5225,
+          "color": 0,
+          "other": 0
+        },
+        "causeShare": {
+          "text glyph": 0.6941,
+          "text position": 0.0017,
+          "vector": 0.0288,
+          "image/barcode": 0.2755,
+          "color": 0,
+          "other": 0
+        },
+        "nonText": {
+          "pass": true,
+          "mismatches": 419,
+          "ratio": 0.0002,
+          "limit": 0.005,
+          "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
+        },
+        "text": {
+          "blurredMismatches": 31326,
+          "blurredRatio": 0.0794,
+          "textPixels": 394622,
+          "inkMean": 0.7839,
+          "inkMin": 0,
+          "inkSpans": 88
+        },
+        "heatmaps": [
+          "reports/output/raster/HBL_DRAFT_REPORT_FORMAT_JASPER-page-1-diff.png"
+        ]
+      },
+      "pagination": {
+        "pass": false,
+        "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+        "singlePage": {
+          "noOverflow": true,
+          "overflowSpans": [],
+          "headerPresent": true,
+          "summaryAfterLastRow": null,
+          "lastRowY": 410.3,
+          "summaryTop": 194.7,
+          "layoutKind": "form"
+        },
+        "multiPage": null
+      },
+      "fontsOverHalfPercent": [],
+      "widthMisses": [],
+      "consolas": []
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+      "page": {
+        "pass": true,
+        "reference": [
+          595,
+          842,
+          1
+        ],
+        "rendered": [
+          595,
+          842,
+          1
+        ]
+      },
+      "geometry": {
+        "pass": true,
+        "unmatchedLines": 0,
+        "unmatchedRects": 0,
+        "unmatchedPaths": 0,
+        "uncaptured": 0,
+        "uncapturedByPage": [
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          }
+        ]
+      },
+      "staticText": {
+        "pass": false,
+        "spans": 85,
+        "failures": 2
+      },
+      "dynamicText": {
+        "pass": true,
+        "spans": 35,
+        "failures": 0
+      },
+      "raster": {
+        "pass": false,
+        "mismatches": 29380,
+        "ratio": 0.0135,
+        "rasterizer": "pdftoppm",
+        "maskMode": "allowed",
+        "allowedDifferencesFile": false,
+        "causes": {
+          "text glyph": 15770,
+          "text position": 119,
+          "vector": 949,
+          "image/barcode": 12542,
+          "color": 0,
+          "other": 0
+        },
+        "causeShare": {
+          "text glyph": 0.5368,
+          "text position": 0.0041,
+          "vector": 0.0323,
+          "image/barcode": 0.4269,
+          "color": 0,
+          "other": 0
+        },
+        "nonText": {
+          "pass": true,
+          "mismatches": 745,
+          "ratio": 0.0003,
+          "limit": 0.005,
+          "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
+        },
+        "text": {
+          "blurredMismatches": 40176,
+          "blurredRatio": 0.1197,
+          "textPixels": 335518,
+          "inkMean": 0.784,
+          "inkMin": 0,
+          "inkSpans": 126
+        },
+        "heatmaps": [
+          "reports/output/raster/ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER-page-1-diff.png"
+        ]
+      },
+      "pagination": {
+        "pass": false,
+        "status": "single-page invariants only; this pilot is not the multi-page stress fixture",
+        "singlePage": {
+          "noOverflow": true,
+          "overflowSpans": [],
+          "headerPresent": true,
+          "summaryAfterLastRow": null,
+          "lastRowY": 361.5,
+          "summaryTop": 348.5,
+          "layoutKind": "form"
+        },
+        "multiPage": null
+      },
+      "fontsOverHalfPercent": [],
+      "widthMisses": [
+        {
+          "id": "p1s113",
+          "text": "2. D.O Counter Timings – 10.00am to 01.00pm & 02.00pm to 4.30pm.",
+          "layer": "static",
+          "size": 8,
+          "font": "NODUGB+ArialUnicodeMS",
+          "reference": 257.7,
+          "rendered": 258.4,
+          "glyphWidth": 257.67,
+          "natural": 258.4,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s116",
+          "text": "5. Free Days FCL– 5 Days (NON-DG), 3 Days (DG or IMCO)/ LCL – 5 Days Free Days",
+          "layer": "static",
+          "size": 8,
+          "font": "NODUGB+ArialUnicodeMS",
+          "reference": 318,
+          "rendered": 319.2,
+          "glyphWidth": 318.02,
+          "natural": 319.2,
+          "cause": "substitute advance differs from the reference font"
+        }
+      ],
+      "consolas": []
+    },
+    {
+      "code": "TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY",
+      "page": {
+        "pass": true,
+        "reference": [
+          595,
+          842,
+          3
+        ],
+        "rendered": [
+          595,
+          842,
+          3
+        ]
+      },
+      "geometry": {
+        "pass": true,
+        "unmatchedLines": 0,
+        "unmatchedRects": 0,
+        "unmatchedPaths": 0,
+        "uncaptured": 0,
+        "uncapturedByPage": [
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          },
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          },
+          {
+            "curves": 0,
+            "nonAxisPaths": 0,
+            "xobjects": 0,
+            "shading": 0,
+            "opacity": 0,
+            "undecodedText": 0,
+            "textRenderMode": 0,
+            "unknown": 0,
+            "total": 0
+          }
+        ]
+      },
+      "staticText": {
+        "pass": false,
+        "spans": 257,
+        "failures": 1
+      },
+      "dynamicText": {
+        "pass": false,
+        "spans": 365,
+        "failures": 11
+      },
+      "raster": {
+        "pass": false,
+        "mismatches": 37398,
+        "ratio": 0.0057,
+        "rasterizer": "pdftoppm",
+        "maskMode": "allowed",
+        "allowedDifferencesFile": false,
+        "causes": {
+          "text glyph": 34672,
+          "text position": 438,
+          "vector": 2288,
+          "image/barcode": 0,
+          "color": 0,
+          "other": 0
+        },
+        "causeShare": {
+          "text glyph": 0.9271,
+          "text position": 0.0117,
+          "vector": 0.0612,
+          "image/barcode": 0,
+          "color": 0,
+          "other": 0
+        },
+        "nonText": {
+          "pass": true,
+          "mismatches": 2288,
+          "ratio": 0.0004,
+          "limit": 0.005,
+          "masked": "span boxes plus logo, letterhead, barcode, QR, and decorative branding"
+        },
+        "text": {
+          "blurredMismatches": 32489,
+          "blurredRatio": 0.0331,
+          "textPixels": 981522,
+          "inkMean": 0.7917,
+          "inkMin": 0,
+          "inkSpans": 624
+        },
+        "heatmaps": [
+          "reports/output/raster/TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-1-diff.png",
+          "reports/output/raster/TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-2-diff.png",
+          "reports/output/raster/TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY-page-3-diff.png"
+        ]
+      },
+      "pagination": {
+        "pass": true,
+        "status": "exercised",
+        "singlePage": {
+          "noOverflow": true,
+          "overflowSpans": [],
+          "headerPresent": true,
+          "summaryAfterLastRow": true,
+          "lastRowY": 150,
+          "summaryTop": 140.2,
+          "layoutKind": "table"
+        },
+        "multiPage": {
+          "headerRepeats": true,
+          "rowBreak": true,
+          "summaryAfterLastRow": true,
+          "layoutKind": "table",
+          "ignoredTrailingBlankPages": 1,
+          "footerRepeats": true,
+          "headerMissing": [],
+          "renderedPages": 3,
+          "referencePages": 2
+        }
+      },
+      "fontsOverHalfPercent": [
+        {
+          "font": "ABCDEE+Arial Unicode MS -> Arimo|regular",
+          "spans": 261,
+          "meanPercent": 0.0052,
+          "meanKernedPercent": 0.0064
+        },
+        {
+          "font": "Arial -> Arimo|regular",
+          "spans": 313,
+          "meanPercent": 0.0057,
+          "meanKernedPercent": 0.005
+        }
+      ],
+      "widthMisses": [
+        {
+          "id": "p1s22",
+          "text": "CASH AT BANK AND IN HAND",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 96.3,
+          "rendered": 96.8,
+          "glyphWidth": 100.16,
+          "natural": 100.7,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s418",
+          "text": "SEA FREIGHT FCL REVENUE",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 95.1,
+          "rendered": 95.7,
+          "glyphWidth": 97.07,
+          "natural": 97.6,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s425",
+          "text": "SEA FREIGHT GROUPAGE REVENUE",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 124.1,
+          "rendered": 124.9,
+          "glyphWidth": 124.15,
+          "natural": 124.9,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s440",
+          "text": "SEA EXPORT CLEARANCE",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 88.9,
+          "rendered": 89.5,
+          "glyphWidth": 88.96,
+          "natural": 89.5,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s317",
+          "text": "TRADE CREDITORS CONTROL",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 102.5,
+          "rendered": 103.1,
+          "glyphWidth": 102.47,
+          "natural": 103.1,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s140",
+          "text": "I & M BANK RWANDA LTD(USD)",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 102.5,
+          "rendered": 103.1,
+          "glyphWidth": 104.41,
+          "natural": 105,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s61",
+          "text": "TRADE DEBTORS CONTROL",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 95.1,
+          "rendered": 95.7,
+          "glyphWidth": 97.06,
+          "natural": 97.6,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p1s54",
+          "text": "TRADE DEBTORS CONTROL",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 95.1,
+          "rendered": 95.7,
+          "glyphWidth": 95.13,
+          "natural": 95.7,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p2s98",
+          "text": "DOCUMENTATION CHGS",
+          "layer": "static",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 83.5,
+          "rendered": 84,
+          "glyphWidth": 253.79,
+          "natural": 255.1,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p2s23",
+          "text": "SEA IMPORT CLEARANCE",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 87.4,
+          "rendered": 87.9,
+          "glyphWidth": 87.4,
+          "natural": 87.9,
+          "cause": "drawn width differs after character spacing; unkerned advance is within 0.5 pt"
+        },
+        {
+          "id": "p2s56",
+          "text": "DUBAI TRANSPORT INCOME",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 95.9,
+          "rendered": 96.5,
+          "glyphWidth": 95.9,
+          "natural": 96.5,
+          "cause": "substitute advance differs from the reference font"
+        },
+        {
+          "id": "p2s91",
+          "text": "SEA FREIGHT GROUPAGE COST",
+          "layer": "dynamic",
+          "size": 7,
+          "font": "ABCDEE+Arial Unicode MS",
+          "reference": 109.8,
+          "rendered": 110.5,
+          "glyphWidth": 177.56,
+          "natural": 178.5,
+          "cause": "substitute advance differs from the reference font"
+        }
+      ],
+      "consolas": []
+    }
+  ],
+  "mupdf": [
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "ratio": 0.0135,
+      "mismatches": 29359,
+      "pass": false,
+      "blurred": 0.116,
+      "nonText": 0.0018
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+      "ratio": 0.0086,
+      "mismatches": 18685,
+      "pass": false,
+      "blurred": 0.0785,
+      "nonText": 0.0001
+    },
+    {
+      "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+      "ratio": 0.0156,
+      "mismatches": 33952,
+      "pass": false,
+      "blurred": 0.1096,
+      "nonText": 0.003
+    },
+    {
+      "code": "TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY",
+      "ratio": 0.0055,
+      "mismatches": 35897,
+      "pass": false,
+      "blurred": 0.0318,
+      "nonText": 0.0005
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+id,page,text,binding,reason
+p1s11,1,OR ORDER THE FULL PACKAGE WHICH ARRIVED ON THE BELOW FLIGHT:,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s15,1,9887,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s16,1,"18,000.000",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s27,1,STC: VALVE MATERIALS FOR MACHINERY PARTS FREIGHT,cargo.description,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s28,1,PREPAID ALL DESTINATION CHARGES ARE CONSIGNEE'S,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s30,1,DESCRIPTION OF GOODS,,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s11,2,OR ORDER THE FULL PACKAGE WHICH ARRIVED ON THE BELOW FLIGHT:,,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s15,2,9887,,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s16,2,"18,000.000",,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s27,2,STC: VALVE MATERIALS FOR MACHINERY PARTS FREIGHT,cargo.description,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s28,2,PREPAID ALL DESTINATION CHARGES ARE CONSIGNEE'S,,"matches a demo value (number, date, party, or Fresa sample text)"
+p2s30,2,DESCRIPTION OF GOODS,,"matches a demo value (number, date, party, or Fresa sample text)"

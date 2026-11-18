@@ -1,0 +1,9 @@
+id,page,text,binding,reason
+p1s1,1,2/8/2019,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s11,1,"1381763867950:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_",,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s19,1,1 1,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s40,1,50013805264,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s49,1,CMA CGM ASHA / V032,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s52,1,23,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s57,1,18,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s110,1,08,,"matches a demo value (number, date, party, or Fresa sample text)"

@@ -1,0 +1,843 @@
+[
+  {
+    "code": "CONTAINER_OUTTURN_REPORT_FORMAT",
+    "fonts": [
+      "ArialUnicodeMS|emb=false",
+      "Helvetica-Bold|emb=false",
+      "Helvetica|emb=false"
+    ],
+    "nonEmbeddedShare": 85,
+    "spanCount": 85,
+    "images": [
+      {
+        "class": "decorative Fresa branding",
+        "width": 58.9,
+        "height": 799
+      }
+    ],
+    "uncaptured": {
+      "curves": 0,
+      "nonAxisPaths": 0,
+      "shading": 0,
+      "cmyk": 0,
+      "opacity": 0,
+      "xobjects": 0,
+      "lineStyle": 0,
+      "markedContent": 0,
+      "undecodedText": 0,
+      "textRenderMode": 0,
+      "unknownOps": {}
+    },
+    "crops": [
+      {
+        "file": "D:/KingFisherWings-frontend/reports/output/round8/CONTAINER_OUTTURN_REPORT_FORMAT-region-1.png",
+        "cell": {
+          "gx": 0,
+          "gy": 0,
+          "x0": 0,
+          "y0": 0,
+          "x1": 438,
+          "y1": 310,
+          "count": 14771
+        },
+        "spans": [
+          {
+            "id": "p1s3",
+            "text": "POL",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s7",
+            "text": "POD",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s8",
+            "text": "POR",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s9",
+            "text": "POF",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s28",
+            "text": "Seal No.",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 10,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s36",
+            "text": "No of Pcs",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s37",
+            "text": "Manifested",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s38",
+            "text": "No of Pcs",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          }
+        ],
+        "images": [
+          {
+            "class": "decorative Fresa branding",
+            "x": 22,
+            "y": 22,
+            "width": 58.9,
+            "height": 799
+          }
+        ],
+        "filledRectsNearby": 0,
+        "pathCount": 0
+      },
+      {
+        "file": "D:/KingFisherWings-frontend/reports/output/round8/CONTAINER_OUTTURN_REPORT_FORMAT-region-2.png",
+        "cell": {
+          "gx": 0,
+          "gy": 1,
+          "x0": 0,
+          "y0": 310,
+          "x1": 438,
+          "y1": 620,
+          "count": 13140
+        },
+        "spans": [
+          {
+            "id": "p1s1",
+            "text": "CONTAINER OUTTURN REPORT",
+            "font": "ArialUnicodeMS",
+            "embedded": false,
+            "size": 14,
+            "renderMode": 2
+          },
+          {
+            "id": "p1s2",
+            "text": "ETA",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s4",
+            "text": "01-FEB-19",
+            "font": "Helvetica",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s10",
+            "text": ":",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s13",
+            "text": "10-FEB-19",
+            "font": "Helvetica",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s15",
+            "text": ":",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s16",
+            "text": "Job No.",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s18",
+            "text": "CSI190007",
+            "font": "Helvetica",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          }
+        ],
+        "images": [
+          {
+            "class": "decorative Fresa branding",
+            "x": 22,
+            "y": 22,
+            "width": 58.9,
+            "height": 799
+          }
+        ],
+        "filledRectsNearby": 0,
+        "pathCount": 0
+      },
+      {
+        "file": "D:/KingFisherWings-frontend/reports/output/round8/CONTAINER_OUTTURN_REPORT_FORMAT-region-3.png",
+        "cell": {
+          "gx": 1,
+          "gy": 1,
+          "x0": 438,
+          "y0": 310,
+          "x1": 876,
+          "y1": 620,
+          "count": 9754
+        },
+        "spans": [
+          {
+            "id": "p1s1",
+            "text": "CONTAINER OUTTURN REPORT",
+            "font": "ArialUnicodeMS",
+            "embedded": false,
+            "size": 14,
+            "renderMode": 2
+          },
+          {
+            "id": "p1s26",
+            "text": "Marks & No.",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s30",
+            "text": "Clerk Name",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 9,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s32",
+            "text": "UNNI & RAJESH - II SHIFT",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 10,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s49",
+            "text": "NO MARKS",
+            "font": "ArialUnicodeMS",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s59",
+            "text": "CHILLERS",
+            "font": "ArialUnicodeMS",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s69",
+            "text": "BOXES WITH BROWN SHADE",
+            "font": "ArialUnicodeMS",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s78",
+            "text": "BROWN WRAP BAGS",
+            "font": "ArialUnicodeMS",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          }
+        ],
+        "images": [],
+        "filledRectsNearby": 0,
+        "pathCount": 0
+      }
+    ]
+  },
+  {
+    "code": "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT",
+    "fonts": [
+      "ZWDLWL+ArialUnicodeMS|emb=true",
+      "Helvetica-Bold|emb=false",
+      "Helvetica|emb=false"
+    ],
+    "nonEmbeddedShare": 39,
+    "spanCount": 130,
+    "images": [
+      {
+        "class": "decorative Fresa branding",
+        "width": 58.9,
+        "height": 799
+      }
+    ],
+    "uncaptured": {
+      "curves": 0,
+      "nonAxisPaths": 0,
+      "shading": 0,
+      "cmyk": 0,
+      "opacity": 0,
+      "xobjects": 0,
+      "lineStyle": 0,
+      "markedContent": 0,
+      "undecodedText": 0,
+      "textRenderMode": 0,
+      "unknownOps": {}
+    },
+    "crops": [
+      {
+        "file": "D:/KingFisherWings-frontend/reports/output/round8/FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT-region-1.png",
+        "cell": {
+          "gx": 1,
+          "gy": 2,
+          "x0": 438,
+          "y0": 620,
+          "x1": 876,
+          "y1": 930,
+          "count": 12412
+        },
+        "spans": [
+          {
+            "id": "p1s33",
+            "text": "Shipper & Address",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s34",
+            "text": "Consignee & Address",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s44",
+            "text": "(SH)4G LOGISTICS INDIA PVT LTD",
+            "font": "ZWDLWL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s45",
+            "text": "10 DBS CENTRE NUNGAMBAKKAM",
+            "font": "ZWDLWL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s46",
+            "text": "HIGH ROAD NUNGAMBAKKAM",
+            "font": "ZWDLWL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s47",
+            "text": "CHENNAI TAMILNADU 600084 INDIA",
+            "font": "ZWDLWL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s48",
+            "text": "EMAIL: ram@fresatechnologies.com",
+            "font": "ZWDLWL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s49",
+            "text": "(NT)AL NASER TRADING COMPANY",
+            "font": "ZWDLWL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          }
+        ],
+        "images": [],
+        "filledRectsNearby": 0,
+        "pathCount": 0
+      },
+      {
+        "file": "D:/KingFisherWings-frontend/reports/output/round8/FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT-region-2.png",
+        "cell": {
+          "gx": 1,
+          "gy": 1,
+          "x0": 438,
+          "y0": 310,
+          "x1": 876,
+          "y1": 620,
+          "count": 11767
+        },
+        "spans": [
+          {
+            "id": "p1s1",
+            "text": "FREIGHT MANIFEST",
+            "font": "ZWDLWL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 14,
+            "renderMode": 2
+          },
+          {
+            "id": "p1s20",
+            "text": "MBLNO12347890 / 07-FEB-19",
+            "font": "Helvetica",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s24",
+            "text": "PREPAID",
+            "font": "Helvetica",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s25",
+            "text": "CEXP190152 / 15-FEB-19",
+            "font": "Helvetica",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s34",
+            "text": "Consignee & Address",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s35",
+            "text": "Commodity Description",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s55",
+            "text": "AL NASER TRADING COMPANY LLC",
+            "font": "ZWDLWL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s56",
+            "text": "30 AL MAKTHOOM BUILDING NEAR",
+            "font": "ZWDLWL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          }
+        ],
+        "images": [],
+        "filledRectsNearby": 0,
+        "pathCount": 0
+      },
+      {
+        "file": "D:/KingFisherWings-frontend/reports/output/round8/FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT-region-3.png",
+        "cell": {
+          "gx": 0,
+          "gy": 0,
+          "x0": 0,
+          "y0": 0,
+          "x1": 438,
+          "y1": 310,
+          "count": 10870
+        },
+        "spans": [
+          {
+            "id": "p1s4",
+            "text": "POL",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s11",
+            "text": "POD",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s12",
+            "text": "POR",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s13",
+            "text": "POF",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s31",
+            "text": "Seal No.",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 11,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s32",
+            "text": "Container No.",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 11,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s39",
+            "text": "Marks & No.",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          }
+        ],
+        "images": [
+          {
+            "class": "decorative Fresa branding",
+            "x": 22,
+            "y": 22,
+            "width": 58.9,
+            "height": 799
+          }
+        ],
+        "filledRectsNearby": 0,
+        "pathCount": 0
+      }
+    ]
+  },
+  {
+    "code": "CONTAINER_LOAD_PLAN_REPORT_FORMAT",
+    "fonts": [
+      "NIKBLL+ArialUnicodeMS|emb=true",
+      "Helvetica-Bold|emb=false",
+      "Helvetica|emb=false"
+    ],
+    "nonEmbeddedShare": 38,
+    "spanCount": 134,
+    "images": [
+      {
+        "class": "decorative Fresa branding",
+        "width": 58.9,
+        "height": 799
+      }
+    ],
+    "uncaptured": {
+      "curves": 0,
+      "nonAxisPaths": 0,
+      "shading": 0,
+      "cmyk": 0,
+      "opacity": 0,
+      "xobjects": 0,
+      "lineStyle": 0,
+      "markedContent": 0,
+      "undecodedText": 0,
+      "textRenderMode": 0,
+      "unknownOps": {}
+    },
+    "crops": [
+      {
+        "file": "D:/KingFisherWings-frontend/reports/output/round8/CONTAINER_LOAD_PLAN_REPORT_FORMAT-region-1.png",
+        "cell": {
+          "gx": 1,
+          "gy": 2,
+          "x0": 438,
+          "y0": 620,
+          "x1": 876,
+          "y1": 930,
+          "count": 13733
+        },
+        "spans": [
+          {
+            "id": "p1s33",
+            "text": "Consignee & Address",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s35",
+            "text": "Shipper & Address",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s41",
+            "text": "(SH)4G LOGISTICS INDIA PVT LTD",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s42",
+            "text": "10 DBS CENTRE NUNGAMBAKKAM",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s43",
+            "text": "HIGH ROAD NUNGAMBAKKAM",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s44",
+            "text": "CHENNAI TAMILNADU 600084 INDIA",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s45",
+            "text": "EMAIL: ram@fresatechnologies.com",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s46",
+            "text": "(NT)AL NASER TRADING COMPANY",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          }
+        ],
+        "images": [],
+        "filledRectsNearby": 0,
+        "pathCount": 0
+      },
+      {
+        "file": "D:/KingFisherWings-frontend/reports/output/round8/CONTAINER_LOAD_PLAN_REPORT_FORMAT-region-2.png",
+        "cell": {
+          "gx": 1,
+          "gy": 1,
+          "x0": 438,
+          "y0": 310,
+          "x1": 876,
+          "y1": 620,
+          "count": 12822
+        },
+        "spans": [
+          {
+            "id": "p1s1",
+            "text": "CONTAINER LOAD PLAN",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 14,
+            "renderMode": 2
+          },
+          {
+            "id": "p1s30",
+            "text": "Commodity Description",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s33",
+            "text": "Consignee & Address",
+            "font": "Helvetica-Bold",
+            "embedded": false,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s52",
+            "text": "AL NASER TRADING COMPANY LLC",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s53",
+            "text": "30 AL MAKTHOOM BUILDING NEAR",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s54",
+            "text": "MUBARAK CENTRE ROUND ABOUT",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s55",
+            "text": "AL NABHA SHARJAH SHARJAH",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s56",
+            "text": "UNITED ARAB EMIRATES",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          }
+        ],
+        "images": [],
+        "filledRectsNearby": 0,
+        "pathCount": 0
+      },
+      {
+        "file": "D:/KingFisherWings-frontend/reports/output/round8/CONTAINER_LOAD_PLAN_REPORT_FORMAT-region-3.png",
+        "cell": {
+          "gx": 2,
+          "gy": 2,
+          "x0": 876,
+          "y0": 620,
+          "x1": 1314,
+          "y1": 930,
+          "count": 10323
+        },
+        "spans": [
+          {
+            "id": "p1s68",
+            "text": "13 PMK COMPLEX 4TH CROSS",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s69",
+            "text": "STREET CHENNAI TAMIL NADU",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s71",
+            "text": "(NT)AL JUNAID FISHES TOOLS",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s72",
+            "text": "BLOCK 216 BUILDING 3015 SHOP NO",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s73",
+            "text": "54 ROAD 1655 SHARJAH UNITED",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s74",
+            "text": "ARAB EMIRATES",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s76",
+            "text": "BLOCK 216 BUILDING 3015 SHOP",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          },
+          {
+            "id": "p1s77",
+            "text": "NO 54 ROAD 1655 SHARJAH UNITED",
+            "font": "NIKBLL+ArialUnicodeMS",
+            "embedded": true,
+            "size": 8,
+            "renderMode": 0
+          }
+        ],
+        "images": [],
+        "filledRectsNearby": 0,
+        "pathCount": 0
+      }
+    ]
+  }
+]

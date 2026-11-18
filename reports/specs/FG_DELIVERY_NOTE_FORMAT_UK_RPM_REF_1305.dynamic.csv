@@ -1,0 +1,10 @@
+id,page,text,binding,reason
+p1s13,1,MBLCOPY87667888 / 28-JAN-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s14,1,PLMAAJEA00081 / 28-JAN-19,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s44,1,STC: VALVE MATERIALS FOR MACHINERY PARTS FREIGHT,cargo.pieces,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s45,1,PREPAID ALL DESTINATION CHARGES ARE CONSIGNEE'S,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s47,1,"18,000.000",shipment.freightTerms,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s49,1,24.000,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s51,1,1 X 20' DC - ABCU9877666,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s54,1,RECEIVED IN GOOD ORDER AND CONDITION,,"matches a demo value (number, date, party, or Fresa sample text)"
+p1s73,1,17-MAY-2023 02:50PM,,"matches a demo value (number, date, party, or Fresa sample text)"
