@@ -369,7 +369,10 @@ export const portalCreditNotesService = {
               attn: user?.fullName,
               phone: user?.phone,
               email: user?.email,
-              company: { name: user?.tenantName || 'KINGFISHER WINGS GROUP' },
+              company: {
+                name: user?.tenantName || undefined,
+                tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
+              },
               ...labels,
             },
           ),

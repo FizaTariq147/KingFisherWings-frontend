@@ -11,16 +11,24 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/Table';
+import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
+import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { InvoiceStatusBadge } from '@/features/invoices/components/InvoiceStatusBadge';
 import {
   INVOICE_STATUS_LABELS,
   INVOICE_TYPE_LABELS,
   type InvoiceType,
 } from '@/features/invoices/constants/invoice.constants';
-import { resolvePdfUrl } from '@/features/invoices/utils/normalizeInvoicePdf';
+import { commercialNoteToPdfModel } from '@/features/invoices/utils/commercialNoteToPdfModel';
+import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
+import { loadInvoiceJobForPdf } from '@/features/invoices/utils/loadInvoiceJobForPdf';
+import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
 import { useJob } from '@/features/jobs/hooks/useJobs';
 import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
+import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
+import { useParty } from '@/features/parties/hooks/useParties';
 import { SectionAttachmentsPanel } from '@/features/shared/section-attachments';
+import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { isUuid } from '@/lib/isUuid';
 import { CREDIT_NOTE_ROUTE_PREFIX } from '../api/creditNote.api';
 import { CreditNoteForm } from '../components/CreditNoteForm';
@@ -71,6 +79,9 @@ export default function CreditNoteDetailPage() {
   const navigate = useNavigate();
   const { data: creditNote, isLoading, isError, error, refetch } = useCreditNote(id);
   const { data: linkedJob } = useJob(creditNote?.job_id || '');
+  const { data: party } = useParty(creditNote?.party_id || '');
+  const { data: companies = [] } = useTenantCompanies(true);
+  const { data: orgProfile } = useOrganizationProfile();
   const post = usePostCreditNote(id);
   const update = useUpdateCreditNote(id);
   const generatePdf = useGenerateCreditNotePdf(id);
@@ -78,6 +89,8 @@ export default function CreditNoteDetailPage() {
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [editOpen, setEditOpen] = useState(false);
+  const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
+  const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
 
   const editDefaults = useMemo(
     () => (creditNote ? creditNoteToFormValues(creditNote) : undefined),
@@ -106,6 +119,11 @@ export default function CreditNoteDetailPage() {
     creditNote.actions?.can_download !== false &&
     ['DRAFT', 'POSTED', 'SENT', 'PARTIALLY_PAID', 'PAID'].includes(creditNote.status);
   const lines = creditNote.lines ?? [];
+  const noteNumber = creditNoteDisplayNumber(creditNote);
+  const pdfFileName = formatPdfFilename(noteNumber, 'credit-note');
+  const companyMatch =
+    companies.find((c) => c.id && creditNote.company_id && c.id === creditNote.company_id) ||
+    companies[0];
 
   const run = async (fn: () => Promise<unknown>, successMsg?: string) => {
     setActionError(null);
@@ -116,6 +134,42 @@ export default function CreditNoteDetailPage() {
       setActionMessage(successMsg || 'Action completed.');
       refetch();
     } catch (err) {
+      setActionError(getErrorMessage(err));
+    } finally {
+      setPending(false);
+    }
+  };
+
+  const openClientPdf = async () => {
+    setActionError(null);
+    setActionMessage(null);
+    setPending(true);
+    setPdfReadyBlob(null);
+    setPdfReadyOpen(true);
+    try {
+      const pdfJob = (await loadInvoiceJobForPdf(creditNote.job_id)) || linkedJob || null;
+      const blob = await generateInvoicePdf(
+        commercialNoteToPdfModel(creditNote, 'credit', {
+          party,
+          job: pdfJob,
+          displayNumber: noteNumber,
+          company: resolveInvoicePdfCompany({
+            profile: orgProfile,
+            companyName: companyMatch?.name,
+          }),
+        }),
+      );
+      setPdfReadyBlob(blob);
+      setActionMessage('PDF ready.');
+      // Best-effort server store for portal / email — client layout is the download face.
+      try {
+        await generatePdf.mutateAsync();
+      } catch {
+        /* ignore */
+      }
+      refetch();
+    } catch (err) {
+      setPdfReadyOpen(false);
       setActionError(getErrorMessage(err));
     } finally {
       setPending(false);
@@ -145,13 +199,7 @@ export default function CreditNoteDetailPage() {
       ? [
           {
             label: 'Download PDF',
-            onClick: () =>
-              void run(async () => {
-                const info = await generatePdf.mutateAsync();
-                const url = resolvePdfUrl(info.pdf_url || info.customer_pdf_url);
-                if (url) window.open(url, '_blank', 'noopener,noreferrer');
-                else throw new Error('PDF generated but no download URL was returned.');
-              }, 'PDF ready.'),
+            onClick: () => void openClientPdf(),
             variant: 'secondary' as const,
           },
         ]
@@ -197,7 +245,7 @@ export default function CreditNoteDetailPage() {
       )}
 
       <DetailPageTemplate
-        title={creditNoteDisplayNumber(creditNote)}
+        title={noteNumber}
         subtitle={
           creditNote.invoice_type
             ? INVOICE_TYPE_LABELS[creditNote.invoice_type as InvoiceType] ??
@@ -356,6 +404,19 @@ export default function CreditNoteDetailPage() {
           />
         ) : null}
       </Modal>
+
+      <PdfReadyModal
+        open={pdfReadyOpen}
+        onClose={() => {
+          setPdfReadyOpen(false);
+          setPdfReadyBlob(null);
+        }}
+        blob={pdfReadyBlob}
+        title="Credit note PDF ready"
+        fileName={pdfFileName}
+        skipBranding
+        description="Your credit note PDF uses the same KingFisher statement-of-charges layout as invoices."
+      />
     </>
   );
 }
