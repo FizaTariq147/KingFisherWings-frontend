@@ -1,4 +1,5 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFPage } from 'pdf-lib';
+import logoAsset from '@/assets/logo.png';
 import { safePdfText } from '@/features/files/utils/sanitizePdfText';
 
 export interface AccountStatementPdfLine {
@@ -16,8 +17,17 @@ export interface AccountStatementPdfAgingBucket {
   amount: number;
 }
 
+export interface AccountStatementPdfCompany {
+  name?: string;
+  tagline?: string;
+  phone?: string;
+  email?: string;
+  website?: string;
+  logoUrl?: string;
+}
+
 export interface AccountStatementPdfInput {
-  /** Shown in body only — system branding stamp adds logo / company header. */
+  /** Document title under KingFisher chrome — e.g. Customer Statement. */
   title?: string;
   subtitle?: string;
   partyName?: string;
@@ -30,15 +40,21 @@ export interface AccountStatementPdfInput {
   agingBuckets?: AccountStatementPdfAgingBucket[];
   agingTotal?: number;
   generatedAt?: string;
+  /** Org chrome — same header/footer face as invoice Generate PDF. */
+  company?: AccountStatementPdfCompany;
 }
 
 /** Landscape A4 — seven ledger columns need width more than height. */
 const PAGE_W = 841.89;
 const PAGE_H = 595.28;
-/** Body-only margins — stampPdfWithBranding adds logo header + footer. */
 const MARGIN_X = 36;
-const MARGIN_TOP = 28;
-const MARGIN_BOTTOM = 28;
+/** Leave room for KingFisher header chrome (logo + company). */
+const MARGIN_TOP = 96;
+/** Leave room for KingFisher footer (call / mail / web + accent bar). */
+const MARGIN_BOTTOM = 56;
+const NAVY = rgb(0.039, 0.161, 0.259);
+const ORANGE = rgb(0.957, 0.447, 0.078);
+const WHITE = rgb(1, 1, 1);
 const COL_GAP = 8;
 const ROW_PAD = 4;
 const ROW_LINE_H = 10;
@@ -46,11 +62,12 @@ const FONT_SIZE = 8;
 const MAX_CELL_LINES = 2;
 /** WinAnsi-safe ellipsis (StandardFonts cannot encode U+2026). */
 const ELLIPSIS = '...';
-const ACCENT = rgb(0.04, 0.16, 0.26);
+const ACCENT = NAVY;
 const MUTED = rgb(0.39, 0.45, 0.51);
 const RULE = rgb(0.82, 0.86, 0.9);
 const ROW_ALT = rgb(0.96, 0.97, 0.98);
 const TEXT = rgb(0.12, 0.14, 0.18);
+const LABEL = rgb(0.5, 0.53, 0.56);
 
 /**
  * Proportional column shares of content width (must sum to 1).
@@ -258,10 +275,83 @@ function buildColumnLayout(contentW: number): ColumnLayout {
   };
 }
 
+async function embedStatementLogo(
+  doc: PDFDocument,
+  preferredLogoUrl?: string | null,
+): Promise<{ image: PDFImage | null; width: number; height: number }> {
+  const preferred = String(preferredLogoUrl ?? '').trim();
+  const candidates = [
+    preferred || undefined,
+    typeof logoAsset === 'string' ? logoAsset : undefined,
+    '/kingfisher-logo.png',
+  ].filter(Boolean) as string[];
+
+  for (const raw of candidates) {
+    try {
+      const url =
+        raw.startsWith('data:') || /^https?:\/\//i.test(raw) || raw.startsWith('blob:')
+          ? raw
+          : new URL(raw, window.location.origin).href;
+      const res = await fetch(url, preferred && raw === preferred ? { mode: 'cors' } : undefined);
+      if (!res.ok) continue;
+      const bytes = await res.arrayBuffer();
+      let image: PDFImage;
+      try {
+        image = await doc.embedPng(bytes);
+      } catch {
+        image = await doc.embedJpg(bytes);
+      }
+      const maxH = 40;
+      const scale = maxH / image.height;
+      return { image, width: image.width * scale, height: maxH };
+    } catch {
+      /* try next */
+    }
+  }
+  return { image: null, width: 0, height: 0 };
+}
+
+function drawStatementFooter(
+  page: PDFPage,
+  font: PDFFont,
+  fontBold: PDFFont,
+  phone: string,
+  email: string,
+  website: string,
+): void {
+  const top = 42;
+  const contentW = PAGE_W - MARGIN_X * 2;
+  page.drawLine({
+    start: { x: MARGIN_X, y: top + 14 },
+    end: { x: PAGE_W - MARGIN_X, y: top + 14 },
+    thickness: 0.6,
+    color: RULE,
+  });
+  const colW = contentW / 3;
+  const items: Array<{ label: string; value: string }> = [
+    { label: 'CALL US ANYTIME', value: phone },
+    { label: 'MAIL TO US', value: email },
+    { label: 'WEBSITE', value: website },
+  ];
+  items.forEach((item, i) => {
+    const x = MARGIN_X + i * colW;
+    page.drawCircle({ x: x + 4, y: top - 6, size: 4.5, color: NAVY });
+    page.drawCircle({ x: x + 4, y: top - 6, size: 2, color: i === 0 ? ORANGE : WHITE });
+    page.drawText(item.label, { x: x + 12, y: top + 2, size: 5, font: fontBold, color: LABEL });
+    page.drawText(truncateToWidth(font, item.value, 7, colW - 18), {
+      x: x + 12,
+      y: top - 10,
+      size: 7,
+      font,
+      color: TEXT,
+    });
+  });
+  page.drawRectangle({ x: 0, y: 0, width: PAGE_W * 0.78, height: 7, color: NAVY });
+  page.drawRectangle({ x: PAGE_W * 0.78, y: 0, width: PAGE_W * 0.22, height: 7, color: ORANGE });
+}
+
 /**
- * Body-only account statement content (landscape).
- * Callers must run the result through {@link triggerBrandedPdfDownload} /
- * {@link ensureBrandedPdfBlob} so logo, accent bar, and footer match invoices & quotations.
+ * Landscape account statement with the same KingFisher header/footer chrome as invoice PDFs.
  */
 export async function generateAccountStatementPdf(
   input: AccountStatementPdfInput,
@@ -269,6 +359,7 @@ export async function generateAccountStatementPdf(
   const pdf = await PDFDocument.create();
   const bodyFont = await pdf.embedFont(StandardFonts.Helvetica);
   const boldFont = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const logo = await embedStatementLogo(pdf, input.company?.logoUrl);
 
   const title = safePdfText(input.title || 'Account Statement', 'Account Statement');
   const subtitle = safePdfText(input.subtitle || '', '');
@@ -279,6 +370,23 @@ export async function generateAccountStatementPdf(
   const generatedAt = safePdfText(
     input.generatedAt || new Date().toISOString().slice(0, 10),
     '',
+  );
+  const companyName = safePdfText(
+    input.company?.name || 'KINGFISHER WINGS GROUP',
+    'KINGFISHER WINGS GROUP',
+  ).toUpperCase();
+  const tagline = safePdfText(
+    input.company?.tagline || 'FREIGHT - LOGISTICS - GENERAL TRADING',
+    'FREIGHT - LOGISTICS - GENERAL TRADING',
+  ).toUpperCase();
+  const companyPhone = safePdfText(input.company?.phone || '+971 55 5355 286', '+971 55 5355 286');
+  const companyEmail = safePdfText(
+    input.company?.email || 'info@kingfisherwingsgroup.com',
+    'info@kingfisherwingsgroup.com',
+  );
+  const companyWeb = safePdfText(
+    input.company?.website || 'www.kingfisherwingsgroup.com',
+    'www.kingfisherwingsgroup.com',
   );
   const contentW = PAGE_W - MARGIN_X * 2;
   const col = buildColumnLayout(contentW);
@@ -293,7 +401,66 @@ export async function generateAccountStatementPdf(
     balance: money(line.balance),
   }));
 
+  const drawPageChrome = (target: PDFPage, continuation: boolean) => {
+    // Top accent bar (invoice face)
+    target.drawRectangle({ x: 0, y: PAGE_H - 5, width: PAGE_W * 0.7, height: 5, color: NAVY });
+    target.drawRectangle({
+      x: PAGE_W * 0.7,
+      y: PAGE_H - 5,
+      width: PAGE_W * 0.3,
+      height: 5,
+      color: ORANGE,
+    });
+
+    let hy = PAGE_H - 14;
+    if (logo.image) {
+      target.drawImage(logo.image, {
+        x: MARGIN_X,
+        y: hy - logo.height,
+        width: logo.width,
+        height: logo.height,
+      });
+    } else {
+      target.drawText('KingFisher', {
+        x: MARGIN_X,
+        y: hy - 12,
+        size: 11,
+        font: boldFont,
+        color: NAVY,
+      });
+      target.drawText('WINGS GROUP', {
+        x: MARGIN_X,
+        y: hy - 24,
+        size: 8,
+        font: boldFont,
+        color: ORANGE,
+      });
+    }
+
+    let rightY = hy - 6;
+    drawRight(target, companyName, PAGE_W - MARGIN_X, rightY, 9, boldFont, NAVY);
+    rightY -= 10;
+    drawRight(target, tagline, PAGE_W - MARGIN_X, rightY, 6, boldFont, ORANGE);
+    rightY -= 11;
+    drawRight(target, companyPhone, PAGE_W - MARGIN_X, rightY, 7, bodyFont, MUTED);
+    rightY -= 10;
+    drawRight(target, companyEmail, PAGE_W - MARGIN_X, rightY, 7, bodyFont, MUTED);
+
+    if (continuation) {
+      target.drawText(`${title} (continued)`, {
+        x: MARGIN_X,
+        y: PAGE_H - MARGIN_TOP + 8,
+        size: 9,
+        font: boldFont,
+        color: MUTED,
+      });
+    }
+
+    drawStatementFooter(target, bodyFont, boldFont, companyPhone, companyEmail, companyWeb);
+  };
+
   let page = pdf.addPage([PAGE_W, PAGE_H]);
+  drawPageChrome(page, false);
   let y = PAGE_H - MARGIN_TOP;
   let tableStarted = false;
 
@@ -306,7 +473,7 @@ export async function generateAccountStatementPdf(
       color: ACCENT,
     });
     const headerY = y;
-    const headerColor = rgb(1, 1, 1);
+    const headerColor = WHITE;
     page.drawText('Date', {
       x: col.dateX,
       y: headerY,
@@ -344,34 +511,23 @@ export async function generateAccountStatementPdf(
   const ensureSpace = (needed: number) => {
     if (y - needed >= MARGIN_BOTTOM) return;
     page = pdf.addPage([PAGE_W, PAGE_H]);
+    drawPageChrome(page, true);
     y = PAGE_H - MARGIN_TOP;
     if (tableStarted) drawTableHeader();
   };
 
-  // Title row — stack "As of" when it would collide with the title.
+  // Document title (under chrome) — same weight as invoice face titles.
   const asOfLabel = asOf ? `As of ${asOf}` : '';
-  const titleW = measure(boldFont, title, 13);
+  const titleSize = 18;
   const asOfW = asOfLabel ? measure(bodyFont, asOfLabel, 9) : 0;
-  if (asOfLabel && titleW + asOfW + 16 > contentW) {
-    page.drawText(truncateToWidth(boldFont, title, 13, contentW), {
-      x: MARGIN_X,
-      y,
-      size: 13,
-      font: boldFont,
-      color: ACCENT,
-    });
-    y -= 14;
-    page.drawText(asOfLabel, { x: MARGIN_X, y, size: 9, font: bodyFont, color: MUTED });
-  } else {
-    page.drawText(truncateToWidth(boldFont, title, 13, contentW - asOfW - 16), {
-      x: MARGIN_X,
-      y,
-      size: 13,
-      font: boldFont,
-      color: ACCENT,
-    });
-    if (asOfLabel) drawRight(page, asOfLabel, PAGE_W - MARGIN_X, y, 9, bodyFont, MUTED);
-  }
+  page.drawText(truncateToWidth(boldFont, title, titleSize, contentW - asOfW - 16), {
+    x: MARGIN_X,
+    y,
+    size: titleSize,
+    font: boldFont,
+    color: NAVY,
+  });
+  if (asOfLabel) drawRight(page, asOfLabel, PAGE_W - MARGIN_X, y + 2, 9, bodyFont, MUTED);
   y -= 14;
 
   if (subtitle) {

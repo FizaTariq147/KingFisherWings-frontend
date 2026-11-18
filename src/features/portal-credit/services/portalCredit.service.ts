@@ -1,7 +1,6 @@
 import { PortalApiError, portalApiClient } from '@/lib/portalApiClient';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
-import { statementPdfBranding } from '@/features/files/utils/pdfBranding';
-import { triggerBrandedPdfDownload } from '@/features/files/utils/triggerBlobDownload';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { generateAccountStatementPdf } from '@/features/shared/account-statement/generateAccountStatementPdf';
 import { PORTAL_CREDIT_API } from '../api/portalCredit.api';
 import type {
@@ -50,7 +49,7 @@ async function buildClientStatementPdf(
   const currency = statement.currencyCode || summary.currencyCode;
 
   const blob = await generateAccountStatementPdf({
-    title: 'Account Statement',
+    title: 'Customer Statement',
     subtitle: [
       'Customer AR ledger — full history',
       `${statement.lines.length} transaction(s)`,
@@ -68,6 +67,7 @@ async function buildClientStatementPdf(
     lines: statement.lines,
     agingBuckets,
     agingTotal,
+    company: meta.companyName ? { name: meta.companyName } : undefined,
   });
 
   const reference = `AR-Statement-${resolvedAsOf || new Date().toISOString().slice(0, 10)}`;
@@ -92,23 +92,17 @@ export const portalCreditService = {
   },
 
   /**
-   * Always generate ledger PDF in the browser with system branding.
+   * Always generate ledger PDF in the browser with KingFisher invoice header/footer.
    * Live `/portal/credit/statement.pdf` often returns JSON / empty — never download it.
    */
   async downloadStatementPdf(asOf?: string, meta: PortalStatementPdfMeta = {}): Promise<void> {
-    const { blob, asOf: resolvedAsOf, reference } = await buildClientStatementPdf(asOf, meta);
+    const { blob, reference } = await buildClientStatementPdf(asOf, meta);
     const typed = new Blob([await blob.arrayBuffer()], { type: 'application/pdf' });
 
     if (!(await blobLooksLikePdf(typed))) {
       throw new PortalApiError('Failed to generate statement PDF.', 500);
     }
 
-    const filename = `${reference}.pdf`;
-    await triggerBrandedPdfDownload(typed, filename, {
-      filename,
-      branding: statementPdfBranding(reference, resolvedAsOf, {
-        companyName: meta.companyName,
-      }),
-    });
+    triggerBlobDownload(typed, `${reference}.pdf`);
   },
 };

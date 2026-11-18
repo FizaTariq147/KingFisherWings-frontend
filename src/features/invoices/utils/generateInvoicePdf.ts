@@ -85,9 +85,17 @@ export type InvoicePdfModel = {
   jobRefLabel?: string;
   /** When true, omit Advance Received / Balance Due (quotations). */
   hideAdvanceBalance?: boolean;
+  /**
+   * `statement` = tax-invoice / quotation face (default).
+   * `commercial_note` = credit/debit body (CUSTOMER | SHIP TO | meta + QTY table)
+   * while keeping the same KingFisher header/footer chrome.
+   */
+  layout?: 'statement' | 'commercial_note';
   /** Page size — default A4. USA formats may use Letter. */
   pageSize?: 'A4' | 'Letter';
   billTo: InvoicePdfBillTo;
+  /** Optional ship-to block for commercial_note layout (falls back to billTo). */
+  shipTo?: InvoicePdfBillTo;
   shipment?: InvoicePdfShipment;
   lines: InvoicePdfChargeLine[];
   subtotal?: number;
@@ -495,12 +503,14 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   const dueDateLabel = safePdfText(model.dueDateLabel || 'Due Date');
   const jobRefLabel = safePdfText(model.jobRefLabel || 'Job / Ref No.');
 
-  drawText(page, documentTitle, MARGIN, y, 24, fontBold, NAVY);
-
+  // Fixed title size for INVOICE / QUOTATION / CREDIT NOTE / DEBIT NOTE (identical face).
+  const TITLE_SIZE = 18;
   const badgeH = 15;
   const badgePad = 14;
   const badgeW = Math.max(58, measure(fontBold, copyLabel, 7.5) + badgePad);
   const badgeX = PAGE_W - MARGIN - badgeW;
+  drawText(page, documentTitle, MARGIN, y, TITLE_SIZE, fontBold, NAVY);
+
   const badgeY = y - 2;
   drawRoundedRect(page, badgeX, badgeY, badgeW, badgeH, 7.5, { color: NAVY });
   drawText(
@@ -513,7 +523,7 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
     WHITE,
   );
 
-  y -= 13;
+  y -= 12;
   drawText(page, documentSubtitle, MARGIN, y, 7.5, font, MUTED);
   y -= 10;
   page.drawLine({
@@ -523,6 +533,41 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
     color: NAVY,
   });
   y -= 14;
+
+  if (model.layout === 'commercial_note') {
+    const drawn = drawCommercialNoteBody({
+      page,
+      doc,
+      model,
+      font,
+      fontBold,
+      y,
+      pageW: PAGE_W,
+      pageH: PAGE_H,
+      contentW: CONTENT_W,
+      currency,
+      vatPct,
+      companyPhone,
+      companyEmail,
+      companyWeb,
+      numberLabel,
+      dateLabel,
+      dueDateLabel,
+      jobRefLabel,
+    });
+    drawPageFooter(
+      drawn.page,
+      font,
+      fontBold,
+      companyPhone,
+      companyEmail,
+      companyWeb,
+      PAGE_W,
+      CONTENT_W,
+    );
+    const noteBytes = await doc.save();
+    return new Blob([new Uint8Array(noteBytes)], { type: 'application/pdf' });
+  }
 
   // ——— Bill To | Invoice Details ———
   const gap = 10;
@@ -855,6 +900,276 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
 
   const bytes = await doc.save();
   return new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });
+}
+
+/**
+ * Credit / debit note body — CUSTOMER | SHIP TO | meta, QTY table, simple totals,
+ * Thank you + Terms. Header/footer chrome stays on the shared KingFisher invoice face.
+ */
+function drawCommercialNoteBody(opts: {
+  page: PDFPage;
+  doc: PDFDocument;
+  model: InvoicePdfModel;
+  font: PDFFont;
+  fontBold: PDFFont;
+  y: number;
+  pageW: number;
+  pageH: number;
+  contentW: number;
+  currency: string;
+  vatPct: number;
+  companyPhone: string;
+  companyEmail: string;
+  companyWeb: string;
+  numberLabel: string;
+  dateLabel: string;
+  dueDateLabel: string;
+  jobRefLabel: string;
+}): { page: PDFPage; y: number } {
+  let { page, y } = opts;
+  const {
+    doc,
+    model,
+    font,
+    fontBold,
+    pageW,
+    pageH,
+    contentW,
+    currency,
+    vatPct,
+    companyPhone,
+    companyEmail,
+    companyWeb,
+    numberLabel,
+    dateLabel,
+    dueDateLabel,
+    jobRefLabel,
+  } = opts;
+
+  const FOOTER_RESERVE = 62;
+  const ensureSpace = (need: number) => {
+    if (y - need >= FOOTER_RESERVE + 8) return;
+    drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb, pageW, contentW);
+    page = doc.addPage([pageW, pageH]);
+    page.drawRectangle({ x: 0, y: pageH - 4, width: pageW * 0.72, height: 4, color: NAVY });
+    page.drawRectangle({
+      x: pageW * 0.72,
+      y: pageH - 4,
+      width: pageW * 0.28,
+      height: 4,
+      color: ORANGE,
+    });
+    y = pageH - 20;
+  };
+
+  const bill = model.billTo;
+  const ship = model.shipTo ?? model.billTo;
+  const colGap = 16;
+  const colW = (contentW - colGap * 2) / 3;
+
+  const partyBlock = (
+    title: string,
+    party: InvoicePdfBillTo,
+    x: number,
+    top: number,
+  ): number => {
+    drawText(page, title, x, top, 8, fontBold, NAVY);
+    let py = top - 14;
+    const name = party.client || '—';
+    drawText(page, fit(fontBold, name, 9, colW - 4), x, py, 9, fontBold, TEXT);
+    py -= 12;
+    const lines = [
+      party.attn ? `Attn: ${party.attn}` : '',
+      ...(party.addressLines ?? []),
+      party.phone ? `Phone: ${party.phone}` : '',
+      party.email ? `Email: ${party.email}` : '',
+    ].filter(Boolean);
+    for (const line of lines.slice(0, 5)) {
+      drawText(page, fit(font, line, 7.5, colW - 4), x, py, 7.5, font, MUTED);
+      py -= 10;
+    }
+    return py;
+  };
+
+  ensureSpace(110);
+  const blockTop = y;
+  const leftBottom = partyBlock('CUSTOMER', bill, MARGIN, blockTop);
+  const midBottom = partyBlock('SHIP TO', ship, MARGIN + colW + colGap, blockTop);
+
+  // Right meta — stacked label / value like the sample
+  let metaY = blockTop;
+  const metaX = MARGIN + (colW + colGap) * 2;
+  const metaRows: Array<[string, string]> = [
+    [numberLabel || 'Note #', model.invoiceNumber || '—'],
+    [dateLabel || 'Date', fmtDate(model.invoiceDate)],
+    [jobRefLabel || 'P.O.#', model.jobRef || '—'],
+    [dueDateLabel || 'Due Date', fmtDate(model.dueDate)],
+  ];
+  for (const [label, value] of metaRows) {
+    drawText(page, label.toUpperCase(), metaX, metaY, 7, fontBold, NAVY);
+    metaY -= 11;
+    drawText(page, fit(font, value, 9, colW - 4), metaX, metaY, 9, font, TEXT);
+    metaY -= 16;
+  }
+
+  y = Math.min(leftBottom, midBottom, metaY) - 18;
+
+  // ——— QTY | DESCRIPTION | UNIT PRICE | AMOUNT ———
+  const headerH = 18;
+  const cols = {
+    qty: { x: MARGIN, w: 48 },
+    desc: { x: MARGIN + 48, w: contentW - 48 - 160 },
+    rate: { x: MARGIN + contentW - 160, w: 72 },
+    amount: { x: MARGIN + contentW - 88, w: 88 },
+  };
+
+  const drawTableHeader = () => {
+    ensureSpace(headerH + 40);
+    drawText(page, 'QTY', cols.qty.x, y - 12, 8, fontBold, NAVY);
+    drawText(page, 'DESCRIPTION', cols.desc.x, y - 12, 8, fontBold, NAVY);
+    drawRight(page, 'UNIT PRICE', cols.rate.x + cols.rate.w, y - 12, 8, fontBold, NAVY);
+    drawRight(page, 'AMOUNT', cols.amount.x + cols.amount.w, y - 12, 8, fontBold, NAVY);
+    y -= headerH;
+    page.drawLine({
+      start: { x: MARGIN, y },
+      end: { x: pageW - MARGIN, y },
+      thickness: 1.2,
+      color: ORANGE,
+    });
+    y -= 6;
+  };
+
+  drawTableHeader();
+
+  const lines = model.lines.length
+    ? model.lines
+    : [{ description: 'No charge lines', qty: undefined, rate: undefined, amount: undefined }];
+
+  lines.forEach((line, index) => {
+    const descLines = wrapLines(font, line.description || '—', 8, cols.desc.w - 4, 3);
+    const h = Math.max(18, descLines.length * 11 + 6);
+    if (y - h < FOOTER_RESERVE + 8) {
+      // New page + redraw header, then continue this row.
+      drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb, pageW, contentW);
+      page = doc.addPage([pageW, pageH]);
+      page.drawRectangle({ x: 0, y: pageH - 4, width: pageW * 0.72, height: 4, color: NAVY });
+      page.drawRectangle({
+        x: pageW * 0.72,
+        y: pageH - 4,
+        width: pageW * 0.28,
+        height: 4,
+        color: ORANGE,
+      });
+      y = pageH - 20;
+      drawTableHeader();
+    }
+    if (index % 2 === 1) {
+      page.drawRectangle({
+        x: MARGIN,
+        y: y - h,
+        width: contentW,
+        height: h,
+        color: ROW_ALT,
+      });
+    }
+    const baseY = y - 12;
+    if (line.qty != null) {
+      drawText(page, String(line.qty), cols.qty.x, baseY, 8, font, TEXT);
+    }
+    let dy = baseY;
+    for (const dl of descLines) {
+      drawText(page, dl, cols.desc.x, dy, 8, font, TEXT);
+      dy -= 11;
+    }
+    if (line.rate != null) {
+      drawRight(page, money(line.rate), cols.rate.x + cols.rate.w, baseY, 8, font, TEXT);
+    }
+    if (line.amount != null) {
+      drawRight(
+        page,
+        money(line.amount),
+        cols.amount.x + cols.amount.w,
+        baseY,
+        8,
+        fontBold,
+        TEXT,
+      );
+    }
+    y -= h;
+  });
+
+  page.drawLine({
+    start: { x: MARGIN, y },
+    end: { x: pageW - MARGIN, y },
+    thickness: 0.6,
+    color: RULE,
+  });
+  y -= 16;
+
+  // ——— Totals (right) ———
+  const subtotal = model.subtotal ?? 0;
+  const discount = model.discount ?? 0;
+  const taxable = model.taxableAmount ?? Math.max(0, subtotal - discount);
+  const vatAmount = model.vatAmount ?? 0;
+  const grand = model.grandTotal ?? taxable + vatAmount + (model.otherCharges ?? 0);
+  const totalsW = 200;
+  const totalsX = pageW - MARGIN - totalsW;
+
+  ensureSpace(90);
+  const totPairs: Array<[string, string, boolean]> = [
+    ['Subtotal', money(subtotal), false],
+    [
+      vatPct > 0 ? `Sales Tax ${vatPct.toFixed(1)}%` : 'Tax',
+      money(vatAmount),
+      false,
+    ],
+    ['TOTAL', `${currency} ${money(grand)}`, true],
+  ];
+  for (const [label, value, emph] of totPairs) {
+    if (emph) {
+      drawText(page, label, totalsX, y, 10, fontBold, NAVY);
+      drawRight(page, value, totalsX + totalsW, y, 10, fontBold, NAVY);
+      y -= 18;
+    } else {
+      drawText(page, label, totalsX, y, 8, font, LABEL);
+      drawRight(page, value, totalsX + totalsW, y, 8, font, TEXT);
+      y -= 14;
+    }
+  }
+
+  y -= 10;
+  ensureSpace(90);
+
+  // Thank you (left) + Terms (right)
+  drawText(page, 'Thank you', MARGIN, y, 16, fontBold, NAVY);
+
+  const termsX = MARGIN + contentW * 0.42;
+  const termsW = contentW * 0.58;
+  page.drawRectangle({
+    x: termsX,
+    y: y - 72,
+    width: 2.5,
+    height: 78,
+    color: NAVY,
+  });
+  drawText(page, 'TERMS & CONDITIONS', termsX + 10, y, 8, fontBold, ORANGE);
+  const defaultTerms =
+    'Payment is due by the due date. Please quote the note number on all correspondence. This is a computer-generated credit / debit note.';
+  const termLines = wrapLines(
+    font,
+    model.remarks?.trim() || defaultTerms,
+    7,
+    termsW - 16,
+    6,
+  );
+  let ty = y - 14;
+  for (const line of termLines) {
+    drawText(page, line, termsX + 10, ty, 7, font, TEXT);
+    ty -= 10;
+  }
+  y = Math.min(y - 24, ty) - 12;
+
+  return { page, y };
 }
 
 function drawPageFooter(
