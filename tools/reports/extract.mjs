@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 import { getDocument, OPS } from 'pdfjs-dist/legacy/build/pdf.mjs';
 import { readOperators } from './read-operators.mjs';
+import { readPageBoxes } from './page-box.mjs';
 import { mapFont } from './font-map.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -559,16 +560,20 @@ async function attachBarcodes(page, images, view, filePath, pageIndex) {
 async function openPdf(filePath) {
   const data = new Uint8Array(fs.readFileSync(filePath));
   const doc = await getDocument({ data, disableWorker: true, useSystemFonts: true }).promise;
+  const boxes = await readPageBoxes(filePath);
   const pages = [];
   for (let index = 1; index <= doc.numPages; index += 1) {
     const page = await doc.getPage(index);
     const view = page.getViewport({ scale: 1 });
+    const box = boxes[index - 1];
+    const [x0, y0, x1, y1] = box.mediaBox;
     const ops = await page.getOperatorList();
-    const read = readOperators(ops, page, { width: view.width, height: view.height });
+    const read = readOperators(ops, page, { width: view.width, height: view.height, minX: x0, minY: y0, maxX: x1, maxY: y1 });
     await attachBarcodes(page, read.images, view, filePath, index);
     pages.push({
       width: round1(view.width),
       height: round1(view.height),
+      pageBox: box,
       ...read,
     });
   }
@@ -806,6 +811,7 @@ function pageSpec(read, pageIndex) {
   return {
     width: read.width,
     height: read.height,
+    pageBox: read.pageBox,
     lines: read.lines,
     rects: read.rects,
     spans,
@@ -893,6 +899,7 @@ export async function extractSpec(code) {
       width: first.width,
       height: first.height,
       orientation: first.width > first.height ? 'landscape' : 'portrait',
+      ...first.pageBox,
     },
     fonts: [...fontNames.keys()].map((name) => {
       const mapped = mapFont(name);

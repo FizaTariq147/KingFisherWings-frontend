@@ -17,6 +17,16 @@ function round4(value) {
   return Math.round(Number(value) * 10000) / 10000;
 }
 
+function colorFine(color) {
+  const raw = [...(color || [0, 0, 0])];
+  while (raw.length < 3) raw.push(raw[0] || 0);
+  return raw.slice(0, 3).map((channel) => {
+    const number = Number(channel);
+    const unit = number > 1 ? number / 255 : number;
+    return (Math.round(unit * 1e6) / 1e6).toFixed(6);
+  }).join(',');
+}
+
 function hex(color) {
   const raw = [...(color || [0, 0, 0])];
   while (raw.length < 3) raw.push(raw[0] || 0);
@@ -119,7 +129,11 @@ function cloneState(state) {
 }
 
 function intersects(box, page) {
-  return box.maxX > 0 && box.minX < page.width && box.maxY > 0 && box.minY < page.height;
+  const minX = page.minX || 0;
+  const minY = page.minY || 0;
+  const maxX = page.maxX ?? page.width;
+  const maxY = page.maxY ?? page.height;
+  return box.maxX > minX && box.minX < maxX && box.maxY > minY && box.minY < maxY;
 }
 
 function numberArg(args) {
@@ -209,10 +223,10 @@ function pushBox(rects, lines, minX, minY, maxX, maxY, style) {
   // near-white 2 pt bars used as cell backgrounds.
   if ((width > 2 && height > 2) || (filled && width >= 1 && height >= 1)) {
     rects.push({
-      x: round1(minX),
-      y: round1(minY),
-      width: round1(width),
-      height: round1(height),
+      x: round4(minX),
+      y: round4(minY),
+      width: round4(width),
+      height: round4(height),
       strokeWidth: style.strokeWidth,
       stroke: style.paint === 'fill' ? null : style.stroke,
       fill: style.paint === 'stroke' ? null : style.fill,
@@ -221,22 +235,24 @@ function pushBox(rects, lines, minX, minY, maxX, maxY, style) {
   } else if (width > 2 && height >= 0.15 && height <= 2.5) {
     // Short rules (length <= 4) still count; the previous >4 cutoff dropped them.
     lines.push({
-      x1: round1(minX),
-      y1: round1(minY + height / 2),
-      x2: round1(maxX),
-      y2: round1(minY + height / 2),
-      width: round1(height),
-      color: style.stroke || style.fill || '#000000',
+      x1: round4(minX),
+      y1: round4(minY + height / 2),
+      x2: round4(maxX),
+      y2: round4(minY + height / 2),
+      width: round4(height),
+      color: style.stroke || style.fill || '0.000000,0.000000,0.000000',
+      source: filled ? 'rect' : 'stroke',
       ...strokeStyle(style),
     });
   } else if (height > 2 && width >= 0.15 && width <= 2.5) {
     lines.push({
-      x1: round1(minX + width / 2),
-      y1: round1(minY),
-      x2: round1(minX + width / 2),
-      y2: round1(maxY),
-      width: round1(width),
-      color: style.stroke || style.fill || '#000000',
+      x1: round4(minX + width / 2),
+      y1: round4(minY),
+      x2: round4(minX + width / 2),
+      y2: round4(maxY),
+      width: round4(width),
+      color: style.stroke || style.fill || '0.000000,0.000000,0.000000',
+      source: filled ? 'rect' : 'stroke',
       ...strokeStyle(style),
     });
   }
@@ -244,7 +260,7 @@ function pushBox(rects, lines, minX, minY, maxX, maxY, style) {
 
 function userPoint(state, x, y) {
   const point = mapPoint(state.ctm, x, y);
-  return [round1(point[0]), round1(point[1])];
+  return [round4(point[0]), round4(point[1])];
 }
 
 function shapesFromPath(pathOps, nums, state, style) {
@@ -294,7 +310,8 @@ function shapesFromPath(pathOps, nums, state, style) {
             x2: point[0],
             y2: point[1],
             width: style.strokeWidth,
-            color: style.stroke || '#000000',
+            color: style.stroke || '0.000000,0.000000,0.000000',
+            source: 'stroke',
             ...strokeStyle(style),
           });
         }
@@ -514,6 +531,7 @@ export function readOperators(ops, page, pageBox) {
   };
   const dropped = { count: 0 };
   const droppedPast = [];
+  let paintOrder = 0;
   const rects = [];
   const lines = [];
   const paths = [];
@@ -615,9 +633,9 @@ export function readOperators(ops, page, pageBox) {
       const painted = paintKind(fns, i);
       if (painted === 'clip' || painted === 'none') continue;
       const shaped = shapesFromPath(pathOps, nums, state, {
-        strokeWidth: round1(state.lineWidth),
-        stroke: hex(state.stroke),
-        fill: hex(state.fill),
+        strokeWidth: round4(state.lineWidth),
+        stroke: colorFine(state.stroke),
+        fill: colorFine(state.fill),
         dash: state.dash.slice(),
         dashPhase: state.dashPhase,
         paint: painted,
@@ -626,7 +644,11 @@ export function readOperators(ops, page, pageBox) {
         miterLimit: state.miterLimit,
       });
       for (const rect of shaped.rects) {
-        if (keepBox({ minX: rect.x, minY: rect.y, maxX: rect.x + rect.width, maxY: rect.y + rect.height }, pageBox, dropped)) rects.push(rect);
+        if (keepBox({ minX: rect.x, minY: rect.y, maxX: rect.x + rect.width, maxY: rect.y + rect.height }, pageBox, dropped)) {
+          rect.order = paintOrder;
+          paintOrder += 1;
+          rects.push(rect);
+        }
       }
       for (const line of shaped.lines) {
         if (keepBox({
@@ -634,13 +656,21 @@ export function readOperators(ops, page, pageBox) {
           minY: Math.min(line.y1, line.y2),
           maxX: Math.max(line.x1, line.x2),
           maxY: Math.max(line.y1, line.y2),
-        }, pageBox, dropped)) lines.push(line);
+        }, pageBox, dropped)) {
+          line.order = paintOrder;
+          paintOrder += 1;
+          lines.push(line);
+        }
       }
       for (const path of shaped.paths) {
         const xs = path.commands.flatMap((command) => (command.op === 'c' ? command.p.flat() : command.p || [])).filter((_, index) => index % 2 === 0);
         const ys = path.commands.flatMap((command) => (command.op === 'c' ? command.p.flat() : command.p || [])).filter((_, index) => index % 2 === 1);
         if (!xs.length) continue;
-        if (keepBox({ minX: Math.min(...xs), minY: Math.min(...ys), maxX: Math.max(...xs), maxY: Math.max(...ys) }, pageBox, dropped)) paths.push(path);
+        if (keepBox({ minX: Math.min(...xs), minY: Math.min(...ys), maxX: Math.max(...xs), maxY: Math.max(...ys) }, pageBox, dropped)) {
+          path.order = paintOrder;
+          paintOrder += 1;
+          paths.push(path);
+        }
       }
     } else if (show.has(fn)) {
       const span = showSpan(state, args[i], page, uncaptured, pageBox, droppedPast);

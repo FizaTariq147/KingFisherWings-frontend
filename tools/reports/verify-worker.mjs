@@ -52,6 +52,7 @@ function classesOf(result) {
   }
   for (const failure of result.staticText.failures || []) classes.push(`static ${failure.cause}`);
   for (const failure of result.dynamicText.failures || []) classes.push(`dynamic ${failure.cause}`);
+  if (result.geometryOnlyRaster && !result.geometryOnlyRaster.pass) classes.push('geometry-only raster');
   if (!result.raster.pass) {
     const nonTextFail = (result.raster.nonText?.ratio ?? 1) > 0.005;
     classes.push(nonTextFail ? 'raster R1' : 'raster R2');

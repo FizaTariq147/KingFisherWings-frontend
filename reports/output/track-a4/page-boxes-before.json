@@ -1,0 +1,44 @@
+{
+  "compared": 391,
+  "mismatchDocuments": 146,
+  "note": "Measured on the Track A3 outputs, before the page-box renderer. UserUnit matched on every document.",
+  "fieldCounts": {
+    "MediaBox": 127,
+    "MediaBox+Rotate": 18,
+    "CropBox": 1
+  },
+  "mediaBoxDeltas": {
+    "0,0,0,0.02": 101,
+    "0,0,-247,247": 18,
+    "0,0,0,0.04": 9,
+    "0,0,0.04,0.04": 6,
+    "0,0,-0.04,0.04": 7,
+    "0,0,0.04,-0.04": 1,
+    "0,0,-0.04,0.02": 3
+  },
+  "examples": {
+    "MediaBox": "AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT reference [0,0,594,841.92] rendered [0,0,594,841.9]",
+    "CropBox": "ADVANCE_SHIPPING_NOTE_FORMAT_1 reference CropBox [0,0,595,842], rendered CropBox absent",
+    "MediaBox+Rotate": "GL_REPORT_VOUCHER_REPORT_FORMAT reference rotate 90 media [0,0,595,842], rendered rotate 0 media [0,0,842,595]"
+  },
+  "rotated": [
+    "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+    "CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT",
+    "CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT",
+    "PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE",
+    "PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE",
+    "CARGO_MANIFEST_REPORT_FORMAT",
+    "CONTAINER_LOAD_PLAN_REPORT_FORMAT",
+    "CONTAINER_OUTTURN_REPORT_FORMAT",
+    "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT",
+    "OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER",
+    "AP_AGING_SUMMARY_REPORT_FORMAT",
+    "AR_AGING_SUMMARY_REPORT_FORMAT",
+    "GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT",
+    "GL_REPORT_VOUCHER_REPORT_FORMAT",
+    "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+    "FG_TAX_INVOICE_INDIA_RPM_REF_237",
+    "FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796",
+    "FG_PROOF_OF_DELIVERY_RPM_REF_847"
+  ]
+}

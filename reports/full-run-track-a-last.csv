@@ -1,400 +1,400 @@
 code,pages,page,geometry,static,dynamic,raster,pagination,failure_class,cause_counts,non_text,text_ink,masked_fraction
-HBL_DRAFT_REPORT_FORMAT_JASPER,1,pass,pass,pass,pass,pass,single-page,,,0,0.0673,0.0415
-AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0039,0.1648,0.0352
-INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0357,3.7578,0.0672
 HBL_DRAFT_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0,0.0151,0.0601
-INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,pass,single-page,,,0.0028,0.1559,0.0318
-HBL_DRAFT_REPORT_FORMAT_4,1,pass,pass,pass,pass,pass,single-page,,,0,0.0488,0.019
+HBL_DRAFT_REPORT_FORMAT_JASPER,1,pass,pass,pass,pass,pass,single-page,,,0,0.0673,0.0415
+INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0266,0.5112,0.0672
+AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0023,0.1562,0.0352
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,pass,single-page,,,0.0017,0.1617,0.0318
 ARRIVAL_CONFIRMATION,1,pass,pass,pass,pass,pass,single-page,,,0.0015,0.2439,0.0236
-AIR_FREIGHT_ATD_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.2096,0.0338
+HBL_DRAFT_REPORT_FORMAT_4,1,pass,pass,pass,pass,pass,single-page,,,0,0.0488,0.019
 HBL_DRAFT_REPORT_FORMAT_5,1,pass,pass,pass,pass,pass,single-page,,,0,0.0649,0.0333
+AIR_FREIGHT_ATD_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0015,0.2096,0.0338
 INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0,0.0177,0.0954
+INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0.003,0.1314,0.039
 HBL_DRAFT_REPORT_FORMAT_6,2,pass,pass,pass,pass,pass,pass,,,0,0.0631,0.0402
-INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0.0035,0.1312,0.039
-INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,pass,single-page,,,0.0035,0.1652,0.0316
+INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,pass,single-page,,,0.0019,0.1729,0.0316
 HBL_DRAFT_REPORT_FORMAT_7,2,pass,pass,pass,pass,pass,pass,,,0,0.3917,0.0297
-INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.1582,0.0296
-CARGO_ARRIVAL_NOTICE_AIR_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0033,0.2062,0.0267
 HBL_DRAFT_REPORT_FORMAT_8,1,pass,pass,pass,pass,pass,single-page,,,0,0.072,0.0665
-INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0.0037,0.2421,0.0346
+INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA,1,pass,pass,pass,pass,pass,single-page,,,0.0015,0.1555,0.0296
+CARGO_ARRIVAL_NOTICE_AIR_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.2003,0.0267
 HBL_DRAFT_REPORT_FORMAT_9,1,pass,pass,pass,pass,pass,single-page,,,0,0.0707,0.0196
-CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.2198,0.0267
-CARGO_MANIFEST_AIR_HOUSE_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0025,0.1993,0.0376
+INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0.0025,0.2429,0.0346
+CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.2158,0.0267
 INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC,1,pass,pass,fail,pass,pass,single-page,static width,static width=1,0,0.1243,0.0983
-HBL_DRAFT_REPORT_FORMAT_10,2,pass,pass,pass,pass,pass,pass,,,0.0001,0.0558,0.0367
+AIR_QUOTATION_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,geometry-only raster | raster R1,geometry-only raster=1; raster R1=1,0.0059,0.0548,0.0245
+CARGO_MANIFEST_AIR_HOUSE_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0025,0.1941,0.0376
 INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA,1,pass,pass,pass,pass,pass,single-page,,,0,0.0837,0.1033
-AIR_QUOTATION_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0069,0.0549,0.0245
-CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.02,5.0175,0.0744
+BOOKING_CONFIRMATION_AIR_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0016,0.0506,0.0223
+CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0196,0.7115,0.0744
 HBL_DRAFT_REPORT_FORMAT_11,1,pass,pass,pass,pass,pass,single-page,,,0,0.0422,0.0323
-BOOKING_CONFIRMATION_AIR_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.003,0.0645,0.0223
-INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0,0.0703,0.095
+CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0188,0.5265,0.0744
 HBL_DRAFT_REPORT_FORMAT_12,1,pass,pass,pass,pass,pass,single-page,,,0,0.0508,0.0563
-CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0276,3.4762,0.0744
+HBL_DRAFT_REPORT_FORMAT_10,2,pass,pass,pass,pass,pass,pass,,,0.0001,0.0558,0.0367
 HBL_DRAFT_REPORT_FORMAT_13,1,pass,pass,pass,pass,pass,single-page,,,0,0.0222,0.0226
-HBL_DRAFT_REPORT_FORMAT_14,1,pass,pass,pass,pass,pass,single-page,,,0,0.0485,0.03
+INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0,0.0703,0.095
 INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED,1,pass,pass,pass,pass,pass,single-page,,,0,0.0081,0.0152
-INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND,1,pass,pass,pass,pass,pass,single-page,,,0.0047,0.2399,0.0416
+HBL_DRAFT_REPORT_FORMAT_14,1,pass,pass,pass,pass,pass,single-page,,,0,0.0485,0.03
+INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND,1,pass,pass,pass,pass,pass,single-page,,,0.0031,0.2386,0.0416
 DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT,2,pass,pass,pass,pass,pass,pass,,,0.0016,0.0881,0.0969
-INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.2404,0.0314
-SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0057,0.108,0.039
-HBL_DRAFT_REPORT_FORMAT_16,1,pass,pass,pass,pass,pass,single-page,,,0,0.0348,0.0229
-AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0196,0.2966,0.0294
-INVOICE_REPORT_FORMAT_15_INVOICE_FCY,1,pass,pass,pass,pass,pass,single-page,,,0,0.0568,0.1127
+SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0025,0.112,0.039
+INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA,1,pass,pass,pass,pass,pass,single-page,,,0.0016,0.2404,0.0314
 INVOICE_REPORT_FORMAT_14_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0,0.0714,0.1127
-AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0113,0.2648,0.0294
+HBL_DRAFT_REPORT_FORMAT_16,1,pass,pass,pass,pass,pass,single-page,,,0,0.0348,0.0229
+AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.1446,0.0294
+INVOICE_REPORT_FORMAT_15_INVOICE_FCY,1,pass,pass,pass,pass,pass,single-page,,,0,0.0568,0.1127
+AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0.0027,0.1832,0.0294
 INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED,1,pass,pass,pass,pass,pass,single-page,,,0,0.0484,0.0099
-HBL_DRAFT_REPORT_FORMAT_18,1,pass,pass,pass,pass,pass,single-page,,,0,0.028,0.0642
-HBL_DRAFT_REPORT_FORMAT_15,2,pass,pass,pass,pass,pass,pass,,,0,0.052,0.024
 HAWB_DRAFT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.286,0.0071
-HBL_DRAFT_REPORT_FORMAT_19,1,pass,pass,pass,pass,pass,single-page,,,0,0.0221,0.0666
-HBL_DRAFT_REPORT_FORMAT_17,2,pass,pass,pass,pass,pass,pass,,,0,0.0375,0.0761
+HBL_DRAFT_REPORT_FORMAT_15,2,pass,pass,pass,pass,pass,pass,,,0,0.052,0.024
+HBL_DRAFT_REPORT_FORMAT_18,1,pass,pass,pass,pass,pass,single-page,,,0,0.028,0.0642
 INVOICE_REPORT_FORMAT_17_INVOICE_JASPER,1,pass,pass,pass,pass,pass,single-page,,,0,0.079,0.1127
-INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0.0028,0.2045,0.0296
+HBL_DRAFT_REPORT_FORMAT_17,2,pass,pass,pass,pass,pass,pass,,,0,0.0375,0.0761
+HBL_DRAFT_REPORT_FORMAT_19,1,pass,pass,pass,pass,pass,single-page,,,0,0.0221,0.0666
 HAWB_DRAFT_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0,0.2834,0.0177
+INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0.0016,0.198,0.0296
 HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.0218,0.011
-HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0,0.0929,0.0096
 HBL_DRAFT_REPORT_FORMAT_20,1,pass,pass,pass,pass,pass,single-page,,,0,0.0416,0.0175
-ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,1,pass,pass,pass,pass,pass,single-page,,,0.0001,0.1251,0.1068
-INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM,1,pass,pass,pass,pass,pass,single-page,,,0.0017,0.1734,0.0286
-JOB_HOUSE_RECORD_LIST_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.1427,0.0508
+INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM,1,pass,pass,pass,pass,pass,single-page,,,0.001,0.1644,0.0286
+HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0,0.0929,0.0096
 ARRIVAL_NOTICE_REPORT_FORMAT_2_CARGO_ARRIVAL_NOTICE_JASPER,1,pass,pass,pass,pass,pass,single-page,,,0,0.1174,0.0954
-INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0.0039,0.1249,0.0391
-INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,pass,single-page,,,0.0025,0.1517,0.0319
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,1,pass,pass,pass,pass,pass,single-page,,,0,0.1251,0.1068
+JOB_HOUSE_RECORD_LIST_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0018,0.1427,0.0508
+INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA,1,pass,pass,pass,pass,pass,single-page,,,0.002,0.161,0.0319
+INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.1256,0.0391
 JOURNAL_VOUCHER_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.0269,0.0892
+ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA,1,pass,pass,pass,pass,pass,single-page,,,0.0005,0.0859,0.1139
 JOB_HOUSE_RECORD_LIST_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.2515,0.0126
-JOURNAL_VOUCHER_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0.0012,0.1292,0.0229
+JOURNAL_VOUCHER_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0.0006,0.1292,0.0229
 HAWB_DRAFT_REPORT_FORMAT_1,9,pass,pass,pass,pass,pass,pass,,,0,0.0326,0.0153
-ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA,1,pass,pass,pass,pass,pass,single-page,,,0.0019,0.1312,0.1093
-ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.1294,0.1139
 PAYMENT_VOUCHER_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0.0008,0.1444,0.0236
-ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA,1,pass,pass,pass,pass,pass,single-page,,,0.0028,0.19,0.0502
 MAWB_DRAFT_REPORT_FORMAT,9,pass,pass,pass,pass,pass,pass,,,0,0,0.0163
-ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA,1,pass,pass,pass,pass,pass,single-page,,,0.0027,0.176,0.0361
+ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.1803,0.0502
+ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.1665,0.0361
 PAYMENT_VOUCHER_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0,0.0845,0.0901
-ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA,1,pass,pass,pass,pass,pass,single-page,,,0.0033,0.1578,0.0363
-PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.003,0.1615,0.0363
+ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA,1,pass,pass,pass,pass,pass,single-page,,,0.0004,0.1078,0.1093
+ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.1554,0.0363
+PAYMENT_VOUCHER_REPORT_FORMAT_3,1,pass,pass,pass,pass,pass,single-page,,,0.0009,0.1336,0.0238
+ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,1,pass,pass,pass,pass,pass,single-page,,,0.0015,0.1642,0.0303
+PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.1561,0.0363
+PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0152,0.6208,0.0052
+PAYMENT_VOUCHER_REPORT_FORMAT_4_VIETNAM,1,pass,pass,pass,pass,pass,single-page,,,0.0017,0.221,0.0093
+ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,1,pass,pass,pass,pass,pass,single-page,,,0.0017,0.1627,0.0405
 MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT,9,pass,pass,pass,pass,pass,pass,,,0,0.0264,0.0119
-PAYMENT_VOUCHER_REPORT_FORMAT_3,1,pass,pass,pass,pass,pass,single-page,,,0.0013,0.1284,0.0238
-ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.1674,0.0303
-ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,1,pass,pass,pass,pass,pass,single-page,,,0.0027,0.169,0.0405
-PAYMENT_VOUCHER_REPORT_FORMAT_4_VIETNAM,1,pass,pass,pass,pass,pass,single-page,,,0.0017,0.2246,0.0093
-PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0247,7.2105,0.0052
-ADVANCE_SHIPPING_NOTE_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0.0001,0.0769,0.0966
+ADVANCE_SHIPPING_NOTE_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,geometry-only raster,geometry-only raster=1,0,0.0769,0.0966
 PROFIT_AND_LOSS_REPORT_FORMAT_2_JASPER,1,pass,pass,pass,pass,pass,single-page,,,0,0.007,0.0052
-ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM,1,pass,pass,pass,pass,pass,single-page,,,0.0036,0.1454,0.0319
-ADVANCE_SHIPPING_NOTE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0221,0.1104,0.0204
-PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.024,3.8419,0.007
-ADVANCE_SHIPPING_NOTE_LOCATION_WISE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0227,0.0954,0.0204
-ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0227,0.0957,0.0204
-CARGO_MANIFEST_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0298,3.1219,0.0782
-CONTAINER_LOAD_PLAN_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0278,2.7135,0.0731
-PURCHASE_INVOICE_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.0079,0.081
-ADVANCE_SHIPPING_NOTE_SUMMARY,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0192,0.1168,0.0204
-RECEIPT_VOUCHER_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0.0007,0.1226,0.023
-TRANSSHIPMENT_LIST_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0019,0.087,0.0334
+PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0184,0.4086,0.007
+ADVANCE_SHIPPING_NOTE,1,pass,pass,pass,pass,pass,single-page,,,0.0009,0.0642,0.0204
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE,1,pass,pass,pass,pass,pass,single-page,,,0.0009,0.0554,0.0204
+ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.1416,0.0319
+CARGO_MANIFEST_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0313,0.6616,0.0782
+PRE_ALERT_AIR_REPORT_FORMAT,2,pass,pass,pass,pass,pass,pass,,,0.0018,0.0514,0.0198
 PURCHASE_INVOICE_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0.0007,0.1285,0.0227
+PURCHASE_INVOICE_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.0079,0.081
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1,1,pass,pass,pass,pass,pass,single-page,,,0.0009,0.0556,0.0204
+ADVANCE_SHIPPING_NOTE_SUMMARY,1,pass,pass,pass,pass,pass,single-page,,,0.0008,0.0706,0.0204
+CONTAINER_LOAD_PLAN_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0287,0.5859,0.0731
+FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT,3,pass,pass,pass,fail,pass,pass,dynamic width,dynamic width=1,0.0029,0.1474,0.0474
+RECEIPT_VOUCHER_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0.0005,0.1139,0.023
 RECEIPT_VOUCHER_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0.0009,0.1369,0.0288
-BOOKING_CONFIRMATION_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0.0027,0.1829,0.0484
-FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT,3,pass,pass,pass,fail,pass,pass,dynamic width,dynamic width=1,0.0039,0.1381,0.0474
-CONTAINER_OUTTURN_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0403,3.9389,0.0681
+BOOKING_CONFIRMATION_REPORT_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0.002,0.168,0.0484
+TRANSSHIPMENT_LIST_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0013,0.0895,0.0334
+CONTAINER_OUTTURN_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0255,0.529,0.0681
 TRIAL_BALANCE_REPORT_FORMAT_2_TRIAL_BALANCE_SUMMARY,1,pass,pass,pass,pass,pass,single-page,,,0,0.0102,0.0072
-CONTAINER_UNLOAD_PLAN_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0392,0.0947
+BOOKING_CONFIRMATION_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0.0008,0.0297,0.0229
 TRIAL_BALANCE_REPORT_FORMAT_3_TRIAL_BALANCE_SUMMARY_BRANCHWISE,3,pass,pass,pass,pass,pass,pass,,,0,0.0663,0.0091
-BOOKING_CONFIRMATION_REPORT_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.0485,0.0229
-PRE_ALERT_AIR_REPORT_FORMAT,2,pass,pass,pass,pass,pass,pass,,,0.0023,0.0661,0.0198
-FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0297,2.8826,0.0782
-CARGO_RECEIPT_NOTE_FOR_EXPORT_CFS_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.0711,0.0282
+CONTAINER_UNLOAD_PLAN_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0392,0.0947
+CARGO_RECEIPT_NOTE_FOR_EXPORT_CFS_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0008,0.0549,0.0282
+FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0314,0.6433,0.0782
 SAILING_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0014,0.1711,0.0287
 TRIAL_BALANCE_REPORT_FORMAT_6_TRIAL_BALANCE_SUMMARY_EXTENDED_BRANCHWISE,3,pass,pass,pass,pass,pass,pass,,,0,0.0668,0.0091
-OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0959,2.6199,0.0823
-OUTSTANDING_LETTER_REPORT_FORMAT_1_OUTSTANDING_LETTER,1,pass,pass,pass,pass,pass,single-page,,,0.0038,0.1957,0.0383
-OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING,1,pass,pass,pass,pass,pass,single-page,,,0.0027,0.1906,0.0381
-CONTAINER_MOVEMENT_FACILITATION_CELL_NOTE_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0045,0.1568,0.0372
-CONSOL_IGM_FILLING_LETTER_JASPER_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0006,0.0987,0.0951
+PROOF_OF_DELIVERY_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0014,0.0524,0.0223
+OUTSTANDING_LETTER_REPORT_FORMAT_1_OUTSTANDING_LETTER,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.1965,0.0383
+OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0245,0.4408,0.0823
+CONTAINER_MOVEMENT_FACILITATION_CELL_NOTE_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0023,0.1623,0.0372
+OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.1916,0.0381
+CONSOL_IGM_FILLING_LETTER_JASPER_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0987,0.0951
 DELIVERY_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0018,0.196,0.0319
-PROOF_OF_DELIVERY_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0019,0.0869,0.0223
-OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.1729,0.0317
-PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES,1,pass,pass,pass,pass,pass,single-page,,,0.0031,0.1478,0.0439
-EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0003,0.0624,0.0237
-IMPORT_CARGO_MANIFEST_REPORT_FORMAT,2,pass,pass,pass,pass,pass,pass,,,0.0038,0.1105,0.0443
-PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES,1,pass,pass,pass,pass,pass,single-page,,,0.0013,0.1186,0.0417
-JOB_HOUSES_RECORD_LIST_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0048,0.0958,0.0426
-IMPORT_TALLY_SHEET_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0006,0.0682,0.1069
-AP_AGING_SUMMARY_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0155,17.0569,0.0071
+OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES,1,pass,pass,pass,pass,pass,single-page,,,0.0015,0.1737,0.0317
+PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES,1,pass,pass,pass,pass,pass,single-page,,,0.002,0.1414,0.0439
+TRIAL_BALANCE_REPORT_FORMAT_5_TRIAL_BALANCE_SUMMARY_EXTENDED,2,pass,pass,pass,pass,pass,pass,,,0,0.0792,0.007
+EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0583,0.0237
+PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES,1,pass,pass,pass,pass,pass,single-page,,,0.0011,0.1183,0.0417
+IMPORT_CARGO_MANIFEST_REPORT_FORMAT,2,pass,pass,pass,pass,pass,pass,,,0.0022,0.1213,0.0443
+OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS,1,pass,pass,pass,pass,fail,single-page,geometry-only raster | raster R1,geometry-only raster=1; raster R1=1,0.0081,0.0986,0.024
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,3,pass,pass,pass,pass,pass,pass,,,0,0.1266,0.0067
+AP_AGING_SUMMARY_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0114,0.3754,0.0071
+IMPORT_TALLY_SHEET_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0682,0.1069
 LETTER_OF_GUARANTEE_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0401,0.0146
-AR_AGING_SUMMARY_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0175,7.5977,0.0071
-RIDER_SHEET_FOR_EXPORT_MANIFEST_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0028,0.0722,0.0318
-AP_OUTSTANDING_STATEMENT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0027,0.1399,0.0268
-SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0205,0.1621,0.0277
-SHIPMENT_STATUS_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0045,0.1749,0.0245
-OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0087,0.1231,0.024
-GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0323,2.6605,0.007
-TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0127,0.0972,0.0418
-CARTING_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0024,0.0886,0.03
+JOB_HOUSES_RECORD_LIST_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.0978,0.0426
+AP_OUTSTANDING_STATEMENT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0015,0.1491,0.0268
+RIDER_SHEET_FOR_EXPORT_MANIFEST_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0012,0.0779,0.0318
+TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED,3,pass,pass,pass,pass,pass,pass,,,0,0.1266,0.0067
+AR_AGING_SUMMARY_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0162,0.5259,0.0071
+SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0025,0.0786,0.0277
+SHIPMENT_STATUS_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.1748,0.0245
 CONTAINER_VGM_FORM_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0013,0.0023
+CARTING_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0018,0.0892,0.03
+GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0338,0.5605,0.007
 GL_REPORT_CURRENCY_WISE_VOUCHER_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0011,0.1257,0.0089
-TRIAL_BALANCE_REPORT_FORMAT_5_TRIAL_BALANCE_SUMMARY_EXTENDED,2,pass,pass,pass,pass,pass,pass,,,0.0016,0.1118,0.007
-GL_REPORT_VOUCHER_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0485,3.6388,0.0092
-FCL_QUOTATION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0032,0.2093,0.0353
+TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,geometry-only raster | raster R1,geometry-only raster=1; raster R1=1,0.0116,0.0964,0.0418
+GL_REPORT_VOUCHER_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0191,0.5523,0.0092
 FCR_DOCUMENT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0816,0.0541
+FCL_QUOTATION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.203,0.0353
 IMPORT_SECURITY_FILLING_JASPER_AMS_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.1682,0.0057
 ISF_FILING_DOCUMENT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.1902,0.004
-PICKUP_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0024,0.0857,0.0353
+LOADING_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0024,0.0985,0.0352
+PICKUP_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0018,0.0865,0.0353
+SHIPPING_INSTRUCTION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0044,0.1424,0.0423
 PRE_ALERT_TO_CLIENT_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0972,0.0997
-LOADING_CONFIRMATION_REPORT_FORMAT,1,pass,pass,pass,fail,pass,single-page,dynamic width,dynamic width=1,0.0037,0.0972,0.0352
 PREALERT_USA_JASPER_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0,0.0624,0.0913
-SHIPPING_INSTRUCTION_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0049,0.1441,0.0423
-TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,3,pass,pass,pass,pass,pass,pass,,,0.0004,0.1402,0.0067
-SURRENDERED_LETTER_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.0771,0.0413
-STUFFING_REPORT_JASPER_REPORT_FORMAT,2,pass,pass,pass,fail,fail,pass,dynamic position or string | raster R1,dynamic position or string=1; raster R1=1,0.0351,2.7348,0.0784
-TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED,3,pass,pass,pass,pass,pass,pass,,,0.0004,0.1402,0.0067
-TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0038,0.0408,0.0469
-DAILY_STATUS_REPORT_FORMAT_1,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0077,0.0365,0.0131
-FG_INVOICE_FORMAT14_RPM_REF_1325,1,pass,pass,pass,pass,pass,single-page,,,0,0.0957,0.0938
+SURRENDERED_LETTER_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.0819,0.0413
+STUFFING_REPORT_JASPER_REPORT_FORMAT,2,pass,pass,pass,fail,fail,pass,dynamic position or string | raster R1,dynamic position or string=1; raster R1=1,0.0247,0.5979,0.0784
+DAILY_STATUS_REPORT_FORMAT_1,2,pass,pass,pass,pass,fail,pass,geometry-only raster | raster R1,geometry-only raster=1; raster R1=1,0.0077,0.0365,0.0131
+TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.0408,0.0469
+JOB_CARD_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.1324,0.0593
 FG_INVOICE_FORMAT12_RPM_REF_1199,1,pass,pass,pass,pass,pass,single-page,,,0,0.0791,0.1009
-JOB_CARD_REPORT_FORMAT,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0117,0.1755,0.0593
-FG_INVOICE_FORMAT9_RPM_REF_1055,1,pass,pass,pass,pass,pass,single-page,,,0,0.0588,0.0923
+FG_INVOICE_FORMAT14_RPM_REF_1325,1,pass,pass,pass,pass,pass,single-page,,,0,0.0957,0.0938
 FG_INVOICE_FORMAT8_RPM_REF_1011,1,pass,pass,pass,pass,pass,single-page,,,0,0.1018,0.0957
-FG_INVOICE_SINGAPORE_RPM_REF_1069,1,pass,pass,pass,pass,pass,single-page,,,0,0.0762,0.0909
-DAILY_STATUS_REPORT_FORMAT_2,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0162,0.0251,0.0294
-FG_INVOICE_FORMAT15_RPM_REF_1384,1,pass,pass,pass,pass,pass,single-page,,,0,0.067,0.0067
+DAILY_STATUS_REPORT_FORMAT_2,1,pass,pass,pass,pass,fail,single-page,geometry-only raster | raster R1,geometry-only raster=1; raster R1=1,0.0148,0.0251,0.0294
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,geometry-only raster | raster R1,geometry-only raster=1; raster R1=1,0.0078,0.0829,0.0154
+FG_INVOICE_FORMAT9_RPM_REF_1055,1,pass,pass,pass,pass,pass,single-page,,,0,0.0588,0.0923
+STUFFING_REPORT_FORMAT,2,pass,pass,fail,pass,fail,pass,static width | geometry-only raster | raster R1,static width=1; geometry-only raster=1; raster R1=1,0.0055,0.0352,0.0185
 FG_INVOICE_FORMAT15_STANDARD_RPM_REF_1394,1,pass,pass,pass,pass,pass,single-page,,,0,0.0662,0.0926
 FG_INVOICE_FORMAT1_RPM_REF_443,1,pass,pass,pass,pass,pass,single-page,,,0.0005,0.0529,0.0956
-FG_INVOICE_FORMAT3_FCY_RPM_REF_1012,1,pass,pass,pass,pass,pass,single-page,,,0,0.0577,0.0957
+FG_INVOICE_SINGAPORE_RPM_REF_1069,1,pass,pass,pass,pass,pass,single-page,,,0,0.0762,0.0909
+FG_INVOICE_FORMAT15_RPM_REF_1384,1,pass,pass,pass,pass,pass,single-page,,,0,0.067,0.0067
 FG_INVOICE_FORMAT2_FCY_RPM_REF_490,1,pass,pass,pass,pass,pass,single-page,,,0,0.0512,0.0957
-FG_INVOICE_FORMAT3_RPM_REF_478,1,pass,pass,pass,pass,pass,single-page,,,0,0.0635,0.0957
-FG_INVOICE_FORMAT4_FCY_RPM_REF_1433,2,pass,pass,pass,pass,pass,pass,,,0,0.0508,0.048
-FG_INVOICE_FORMAT7_INR_RPM_REF_897,1,pass,pass,pass,pass,pass,single-page,,,0,0.0398,0.0993
+FG_INVOICE_FORMAT3_RPM_REF_478,1,pass,pass,pass,pass,pass,single-page,,,0.0001,0.0635,0.0957
+FG_INVOICE_FORMAT3_FCY_RPM_REF_1012,1,pass,pass,pass,pass,pass,single-page,,,0,0.0577,0.0957
 FG_INVOICE_FORMAT5_RPM_REF_672,1,pass,pass,pass,pass,pass,single-page,,,0,0.073,0.0913
-FG_INVOICE_FORMAT6_RPM_REF_691,1,pass,pass,pass,pass,pass,single-page,,,0.0039,0.3007,0.0175
+FG_INVOICE_FORMAT7_INR_RPM_REF_897,1,pass,pass,pass,pass,pass,single-page,,,0,0.0398,0.0993
+FG_INVOICE_FORMAT6_RPM_REF_691,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.3007,0.0175
+FG_INVOICE_FORMAT4_FCY_RPM_REF_1433,2,pass,pass,pass,pass,pass,pass,,,0,0.0508,0.048
 FG_INVOICE_FORMAT7_RPM_REF_894,1,pass,pass,pass,pass,pass,single-page,,,0,0.0348,0.0993
-LAND_FREIGHT_TRANSPORTATION_INVOICEFORMAT1_RPM_REF_1485,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.3141,0.0168
-LAND_FREIGHT_TRANSPORTATION_INVOICE_RPM_REF_525,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.2277,0.0169
 FG_OVERSEAS_DEBIT_NOTE_FORMAT2_RPM_REF_1343,1,pass,pass,pass,pass,pass,single-page,,,0,0.0784,0.0913
-PROFORMA_INVOICE_FORMAT_1_RPM_REF_815,1,pass,pass,pass,pass,pass,single-page,,,0.0032,0.2323,0.0195
-SIMPLE_INVOICE_INDIA_RPM_REF_575,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.2525,0.0182
-SIMPLE_INVOICE_RPM_REF_325,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.2733,0.0182
-FG_SIMPLE_INVOICE_INDIA_RPM_REF_862,1,pass,pass,pass,pass,pass,single-page,,,0.0002,0.0443,0.0967
-FG_SIMPLE_INVOICE_RPM_REF_861,1,pass,pass,pass,pass,pass,single-page,,,0.0002,0.0636,0.0965
-FG_SIMPLE_INVOICE_USA_RPM_REF_1274,1,pass,pass,pass,pass,pass,single-page,,,0.0002,0.0669,0.0965
-SIMPLE_INVOICE_INDIA_WITH_OS_RPM_REF_767,1,pass,pass,pass,pass,pass,single-page,,,0.003,0.2162,0.0182
+LAND_FREIGHT_TRANSPORTATION_INVOICE_RPM_REF_525,1,pass,pass,pass,pass,pass,single-page,,,0.002,0.2273,0.0169
+LAND_FREIGHT_TRANSPORTATION_INVOICEFORMAT1_RPM_REF_1485,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.3139,0.0168
+PROFORMA_INVOICE_FORMAT_1_RPM_REF_815,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.2308,0.0195
+SIMPLE_INVOICE_RPM_REF_325,1,pass,pass,pass,pass,pass,single-page,,,0.0019,0.2856,0.0182
+FG_SIMPLE_INVOICE_RPM_REF_861,1,pass,pass,pass,pass,pass,single-page,,,0,0.0636,0.0965
+SIMPLE_INVOICE_INDIA_WITH_OS_RPM_REF_767,1,pass,pass,pass,pass,pass,single-page,,,0.0018,0.221,0.0182
+FG_SIMPLE_INVOICE_INDIA_RPM_REF_862,1,pass,pass,pass,pass,pass,single-page,,,0,0.0443,0.0967
+SIMPLE_INVOICE_INDIA_RPM_REF_575,1,pass,pass,pass,pass,pass,single-page,,,0.0018,0.2656,0.0182
 FG_KSA_INVOICE_ARABIC_RPM_REF_1161,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.2168,0.0911
-STUFFING_REPORT_FORMAT,2,pass,pass,fail,pass,fail,pass,static width | raster R1,static width=1; raster R1=1,0.0065,0.043,0.0185
-SIMPLE_INVOICE_WITH_OS_RPM_REF_76,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.2236,0.0182
-FG_STANDARD_INVOICE_RPM_REF_217,1,pass,pass,pass,pass,pass,single-page,,,0,0.0875,0.0913
 FG_STANDARD_INVOICE_FORMAT4_RPM_REF_1419,1,pass,pass,pass,pass,pass,single-page,,,0,0.1155,0.0068
-SIMPLE_INVOICEVAT_RPM_REF_673,1,pass,pass,pass,pass,pass,single-page,,,0.0042,0.2549,0.0182
-FG_STANDARD_TAX_INVOICE_FORMAT10_RPM_REF_801,1,pass,pass,pass,pass,pass,single-page,,,0,0.0438,0.0924
+FG_STANDARD_INVOICE_RPM_REF_217,1,pass,pass,pass,pass,pass,single-page,,,0,0.0875,0.0913
+FG_SIMPLE_INVOICE_USA_RPM_REF_1274,1,pass,pass,pass,pass,pass,single-page,,,0,0.0669,0.0965
+SIMPLE_INVOICE_WITH_OS_RPM_REF_76,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.2318,0.0182
+SIMPLE_INVOICEVAT_RPM_REF_673,1,pass,pass,pass,pass,pass,single-page,,,0.0025,0.263,0.0182
+FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431,1,pass,pass,pass,pass,pass,single-page,geometry-only raster,geometry-only raster=1,0,0.1055,0.0973
 FG_STANDARD_TAX_INVOICE_FORMAT13_RPM_REF_882,1,pass,pass,pass,pass,pass,single-page,,,0,0.032,0.0919
-FG_STANDARD_TAX_INVOICE_FORMAT12_LETTERHEAD_RPM_REF_869,1,pass,pass,pass,pass,pass,single-page,,,0,0.0628,0.0067
-FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431,1,pass,pass,pass,pass,pass,single-page,,,0,0.1055,0.0973
-FG_STANDARD_TAX_INVOICE_FORMAT14_RPM_REF_921,1,pass,pass,pass,pass,pass,single-page,,,0,0.065,0.096
-STATEMENT_OF_ACCOUNTS_REPORT_FORMAT,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0086,0.1054,0.0154
-FG_STANDARD_TAX_INVOICE_FORMAT16_RPM_REF_1170,1,pass,pass,pass,pass,pass,single-page,,,0,0.0924,0.0946
 FG_STANDARD_TAX_INVOICE_FORMAT15_RPM_REF_997,1,pass,pass,pass,pass,pass,single-page,,,0,0.0703,0.0438
-FG_STANDARD_TAX_INVOICE_FORMAT19_RPM_REF_1344,1,pass,pass,pass,pass,pass,single-page,,,0,0.1216,0.0925
+FG_STANDARD_TAX_INVOICE_FORMAT10_RPM_REF_801,1,pass,pass,pass,pass,pass,single-page,,,0,0.0438,0.0924
+FG_STANDARD_TAX_INVOICE_FORMAT12_LETTERHEAD_RPM_REF_869,1,pass,pass,pass,pass,pass,single-page,,,0,0.0628,0.0067
+FG_STANDARD_TAX_INVOICE_FORMAT16_RPM_REF_1170,1,pass,pass,pass,pass,pass,single-page,,,0,0.0924,0.0946
+FG_STANDARD_TAX_INVOICE_FORMAT14_RPM_REF_921,1,pass,pass,pass,pass,pass,single-page,,,0,0.065,0.096
 FG_STANDARD_TAX_INVOICE_FORMAT17_RPM_REF_1309,1,pass,pass,pass,pass,pass,single-page,,,0,0.0953,0.0932
+FG_STANDARD_TAX_INVOICE_FORMAT19_RPM_REF_1344,1,pass,pass,pass,pass,pass,single-page,,,0,0.1216,0.0925
 FG_STANDARD_TAX_INVOICE_FORMAT18_RPM_REF_1319,1,pass,pass,pass,pass,pass,single-page,,,0,0.1094,0.0933
 FG_STANDARD_TAX_INVOICE_FORMAT20_RPM_REF_1345,1,pass,pass,pass,pass,pass,single-page,,,0,0.0465,0.0924
-FG_STANDARD_TAX_INVOICE_FORMAT3_RPM_REF_687,1,pass,pass,pass,pass,pass,single-page,,,0,0.1216,0.0925
 FG_STANDARD_TAX_INVOICE_FORMAT21_RPM_REF_1407,1,pass,pass,pass,pass,pass,single-page,,,0,0.1109,0.0919
-FG_STANDARD_TAX_INVOICE_FORMAT5_RPM_REF_699,1,pass,pass,pass,pass,pass,single-page,,,0,0.1135,0.0925
 FG_STANDARD_TAX_INVOICE_FORMAT6_RPM_REF_751,1,pass,pass,pass,pass,pass,single-page,,,0,0.0885,0.0957
+FG_STANDARD_TAX_INVOICE_FORMAT3_RPM_REF_687,1,pass,pass,pass,pass,pass,single-page,,,0,0.1216,0.0925
 FG_STANDARD_TAX_INVOICE_FORMAT9_RPM_REF_799,1,pass,pass,pass,pass,pass,single-page,,,0,0.0427,0.0921
-FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778,1,pass,pass,pass,pass,pass,single-page,,,0,0.0868,0.0924
-FG_STANDARD_TAX_INVOICE_FORMAT22_RPM_REF_1425,3,pass,pass,pass,pass,pass,pass,,,0,0.1124,0.0919
-STANDARD_INVOICELAND_RPM_REF_419,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.2272,0.0199
+FG_STANDARD_TAX_INVOICE_FORMAT5_RPM_REF_699,1,pass,pass,pass,pass,pass,single-page,,,0,0.1135,0.0925
+FG_STANDARD_TAX_INVOICE_FORMAT22_RPM_REF_1425,3,pass,pass,pass,pass,pass,pass,,,0,0.1076,0.0919
+STANDARD_INVOICELAND_RPM_REF_419,1,pass,pass,pass,pass,pass,single-page,,,0.0025,0.2235,0.0199
 FG_STANDARD_INVOICE_ARABIC_RPM_REF_464,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1455,0.0952
-FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.216,0.0962
-FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.216,0.0106
+FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778,1,pass,pass,pass,pass,pass,single-page,,,0,0.0868,0.0924
 FG_STANDARD_INVOICE_ARABIC_OMAN_RPM_REF_747,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1412,0.0939
+FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.216,0.0106
+FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.216,0.0962
 FG_STANDARD_COURIER_INVOICE_RPM_REF_773,1,pass,pass,pass,pass,pass,single-page,,,0,0.103,0.0935
+FG_STANDARD_INVOICE_ARABIC_FORMAT3_RPM_REF_1183,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1914,0.0952
 FG_STANDARD_INVOICE_ARABIC_FORMAT2_RPM_REF_1171,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1411,0.0952
 FG_STANDARD_INVOICE_ARABIC_FORMAT4_RPM_REF_1215,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1437,0.0952
-FG_STANDARD_INVOICE_ARABIC_FORMAT3_RPM_REF_1183,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1914,0.0952
-FG_STANDARD_INVOICE_ARABIC_FORMAT5_RPM_REF_1385,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1487,0.0952
 FG_STANDARD_INVOICE_ARABIC_FORMAT7_RPM_REF_1400,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1492,0.0962
-STANDARD_INVOICE_FCY_RPM_REF_486,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.2296,0.0197
-STANDARD_INVOICEUSA_RPM_REF_412,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.3314,0.0189
-STANDARD_INVOICE_FCY_FORMAT2_RPM_REF_850,1,pass,pass,pass,pass,pass,single-page,,,0.0036,0.2635,0.0168
+FG_STANDARD_INVOICE_ARABIC_FORMAT5_RPM_REF_1385,1,pass,pass,fail,pass,pass,single-page,static width | static position or string,static width=1; static position or string=1,0,0.1487,0.0952
+STANDARD_INVOICE_FCY_FORMAT2_RPM_REF_850,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.2635,0.0168
+STANDARD_INVOICE_FCY_RPM_REF_486,1,pass,pass,pass,pass,pass,single-page,,,0.0023,0.2293,0.0197
+STANDARD_INVOICE_KAMPALA_RPM_REF_879,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.1358,0.0174
 FG_STANDARD_INVOICE_FCY_RPM_REF_1029,1,pass,pass,pass,pass,pass,single-page,,,0,0.1429,0.0925
-STANDARD_INVOICE_KAMPALA_RPM_REF_879,1,pass,pass,pass,pass,pass,single-page,,,0.0041,0.1353,0.0174
-FG_STANDARD_TAX_INVOICE_FORMAT16_CUM_AN_RPM_REF_1186,2,pass,pass,pass,pass,pass,pass,,,0,0.077,0.0985
+SUMMARY_INVOICE_RPM_REF_202,1,pass,pass,pass,pass,pass,single-page,,,0.0025,0.1207,0.0168
+STANDARD_INVOICEUSA_FORMAT_2_RPM_REF_698,1,pass,pass,pass,pass,pass,single-page,,,0.0024,0.2515,0.0197
+STANDARD_INVOICEMALAYSIA_RPM_REF_611,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.2349,0.0198
+STANDARD_INVOICEUSA_RPM_REF_412,1,pass,pass,pass,pass,pass,single-page,,,0.0023,0.3477,0.0189
 FG_STANDARD_TAX_INVOICE_RPM_REF_385,1,pass,pass,pass,pass,pass,single-page,,,0,0.1236,0.0924
-STANDARD_INVOICEMALAYSIA_RPM_REF_611,1,pass,pass,pass,pass,pass,single-page,,,0.0039,0.2358,0.0198
-SUMMARY_INVOICE_RPM_REF_202,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.1179,0.0168
-STANDARD_INVOICEUSA_FORMAT_2_RPM_REF_698,1,pass,pass,pass,pass,pass,single-page,,,0.0035,0.249,0.0197
-TAX_INVOICE_INDIA_RPM_REF_351,1,pass,pass,pass,pass,pass,single-page,,,0.003,0.1898,0.0198
-FG_TAX_INVOICE_INDIA_RPM_REF_237,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0329,4.6426,0.069
-TAX_INVOICE_INDIA_REIMBURSEMENT_BILL_RPM_REF_713,1,pass,pass,pass,pass,pass,single-page,,,0.003,0.1896,0.0198
-FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0256,4.5644,0.069
-TAX_INVOICE_INDIA_FORMAT2_RPM_REF_449,1,pass,pass,pass,pass,pass,single-page,,,0.0035,0.2001,0.0197
-FG_TAX_INVOICE_INDIA_FORMAT2_RPM_REF_911,1,pass,pass,pass,pass,pass,single-page,,,0,0.123,0.0923
-TAX_INVOICE_INDIA_FORMAT1_RPM_REF_458,1,pass,pass,pass,pass,pass,single-page,,,0.0033,0.2284,0.0195
+FG_STANDARD_TAX_INVOICE_FORMAT16_CUM_AN_RPM_REF_1186,2,pass,pass,pass,pass,pass,pass,,,0,0.077,0.0985
+TAX_INVOICE_INDIA_FORMAT1_RPM_REF_458,1,pass,pass,pass,pass,pass,single-page,,,0.0023,0.2298,0.0195
+FG_TAX_INVOICE_INDIA_RPM_REF_237,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0259,0.531,0.069
+TAX_INVOICE_INDIA_REIMBURSEMENT_BILL_RPM_REF_713,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.1949,0.0198
+TAX_INVOICE_INDIA_RPM_REF_351,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.1951,0.0198
+FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.019,0.5588,0.069
+TAX_INVOICE_INDIA_FORMAT2_RPM_REF_449,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.1997,0.0197
 FG_TAX_INVOICE_INDIA_FORMAT7_RPM_REF_1067,1,pass,pass,pass,pass,pass,single-page,,,0,0.1308,0.0923
-FG_TAX_INVOICE_INDIA_FORMAT6_RPM_REF_1059,2,pass,pass,pass,pass,pass,pass,,,0,0.106,0.0923
-FG_TAX_INVOICE_INDIA_FORMAT8_RPM_REF_1159,1,pass,pass,pass,pass,pass,single-page,,,0,0.1232,0.0923
-FG_TAX_INVOICE_INDIA_FORMAT5_RPM_REF_1009,1,pass,pass,pass,pass,pass,single-page,,,0,0.06,0.0495
 FG_TAX_INVOICE_INDIA_FORMAT3_RPM_REF_977,1,pass,pass,pass,pass,pass,single-page,,,0,0.1092,0.0923
+FG_TAX_INVOICE_INDIA_FORMAT2_RPM_REF_911,1,pass,pass,pass,pass,pass,single-page,,,0,0.123,0.0923
+FG_TAX_INVOICE_INDIA_FORMAT8_RPM_REF_1159,1,pass,pass,pass,pass,pass,single-page,,,0.0001,0.1232,0.0923
+FG_TAX_INVOICE_INDIA_FORMAT6_RPM_REF_1059,2,pass,pass,pass,pass,pass,pass,,,0,0.106,0.0923
+FG_TAX_INVOICE_INDIA_FORMAT5_RPM_REF_1009,1,pass,pass,pass,pass,pass,single-page,,,0,0.06,0.0495
 FG_TAX_INVOICE_MALAYSIA_RPM_REF_736,1,pass,pass,pass,pass,pass,single-page,,,0,0.0517,0.0934
-FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007,1,pass,pass,pass,pass,pass,single-page,,,0,0.1333,0.0902
 FG_TAX_INVOICE_SINGAPORE_RPM_REF_737,1,pass,pass,pass,pass,pass,single-page,,,0,0.0469,0.0948
-ARRIVAL_CONFIRMATION_RPM_REF_152,1,pass,pass,pass,pass,pass,single-page,,,0.0023,0.2756,0.0123
-WAREHOUSE_INVOICE_RPM_REF_201,1,pass,pass,pass,pass,pass,single-page,,,0.0031,0.1226,0.0168
-ARRIVAL_CONFIRMATION_FORMAT1_RPM_REF_732,1,pass,pass,pass,pass,pass,single-page,,,0.0034,0.2198,0.0169
-FG_ARRIVAL_INFORMATION_RPM_REF_871,1,pass,pass,pass,pass,pass,single-page,,,0,0.1183,0.1019
-WAREHOUSE_INVOICE_INDIA_FORMAT_RPM_REF_1109,2,pass,pass,pass,pass,pass,pass,,,0.003,0.099,0.0214
+WAREHOUSE_INVOICE_RPM_REF_201,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.1198,0.0168
+WAREHOUSE_INVOICE_INDIA_FORMAT_RPM_REF_1109,2,pass,pass,pass,pass,pass,pass,,,0.0017,0.0991,0.0214
+FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007,1,pass,pass,pass,pass,pass,single-page,geometry-only raster,geometry-only raster=1,0,0.1333,0.0902
 FG_ARRIVAL_NOTICE_FORMAT2_RPM_REF_593,1,pass,pass,pass,pass,pass,single-page,,,0,0.0095,0.1039
 FG_ARRIVAL_NOTICE_RPM_REF_399,1,pass,pass,pass,pass,pass,single-page,,,0,0.0785,0.0941
+FG_ARRIVAL_INFORMATION_RPM_REF_871,1,pass,pass,pass,pass,pass,single-page,,,0,0.1183,0.1019
+ARRIVAL_CONFIRMATION_FORMAT1_RPM_REF_732,1,pass,pass,pass,pass,pass,single-page,,,0.003,0.2105,0.0169
+ARRIVAL_CONFIRMATION_RPM_REF_152,1,pass,pass,pass,pass,pass,single-page,,,0.0023,0.2756,0.0123
+ARRIVAL_INFORMATION_RPM_REF_839,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0055,0.3961,0.013
 FG_ARRIVALNOTICE_WITHOUT_CHG_RPM_REF_633,1,pass,pass,pass,pass,pass,single-page,,,0,0.0095,0.1022
-FG_ARRIVAL_NOTICE_FORMAT3_RPM_REF_893,1,pass,pass,pass,pass,pass,single-page,,,0.0004,0.3453,0.0988
-ARRIVAL_INFORMATION_RPM_REF_839,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0058,0.3967,0.013
-CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_RPM_REF_363,1,pass,pass,pass,pass,pass,single-page,,,0.0044,0.2837,0.0188
+FG_ARRIVAL_NOTICE_FORMAT3_RPM_REF_893,1,pass,pass,pass,pass,pass,single-page,,,0,0.3412,0.0988
+CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_RPM_REF_363,1,pass,pass,pass,pass,pass,single-page,,,0.0039,0.2903,0.0188
 FG_CARGO_ARRIVAL_NOTICE_FORMAT1_RPM_REF_553,2,pass,pass,pass,pass,pass,pass,,,0,0.1625,0.0936
+CARGO_ARRIVAL_NOTICE_AIR_RPM_REF_49,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0059,0.3645,0.0134
 FG_CARGO_ARRIVAL_NOTICE_RPM_REF_233,2,pass,pass,pass,pass,pass,pass,,,0,0.1191,0.057
-CARGO_ARRIVAL_NOTICE_AIR_RPM_REF_49,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0064,0.355,0.0134
 FG_CARGO_ARRIVAL_NOTICE_SEA_RPM_REF_1172,2,pass,pass,pass,pass,pass,pass,,,0,0.0381,0.0608
-CARGO_ARRIVAL_NOTICE_SEA_RPM_REF_27,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0065,0.3487,0.0134
-CARGO_ARRIVAL_NOTICE_SEA_FORMAT2_RPM_REF_592,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.006,0.3752,0.0106
-CARGO_ARRIVAL_NOTICE_SEA_FORMAT1_RPM_REF_446,1,pass,pass,pass,pass,pass,single-page,,,0.0027,0.1413,0.0164
-CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_RPM_REF_251,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.1233,0.0165
-CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_FORMAT1_RPM_REF_447,1,pass,pass,pass,pass,pass,single-page,,,0.0023,0.1376,0.0164
-CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3_RPM_REF_1376,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0063,0.366,0.0131
-SEA_ARRIVAL_NOTICE_FCL_VIETNAM_RPM_REF_420,1,pass,pass,pass,pass,pass,single-page,,,0.0033,0.1219,0.0162
-FG_CARGO_ARRIVAL_NOTICE_SEA_FORMAT3_RPM_REF_1322,1,pass,pass,pass,pass,pass,single-page,,,0,0.0402,0.0951
-SEA_ARRIVAL_NOTICE_LCL_VIETNAM_RPM_REF_422,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.1811,0.0155
+CARGO_ARRIVAL_NOTICE_SEA_RPM_REF_27,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0059,0.3517,0.0134
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT2_RPM_REF_592,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0057,0.3718,0.0106
+CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_RPM_REF_251,1,pass,pass,pass,pass,pass,single-page,,,0.0026,0.1211,0.0165
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT1_RPM_REF_446,1,pass,pass,pass,pass,pass,single-page,,,0.0023,0.138,0.0164
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3_RPM_REF_1376,2,pass,pass,pass,pass,fail,pass,raster R1,raster R1=1,0.0056,0.3604,0.0131
+CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_FORMAT1_RPM_REF_447,1,pass,pass,pass,pass,pass,single-page,,,0.0021,0.1338,0.0164
+SEA_ARRIVAL_NOTICE_FCL_VIETNAM_RPM_REF_420,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.1131,0.0162
+SEA_ARRIVAL_NOTICE_LCL_VIETNAM_RPM_REF_422,1,pass,pass,pass,pass,pass,single-page,,,0.0022,0.1807,0.0155
 FG_HBL_HKG,1,pass,pass,pass,pass,pass,single-page,,,0,0.0683,0.0385
+FG_CARGO_ARRIVAL_NOTICE_SEA_FORMAT3_RPM_REF_1322,1,pass,pass,pass,pass,pass,single-page,,,0,0.0402,0.0951
 FG_HBL_MAGICLOGISYS,1,pass,pass,pass,pass,pass,single-page,,,0,0.0148,0.0216
 FG_HBL_FORMAT_14,1,pass,pass,pass,pass,pass,single-page,,,0,0.0644,0.0177
 FG_HBL_FORMAT_16,1,pass,pass,pass,pass,pass,single-page,,,0,0.0355,0.0353
-FG_HBL_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.2615,0.002
 FG_HBL_FORMAT_20,1,pass,pass,pass,pass,pass,single-page,,,0,0.0233,0.0197
-HBL_DRAFT_REPORT_FORMAT_27,1,pass,pass,pass,pass,pass,single-page,,,0,0.0352,0.0391
+FG_HBL_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.2615,0.002
 HBL_DRAFT_REPORT_FORMAT_26,1,pass,pass,pass,pass,pass,single-page,,,0,0.0862,0.0324
-HBL_DRAFT_REPORT_FORMAT_33,1,pass,pass,pass,pass,fail,single-page,raster R2,raster R2=1,0.0019,1.1714,0.0016
-HBL_DRAFT_REPORT_FORMAT_41,1,pass,pass,pass,pass,pass,single-page,,,0,0.025,0.0379
+HBL_DRAFT_REPORT_FORMAT_27,1,pass,pass,pass,pass,pass,single-page,,,0,0.0352,0.0391
+HBL_DRAFT_REPORT_FORMAT_33,1,pass,pass,pass,pass,fail,single-page,raster R2,raster R2=1,0.0019,1.1686,0.0016
 HBL_DRAFT_REPORT_FORMAT_25,2,pass,pass,pass,pass,fail,pass,raster R2,raster R2=1,0,0.4451,0.0294
 HBL_DRAFT_REPORT_FORMAT_23,2,pass,pass,pass,pass,pass,pass,,,0.0001,0.0562,0.0403
-HBL_DRAFT_REPORT_FORMAT_40,1,pass,pass,pass,pass,pass,single-page,,,0,0.3614,0.0278
+HBL_DRAFT_REPORT_FORMAT_41,1,pass,pass,pass,pass,pass,single-page,,,0,0.025,0.0379
 HBL_DRAFT_REPORT_FORMAT_43,1,pass,pass,pass,pass,pass,single-page,,,0.0002,0.0575,0.0376
+HBL_DRAFT_REPORT_FORMAT_40,1,pass,pass,pass,pass,pass,single-page,,,0,0.3614,0.0278
 HBL_DRAFT_REPORT_FORMAT_42,1,pass,pass,pass,pass,pass,single-page,,,0,0.0318,0.0167
+HBL_DRAFT_REPORT_FORMAT_47,1,pass,pass,pass,pass,pass,single-page,,,0,0.0605,0.0342
+HBL_DRAFT_REPORT_FORMAT_46,1,pass,pass,pass,pass,pass,single-page,,,0,0.1174,0.0514
 HBL_DRAFT_REPORT_FORMAT_44,1,pass,pass,pass,pass,pass,single-page,,,0,0.1057,0.0395
 HBL_DRAFT_REPORT_FORMAT_45,1,pass,pass,pass,pass,pass,single-page,,,0.0001,0.2906,0.09
-HBL_DRAFT_REPORT_FORMAT_47,1,pass,pass,pass,pass,pass,single-page,,,0,0.0605,0.0342
-HBL_DRAFT_REPORT_FORMAT_46,1,pass,pass,pass,pass,pass,single-page,,,0.0001,0.1174,0.0514
-HBL_DRAFT_REPORT_FORMAT_49,1,pass,pass,pass,pass,pass,single-page,,,0,0.0696,0.0485
+HBL_DRAFT_REPORT_FORMAT_36,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0093,0.7205,0.0259
 HBL_DRAFT_REPORT_FORMAT_48,1,pass,pass,pass,pass,pass,single-page,,,0,0.0521,0.0878
-HBL_DRAFT_REPORT_FORMAT_51,1,pass,pass,pass,pass,pass,single-page,,,0,0.0272,0.0451
 HBL_DRAFT_REPORT_FORMAT_50,1,pass,pass,pass,pass,pass,single-page,,,0,0.1352,0.0273
-HBL_DRAFT_REPORT_FORMAT_55,1,pass,pass,pass,pass,pass,single-page,,,0,0.0199,0.0687
-HBL_DRAFT_REPORT_FORMAT_53,1,pass,pass,pass,pass,pass,single-page,,,0,0.1275,0.0755
+HBL_DRAFT_REPORT_FORMAT_49,1,pass,pass,pass,pass,pass,single-page,,,0,0.0696,0.0485
+HBL_DRAFT_REPORT_FORMAT_51,1,pass,pass,pass,pass,pass,single-page,,,0,0.0272,0.0451
+HBL_DRAFT_REPORT_FORMAT_29,2,pass,pass,pass,pass,fail,pass,raster R2,raster R2=1,0.0036,0.9752,0
 HBL_DRAFT_REPORT_FORMAT_52,2,pass,pass,pass,pass,pass,pass,,,0,0.0412,0.019
+HBL_DRAFT_REPORT_FORMAT_53,1,pass,pass,pass,pass,pass,single-page,,,0,0.1275,0.0755
 HBL_DRAFT_REPORT_FORMAT_54,1,pass,pass,pass,pass,pass,single-page,,,0,0.3237,0.0378
-HBL_DRAFT_REPORT_FORMAT_36,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0113,0.7214,0.0259
-HBL_DRAFT_REPORT_FORMAT_61,1,pass,pass,pass,pass,pass,single-page,,,0,0.1319,0.0823
-HBL_DRAFT_REPORT_FORMAT_60,1,pass,pass,pass,pass,pass,single-page,,,0.0001,0.1175,0.0514
 HBL_DRAFT_REPORT_FORMAT_56,1,pass,pass,pass,pass,pass,single-page,,,0,0.2339,0.0648
-HBL_DRAFT_REPORT_FORMAT_63,2,pass,pass,pass,pass,pass,pass,,,0,0.0112,0.0683
-HBL_DRAFT_REPORT_FORMAT_59,2,pass,pass,pass,pass,pass,pass,,,0.0009,0.2436,0.0225
-HBL_DRAFT_REPORT_FORMAT_65,1,pass,pass,pass,pass,pass,single-page,,,0,0.0635,0.0558
+HBL_DRAFT_REPORT_FORMAT_55,1,pass,pass,pass,pass,pass,single-page,,,0,0.0199,0.0687
+HBL_DRAFT_REPORT_FORMAT_60,1,pass,pass,pass,pass,pass,single-page,,,0,0.1175,0.0514
+HBL_DRAFT_REPORT_FORMAT_59,2,pass,pass,pass,pass,pass,pass,,,0.0009,0.241,0.0225
 HBL_DRAFT_REPORT_FORMAT_67,1,pass,pass,pass,pass,pass,single-page,,,0,0.0403,0.0739
+HBL_DRAFT_REPORT_FORMAT_61,1,pass,pass,pass,pass,pass,single-page,,,0,0.1319,0.0823
+HBL_DRAFT_REPORT_FORMAT_65,1,pass,pass,pass,pass,pass,single-page,,,0,0.0635,0.0558
 HBL_DRAFT_REPORT_FORMAT_64,2,pass,pass,pass,pass,pass,pass,,,0,0.0322,0.0188
-HBL_DRAFT_REPORT_FORMAT_68,1,pass,pass,pass,pass,pass,single-page,,,0,0.0935,0.0091
+HBL_DRAFT_REPORT_FORMAT_63,2,pass,pass,pass,pass,pass,pass,,,0,0.0112,0.0683
 HBL_DRAFT_REPORT_FORMAT_66,1,pass,pass,pass,pass,pass,single-page,,,0,0.0346,0.0212
-HBL_DRAFT_REPORT_FORMAT_69,2,pass,pass,pass,pass,pass,pass,,,0.0001,0.0595,0.0795
-HBL_DRAFT_REPORT_FORMAT_70,2,pass,pass,pass,pass,pass,pass,,,0,0.0389,0.0098
-HBL_DRAFT_REPORT_FORMAT_29,2,pass,pass,pass,pass,fail,pass,raster R2,raster R2=1,0.0039,0.9942,0
+HBL_DRAFT_REPORT_FORMAT_68,1,pass,pass,pass,pass,pass,single-page,,,0,0.0935,0.0091
 HBL_DRAFT_REPORT_FORMAT_73,1,pass,pass,pass,pass,pass,single-page,,,0,0.0447,0.0174
 HBL_DRAFT_REPORT_FORMAT_72,2,pass,pass,pass,pass,pass,pass,,,0,0.0436,0.0086
+HBL_DRAFT_REPORT_FORMAT_69,2,pass,pass,pass,pass,pass,pass,,,0.0001,0.0595,0.0795
 HBL_DRAFT_REPORT_FORMAT_75,2,pass,pass,pass,pass,pass,pass,,,0,0.0284,0.0266
-HBL_DRAFT_REPORT_FORMAT_77,1,pass,pass,pass,pass,pass,single-page,,,0,0.0327,0.0769
-FG_HBL_ORIGINAL_FORMAT_87,1,pass,pass,pass,pass,pass,single-page,,,0,0.1554,0.0116
-HBL_DRAFT_REPORT_FORMAT_83,1,pass,pass,pass,pass,pass,single-page,,,0,0.1871,0.022
+HBL_DRAFT_REPORT_FORMAT_70,2,pass,pass,pass,pass,pass,pass,,,0,0.0389,0.0098
 HBL_DRAFT_REPORT_FORMAT_87,1,pass,pass,pass,pass,pass,single-page,,,0,0.2462,0.0333
-HBL_DRAFT_REPORT_FORMAT_84,1,pass,pass,pass,pass,pass,single-page,,,0,0.1359,0.0483
+HBL_DRAFT_REPORT_FORMAT_77,1,pass,pass,pass,pass,pass,single-page,,,0,0.0327,0.0769
+HBL_DRAFT_REPORT_FORMAT_83,1,pass,pass,pass,pass,pass,single-page,,,0,0.1871,0.022
 HBL_DRAFT_REPORT_FORMAT_86,1,pass,pass,pass,pass,pass,single-page,,,0.0005,0.0417,0.0718
 HBL_DRAFT_REPORT_FORMAT_85,1,pass,pass,pass,pass,pass,single-page,,,0,0.2146,0.0253
+HBL_DRAFT_REPORT_FORMAT_84,1,pass,pass,pass,pass,pass,single-page,,,0,0.1359,0.0483
 HBL_DRAFT_REPORT_FORMAT_88,1,pass,pass,pass,pass,pass,single-page,,,0.0005,0.049,0.0306
 HBL_DRAFT_REPORT_FORMAT_92,1,pass,pass,pass,pass,pass,single-page,,,0,0.1558,0.0651
+FG_HBL_ORIGINAL_FORMAT_87,1,pass,pass,pass,pass,pass,single-page,,,0,0.1554,0.0116
 HBL_DRAFT_REPORT_FORMAT_90,1,pass,pass,pass,pass,pass,single-page,,,0,0.2696,0.0814
+HBL_DRAFT_REPORT_FORMAT_95,2,pass,pass,pass,pass,pass,pass,,,0,0.1411,0.0311
 HBL_DRAFT_REPORT_FORMAT_89,2,pass,pass,pass,pass,pass,pass,,,0,0.091,0.0286
 HBL_DRAFT_REPORT_FORMAT_96,1,pass,pass,pass,pass,pass,single-page,,,0,0.1921,0.0917
-HBL_DRAFT_REPORT_FORMAT_95,2,pass,pass,pass,pass,pass,pass,,,0,0.1411,0.0311
-HBL_DRAFT_REPORT_FORMAT_99,2,pass,pass,pass,pass,pass,pass,,,0,0.1746,0.0799
 HBL_DRAFT_REPORT_FORMAT_97,1,pass,pass,pass,pass,fail,single-page,raster R2,raster R2=1,0,0.4411,0.0676
 HBL_DRAFT_REPORT_FORMAT_101,2,pass,pass,pass,pass,pass,pass,,,0,0.3111,0.0717
 HBL_DRAFT_REPORT_FORMAT_100,2,pass,pass,pass,pass,pass,pass,,,0,0.2692,0.0128
-HBL_DRAFT_REPORT_FORMAT_107,1,pass,pass,pass,pass,pass,single-page,,,0,0.0449,0.0223
-HBL_DRAFT_REPORT_FORMAT_114,1,pass,pass,pass,pass,pass,single-page,,,0,0.1246,0.0772
-HBL_DRAFT_REPORT_FORMAT_118,1,pass,pass,pass,pass,pass,single-page,,,0,0,0.0008
-HBL_DRAFT_REPORT_FORMAT_117,2,pass,pass,pass,pass,pass,pass,,,0,0.3901,0.0603
-HBL_DRAFT_REPORT_FORMAT_116,2,pass,pass,pass,pass,pass,pass,,,0,0.278,0.0017
-HBL_DRAFT_REPORT_FORMAT_109,1,pass,pass,pass,pass,pass,single-page,,,0.0002,0.0323,0.0252
 HBL_DRAFT_REPORT_FORMAT_102,2,pass,pass,pass,pass,pass,pass,,,0,0.0475,0.0075
-HBL_DRAFT_REPORT_FORMAT_120,1,pass,pass,pass,pass,pass,single-page,,,0,0.0363,0.0141
-HBL_DRAFT_REPORT_FORMAT_127,2,pass,pass,pass,pass,pass,pass,,,0,0,0.0004
-HBL_DRAFT_REPORT_FORMAT_128,1,pass,pass,pass,pass,pass,single-page,,,0,0.3457,0.0088
-HBL_DRAFT_REPORT_FORMAT_122,3,pass,pass,pass,pass,pass,pass,,,0,0.0027,0.0003
+HBL_DRAFT_REPORT_FORMAT_99,2,pass,pass,pass,pass,pass,pass,,,0,0.1746,0.0799
+HBL_DRAFT_REPORT_FORMAT_107,1,pass,pass,pass,pass,pass,single-page,,,0,0.0449,0.0223
+HBL_DRAFT_REPORT_FORMAT_109,1,pass,pass,pass,pass,pass,single-page,,,0.0002,0.0323,0.0252
+HBL_DRAFT_REPORT_FORMAT_118,1,pass,pass,pass,pass,pass,single-page,,,0,0,0.0008
+HBL_DRAFT_REPORT_FORMAT_114,1,pass,pass,pass,pass,pass,single-page,,,0,0.1246,0.0772
+HBL_DRAFT_REPORT_FORMAT_116,2,pass,pass,pass,pass,pass,pass,,,0,0.278,0.0017
+HBL_DRAFT_REPORT_FORMAT_117,2,pass,pass,pass,pass,pass,pass,,,0,0.3901,0.0603
 HBL_DRAFT_REPORT_FORMAT_130,2,pass,pass,pass,pass,pass,pass,,,0,0,0.0004
+HBL_DRAFT_REPORT_FORMAT_120,1,pass,pass,pass,pass,pass,single-page,,,0,0.0358,0.0141
+HBL_DRAFT_REPORT_FORMAT_122,3,pass,pass,pass,pass,pass,pass,,,0,0.0027,0.0003
+HBL_DRAFT_REPORT_FORMAT_128,1,pass,pass,pass,pass,pass,single-page,,,0,0.3457,0.0088
+HBL_DRAFT_REPORT_FORMAT_127,2,pass,pass,pass,pass,pass,pass,,,0,0,0.0004
 HBL_DRAFT_REPORT_FORMAT_132,1,pass,pass,pass,pass,pass,single-page,,,0,0,0.0008
+HBL_DRAFT_REPORT_FORMAT_129,1,pass,pass,pass,pass,pass,single-page,,,0,0.091,0.025
 HBL_DRAFT_REPORT_FORMAT_134,1,pass,pass,pass,pass,pass,single-page,,,0,0.0389,0.072
 HBL_DRAFT_REPORT_FORMAT_137,1,pass,pass,pass,pass,pass,single-page,,,0,0.1183,0.0259
-HBL_DRAFT_REPORT_FORMAT_136,2,pass,pass,pass,pass,pass,pass,,,0,0.0743,0.0166
 HBL_DRAFT_REPORT_FORMAT_135,1,pass,pass,pass,pass,pass,single-page,,,0.0004,0.3805,0.0792
-HBL_DRAFT_REPORT_FORMAT_138,2,pass,pass,pass,pass,pass,pass,,,0,0.1178,0.033
-HBL_DRAFT_REPORT_FORMAT_139,1,pass,pass,pass,pass,pass,single-page,,,0,0.1939,0.0157
-HBL_DRAFT_REPORT_FORMAT_129,1,pass,pass,pass,pass,pass,single-page,,,0,0.091,0.025
+HBL_DRAFT_REPORT_FORMAT_136,2,pass,pass,pass,pass,pass,pass,,,0,0.0743,0.0166
 HBL_DRAFT_REPORT_FORMAT_140,1,pass,pass,pass,pass,pass,single-page,,,0,0.0169,0.0526
+HBL_DRAFT_REPORT_FORMAT_139,1,pass,pass,pass,pass,pass,single-page,,,0,0.1939,0.0157
+HBL_DRAFT_REPORT_FORMAT_138,2,pass,pass,pass,pass,pass,pass,,,0,0.1178,0.033
 HBL_DRAFT_REPORT_FORMAT_142,2,pass,pass,pass,pass,pass,pass,,,0,0.09,0.0547
 HBL_DRAFT_REPORT_FORMAT_143,1,pass,pass,pass,pass,pass,single-page,,,0,0.2179,0.0756
-HBL_DRAFT_REPORT_FORMAT_146,1,pass,pass,pass,pass,pass,single-page,,,0.0006,0.102,0.066
-HBL_DRAFT_REPORT_FORMAT_145,1,pass,pass,pass,pass,pass,single-page,,,0,0.0603,0.0844
-HBL_DRAFT_REPORT_FORMAT_144,2,pass,pass,pass,pass,pass,pass,,,0,0.0847,0.0712
-HBL_DRAFT_REPORT_FORMAT_147,2,pass,pass,pass,pass,pass,pass,,,0,0.2822,0.0707
 HBL_DRAFT_REPORT_FORMAT_141,1,pass,pass,pass,pass,fail,single-page,raster R2,raster R2=1,0,0.4753,0.0775
+HBL_DRAFT_REPORT_FORMAT_145,1,pass,pass,pass,pass,pass,single-page,,,0,0.0603,0.0844
+HBL_DRAFT_REPORT_FORMAT_146,1,pass,pass,pass,pass,pass,single-page,,,0.0006,0.102,0.066
+HBL_DRAFT_REPORT_FORMAT_147,2,pass,pass,pass,pass,pass,pass,,,0,0.2822,0.0707
+HBL_DRAFT_REPORT_FORMAT_144,2,pass,pass,pass,pass,pass,pass,,,0,0.0847,0.0712
 HBL_DRAFT_REPORT_FORMAT_149,2,pass,pass,pass,pass,pass,pass,,,0,0.3725,0.0824
-HBL_DRAFT_REPORT_FORMAT_172,2,pass,pass,pass,pass,pass,pass,,,0,0.3462,0.06
 FG_DELIVERY_NOTE_FORMAT_UK_RPM_REF_1305,1,pass,pass,pass,pass,pass,single-page,,,0,0.1349,0.0915
-HBL_DRAFT_REPORT_FORMAT_171,2,pass,pass,pass,pass,pass,pass,,,0.0001,0.1203,0.1262
-HBL_DRAFT_REPORT_FORMAT_151,2,pass,pass,pass,pass,fail,pass,raster R2,raster R2=1,0,0.4765,0.0813
-D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427,1,pass,pass,fail,pass,pass,single-page,static position or string,static position or string=1,0.0021,0.3791,0.0126
-D_O_FCL_VIETNAM_RPM_REF_411,1,pass,pass,fail,pass,pass,single-page,static position or string,static position or string=1,0.0019,0.3884,0.0126
-FG_CONSIGNMENT_DELIVERY_NOTE_RPM_REF_1379,2,pass,pass,pass,pass,pass,pass,,,0,0.1509,0.035
-DELIVERY_CONFIRMATION_RPM_REF_153,1,pass,pass,pass,pass,pass,single-page,,,0.0031,0.2395,0.02
-FG_CONSIGNMENT_DELIVERY_NOTE_FORMAT_1,2,pass,pass,pass,pass,pass,pass,,,0,0.1483,0.0349
 HBL_DRAFT_REPORT_FORMAT_148,1,pass,pass,pass,pass,fail,single-page,raster R2,raster R2=1,0,0.5256,0.0376
+HBL_DRAFT_REPORT_FORMAT_171,2,pass,pass,pass,pass,pass,pass,,,0.0001,0.1203,0.1262
+HBL_DRAFT_REPORT_FORMAT_172,2,pass,pass,pass,pass,pass,pass,,,0,0.3462,0.06
+HBL_DRAFT_REPORT_FORMAT_151,2,pass,pass,pass,pass,fail,pass,raster R2,raster R2=1,0,0.4765,0.0813
+D_O_FCL_VIETNAM_RPM_REF_411,1,pass,pass,pass,pass,pass,single-page,,,0.0018,0.3875,0.0126
+D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427,1,pass,pass,pass,pass,pass,single-page,,,0.002,0.3745,0.0126
+DELIVERY_CONFIRMATION_RPM_REF_153,1,pass,pass,pass,pass,pass,single-page,,,0.0031,0.2395,0.02
+FG_CONSIGNMENT_DELIVERY_NOTE_RPM_REF_1379,2,pass,pass,pass,pass,pass,pass,,,0,0.1509,0.035
+FG_CONSIGNMENT_DELIVERY_NOTE_FORMAT_1,2,pass,pass,pass,pass,pass,pass,,,0,0.1483,0.0349
 DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.2378,0.0171
 DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.2378,0.0171
 DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.2378,0.0171
-DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.2378,0.0171
-DELIVERY_ORDER_REPORT_FORMAT_16,2,pass,pass,pass,pass,pass,pass,,,0.0039,0.1933,0.0188
-DELIVERY_ORDER_FORMAT_17_RPM_REF_1496,1,pass,pass,pass,pass,pass,single-page,,,0.003,0.238,0.0186
-FG_DELIVERY_ORDER_AIR_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0,0.1141,0.0919
+DELIVERY_ORDER_FORMAT_17_RPM_REF_1496,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.2428,0.0186
 FG_DELIVERY_ORDER_ABUDHABI_RPM_REF_808,1,pass,pass,pass,pass,pass,single-page,,,0,0.0572,0.0921
+DELIVERY_ORDER_REPORT_FORMAT_16,2,pass,pass,pass,pass,pass,pass,,,0.0026,0.188,0.0188
 DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT,2,pass,pass,pass,pass,pass,pass,,,0.0016,0.0881,0.0969
 FG_DELIVERY_ORDER_AIR_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.0879,0.0927
-FG_DELIVERY_ORDER_FORMAT10_RPM_REF_835,1,pass,pass,pass,pass,pass,single-page,,,0,0.0378,0.111
-DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT,2,pass,pass,pass,pass,pass,pass,,,0.0016,0.0881,0.0969
-FG_DELIVERY_ORDER_SEA_FORMAT6_RPM_REF_668,1,pass,pass,pass,pass,pass,single-page,,,0,0.0469,0.0963
+FG_DELIVERY_ORDER_AIR_FORMAT_2,1,pass,pass,pass,pass,pass,single-page,,,0,0.1141,0.0919
 FG_DELIVERY_ORDER_SEA_FORMAT10_RPM_REF_1395,1,pass,pass,pass,pass,pass,single-page,,,0,0.0417,0.0921
+FG_DELIVERY_ORDER_FORMAT10_RPM_REF_835,1,pass,pass,pass,pass,pass,single-page,,,0,0.0378,0.111
 FG_DELIVERY_ORDER_SEA_FORMAT3_RPM_REF_560,1,pass,pass,pass,pass,pass,single-page,,,0,0.0417,0.0921
 FG_DELIVERY_ORDER_SEA_FORMAT5_RPM_REF_628,1,pass,pass,pass,pass,pass,single-page,,,0,0.0735,0.0948
-FG_DELIVERY_ORDER_SEA_FORMAT7_RPM_REF_755,1,pass,pass,pass,pass,pass,single-page,,,0,0.1396,0.0964
+FG_DELIVERY_ORDER_SEA_FORMAT6_RPM_REF_668,1,pass,pass,pass,pass,pass,single-page,,,0,0.0469,0.0963
+DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT,2,pass,pass,pass,pass,pass,pass,,,0.0016,0.0881,0.0969
 FG_DELIVERY_ORDER_FORMAT9_RPM_REF_803,1,pass,pass,pass,pass,pass,single-page,,,0,0.0176,0.0944
-FG_DELIVERY_ORDER_FORMAT8_RPM_REF_777,1,pass,pass,pass,pass,pass,single-page,,,0,0.0862,0.0929
+FG_DELIVERY_ORDER_SEA_FORMAT7_RPM_REF_755,1,pass,pass,pass,pass,pass,single-page,,,0,0.1396,0.0964
 DELIVERY_ORDER_REPORT_FORMAT_14,1,pass,pass,pass,pass,pass,single-page,,,0,0.2102,0.091
-DELIVERY_ORDER_REPORT_FORMAT_13,1,pass,pass,pass,pass,fail,single-page,raster R1,raster R1=1,0.0159,0.1311,0.0986
 DELIVERY_ORDER_REPORT_FORMAT_15,1,pass,pass,pass,pass,pass,single-page,,,0,0.0967,0.0973
-DELIVERY_ORDER_REPORT_FORMAT_18,1,pass,pass,pass,pass,pass,single-page,,,0,0.1007,0.0941
-FG_DELIVERY_ORDER_FORMAT_16,1,pass,pass,pass,pass,pass,single-page,,,0,0.1675,0.0979
-FG_DELIVERY_ORDER_SEA_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.104,0.0919
-FG_DELIVERY_ORDER_AIR_USA_RPM_REF_650,2,pass,pass,pass,pass,pass,pass,,,0,0.0158,0.0899
-FG_DELIVERY_ORDER_FORMAT3_RPM_REF_629,2,pass,pass,pass,pass,pass,pass,,,0,0.028,0.0899
+FG_DELIVERY_ORDER_FORMAT8_RPM_REF_777,1,pass,pass,pass,pass,pass,single-page,,,0,0.0862,0.0929
+DELIVERY_ORDER_REPORT_FORMAT_13,1,pass,pass,pass,pass,pass,single-page,,,0,0.0949,0.0986
 FG_DELIVERY_ORDER_FOR_TRUCKER,1,pass,pass,pass,pass,pass,single-page,,,0,0.0118,0.0916
+DELIVERY_ORDER_REPORT_FORMAT_18,1,pass,pass,pass,pass,pass,single-page,,,0,0.1007,0.0941
+FG_DELIVERY_ORDER_SEA_FORMAT_1,1,pass,pass,pass,pass,pass,single-page,,,0,0.104,0.0919
+FG_DELIVERY_ORDER_FORMAT_16,1,pass,pass,pass,pass,pass,single-page,,,0,0.1675,0.0979
+FG_DELIVERY_ORDER_FORMAT3_RPM_REF_629,2,pass,pass,pass,pass,pass,pass,,,0,0.028,0.0899
+FG_DELIVERY_ORDER_AIR_USA_RPM_REF_650,2,pass,pass,pass,pass,pass,pass,,,0,0.0158,0.0899
 FG_DELIVERY_ORDER_FOR_TRUCKER,1,pass,pass,pass,pass,pass,single-page,,,0,0.0118,0.0916
 FG_NOTICE_OF_DELIVERY_RPM_REF_905,1,pass,pass,pass,pass,pass,single-page,,,0,0.1135,0.0451
-PROOF_OF_DELIVERY_RPM_REF_275,1,pass,pass,pass,pass,pass,single-page,,,0.0028,0.2227,0.0186
+PROOF_OF_DELIVERY_RPM_REF_275,1,pass,pass,pass,pass,pass,single-page,,,0.0027,0.2274,0.0186
 FG_HBL_FORMAT10_RPM_REF_472,2,pass,pass,pass,pass,pass,pass,,,0,0,0.0097
-FG_PROOF_OF_DELIVERY_RPM_REF_847,1,pass,pass,fail,pass,fail,single-page,static width | static position or string | raster R1,static width=1; static position or string=1; raster R1=1,0.0254,2.8159,0.0716
+FG_PROOF_OF_DELIVERY_RPM_REF_847,1,pass,pass,fail,pass,fail,single-page,static width | static position or string | raster R1,static width=1; static position or string=1; raster R1=1,0.0257,0.711,0.0716
+DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT,1,pass,pass,pass,pass,pass,single-page,,,0.0029,0.2378,0.0171
 FG_DELIVERY_ORDER_FOR_TRUCKER,1,pass,pass,pass,pass,pass,single-page,,,0,0.0118,0.0916
 FG_DELIVERY_ORDER_FOR_TRUCKER,1,pass,pass,pass,pass,pass,single-page,,,0,0.0118,0.0916

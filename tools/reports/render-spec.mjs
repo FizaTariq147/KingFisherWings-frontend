@@ -8,7 +8,7 @@ import path from 'node:path';
 import { createRequire } from 'node:module';
 import { fileURLToPath } from 'node:url';
 import fontkit from '@pdf-lib/fontkit';
-import { PDFDocument, rgb } from 'pdf-lib';
+import { PDFDocument, PDFName, degrees, rgb } from 'pdf-lib';
 import { applyAdvanceTable, baseFontName, embedReferenceFont, referenceFontSnapshots, widthTables } from './reference-font.mjs';
 
 const require = createRequire(import.meta.url);
@@ -91,12 +91,6 @@ export function characterSpacingFor(span, systemFonts = false) {
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const longValues = JSON.parse(fs.readFileSync(path.join(root, 'reports/fixtures/long-values.json'), 'utf8'));
 
-function parseColor(hex) {
-  const text = String(hex || '#000000').replace('#', '');
-  const value = Number.parseInt(text.padEnd(6, '0').slice(0, 6), 16);
-  return rgb(((value >> 16) & 255) / 255, ((value >> 8) & 255) / 255, (value & 255) / 255);
-}
-
 function formatFor(span, spec) {
   const bound = spec.formatRules.find((rule) => rule.path === span.binding)?.format;
   if (bound) return bound;
@@ -149,6 +143,32 @@ function wrapLines(text, font, size, maxWidth) {
   return lines.length ? lines : [''];
 }
 
+function keepPrecomposedLatin(font) {
+  const face = font.embedder?.font;
+  if (!face?.layout || face.precomposedLatin) return;
+  const original = face.layout.bind(face);
+  face.layout = (text, fontFeatures) => {
+    const glyphs = [];
+    const positions = [];
+    for (const chunk of String(text).split(/([\u1EA0-\u1EF9])/u)) {
+      if (!chunk) continue;
+      const codePoint = chunk.codePointAt(0);
+      const single = [...chunk].length === 1;
+      if (single && codePoint >= 0x1EA0 && codePoint <= 0x1EF9 && face.hasGlyphForCodePoint(codePoint)) {
+        const glyph = face.glyphForCodePoint(codePoint);
+        glyphs.push(glyph);
+        positions.push({ xAdvance: glyph.advanceWidth, yAdvance: 0, xOffset: 0, yOffset: 0 });
+      } else {
+        const run = original(chunk, fontFeatures);
+        glyphs.push(...run.glyphs);
+        positions.push(...run.positions);
+      }
+    }
+    return { glyphs, positions };
+  };
+  face.precomposedLatin = true;
+}
+
 async function embedBundles(doc, options = {}, pages = [], snapshots = new Map()) {
   const cache = new Map();
   const features = options.systemFonts ? undefined : { kern: false, liga: false, clig: false };
@@ -159,6 +179,7 @@ async function embedBundles(doc, options = {}, pages = [], snapshots = new Map()
     const key = `${fontName || ''}|${file}|${features ? 'nokern' : 'default'}`;
     if (!cache.has(key)) {
       const font = await doc.embedFont(fs.readFileSync(file), { subset: true, features });
+      keepPrecomposedLatin(font);
       cache.set(key, font);
       if (fontName && widths.has(fontName)) outlines.push({ font, widths: widths.get(fontName) });
     }
@@ -205,6 +226,17 @@ function drawClipped(page, span, draw) {
   );
   draw();
   page.pushOperators(popGraphicsState());
+}
+
+function parseColor(value) {
+  const text = String(value || '0,0,0');
+  if (text.includes(',')) {
+    const [red, green, blue] = text.split(',').map(Number);
+    return rgb(red || 0, green || 0, blue || 0);
+  }
+  const hex = text.replace('#', '');
+  const parsed = Number.parseInt(hex.padEnd(6, '0').slice(0, 6), 16);
+  return rgb(((parsed >> 16) & 255) / 255, ((parsed >> 8) & 255) / 255, (parsed & 255) / 255);
 }
 
 function rgbParts(hex) {
@@ -322,16 +354,46 @@ async function piecesFor(bundles, span, text, x, y) {
   });
 }
 
+function drawFilledRule(page, line) {
+  const dx = Math.abs(line.x2 - line.x1);
+  const dy = Math.abs(line.y2 - line.y1);
+  const thickness = line.width || 0.4;
+  const color = parseColor(line.color);
+  // A filled rule records the stroke color that was current in the reference.
+  // Set that stroke color and cap before the fill so the re-extracted line matches.
+  page.pushOperators(
+    pushGraphicsState(),
+    setLineCap(line.lineCap || 0),
+    setLineJoin(line.lineJoin || 0),
+    setStrokingRgbColor(color.red, color.green, color.blue),
+  );
+  const box = dx >= dy
+    ? {
+      x: Math.min(line.x1, line.x2),
+      y: ((line.y1 + line.y2) / 2) - thickness / 2,
+      width: dx,
+      height: thickness,
+    }
+    : {
+      x: ((line.x1 + line.x2) / 2) - thickness / 2,
+      y: Math.min(line.y1, line.y2),
+      width: thickness,
+      height: dy,
+    };
+  page.drawRectangle({ ...box, color, borderWidth: 0 });
+  page.pushOperators(popGraphicsState());
+}
+
 function drawPath(page, path) {
-  const strokeColor = rgbParts(path.stroke || '#000000');
-  const fillColor = rgbParts(path.fill || '#000000');
+  const strokeColor = parseColor(path.stroke || '#000000');
+  const fillColor = parseColor(path.fill || '#000000');
   const operators = [
     pushGraphicsState(),
     setLineWidth(path.strokeWidth || 0.6),
     setLineCap(path.lineCap || 0),
     setLineJoin(path.lineJoin || 0),
-    setStrokingRgbColor(...strokeColor),
-    setFillingRgbColor(...fillColor),
+    setStrokingRgbColor(strokeColor.red, strokeColor.green, strokeColor.blue),
+    setFillingRgbColor(fillColor.red, fillColor.green, fillColor.blue),
   ];
   if (path.dash?.length) operators.push(setDashPattern(path.dash, path.dashPhase || 0));
   let started = false;
@@ -422,8 +484,46 @@ export async function renderSpec(code, options = {}) {
   const bundles = await embedBundles(doc, options, pages, snapshots);
   const overflowLog = [];
   for (const source of pages) {
-    const page = doc.addPage([source.width || spec.page.width, source.height || spec.page.height]);
-    for (const rect of source.rects || []) {
+    const box = source.pageBox || (source.mediaBox ? source : null);
+    const media = box?.mediaBox;
+    const page = doc.addPage(media ? [media[2] - media[0], media[3] - media[1]] : [source.width || spec.page.width, source.height || spec.page.height]);
+    if (media) {
+      page.setMediaBox(media[0], media[1], media[2] - media[0], media[3] - media[1]);
+      if (box.cropBox) page.setCropBox(box.cropBox[0], box.cropBox[1], box.cropBox[2] - box.cropBox[0], box.cropBox[3] - box.cropBox[1]);
+      else page.node.delete(PDFName.of('CropBox'));
+      page.setRotation(degrees(box.rotate || 0));
+      if (box.userUnit && box.userUnit !== 1) page.node.set(PDFName.of('UserUnit'), doc.context.obj(box.userUnit));
+    }
+    const shapes = [
+      ...(source.rects || []).map((rect) => ({ kind: 'rect', order: rect.order ?? 0, rect })),
+      ...(source.lines || []).map((line) => ({ kind: 'line', order: line.order ?? 0, line })),
+      ...(source.paths || []).map((path) => ({ kind: 'path', order: path.order ?? 0, path })),
+    ].sort((left, right) => left.order - right.order);
+    for (const shape of shapes) {
+      if (shape.kind === 'path') {
+        drawPath(page, shape.path);
+        continue;
+      }
+      if (shape.kind === 'line') {
+        const line = shape.line;
+        if (line.source === 'rect') {
+          drawFilledRule(page, line);
+          continue;
+        }
+        page.pushOperators(pushGraphicsState(), setLineJoin(line.lineJoin || 0));
+        page.drawLine({
+          start: { x: line.x1, y: line.y1 },
+          end: { x: line.x2, y: line.y2 },
+          thickness: line.width || 0.4,
+          color: parseColor(line.color),
+          lineCap: line.lineCap == null ? 0 : line.lineCap,
+          dashArray: line.dash?.length ? line.dash : undefined,
+          dashPhase: line.dash?.length ? (line.dashPhase || 0) : undefined,
+        });
+        page.pushOperators(popGraphicsState());
+        continue;
+      }
+      const rect = shape.rect;
       if (rect.dash?.length) page.pushOperators(setDashPattern(rect.dash, rect.dashPhase || 0));
       page.drawRectangle({
         x: rect.x,
@@ -438,20 +538,6 @@ export async function renderSpec(code, options = {}) {
       });
       if (rect.dash?.length) page.pushOperators(restoreDashPattern());
     }
-    for (const line of source.lines || []) {
-      page.pushOperators(pushGraphicsState(), setLineJoin(line.lineJoin || 0));
-      page.drawLine({
-        start: { x: line.x1, y: line.y1 },
-        end: { x: line.x2, y: line.y2 },
-        thickness: line.width || 0.4,
-        color: parseColor(line.color),
-        lineCap: line.lineCap == null ? 0 : line.lineCap,
-        dashArray: line.dash?.length ? line.dash : undefined,
-        dashPhase: line.dash?.length ? (line.dashPhase || 0) : undefined,
-      });
-      page.pushOperators(popGraphicsState());
-    }
-    for (const path of source.paths || []) drawPath(page, path);
     for (const image of source.images || []) {
       if (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded) drawBarcode(page, image);
     }
@@ -471,7 +557,8 @@ export async function renderSpec(code, options = {}) {
       const originalSize = size;
       const probe = await piecesFor(bundles, span, text, span.x, span.y);
       const probeFont = probe[0]?.font;
-      const pageWidth = source.width || spec.page.width;
+      const mediaWidth = media ? media[2] - media[0] : (source.width || spec.page.width);
+      const pageWidth = mediaWidth;
       const visibleSegments = (span.segments || []).filter((segment) => segment.x < pageWidth);
       let spacing = span.advances?.length || span.fontEmbedded === false
         ? (span.charSpacing || 0)

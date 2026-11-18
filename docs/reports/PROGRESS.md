@@ -672,7 +672,7 @@ Each presentation-form glyph is placed at its reference x using that glyph's adv
 
 ### Non-Arabic fixes
 
-Not applied. The 4 dynamic width failures are Arabic-comma addresses, so they are exceptions, not a general width fix. Of the static position failures, the only non-Arabic documents are the two Vietnam delivery orders. Noto Sans drops U+1ECB. Routing those spans to Arimo was tried and reverted: font family, width, and raster then failed.
+Not applied in Track A2. The 4 dynamic width failures are Arabic-comma addresses. The two Vietnam delivery orders were still failing here; Track A3 clears them.
 
 ### Checker changes
 
@@ -680,8 +680,53 @@ Items 1-7 are the Track A list above. Item 8 is new:
 
 8. `diagnoseNonText` writes distance histograms for a report. It does not change the mask, the whitening, or the pass rule.
 
+## Track A3
+
+Nothing is accepted. `reports/signoff.csv` was not edited. No threshold, mask, or status changed. The checker did not change.
+
+| | Documents | Clean | R1 | R2 | Static position |
+|---|---:|---:|---:|---:|---:|
+| Before | 399 | 334 | 41 | 7 | 13 |
+| After | 399 | 336 | 41 | 7 | 11 |
+
+The two Vietnam delivery orders moved from static position to clean. No other class changed. No previously clean document was re-rendered.
+
+Layer isolation for the 10 worst R1 documents is in `reports/output/track-a3/layers.md`. Geometry-only ratios stay above 0.5%. The differing segments are strokes. Spec coordinates are stored at 0.1 pt. No filled-rect-to-stroke conversion was present, so the renderer was not changed for that and the 41 R1 documents were not re-rendered. 18 of the 41 are rotated pages whose media-box coordinates are drawn on the rotated page size. That does not cover the 23 unrotated R1 documents.
+
+Noto Sans already contains U+1EA0–U+1EF9. Precomposed glyphs in that range are now embedded instead of a base letter plus a combining dot. Both Vietnam delivery orders pass all layers.
+
+Review sheets are `reports/review/<family>/<code>.png` with `reports/review/index.csv`. `npm run report:signoff -- <code> <reviewer>` writes a sign-off row only when every layer passes or the code's line in `reports/exceptions.md` contains `approved`. It was not run.
+
 ### Exceptions
 
 `reports/exceptions.md` lists every document that cannot pass, with the reason: Arabic joins and widths, Arabic-comma dynamic widths, the two Vietnam delivery orders, the 41 R1 documents, the 7 R2 text-ink documents, the 18 form-background overlays, and proof of delivery.
+
+## Track A4
+
+Nothing is accepted. `reports/signoff.csv` was not edited. No threshold, mask, or status changed.
+
+Before is `reports/full-run-track-a-before-a4.csv`. After is `reports/full-run-track-a-last.csv`.
+
+| | Documents | Clean | R1 | R2 | Static position | Geometry-only raster |
+|---|---:|---:|---:|---:|---:|---:|
+| Before | 399 | 336 | 41 | 7 | 11 | not measured |
+| After | 399 | 343 | 31 | 7 | 11 | 10 |
+
+Static width stayed 13. Dynamic width stayed 4. Dynamic position stayed 1. No document gained raster R1. Three documents that were clean now fail only the new geometry-only raster: ADVANCE_SHIPPING_NOTE_FORMAT_1, FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431, FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007. Their page, vector geometry, static, dynamic, and masked raster checks still pass.
+
+The renderer writes the reference `/Rotate`, MediaBox, and CropBox, and draws in MediaBox coordinates. After the re-render, all 391 documents match on `/Rotate`, MediaBox, CropBox, and UserUnit. Before that, 146 differed: 127 by 0.02 or 0.04 pt of MediaBox rounding, 18 rotated documents by `/Rotate` 90 versus 0 and a swapped MediaBox, and ADVANCE_SHIPPING_NOTE_FORMAT_1 by a CropBox. No UserUnit differed. The 18 rotated documents still fail raster R1. Page and vector geometry pass, and the geometry-only raster passes. GL voucher non-text moved from 0.0485 to 0.0191 and text-ink from 3.6388 to 0.5523.
+
+Line and rect coordinates and widths are stored to 0.0001 pt. Geometry colors are `r,g,b` with 6 decimal places. The geometry check still tolerates 0.1 pt and does not round either side.
+
+The geometry-only raster is additive. It strips text and images, diffs at 150 dpi, and fails above 0.5% of page pixels. It does not change masks or the masked raster pass. Ten documents pass vector geometry and fail it. The list is in `reports/exceptions.md`.
+
+On the 23 non-rotated R1 documents, the top segments after the page-box and precision render had identical coordinates. Filled rules were drawn as strokes, path colors were parsed as hex so a gray fill became black, and a later reference fill was painted underneath an earlier path. Those three are fixed. Ten of the 23 are now clean. Seven still fail the geometry-only raster on one-pixel rule coverage. That was not changed further.
+
+### Checker changes
+
+Items 1-8 are unchanged. Items 9 and 10 are new:
+
+9. The vector geometry check compares in displayed (rotated) coordinates. Values are not rounded to 0.1 pt before the compare. The tolerance stays 0.1 pt.
+10. An additive geometry-only raster strips text and images from both content streams, diffs at 150 dpi, and fails above 0.5% of page pixels. It does not change the masked raster pass.
 
 

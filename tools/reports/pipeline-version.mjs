@@ -8,9 +8,9 @@
  */
 export const PIPELINE_VERSION = {
   id: 'track-a-speed-1',
-  extract: 'e1-class-order',
-  render: 'r3-glyph-advances',
-  checker: 'c2-nontxt-diagnose',
+  extract: 'e3-paint-order',
+  render: 'r8-rule-stroke-color',
+  checker: 'c3-geometry-raster',
   raster: 'pdftoppm-150',
 };
 

@@ -16,6 +16,8 @@ import fontkit from '@pdf-lib/fontkit';
 import { inspectPdfFile } from './extract.mjs';
 import { fontFile, mapFont } from './font-map.mjs';
 import { characterSpacingFor } from './render-spec.mjs';
+import { displayGeometry } from './page-box.mjs';
+import { geometryOnlyRatio } from './content-layers.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const GEOMETRY_TOLERANCE = 0.1;
@@ -532,7 +534,11 @@ export async function diffPilot(code, options = {}) {
   const pageResults = [];
   for (let index = 0; index < pageCount; index += 1) {
     const specPage = spec.pages?.[index] || spec;
-    pageResults.push(comparePage(specPage, pageOf(rendered, index)));
+    const renderedPage = pageOf(rendered, index);
+    pageResults.push(comparePage(
+      displayGeometry(specPage, specPage.pageBox),
+      displayGeometry(renderedPage, renderedPage.pageBox),
+    ));
   }
   const failures = pageResults.flatMap((page) => page.failures);
   const staticFailures = failures.filter((item) => item.layer === 'static');
@@ -552,6 +558,8 @@ export async function diffPilot(code, options = {}) {
     diagnoseNonText: Boolean(options.diagnoseNonText),
     timing: options.timing,
   });
+  const geometryDir = path.join(options.workDir || path.join(root, 'reports/cache/work/geometry-only'), code);
+  const geometryOnlyRaster = await geometryOnlyRatio(referencePath, renderedPath, geometryDir);
   const deviation = options.skipDeviation ? { spans: [] } : await naturalDeviation(spec);
   const images = (spec.pages || []).flatMap((page, index) => (page.images || []).map((image) => ({
     page: index + 1,
@@ -599,7 +607,9 @@ export async function diffPilot(code, options = {}) {
       unmatchedPaths,
       uncaptured,
       uncapturedByPage: pageResults.map((page) => page.uncaptured),
+      compare: 'displayed coordinates, unrounded, tolerance 0.1 pt',
     },
+    geometryOnlyRaster,
     staticText: {
       pass: staticFailures.length === 0,
       spans: pageResults.reduce((sum, page) => sum + page.staticSpans, 0),

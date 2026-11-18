@@ -33,7 +33,8 @@
     "report:extract": "node tools/reports/extract.mjs",
     "report:validate-spec": "node tools/reports/validate-spec.mjs",
     "report:render-spec": "node tools/reports/render-spec.mjs",
-    "report:diff-pilot": "node tools/reports/diff-pilot.mjs"
+    "report:diff-pilot": "node tools/reports/diff-pilot.mjs",
+    "report:signoff": "node tools/reports/signoff.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",

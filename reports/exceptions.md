@@ -2,14 +2,16 @@
 
 Nothing in this list is accepted. Each line is a document that cannot pass a stated check without changing a threshold, a status value, or `reports/signoff.csv`. A human can approve or reject each reason.
 
-Counts are the 399-document runs. Before is Track A (`reports/full-run-track-a-before-a2.csv`). After is Track A2 (`reports/full-run-track-a-last.csv`).
+`npm run report:signoff -- <code> <reviewer>` writes a `reports/signoff.csv` row only when every layer passes, or when the code's line in this file contains the word `approved`. No line below contains that word. The command was not run.
 
-| | Documents | Clean | R1 | R2 | Static position |
-|---|---:|---:|---:|---:|---:|
-| Before | 399 | 334 | 41 | 7 | 12 |
-| After | 399 | 334 | 41 | 7 | 13 |
+Counts are the 399-document runs. Before is Track A3 (`reports/full-run-track-a-before-a4.csv`). After is Track A4 (`reports/full-run-track-a-last.csv`).
 
-No previously clean document failed a layer. Static width stayed 13. Dynamic width stayed 4. Dynamic position stayed 1.
+| | Documents | Clean | R1 | R2 | Static position | Geometry-only raster |
+|---|---:|---:|---:|---:|---:|---:|
+| Before (Track A3) | 399 | 336 | 41 | 7 | 11 | not measured |
+| After (Track A4) | 399 | 343 | 31 | 7 | 11 | 10 |
+
+Static width stayed 13. Dynamic width stayed 4. Dynamic position stayed 1. Ten R1 documents became clean. Three documents that were clean now fail only the new geometry-only raster. No document that passed an existing layer failed that layer.
 
 ## Arabic glyphs
 
@@ -43,16 +45,17 @@ These four are the dynamic width failures. They are not a general width bug. The
 
 STUFFING_REPORT_JASPER_REPORT_FORMAT fails dynamic position on the same Dubai address, and it is also raster R1 (non-text 0.0351, text-ink 2.73).
 
-## Vietnamese text the subset drops
+## Vietnamese delivery orders
 
-- D_O_FCL_VIETNAM_RPM_REF_411
-- D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427
-
-Reason: the Noto Sans subset drops U+1ECB, so "Kính đề nghị giao cho" is extracted as "Kính đề nghi giao cho" and the following word shifts. Routing those spans to Arimo was tried and reverted: the checker expects Noto Sans for TimesNewRomanPS-BoldMT, and the Arimo widths and raster then failed. Keeping Arimo would be a checker change.
+D_O_FCL_VIETNAM_RPM_REF_411 and D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427 now pass every layer. Noto Sans already contains U+1EA0–U+1EF9. fontkit was decomposing U+1ECB into U+0069 plus a combining dot with an empty ToUnicode entry, so the checker read "Kính đề nghi giao cho". Those code points are now embedded as the precomposed glyph. Text-ink is 0.3882 and 0.379, both under T = 0.40. They are not exceptions.
 
 ## Raster R1
 
-41 documents. Non-text is above 0.5% at 150 dpi. Masks and limits were not changed. For every differing non-text pixel, distance to the nearest text span box and to the nearest allowed image box:
+41 documents. Non-text is above 0.5% at 150 dpi. Masks and limits were not changed. Track A3 did not find one cause that covers all 41, so no raster limit moved and the 41 were not re-rendered.
+
+On the 10 worst, stripping text and images from both content streams still leaves a geometry-only mismatch above 0.5% (0.012 to 0.094). The text-only mismatch is the font raster. The top differing segments are strokes of width 0.5 or 1 pt, not filled rects converted to strokes. Spec line and rect coordinates are stored to 0.1 pt and colors as `#rrggbb`, not at full PDF precision. That rounding was left in place so the geometry check stays on the same numbers.
+
+18 of the 41 use a rotated page. Their stroke coordinates are in the unrotated media box while the rendered page uses the rotated size, so those strokes do not land on the reference rows. The other 23 R1 documents are not rotated, so rotation is not the cause for the whole class. For every differing non-text pixel, distance to the nearest text span box and to the nearest allowed image box:
 
 | Distance | Pixels |
 |---|---:|
@@ -68,6 +71,31 @@ Worst 10 by pixels over 8 px: GL_REPORT_VOUCHER_REPORT_FORMAT (196,521), OUTSTAN
 The other 31 R1 documents are in the histogram table. Several also have text-ink above T = 0.40 (container outturn 3.94, GL voucher 3.64, and the other rows in the after CSV whose `text_ink` column is above 0.40). Both limits would have to move for those to pass.
 
 FG_PROOF_OF_DELIVERY_RPM_REF_847 is in this R1 set and also fails static width and static position on Arabic labels (one label 94.3 vs 247.1 on the shipment-number line).
+
+## Track A4
+
+Page boxes now match the reference on all 391 documents: `/Rotate`, MediaBox, CropBox, and UserUnit. Before the renderer change, 146 documents differed (127 by 0.02 or 0.04 pt of MediaBox rounding, 18 by a missing `/Rotate` 90 and a swapped MediaBox, and `ADVANCE_SHIPPING_NOTE_FORMAT_1` by a CropBox equal to the MediaBox). No UserUnit differed.
+
+Line and rect coordinates and widths are stored to 0.0001 pt. Geometry colors are stored as `r,g,b` with 6 decimal places. The geometry check still uses 0.1 pt and does not round either side before the compare.
+
+The geometry-only raster strips text and images from both content streams and diffs at 150 dpi. It fails above 0.5% of page pixels. It does not change the masked raster rule. Ten documents pass the vector geometry check and fail this raster:
+
+- AIR_QUOTATION_REPORT_FORMAT
+- ADVANCE_SHIPPING_NOTE_FORMAT_1
+- OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS
+- TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT
+- DAILY_STATUS_REPORT_FORMAT_1
+- DAILY_STATUS_REPORT_FORMAT_2
+- STATEMENT_OF_ACCOUNTS_REPORT_FORMAT
+- STUFFING_REPORT_FORMAT
+- FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431
+- FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007
+
+The three that were previously clean are ADVANCE_SHIPPING_NOTE_FORMAT_1, FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431, and FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007. Their masked raster still passes.
+
+On the 23 non-rotated R1 documents, after the page-box and precision render and before the paint fixes, 22 still failed the geometry-only raster. Every top segment had the same coordinates on both sides. Twenty-one of those documents were filled rules stored as lines and drawn as strokes. The remaining pixels on SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT were a gray filled path (`0.917647`) drawn black, because path colors were parsed as hex. DELIVERY_ORDER_REPORT_FORMAT_13 then had a white rounded path painted over a gray bar that the reference paints later. Those three causes are general and are fixed: filled rules are filled, path colors use the stored components, and shapes are painted in content-stream order. Ten of the 23 are now clean. Seven of the 23 still fail the geometry-only raster; the remaining difference is one-pixel coverage of rules whose coordinates already match, which is not a further general fix. Segment list: `reports/output/track-a4/plain23/segments.json`.
+
+The 18 rotated documents still fail raster R1. Their page boxes match, vector geometry passes, and the geometry-only raster passes. GL_REPORT_VOUCHER_REPORT_FORMAT non-text moved from 0.0485 to 0.0191 and text-ink from 3.6388 to 0.5523. Both limits still fail. Nothing is accepted.
 
 ## Text-ink above T (raster R2)
 
