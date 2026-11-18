@@ -79,6 +79,55 @@ export function JobContainersPanel({
     refetch: refetchStatusCatalog,
   } = useContainerStatusCatalog();
   const [addStatusOpen, setAddStatusOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [singleFill, setSingleFill] = useState<ContainerFillInfo | null>(null);
+  const [fillEdit, setFillEdit] = useState<{
+    containerId: string;
+    cubic_capacity: string;
+    max_payload: string;
+    cbm: string;
+    gross_weight: string;
+  } | null>(null);
+  const [fillSaving, setFillSaving] = useState(false);
+  const [syncIncludeHouses, setSyncIncludeHouses] = useState(true);
+  const [syncSubJobOnly, setSyncSubJobOnly] = useState(false);
+  const [syncRollupHeader, setSyncRollupHeader] = useState(true);
+  const [containerTypeId, setContainerTypeId] = useState('');
+  const [containerNumber, setContainerNumber] = useState('');
+  const [sealNumber, setSealNumber] = useState('');
+  const [status, setStatus] = useState('EMPTY');
+  const [addCubicCapacity, setAddCubicCapacity] = useState('');
+  const [addMaxPayload, setAddMaxPayload] = useState('');
+  const [assignCargoId, setAssignCargoId] = useState('');
+  const [assignContainerId, setAssignContainerId] = useState('');
+  const [splitContainerId, setSplitContainerId] = useState('');
+  const [splitPortions, setSplitPortions] = useState<
+    { consignee_id: string; packages: string; gross_weight: string }[]
+  >([{ consignee_id: '', packages: '', gross_weight: '' }]);
+  const [editId, setEditId] = useState<string | null>(null);
+  const [editDraft, setEditDraft] = useState<{
+    container_number: string;
+    seal_number: string;
+    status: string;
+    tare_weight: string;
+    max_payload: string;
+    cubic_capacity: string;
+    gross_weight: string;
+    vgm_weight: string;
+    cbm: string;
+  }>({
+    container_number: '',
+    seal_number: '',
+    status: 'EMPTY',
+    tare_weight: '',
+    max_payload: '',
+    cubic_capacity: '',
+    gross_weight: '',
+    vgm_weight: '',
+    cbm: '',
+  });
+
   /** Full catalog + system seeds — custom codes must be selectable and saveable. */
   const statusOptions = useMemo(() => {
     const rows = statusCatalog.map((row) => ({
@@ -135,54 +184,6 @@ export function JobContainersPanel({
   const addValidation = useInlineValidation();
   const assignValidation = useInlineValidation();
   const splitValidation = useInlineValidation();
-  const [error, setError] = useState<string | null>(null);
-  const [msg, setMsg] = useState<string | null>(null);
-  const [singleFill, setSingleFill] = useState<ContainerFillInfo | null>(null);
-  const [fillEdit, setFillEdit] = useState<{
-    containerId: string;
-    cubic_capacity: string;
-    max_payload: string;
-    cbm: string;
-    gross_weight: string;
-  } | null>(null);
-  const [fillSaving, setFillSaving] = useState(false);
-  const [syncIncludeHouses, setSyncIncludeHouses] = useState(true);
-  const [syncSubJobOnly, setSyncSubJobOnly] = useState(false);
-  const [syncRollupHeader, setSyncRollupHeader] = useState(true);
-  const [containerTypeId, setContainerTypeId] = useState('');
-  const [containerNumber, setContainerNumber] = useState('');
-  const [sealNumber, setSealNumber] = useState('');
-  const [status, setStatus] = useState('EMPTY');
-  const [addCubicCapacity, setAddCubicCapacity] = useState('');
-  const [addMaxPayload, setAddMaxPayload] = useState('');
-  const [assignCargoId, setAssignCargoId] = useState('');
-  const [assignContainerId, setAssignContainerId] = useState('');
-  const [splitContainerId, setSplitContainerId] = useState('');
-  const [splitPortions, setSplitPortions] = useState<
-    { consignee_id: string; packages: string; gross_weight: string }[]
-  >([{ consignee_id: '', packages: '', gross_weight: '' }]);
-  const [editId, setEditId] = useState<string | null>(null);
-  const [editDraft, setEditDraft] = useState<{
-    container_number: string;
-    seal_number: string;
-    status: string;
-    tare_weight: string;
-    max_payload: string;
-    cubic_capacity: string;
-    gross_weight: string;
-    vgm_weight: string;
-    cbm: string;
-  }>({
-    container_number: '',
-    seal_number: '',
-    status: 'EMPTY',
-    tare_weight: '',
-    max_payload: '',
-    cubic_capacity: '',
-    gross_weight: '',
-    vgm_weight: '',
-    cbm: '',
-  });
 
   const fillByContainerId = useMemo(() => {
     const map = new Map<string, ContainerFillInfo>();

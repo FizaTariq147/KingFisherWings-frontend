@@ -19,18 +19,22 @@ function cleanLine(
   const drCr =
     line.dr_cr === 'DR' || line.dr_cr === 'CR' ? line.dr_cr : defaultDrCr;
   const ppCc = line.pp_cc === 'PP' || line.pp_cc === 'CC' ? line.pp_cc : undefined;
+  const quantity = Number(line.quantity ?? 1) || 1;
+  // Form Amount is unit rate; API `amount` is the extended line total.
+  const unitRate = Number(line.amount ?? 0) || 0;
+  const amount = Math.round(quantity * unitRate * 100) / 100;
   const out: JobInvoiceFormLineDto = {
     description: String(line.description ?? '').trim() || undefined,
     shipment_no: String(line.shipment_no ?? '').trim() || undefined,
     unit: String(line.unit ?? '').trim() || undefined,
-    quantity: Number(line.quantity ?? 1) || 1,
+    quantity,
     currency_code: String(line.currency_code ?? 'AED')
       .trim()
       .toUpperCase()
       .slice(0, 3) || 'AED',
     exchange_rate: Number(line.exchange_rate ?? 1) || 1,
     dr_cr: drCr,
-    amount: Number(line.amount ?? 0) || 0,
+    amount,
   };
   const jobChargeId = uuidOrUndef(line.job_charge_id);
   const chargeCodeId = uuidOrUndef(line.charge_code_id);
@@ -57,6 +61,10 @@ export function prepareJobInvoiceFormSave(
   const lines = (form.lines ?? [])
     .filter((l) => Number(l.amount) >= 0)
     .map((l) => cleanLine(l, kind));
+  const billFromLines =
+    Math.round(
+      lines.reduce((sum, l) => sum + (Number(l.amount) || 0), 0) * 100,
+    ) / 100;
 
   const dto: JobInvoiceFormSaveDto = {
     voucher_type:
@@ -65,10 +73,8 @@ export function prepareJobInvoiceFormSave(
     v_date: String(form.v_date ?? '').slice(0, 10) || undefined,
     gl_date: String(form.gl_date ?? '').slice(0, 10) || undefined,
     exchange_rate: Number(form.exchange_rate ?? 1) || 1,
-    bill_amount:
-      form.bill_amount != null
-        ? Number(form.bill_amount) || 0
-        : lines.reduce((sum, l) => sum + (Number(l.amount) || 0), 0),
+    // Always Σ(Qty × rate) after cleanLine expands amounts.
+    bill_amount: billFromLines,
     remarks: form.remarks != null ? String(form.remarks) : undefined,
     books: form.books != null ? String(form.books) : undefined,
     address: form.address != null ? String(form.address) : undefined,
