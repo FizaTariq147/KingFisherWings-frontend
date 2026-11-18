@@ -17,6 +17,10 @@ import { useInvoicePaymentProofs } from '@/features/payment-proofs/hooks/usePaym
 import { adjustInvoiceAmountsWithProofs } from '@/features/payment-proofs/utils/adjustInvoiceAmountsWithProofs';
 import { InvoiceOnlinePaymentsPanel } from '@/features/online-payments/components/InvoiceOnlinePaymentsPanel';
 import { OpsContinuumRail } from '@/features/ops-activity';
+import {
+  InvoiceConfirmModal,
+  type InvoiceConfirmKind,
+} from '../components/InvoiceConfirmModal';
 import { InvoiceEmailModal } from '../components/InvoiceEmailModal';
 import { InvoiceHistoryPanel } from '../components/InvoiceHistoryPanel';
 import { InvoiceLinesEditor } from '../components/InvoiceLinesEditor';
@@ -72,6 +76,7 @@ export default function InvoiceDetailPage() {
   const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
   const [pdfReadyUrl, setPdfReadyUrl] = useState<string | null>(null);
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
+  const [confirmKind, setConfirmKind] = useState<InvoiceConfirmKind | null>(null);
 
   const amounts = useMemo(
     () =>
@@ -279,10 +284,8 @@ export default function InvoiceDetailPage() {
       label: 'Generate PDF',
       onClick: () => {
         if (invoice.status === 'DRAFT') {
-          const ok = window.confirm(
-            'This invoice is still DRAFT. Some backends only generate PDFs after Post. Continue anyway?',
-          );
-          if (!ok) return;
+          setConfirmKind('draft-pdf');
+          return;
         }
         void openClientPdf(true);
       },
@@ -311,10 +314,7 @@ export default function InvoiceDetailPage() {
       ? [
           {
             label: 'Cancel',
-            onClick: () => {
-              if (!window.confirm('Cancel this invoice?')) return;
-              void run(() => actions.cancel.mutateAsync(), 'Invoice cancelled.');
-            },
+            onClick: () => setConfirmKind('cancel'),
             variant: 'danger' as const,
           },
         ]
@@ -323,18 +323,55 @@ export default function InvoiceDetailPage() {
       ? [
           {
             label: 'Delete',
-            onClick: () => {
-              if (!window.confirm('Delete this draft invoice?')) return;
-              void run(async () => {
-                await remove.mutateAsync(id);
-                navigate(INVOICE_ROUTE_PREFIX);
-              });
-            },
+            onClick: () => setConfirmKind('delete'),
             variant: 'danger' as const,
           },
         ]
       : []),
   ];
+
+  const closeConfirm = () => setConfirmKind(null);
+
+  const handleConfirm = () => {
+    if (confirmKind === 'draft-pdf') {
+      closeConfirm();
+      void openClientPdf(true);
+      return;
+    }
+    if (confirmKind === 'cancel') {
+      closeConfirm();
+      void run(() => actions.cancel.mutateAsync(), 'Invoice cancelled.');
+      return;
+    }
+    if (confirmKind === 'delete') {
+      closeConfirm();
+      void run(async () => {
+        await remove.mutateAsync(id);
+        navigate(INVOICE_ROUTE_PREFIX);
+      });
+    }
+  };
+
+  const handlePostThenGenerate = () => {
+    closeConfirm();
+    void (async () => {
+      setActionError(null);
+      setActionMessage(null);
+      setPending(true);
+      try {
+        await actions.post.mutateAsync();
+        setActionMessage(
+          'Invoice posted. It will appear on the customer portal for this party.',
+        );
+        await refetch();
+        setPending(false);
+        await openClientPdf(true);
+      } catch (err) {
+        setActionError(getErrorMessage(err));
+        setPending(false);
+      }
+    })();
+  };
 
   return (
     <>
@@ -565,6 +602,19 @@ export default function InvoiceDetailPage() {
         fileName={pdfFileName}
         skipBranding
         description="Your invoice PDF was created successfully."
+      />
+
+      <InvoiceConfirmModal
+        open={confirmKind != null}
+        kind={confirmKind ?? 'draft-pdf'}
+        invoiceLabel={invoiceNumber}
+        isPending={pending}
+        canPost={canPost}
+        onClose={closeConfirm}
+        onConfirm={handleConfirm}
+        onPostThenGenerate={
+          confirmKind === 'draft-pdf' ? handlePostThenGenerate : undefined
+        }
       />
     </>
   );
