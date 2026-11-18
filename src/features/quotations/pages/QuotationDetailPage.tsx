@@ -75,6 +75,7 @@ import {
   isAwaitingCustomerDecision,
   resolveCustomerFacingQuoteStatus,
 } from '../utils/customerQuoteDecision';
+import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
 import { ensureQuotationEmailPdf } from '../utils/ensureQuotationEmailPdf';
 import { quotationDisplayNumber } from '../utils/normalizeQuotation';
 import { recalculateQuotationTotals } from '../utils/recalculateQuotationTotals';
@@ -145,6 +146,7 @@ export default function QuotationDetailPage() {
   const { data: quotation, isLoading, isError, error, refetch } = useQuotation(id);
   const { data: revisions = [] } = useQuotationRevisions(id, Boolean(id));
   const { data: companies = [] } = useTenantCompanies(Boolean(id));
+  const { data: orgProfile } = useOrganizationProfile();
   const actions = useQuotationActions(id);
   const shipmentPerms = useShipmentsPermissions();
   const remove = useDeleteQuotation();
@@ -1530,6 +1532,7 @@ export default function QuotationDetailPage() {
               quotation,
               mode: dto.pdf_mode === 'INTERNAL' ? 'INTERNAL' : 'CUSTOMER',
               companyName: companyMatch?.name,
+              orgProfile,
             });
             // SMTP: attach client KingFisher PDF (multipart / pdf_base64 per live OpenAPI).
             const result = await actions.sendEmail.mutateAsync({

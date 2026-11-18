@@ -7,6 +7,7 @@ import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { useJob } from '@/features/jobs/hooks/useJobs';
 import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { isUuid } from '@/lib/isUuid';
+import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
 import { useParty } from '@/features/parties/hooks/useParties';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
@@ -32,6 +33,7 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { invoiceToPdfModel } from '../utils/invoiceToPdfModel';
 import { loadInvoiceJobForPdf } from '../utils/loadInvoiceJobForPdf';
 import { invoiceDisplayNumber } from '../utils/normalizeInvoice';
+import { resolveInvoicePdfCompany } from '../utils/resolveInvoicePdfCompany';
 import { buildInvoiceFresaCatalogPath } from '@/features/reports/constants/fresaPdfParity.constants';
 import { buildCatalogHref } from '@/features/reports/utils/moduleCatalogFamily';
 
@@ -62,6 +64,7 @@ export default function InvoiceDetailPage() {
   const { data: party } = useParty(invoice?.party_id || '');
   const { data: job } = useJob(invoice?.job_id || '');
   const { data: companies = [] } = useTenantCompanies(true);
+  const { data: orgProfile } = useOrganizationProfile();
   const [pending, setPending] = useState(false);
   const [actionError, setActionError] = useState<string | null>(null);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
@@ -156,12 +159,16 @@ export default function InvoiceDetailPage() {
 
   const buildClientPdf = async () => {
     // Always reload job + containers + port/vessel labels so SHIPMENT DETAILS is dynamic.
+    // Default face = KingFisher TAX INVOICE / STATEMENT OF CHARGES (dynamic logo + org + lines).
     const pdfJob = (await loadInvoiceJobForPdf(invoice.job_id)) || job || null;
     return generateInvoicePdf(
       invoiceToPdfModel(invoice, {
         party,
         job: pdfJob,
-        company: { name: companyMatch?.name || 'KINGFISHER WINGS GROUP' },
+        company: resolveInvoicePdfCompany({
+          profile: orgProfile,
+          companyName: companyMatch?.name,
+        }),
       }),
     );
   };
@@ -522,6 +529,7 @@ export default function InvoiceDetailPage() {
               party,
               job,
               companyName: companyMatch?.name,
+              orgProfile,
             });
             // SMTP: attach client KingFisher PDF (multipart / pdf_base64 per live OpenAPI).
             await actions.send.mutateAsync({

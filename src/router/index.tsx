@@ -569,8 +569,11 @@ export const router = createBrowserRouter([
                   'menu_jobs_air_export',
                   'menu_jobs_sea_export',
                   'menu_jobs_sea_import',
+                  // Transport handoff assignees open linked air/sea/road jobs without ops menu grants.
+                  'jobs.transport.handoff',
+                  'transport.handoff',
                 ]}
-                requireEnabledModule="operations"
+                requireEnabledModuleAny={['operations', 'transport']}
               />
             ),
             children: [

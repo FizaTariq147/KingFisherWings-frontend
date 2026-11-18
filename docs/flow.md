@@ -2,7 +2,20 @@
 
 ## Transport-only handoff (`jobs.transport.handoff`)
 
-Grant **`jobs.transport.handoff`** (+ `jobs.view` / `jobs.update`) **without** `operations_*.see` / sea-fcl matrix grants. Ops job-type sees flood the list; handoff-only users must not receive them.
+### Required accesses (road / sea / air — same pack)
+
+Grant these on the transporter role. **Do not** grant air/sea/road ops job-type sees or `menu_jobs_*` for handoff-only users.
+
+| Key | Why |
+|-----|-----|
+| `jobs.transport.handoff` (alias `transport.handoff`) | Assignee queue + handoff-limited UI |
+| `jobs.view` | Open assigned job detail (any `job_type`) |
+| `jobs.update` | Containers / trucker / port token / status / docs |
+| Tenant module `transport` (and/or `operations`) | FE route gate for `/jobs/*` |
+
+**Not required** for Pass-to-Transport handoff: `operations_air_export.see`, `operations_sea_*.see`, `operations_road_freight.see`, or `menu_jobs_air_export` / sea / road. Parent job type (AIR_EXPORT, SEA_*, ROAD_FREIGHT) does not change the permission pack — BE opens by `ops_user_id = me`.
+
+If Open job handoff returns `You do not have access to AIR_EXPORT jobs` (or SEA/ROAD), the role is missing the handoff pack above **or** BE is still gating GET `/jobs/:id` by job_type instead of assignee.
 
 ### Visibility
 
@@ -10,7 +23,7 @@ Grant **`jobs.transport.handoff`** (+ `jobs.view` / `jobs.update`) **without** `
 |--------|------|
 | Job list / dashboard counts | Assignee only — `Job.ops_user_id = current user`. Not the whole TRANSPORT org-department queue, and not ops `job_type` grants. |
 | Job detail | `view_mode: handoff_limited` (forced for handoff-only assignees). Single **Handoff** tab. |
-| Open by URL | Assignee (or admin). Handoff-only users cannot open a Transport-dept job assigned to someone else. |
+| Open by URL | Assignee (or admin). Handoff-only users cannot open a Transport-dept job assigned to someone else. FE deep-links `/jobs/:id?tab=handoff` from Transport requests. |
 
 ### What they can do (handoff tab)
 
