@@ -77,11 +77,14 @@ export function LogoFileField({
       const message =
         err instanceof Error ? err.message : 'Logo upload failed. You can still paste a logo URL.';
       setLocalError(message);
-      // Keep UX unblocked: local preview so user sees the choice.
-      try {
-        onChange(URL.createObjectURL(file));
-      } catch {
-        /* ignore */
+      // Do not write blob: URLs into logo_url — they 401 on save and are not persistable.
+      // url-only mode still allows a local preview until a hosted URL is pasted.
+      if (uploadMode === 'url-only') {
+        try {
+          onChange(URL.createObjectURL(file));
+        } catch {
+          /* ignore */
+        }
       }
     } finally {
       setUploading(false);
