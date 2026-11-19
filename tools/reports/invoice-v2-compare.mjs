@@ -94,6 +94,7 @@ for (const row of live.invoices) {
   const filled = fillInvoiceSpans(spec, record);
   const v2Path = path.join(dir, 'v2', `${row.id}.pdf`);
   await renderSpec(code, {
+    spec,
     values: filled.values,
     organization: {
       name: organization.name,
@@ -103,6 +104,7 @@ for (const row of live.invoices) {
       website: organization.website,
     },
     outputPath: v2Path,
+    quietArtifacts: true,
   });
   const classicPath = path.join(dir, 'classic', `${row.id}.pdf`);
   const classicPng = raster(classicPath, path.join(compareDir, `.${row.id}-classic`));

@@ -7,6 +7,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { layoutRepeatingCharges } from './invoice-rows.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -153,6 +154,9 @@ export function fillInvoiceSpans(spec, record) {
   const tax = classicMoney(invoice.tax_total ?? 0);
   const total = byPath['invoice.total'];
   let taxPlaced = false;
+  const laid = layoutRepeatingCharges(spec, record);
+  Object.assign(values, laid.values);
+  blanks.push(...laid.blanks);
   const pages = spec.pages?.length ? spec.pages : [spec];
 
   for (const page of pages) {
@@ -171,33 +175,35 @@ export function fillInvoiceSpans(spec, record) {
       return !/\b(sgst|cgst|igst)\b/.test(keys);
     }).sort((a, b) => b.y - a.y);
 
-    chargeRows.forEach((row, index) => {
-      const right = row.spans.slice().sort((a, b) => b.x - a.x)[0];
-      const line = lines[index];
-      if (!line) {
-        blanks.push({ span: right.id, label: 'line amount', binding: 'invoice.lines', why: 'empty in the record' });
-        return;
-      }
-      values[right.id] = classicMoney(lineAmount(line));
-      const caption = nearestLabel(right, spans);
-      if (caption?.role === 'static' && String(line.description || line.charge_code || '').trim()) {
-        values[caption.id] = String(line.description || line.charge_code);
-      }
-      for (const span of row.spans) {
-        if (span.id === right.id) continue;
-        values[span.id] = '';
-        const side = nearestLabel(span, spans);
-        blanks.push({ span: span.id, label: side?.text || 'charge column', binding: '', why: 'no source' });
-      }
-    });
-    if (lines.length > chargeRows.length) {
-      for (let index = chargeRows.length; index < lines.length; index += 1) {
-        blanks.push({
-          span: `line-${index + 1}`,
-          label: lines[index].description || 'line amount',
-          binding: 'invoice.lines',
-          why: 'no source',
-        });
+    if (!laid.values || !Object.keys(laid.values).length) {
+      chargeRows.forEach((row, index) => {
+        const right = row.spans.slice().sort((a, b) => b.x - a.x)[0];
+        const line = lines[index];
+        if (!line) {
+          blanks.push({ span: right.id, label: 'line amount', binding: 'invoice.lines', why: 'empty in the record' });
+          return;
+        }
+        values[right.id] = classicMoney(lineAmount(line));
+        const caption = nearestLabel(right, spans);
+        if (caption?.role === 'static' && String(line.description || line.charge_code || '').trim()) {
+          values[caption.id] = String(line.description || line.charge_code);
+        }
+        for (const span of row.spans) {
+          if (span.id === right.id) continue;
+          values[span.id] = '';
+          const side = nearestLabel(span, spans);
+          blanks.push({ span: span.id, label: side?.text || 'charge column', binding: '', why: 'no source' });
+        }
+      });
+      if (lines.length > chargeRows.length) {
+        for (let index = chargeRows.length; index < lines.length; index += 1) {
+          blanks.push({
+            span: `line-${index + 1}`,
+            label: lines[index].description || 'line amount',
+            binding: 'invoice.lines',
+            why: 'no source',
+          });
+        }
       }
     }
     const totalRows = rows.filter((row) => {
