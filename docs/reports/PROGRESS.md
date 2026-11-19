@@ -111,6 +111,7 @@ Status: 0 accepted, 6 in progress, 846 reference only.
 - 545 registered codes had no phase-0 filename match. 135 pinned files had no registered code. The code map and the triage CSVs below are that split. `ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1` is a proposed code for the Location Wise- 1 file. It is not in the 852-code registry.
 - The 402 PDFs and 49 Excel files were committed in `ce4a25f0` as normal git objects, not Git LFS. This phase removes the Fresa Gold brochure from that pin. PNGs stay gitignored.
 - Catalogue gating stays soft. Hard gating is Phase 7 and was not implemented.
+- `defaultPdfStyle` is not a field on `OrganizationProfile` or `Company`, and `reports.engine` is not a stored setting. The four Generate PDF screens call `generateInvoicePdf` (quotation and credit/debit notes through their mappers). Treating a missing value as classic matches current behavior. A stored per-company style needs a backend column that this repo cannot name. Do not invent the column.
 
 ## Verification log
 
@@ -728,5 +729,21 @@ Items 1-8 are unchanged. Items 9 and 10 are new:
 
 9. The vector geometry check compares in displayed (rotated) coordinates. Values are not rounded to 0.1 pt before the compare. The tolerance stays 0.1 pt.
 10. An additive geometry-only raster strips text and images from both content streams, diffs at 150 dpi, and fails above 0.5% of page pixels. It does not change the masked raster pass.
+
+## Fidelity freeze
+
+No checker change. No threshold, mask, status, or `reports/signoff.csv` change. Counts stay at the Track A4 table above: 399 documents, clean 343, R1 31, R2 7, static position 11, static width 13, dynamic width 4, dynamic position 1, geometry-only raster 10.
+
+`reports/exceptions.md` classifies every remaining failure. `reports/full-run-summary.md` has the same counts by class and by cause. Review sheets were regenerated with `node tools/reports/review-pack.mjs`. How to run the pool, read a sheet, and sign off is `docs/reports/HANDOFF.md`.
+
+Classic Generate PDF is frozen. `docs/reports/CLASSIC_FILES.md` lists the generator and the mappers the four screens use. `npm run report:guard-classic` hashes those files and compares 150 dpi rasters of one quotation, invoice, credit note, and debit note with `reports/classic-snapshots/`. The guard is in `.github/workflows/report-pilots.yml`.
+
+Guard at the start of this part, after the baseline commit `a8e693c5`, and again after the classification and review pack:
+
+```
+{"ok":true,"files":6,"pages":{"invoice":1,"quotation":1,"credit-note":1,"debit-note":1}}
+```
+
+Review pack: `{"documents":391,"sheets":391}`.
 
 

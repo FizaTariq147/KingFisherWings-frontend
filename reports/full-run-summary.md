@@ -1,86 +1,48 @@
-# Full-run summary (Round 8)
+# Full-run summary
 
-Nothing is accepted. Thresholds are unchanged except for one new fail rule: raster fails when the masked fraction exceeds 25%. Geometry 0.1 pt, text 0.5 pt, and raster 0.5% are unchanged.
+Nothing is accepted. Thresholds, masks, and status values are unchanged. Source: `reports/full-run-track-a-last.csv` (Track A4). Excel and the two scanned files stay out of scope.
 
-Source: `reports/full-run.csv` after remesure. Excel and the two scanned files stay out of scope.
+399 document rows. 391 unique codes. Duplicate census rows: `FG_DELIVERY_ORDER_FOR_TRUCKER` and `DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT`, four rows each.
 
-## Counts by class
+## Counts by checker class
 
-| Class | Documents | Instances |
-|---|---|---|
-| raster | 208 | 208 |
-| static position or string | 15 | 318 |
-| dynamic position or string | 9 | 11 |
-| geometry mismatch | 3 | 3 |
+| Class | Rows |
+|---|---:|
+| Clean | 343 |
+| Raster R1 | 31 |
+| Raster R2 | 7 |
+| Static width | 13 |
+| Static position or string | 11 |
+| Dynamic width | 4 |
+| Dynamic position or string | 1 |
+| Geometry-only raster | 10 |
 
-Pagination failures from Round 7 are gone after checker fixes (the four references failed their own rules).
+A row can carry more than one class. Page failures: 0. Geometry mismatches: 0. Pagination failures: 0.
 
-Verified: 399. Clean on all layers: **188**.
+Before this run (Track A3, `reports/full-run-track-a-before-a4.csv`): 399 documents, clean 336, R1 41, R2 7, static position 11. Static width 13, dynamic width 4, and dynamic position 1 were already at those counts. Geometry-only raster was not measured.
 
-| Layer | Pass | Fail |
-|---|---|---|
-| page | 399 | 0 |
-| geometry | 396 | 3 |
-| static | 384 | 15 |
-| dynamic | 390 | 9 |
-| raster | 191 | 208 |
+No document gained raster R1. No document that passed an existing layer failed that layer. Three previously clean documents fail only the geometry-only raster.
 
-Pagination: 79 multi-page pass, 320 single-page.
+## Counts by cause
 
-## Raster split
+These overlap. The list is `reports/exceptions.md`.
 
-Of the raster failures with metrics:
+| Cause | Documents |
+|---|---:|
+| Arabic joins | 13 |
+| Arabic-comma address widths | 5 |
+| Rule antialiasing with matching coordinates | 10 |
+| Text-ink above T | 7 |
+| Form background overlay | 18 |
+| Other | 24 |
 
-| Bucket | Meaning | Count |
-|---|---|---|
-| R1 | non-text ratio > 0.5% | 48 |
-| R2 | non-text ≤ 0.5% (text-driven; T unset) | 157 |
+The 18 form-background documents pass every layer. The pass uses a compare-time copy of the reference form. They are not in the 56 failing rows.
 
-## Masked fraction
+Of the 10 geometry-only failures, the masked raster still passes for `ADVANCE_SHIPPING_NOTE_FORMAT_1`, `FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431`, and `FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007`. The other seven also fail raster R1.
 
-Eight documents exceed 15% (all also exceed 25% and fail raster):
+## Checker changes
 
-| Code | Masked fraction |
-|---|---|
-| HBL_DRAFT_REPORT_FORMAT_127 | 0.8887 |
-| HBL_DRAFT_REPORT_FORMAT_130 | 0.8887 |
-| HBL_DRAFT_REPORT_FORMAT_118 | 0.8791 |
-| HBL_DRAFT_REPORT_FORMAT_132 | 0.8685 |
-| FG_HBL_FORMAT10_RPM_REF_472 | 0.8680 |
-| HBL_DRAFT_REPORT_FORMAT_122 | 0.8643 |
-| MAWB_DRAFT_REPORT_FORMAT | 0.8402 |
-| HBL_DRAFT_REPORT_FORMAT_129 | 0.7798 |
+Items 1–8 were already shipped. Items 9 and 10 shipped in Track A4 and were not changed for this summary:
 
-`HBL_DRAFT_REPORT_FORMAT_122`: the logo slot is a near-full-page form background image (554×780.1 pt) also classed as decorative Fresa branding. That slot is applied on every page, ~5.64M masked pixels. Output draws nothing there.
-
-## 20 slowest or riskiest causes
-
-1. Near-full-page images taken as the logo slot (masked fraction > 25%).
-2. Tall left-edge “decorative branding” strips not drawn (R1 dominant).
-3. Poppler substituting Helvetica for non-embedded ArialUnicodeMS.
-4. Embedded Arabic CID ArialUnicodeMS drawn as Arimo without Arabic outlines.
-5. Arabic presentation-form strings failing position/string checks.
-6. Dynamic addresses containing Arabic comma `،` failing position/string.
-7. Near-white 2 pt filled rects missing on round-trip (`#fbfbfb` / `#f9f9f9`).
-8. Short projecting-cap rules missing (Advance Shipping Note).
-9. Render-mode 2 (fill+stroke) titles with high text blur.
-10. High text-ink (>1) where differing pixels exceed reference ink.
-11. Non-text vector mismatches from undrawn form artwork.
-12. Color-filled backgrounds classified as “other” in heatmaps.
-13. Branding-mask pixel counts dominated by mis-slotted form images.
-14. Default overflow mode `clip` cutting long live values.
-15. Number fields shrunk below 4 pt under overflow stress.
-16. Wrap hitting maxLines on HBL Draft 15 under overflow.
-17. Static Arabic bilingual labels (15 docs / 318 spans).
-18. Geometry hairlines and micro-fills (3 docs).
-19. Unmasked non-letterhead images still compared on the full page.
-20. Single-page pagination invariants still false for many forms (not a failure class).
-
-## Artifacts
-
-- `reports/full-run.csv` — masked_fraction column added
-- `reports/rehearsal-raster.csv` — masked_fraction column added
-- `reports/output/round8/r1/` — 10 worst R1 heatmaps
-- `reports/output/round8/calibration/` — 20 side-by-side crops
-- `reports/output/round8/live/` — overflow renders
-- `reports/output/round8/arabic.json` — Arabic font report
+9. Vector geometry compares in displayed coordinates, unrounded, tolerance 0.1 pt.
+10. Additive geometry-only raster at 150 dpi, fail above 0.5% of page pixels. The masked raster rule is unchanged.
