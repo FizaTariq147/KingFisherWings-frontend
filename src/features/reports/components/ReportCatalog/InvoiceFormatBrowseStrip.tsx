@@ -1,5 +1,6 @@
 import { listInvoiceFormatPreviews } from '../../data/invoiceFormatPreviews';
-import { invoiceV2BadgeText, invoiceV2Rank } from '../../engine/invoiceV2Codes';
+import { invoiceV2BadgeText } from '../../engine/invoiceV2Codes';
+import { invoiceV2ListRank, invoiceV2ApplicabilityHint } from '../../engine/invoiceV2Applicability';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
@@ -11,6 +12,7 @@ type InvoiceFormatBrowseStripProps = {
   visible: boolean;
   searchQuery?: string;
   allowedCodes?: ReadonlySet<string> | null;
+  invoiceCurrency?: string | null;
 };
 
 /** Invoice Formats — https://fresatechnologies.com/sample-report-formats/ */
@@ -20,12 +22,13 @@ export function InvoiceFormatBrowseStrip({
   visible,
   searchQuery = '',
   allowedCodes = null,
+  invoiceCurrency = null,
 }: InvoiceFormatBrowseStripProps) {
   if (!visible) return null;
 
   const all = listInvoiceFormatPreviews()
     .slice()
-    .sort((a, b) => invoiceV2Rank(a.code) - invoiceV2Rank(b.code) || a.formatNumber - b.formatNumber);
+    .sort((a, b) => invoiceV2ListRank(a.code, invoiceCurrency) - invoiceV2ListRank(b.code, invoiceCurrency) || a.formatNumber - b.formatNumber);
   const { items, scopedTotal, filterActive } = filterCatalogStripRows(all, {
     searchQuery,
     allowedCodes,
@@ -57,7 +60,12 @@ export function InvoiceFormatBrowseStrip({
           badge={`#${row.formatNumber}`}
           name={row.name}
           status={resolveCatalogFormatStatus(row.code)}
-          sharedHint={invoiceV2Rank(row.code) === 0 ? invoiceV2BadgeText(reportConformanceStatus(row.code)) : null}
+          sharedHint={
+            [
+              invoiceV2ListRank(row.code, invoiceCurrency) < 2 ? invoiceV2BadgeText(reportConformanceStatus(row.code)) : null,
+              invoiceV2ApplicabilityHint(row.code, invoiceCurrency),
+            ].filter(Boolean).join(' · ') || null
+          }
           onClick={() => onSelect(row.code)}
         />
       ))}

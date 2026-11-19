@@ -27,6 +27,8 @@ import { isClientLayoutFallbackEnabled } from '../utils/clientLayoutFallback';
 import { hasCatalogLayoutPdf } from '../utils/generateCatalogLayoutPdf';
 import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
 import { FresaSamplePageTable } from '../components/ReportCatalog/FresaSamplePageTable';
+import { invoiceService } from '@/features/invoices/services/invoice.service';
+import { isUuid } from '@/lib/isUuid';
 import {
   FRESA_PAGE_COLUMNS,
   fresaColumnForFamily,
@@ -177,6 +179,22 @@ export default function ReportCatalogPage() {
   const jobId = searchParams.get('job_id') || undefined;
   const quotationId = searchParams.get('quotation_id') || undefined;
   const invoiceId = searchParams.get('invoice_id') || undefined;
+  const [invoiceCurrency, setInvoiceCurrency] = useState<string | null>(null);
+  useEffect(() => {
+    if (!invoiceId || !isUuid(invoiceId)) {
+      setInvoiceCurrency(null);
+      return;
+    }
+    let cancelled = false;
+    invoiceService.getById(invoiceId).then((invoice) => {
+      if (!cancelled) setInvoiceCurrency(invoice.currency_code || null);
+    }).catch(() => {
+      if (!cancelled) setInvoiceCurrency(null);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [invoiceId]);
   const partyId = searchParams.get('party_id') || undefined;
   const shipmentId = searchParams.get('shipment_id') || undefined;
   const selectedCode = (searchParams.get('code') || '').trim();
@@ -1354,6 +1372,7 @@ export default function ReportCatalogPage() {
           loading={listLoading}
           emptyHint="No reports match these filters."
           focusColumn={fresaFocusColumn}
+          invoiceCurrency={invoiceCurrency}
         />
       ) : (
         <>
@@ -1363,6 +1382,7 @@ export default function ReportCatalogPage() {
             onSelect={selectInvoiceFormatCode}
             searchQuery={searchQuery}
             allowedCodes={allowedCodes}
+            invoiceCurrency={invoiceCurrency}
           />
 
           <AccountsFormatBrowseStrip

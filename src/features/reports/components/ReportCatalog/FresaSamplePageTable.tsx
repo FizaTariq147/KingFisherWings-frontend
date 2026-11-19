@@ -5,7 +5,7 @@ import {
   type FresaPageColumnId,
 } from '../../constants/fresaPageColumns';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
-import { invoiceV2Rank } from '../../engine/invoiceV2Codes';
+import { invoiceV2ListRank, invoiceV2ApplicabilityHint } from '../../engine/invoiceV2Applicability';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { FormatStatusBadge } from './FormatStatusBadge';
@@ -14,8 +14,8 @@ import {
   reportConformanceStatus,
 } from '../../utils/reportConformanceStatus';
 
-function compareByName(a: ReportTemplate, b: ReportTemplate): number {
-  const rank = invoiceV2Rank(a.code) - invoiceV2Rank(b.code);
+function compareByName(a: ReportTemplate, b: ReportTemplate, currency?: string | null): number {
+  const rank = invoiceV2ListRank(a.code, currency) - invoiceV2ListRank(b.code, currency);
   if (rank !== 0) return rank;
   const na = parseInvoiceFormatNumber(a.code);
   const nb = parseInvoiceFormatNumber(b.code);
@@ -27,6 +27,7 @@ function compareByName(a: ReportTemplate, b: ReportTemplate): number {
 
 function groupByFresaColumn(
   items: ReportTemplate[],
+  currency?: string | null,
 ): Record<FresaPageColumnId, ReportTemplate[]> {
   const map: Record<FresaPageColumnId, ReportTemplate[]> = {
     sea: [],
@@ -38,7 +39,7 @@ function groupByFresaColumn(
     map[fresaColumnForFamily(t.family)].push(t);
   }
   for (const col of FRESA_PAGE_COLUMNS) {
-    map[col.id].sort(compareByName);
+    map[col.id].sort((a, b) => compareByName(a, b, currency));
   }
   return map;
 }
@@ -51,6 +52,7 @@ type FresaSamplePageTableProps = {
   emptyHint?: string;
   /** Highlight a single Fresa column (from family filter). */
   focusColumn?: FresaPageColumnId | null;
+  invoiceCurrency?: string | null;
 };
 
 /**
@@ -63,8 +65,9 @@ export function FresaSamplePageTable({
   loading,
   emptyHint,
   focusColumn = null,
+  invoiceCurrency = null,
 }: FresaSamplePageTableProps) {
-  const columns = groupByFresaColumn(items);
+  const columns = groupByFresaColumn(items, invoiceCurrency);
   const visibleCols = focusColumn
     ? FRESA_PAGE_COLUMNS.filter((c) => c.id === focusColumn)
     : FRESA_PAGE_COLUMNS;
@@ -114,6 +117,7 @@ export function FresaSamplePageTable({
                     index={index}
                     active={selectedCode === t.code}
                     onSelect={onSelect}
+                    invoiceCurrency={invoiceCurrency}
                   />
                 </li>
               ))}
@@ -170,6 +174,7 @@ export function FresaSamplePageTable({
                           index={rowIndex}
                           active={selectedCode === t.code}
                           onSelect={onSelect}
+                          invoiceCurrency={invoiceCurrency}
                           compact
                         />
                       ) : (
@@ -192,16 +197,19 @@ function FormatLink({
   index,
   active,
   onSelect,
+  invoiceCurrency = null,
   compact = false,
 }: {
   template: ReportTemplate;
   index: number;
   active: boolean;
   onSelect: (template: ReportTemplate) => void;
+  invoiceCurrency?: string | null;
   compact?: boolean;
 }) {
   const formatNo = parseInvoiceFormatNumber(template.code);
   const sharedHint = catalogSharedLayoutHint(template.code);
+  const applicability = invoiceV2ApplicabilityHint(template.code, invoiceCurrency);
   const status = resolveCatalogFormatStatus(template.code);
   return (
     <button
@@ -229,6 +237,9 @@ function FormatLink({
         {reportConformanceLabel(reportConformanceStatus(template.code))}
         {reportConformanceStatus(template.code) === 'accepted' ? '' : ' · approximate, not final'}
       </span>
+      {applicability ? (
+        <span className="mt-0.5 block text-[9px] font-semibold text-amber-800">{applicability}</span>
+      ) : null}
       {sharedHint ? (
         <span className="mt-0.5 block text-[9px] font-medium text-amber-800">{sharedHint}</span>
       ) : null}
