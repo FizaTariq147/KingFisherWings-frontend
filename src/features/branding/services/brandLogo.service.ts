@@ -1,5 +1,7 @@
 import { axiosInstance } from '@/lib/axios';
 import { superAdminApiClient } from '@/lib/superAdminApiClient';
+import { cacheOrganizationLogoFile } from '@/features/organization/utils/orgLogoCache';
+import { useAuthStore } from '@/store/authStore';
 import { BRAND_LOGO_API } from '../api/brandLogo.api';
 import { BRAND_LOGO_ACCEPT, BRAND_LOGO_MAX_BYTES } from '../constants/brandLogo.constants';
 import { normalizeBrandLogoForUpload } from '../utils/normalizeBrandLogoForUpload';
@@ -90,6 +92,11 @@ export const brandLogoService = {
     const err = validateBrandLogoFile(file);
     if (err) throw new Error(err);
     const normalized = await normalizeBrandLogoForUpload(file);
+    // Cache PNG locally so invoice/quotation PDFs embed this logo even if CDN/files fetch fails.
+    await cacheOrganizationLogoFile(
+      normalized,
+      useAuthStore.getState().user?.tenantId,
+    );
     return postLogo(BRAND_LOGO_API.organizationLogo, normalized, 'staff');
   },
 
