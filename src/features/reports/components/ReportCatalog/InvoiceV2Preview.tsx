@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { PdfViewerModal } from '@/features/files/components/PdfViewerModal';
 import { usePdfViewer } from '@/features/files/hooks/usePdfViewer';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
+import { fetchOrganizationLogoBytes } from '@/features/organization/utils/embedOrganizationPdfLogo';
 import { jobService } from '@/features/jobs/services/job.service';
 import { organizationService } from '@/features/organization/services/organization.service';
 import { partyService } from '@/features/parties/services/party.service';
@@ -41,7 +42,18 @@ export function InvoiceV2Preview({ code, invoiceId }: Props) {
           invoice.party_id && isUuid(invoice.party_id) ? partyService.getById(invoice.party_id).catch(() => null) : null,
           organizationService.getProfile().catch(() => null),
         ]);
-        const blob = await renderInvoiceV2InBrowser({ code, invoice, job, party, organization });
+        const profile = organization as { logo_url?: string; logoUrl?: string } | null;
+        const logoBytes = await fetchOrganizationLogoBytes(profile?.logo_url || profile?.logoUrl || null);
+        let logoBase64: string | undefined;
+        if (logoBytes) {
+          const view = new Uint8Array(logoBytes);
+          let binary = '';
+          for (let index = 0; index < view.length; index += 0x8000) {
+            binary += String.fromCharCode(...view.subarray(index, index + 0x8000));
+          }
+          logoBase64 = btoa(binary);
+        }
+        const blob = await renderInvoiceV2InBrowser({ code, invoice, job, party, organization, logoBase64 });
         if (cancelled) return;
         viewer.showBlob(blob, { fileName: `${code}.pdf`, title: code });
       } catch {

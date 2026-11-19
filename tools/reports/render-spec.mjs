@@ -567,14 +567,19 @@ export async function renderSpec(code, options = {}) {
     for (const image of source.images || []) {
       if (options.values && (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded)) continue;
       if (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded) drawBarcode(page, image);
-      if (options.logoPng && image.proposedClass === 'logo' && fs.existsSync(options.logoPng)) {
-        const png = await doc.embedPng(fs.readFileSync(options.logoPng));
-        page.drawImage(png, {
-          x: image.x,
-          y: image.y,
-          width: image.width || png.width,
-          height: image.height || png.height,
-        });
+      if (image.proposedClass === 'logo' && (options.logoBytes || (options.logoPng && fs.existsSync(options.logoPng)))) {
+        const bytes = options.logoBytes || fs.readFileSync(options.logoPng);
+        try {
+          const embedded = bytes[0] === 0xff && bytes[1] === 0xd8 ? await doc.embedJpg(bytes) : await doc.embedPng(bytes);
+          page.drawImage(embedded, {
+            x: image.x,
+            y: image.y,
+            width: image.width || embedded.width,
+            height: image.height || embedded.height,
+          });
+        } catch {
+          // An unreadable logo leaves the slot empty.
+        }
       }
     }
     const paintSpans = [

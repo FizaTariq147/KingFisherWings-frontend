@@ -50,6 +50,7 @@ export async function renderInvoiceV2InBrowser(body: {
   job?: unknown;
   party?: unknown;
   organization?: unknown;
+  logoBase64?: string;
 }): Promise<Blob> {
   const response = await fetch('/__reports/invoice-v2', {
     method: 'POST',

@@ -50,9 +50,14 @@ export function invoiceV2Plugin() {
           const filled = fillInvoiceSpans(spec, body);
           const org = body.organization || {};
           const outPath = path.join(os.tmpdir(), `invoice-v2-${Date.now()}.pdf`);
+          let logoBytes = null;
+          if (body.logoBase64) {
+            logoBytes = Buffer.from(String(body.logoBase64), 'base64');
+          }
           await renderSpec(code, {
             spec,
             values: filled.values,
+            logoBytes,
             organization: {
               name: org.display_name || org.name || '',
               address: [org.address, org.city, org.country_code].filter(Boolean).join(', '),
