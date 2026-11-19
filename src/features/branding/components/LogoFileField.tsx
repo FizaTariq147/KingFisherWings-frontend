@@ -160,8 +160,8 @@ export function LogoFileField({
         </p>
       ) : (
         <p className="text-[11px] text-[var(--color-neutral-500)]">
-          Prefer PNG or JPG for PDFs (WebP/SVG are converted). Save the organization
-          profile after uploading. Empty uses the default KingFisher logo.
+          PNG, JPG, and WebP are supported (SVG too). WebP logos are embedded on
+          PDFs automatically. Save the organization profile after uploading.
         </p>
       )}
     </div>

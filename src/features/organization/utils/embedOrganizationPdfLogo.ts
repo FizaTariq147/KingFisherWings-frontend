@@ -107,14 +107,49 @@ function sniffMime(bytes: ArrayBuffer): string | undefined {
   return undefined;
 }
 
+async function canvasToPngBytes(
+  source: CanvasImageSource,
+  width: number,
+  height: number,
+): Promise<ArrayBuffer | null> {
+  if (!width || !height) return null;
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return null;
+  ctx.drawImage(source, 0, 0, width, height);
+  const pngBlob = await new Promise<Blob | null>((resolve) => {
+    canvas.toBlob((b) => resolve(b), 'image/png');
+  });
+  if (!pngBlob) return null;
+  return await pngBlob.arrayBuffer();
+}
+
 /**
  * pdf-lib only embeds PNG/JPEG. Rasterize WebP/SVG (and other browser-decodable
- * formats) to PNG via canvas so organization logos still appear on PDFs.
+ * formats) to PNG via canvas so organization WebP logos still appear on PDFs.
  */
 async function rasterizeToPngBytes(bytes: ArrayBuffer): Promise<ArrayBuffer | null> {
   if (typeof document === 'undefined') return null;
-  const mime = sniffMime(bytes) || 'image/png';
+  const mime = sniffMime(bytes) || 'application/octet-stream';
   const blob = new Blob([bytes], { type: mime });
+
+  // createImageBitmap handles WebP reliably in Chromium/Edge/Firefox.
+  if (typeof createImageBitmap === 'function') {
+    try {
+      const bitmap = await createImageBitmap(blob);
+      try {
+        const png = await canvasToPngBytes(bitmap, bitmap.width, bitmap.height);
+        if (png) return png;
+      } finally {
+        bitmap.close();
+      }
+    } catch {
+      /* fall through to <img> */
+    }
+  }
+
   const objectUrl = URL.createObjectURL(blob);
   try {
     const img = await new Promise<HTMLImageElement>((resolve, reject) => {
@@ -123,20 +158,11 @@ async function rasterizeToPngBytes(bytes: ArrayBuffer): Promise<ArrayBuffer | nu
       el.onerror = () => reject(new Error('Logo image decode failed'));
       el.src = objectUrl;
     });
-    const w = img.naturalWidth || img.width;
-    const h = img.naturalHeight || img.height;
-    if (!w || !h) return null;
-    const canvas = document.createElement('canvas');
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return null;
-    ctx.drawImage(img, 0, 0);
-    const pngBlob = await new Promise<Blob | null>((resolve) => {
-      canvas.toBlob((b) => resolve(b), 'image/png');
-    });
-    if (!pngBlob) return null;
-    return await pngBlob.arrayBuffer();
+    return await canvasToPngBytes(
+      img,
+      img.naturalWidth || img.width,
+      img.naturalHeight || img.height,
+    );
   } catch {
     return null;
   } finally {
@@ -202,29 +228,45 @@ export async function fetchOrganizationLogoBytes(
   }
 }
 
+async function embedPngOrJpg(
+  doc: PDFDocument,
+  bytes: ArrayBuffer,
+  maxHeight: number,
+): Promise<EmbeddedPdfLogo | null> {
+  try {
+    let image: PDFImage;
+    try {
+      image = await doc.embedPng(bytes);
+    } catch {
+      image = await doc.embedJpg(bytes);
+    }
+    const scale = maxHeight / image.height;
+    return { image, width: image.width * scale, height: maxHeight };
+  } catch {
+    return null;
+  }
+}
+
 async function embedBytes(
   doc: PDFDocument,
   bytes: ArrayBuffer,
   maxHeight: number,
 ): Promise<EmbeddedPdfLogo | null> {
-  const candidates: ArrayBuffer[] = [bytes];
-  const rasterized = await rasterizeToPngBytes(bytes);
-  if (rasterized) candidates.push(rasterized);
-
-  for (const candidate of candidates) {
-    try {
-      let image: PDFImage;
-      try {
-        image = await doc.embedPng(candidate);
-      } catch {
-        image = await doc.embedJpg(candidate);
-      }
-      const scale = maxHeight / image.height;
-      return { image, width: image.width * scale, height: maxHeight };
-    } catch {
-      /* try next candidate */
+  const mime = sniffMime(bytes);
+  // WebP/SVG (and unknown) → rasterize to PNG first so org WebP logos show on PDFs.
+  if (mime === 'image/webp' || mime === 'image/svg+xml' || !mime) {
+    const rasterized = await rasterizeToPngBytes(bytes);
+    if (rasterized) {
+      const embedded = await embedPngOrJpg(doc, rasterized, maxHeight);
+      if (embedded) return embedded;
     }
   }
+
+  const direct = await embedPngOrJpg(doc, bytes, maxHeight);
+  if (direct) return direct;
+
+  const rasterized = await rasterizeToPngBytes(bytes);
+  if (rasterized) return embedPngOrJpg(doc, rasterized, maxHeight);
   return null;
 }
 
