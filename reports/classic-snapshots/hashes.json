@@ -1,0 +1,8 @@
+{
+  "src/features/invoices/utils/generateInvoicePdf.ts": "e517f63709e86170e3a8101bf6ecda0437872f1fd9302246206ea2ecd7d49136",
+  "src/features/organization/utils/embedOrganizationPdfLogo.ts": "c99b0e2a934f18c719ffb3734e9beec6e10cb70f163d8bdf124f8317b27ba9dc",
+  "src/features/files/utils/sanitizePdfText.ts": "1ee8387e6e231e95d2769af68026726fbbed8c067c653ab60a620ed4d8660cae",
+  "src/features/quotations/utils/generateQuotationPdf.ts": "b08a7cc37c1c1288c8285e3d90ec4c5f996f6e5e0d0c4ff1e0164eea13baf047",
+  "src/features/invoices/utils/invoiceToPdfModel.ts": "322e7a4a3bf01afffe67fc4863beb9825c85a497cd3849ec4ec4277eb54001f4",
+  "src/features/invoices/utils/commercialNoteToPdfModel.ts": "f33c7a35ac623fba1fe9c9af0eeba09e840912b85287362e909a916fd81df927"
+}
