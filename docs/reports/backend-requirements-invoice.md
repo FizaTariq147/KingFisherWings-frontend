@@ -36,8 +36,18 @@ These are now filled from the record when the field exists.
 | Currency | `Invoice.currency_code` |
 | Per-line tax | `InvoiceLine.tax_amount` when the column is a single tax. SGST, CGST, and IGST stay blank. |
 | Amount in words | Derived from `Invoice.total_amount` and `Invoice.currency_code`. INR uses lakh and crore. |
+| Voyage / Flight No. | `Job.voyage_number`, else the sea leg `voyage_number` |
+| Ref No. | `Job.client_reference_no`, else `Job.reference_no` |
+| INCO Terms | `Job.incoterms` |
+| Customer P/O No. | `Invoice.lpo_number` |
+| Balance | `Invoice.outstanding_balance` |
+| Due date | `Invoice.due_date` |
+| Department | `Job.department_name` |
+| Place of Origin | `Job.origin_port_code` |
+| MAWB / MBL | Sea `mbl_number`, else air `mawb_number` |
+| HAWB / HBL | Sea `hbl_number`, else air `hawb_number` |
 
-Charge description, quantity, rate, and line amount exist on `Invoice.lines` (`description`, `quantity`, `unit_price`, `line_total`). The specs do not bind those line slots, so extra lines are not drawn. India SGST, CGST, and IGST are not separate fields. `Invoice` has one `tax_total`.
+Charge description, quantity, rate, and line amount are drawn from `Invoice.lines` (`description`, `quantity`, `unit_price`, `line_total`). Extra lines continue on the next page. India SGST, CGST, and IGST are not separate fields. `Invoice` has one `tax_total`. Those columns are not drawn. The codes are listed in `reports/invoice-v2/gst-blocked.md`.
 
 | Needed value | Table | Column |
 |---|---|---|

@@ -46,7 +46,18 @@ export function bindingForLabel(label, dictionary) {
     const matches = [...dictionary.keys()].filter((entry) => entry.startsWith(key));
     if (matches.length === 1) return dictionary.get(matches[0]);
   }
-  return '';
+  const generic = new Set(['total', 'amount', 'date', 'type', 'tax', 'gst', 'no']);
+  let best = '';
+  let bestLength = 0;
+  for (const entry of dictionary.keys()) {
+    if (entry.length < 4 || generic.has(entry)) continue;
+    const hit = key === entry || key.startsWith(`${entry} `) || key.endsWith(` ${entry}`) || key.includes(` ${entry} `);
+    if (hit && entry.length > bestLength) {
+      best = dictionary.get(entry);
+      bestLength = entry.length;
+    }
+  }
+  return best;
 }
 
 export function invoiceFamilyCodes() {
@@ -91,7 +102,17 @@ function aliasBinding(key) {
   if (key.startsWith('container')) return 'cargo.containerNo';
   if (key === 'hbl' || key.startsWith('hbl ')) return 'shipment.hbl';
   if (key.startsWith('shipment')) return 'shipment.number';
-  if (key.startsWith('reference')) return 'shipment.reference';
+  if (key.startsWith('reference') || key === 'ref' || key.startsWith('ref no')) return 'shipment.reference';
+  if (key.includes('voyage') || key.includes('flight')) return 'shipment.voyage';
+  if (key.includes('inco')) return 'job.incoterms';
+  if (key.includes('p o') || key.includes('po no') || key.includes('lpo')) return 'invoice.lpo';
+  if (key === 'balance' || key.startsWith('balance ')) return 'invoice.outstanding';
+  if (key.includes('due date')) return 'invoice.dueDate';
+  if (key.includes('department')) return 'job.department';
+  if (key.includes('place of origin') || key === 'origin') return 'shipment.pol';
+  if ((key.includes('hawb') || key.includes('hbl')) && (key.includes('mawb') || key.includes('mbl'))) return 'shipment.transportDocs';
+  if (key.includes('hawb') && key.includes('hbl')) return 'shipment.houseDoc';
+  if (key.includes('mawb') || key.includes('mbl')) return 'shipment.masterDoc';
   if (key.startsWith('igm')) return 'shipment.igm';
   if (key.startsWith('narration')) return 'invoice.narration';
   if (key.startsWith('remark')) return 'invoice.remarks';
@@ -128,6 +149,9 @@ function pathValues(record) {
     'shipment.hawb': text(air.hawb_number),
     'shipment.hbl': text(sea.hbl_number),
     'shipment.mbl': text(sea.mbl_number),
+    'shipment.houseDoc': text(sea.hbl_number) || text(air.hawb_number),
+    'shipment.masterDoc': text(sea.mbl_number) || text(air.mawb_number),
+    'shipment.transportDocs': [text(sea.mbl_number), text(air.mawb_number), text(sea.hbl_number), text(air.hawb_number)].filter(Boolean).join(' / '),
     'shipment.pol': text(job.origin_port_code),
     'shipment.pod': text(job.dest_port_code),
     'shipment.placeOfReceipt': text(sea.place_of_receipt),
@@ -152,7 +176,14 @@ function pathValues(record) {
     'shipment.igm': '',
     'invoice.narration': '',
     'invoice.remarks': text(invoice.remarks),
+    'invoice.dueDate': text(invoice.due_date),
+    'invoice.lpo': text(invoice.lpo_number),
+    'invoice.outstanding': invoice.outstanding_balance == null ? '' : classicMoney(invoice.outstanding_balance),
+    'job.incoterms': text(job.incoterms),
+    'job.department': text(job.department_name),
     'invoice.amountWords': amountInWords(invoice.total_amount ?? (Number(invoice.subtotal ?? 0) + Number(invoice.tax_total ?? 0)), invoice.currency_code),
+    'invoice.lines.quantity': invoice.lines?.[0]?.quantity == null ? '' : String(invoice.lines[0].quantity),
+    'invoice.lines.rate': invoice.lines?.[0]?.unit_price == null || invoice.lines[0].unit_price === '' ? '' : classicMoney(invoice.lines[0].unit_price),
     'cargo.containerType': text(job.containers?.[0]?.container_type_code),
     'cargo.sealNo': text(job.containers?.[0]?.seal_number),
   };
