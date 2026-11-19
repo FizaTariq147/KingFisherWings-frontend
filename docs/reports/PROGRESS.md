@@ -111,6 +111,7 @@ Status: 0 accepted, 6 in progress, 846 reference only.
 - 545 registered codes had no phase-0 filename match. 135 pinned files had no registered code. The code map and the triage CSVs below are that split. `ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1` is a proposed code for the Location Wise- 1 file. It is not in the 852-code registry.
 - The 402 PDFs and 49 Excel files were committed in `ce4a25f0` as normal git objects, not Git LFS. This phase removes the Fresa Gold brochure from that pin. PNGs stay gitignored.
 - Catalogue gating stays soft. Hard gating is Phase 7 and was not implemented.
+- `defaultPdfStyle` is not a field on `OrganizationProfile` or `Company`, and `reports.engine` is not a stored setting. The four Generate PDF screens call `generateInvoicePdf` (quotation and credit/debit notes through their mappers). Treating a missing value as classic matches current behavior. A stored per-company style needs a backend column that this repo cannot name. Do not invent the column.
 
 ## Verification log
 
@@ -728,5 +729,43 @@ Items 1-8 are unchanged. Items 9 and 10 are new:
 
 9. The vector geometry check compares in displayed (rotated) coordinates. Values are not rounded to 0.1 pt before the compare. The tolerance stays 0.1 pt.
 10. An additive geometry-only raster strips text and images from both content streams, diffs at 150 dpi, and fails above 0.5% of page pixels. It does not change the masked raster pass.
+
+## Fidelity freeze
+
+No checker change. No threshold, mask, status, or `reports/signoff.csv` change. Counts stay at the Track A4 table above: 399 documents, clean 343, R1 31, R2 7, static position 11, static width 13, dynamic width 4, dynamic position 1, geometry-only raster 10.
+
+`reports/exceptions.md` classifies every remaining failure. `reports/full-run-summary.md` has the same counts by class and by cause. Review sheets were regenerated with `node tools/reports/review-pack.mjs`. How to run the pool, read a sheet, and sign off is `docs/reports/HANDOFF.md`.
+
+Classic Generate PDF is frozen. `docs/reports/CLASSIC_FILES.md` lists the generator and the mappers the four screens use. `npm run report:guard-classic` hashes those files and compares 150 dpi rasters of one quotation, invoice, credit note, and debit note with `reports/classic-snapshots/`. The guard is in `.github/workflows/report-pilots.yml`.
+
+Guard at the start of this part, after the baseline commit `a8e693c5`, and again after the classification and review pack:
+
+```
+{"ok":true,"files":6,"pages":{"invoice":1,"quotation":1,"credit-note":1,"debit-note":1}}
+```
+
+Review pack: `{"documents":391,"sheets":391}`.
+
+## Invoice family
+
+No code is accepted. Classic Generate PDF is unchanged. `VITE_REPORTS_ENGINE` defaults to `legacy`. `readDefaultPdfStyle` returns `classic` when the payload has no `defaultPdfStyle`. That field is still absent from `OrganizationProfile` and `Company`.
+
+The invoice contract is `src/features/reports/engine/invoiceReportContract.ts`. The dictionary resolves 133 of 1,016 dynamic spans on 26 specs. 883 spans are in `reports/invoice-unresolved.csv`. Notify party and net weight stay blank. Details are in `docs/reports/backend-requirements-invoice.md`.
+
+Reports and Formats call v2 only when the engine is `v2` and the code is an invoice format. Credit notes, debit notes, and quotations are not routed there. A thrown v2 render returns the classic blob and the notice in `invoiceV2Gate.ts`. The browser does not host `renderSpec`, so that call throws and the current layout is still shown.
+
+Ten invoice-shaped records (no live tenant API in this workspace) are summarized in `reports/invoice-v2-samples.json`. All are one page. Empty fields stayed empty. Sample 1's text extract has no Fresa name or URL. Charge lines do not map onto format 1, which has no description slot.
+
+Guard after these edits, and again after the full re-verify:
+
+```
+{"ok":true,"files":6,"pages":{"invoice":1,"quotation":1,"credit-note":1,"debit-note":1}}
+```
+
+Full verify, 399 documents, cache hits on every spec and golden render. Counts stayed 343 clean, R1 31, R2 7, static width 13, static position 11, dynamic width 4, dynamic position 1, geometry-only 10. No document that was clean in `reports/full-run-track-a-before-invoice.csv` failed. The pool still lists the same three geometry-only codes against the first Track A baseline.
+
+```
+{"documents":399,"regressions":3,"regressionCodes":[{"code":"ADVANCE_SHIPPING_NOTE_FORMAT_1","classes":["geometry-only raster"]},{"code":"FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431","classes":["geometry-only raster"]},{"code":"FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007","classes":["geometry-only raster"]}]}
+```
 
 

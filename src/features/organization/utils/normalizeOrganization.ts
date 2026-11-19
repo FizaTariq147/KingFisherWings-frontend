@@ -1,3 +1,8 @@
+import {
+  isBackendAcceptableLogoUrl,
+  parseFilesApiUrl,
+  stripUrlQuery,
+} from '@/features/files/utils/parseFilesApiUrl';
 import type {
   NumberFormat,
   NumberFormatPreview,
@@ -74,6 +79,14 @@ export function normalizePaginationMeta(
 function repairStoredLogoUrl(raw: string): string {
   const trimmed = raw.trim();
   if (!trimmed) return '';
+  // Keep absolute https for profile save (backend @IsUrl). Only strip presign query.
+  // Do NOT rewrite to /files/… here — that fails PATCH ("logo_url must be a URL address").
+  if (/^https?:\/\//i.test(trimmed)) {
+    const cleaned = stripUrlQuery(trimmed);
+    if (isBackendAcceptableLogoUrl(cleaned) || parseFilesApiUrl(cleaned)) {
+      return cleaned;
+    }
+  }
   const triple = trimmed.match(/^https?:\/\/\/(.+)$/i);
   if (triple?.[1] && /^(files|backend)\//i.test(triple[1])) {
     return `/${triple[1]}`;

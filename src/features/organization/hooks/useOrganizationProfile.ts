@@ -24,7 +24,10 @@ export function useOrganizationProfile() {
     queryKey: organizationKeys.profile(tenantId),
     queryFn: () => organizationService.getProfile(),
     enabled: Boolean(accessToken),
-    staleTime: 30_000,
+    // Logo/branding must refresh when switching devices/sessions.
+    staleTime: 15_000,
+    refetchOnMount: 'always',
+    refetchOnWindowFocus: true,
   });
 }
 

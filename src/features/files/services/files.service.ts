@@ -85,13 +85,18 @@ function resolveTenantId(explicit?: string): string {
 function sanitizeDownloadFilename(filename: string): string {
   const trimmed = filename.trim();
   if (!trimmed) throw new Error('Filename is required.');
-  if (trimmed.includes('..') || trimmed.includes('/') || trimmed.includes('\\')) {
+  if (trimmed.includes('..') || trimmed.includes('\\')) {
     throw new Error('Invalid filename.');
   }
-  if (!/^[\w.\- ()[\]]+$/i.test(trimmed)) {
-    throw new Error('Invalid filename characters.');
+  // Allow nested object-store keys (`folder/logo.webp`) — encodeFilePathSegment handles `/`.
+  const segments = trimmed.split('/').filter(Boolean);
+  if (!segments.length) throw new Error('Filename is required.');
+  for (const segment of segments) {
+    if (!/^[\w.\- ()[\]]+$/i.test(segment)) {
+      throw new Error('Invalid filename characters.');
+    }
   }
-  return trimmed;
+  return segments.join('/');
 }
 
 function guessFilenameFromUrl(url: string, fallback = 'download'): string {

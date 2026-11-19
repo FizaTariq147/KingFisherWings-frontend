@@ -54,6 +54,8 @@ export type InvoicePdfChargeLine = {
 export type InvoicePdfCompany = {
   name?: string;
   tagline?: string;
+  /** Organization address lines (street, city, country) from org profile. */
+  addressLines?: string[];
   phone?: string;
   email?: string;
   website?: string;
@@ -401,6 +403,9 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   const companyPhone = safePdfText(model.company?.phone || '+971 55 5355 286');
   const companyEmail = safePdfText(model.company?.email || 'info@kingfisherwingsgroup.com');
   const companyWeb = safePdfText(model.company?.website || 'www.kingfisherwingsgroup.com');
+  const companyAddress = safePdfText(
+    (model.company?.addressLines ?? []).map((l) => String(l).trim()).filter(Boolean).join(', '),
+  );
   const copyLabel = safePdfText(model.copyLabel || 'ORIGINAL');
   const vatPct =
     model.vatRate != null && Number.isFinite(model.vatRate) ? Number(model.vatRate) : 0;
@@ -408,11 +413,21 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   let page = doc.addPage([PAGE_W, PAGE_H]);
   let y = PAGE_H;
 
-  const FOOTER_RESERVE = 62;
+  const FOOTER_RESERVE = companyAddress ? 74 : 62;
 
   const ensureSpace = (need: number) => {
     if (y - need >= FOOTER_RESERVE + 8) return false;
-    drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb, PAGE_W, CONTENT_W);
+    drawPageFooter(
+      page,
+      font,
+      fontBold,
+      companyPhone,
+      companyEmail,
+      companyWeb,
+      PAGE_W,
+      CONTENT_W,
+      companyAddress,
+    );
     page = doc.addPage([PAGE_W, PAGE_H]);
     // Continuation top bar
     page.drawRectangle({ x: 0, y: PAGE_H - 4, width: PAGE_W * 0.72, height: 4, color: NAVY });
@@ -455,7 +470,17 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   drawRight(page, companyName, PAGE_W - MARGIN, rightY, 10.5, fontBold, NAVY);
   rightY -= 11;
   drawRight(page, tagline, PAGE_W - MARGIN, rightY, 6.5, fontBold, ORANGE);
-  rightY -= 13;
+  rightY -= 11;
+  // Organization address (Settings → Organization)
+  const companyAddressLines = (model.company?.addressLines ?? [])
+    .map((line) => safePdfText(line))
+    .filter(Boolean)
+    .slice(0, 3);
+  for (const line of companyAddressLines) {
+    drawRight(page, line, PAGE_W - MARGIN, rightY, 7, font, MUTED);
+    rightY -= 9;
+  }
+  if (companyAddressLines.length) rightY -= 4;
   // Phone + email with mini icons
   const phoneW = measure(font, companyPhone, 7.5);
   drawMiniIcon(page, 'phone', PAGE_W - MARGIN - phoneW - 14, rightY - 1);
@@ -525,6 +550,7 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
       companyPhone,
       companyEmail,
       companyWeb,
+      companyAddress,
       numberLabel,
       dateLabel,
       dueDateLabel,
@@ -539,6 +565,7 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
       companyWeb,
       PAGE_W,
       CONTENT_W,
+      companyAddress,
     );
     const noteBytes = await doc.save();
     return new Blob([new Uint8Array(noteBytes)], { type: 'application/pdf' });
@@ -936,7 +963,17 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
     y -= panelH + 10;
   }
 
-  drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb, PAGE_W, CONTENT_W);
+  drawPageFooter(
+    page,
+    font,
+    fontBold,
+    companyPhone,
+    companyEmail,
+    companyWeb,
+    PAGE_W,
+    CONTENT_W,
+    companyAddress,
+  );
 
   const bytes = await doc.save();
   return new Blob([new Uint8Array(bytes)], { type: 'application/pdf' });
@@ -961,6 +998,7 @@ function drawCommercialNoteBody(opts: {
   companyPhone: string;
   companyEmail: string;
   companyWeb: string;
+  companyAddress?: string;
   numberLabel: string;
   dateLabel: string;
   dueDateLabel: string;
@@ -980,16 +1018,27 @@ function drawCommercialNoteBody(opts: {
     companyPhone,
     companyEmail,
     companyWeb,
+    companyAddress = '',
     numberLabel,
     dateLabel,
     dueDateLabel,
     jobRefLabel,
   } = opts;
 
-  const FOOTER_RESERVE = 62;
+  const FOOTER_RESERVE = companyAddress ? 74 : 62;
   const ensureSpace = (need: number) => {
     if (y - need >= FOOTER_RESERVE + 8) return;
-    drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb, pageW, contentW);
+    drawPageFooter(
+      page,
+      font,
+      fontBold,
+      companyPhone,
+      companyEmail,
+      companyWeb,
+      pageW,
+      contentW,
+      companyAddress,
+    );
     page = doc.addPage([pageW, pageH]);
     page.drawRectangle({ x: 0, y: pageH - 4, width: pageW * 0.72, height: 4, color: NAVY });
     page.drawRectangle({
@@ -1090,7 +1139,17 @@ function drawCommercialNoteBody(opts: {
     const h = Math.max(18, descLines.length * 11 + 6);
     if (y - h < FOOTER_RESERVE + 8) {
       // New page + redraw header, then continue this row.
-      drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb, pageW, contentW);
+      drawPageFooter(
+        page,
+        font,
+        fontBold,
+        companyPhone,
+        companyEmail,
+        companyWeb,
+        pageW,
+        contentW,
+        companyAddress,
+      );
       page = doc.addPage([pageW, pageH]);
       page.drawRectangle({ x: 0, y: pageH - 4, width: pageW * 0.72, height: 4, color: NAVY });
       page.drawRectangle({
@@ -1221,8 +1280,10 @@ function drawPageFooter(
   website: string,
   pageW: number,
   contentW: number,
+  address = '',
 ): void {
-  const top = 48;
+  const hasAddress = Boolean(String(address || '').trim());
+  const top = hasAddress ? 56 : 48;
   page.drawLine({
     start: { x: MARGIN, y: top + 16 },
     end: { x: pageW - MARGIN, y: top + 16 },
@@ -1230,6 +1291,20 @@ function drawPageFooter(
     color: RULE,
   });
 
+  if (hasAddress) {
+    drawText(page, 'ADDRESS', MARGIN, top + 4, 5.5, fontBold, LABEL);
+    drawText(
+      page,
+      fit(font, String(address).trim(), 7.5, contentW),
+      MARGIN,
+      top - 8,
+      7.5,
+      font,
+      TEXT,
+    );
+  }
+
+  const contactTop = hasAddress ? top - 22 : top;
   const colW = contentW / 3;
   const items: Array<{ label: string; value: string; kind: 'phone' | 'mail' | 'web' }> = [
     { label: 'CALL US ANYTIME', value: phone, kind: 'phone' },
@@ -1238,9 +1313,17 @@ function drawPageFooter(
   ];
   items.forEach((item, i) => {
     const x = MARGIN + i * colW;
-    drawText(page, item.label, x + 14, top + 4, 5.5, fontBold, LABEL);
-    drawMiniIcon(page, item.kind, x, top - 10);
-    drawText(page, fit(font, item.value, 7.5, colW - 20), x + 14, top - 8, 7.5, font, TEXT);
+    drawText(page, item.label, x + 14, contactTop + 4, 5.5, fontBold, LABEL);
+    drawMiniIcon(page, item.kind, x, contactTop - 10);
+    drawText(
+      page,
+      fit(font, item.value, 7.5, colW - 20),
+      x + 14,
+      contactTop - 8,
+      7.5,
+      font,
+      TEXT,
+    );
   });
 
   page.drawRectangle({ x: 0, y: 0, width: pageW, height: 8, color: NAVY });

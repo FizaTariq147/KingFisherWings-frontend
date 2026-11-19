@@ -17,6 +17,8 @@ jobs:
       - name: Install Poppler
         run: sudo apt-get update && sudo apt-get install -y poppler-utils
       - run: npm ci
+      - name: Guard classic Generate PDF
+        run: npm run report:guard-classic
       - name: Diff the four pilots against the round-3 baseline
         run: |
           node tools/reports/diff-pilot.mjs INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA --check-baseline

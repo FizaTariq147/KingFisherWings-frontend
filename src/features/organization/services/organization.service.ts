@@ -1,3 +1,4 @@
+import { toPersistableLogoUrl } from '@/features/files/utils/parseFilesApiUrl';
 import { axiosInstance } from '@/lib/axios';
 import { isUuid } from '@/lib/isUuid';
 import { withGatewayRetry } from '@/lib/wakeApi';
@@ -89,6 +90,24 @@ export const organizationService = {
       const payload = prepareProfilePayload(values);
       const res = await withGatewayRetry(() =>
         axiosInstance.patch<unknown>(ORGANIZATION_API.profile, payload),
+      );
+      return normalizeOrganizationProfile(res.data);
+    } catch (error) {
+      throw formatAxiosError(error);
+    }
+  },
+
+  /** Persist logo_url alone so a first upload is durable without a second Save click. */
+  async persistLogoUrl(logoUrl: string): Promise<OrganizationProfile> {
+    const logo_url = toPersistableLogoUrl(logoUrl);
+    if (!logo_url) {
+      throw new Error(
+        'logo_url must be a URL address. Use a public https:// link (Cloudflare R2 https URL is OK).',
+      );
+    }
+    try {
+      const res = await withGatewayRetry(() =>
+        axiosInstance.patch<unknown>(ORGANIZATION_API.profile, { logo_url }),
       );
       return normalizeOrganizationProfile(res.data);
     } catch (error) {

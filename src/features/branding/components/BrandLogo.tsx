@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { isApiOriginUrl } from '@/lib/safeHttpUrl';
+import {
+  isStoredFileUrl,
+  toDurableFilesApiPath,
+} from '@/features/files/utils/parseFilesApiUrl';
 import { fetchOrganizationLogoBytes } from '@/features/organization/utils/embedOrganizationPdfLogo';
 import { cacheOrganizationLogoFile } from '@/features/organization/utils/orgLogoCache';
-import { BRAND_LOGO_API } from '../api/brandLogo.api';
 import { DEFAULT_BRAND_LOGO_URL } from '../constants/brandLogo.constants';
 import { resolveBrandLogoUrl } from '../utils/resolveBrandLogoUrl';
 
@@ -16,17 +19,22 @@ type Props = {
   className?: string;
 };
 
+/**
+ * True when the logo must be loaded with the staff JWT (every device/session).
+ * Private R2/S3 object URLs look like public https but expire / block <img> without auth.
+ */
 function needsAuthFetch(url: string): boolean {
   const trimmed = url.trim();
   if (!trimmed || trimmed === DEFAULT_BRAND_LOGO_URL) return false;
   if (trimmed.startsWith('data:') || trimmed.startsWith('blob:')) return false;
   if (trimmed.startsWith('/')) return true;
+  if (isStoredFileUrl(trimmed) || Boolean(toDurableFilesApiPath(trimmed))) return true;
   return isApiOriginUrl(trimmed);
 }
 
 /**
  * Brand mark with dynamic URL + hard fallback to assets/logo.png.
- * Auth-fetches org `/files/...` and `/organization/logo` so previews match PDFs.
+ * Always prefers authenticated byte fetch so sidebar matches PDFs on every device.
  */
 export function BrandLogo({
   logoUrl,
@@ -49,33 +57,34 @@ export function BrandLogo({
     let objectUrl: string | null = null;
 
     const run = async () => {
-      const target =
-        resolved && resolved !== DEFAULT_BRAND_LOGO_URL
-          ? resolved
-          : BRAND_LOGO_API.organizationLogo;
+      const preferred =
+        resolved && resolved !== DEFAULT_BRAND_LOGO_URL ? resolved : null;
 
-      if (!needsAuthFetch(target) && resolved && resolved !== DEFAULT_BRAND_LOGO_URL) {
-        if (!cancelled) setSrc(resolved);
+      // Network-first (profile → /files → /organization/logo) so all sessions stay in sync.
+      // Do not rely on this browser’s localStorage as the source of truth.
+      try {
+        const bytes = await fetchOrganizationLogoBytes(preferred);
+        if (cancelled) return;
+        if (bytes && bytes.byteLength > 0) {
+          const blob = new Blob([bytes]);
+          void cacheOrganizationLogoFile(blob);
+          objectUrl = URL.createObjectURL(blob);
+          setSrc(objectUrl);
+          return;
+        }
+      } catch {
+        /* fall through */
+      }
+
+      if (cancelled) return;
+
+      // Truly public CDN (not our private object store) — <img> is fine.
+      if (preferred && !needsAuthFetch(preferred)) {
+        setSrc(preferred);
         return;
       }
 
-      try {
-        const bytes = await fetchOrganizationLogoBytes(
-          resolved && resolved !== DEFAULT_BRAND_LOGO_URL ? resolved : null,
-        );
-        if (cancelled) return;
-        if (!bytes || bytes.byteLength === 0) {
-          setSrc(resolved || DEFAULT_BRAND_LOGO_URL);
-          return;
-        }
-        const blob = new Blob([bytes]);
-        // Warm PDF logo cache whenever branding preview loads successfully.
-        void cacheOrganizationLogoFile(blob);
-        objectUrl = URL.createObjectURL(blob);
-        setSrc(objectUrl);
-      } catch {
-        if (!cancelled) setSrc(resolved || DEFAULT_BRAND_LOGO_URL);
-      }
+      setSrc(DEFAULT_BRAND_LOGO_URL);
     };
 
     void run();
