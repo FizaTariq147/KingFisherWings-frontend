@@ -548,9 +548,24 @@ async function embedBytes(
   return embedPngOrJpg(doc, bytes, maxHeight);
 }
 
+async function fetchBundledAssetBytes(assetUrl: string): Promise<ArrayBuffer | null> {
+  const url = String(assetUrl ?? '').trim();
+  if (!url || url.startsWith('blob:')) return null;
+  try {
+    // Vite-bundled /assets/… — same-origin; do not send through axios API base.
+    const res = await fetch(url, { credentials: 'same-origin', mode: 'same-origin' });
+    if (!res.ok) return null;
+    const bytes = await res.arrayBuffer();
+    return looksLikeImageBytes(bytes) ? bytes : null;
+  } catch {
+    return null;
+  }
+}
+
 /**
  * Embed the organization logo into a pdf-lib document.
- * Does NOT fall back to the product KingFisher asset.
+ * When `allowProductFallback` is true, uses the bundled commercial PDF logo so
+ * invoice/quotation/credit/debit/AR PDFs show a logo on every device.
  */
 export async function embedOrganizationPdfLogo(
   doc: PDFDocument,
@@ -566,12 +581,15 @@ export async function embedOrganizationPdfLogo(
   }
 
   if (opts?.allowProductFallback === true) {
-    const { resolveProductFallbackLogoUrl } = await import(
+    const { resolveCommercialPdfLogoUrl, resolveProductFallbackLogoUrl } = await import(
       '@/features/reports/constants/reportBranding.constants'
     );
-    const fallback = resolveProductFallbackLogoUrl();
+    const fallback =
+      resolveCommercialPdfLogoUrl() || resolveProductFallbackLogoUrl();
     if (fallback) {
-      const bytes = await fetchOneLogoCandidate(fallback);
+      const bytes =
+        (await fetchBundledAssetBytes(fallback)) ||
+        (await fetchOneLogoCandidate(fallback));
       if (bytes) {
         return (await embedBytes(doc, bytes, maxHeight)) ?? { image: null, width: 0, height: 0 };
       }

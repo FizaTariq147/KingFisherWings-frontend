@@ -325,6 +325,7 @@ export async function generateAccountStatementPdf(
   const boldFont = await pdf.embedFont(StandardFonts.HelveticaBold);
   const logo = await embedOrganizationPdfLogo(pdf, input.company?.logoUrl, {
     maxHeight: 40,
+    allowProductFallback: true,
   });
 
   const title = safePdfText(input.title || 'Account Statement', 'Account Statement');
