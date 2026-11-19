@@ -8,6 +8,7 @@ import { storybookTest } from '@storybook/addon-vitest/vitest-plugin';
 import { playwright } from '@vitest/browser-playwright';
 import { hawbDraft2PrintPlugin } from './scripts/hawbDraft2PrintPlugin.mjs';
 import { specReviewPlugin } from './scripts/specReviewPlugin.mjs';
+import { invoiceV2Plugin } from './scripts/invoiceV2Plugin.mjs';
 
 const dirname =
   typeof __dirname !== 'undefined'
@@ -15,7 +16,7 @@ const dirname =
     : path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig(({ mode }) => ({
-  plugins: [react(), tailwindcss(), hawbDraft2PrintPlugin(), specReviewPlugin()],
+  plugins: [react(), tailwindcss(), hawbDraft2PrintPlugin(), specReviewPlugin(), invoiceV2Plugin()],
 
   assetsInclude: ['**/*.pdf'],
 

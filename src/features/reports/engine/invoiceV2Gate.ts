@@ -36,14 +36,26 @@ export async function generateWithFallback(input: {
   }
 }
 
-/** The spec PDF is drawn by the Node renderer. The browser does not host it. */
+/** Thrown when the dev renderer is off or the spec draw fails. */
 export class InvoiceV2Unavailable extends Error {
   constructor() {
-    super('Invoice v2 is drawn by the report pipeline, which is not running in the browser.');
+    super('Invoice v2 could not be built.');
     this.name = 'InvoiceV2Unavailable';
   }
 }
 
-export async function renderInvoiceV2InBrowser(): Promise<Blob> {
-  throw new InvoiceV2Unavailable();
+export async function renderInvoiceV2InBrowser(body: {
+  code: string;
+  invoice?: unknown;
+  job?: unknown;
+  party?: unknown;
+  organization?: unknown;
+}): Promise<Blob> {
+  const response = await fetch('/__reports/invoice-v2', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!response.ok) throw new InvoiceV2Unavailable();
+  return response.blob();
 }
