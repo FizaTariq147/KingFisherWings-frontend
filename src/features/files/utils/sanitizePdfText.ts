@@ -3,10 +3,10 @@ export function sanitizePdfText(value: string): string {
   return value
     .replace(/\u2014/g, '-')
     .replace(/\u2013/g, '-')
-    .replace(/[^\x20-\x7E\n\r\t]/g, ' ')
-    .replace(/[ \t]+\n/g, '\n')
-    .replace(/\n[ \t]+/g, '\n')
-    .replace(/[ \t]{2,}/g, ' ')
+    // WinAnsi cannot encode LF/CR/TAB (e.g. address fields with line breaks).
+    .replace(/[\n\r\t]+/g, ' ')
+    .replace(/[^\x20-\x7E]/g, ' ')
+    .replace(/ {2,}/g, ' ')
     .trim();
 }
 

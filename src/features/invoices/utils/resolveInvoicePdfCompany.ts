@@ -1,7 +1,9 @@
 import { BRAND_LOGO_API } from '@/features/branding/api/brandLogo.api';
 import type { OrganizationProfile } from '@/features/organization/types/organization.types';
 import { organizationService } from '@/features/organization/services/organization.service';
-import { repairOrganizationLogoUrl } from '@/features/organization/utils/embedOrganizationPdfLogo';
+import {
+  toApiRelativeLogoUrl,
+} from '@/features/organization/utils/embedOrganizationPdfLogo';
 import { resolveReportLogoUrl } from '@/features/reports/constants/reportBranding.constants';
 import type { InvoicePdfCompany } from './generateInvoicePdf';
 
@@ -24,14 +26,23 @@ export function resolveInvoicePdfCompany(opts: {
   const web = website
     ? website.replace(/^https?:\/\//i, '').replace(/\/$/, '')
     : '';
-  const logoRaw = repairOrganizationLogoUrl(
+  // Rewrite API /files/… URLs for local proxy; keep absolute CDN URLs intact.
+  const profileLogo =
     profile?.logo_url ||
-      (profile as { logoUrl?: string } | null | undefined)?.logoUrl ||
-      '',
-  );
+    (profile as { logoUrl?: string } | null | undefined)?.logoUrl ||
+    '';
+  const logoRaw =
+    toApiRelativeLogoUrl(profileLogo) || String(profileLogo).trim();
+
+  const street = profile?.address?.trim() || '';
+  const cityCountry = [profile?.city?.trim(), profile?.country_code?.trim()]
+    .filter(Boolean)
+    .join(', ');
+  const addressLines = [street, cityCountry].filter(Boolean);
 
   return {
     name: name || undefined,
+    addressLines: addressLines.length ? addressLines : undefined,
     phone: profile?.phone?.trim() || undefined,
     email: profile?.email?.trim() || undefined,
     website: web || undefined,

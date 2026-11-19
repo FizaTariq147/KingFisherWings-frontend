@@ -100,6 +100,7 @@ function toCompany(company?: QuotationPdfCompany): InvoicePdfCompany | undefined
   return {
     name: company.name,
     tagline: company.tagline || 'FREIGHT - LOGISTICS - GENERAL TRADING',
+    addressLines: company.addressLines,
     phone: company.phone,
     email: company.email,
     website: company.website,

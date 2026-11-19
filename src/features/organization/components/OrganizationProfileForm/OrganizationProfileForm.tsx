@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { type Resolver } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { RefreshCw } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
@@ -14,19 +15,24 @@ import {
   type LocaleCatalog,
 } from '@/lib/locale';
 import { getServerErrorMessage, useAppForm } from '@/lib/validation';
+import { useAuthStore } from '@/store/authStore';
 import {
   CURRENCY_OPTIONS,
   LANGUAGE_OPTIONS,
   TIMEZONE_OPTIONS,
 } from '../../constants/organization.constants';
 import {
+  organizationKeys,
   useJobCreateSettings,
   useOrganizationProfile,
   useUpdateJobCreateSettings,
   useUpdateOrganizationProfile,
 } from '../../hooks/useOrganizationProfile';
 import { updateOrganizationProfileSchema } from '../../schemas/organization.schema';
-import type { OrganizationProfileFormValues } from '../../types/organization.types';
+import type {
+  OrganizationProfile,
+  OrganizationProfileFormValues,
+} from '../../types/organization.types';
 import { LogoFileField } from '@/features/branding/components/LogoFileField';
 import { profileToFormValues } from '../../utils/prepareOrganizationPayload';
 
@@ -56,6 +62,8 @@ const EMPTY: OrganizationProfileFormValues = {
 };
 
 export default function OrganizationProfilePage() {
+  const queryClient = useQueryClient();
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   const { data, isLoading, isFetching, isError, error, refetch } = useOrganizationProfile();
   const updateProfile = useUpdateOrganizationProfile();
   const jobCreateSettings = useJobCreateSettings(true);
@@ -372,6 +380,23 @@ export default function OrganizationProfilePage() {
             onChange={(url) =>
               setValue('logo_url', url, { shouldDirty: true, shouldValidate: true })
             }
+            onUploaded={({ logo_url, persisted }) => {
+              setValue('logo_url', logo_url, {
+                // Already on the server when persisted — don't force Save for logo alone.
+                shouldDirty: !persisted,
+                shouldValidate: true,
+              });
+              if (!persisted) return;
+              queryClient.setQueryData(
+                organizationKeys.profile(tenantId),
+                (prev: OrganizationProfile | undefined) =>
+                  prev ? { ...prev, logo_url } : prev,
+              );
+              // Refresh org chrome everywhere (sidebar + PDF company resolve).
+              void queryClient.invalidateQueries({
+                queryKey: organizationKeys.all(tenantId),
+              });
+            }}
           />
           <div className="flex flex-col gap-1">
             <label htmlFor="org-primary-color" className="text-xs font-medium text-[var(--color-neutral-600)]">

@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react';
-import { ImagePlus, Loader2 } from 'lucide-react';
+import { ImagePlus, Link2, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { BRAND_LOGO_ACCEPT } from '../constants/brandLogo.constants';
@@ -10,6 +10,11 @@ type Props = {
   /** Current logo URL (form field). */
   value?: string;
   onChange: (logoUrl: string) => void;
+  /**
+   * Called after a successful upload / Apply URL. `persisted` means logo_url is
+   * already on the organization/tenant record (safe across devices).
+   */
+  onUploaded?: (result: { logo_url: string; persisted: boolean }) => void;
   error?: string;
   /**
    * `organization` → POST /organization/logo (needs auth).
@@ -25,11 +30,12 @@ type Props = {
 
 /**
  * Logo chooser: pick image file (upload when BE supports it) + optional URL.
- * Never blocks save — URL field remains editable as fallback.
+ * Organization mode: Apply URL ingests the image so PDFs work on every device.
  */
 export function LogoFileField({
   value,
   onChange,
+  onUploaded,
   error,
   uploadMode,
   tenantId,
@@ -38,10 +44,28 @@ export function LogoFileField({
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [applyingUrl, setApplyingUrl] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [localOk, setLocalOk] = useState<string | null>(null);
+  const busy = uploading || applyingUrl;
+
+  const finishOrgResult = (result: { logo_url: string; persisted: boolean }) => {
+    onChange(result.logo_url);
+    onUploaded?.(result);
+    if (result.persisted) {
+      setLocalOk(
+        'Logo URL saved — sidebar and invoice/quotation/credit/debit PDFs will use it on all devices.',
+      );
+    } else {
+      setLocalError(
+        'Logo ready in the form. Click Save profile so it appears on other devices and sessions.',
+      );
+    }
+  };
 
   const onPick = async (file: File | null) => {
     setLocalError(null);
+    setLocalOk(null);
     if (!file) return;
     const invalid = validateBrandLogoFile(file);
     if (invalid) {
@@ -52,8 +76,8 @@ export function LogoFileField({
     setUploading(true);
     try {
       if (uploadMode === 'organization') {
-        const { logo_url } = await brandLogoService.uploadOrganizationLogo(file);
-        onChange(logo_url);
+        const result = await brandLogoService.uploadOrganizationLogo(file);
+        finishOrgResult(result);
         return;
       }
       if (uploadMode === 'tenant') {
@@ -66,13 +90,15 @@ export function LogoFileField({
           );
           return;
         }
-        const { logo_url } = await brandLogoService.uploadTenantLogo(tenantId, file);
-        onChange(logo_url);
+        const result = await brandLogoService.uploadTenantLogo(tenantId, file);
+        onChange(result.logo_url);
+        onUploaded?.(result);
+        setLocalOk('Logo saved — it will show for this tenant on all devices.');
         return;
       }
       // url-only fallback preview
       onChange(URL.createObjectURL(file));
-      setLocalError('Paste a public logo URL below to persist (file upload API not configured).');
+      setLocalError('Paste a public logo URL below and click Apply URL to persist.');
     } catch (err) {
       const message =
         err instanceof Error ? err.message : 'Logo upload failed. You can still paste a logo URL.';
@@ -92,6 +118,35 @@ export function LogoFileField({
     }
   };
 
+  const onApplyUrl = async () => {
+    setLocalError(null);
+    setLocalOk(null);
+    const raw = String(value ?? '').trim();
+    if (!raw) {
+      setLocalError('Paste a logo URL first.');
+      return;
+    }
+    if (uploadMode !== 'organization') {
+      onChange(raw);
+      setLocalOk('Logo URL set. Save the form to keep it.');
+      return;
+    }
+
+    setApplyingUrl(true);
+    try {
+      const result = await brandLogoService.applyOrganizationLogoUrl(raw);
+      finishOrgResult(result);
+    } catch (err) {
+      setLocalError(
+        err instanceof Error
+          ? err.message
+          : 'Could not apply that logo URL. Try Choose logo or another URL.',
+      );
+    } finally {
+      setApplyingUrl(false);
+    }
+  };
+
   return (
     <div className="space-y-2 sm:col-span-2">
       <p className="text-xs font-medium text-[var(--color-neutral-600)]">{label}</p>
@@ -105,14 +160,14 @@ export function LogoFileField({
             type="file"
             accept={BRAND_LOGO_ACCEPT}
             className="sr-only"
-            disabled={disabled || uploading}
+            disabled={disabled || busy}
             onChange={(e) => void onPick(e.target.files?.[0] ?? null)}
           />
           <Button
             type="button"
             variant="secondary"
             size="sm"
-            disabled={disabled || uploading}
+            disabled={disabled || busy}
             onClick={() => inputRef.current?.click()}
           >
             {uploading ? (
@@ -132,9 +187,10 @@ export function LogoFileField({
               type="button"
               variant="secondary"
               size="sm"
-              disabled={disabled || uploading}
+              disabled={disabled || busy}
               onClick={() => {
                 setLocalError(null);
+                setLocalOk(null);
                 onChange('');
               }}
             >
@@ -143,29 +199,64 @@ export function LogoFileField({
           ) : null}
         </div>
       </div>
-      <Input
-        label="Logo URL (optional)"
-        type="text"
-        inputMode="url"
-        autoComplete="off"
-        placeholder="https://… or /files/… path from upload"
-        value={value || ''}
-        error={error}
-        disabled={disabled || uploading}
-        onChange={(e) => {
-          setLocalError(null);
-          onChange(e.target.value);
-        }}
-      />
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+        <div className="min-w-0 flex-1">
+          <Input
+            label="Logo URL (optional)"
+            type="text"
+            inputMode="url"
+            autoComplete="off"
+            placeholder="R2 /files link, https://…, or /files/…"
+            value={value || ''}
+            error={error}
+            disabled={disabled || busy}
+            onChange={(e) => {
+              setLocalError(null);
+              setLocalOk(null);
+              onChange(e.target.value);
+            }}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                void onApplyUrl();
+              }
+            }}
+          />
+        </div>
+        <Button
+          type="button"
+          variant="secondary"
+          size="sm"
+          className="shrink-0 sm:mb-0.5"
+          disabled={disabled || busy || !String(value ?? '').trim()}
+          onClick={() => void onApplyUrl()}
+        >
+          {applyingUrl ? (
+            <>
+              <Loader2 className="mr-1.5 h-3.5 w-3.5 animate-spin" />
+              Applying…
+            </>
+          ) : (
+            <>
+              <Link2 className="mr-1.5 h-3.5 w-3.5" />
+              Apply URL
+            </>
+          )}
+        </Button>
+      </div>
       {localError ? (
         <p className="text-xs text-amber-800" role="status">
           {localError}
         </p>
+      ) : localOk ? (
+        <p className="text-xs text-emerald-800" role="status">
+          {localOk}
+        </p>
       ) : (
         <p className="text-[11px] text-[var(--color-neutral-500)]">
-          PNG, JPG, and WebP are supported. WebP is converted to PNG on upload so
-          invoice, quotation, credit, and debit PDFs can show your logo. Save the
-          organization profile after uploading.
+          Paste your logo https:// URL and click Apply URL (or Choose logo). It is saved on
+          the organization profile so every device and session loads the same logo in the
+          sidebar and on invoice, quotation, credit, and debit PDFs.
         </p>
       )}
     </div>

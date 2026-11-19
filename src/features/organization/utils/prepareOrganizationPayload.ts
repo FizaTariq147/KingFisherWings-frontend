@@ -1,3 +1,4 @@
+import { toPersistableLogoUrl } from '@/features/files/utils/parseFilesApiUrl';
 import { isUuid } from '@/lib/isUuid';
 import type {
   BankAccountFormValues,
@@ -31,7 +32,11 @@ export function prepareProfilePayload(
   if (display) payload.display_name = display;
 
   const logo = trimOrOmit(values.logo_url);
-  if (logo) payload.logo_url = logo;
+  // Backend @IsUrl — never send /files/… or localhost; prefer cleaned https://.
+  if (logo) {
+    const persistable = toPersistableLogoUrl(logo);
+    if (persistable) payload.logo_url = persistable;
+  }
 
   const color = trimOrOmit(values.primary_color);
   if (color) payload.primary_color = color;
