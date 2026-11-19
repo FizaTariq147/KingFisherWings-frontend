@@ -101,6 +101,31 @@ function formatFor(span, spec) {
   return '';
 }
 
+function fresaFragment(text) {
+  return /fresa|echnolog|powered by/i.test(String(text || ''));
+}
+
+function organizationText(span, organization) {
+  if (!organization) return '';
+  const raw = String(span.text || '');
+  if (/powered by/i.test(raw) || fresaFragment(raw) && span.brandingKind !== 'name' && span.brandingKind !== 'address' && span.brandingKind !== 'phone') {
+    if (/@/.test(raw)) return organization.email || '';
+    if (/https?:|www\.|\.com/i.test(raw)) return organization.website || '';
+    if (/powered by|echnolog/i.test(raw)) return '';
+  }
+  if (span.brandingKind === 'address') return organization.address || '';
+  if (span.brandingKind === 'phone') return organization.phone || '';
+  if (span.brandingKind === 'url') return organization.website || '';
+  if (span.brandingKind === 'email') return organization.email || '';
+  if (span.brandingKind === 'name') {
+    if (/@/.test(raw)) return organization.email || '';
+    if (/https?:|www\.|\.com/i.test(raw)) return organization.website || '';
+    if (/powered by|echnolog/i.test(raw)) return '';
+    return organization.name || '';
+  }
+  return '';
+}
+
 function replacement(span, spec) {
   const format = formatFor(span, spec);
   if (format === 'date') return longValues.date;
@@ -540,17 +565,37 @@ export async function renderSpec(code, options = {}) {
     }
     for (const image of source.images || []) {
       if (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded) drawBarcode(page, image);
+      if (options.logoPng && image.proposedClass === 'logo' && fs.existsSync(options.logoPng)) {
+        const png = await doc.embedPng(fs.readFileSync(options.logoPng));
+        page.drawImage(png, {
+          x: image.x,
+          y: image.y,
+          width: image.width || png.width,
+          height: image.height || png.height,
+        });
+      }
     }
     const paintSpans = [
       ...(source.spans || []),
       ...(source.table?.rows || []).flat().filter(Boolean).map((cell) => ({ ...cell, role: cell.role || 'dynamic' })),
     ];
     for (const span of paintSpans) {
-      if (span.role === 'branding') continue;
       const demo = span.text;
-      const text = options.overflow && span.role === 'dynamic' ? replacement(span, spec) : demo;
+      let text = options.overflow && span.role === 'dynamic' ? replacement(span, spec) : demo;
+      let mode = options.overflow ? overflowMode(span, spec) : 'none';
+      if ((options.organization || options.values) && span.role === 'static' && fresaFragment(demo)) {
+        continue;
+      }
+      if (options.organization && span.role === 'branding') {
+        text = organizationText(span, options.organization);
+        mode = text ? 'wrap-shrink-clip' : 'none';
+      } else if (span.role === 'branding') {
+        continue;
+      } else if (options.values && span.role === 'dynamic') {
+        text = options.values[span.id] ?? '';
+        mode = overflowMode(span, spec);
+      }
       if (!text) continue;
-      const mode = options.overflow ? overflowMode(span, spec) : 'none';
       const color = parseColor(span.color);
       const box = Math.max(span.width, 1);
       let size = span.size || 8;

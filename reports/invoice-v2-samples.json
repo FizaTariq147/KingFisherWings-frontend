@@ -1,0 +1,93 @@
+[
+  {
+    "file": "sample-1.pdf",
+    "invoice": "INV-LONG-1",
+    "pages": 1,
+    "warnings": 2,
+    "warningText": [
+      "text overflow clipped after wrap/shrink",
+      "1 charge line has no row in this spec (0 description slots)"
+    ]
+  },
+  {
+    "file": "sample-2.pdf",
+    "invoice": "INV-LINES-2",
+    "pages": 1,
+    "warnings": 1,
+    "warningText": [
+      "12 charge lines have no row in this spec (0 description slots)"
+    ]
+  },
+  {
+    "file": "sample-3.pdf",
+    "invoice": "INV-USD-3",
+    "pages": 1,
+    "warnings": 1,
+    "warningText": [
+      "1 charge line has no row in this spec (0 description slots)"
+    ]
+  },
+  {
+    "file": "sample-4.pdf",
+    "invoice": "INV-EUR-4",
+    "pages": 1,
+    "warnings": 1,
+    "warningText": [
+      "2 charge lines have no row in this spec (0 description slots)"
+    ]
+  },
+  {
+    "file": "sample-5.pdf",
+    "invoice": "INV-EMPTY-5",
+    "pages": 1,
+    "warnings": 0,
+    "warningText": []
+  },
+  {
+    "file": "sample-6.pdf",
+    "invoice": "INV-ADDR-6",
+    "pages": 1,
+    "warnings": 1,
+    "warningText": [
+      "text overflow clipped after wrap/shrink"
+    ]
+  },
+  {
+    "file": "sample-7.pdf",
+    "invoice": "INV-BOX-7",
+    "pages": 1,
+    "warnings": 3,
+    "warningText": [
+      "number overflow clipped after shrink",
+      "number overflow clipped after shrink",
+      "1 charge line has no row in this spec (0 description slots)"
+    ]
+  },
+  {
+    "file": "sample-8.pdf",
+    "invoice": "INV-ZERO-8",
+    "pages": 1,
+    "warnings": 1,
+    "warningText": [
+      "1 charge line has no row in this spec (0 description slots)"
+    ]
+  },
+  {
+    "file": "sample-9.pdf",
+    "invoice": "INV-MULTI-9",
+    "pages": 1,
+    "warnings": 1,
+    "warningText": [
+      "3 charge lines have no row in this spec (0 description slots)"
+    ]
+  },
+  {
+    "file": "sample-10.pdf",
+    "invoice": "INV-NOJOB-10",
+    "pages": 1,
+    "warnings": 1,
+    "warningText": [
+      "1 charge line has no row in this spec (0 description slots)"
+    ]
+  }
+]
