@@ -44,7 +44,16 @@ export const REPORT_BRANDING = {
  * product placeholder as if it were the tenant logo.
  */
 export function resolveReportLogoUrl(tenantLogoUrl?: string | null): string | undefined {
-  const fromTenant = String(tenantLogoUrl ?? '').trim();
+  // Inline repair for paths mangled by older form URL normalize (`/files` → `https:///files`).
+  let fromTenant = String(tenantLogoUrl ?? '').trim();
+  if (!fromTenant) return undefined;
+  const triple = fromTenant.match(/^https?:\/\/\/(.+)$/i);
+  if (triple?.[1] && /^(files|backend)\//i.test(triple[1])) {
+    fromTenant = `/${triple[1]}`;
+  } else {
+    const hostFiles = fromTenant.match(/^https?:\/\/files\/(.+)$/i);
+    if (hostFiles?.[1]) fromTenant = `/files/${hostFiles[1]}`;
+  }
   return fromTenant || undefined;
 }
 

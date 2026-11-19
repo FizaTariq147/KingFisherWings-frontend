@@ -1,5 +1,6 @@
 import type { OrganizationProfile } from '@/features/organization/types/organization.types';
 import { organizationService } from '@/features/organization/services/organization.service';
+import { repairOrganizationLogoUrl } from '@/features/organization/utils/embedOrganizationPdfLogo';
 import { resolveReportLogoUrl } from '@/features/reports/constants/reportBranding.constants';
 import type { InvoicePdfCompany } from './generateInvoicePdf';
 
@@ -22,10 +23,11 @@ export function resolveInvoicePdfCompany(opts: {
   const web = website
     ? website.replace(/^https?:\/\//i, '').replace(/\/$/, '')
     : '';
-  const logoRaw =
+  const logoRaw = repairOrganizationLogoUrl(
     profile?.logo_url ||
-    (profile as { logoUrl?: string } | null | undefined)?.logoUrl ||
-    '';
+      (profile as { logoUrl?: string } | null | undefined)?.logoUrl ||
+      '',
+  );
 
   return {
     name: name || undefined,

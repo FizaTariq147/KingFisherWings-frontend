@@ -142,8 +142,10 @@ export function LogoFileField({
       </div>
       <Input
         label="Logo URL (optional)"
-        type="url"
-        placeholder="https://… or leave empty for default KingFisher logo"
+        type="text"
+        inputMode="url"
+        autoComplete="off"
+        placeholder="https://… or /files/… path from upload"
         value={value || ''}
         error={error}
         disabled={disabled || uploading}
@@ -158,7 +160,8 @@ export function LogoFileField({
         </p>
       ) : (
         <p className="text-[11px] text-[var(--color-neutral-500)]">
-          PNG, JPG, WebP or SVG · max 2 MB. Default software logo is used when empty.
+          Prefer PNG or JPG for PDFs (WebP/SVG are converted). Save the organization
+          profile after uploading. Empty uses the default KingFisher logo.
         </p>
       )}
     </div>
