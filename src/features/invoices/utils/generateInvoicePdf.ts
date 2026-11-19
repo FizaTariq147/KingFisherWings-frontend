@@ -381,8 +381,9 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
+  // Wide org logos (e.g. KingFisher WebP 300×146) need a bit more height.
   const logo = await embedOrganizationPdfLogo(doc, model.company?.logoUrl, {
-    maxHeight: 48,
+    maxHeight: 56,
   });
 
   const PAGE_W = model.pageSize === 'Letter' ? LETTER_W : A4_W;

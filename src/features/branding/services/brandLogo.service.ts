@@ -1,6 +1,7 @@
 import { axiosInstance } from '@/lib/axios';
 import { BRAND_LOGO_API } from '../api/brandLogo.api';
 import { BRAND_LOGO_ACCEPT, BRAND_LOGO_MAX_BYTES } from '../constants/brandLogo.constants';
+import { normalizeBrandLogoForUpload } from '../utils/normalizeBrandLogoForUpload';
 
 export type BrandLogoUploadResult = {
   logo_url: string;
@@ -53,19 +54,21 @@ async function postLogo(path: string, file: File): Promise<BrandLogoUploadResult
 }
 
 export const brandLogoService = {
-  /** POST /organization/logo */
+  /** POST /organization/logo — WebP/SVG converted to PNG for PDF compatibility. */
   async uploadOrganizationLogo(file: File): Promise<BrandLogoUploadResult> {
     const err = validateBrandLogoFile(file);
     if (err) throw new Error(err);
-    return postLogo(BRAND_LOGO_API.organizationLogo, file);
+    const normalized = await normalizeBrandLogoForUpload(file);
+    return postLogo(BRAND_LOGO_API.organizationLogo, normalized);
   },
 
-  /** POST /tenants/:id/logo */
+  /** POST /tenants/:id/logo — WebP/SVG converted to PNG for PDF compatibility. */
   async uploadTenantLogo(tenantId: string, file: File): Promise<BrandLogoUploadResult> {
     const err = validateBrandLogoFile(file);
     if (err) throw new Error(err);
     const id = tenantId.trim();
     if (!id) throw new Error('Tenant id is required to upload a logo.');
-    return postLogo(BRAND_LOGO_API.tenantLogo(id), file);
+    const normalized = await normalizeBrandLogoForUpload(file);
+    return postLogo(BRAND_LOGO_API.tenantLogo(id), normalized);
   },
 };

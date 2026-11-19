@@ -160,8 +160,9 @@ export function LogoFileField({
         </p>
       ) : (
         <p className="text-[11px] text-[var(--color-neutral-500)]">
-          PNG, JPG, and WebP are supported (SVG too). WebP logos are embedded on
-          PDFs automatically. Save the organization profile after uploading.
+          PNG, JPG, and WebP are supported. WebP is converted to PNG on upload so
+          invoice, quotation, credit, and debit PDFs can show your logo. Save the
+          organization profile after uploading.
         </p>
       )}
     </div>
