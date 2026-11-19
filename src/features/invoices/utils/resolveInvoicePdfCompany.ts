@@ -1,3 +1,4 @@
+import { BRAND_LOGO_API } from '@/features/branding/api/brandLogo.api';
 import type { OrganizationProfile } from '@/features/organization/types/organization.types';
 import { organizationService } from '@/features/organization/services/organization.service';
 import { repairOrganizationLogoUrl } from '@/features/organization/utils/embedOrganizationPdfLogo';
@@ -34,7 +35,9 @@ export function resolveInvoicePdfCompany(opts: {
     phone: profile?.phone?.trim() || undefined,
     email: profile?.email?.trim() || undefined,
     website: web || undefined,
-    logoUrl: resolveReportLogoUrl(logoRaw) || undefined,
+    // Prefer profile.logo_url; fall back to GET /organization/logo binary path.
+    logoUrl:
+      resolveReportLogoUrl(logoRaw) || BRAND_LOGO_API.organizationLogo,
     tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
   };
 }
