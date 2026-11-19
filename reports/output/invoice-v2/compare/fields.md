@@ -6,23 +6,21 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
-| Shipment No. |  | no source |
+| Shipment No. | shipment.number | empty in the record |
 | HBL / HA | shipment.hbl | empty in the record |
-| Narration |  | no source |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
 | TCNU9876543 |  | no source |
-| SEAL FEE |  | no source |
-| BILL OF LADING | shipment.hbl | empty in the record |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -35,24 +33,24 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
 | Consignee | party.consignee | empty in the record |
-| Shipment No. |  | no source |
+| Shipment No. | shipment.number | empty in the record |
 | HBL / HA | shipment.hbl | empty in the record |
-| Narration |  | no source |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
 | TCNU9876543 |  | no source |
-| SEAL FEE |  | no source |
-| BILL OF LADING | shipment.hbl | empty in the record |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| POD | shipment.pod | empty in the record |
+| Container No. | cargo.containerNo | empty in the record |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -65,24 +63,23 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| SEAL FEE |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
 | Consignee | party.consignee | empty in the record |
-| Shipment No. |  | no source |
+| Shipment No. | shipment.number | empty in the record |
 | HBL / HA | shipment.hbl | empty in the record |
-| Narration |  | no source |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
 | TCNU9876543 |  | no source |
-| BILL OF LADING | shipment.hbl | empty in the record |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| Container No. | cargo.containerNo | empty in the record |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -97,24 +94,23 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
 | Consignee | party.consignee | empty in the record |
-| Shipment No. |  | no source |
+| Shipment No. | shipment.number | empty in the record |
 | HBL / HA | shipment.hbl | empty in the record |
-| Narration |  | no source |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
 | TCNU9876543 |  | no source |
-| SEAL FEE |  | no source |
-| BILL OF LADING | shipment.hbl | empty in the record |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| POD | shipment.pod | empty in the record |
+| Container No. | cargo.containerNo | empty in the record |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -127,22 +123,21 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
 | Consignee | party.consignee | empty in the record |
-| Shipment No. |  | no source |
-| Narration |  | no source |
+| Shipment No. | shipment.number | empty in the record |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
 | TCNU9876543 |  | no source |
-| SEAL FEE |  | no source |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -156,24 +151,24 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
 | Consignee | party.consignee | empty in the record |
-| Shipment No. |  | no source |
+| Shipment No. | shipment.number | empty in the record |
 | HBL / HA | shipment.hbl | empty in the record |
-| Narration |  | no source |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
 | TCNU9876543 |  | no source |
-| SEAL FEE |  | no source |
-| BILL OF LADING | shipment.hbl | empty in the record |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| POD | shipment.pod | empty in the record |
+| Container No. | cargo.containerNo | empty in the record |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -186,24 +181,24 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
 | Consignee | party.consignee | empty in the record |
-| Shipment No. |  | no source |
+| Shipment No. | shipment.number | empty in the record |
 | HBL / HA | shipment.hbl | empty in the record |
-| Narration |  | no source |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
 | TCNU9876543 |  | no source |
-| SEAL FEE |  | no source |
-| BILL OF LADING | shipment.hbl | empty in the record |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| POD | shipment.pod | empty in the record |
+| Container No. | cargo.containerNo | empty in the record |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -217,24 +212,24 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
 | Consignee | party.consignee | empty in the record |
-| Shipment No. |  | no source |
+| Shipment No. | shipment.number | empty in the record |
 | HBL / HA | shipment.hbl | empty in the record |
-| Narration |  | no source |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
 | TCNU9876543 |  | no source |
-| SEAL FEE |  | no source |
-| BILL OF LADING | shipment.hbl | empty in the record |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| POD | shipment.pod | empty in the record |
+| Container No. | cargo.containerNo | empty in the record |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -247,24 +242,24 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
 | Consignee | party.consignee | empty in the record |
-| Shipment No. |  | no source |
+| Shipment No. | shipment.number | empty in the record |
 | HBL / HA | shipment.hbl | empty in the record |
-| Narration |  | no source |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
 | TCNU9876543 |  | no source |
-| SEAL FEE |  | no source |
-| BILL OF LADING | shipment.hbl | empty in the record |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| POD | shipment.pod | empty in the record |
+| Container No. | cargo.containerNo | empty in the record |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -277,24 +272,24 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 
 | Label | Binding | Why it is blank |
 |---|---|---|
-| 1 |  | no source |
-| line amount | invoice.lines | empty in the record |
+| 1 | invoice.lines | no source |
 |  |  | no source |
 | 4G LOGISTICS INDIA PVT L |  | no source |
 | Consignee | party.consignee | empty in the record |
-| Shipment No. |  | no source |
+| Shipment No. | shipment.number | empty in the record |
 | HBL / HA | shipment.hbl | empty in the record |
-| Narration |  | no source |
+| Narration | invoice.narration | no source |
 | MSC MARINA / 876 |  | no source |
-| Reference No. |  | no source |
-| IGM No. |  | no source |
-| Remarks |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
 | TCNU9876543 |  | no source |
-| SEAL FEE |  | no source |
-| BILL OF LADING | shipment.hbl | empty in the record |
 | SGST |  | no source |
 | CGST |  | no source |
 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| POD | shipment.pod | empty in the record |
+| Container No. | cargo.containerNo | empty in the record |
+| FREIGHT | shipment.freightTerms | empty in the record |
 
 | Figure | Classic PDF | v2 PDF |
 |---|---|---|
@@ -302,4 +297,172 @@ Columns are classic PDF, v2 PDF, Fresa reference.
 | tax 0.00 | matches | matches |
 | grand total 94.50 | matches | matches |
 | line 1 94.50 | matches | matches |
+
+## EXTRA-USD-6
+
+| Label | Binding | Why it is blank |
+|---|---|---|
+| 1 | invoice.lines | no source |
+|  |  | no source |
+| 4G LOGISTICS INDIA PVT L |  | no source |
+| Shipment No. | shipment.number | empty in the record |
+| HBL / HA | shipment.hbl | empty in the record |
+| Narration | invoice.narration | no source |
+| MSC MARINA / 876 |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
+| TCNU9876543 |  | no source |
+| SGST |  | no source |
+| CGST |  | no source |
+| Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| FREIGHT | shipment.freightTerms | empty in the record |
+
+| Figure | Classic PDF | v2 PDF |
+|---|---|---|
+| subtotal 210.00 | matches | matches |
+| tax 0.00 | matches | matches |
+| grand total 210.00 | matches | matches |
+| line 1 10.00 | matches | matches |
+| line 2 20.00 | matches | matches |
+| line 3 30.00 | matches | matches |
+| line 4 40.00 | matches | matches |
+| line 5 50.00 | matches | matches |
+| line 6 60.00 | matches | matches |
+
+## EXTRA-EUR-8
+
+| Label | Binding | Why it is blank |
+|---|---|---|
+| 1 | invoice.lines | no source |
+|  |  | no source |
+| 4G LOGISTICS INDIA PVT L |  | no source |
+| Shipment No. | shipment.number | empty in the record |
+| HBL / HA | shipment.hbl | empty in the record |
+| Narration | invoice.narration | no source |
+| MSC MARINA / 876 |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
+| TCNU9876543 |  | no source |
+| SGST |  | no source |
+| CGST |  | no source |
+| Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| FREIGHT | shipment.freightTerms | empty in the record |
+
+| Figure | Classic PDF | v2 PDF |
+|---|---|---|
+| subtotal 360.00 | matches | matches |
+| tax 0.00 | matches | matches |
+| grand total 360.00 | matches | matches |
+| line 1 10.00 | matches | matches |
+| line 2 20.00 | matches | matches |
+| line 3 30.00 | matches | matches |
+| line 4 40.00 | matches | matches |
+| line 5 50.00 | matches | matches |
+| line 6 60.00 | matches | matches |
+| line 7 70.00 | matches | matches |
+| line 8 80.00 | matches | matches |
+
+## EXTRA-INR-12
+
+| Label | Binding | Why it is blank |
+|---|---|---|
+| 1 | invoice.lines | no source |
+|  |  | no source |
+| 4G LOGISTICS INDIA PVT L |  | no source |
+| Shipment No. | shipment.number | empty in the record |
+| HBL / HA | shipment.hbl | empty in the record |
+| Narration | invoice.narration | no source |
+| MSC MARINA / 876 |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
+| TCNU9876543 |  | no source |
+| SGST |  | no source |
+| CGST |  | no source |
+| Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| FREIGHT | shipment.freightTerms | empty in the record |
+
+| Figure | Classic PDF | v2 PDF |
+|---|---|---|
+| subtotal 780.00 | matches | matches |
+| tax 0.00 | matches | matches |
+| grand total 780.00 | matches | matches |
+| line 1 10.00 | matches | matches |
+| line 2 20.00 | matches | matches |
+| line 3 30.00 | matches | matches |
+| line 4 40.00 | matches | matches |
+| line 5 50.00 | matches | matches |
+| line 6 60.00 | matches | matches |
+| line 7 70.00 | matches | matches |
+| line 8 80.00 | matches | matches |
+| line 9 90.00 | matches | matches |
+| line 10 100.00 | matches | matches |
+| line 11 110.00 | matches | matches |
+| line 12 120.00 | matches | matches |
+
+## EXTRA-AED-5
+
+| Label | Binding | Why it is blank |
+|---|---|---|
+| 1 | invoice.lines | no source |
+|  |  | no source |
+| 4G LOGISTICS INDIA PVT L |  | no source |
+| Shipment No. | shipment.number | empty in the record |
+| HBL / HA | shipment.hbl | empty in the record |
+| Narration | invoice.narration | no source |
+| MSC MARINA / 876 |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
+| TCNU9876543 |  | no source |
+| SGST |  | no source |
+| CGST |  | no source |
+| Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| FREIGHT | shipment.freightTerms | empty in the record |
+
+| Figure | Classic PDF | v2 PDF |
+|---|---|---|
+| subtotal 150.00 | matches | matches |
+| tax 0.00 | matches | matches |
+| grand total 150.00 | matches | matches |
+| line 1 10.00 | matches | matches |
+| line 2 20.00 | matches | matches |
+| line 3 30.00 | matches | matches |
+| line 4 40.00 | matches | matches |
+| line 5 50.00 | matches | matches |
+
+## EXTRA-GBP-7
+
+| Label | Binding | Why it is blank |
+|---|---|---|
+| 1 | invoice.lines | no source |
+|  |  | no source |
+| 4G LOGISTICS INDIA PVT L |  | no source |
+| Shipment No. | shipment.number | empty in the record |
+| HBL / HA | shipment.hbl | empty in the record |
+| Narration | invoice.narration | no source |
+| MSC MARINA / 876 |  | no source |
+| Reference No. | shipment.reference | empty in the record |
+| IGM No. | shipment.igm | no source |
+| Remarks | invoice.remarks | empty in the record |
+| TCNU9876543 |  | no source |
+| SGST |  | no source |
+| CGST |  | no source |
+| Rupee Seventeen Thousand Three Hundred Eighty-Four Only |  | no source |
+| FREIGHT | shipment.freightTerms | empty in the record |
+
+| Figure | Classic PDF | v2 PDF |
+|---|---|---|
+| subtotal 280.00 | matches | matches |
+| tax 0.00 | matches | matches |
+| grand total 280.00 | matches | matches |
+| line 1 10.00 | matches | matches |
+| line 2 20.00 | matches | matches |
+| line 3 30.00 | matches | matches |
+| line 4 40.00 | matches | matches |
+| line 5 50.00 | matches | matches |
+| line 6 60.00 | matches | matches |
+| line 7 70.00 | matches | matches |
 

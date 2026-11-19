@@ -13,7 +13,44 @@ const root = process.cwd();
 const dir = path.join(root, 'reports/output/invoice-v2');
 const code = 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA';
 const live = JSON.parse(fs.readFileSync(path.join(dir, 'live.json'), 'utf8'));
-const spec = JSON.parse(fs.readFileSync(path.join(root, 'reports/specs', `${code}.json`), 'utf8'));
+const specPath = path.join(root, 'reports/specs', `${code}.json`);
+const base = live.invoices[0];
+const extras = [
+  ['USD', 6],
+  ['EUR', 8],
+  ['INR', 12],
+  ['AED', 5],
+  ['GBP', 7],
+].map(([currency, count]) => {
+  const lines = Array.from({ length: count }, (_, index) => {
+    const amount = (index + 1) * 10;
+    return {
+      description: `Extra charge ${index + 1}`,
+      quantity: index + 1,
+      unit_price: 10,
+      tax_amount: 0,
+      line_total: amount,
+    };
+  });
+  const subtotal = lines.reduce((sum, line) => sum + line.line_total, 0);
+  return {
+    id: `extra-${currency.toLowerCase()}-${count}`,
+    invoice: {
+      ...base.invoice,
+      id: `extra-${currency.toLowerCase()}-${count}`,
+      invoice_number: `EXTRA-${currency}-${count}`,
+      currency_code: currency,
+      lines,
+      subtotal,
+      tax_total: 0,
+      total_amount: subtotal,
+    },
+    job: base.job,
+    party: base.party,
+  };
+});
+live.invoices = [...live.invoices, ...extras];
+fs.writeFileSync(path.join(dir, 'batch-live.json'), `${JSON.stringify(live)}\n`);
 
 function referencePdf() {
   const mapped = fs.readFileSync(path.join(root, 'reports/references/code-map.csv'), 'utf8');
@@ -91,6 +128,7 @@ const results = [];
 const fieldLines = ['# Blank and unresolved fields', '', 'Columns are classic PDF, v2 PDF, Fresa reference.', ''];
 for (const row of live.invoices) {
   const record = { invoice: row.invoice, job: row.job, party: row.party, organization };
+  const spec = JSON.parse(fs.readFileSync(specPath, 'utf8'));
   const filled = fillInvoiceSpans(spec, record);
   const v2Path = path.join(dir, 'v2', `${row.id}.pdf`);
   await renderSpec(code, {
@@ -157,6 +195,7 @@ for (const row of live.invoices) {
 }
 fs.writeFileSync(path.join(compareDir, 'fields.md'), `${fieldLines.join('\n')}\n`);
 fs.writeFileSync(path.join(compareDir, 'reconciliation.json'), `${JSON.stringify(results, null, 2)}\n`);
+const failed = results.filter((row) => !row.match);
 console.log(JSON.stringify(results.map((row) => ({
   number: row.number,
   png: row.png,
@@ -164,3 +203,4 @@ console.log(JSON.stringify(results.map((row) => ({
   blanks: row.blanks,
   failed: row.checks.filter((check) => !check.classic || !check.v2),
 })), null, 2));
+if (failed.length) process.exit(1);
