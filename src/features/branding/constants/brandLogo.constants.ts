@@ -1,6 +1,6 @@
-import defaultLogo from '@/assets/logo.png';
+import defaultLogo from '@/assets/kingfisher-technologies-logo.webp';
 
-/** Static KingFisher asset — always available as fallback. */
+/** Static KingFisher TECHNOLOGIES mark — login / chrome fallback (not commercial PDF logo). */
 export const DEFAULT_BRAND_LOGO_URL =
   typeof defaultLogo === 'string' ? defaultLogo : '/kingfisher-logo.png';
 
