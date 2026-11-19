@@ -6,6 +6,7 @@
  * Frontend: client layout fallback uses the same asset when enabled.
  */
 import logoUrl from '@/assets/logo.png';
+import commercialPdfLogoUrl from '@/assets/commercial-pdf-logo.png';
 
 export const REPORT_BRANDING = {
   /** Product brand shown in header/footer chrome (not Fresa). */
@@ -17,6 +18,12 @@ export const REPORT_BRANDING = {
   sampleDataMode: 'fresa-dummy-with-kf-logo' as const,
   /** Default FE logo asset — packs should prefer tenant org logo when present. */
   defaultLogoUrl: typeof logoUrl === 'string' ? logoUrl : '',
+  /**
+   * Bundled logo for invoice / quotation / credit / debit / AR statement PDFs.
+   * Ships with the app so every device/session can embed it when org logo_url fetch fails.
+   */
+  commercialPdfLogoUrl:
+    typeof commercialPdfLogoUrl === 'string' ? commercialPdfLogoUrl : '',
   /** Branding keys expected on BE generate context / org profile. */
   orgFields: [
     'legal_name',
@@ -60,4 +67,13 @@ export function resolveReportLogoUrl(tenantLogoUrl?: string | null): string | un
 /** Product asset for non-report UI only — not a registered-company substitute. */
 export function resolveProductFallbackLogoUrl(): string | undefined {
   return REPORT_BRANDING.defaultLogoUrl || undefined;
+}
+
+/** Bundled commercial PDF logo — available offline on every device. */
+export function resolveCommercialPdfLogoUrl(): string | undefined {
+  return (
+    REPORT_BRANDING.commercialPdfLogoUrl ||
+    REPORT_BRANDING.defaultLogoUrl ||
+    undefined
+  );
 }
