@@ -120,14 +120,28 @@ export function layoutRepeatingCharges(spec, record) {
       });
       values[id] = description;
     }
+    const qtyCell = cells.find((cell) => /\.\d{3,}/.test(String(cell.text)));
+    const rateCell = cells.find((cell) => cell !== amountCell && cell !== qtyCell && cell.x > (qtyCell?.x || 0) && cell.x < amountCell.x);
+    const currencyCell = spans.find((span) => Math.abs(span.y - template.y) <= 4 && /^(INR|USD|AED|EUR|GBP|SGD|VND)$/.test(String(span.text || '').trim()));
+    if (currencyCell && currency) {
+      const id = `line-${index}-ccy`;
+      made.push({ ...currencyCell, id, role: 'dynamic', y, text: '' });
+      values[id] = currency;
+    }
     for (const cell of cells) {
       const id = `line-${index}-${cell.id}`;
       made.push({ ...cell, id, role: 'dynamic', y, text: '' });
-      if (cell.id === amountCell.id) values[id] = classicMoney(lineAmount(line));
+      let bound = '';
+      if (cell === amountCell) bound = classicMoney(lineAmount(line));
+      else if (cell === qtyCell) bound = line.quantity == null ? '' : String(line.quantity);
+      else if (cell === rateCell) bound = classicMoney(line.unit_price ?? 0);
       else {
-        const bound = columnValue(cell, spans, line, currency);
-        values[id] = bound == null ? '' : bound;
-        if (!bound) blanks.push({ span: id, label: nearestLabel(cell, spans)?.text || 'charge column', binding: 'invoice.lines', why: bound === '' ? 'no source' : 'no source' });
+        const labeled = columnValue(cell, spans, line, currency);
+        bound = labeled == null ? '' : labeled;
+      }
+      values[id] = bound;
+      if (!bound && cell !== amountCell) {
+        blanks.push({ span: id, label: nearestLabel(cell, spans)?.text || 'charge column', binding: 'invoice.lines', why: 'no source' });
       }
     }
     return made;

@@ -8,6 +8,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { layoutRepeatingCharges } from './invoice-rows.mjs';
+import { amountInWords } from './amount-words.mjs';
+import { isAllowlisted } from './allowlist.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
@@ -82,6 +84,19 @@ function aliasBinding(key) {
   if (key === 'taxable' || key.startsWith('taxable')) return 'invoice.amount';
   if (key === 'vat' || key.startsWith('vat ') || key === 'tax' || key === 'gst') return 'invoice.tax';
   if (key === 'grand total' || key.startsWith('grand total') || key === 'total amount') return 'invoice.total';
+  if (key === 'bill to' || key.startsWith('bill to')) return 'party.billTo';
+  if (key === 'shipper' || key.startsWith('shipper')) return 'party.shipper';
+  if (key === 'consignee' || key.startsWith('consignee')) return 'party.consignee';
+  if (key === 'vessel' || key.startsWith('vessel')) return 'shipment.vessel';
+  if (key.startsWith('container')) return 'cargo.containerNo';
+  if (key === 'hbl' || key.startsWith('hbl ')) return 'shipment.hbl';
+  if (key.startsWith('shipment')) return 'shipment.number';
+  if (key.startsWith('reference')) return 'shipment.reference';
+  if (key.startsWith('igm')) return 'shipment.igm';
+  if (key.startsWith('narration')) return 'invoice.narration';
+  if (key.startsWith('remark')) return 'invoice.remarks';
+  if (key.startsWith('qty') || key.startsWith('quantity')) return 'invoice.lines.quantity';
+  if (key === 'rate' || key.startsWith('rate ')) return 'invoice.lines.rate';
   return '';
 }
 
@@ -132,12 +147,27 @@ function pathValues(record) {
     'cargo.netWeight': '',
     'cargo.measurement': job.volume_cbm == null ? '' : String(job.volume_cbm),
     'cargo.containerNo': text(job.primary_container_number) || text(job.containers?.[0]?.container_number),
+    'shipment.number': text(job.shipment_number),
+    'shipment.reference': text(job.client_reference_no) || text(job.reference_no),
+    'shipment.igm': '',
+    'invoice.narration': '',
+    'invoice.remarks': text(invoice.remarks),
+    'invoice.amountWords': amountInWords(invoice.total_amount ?? (Number(invoice.subtotal ?? 0) + Number(invoice.tax_total ?? 0)), invoice.currency_code),
     'cargo.containerType': text(job.containers?.[0]?.container_type_code),
     'cargo.sealNo': text(job.containers?.[0]?.seal_number),
   };
 }
 
-const NO_SOURCE = new Set(['party.notify', 'cargo.netWeight']);
+const NO_SOURCE = new Set(['party.notify', 'cargo.netWeight', 'shipment.igm', 'invoice.narration']);
+
+function taxModeFor(code) {
+  try {
+    const table = JSON.parse(fs.readFileSync(path.join(root, 'reports/invoice-v2-applicability.json'), 'utf8'));
+    return table[code]?.taxMode === 'split' ? 'split' : 'single';
+  } catch {
+    return 'single';
+  }
+}
 
 /**
  * Fill one invoice spec from a record. Totals and line amounts use the same
@@ -153,7 +183,6 @@ export function fillInvoiceSpans(spec, record) {
   const subtotal = classicMoney(invoice.subtotal ?? 0);
   const tax = classicMoney(invoice.tax_total ?? 0);
   const total = byPath['invoice.total'];
-  let taxPlaced = false;
   const laid = layoutRepeatingCharges(spec, record);
   Object.assign(values, laid.values);
   blanks.push(...laid.blanks);
@@ -221,11 +250,6 @@ export function fillInvoiceSpans(spec, record) {
       const label = nearestLabel(span, spans);
       const key = normalizeLabel(label?.text || '');
       if (/\b(sgst|cgst|igst)\b/.test(key)) {
-        if (!taxPlaced) {
-          values[span.id] = tax;
-          taxPlaced = true;
-          continue;
-        }
         blanks.push({ span: span.id, label: label?.text || '', binding: '', why: 'no source' });
         values[span.id] = '';
         continue;
@@ -252,7 +276,6 @@ export function fillInvoiceSpans(spec, record) {
       }
       if (binding === 'invoice.tax') {
         values[span.id] = tax;
-        taxPlaced = true;
         continue;
       }
       if (binding === 'invoice.total') {
@@ -266,6 +289,43 @@ export function fillInvoiceSpans(spec, record) {
         continue;
       }
       values[span.id] = String(text);
+    }
+
+    const taxMode = taxModeFor(spec.code);
+    for (const span of spans) {
+      const own = normalizeLabel(span.text);
+      const label = nearestLabel(span, spans);
+      const key = normalizeLabel(label?.text || '');
+      if (taxMode === 'single' && (/\b(sgst|cgst|igst)\b/.test(own) || /\b(sgst|cgst|igst)\b/.test(key))) {
+        values[span.id] = '';
+        if (span.role === 'dynamic') blanks.push({ span: span.id, label: span.text || label?.text || '', binding: '', why: 'no source' });
+        continue;
+      }
+      if (span.role === 'dynamic' || values[span.id] != null) continue;
+      if (isAllowlisted(span.text)) {
+        if (/rupee|fils|paise|dollars/i.test(span.text || '') && byPath['invoice.amountWords']) {
+          values[span.id] = byPath['invoice.amountWords'];
+        }
+        continue;
+      }
+      if (/rupee|fils|paise|dollars|only$/i.test(span.text || '') && byPath['invoice.amountWords']) {
+        values[span.id] = byPath['invoice.amountWords'];
+        continue;
+      }
+      const binding = aliasBinding(key) || bindingForLabel(label?.text || '', dictionary);
+      if (!binding) continue;
+      if (NO_SOURCE.has(binding)) {
+        blanks.push({ span: span.id, label: label?.text || '', binding, why: 'no source' });
+        values[span.id] = '';
+        continue;
+      }
+      const filled = byPath[binding];
+      if (!String(filled || '').trim()) {
+        blanks.push({ span: span.id, label: label?.text || '', binding, why: 'empty in the record' });
+        values[span.id] = '';
+        continue;
+      }
+      values[span.id] = String(filled);
     }
   }
 
