@@ -1,5 +1,5 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFImage, type PDFPage } from 'pdf-lib';
-import logoAsset from '@/assets/logo.png';
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
+import { embedOrganizationPdfLogo } from '@/features/organization/utils/embedOrganizationPdfLogo';
 import { safePdfText } from '@/features/files/utils/sanitizePdfText';
 
 export interface AccountStatementPdfLine {
@@ -275,42 +275,6 @@ function buildColumnLayout(contentW: number): ColumnLayout {
   };
 }
 
-async function embedStatementLogo(
-  doc: PDFDocument,
-  preferredLogoUrl?: string | null,
-): Promise<{ image: PDFImage | null; width: number; height: number }> {
-  const preferred = String(preferredLogoUrl ?? '').trim();
-  const candidates = [
-    preferred || undefined,
-    typeof logoAsset === 'string' ? logoAsset : undefined,
-    '/kingfisher-logo.png',
-  ].filter(Boolean) as string[];
-
-  for (const raw of candidates) {
-    try {
-      const url =
-        raw.startsWith('data:') || /^https?:\/\//i.test(raw) || raw.startsWith('blob:')
-          ? raw
-          : new URL(raw, window.location.origin).href;
-      const res = await fetch(url, preferred && raw === preferred ? { mode: 'cors' } : undefined);
-      if (!res.ok) continue;
-      const bytes = await res.arrayBuffer();
-      let image: PDFImage;
-      try {
-        image = await doc.embedPng(bytes);
-      } catch {
-        image = await doc.embedJpg(bytes);
-      }
-      const maxH = 40;
-      const scale = maxH / image.height;
-      return { image, width: image.width * scale, height: maxH };
-    } catch {
-      /* try next */
-    }
-  }
-  return { image: null, width: 0, height: 0 };
-}
-
 function drawStatementFooter(
   page: PDFPage,
   font: PDFFont,
@@ -359,7 +323,9 @@ export async function generateAccountStatementPdf(
   const pdf = await PDFDocument.create();
   const bodyFont = await pdf.embedFont(StandardFonts.Helvetica);
   const boldFont = await pdf.embedFont(StandardFonts.HelveticaBold);
-  const logo = await embedStatementLogo(pdf, input.company?.logoUrl);
+  const logo = await embedOrganizationPdfLogo(pdf, input.company?.logoUrl, {
+    maxHeight: 40,
+  });
 
   const title = safePdfText(input.title || 'Account Statement', 'Account Statement');
   const subtitle = safePdfText(input.subtitle || '', '');

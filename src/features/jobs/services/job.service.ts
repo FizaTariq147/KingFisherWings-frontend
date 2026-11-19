@@ -5624,12 +5624,14 @@ export const jobService = {
     const name = String(dto.milestone ?? '').trim();
     if (!name) throw new Error('Milestone name is required.');
 
+    const description = dto.description?.trim() || undefined;
+    const notes = dto.notes?.trim() || description;
     const body: CreateCustomMilestoneDto = {
       milestone: name,
       ...(dto.planned_date?.trim() ? { planned_date: dto.planned_date.trim() } : {}),
       ...(dto.actual_date?.trim() ? { actual_date: dto.actual_date.trim() } : {}),
-      ...(dto.description?.trim() ? { description: dto.description.trim() } : {}),
-      ...(dto.notes?.trim() ? { notes: dto.notes.trim() } : {}),
+      ...(description ? { description } : {}),
+      ...(notes ? { notes } : {}),
     };
 
     try {
@@ -5699,7 +5701,30 @@ export const jobService = {
         'Milestone code/name is required. Use the code from GET /jobs/:id/milestones (e.g. SI_SUBMITTED).',
       );
     }
-    return request(() => axiosInstance.patch(JOB_API.milestone(id, key), dto));
+    // Normalize PATCH body; mirror description → notes when notes omitted so
+    // gateways that only persist `notes` still expose customer text on track.
+    const body: UpdateJobMilestoneDto = {};
+    if (dto.planned_date != null) {
+      const v = String(dto.planned_date).trim();
+      if (v) body.planned_date = v;
+    }
+    if (dto.actual_date != null) {
+      const v = String(dto.actual_date).trim();
+      if (v) body.actual_date = v;
+    }
+    if (dto.completed_at != null) {
+      const v = String(dto.completed_at).trim();
+      if (v) body.completed_at = v;
+    }
+    if (dto.description != null) {
+      body.description = String(dto.description).trim();
+    }
+    if (dto.notes != null) {
+      body.notes = String(dto.notes).trim();
+    } else if (dto.description != null) {
+      body.notes = body.description;
+    }
+    return request(() => axiosInstance.patch(JOB_API.milestone(id, key), body));
   },
 
   async listNotes(id: string): Promise<unknown[]> {
@@ -6044,14 +6069,84 @@ export const jobService = {
       );
       const data = unwrapEntity(res.data) ?? res.data;
       if (data != null && data !== '') {
-        // Attach job milestone descriptions so Track & Trace can show customer text
-        // even when history/timeline rows omit `description`.
+        // Always attach job milestone descriptions so Track & Trace can show
+        // customer text even when history/timeline rows omit `description`.
         try {
           const milestones = await this.listMilestones(opts.jobId);
           if (milestones.length && data && typeof data === 'object' && !Array.isArray(data)) {
             const body = data as Record<string, unknown>;
+            body.job_milestones = milestones;
+            body.jobMilestones = milestones;
             if (!Array.isArray(body.milestones) || body.milestones.length === 0) {
               body.milestones = milestones;
+            } else {
+              // Merge customer text onto existing tracking milestone rows.
+              const byKey = new Map<string, string>();
+              for (const m of milestones) {
+                const text = String(m.description || m.notes || '').trim();
+                if (!text) continue;
+                for (const raw of [m.milestone_key, m.milestone, m.id]) {
+                  const k = String(raw || '')
+                    .trim()
+                    .toUpperCase()
+                    .replace(/[\s_-]+/g, ' ')
+                    .trim();
+                  if (k) byKey.set(k, text);
+                  const underscored = String(raw || '')
+                    .trim()
+                    .toUpperCase()
+                    .replace(/[\s-]+/g, '_');
+                  if (underscored) byKey.set(underscored, text);
+                }
+              }
+              const enrichRows = (rows: unknown[]): unknown[] =>
+                rows.map((row) => {
+                  if (!row || typeof row !== 'object' || Array.isArray(row)) return row;
+                  const rec = row as Record<string, unknown>;
+                  const existing = String(
+                    rec.description ?? rec.notes ?? rec.milestone_description ?? '',
+                  ).trim();
+                  if (existing) return row;
+                  const candidates = [
+                    rec.milestone_key,
+                    rec.milestoneKey,
+                    rec.milestone_code,
+                    rec.milestoneCode,
+                    typeof rec.milestone === 'string' ? rec.milestone : undefined,
+                    rec.name,
+                    rec.code,
+                    rec.move,
+                    rec.label,
+                    rec.id,
+                  ];
+                  for (const c of candidates) {
+                    const spaced = String(c || '')
+                      .trim()
+                      .toUpperCase()
+                      .replace(/[\s_-]+/g, ' ')
+                      .trim();
+                    const underscored = String(c || '')
+                      .trim()
+                      .toUpperCase()
+                      .replace(/[\s-]+/g, '_');
+                    const text =
+                      (spaced && byKey.get(spaced)) ||
+                      (underscored && byKey.get(underscored));
+                    if (text) {
+                      return { ...rec, description: text, notes: rec.notes ?? text };
+                    }
+                  }
+                  return row;
+                });
+              if (Array.isArray(body.milestones)) {
+                body.milestones = enrichRows(body.milestones);
+              }
+              if (Array.isArray(body.timeline)) {
+                body.timeline = enrichRows(body.timeline);
+              }
+              if (Array.isArray(body.history)) {
+                body.history = enrichRows(body.history);
+              }
             }
           }
         } catch {

@@ -4,6 +4,7 @@ import type { PortalShipmentDetail } from '@/features/portal-shipments/types/por
 import type { Invoice, InvoiceLine } from '../types/invoice.types';
 import { invoiceDisplayNumber } from './normalizeInvoice';
 import type {
+  InvoicePdfBankAccount,
   InvoicePdfBillTo,
   InvoicePdfChargeLine,
   InvoicePdfCompany,
@@ -15,6 +16,8 @@ export type InvoicePdfEnrichment = {
   party?: Party | null;
   job?: Job | null;
   company?: InvoicePdfCompany;
+  /** Organization bank accounts for remittance details on the PDF. */
+  bankAccounts?: InvoicePdfBankAccount[];
   /** Override Bill To contact from primary party contact when present. */
   attn?: string;
   shipment?: InvoicePdfShipment | null;
@@ -233,7 +236,14 @@ export function invoiceToPdfModel(
   invoice: Invoice,
   enrichment: InvoicePdfEnrichment = {},
 ): InvoicePdfModel {
-  const { party, job, company, attn, shipment: shipmentOverride } = enrichment;
+  const {
+    party,
+    job,
+    company,
+    bankAccounts,
+    attn,
+    shipment: shipmentOverride,
+  } = enrichment;
   const contact = primaryContact(party);
   const vatRate = invoice.vat_rate != null ? Number(invoice.vat_rate) : 0;
   const subtotal = invoice.subtotal ?? 0;
@@ -279,6 +289,7 @@ export function invoiceToPdfModel(
     balanceDue: balance,
     remarks: invoice.remarks,
     company,
+    bankAccounts,
   };
 }
 

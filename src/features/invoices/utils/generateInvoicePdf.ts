@@ -1,5 +1,5 @@
-import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage, type PDFImage } from 'pdf-lib';
-import logoAsset from '@/assets/logo.png';
+import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf-lib';
+import { embedOrganizationPdfLogo } from '@/features/organization/utils/embedOrganizationPdfLogo';
 import { safePdfText } from '@/features/files/utils/sanitizePdfText';
 
 /** A4 portrait defaults — Letter override via model.pageSize. */
@@ -61,6 +61,17 @@ export type InvoicePdfCompany = {
   logoUrl?: string;
 };
 
+/** Organization → Bank Accounts row for the tax-invoice payment block. */
+export type InvoicePdfBankAccount = {
+  bankName?: string;
+  accountName?: string;
+  accountNumber?: string;
+  iban?: string;
+  swiftCode?: string;
+  currencyCode?: string;
+  isDefault?: boolean;
+};
+
 export type InvoicePdfModel = {
   invoiceNumber?: string;
   invoiceDate?: string;
@@ -108,6 +119,8 @@ export type InvoicePdfModel = {
   balanceDue?: number;
   remarks?: string;
   company?: InvoicePdfCompany;
+  /** Active organization bank accounts (default first) for remittance details. */
+  bankAccounts?: InvoicePdfBankAccount[];
   /**
    * Quotations pass this so they keep their own native face instead of the
    * default tax-invoice face.
@@ -326,49 +339,6 @@ function labeledValue(
   drawText(page, fit(fontBold, value || '—', 8, valueMaxW), x + labelW, y, 8, fontBold, TEXT);
 }
 
-async function embedLogo(
-  doc: PDFDocument,
-  preferredLogoUrl?: string | null,
-): Promise<{
-  image: PDFImage | null;
-  width: number;
-  height: number;
-}> {
-  const preferred = String(preferredLogoUrl ?? '').trim();
-  const candidates = [
-    preferred || undefined,
-    typeof logoAsset === 'string' ? logoAsset : undefined,
-    '/kingfisher-logo.png',
-    typeof window !== 'undefined'
-      ? new URL('/kingfisher-logo.png', window.location.origin).href
-      : undefined,
-  ].filter(Boolean) as string[];
-
-  for (const raw of candidates) {
-    try {
-      const url =
-        raw.startsWith('data:') || /^https?:\/\//i.test(raw) || raw.startsWith('blob:')
-          ? raw
-          : new URL(raw, window.location.origin).href;
-      const res = await fetch(url, preferred && raw === preferred ? { mode: 'cors' } : undefined);
-      if (!res.ok) continue;
-      const bytes = await res.arrayBuffer();
-      let image: PDFImage;
-      try {
-        image = await doc.embedPng(bytes);
-      } catch {
-        image = await doc.embedJpg(bytes);
-      }
-      const maxH = 48;
-      const scale = maxH / image.height;
-      return { image, width: image.width * scale, height: maxH };
-    } catch {
-      /* try next */
-    }
-  }
-  return { image: null, width: 0, height: 0 };
-}
-
 function wrapLines(font: PDFFont, text: string, size: number, maxW: number, maxLines = 8): string[] {
   const raw = safePdfText(text);
   if (!raw) return [];
@@ -411,7 +381,9 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   const doc = await PDFDocument.create();
   const font = await doc.embedFont(StandardFonts.Helvetica);
   const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
-  const logo = await embedLogo(doc, model.company?.logoUrl);
+  const logo = await embedOrganizationPdfLogo(doc, model.company?.logoUrl, {
+    maxHeight: 48,
+  });
 
   const PAGE_W = model.pageSize === 'Letter' ? LETTER_W : A4_W;
   const PAGE_H = model.pageSize === 'Letter' ? LETTER_H : A4_H;
@@ -895,6 +867,71 @@ export async function generateInvoicePdf(model: InvoicePdfModel): Promise<Blob> 
   }
 
   y -= blockH + 10;
+
+  // ——— Bank accounts (Organization → Bank Accounts) ———
+  const bankAccounts = (model.bankAccounts ?? []).filter(
+    (a) =>
+      a.bankName ||
+      a.accountName ||
+      a.accountNumber ||
+      a.iban ||
+      a.swiftCode,
+  );
+  if (bankAccounts.length && !model.hideAdvanceBalance) {
+    const rowsPerAccount = bankAccounts.map((a) => {
+      const rows: Array<{ label: string; value: string }> = [];
+      if (a.bankName) rows.push({ label: 'Bank', value: a.bankName });
+      if (a.accountName) rows.push({ label: 'Account name', value: a.accountName });
+      if (a.accountNumber) rows.push({ label: 'Account no.', value: a.accountNumber });
+      if (a.iban) rows.push({ label: 'IBAN', value: a.iban });
+      if (a.swiftCode) rows.push({ label: 'SWIFT', value: a.swiftCode });
+      if (a.currencyCode) rows.push({ label: 'Currency', value: a.currencyCode });
+      return rows;
+    });
+    const lineH = 11;
+    const titleH = 16;
+    const gapBetween = 8;
+    let contentH = titleH;
+    for (let i = 0; i < rowsPerAccount.length; i += 1) {
+      contentH += rowsPerAccount[i].length * lineH;
+      if (i < rowsPerAccount.length - 1) contentH += gapBetween;
+    }
+    const panelH = contentH + 14;
+    ensureSpace(panelH + 8);
+    drawPanel(page, MARGIN, y - panelH, CONTENT_W, panelH);
+    sectionTitle(page, 'BANK ACCOUNTS', MARGIN + 10, y - 13, fontBold);
+    let by = y - 28;
+    const colGap = 12;
+    const labelColW = 78;
+    const valueX = MARGIN + 10 + labelColW + colGap;
+    const valueMaxW = CONTENT_W - labelColW - colGap - 24;
+    for (let i = 0; i < rowsPerAccount.length; i += 1) {
+      if (i > 0) {
+        by -= gapBetween / 2;
+        page.drawLine({
+          start: { x: MARGIN + 10, y: by + 4 },
+          end: { x: MARGIN + CONTENT_W - 10, y: by + 4 },
+          thickness: 0.4,
+          color: RULE,
+        });
+        by -= gapBetween / 2;
+      }
+      for (const row of rowsPerAccount[i]) {
+        drawText(page, row.label, MARGIN + 10, by, 7, font, LABEL);
+        drawText(
+          page,
+          fit(font, row.value, 7.5, valueMaxW),
+          valueX,
+          by,
+          7.5,
+          font,
+          TEXT,
+        );
+        by -= lineH;
+      }
+    }
+    y -= panelH + 10;
+  }
 
   drawPageFooter(page, font, fontBold, companyPhone, companyEmail, companyWeb, PAGE_W, CONTENT_W);
 

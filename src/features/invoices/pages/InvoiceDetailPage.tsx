@@ -37,7 +37,8 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 import { invoiceToPdfModel } from '../utils/invoiceToPdfModel';
 import { loadInvoiceJobForPdf } from '../utils/loadInvoiceJobForPdf';
 import { invoiceDisplayNumber } from '../utils/normalizeInvoice';
-import { resolveInvoicePdfCompany } from '../utils/resolveInvoicePdfCompany';
+import { resolveInvoicePdfBankAccountsAsync } from '../utils/resolveInvoicePdfBankAccounts';
+import { resolveInvoicePdfCompanyAsync } from '../utils/resolveInvoicePdfCompany';
 import { buildInvoiceFresaCatalogPath } from '@/features/reports/constants/fresaPdfParity.constants';
 import { buildCatalogHref } from '@/features/reports/utils/moduleCatalogFamily';
 
@@ -166,14 +167,19 @@ export default function InvoiceDetailPage() {
     // Always reload job + containers + port/vessel labels so SHIPMENT DETAILS is dynamic.
     // Default face = KingFisher TAX INVOICE / STATEMENT OF CHARGES (dynamic logo + org + lines).
     const pdfJob = (await loadInvoiceJobForPdf(invoice.job_id)) || job || null;
+    const [company, bankAccounts] = await Promise.all([
+      resolveInvoicePdfCompanyAsync({
+        profile: orgProfile,
+        companyName: companyMatch?.name,
+      }),
+      resolveInvoicePdfBankAccountsAsync(),
+    ]);
     return generateInvoicePdf(
       invoiceToPdfModel(invoice, {
         party,
         job: pdfJob,
-        company: resolveInvoicePdfCompany({
-          profile: orgProfile,
-          companyName: companyMatch?.name,
-        }),
+        company,
+        bankAccounts,
       }),
     );
   };

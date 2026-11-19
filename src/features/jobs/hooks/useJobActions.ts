@@ -844,8 +844,9 @@ export function useJobMilestoneMutations(jobId: string) {
         });
         try {
           const list = await jobService.listMilestones(jobId);
+          // Prefer optimistic PATCH fields (description/notes) when GET lags.
           queryClient.setQueryData<JobMilestone[]>(jobKeys.milestones(jobId), (prev) =>
-            mergeMilestoneLists(list, prev),
+            mergeMilestoneLists(prev, list),
           );
         } catch {
           /* keep optimistic row */

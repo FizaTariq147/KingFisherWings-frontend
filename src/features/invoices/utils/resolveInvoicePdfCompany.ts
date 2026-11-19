@@ -1,4 +1,5 @@
 import type { OrganizationProfile } from '@/features/organization/types/organization.types';
+import { organizationService } from '@/features/organization/services/organization.service';
 import { resolveReportLogoUrl } from '@/features/reports/constants/reportBranding.constants';
 import type { InvoicePdfCompany } from './generateInvoicePdf';
 
@@ -21,13 +22,37 @@ export function resolveInvoicePdfCompany(opts: {
   const web = website
     ? website.replace(/^https?:\/\//i, '').replace(/\/$/, '')
     : '';
+  const logoRaw =
+    profile?.logo_url ||
+    (profile as { logoUrl?: string } | null | undefined)?.logoUrl ||
+    '';
 
   return {
     name: name || undefined,
     phone: profile?.phone?.trim() || undefined,
     email: profile?.email?.trim() || undefined,
     website: web || undefined,
-    logoUrl: resolveReportLogoUrl(profile?.logo_url) || undefined,
+    logoUrl: resolveReportLogoUrl(logoRaw) || undefined,
     tagline: 'FREIGHT - LOGISTICS - GENERAL TRADING',
   };
+}
+
+/**
+ * Prefer a fresh GET /organization/profile so PDF logo/name match Settings → Organization.
+ * Falls back to the cached React Query profile when the request fails.
+ */
+export async function resolveInvoicePdfCompanyAsync(opts: {
+  profile?: OrganizationProfile | null;
+  companyName?: string | null;
+}): Promise<InvoicePdfCompany> {
+  let profile = opts.profile ?? null;
+  try {
+    profile = await organizationService.getProfile();
+  } catch {
+    /* keep cached */
+  }
+  return resolveInvoicePdfCompany({
+    profile,
+    companyName: opts.companyName,
+  });
 }
