@@ -51,6 +51,7 @@ export function invoiceV2Plugin() {
           const org = body.organization || {};
           const outPath = path.join(os.tmpdir(), `invoice-v2-${Date.now()}.pdf`);
           await renderSpec(code, {
+            spec,
             values: filled.values,
             organization: {
               name: org.display_name || org.name || '',
@@ -60,6 +61,7 @@ export function invoiceV2Plugin() {
               website: org.website || '',
             },
             outputPath: outPath,
+            quietArtifacts: true,
           });
           const bytes = fs.readFileSync(outPath);
           fs.rmSync(outPath, { force: true });

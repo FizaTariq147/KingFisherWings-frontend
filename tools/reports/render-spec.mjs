@@ -44,6 +44,7 @@ const {
 const CODE128AUTO = require('jsbarcode/bin/barcodes/CODE128/CODE128_AUTO.js').default;
 const QRCode = require('qrcode');
 import { fontFile, mapFont } from './font-map.mjs';
+import { isAllowlisted } from './allowlist.mjs';
 
 const CHAR_FALLBACK = JSON.parse(fs.readFileSync(path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), 'reports/char-fallback.json'), 'utf8'));
 
@@ -497,7 +498,7 @@ function drawQr(page, image) {
 }
 
 export async function renderSpec(code, options = {}) {
-  const spec = JSON.parse(fs.readFileSync(path.join(root, 'reports/specs', `${code}.json`), 'utf8'));
+  const spec = options.spec || JSON.parse(fs.readFileSync(path.join(root, 'reports/specs', `${code}.json`), 'utf8'));
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
   let pages = spec.pages?.length ? spec.pages : [spec];
@@ -564,6 +565,7 @@ export async function renderSpec(code, options = {}) {
       if (rect.dash?.length) page.pushOperators(restoreDashPattern());
     }
     for (const image of source.images || []) {
+      if (options.values && (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded)) continue;
       if (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded) drawBarcode(page, image);
       if (options.logoPng && image.proposedClass === 'logo' && fs.existsSync(options.logoPng)) {
         const png = await doc.embedPng(fs.readFileSync(options.logoPng));
@@ -583,7 +585,13 @@ export async function renderSpec(code, options = {}) {
       const demo = span.text;
       let text = options.overflow && span.role === 'dynamic' ? replacement(span, spec) : demo;
       let mode = options.overflow ? overflowMode(span, spec) : 'none';
+      if (options.values && Object.prototype.hasOwnProperty.call(options.values, span.id) && options.values[span.id] === '') {
+        continue;
+      }
       if ((options.organization || options.values) && span.role === 'static' && fresaFragment(demo) && !options.values?.[span.id]) {
+        continue;
+      }
+      if (options.values && span.role === 'static' && !options.values[span.id] && !isAllowlisted(demo)) {
         continue;
       }
       if (options.organization && span.role === 'branding') {
@@ -599,6 +607,7 @@ export async function renderSpec(code, options = {}) {
         mode = 'wrap-shrink-clip';
       }
       if (!text) continue;
+      if (Array.isArray(options.painted)) options.painted.push(String(text).replace(/\s+/g, ' ').trim());
       const color = parseColor(span.color);
       const box = Math.max(span.width, 1);
       let size = span.size || 8;
@@ -680,9 +689,11 @@ export async function renderSpec(code, options = {}) {
   const suffix = options.overflow ? '.overflow' : '';
   const outPath = options.outputPath || path.join(outDir, `${code}${suffix}.pdf`);
   fs.writeFileSync(outPath, bytes);
-  fs.writeFileSync(path.join(outDir, `${code}.advances.json`), `${JSON.stringify({ code, patchedAdvances }, null, 2)}\n`);
+  if (!options.quietArtifacts) {
+    fs.writeFileSync(path.join(outDir, `${code}.advances.json`), `${JSON.stringify({ code, patchedAdvances }, null, 2)}\n`);
+  }
   const warnings = overflowLog.filter((entry) => entry.warning);
-  if (options.overflow || warnings.length) {
+  if (!options.quietArtifacts && (options.overflow || warnings.length)) {
     fs.writeFileSync(path.join(outDir, `${code}.overflow.json`), `${JSON.stringify({ code, maxLines: spec.overflowRules?.maxLines, spans: overflowLog, warnings }, null, 2)}\n`);
   }
   return { outPath, overflowLog, warnings };

@@ -35,7 +35,8 @@
     "report:render-spec": "node tools/reports/render-spec.mjs",
     "report:diff-pilot": "node tools/reports/diff-pilot.mjs",
     "report:signoff": "node tools/reports/signoff.mjs",
-    "report:guard-classic": "node tools/reports/guard-classic.mjs"
+    "report:guard-classic": "node tools/reports/guard-classic.mjs",
+    "report:leak-check": "node tools/reports/leak-check.mjs"
   },
   "dependencies": {
     "@formkit/auto-animate": "^0.10.0",
