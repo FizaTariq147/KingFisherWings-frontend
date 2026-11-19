@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { isStoredFileUrl } from '@/features/files/utils/parseFilesApiUrl';
+import { isApiOriginUrl } from '@/lib/safeHttpUrl';
 import { fetchOrganizationLogoBytes } from '@/features/organization/utils/embedOrganizationPdfLogo';
+import { BRAND_LOGO_API } from '../api/brandLogo.api';
 import { DEFAULT_BRAND_LOGO_URL } from '../constants/brandLogo.constants';
 import { resolveBrandLogoUrl } from '../utils/resolveBrandLogoUrl';
 
@@ -18,19 +19,20 @@ function needsAuthFetch(url: string): boolean {
   const trimmed = url.trim();
   if (!trimmed || trimmed === DEFAULT_BRAND_LOGO_URL) return false;
   if (trimmed.startsWith('data:') || trimmed.startsWith('blob:')) return false;
-  return isStoredFileUrl(trimmed) || trimmed.startsWith('/files/') || trimmed.startsWith('/backend/');
+  if (trimmed.startsWith('/')) return true;
+  return isApiOriginUrl(trimmed);
 }
 
 /**
- * Brand mark with dynamic URL + hard fallback to assets/logo.png
- * (also recovers if a remote URL 404s). Auth-fetches `/files/...` logos.
+ * Brand mark with dynamic URL + hard fallback to assets/logo.png.
+ * Auth-fetches org `/files/...` and `/organization/logo` so previews match PDFs.
  */
 export function BrandLogo({
   logoUrl,
   organizationLogoUrl,
   tenantLogoUrl,
   authLogoUrl,
-  alt = 'KingFisher Wings',
+  alt = 'Company logo',
   className,
 }: Props) {
   const resolved = resolveBrandLogoUrl({
@@ -39,28 +41,36 @@ export function BrandLogo({
     tenantLogoUrl,
     authLogoUrl,
   });
-  const [src, setSrc] = useState(resolved);
+  const [src, setSrc] = useState(resolved || DEFAULT_BRAND_LOGO_URL);
 
   useEffect(() => {
     let cancelled = false;
     let objectUrl: string | null = null;
 
     const run = async () => {
-      if (!resolved || resolved === DEFAULT_BRAND_LOGO_URL || !needsAuthFetch(resolved)) {
-        if (!cancelled) setSrc(resolved || DEFAULT_BRAND_LOGO_URL);
+      const target =
+        resolved && resolved !== DEFAULT_BRAND_LOGO_URL
+          ? resolved
+          : BRAND_LOGO_API.organizationLogo;
+
+      if (!needsAuthFetch(target) && resolved && resolved !== DEFAULT_BRAND_LOGO_URL) {
+        if (!cancelled) setSrc(resolved);
         return;
       }
+
       try {
-        const bytes = await fetchOrganizationLogoBytes(resolved);
+        const bytes = await fetchOrganizationLogoBytes(
+          resolved && resolved !== DEFAULT_BRAND_LOGO_URL ? resolved : null,
+        );
         if (cancelled) return;
         if (!bytes || bytes.byteLength === 0) {
-          setSrc(DEFAULT_BRAND_LOGO_URL);
+          setSrc(resolved || DEFAULT_BRAND_LOGO_URL);
           return;
         }
         objectUrl = URL.createObjectURL(new Blob([bytes]));
         setSrc(objectUrl);
       } catch {
-        if (!cancelled) setSrc(DEFAULT_BRAND_LOGO_URL);
+        if (!cancelled) setSrc(resolved || DEFAULT_BRAND_LOGO_URL);
       }
     };
 

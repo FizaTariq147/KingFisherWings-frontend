@@ -1,8 +1,8 @@
 import { axiosInstance } from '@/lib/axios';
 import { isApiOriginUrl } from '@/lib/safeHttpUrl';
-import { filesService } from '@/features/files/services/files.service';
 import { parseFilesApiUrl } from '@/features/files/utils/parseFilesApiUrl';
 import { resolveProductFallbackLogoUrl } from '@/features/reports/constants/reportBranding.constants';
+import { BRAND_LOGO_API } from '@/features/branding/api/brandLogo.api';
 import type { PDFDocument, PDFImage } from 'pdf-lib';
 
 export type EmbeddedPdfLogo = {
@@ -35,19 +35,10 @@ export function repairOrganizationLogoUrl(logoUrl?: string | null): string {
     ) {
       return parsed.pathname + parsed.search;
     }
-    if (
-      parsed.hostname &&
-      /^files\./i.test(parsed.hostname) === false &&
-      parsed.pathname.startsWith('/files/')
-    ) {
-      // Normal absolute API URL — keep as-is
-      return trimmed;
-    }
   } catch {
     /* not absolute */
   }
 
-  // https://files/tenant/file.png (host=files) from prefixing relative "files/..."
   const hostFiles = trimmed.match(/^https?:\/\/files\/(.+)$/i);
   if (hostFiles?.[1]) return `/files/${hostFiles[1]}`;
 
@@ -107,6 +98,18 @@ function sniffMime(bytes: ArrayBuffer): string | undefined {
   return undefined;
 }
 
+/** Reject JSON/HTML error bodies that arrived as arraybuffers. */
+function looksLikeImageBytes(bytes: ArrayBuffer): boolean {
+  if (!bytes || bytes.byteLength < 24) return false;
+  if (sniffMime(bytes)) return true;
+  const head = new TextDecoder().decode(new Uint8Array(bytes.slice(0, 32))).trimStart();
+  if (head.startsWith('{') || head.startsWith('<!DOCTYPE') || head.startsWith('<html')) {
+    return false;
+  }
+  // Unknown binary — still try rasterize (some CDNs omit magic in odd wrappers).
+  return bytes.byteLength > 256;
+}
+
 async function canvasToPngBytes(
   source: CanvasImageSource,
   width: number,
@@ -127,15 +130,14 @@ async function canvasToPngBytes(
 }
 
 /**
- * pdf-lib only embeds PNG/JPEG. Rasterize WebP/SVG (and other browser-decodable
- * formats) to PNG via canvas so organization WebP logos still appear on PDFs.
+ * pdf-lib only embeds PNG/JPEG. Rasterize WebP/SVG to PNG via canvas so
+ * organization WebP logos still appear on invoice/quotation/credit/debit PDFs.
  */
 async function rasterizeToPngBytes(bytes: ArrayBuffer): Promise<ArrayBuffer | null> {
   if (typeof document === 'undefined') return null;
   const mime = sniffMime(bytes) || 'application/octet-stream';
   const blob = new Blob([bytes], { type: mime });
 
-  // createImageBitmap handles WebP reliably in Chromium/Edge/Firefox.
   if (typeof createImageBitmap === 'function') {
     try {
       const bitmap = await createImageBitmap(blob);
@@ -170,45 +172,43 @@ async function rasterizeToPngBytes(bytes: ArrayBuffer): Promise<ArrayBuffer | nu
   }
 }
 
-/**
- * Load organization logo bytes for client PDF embedding.
- * Supports data URLs, authenticated `/files/{tenant}/{file}` paths, API-origin
- * relative/absolute URLs (Bearer via axios), and public https CDNs.
- */
-export async function fetchOrganizationLogoBytes(
-  logoUrl?: string | null,
-): Promise<ArrayBuffer | null> {
-  const trimmed = repairOrganizationLogoUrl(logoUrl);
+async function axiosGetBytes(pathOrUrl: string): Promise<ArrayBuffer | null> {
+  try {
+    const res = await axiosInstance.get<ArrayBuffer>(toAxiosPath(pathOrUrl), {
+      responseType: 'arraybuffer',
+      skipErrorToast: true,
+    } as Parameters<typeof axiosInstance.get>[1]);
+    const data = res.data;
+    if (!data || !(data instanceof ArrayBuffer) || data.byteLength < 24) return null;
+    if (!looksLikeImageBytes(data)) return null;
+    return data;
+  } catch {
+    return null;
+  }
+}
+
+async function fetchOneLogoCandidate(url: string): Promise<ArrayBuffer | null> {
+  const trimmed = repairOrganizationLogoUrl(url);
   if (!trimmed) return null;
 
   if (trimmed.startsWith('data:image/')) {
     return dataUrlToBytes(trimmed);
   }
 
-  const stored = parseFilesApiUrl(trimmed);
-  if (stored) {
-    try {
-      const blob = await filesService.downloadBlob({
-        tenantId: stored.tenantId,
-        filename: stored.filename,
-      });
-      return await blob.arrayBuffer();
-    } catch {
-      /* try axios / fetch below */
-    }
-  }
+  // Authenticated API paths first (Bearer) — covers /files/... and /organization/logo.
+  if (isApiOriginUrl(trimmed) || trimmed.startsWith('/')) {
+    const viaAxios = await axiosGetBytes(trimmed);
+    if (viaAxios) return viaAxios;
 
-  if (isApiOriginUrl(trimmed)) {
-    try {
-      const res = await axiosInstance.get<ArrayBuffer>(toAxiosPath(trimmed), {
-        responseType: 'arraybuffer',
-        skipErrorToast: true,
-      } as Parameters<typeof axiosInstance.get>[1]);
-      if (res.data && (res.data as ArrayBuffer).byteLength > 0) {
-        return res.data;
-      }
-    } catch {
-      /* try fetch */
+    // Nested /files/{tenant}/... — try encoded path form explicitly.
+    const stored = parseFilesApiUrl(trimmed);
+    if (stored) {
+      const encoded = `/files/${encodeURIComponent(stored.tenantId)}/${stored.filename
+        .split('/')
+        .map((s) => encodeURIComponent(s))
+        .join('/')}`;
+      const viaFiles = await axiosGetBytes(encoded);
+      if (viaFiles) return viaFiles;
     }
   }
 
@@ -222,10 +222,35 @@ export async function fetchOrganizationLogoBytes(
       credentials: isApiOriginUrl(trimmed) ? 'include' : 'omit',
     });
     if (!res.ok) return null;
-    return await res.arrayBuffer();
+    const bytes = await res.arrayBuffer();
+    return looksLikeImageBytes(bytes) ? bytes : null;
   } catch {
     return null;
   }
+}
+
+/**
+ * Load organization logo bytes for client PDF embedding.
+ * Tries profile `logo_url`, then GET `/organization/logo` (upload endpoint binary).
+ */
+export async function fetchOrganizationLogoBytes(
+  logoUrl?: string | null,
+): Promise<ArrayBuffer | null> {
+  const candidates: string[] = [];
+  const repaired = repairOrganizationLogoUrl(logoUrl);
+  if (repaired) candidates.push(repaired);
+  // Uploaded org logos are often served here even when profile.logo_url is empty/stale.
+  candidates.push(BRAND_LOGO_API.organizationLogo);
+
+  const seen = new Set<string>();
+  for (const candidate of candidates) {
+    const key = candidate.trim();
+    if (!key || seen.has(key)) continue;
+    seen.add(key);
+    const bytes = await fetchOneLogoCandidate(key);
+    if (bytes) return bytes;
+  }
+  return null;
 }
 
 async function embedPngOrJpg(
@@ -253,7 +278,7 @@ async function embedBytes(
   maxHeight: number,
 ): Promise<EmbeddedPdfLogo | null> {
   const mime = sniffMime(bytes);
-  // WebP/SVG (and unknown) → rasterize to PNG first so org WebP logos show on PDFs.
+  // WebP/SVG → rasterize to PNG first so org WebP logos show on PDFs.
   if (mime === 'image/webp' || mime === 'image/svg+xml' || !mime) {
     const rasterized = await rasterizeToPngBytes(bytes);
     if (rasterized) {
@@ -272,8 +297,8 @@ async function embedBytes(
 
 /**
  * Embed the registered organization logo into a pdf-lib document.
- * When `preferredLogoUrl` is set, never substitute the product KF asset on failure.
- * Product fallback is only used when no organization logo URL was provided.
+ * Always attempts org logo (profile URL + `/organization/logo`). Product asset
+ * is only used when no organization logo bytes can be loaded.
  */
 export async function embedOrganizationPdfLogo(
   doc: PDFDocument,
@@ -284,14 +309,11 @@ export async function embedOrganizationPdfLogo(
   const preferred = repairOrganizationLogoUrl(preferredLogoUrl);
   const allowProductFallback = opts?.allowProductFallback !== false;
 
-  if (preferred) {
-    const bytes = await fetchOrganizationLogoBytes(preferred);
-    if (bytes) {
-      const embedded = await embedBytes(doc, bytes, maxHeight);
-      if (embedded) return embedded;
-    }
-    // Org logo was registered but could not be loaded — leave blank (do not show KF asset as tenant).
-    return { image: null, width: 0, height: 0 };
+  // Always try org logo sources (URL and/or GET /organization/logo).
+  const orgBytes = await fetchOrganizationLogoBytes(preferred || null);
+  if (orgBytes) {
+    const embedded = await embedBytes(doc, orgBytes, maxHeight);
+    if (embedded) return embedded;
   }
 
   if (!allowProductFallback) {
@@ -300,7 +322,7 @@ export async function embedOrganizationPdfLogo(
 
   const fallback = resolveProductFallbackLogoUrl();
   if (!fallback) return { image: null, width: 0, height: 0 };
-  const bytes = await fetchOrganizationLogoBytes(fallback);
+  const bytes = await fetchOneLogoCandidate(fallback);
   if (!bytes) return { image: null, width: 0, height: 0 };
   return (await embedBytes(doc, bytes, maxHeight)) ?? { image: null, width: 0, height: 0 };
 }
