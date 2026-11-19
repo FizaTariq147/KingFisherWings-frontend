@@ -43,8 +43,23 @@ function normalizeUrl(value: unknown): unknown {
   if (typeof value !== 'string') return value;
   const trimmed = value.trim();
   if (!trimmed) return trimmed;
+  // Absolute / relative API paths (e.g. /files/{tenant}/logo.png) — do not prefix https://
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) return trimmed;
   if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return trimmed;
   return `https://${trimmed}`;
+}
+
+/** Accept http(s) URLs or app/API-absolute paths used for org logos. */
+function isHttpUrlOrAppPath(value: string): boolean {
+  if (value.startsWith('/') && !value.startsWith('//') && value.length > 1) {
+    return !/\s/.test(value);
+  }
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === 'http:' || parsed.protocol === 'https:';
+  } catch {
+    return false;
+  }
 }
 
 /** Generic trimmed text (addresses, notes, etc.). */
@@ -376,7 +391,12 @@ export function optionalUrlOrEmpty() {
       if (v == null || v === '') return '';
       return normalizeUrl(typeof v === 'string' ? v.trim() : v);
     },
-    z.union([z.literal(''), z.string().url(V.url)]),
+    z.union([
+      z.literal(''),
+      z
+        .string()
+        .refine(isHttpUrlOrAppPath, V.url),
+    ]),
   );
 }
 

@@ -71,13 +71,25 @@ export function normalizePaginationMeta(
   return { page: p, limit: l, total, totalPages };
 }
 
+function repairStoredLogoUrl(raw: string): string {
+  const trimmed = raw.trim();
+  if (!trimmed) return '';
+  const triple = trimmed.match(/^https?:\/\/\/(.+)$/i);
+  if (triple?.[1] && /^(files|backend)\//i.test(triple[1])) {
+    return `/${triple[1]}`;
+  }
+  const hostFiles = trimmed.match(/^https?:\/\/files\/(.+)$/i);
+  if (hostFiles?.[1]) return `/files/${hostFiles[1]}`;
+  return trimmed;
+}
+
 export function normalizeOrganizationProfile(raw: unknown): OrganizationProfile {
   const data = asRecord(unwrapEntity(raw)) ?? {};
   return {
     id: str(data.id),
     name: str(data.name),
     display_name: str(data.display_name ?? data.displayName),
-    logo_url: str(data.logo_url ?? data.logoUrl),
+    logo_url: repairStoredLogoUrl(str(data.logo_url ?? data.logoUrl)),
     primary_color: str(data.primary_color ?? data.primaryColor),
     website: str(data.website),
     address: str(data.address),
