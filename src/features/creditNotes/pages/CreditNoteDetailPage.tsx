@@ -22,7 +22,7 @@ import {
 import { commercialNoteToPdfModel } from '@/features/invoices/utils/commercialNoteToPdfModel';
 import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
 import { loadInvoiceJobForPdf } from '@/features/invoices/utils/loadInvoiceJobForPdf';
-import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
+import { resolveInvoicePdfCompanyAsync } from '@/features/invoices/utils/resolveInvoicePdfCompany';
 import { useJob } from '@/features/jobs/hooks/useJobs';
 import { jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
 import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
@@ -148,15 +148,16 @@ export default function CreditNoteDetailPage() {
     setPdfReadyOpen(true);
     try {
       const pdfJob = (await loadInvoiceJobForPdf(creditNote.job_id)) || linkedJob || null;
+      const company = await resolveInvoicePdfCompanyAsync({
+        profile: orgProfile,
+        companyName: companyMatch?.name,
+      });
       const blob = await generateInvoicePdf(
         commercialNoteToPdfModel(creditNote, 'credit', {
           party,
           job: pdfJob,
           displayNumber: noteNumber,
-          company: resolveInvoicePdfCompany({
-            profile: orgProfile,
-            companyName: companyMatch?.name,
-          }),
+          company,
         }),
       );
       setPdfReadyBlob(blob);

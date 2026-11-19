@@ -1,7 +1,6 @@
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
-import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
-import { organizationService } from '@/features/organization/services/organization.service';
+import { resolveInvoicePdfCompanyAsync } from '@/features/invoices/utils/resolveInvoicePdfCompany';
 import { generateAccountStatementPdf } from '@/features/shared/account-statement/generateAccountStatementPdf';
 import type { StatementReportResult } from '../types/arApAging.types';
 
@@ -31,12 +30,9 @@ export async function downloadGlStatementPdf(
     .slice(0, 48);
   const filename = `${kind === 'ar' ? 'Customer' : 'Vendor'}-Statement-${safeParty}-${asOf}.pdf`;
 
-  let profile = null;
-  try {
-    profile = await organizationService.getProfile();
-  } catch {
-    profile = null;
-  }
+  const company = await resolveInvoicePdfCompanyAsync({
+    companyName: options?.companyName,
+  });
 
   const blob = await generateAccountStatementPdf({
     title,
@@ -58,10 +54,7 @@ export async function downloadGlStatementPdf(
       credit: line.credit,
       balance: line.balance,
     })),
-    company: resolveInvoicePdfCompany({
-      profile,
-      companyName: options?.companyName,
-    }),
+    company,
   });
 
   const typed = new Blob([await blob.arrayBuffer()], { type: 'application/pdf' });

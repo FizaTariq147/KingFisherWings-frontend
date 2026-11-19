@@ -1114,29 +1114,61 @@ export function normalizePublicTrack(
     .filter((m): m is PublicTrackMilestone => Boolean(m))
     .filter((m) => !isTrackTimelineNoise(m));
 
-  // Enrich descriptions from a parallel milestones catalog when history rows omit them.
-  const catalogRaw = unwrapArray(
-    body.milestones,
+  // Enrich descriptions from milestone catalogs when history/timeline rows omit them.
+  // Merge every candidate source — unwrapArray alone would stop at the first non-empty
+  // list (often tracking history without customer descriptions).
+  const catalogSources: unknown[] = [
+    body.job_milestones,
+    body.jobMilestones,
     body.custom_milestones,
     body.customMilestones,
     asRecord(body.job)?.milestones,
-  );
-  if (catalogRaw.length) {
-    const byKey = new Map<string, string>();
-    for (let i = 0; i < catalogRaw.length; i += 1) {
-      const cat = normalizePublicMilestone(catalogRaw[i], i);
+    asRecord(body.job)?.custom_milestones,
+    body.milestones,
+  ];
+  const byKey = new Map<string, string>();
+  const registerCatalogKey = (raw: unknown, text: string) => {
+    const base = String(raw || '').trim();
+    if (!base) return;
+    const upper = base.toUpperCase();
+    byKey.set(upper, text);
+    byKey.set(upper.replace(/[\s_-]+/g, ' ').trim(), text);
+    byKey.set(upper.replace(/[\s-]+/g, '_'), text);
+  };
+  for (const source of catalogSources) {
+    const rows = Array.isArray(source)
+      ? source
+      : unwrapArray(source);
+    for (let i = 0; i < rows.length; i += 1) {
+      const cat = normalizePublicMilestone(rows[i], i);
       if (!cat?.description) continue;
-      const key = String(cat.move || cat.label || cat.id)
-        .trim()
-        .toUpperCase();
-      if (key) byKey.set(key, cat.description);
+      registerCatalogKey(cat.move, cat.description);
+      registerCatalogKey(cat.label, cat.description);
+      registerCatalogKey(cat.id, cat.description);
+      const raw = asRecord(rows[i]);
+      if (raw) {
+        registerCatalogKey(raw.milestone_key ?? raw.milestoneKey, cat.description);
+        registerCatalogKey(raw.milestone_code ?? raw.milestoneCode, cat.description);
+        registerCatalogKey(
+          typeof raw.milestone === 'string' ? raw.milestone : undefined,
+          cat.description,
+        );
+      }
     }
+  }
+  if (byKey.size) {
     for (const m of milestones) {
       if (m.description) continue;
-      const key = String(m.move || m.label || m.id)
-        .trim()
-        .toUpperCase();
-      const fromCatalog = byKey.get(key);
+      const candidates = [m.move, m.label, m.id];
+      let fromCatalog: string | undefined;
+      for (const c of candidates) {
+        const upper = String(c || '').trim().toUpperCase();
+        fromCatalog =
+          byKey.get(upper) ||
+          byKey.get(upper.replace(/[\s_-]+/g, ' ').trim()) ||
+          byKey.get(upper.replace(/[\s-]+/g, '_'));
+        if (fromCatalog) break;
+      }
       if (fromCatalog) {
         m.description = fromCatalog;
         m.summary = m.summary || fromCatalog;

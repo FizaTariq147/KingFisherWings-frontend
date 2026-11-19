@@ -1,6 +1,5 @@
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
-import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
-import { organizationService } from '@/features/organization/services/organization.service';
+import { resolveInvoicePdfCompanyAsync } from '@/features/invoices/utils/resolveInvoicePdfCompany';
 import type { OrganizationProfile } from '@/features/organization/types/organization.types';
 import { partyService } from '@/features/parties/services/party.service';
 import { isUuid } from '@/lib/isUuid';
@@ -38,21 +37,14 @@ export async function ensureQuotationEmailPdf(opts: {
     }
   }
 
-  let profile = opts.orgProfile ?? null;
-  if (!profile) {
-    try {
-      profile = await organizationService.getProfile();
-    } catch {
-      profile = null;
-    }
-  }
+  const company = await resolveInvoicePdfCompanyAsync({
+    profile: opts.orgProfile,
+    companyName: opts.companyName,
+  });
 
   const blob = await generateQuotationPdf({
     quotation,
-    company: resolveInvoicePdfCompany({
-      profile,
-      companyName: opts.companyName,
-    }),
+    company,
   });
   const fileName = formatPdfFilename(quotationDisplayNumber(quotation), 'quotation');
 

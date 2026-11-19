@@ -767,9 +767,19 @@ export function normalizeMilestone(raw: unknown): JobMilestone | null {
     actual_date,
     completed_at,
     description:
-      pickString(r, 'description', 'milestone_description', 'milestoneDescription') || undefined,
+      pickString(
+        r,
+        'description',
+        'milestone_description',
+        'milestoneDescription',
+        'customer_description',
+        'customerDescription',
+        'notes',
+        'remark',
+        'remarks',
+      ) || undefined,
     is_completed: milestoneIsCompleted(r),
-    notes: pickString(r, 'notes') || undefined,
+    notes: pickString(r, 'notes', 'description') || undefined,
   };
 }
 

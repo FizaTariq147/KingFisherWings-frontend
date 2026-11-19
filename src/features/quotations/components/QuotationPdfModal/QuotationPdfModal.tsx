@@ -6,7 +6,7 @@ import { PdfReadyModal } from '@/features/files/components/PdfReadyModal';
 import { formatPdfFilename } from '@/features/files/utils/pdfFilename';
 import { quotationPdfBranding } from '@/features/files/utils/pdfBranding';
 import { useOrganizationProfile } from '@/features/organization/hooks/useOrganizationProfile';
-import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
+import { resolveInvoicePdfCompanyAsync } from '@/features/invoices/utils/resolveInvoicePdfCompany';
 import { useAuthStore } from '@/store/authStore';
 import { useTenantCompanies } from '@/features/users/hooks/useTenantCompanies';
 import { PDF_MODES, type PdfMode } from '../../constants/quotation.constants';
@@ -134,16 +134,6 @@ export function QuotationPdfModal({
   const pdfBranding = quotationPdfBranding(quotationNumber, quotationDate);
   const busy = Boolean(isPending || clientPending);
 
-  const companyForPdf = useMemo(() => {
-    const match =
-      companies.find((c) => c.id && quotation?.company_id && c.id === quotation.company_id) ||
-      companies[0];
-    return resolveInvoicePdfCompany({
-      profile: orgProfile,
-      companyName: match?.name,
-    });
-  }, [companies, orgProfile, quotation?.company_id]);
-
   const closeReady = () => {
     setReadyOpen(false);
     setReadyUrl(null);
@@ -155,9 +145,16 @@ export function QuotationPdfModal({
     if (!quotation) {
       throw new Error('Quotation data is required to generate the KingFisher PDF.');
     }
+    const match =
+      companies.find((c) => c.id && quotation.company_id && c.id === quotation.company_id) ||
+      companies[0];
+    const company = await resolveInvoicePdfCompanyAsync({
+      profile: orgProfile,
+      companyName: match?.name,
+    });
     return generateQuotationPdf({
       quotation,
-      company: companyForPdf,
+      company,
       generatedBy: user?.email || user?.name || undefined,
       confirmNote: mode === 'CUSTOMER' ? 'Please confirm the quote.' : undefined,
     });
