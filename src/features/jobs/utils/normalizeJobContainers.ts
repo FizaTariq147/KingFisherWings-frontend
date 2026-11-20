@@ -156,31 +156,49 @@ export function pickJobContainerDisplay(
   containers?: JobContainer[] | null,
   fallback?: { number?: string; status?: string },
 ): JobContainerDisplay | null {
+  return listJobContainerDisplays(containers, fallback)[0] ?? null;
+}
+
+/**
+ * All distinct container numbers for a job (ACTUAL preferred over PLANNED duplicates).
+ * Used by dashboard Active Shipments when a job has more than one container.
+ */
+export function listJobContainerDisplays(
+  containers?: JobContainer[] | null,
+  fallback?: { number?: string; status?: string },
+): JobContainerDisplay[] {
   const list = containers ?? [];
   const withNumber = (c: JobContainer) => Boolean(c.container_number?.trim());
-  const actual = list.find((c) => c.container_kind === 'ACTUAL' && withNumber(c));
-  const planned = list.find((c) => c.container_kind === 'PLANNED' && withNumber(c));
-  const anyNumbered = list.find(withNumber);
-  const anyActual = list.find((c) => c.container_kind === 'ACTUAL');
-  const anyPlanned = list.find((c) => c.container_kind === 'PLANNED');
-  const picked = actual ?? planned ?? anyNumbered ?? anyActual ?? anyPlanned ?? list[0];
+  const actualNumbered = list.filter((c) => c.container_kind === 'ACTUAL' && withNumber(c));
+  const source = actualNumbered.length > 0 ? actualNumbered : list.filter(withNumber);
 
-  const number =
-    picked?.container_number?.trim() ||
-    fallback?.number?.trim() ||
-    '';
-  // Prefer catalog status_code, then enum status, then job-level fallback (show-all).
-  const status =
-    String(picked?.status_code ?? picked?.status ?? '').trim() ||
-    fallback?.status?.trim() ||
-    '';
+  const seen = new Set<string>();
+  const out: JobContainerDisplay[] = [];
+  for (const c of source) {
+    const number = c.container_number?.trim() || '';
+    if (!number) continue;
+    const key = number.toUpperCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push({
+      number,
+      status: String(c.status_code ?? c.status ?? '').trim(),
+      kind: c.container_kind,
+    });
+  }
 
-  if (!number && !status) return null;
-  return {
-    number,
-    status,
-    kind: picked?.container_kind,
-  };
+  if (
+    out.length === 0 &&
+    (fallback?.number?.trim() || fallback?.status?.trim())
+  ) {
+    out.push({
+      number: fallback?.number?.trim() || '',
+      status: fallback?.status?.trim() || '',
+    });
+  }
+
+  // If we only have status fallback rows with empty numbers, drop empties without status.
+  return out.filter((row) => row.number || row.status);
 }
 
 export interface ContainerFillInfo {

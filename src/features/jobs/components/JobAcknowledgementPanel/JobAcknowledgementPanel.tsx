@@ -20,7 +20,8 @@ import {
 } from '@/features/files/utils/triggerBlobDownload';
 import { ApiDataView } from '../ApiDataView';
 import { jobService } from '../../services/job.service';
-import { jobKeys, useJobContainers } from '../../hooks/useJobs';
+import { jobKeys, useJob, useJobContainers } from '../../hooks/useJobs';
+import { isAirwayBillJobType } from '../../utils/jobDetailTabs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
 import type { DeliveryAcknowledgement } from '../../types/job.types';
 
@@ -49,13 +50,20 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
+  const { data: job } = useJob(jobId);
   const { data: containers = [], isLoading: containersLoading } = useJobContainers(jobId);
+  const isAir = isAirwayBillJobType(job?.job_type);
+  /** Air jobs use the containers API as MAWB rows — label only; wire still uses container_id. */
+  const unitLabel = isAir ? 'MAWB' : 'Container';
+  const unitLabelLower = isAir ? 'MAWB' : 'container';
 
   const [containerId, setContainerId] = useState('');
   const [message, setMessage] = useState('');
   const [files, setFiles] = useState<File[]>([]);
   const [proofFiles, setProofFiles] = useState<File[]>([]);
   const [receiveNotes, setReceiveNotes] = useState('');
+  /** Session fallback when BE still returns one job-wide ack without container_id. */
+  const [sentContainerIds, setSentContainerIds] = useState<Set<string>>(() => new Set());
 
   const containerOptions = useMemo(
     () =>
@@ -85,7 +93,32 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
       (!hasContainers || isUuid(containerId)),
   });
 
-  const ack: DeliveryAcknowledgement | undefined = query.data;
+  const rawAck: DeliveryAcknowledgement | undefined = query.data;
+  /**
+   * Scope UI to the selected container so a 2nd/3rd container still gets
+   * "Message to customer" even if GET returns another container's (or job-wide) row.
+   */
+  const ack: DeliveryAcknowledgement | undefined = useMemo(() => {
+    if (!rawAck) return undefined;
+    if (!hasContainers || !isUuid(containerId)) return rawAck;
+    const ackCid = String(rawAck.container_id ?? '').trim();
+    if (ackCid && isUuid(ackCid) && ackCid !== containerId) {
+      return undefined;
+    }
+    // Job-wide row (no container_id): only apply to containers already sent this session.
+    if (
+      !ackCid &&
+      containerOptions.length > 1 &&
+      !sentContainerIds.has(containerId) &&
+      Boolean(rawAck.id) &&
+      String(rawAck.status || '').toUpperCase() !== 'DRAFT' &&
+      String(rawAck.status || '') !== ''
+    ) {
+      return undefined;
+    }
+    return rawAck;
+  }, [rawAck, hasContainers, containerId, containerOptions.length, sentContainerIds]);
+
   const status = (ack?.status || 'DRAFT').toUpperCase();
   const customerMarked =
     ack?.customer_marked_received === true ||
@@ -134,7 +167,7 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   const send = useMutation({
     mutationFn: (opts?: { proofOnly?: boolean; proof?: File[] }) => {
       if (containerRequired && !isUuid(containerId)) {
-        throw new Error('Select a container before sending acknowledgement.');
+        throw new Error(`Select a ${unitLabelLower} before sending acknowledgement.`);
       }
       return jobService.sendAcknowledgement(jobId, {
         ...(opts?.proofOnly
@@ -150,10 +183,23 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
             }),
       });
     },
-    onSuccess: (data) => {
+    onSuccess: (data, vars) => {
+      if (!vars?.proofOnly && isUuid(containerId)) {
+        setSentContainerIds((prev) => {
+          const next = new Set(prev);
+          next.add(containerId);
+          return next;
+        });
+      }
+      const scoped =
+        data?.container_id && isUuid(data.container_id)
+          ? data
+          : isUuid(containerId)
+            ? { ...data, container_id: containerId }
+            : data;
       qc.setQueryData(
         [...jobKeys.all, 'acknowledgement', jobId, containerId || 'none'],
-        data,
+        scoped,
       );
       void qc.invalidateQueries({
         queryKey: [...jobKeys.all, 'acknowledgement', jobId],
@@ -271,11 +317,25 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
 
   useEffect(() => {
     // Seed from ack only when user has not picked a container yet.
-    if (!ack?.container_id || containerId) return;
-    if (containerOptions.some((o) => o.value === ack.container_id)) {
-      setContainerId(ack.container_id);
+    if (!rawAck?.container_id || containerId) return;
+    if (containerOptions.some((o) => o.value === rawAck.container_id)) {
+      setContainerId(rawAck.container_id);
     }
-  }, [ack?.container_id, containerId, containerOptions]);
+  }, [rawAck?.container_id, containerId, containerOptions]);
+
+  // Remember containers already acknowledged when GET returns a matching container_id.
+  useEffect(() => {
+    const cid = String(rawAck?.container_id ?? '').trim();
+    if (!isUuid(cid)) return;
+    const st = String(rawAck?.status ?? '').toUpperCase();
+    if (!st || st === 'DRAFT') return;
+    setSentContainerIds((prev) => {
+      if (prev.has(cid)) return prev;
+      const next = new Set(prev);
+      next.add(cid);
+      return next;
+    });
+  }, [rawAck?.container_id, rawAck?.status]);
 
   const firstSendDisabled =
     send.isPending ||
@@ -324,7 +384,7 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
 
         {hasContainers && !isUuid(containerId) && containerOptions.length > 1 ? (
           <p className="text-[13px] text-[var(--color-neutral-500)]">
-            Select a container to load or send its acknowledgement.
+            Select a {unitLabelLower} to load or send its acknowledgement.
           </p>
         ) : null}
 
@@ -333,7 +393,7 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
             Sent to customer — waiting for them to mark received in the portal.
             {ack?.sent_at ? ` Sent at ${ack.sent_at}.` : ''}
             {fieldsLocked
-              ? ' Message and container are locked; you can still attach proof or resend with a file.'
+              ? ` Message and ${unitLabelLower} are locked; you can still attach proof or resend with a file.`
               : ''}
           </p>
         ) : null}
@@ -353,7 +413,7 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
             <p className="mt-1 whitespace-pre-wrap text-[13px] text-[#0f172a]">{adminText}</p>
             {ack?.container_id ? (
               <p className="mt-1 text-[12px] text-[#64748b]">
-                Container:{' '}
+                {unitLabel}:{' '}
                 {containerOptions.find((o) => o.value === ack.container_id)?.label ||
                   ack.container_id.slice(0, 8)}
               </p>
@@ -405,7 +465,8 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
         {hasContainers ? (
           <label className="block text-sm">
             <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-              Container{containerRequired ? ' *' : ''}
+              {unitLabel}
+              {containerRequired ? ' *' : ''}
             </span>
             <select
               className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
@@ -419,7 +480,7 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
               disabled={containersLoading}
             >
               {containerOptions.length > 1 ? (
-                <option value="">Select container…</option>
+                <option value="">Select {unitLabelLower}…</option>
               ) : null}
               {containerOptions.map((opt) => (
                 <option key={opt.value} value={opt.value}>
@@ -428,7 +489,8 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
               ))}
             </select>
             <p className="mt-1 text-[11px] text-[var(--color-neutral-400)]">
-              Acknowledgement is sent per container. Switch container to view or send another.
+              Acknowledgement is sent per {unitLabelLower}. Switch {unitLabelLower} to view or send
+              another.
             </p>
           </label>
         ) : null}
@@ -437,8 +499,8 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
           <div className="grid gap-3 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] p-3 sm:grid-cols-2">
             <p className="sm:col-span-2 text-[12px] text-[#64748b]">
               Compose a written acknowledgement for the customer
-              {hasContainers ? ' for the selected container' : ''}. After the first send, message
-              and container lock; proof can still be attached later.
+              {hasContainers ? ` for the selected ${unitLabelLower}` : ''}. After the first send,
+              message and {unitLabelLower} lock; proof can still be attached later.
             </p>
             <label className="block text-sm sm:col-span-2">
               <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
