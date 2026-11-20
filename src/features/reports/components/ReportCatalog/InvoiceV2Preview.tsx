@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { PdfViewerModal } from '@/features/files/components/PdfViewerModal';
 import { usePdfViewer } from '@/features/files/hooks/usePdfViewer';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
+import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
+import { invoiceToPdfModel } from '@/features/invoices/utils/invoiceToPdfModel';
+import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
+import type { OrganizationProfile } from '@/features/organization/types/organization.types';
 import { fetchOrganizationLogoBytes } from '@/features/organization/utils/embedOrganizationPdfLogo';
 import { jobService } from '@/features/jobs/services/job.service';
 import { organizationService } from '@/features/organization/services/organization.service';
@@ -35,13 +39,20 @@ export function InvoiceV2Preview({ code, invoiceId }: Props) {
       return;
     }
     (async () => {
+      let invoice: Awaited<ReturnType<typeof invoiceService.getById>> | null = null;
+      let job: Awaited<ReturnType<typeof jobService.getById>> | null = null;
+      let party: Awaited<ReturnType<typeof partyService.getById>> | null = null;
+      let organization: OrganizationProfile | null = null;
       try {
-        const invoice = await invoiceService.getById(invoiceId);
-        const [job, party, organization] = await Promise.all([
+        invoice = await invoiceService.getById(invoiceId);
+        const loaded = await Promise.all([
           invoice.job_id && isUuid(invoice.job_id) ? jobService.getById(invoice.job_id).catch(() => null) : null,
           invoice.party_id && isUuid(invoice.party_id) ? partyService.getById(invoice.party_id).catch(() => null) : null,
           organizationService.getProfile().catch(() => null),
         ]);
+        job = loaded[0];
+        party = loaded[1];
+        organization = loaded[2] as OrganizationProfile | null;
         const profile = organization as { logo_url?: string; logoUrl?: string } | null;
         const logoBytes = await fetchOrganizationLogoBytes(profile?.logo_url || profile?.logoUrl || null);
         let logoBase64: string | undefined;
@@ -57,7 +68,19 @@ export function InvoiceV2Preview({ code, invoiceId }: Props) {
         if (cancelled) return;
         viewer.showBlob(blob, { fileName: `${code}.pdf`, title: code });
       } catch {
-        if (!cancelled) setNotice(INVOICE_V2_FALLBACK_NOTICE);
+        if (cancelled || !invoice) {
+          if (!cancelled) setNotice(INVOICE_V2_FALLBACK_NOTICE);
+          return;
+        }
+        try {
+          const company = resolveInvoicePdfCompany({ profile: organization });
+          const classic = await generateInvoicePdf(invoiceToPdfModel(invoice, { party, job, company }));
+          if (cancelled) return;
+          setNotice(INVOICE_V2_FALLBACK_NOTICE);
+          viewer.showBlob(classic, { fileName: 'invoice.pdf', title: 'Classic invoice' });
+        } catch {
+          if (!cancelled) setNotice(INVOICE_V2_FALLBACK_NOTICE);
+        }
       }
     })();
     return () => {

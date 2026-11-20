@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateWithFallback, shouldUseInvoiceV2 } from './invoiceV2Gate';
+import { generateInvoicePdfChoice, generateWithFallback, INVOICE_V2_FALLBACK_NOTICE, shouldUseInvoiceV2 } from './invoiceV2Gate';
 import { readDefaultPdfStyle } from './reportsEngine';
 import type { Invoice } from '@/features/invoices/types/invoice.types';
 import { valueForInvoiceBinding } from './invoiceReportContract';
@@ -35,6 +35,35 @@ describe('invoice v2 gate', () => {
         style: 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA',
       })).toBe(false);
     }
+  });
+
+  it('Generate PDF falls back to classic and shows a notice when the selected style throws', async () => {
+    const style = 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE';
+    let classicCalls = 0;
+    const result = await generateInvoicePdfChoice({
+      engine: 'v2',
+      style,
+      renderV2: async () => {
+        throw new Error('forced v2 failure');
+      },
+      renderClassic: async () => {
+        classicCalls += 1;
+        return new Blob(['classic-pdf']);
+      },
+    });
+    expect(classicCalls).toBe(1);
+    expect(result.notice).toBe(INVOICE_V2_FALLBACK_NOTICE);
+    expect(await result.blob.text()).toBe('classic-pdf');
+    const skipped = await generateInvoicePdfChoice({
+      engine: 'v2',
+      style: 'classic',
+      renderV2: async () => {
+        throw new Error('must not run');
+      },
+      renderClassic: async () => new Blob(['still-classic']),
+    });
+    expect(skipped.notice).toBeNull();
+    expect(await skipped.blob.text()).toBe('still-classic');
   });
 
   it('falls back to classic and returns a notice when v2 throws', async () => {

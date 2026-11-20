@@ -21,6 +21,25 @@ export function shouldUseInvoiceV2(input: {
   return input.style.trim() !== '' && input.style !== 'classic';
 }
 
+/** Generate PDF. A non-classic company style is attempted, then classic. */
+export async function generateInvoicePdfChoice(input: {
+  engine: 'legacy' | 'v2';
+  style: string;
+  renderV2: () => Promise<Blob>;
+  renderClassic: () => Promise<Blob>;
+}): Promise<{ blob: Blob; notice: string | null }> {
+  return generateWithFallback({
+    attemptV2: shouldUseInvoiceV2({
+      engine: input.engine,
+      entry: 'generate',
+      document: 'invoice',
+      style: input.style,
+    }),
+    renderV2: input.renderV2,
+    renderClassic: input.renderClassic,
+  });
+}
+
 export async function generateWithFallback(input: {
   attemptV2: boolean;
   renderV2: () => Promise<Blob>;

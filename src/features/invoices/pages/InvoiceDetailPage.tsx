@@ -32,6 +32,9 @@ import {
 } from '../constants/invoice.constants';
 import { useInvoiceActions, useInvoicePdf } from '../hooks/useInvoiceActions';
 import { useDeleteInvoice, useInvoice } from '../hooks/useInvoices';
+import { fetchOrganizationLogoBytes } from '@/features/organization/utils/embedOrganizationPdfLogo';
+import { generateInvoicePdfChoice, INVOICE_V2_FALLBACK_NOTICE, renderInvoiceV2InBrowser } from '@/features/reports/engine/invoiceV2Gate';
+import { readDefaultPdfStyle, reportsEngine } from '@/features/reports/engine/reportsEngine';
 import { generateInvoicePdf } from '../utils/generateInvoicePdf';
 import { getErrorMessage } from '../utils/getErrorMessage';
 import { invoiceToPdfModel } from '../utils/invoiceToPdfModel';
@@ -192,9 +195,38 @@ export default function InvoiceDetailPage() {
     setPdfReadyBlob(null);
     setPdfReadyOpen(true);
     try {
-      const blob = await buildClientPdf();
-      setPdfReadyBlob(blob);
-      setActionMessage('PDF ready.');
+      const style = [companyMatch, orgProfile]
+        .map((source) => readDefaultPdfStyle(source))
+        .find((value) => value !== 'classic') || 'classic';
+      const result = await generateInvoicePdfChoice({
+        engine: reportsEngine(),
+        style,
+        renderClassic: buildClientPdf,
+        renderV2: async () => {
+          const profile = orgProfile as { logo_url?: string; logoUrl?: string } | null | undefined;
+          const logoBytes = await fetchOrganizationLogoBytes(profile?.logo_url || profile?.logoUrl || null);
+          let logoBase64: string | undefined;
+          if (logoBytes) {
+            const view = new Uint8Array(logoBytes);
+            let binary = '';
+            for (let index = 0; index < view.length; index += 0x8000) {
+              binary += String.fromCharCode(...view.subarray(index, index + 0x8000));
+            }
+            logoBase64 = btoa(binary);
+          }
+          const pdfJob = (await loadInvoiceJobForPdf(invoice.job_id)) || job || null;
+          return renderInvoiceV2InBrowser({
+            code: style,
+            invoice,
+            job: pdfJob,
+            party,
+            organization: orgProfile,
+            logoBase64,
+          });
+        },
+      });
+      setPdfReadyBlob(result.blob);
+      setActionMessage(result.notice || 'PDF ready.');
       if (alsoGenerateServer) {
         try {
           const info = await actions.generatePdf.mutateAsync();
@@ -408,7 +440,11 @@ export default function InvoiceDetailPage() {
         <div
           role="status"
           className="mb-3 rounded-lg border px-3 py-2 text-sm"
-          style={{
+          style={actionMessage === INVOICE_V2_FALLBACK_NOTICE ? {
+            background: 'var(--color-warning-100, #FEF3C7)',
+            borderColor: '#FCD34D',
+            color: 'var(--color-warning-800, #92400E)',
+          } : {
             background: 'var(--color-success-100)',
             borderColor: '#BBF7D0',
             color: 'var(--color-success-700)',

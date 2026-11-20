@@ -28,11 +28,18 @@ export function loadDictionary() {
   return rows;
 }
 
+const CURRENCY_LABEL = /^(inr|usd|aed|eur|gbp|sgd|vnd|pkr)$/;
+
 export function nearestLabel(span, spans) {
   const left = spans
     .filter((other) => other.role === 'static' && other !== span && Math.abs(other.y - span.y) <= 2 && other.x < span.x)
-    .sort((a, b) => (span.x - (b.x + b.width)) - (span.x - (a.x + a.width)))[0];
-  if (left) return left;
+    .sort((a, b) => (span.x - (b.x + b.width)) - (span.x - (a.x + a.width)));
+  const moneyCaption = left.find((candidate) => {
+    const key = normalizeLabel(candidate.text);
+    return /^(total|sub total|subtotal|grand total|vat|tax)\b/.test(key) && !/^total no\b/.test(key);
+  });
+  const label = moneyCaption || left.find((candidate) => !CURRENCY_LABEL.test(normalizeLabel(candidate.text))) || left[0];
+  if (label) return label;
   return spans
     .filter((other) => other.role === 'static' && other !== span && other.y > span.y + 2 && other.x < span.x + span.width && other.x + other.width > span.x)
     .sort((a, b) => (a.y - span.y) - (b.y - span.y))[0] || null;
@@ -94,7 +101,7 @@ function aliasBinding(key) {
   if (key === 'subtotal' || key.startsWith('subtotal') || key.startsWith('sub total')) return 'invoice.amount';
   if (key === 'taxable' || key.startsWith('taxable')) return 'invoice.amount';
   if (key === 'vat' || key.startsWith('vat ') || key === 'tax' || key === 'gst') return 'invoice.tax';
-  if (key === 'grand total' || key.startsWith('grand total') || key === 'total amount') return 'invoice.total';
+  if (key === 'total' || key === 'grand total' || key.startsWith('grand total') || key === 'total amount') return 'invoice.total';
   if (key === 'bill to' || key.startsWith('bill to')) return 'party.billTo';
   if (key === 'shipper' || key.startsWith('shipper')) return 'party.shipper';
   if (key === 'consignee' || key.startsWith('consignee')) return 'party.consignee';
@@ -126,17 +133,49 @@ function pathValues(record) {
   const invoice = record.invoice || {};
   const job = record.job || {};
   const party = record.party || {};
+  const fcl = job.sea_fcl_details || {};
+  const lcl = job.sea_lcl_details || {};
   const sea = job.sea_fcl_details || job.sea_lcl_details || {};
   const air = job.air_details || {};
+  const ship = invoice.shipment || {};
+  const bl = (job.bills_of_lading || []).find((item) => item) || {};
+  const booking = job.sea_fcl_booking_form || job.sea_lcl_booking_form || {};
   const text = (value) => (value == null ? '' : String(value).trim());
+  const firstText = (...values) => {
+    for (const value of values) {
+      const cleaned = text(value);
+      if (cleaned) return cleaned;
+    }
+    return '';
+  };
+  const containerNumbers = [...new Set(
+    [text(job.primary_container_number)]
+      .concat(job.containers || [], fcl.containers || [], lcl.containers || [])
+      .map((item) => (item && typeof item === 'object' ? text(item.container_number) : text(item)))
+      .filter(Boolean),
+  )];
+  const hbl = firstText(
+    fcl.hbl_number,
+    lcl.hbl_number,
+    fcl.hbl_number_from_agent,
+    lcl.hbl_number_from_agent,
+    ship.hbl_number,
+    air.hawb_number,
+    ship.hawb_number,
+    ship.bl_awb,
+    bl.bl_number,
+  );
+  const hawb = firstText(air.hawb_number, ship.hawb_number);
+  const mbl = firstText(fcl.mbl_number, lcl.mbl_number, ship.mbl_number);
+  const mawb = firstText(air.mawb_number, ship.mawb_number);
   return {
     'company.name': text(org.display_name) || text(org.name),
     'company.address': [org.address, org.city, org.country_code].map(text).filter(Boolean).join(', '),
     'company.phone': text(org.phone),
     'company.email': text(org.email),
     'party.billTo': [text(invoice.party_name) || text(party.name), party.address, party.city].map(text).filter(Boolean).join(', '),
-    'party.shipper': text(job.shipper_name),
-    'party.consignee': text(job.consignee_name),
+    'party.shipper': firstText(job.shipper_name, job.shipper?.name),
+    'party.consignee': firstText(job.consignee_name, job.consignee?.name),
     'party.notify': '',
     'job.number': text(invoice.job_number) || text(job.job_number),
     'invoice.number': text(invoice.invoice_number),
@@ -145,20 +184,20 @@ function pathValues(record) {
     'invoice.amount': classicMoney(invoice.subtotal ?? 0),
     'invoice.tax': classicMoney(invoice.tax_total ?? 0),
     'invoice.total': classicMoney(invoice.total_amount ?? (Number(invoice.subtotal ?? 0) + Number(invoice.tax_total ?? 0))),
-    'shipment.mawb': text(air.mawb_number),
-    'shipment.hawb': text(air.hawb_number),
-    'shipment.hbl': text(sea.hbl_number),
-    'shipment.mbl': text(sea.mbl_number),
-    'shipment.houseDoc': text(sea.hbl_number) || text(air.hawb_number),
-    'shipment.masterDoc': text(sea.mbl_number) || text(air.mawb_number),
-    'shipment.transportDocs': [text(sea.mbl_number), text(air.mawb_number), text(sea.hbl_number), text(air.hawb_number)].filter(Boolean).join(' / '),
+    'shipment.mawb': mawb,
+    'shipment.hawb': hawb,
+    'shipment.hbl': hbl,
+    'shipment.mbl': mbl,
+    'shipment.houseDoc': hbl || hawb,
+    'shipment.masterDoc': mbl || mawb,
+    'shipment.transportDocs': [...new Set([mbl, mawb, hbl, hawb].filter(Boolean))].join(' / '),
     'shipment.pol': text(job.origin_port_code),
     'shipment.pod': text(job.dest_port_code),
     'shipment.placeOfReceipt': text(sea.place_of_receipt),
     'shipment.placeOfDelivery': text(sea.place_of_delivery),
     'shipment.finalDestination': text(job.dest_door_address),
-    'shipment.vessel': text(job.vessel_name) || text(sea.vessel_name),
-    'shipment.voyage': text(job.voyage_number) || text(sea.voyage_number),
+    'shipment.vessel': firstText(job.vessel_name, fcl.vessel_name, lcl.vessel_name, ship.vessel_name, ship.vessel_flight, bl.vessel_name),
+    'shipment.voyage': firstText(job.voyage_number, fcl.voyage_number, lcl.voyage_number, ship.voyage_number, ship.flight_number, air.flight_number, booking.voyage_ref, bl.voyage_number),
     'shipment.etd': text(job.etd) || text(sea.etd),
     'shipment.eta': text(job.eta) || text(sea.eta),
     'shipment.carrier': text(sea.shipping_line_name),
@@ -170,7 +209,7 @@ function pathValues(record) {
     'cargo.grossWeight': job.gross_weight == null ? '' : String(job.gross_weight),
     'cargo.netWeight': '',
     'cargo.measurement': job.volume_cbm == null ? '' : String(job.volume_cbm),
-    'cargo.containerNo': text(job.primary_container_number) || text(job.containers?.[0]?.container_number),
+    'cargo.containerNo': containerNumbers.join(', '),
     'shipment.number': text(job.shipment_number),
     'shipment.reference': text(job.client_reference_no) || text(job.reference_no),
     'shipment.igm': '',
@@ -357,6 +396,18 @@ export function fillInvoiceSpans(spec, record) {
         continue;
       }
       values[span.id] = String(filled);
+    }
+  }
+
+  for (const page of pages) {
+    for (const span of page.spans || []) {
+      const value = values[span.id];
+      if (!value || !/^[\d,]+\.\d{2}$/.test(String(value))) continue;
+      const needed = String(value).length * (span.size || 7) * 0.56;
+      if ((span.width || 0) >= needed) continue;
+      const width = Math.min(needed, 150);
+      span.width = width;
+      if (span.x + width > 583) span.x = Math.max(28, 583 - width);
     }
   }
 

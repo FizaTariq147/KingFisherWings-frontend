@@ -567,16 +567,22 @@ export async function renderSpec(code, options = {}) {
     for (const image of source.images || []) {
       if (options.values && (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded)) continue;
       if (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded) drawBarcode(page, image);
-      if (image.proposedClass === 'logo' && (options.logoBytes || (options.logoPng && fs.existsSync(options.logoPng)))) {
+      const logoSlot = image.proposedClass === 'logo' || (image.proposedClass === 'letterhead' && options.values);
+      if (logoSlot && (options.logoBytes || (options.logoPng && fs.existsSync(options.logoPng)))) {
         const bytes = options.logoBytes || fs.readFileSync(options.logoPng);
         try {
           const embedded = bytes[0] === 0xff && bytes[1] === 0xd8 ? await doc.embedJpg(bytes) : await doc.embedPng(bytes);
-          page.drawImage(embedded, {
-            x: image.x,
-            y: image.y,
-            width: image.width || embedded.width,
-            height: image.height || embedded.height,
-          });
+          let x = image.x;
+          let y = image.y;
+          let width = image.width || embedded.width;
+          let height = image.height || embedded.height;
+          if (image.proposedClass === 'letterhead' && embedded.width && embedded.height) {
+            const fit = Math.min(image.height / embedded.height, (image.height * 2.6) / embedded.width);
+            width = embedded.width * fit;
+            height = embedded.height * fit;
+            y = image.y + Math.max(0, (image.height - height) / 2);
+          }
+          page.drawImage(embedded, { x, y, width, height });
         } catch {
           // An unreadable logo leaves the slot empty.
         }
