@@ -106,7 +106,21 @@ function fresaFragment(text) {
   return /fresa|echnolog|powered by/i.test(String(text || ''));
 }
 
-function organizationText(span, organization) {
+function addressLineFor(span, organization, siblings = []) {
+  const address = String(organization.address || '').trim();
+  if (!address) return '';
+  if (/^[A-Za-z]$/.test(String(span.text || '').trim())) return '';
+  const lines = address.split(/\s*,\s*/).filter(Boolean);
+  const peers = siblings
+    .filter((other) => other.role === 'branding' && other.brandingKind === 'address' && !/^[A-Za-z]$/.test(String(other.text || '').trim()))
+    .sort((a, b) => b.y - a.y);
+  const index = peers.findIndex((peer) => peer.id === span.id);
+  if (index < 0) return address;
+  if (lines.length > 1 && peers.length > 1) return lines[index] || '';
+  return index === 0 ? address : '';
+}
+
+function organizationText(span, organization, siblings = []) {
   if (!organization) return '';
   const raw = String(span.text || '');
   if (/powered by/i.test(raw) || fresaFragment(raw) && span.brandingKind !== 'name' && span.brandingKind !== 'address' && span.brandingKind !== 'phone') {
@@ -114,8 +128,17 @@ function organizationText(span, organization) {
     if (/https?:|www\.|\.com/i.test(raw)) return organization.website || '';
     if (/powered by|echnolog/i.test(raw)) return '';
   }
-  if (span.brandingKind === 'address') return organization.address || '';
-  if (span.brandingKind === 'phone') return organization.phone || '';
+  if (span.brandingKind === 'address') {
+    return addressLineFor(span, organization, siblings);
+  }
+  if (span.brandingKind === 'phone') {
+    const phone = String(organization.phone || '').trim();
+    if (!phone) return '';
+    if (/^\s*(tel|phone|fax|mobile)\b/i.test(raw) && !phone.toLowerCase().startsWith('phone')) {
+      return `Phone : ${phone}`;
+    }
+    return phone;
+  }
   if (span.brandingKind === 'url') return organization.website || '';
   if (span.brandingKind === 'email') return organization.email || '';
   if (span.brandingKind === 'name') {
@@ -576,11 +599,16 @@ export async function renderSpec(code, options = {}) {
           let y = image.y;
           let width = image.width || embedded.width;
           let height = image.height || embedded.height;
-          if (image.proposedClass === 'letterhead' && embedded.width && embedded.height) {
-            const fit = Math.min(image.height / embedded.height, (image.height * 2.6) / embedded.width);
+          if ((image.proposedClass === 'logo' || image.proposedClass === 'letterhead') && embedded.width && embedded.height) {
+            const boxW = image.width || embedded.width;
+            const boxH = image.height || embedded.height;
+            const fit = image.proposedClass === 'letterhead'
+              ? Math.min(boxH / embedded.height, (boxH * 2.6) / embedded.width)
+              : Math.min(boxW / embedded.width, boxH / embedded.height);
             width = embedded.width * fit;
             height = embedded.height * fit;
-            y = image.y + Math.max(0, (image.height - height) / 2);
+            x = image.x + Math.max(0, (boxW - width) / 2);
+            y = image.y + Math.max(0, (boxH - height) / 2);
           }
           page.drawImage(embedded, { x, y, width, height });
         } catch {
@@ -606,7 +634,7 @@ export async function renderSpec(code, options = {}) {
         continue;
       }
       if (options.organization && span.role === 'branding') {
-        text = organizationText(span, options.organization);
+        text = organizationText(span, options.organization, paintSpans);
         mode = text ? 'wrap-shrink-clip' : 'none';
       } else if (span.role === 'branding') {
         continue;

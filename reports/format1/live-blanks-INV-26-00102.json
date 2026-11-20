@@ -1,0 +1,128 @@
+[
+  {
+    "span": "line-0-p1s176",
+    "label": "1",
+    "why": "no source",
+    "binding": "invoice.lines"
+  },
+  {
+    "span": "line-0-p1s177",
+    "label": "1",
+    "why": "no source",
+    "binding": "invoice.lines"
+  },
+  {
+    "span": "line-0-p1s178",
+    "label": "1",
+    "why": "no source",
+    "binding": "invoice.lines"
+  },
+  {
+    "span": "line-0-p1s179",
+    "label": "1",
+    "why": "no source",
+    "binding": "invoice.lines"
+  },
+  {
+    "span": "line-0-p1s180",
+    "label": "1",
+    "why": "no source",
+    "binding": "invoice.lines"
+  },
+  {
+    "span": "p1s32",
+    "label": "4G LOGISTICS INDIA PVT L",
+    "why": "no source",
+    "binding": ""
+  },
+  {
+    "span": "p1s53",
+    "label": "Shipment No.",
+    "why": "empty in the record",
+    "binding": "shipment.number"
+  },
+  {
+    "span": "p1s61",
+    "label": "HBL / HA WB No.",
+    "why": "empty in the record",
+    "binding": "shipment.hbl"
+  },
+  {
+    "span": "p1s87",
+    "label": "Narration",
+    "why": "empty in the record",
+    "binding": "invoice.narration"
+  },
+  {
+    "span": "p1s96",
+    "label": "Reference No.",
+    "why": "empty in the record",
+    "binding": "shipment.reference"
+  },
+  {
+    "span": "p1s103",
+    "label": "IGM No.",
+    "why": "empty in the record",
+    "binding": "shipment.igm"
+  },
+  {
+    "span": "p1s110",
+    "label": "1X20: SHIPMENT T",
+    "why": "no source",
+    "binding": ""
+  },
+  {
+    "span": "p1s127",
+    "label": "18,000.000 K",
+    "why": "no source",
+    "binding": ""
+  },
+  {
+    "span": "p1s207",
+    "label": "Non Taxable Amount",
+    "why": "empty in the record",
+    "binding": "invoice.nonTaxable"
+  },
+  {
+    "span": "p1s208",
+    "label": "SGST",
+    "why": "empty in the record",
+    "binding": "invoice.sgstTotal"
+  },
+  {
+    "span": "p1s209",
+    "label": "CGST",
+    "why": "empty in the record",
+    "binding": "invoice.cgstTotal"
+  },
+  {
+    "span": "p1s212",
+    "label": "I/UGST",
+    "why": "empty in the record",
+    "binding": "invoice.igstTotal"
+  },
+  {
+    "span": "p1s40",
+    "label": "Due Date",
+    "why": "empty in the record",
+    "binding": "invoice.dueDate"
+  },
+  {
+    "span": "p1s64",
+    "label": "Place of Receipt",
+    "why": "empty in the record",
+    "binding": "shipment.placeOfReceipt"
+  },
+  {
+    "span": "p1s76",
+    "label": "Place of Delivery",
+    "why": "empty in the record",
+    "binding": "shipment.placeOfDelivery"
+  },
+  {
+    "span": "p1s81",
+    "label": "V essel / V oyage",
+    "why": "empty in the record",
+    "binding": "shipment.vesselVoyage"
+  }
+]

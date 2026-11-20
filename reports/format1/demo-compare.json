@@ -1,0 +1,16 @@
+{
+  "layers": {
+    "page": true,
+    "geometry": false,
+    "staticText": true,
+    "dynamicText": true,
+    "raster": false,
+    "pagination": "single-page",
+    "rasterRatio": 0.0527,
+    "rasterMismatches": 114464,
+    "pixelmatchMismatches": 65203
+  },
+  "missingExpected": [],
+  "fresaLeaks": [],
+  "paintedCount": 55
+}
