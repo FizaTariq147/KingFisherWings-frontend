@@ -192,6 +192,12 @@
     "binding": "shipment.etd"
   },
   {
+    "span": "p1s93",
+    "label": "ET A",
+    "why": "empty in the record",
+    "binding": "shipment.eta"
+  },
+  {
     "span": "p1s107",
     "label": "INCO T erms",
     "why": "empty in the record",

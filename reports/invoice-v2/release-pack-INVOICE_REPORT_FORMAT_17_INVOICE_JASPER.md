@@ -6,7 +6,7 @@ Nothing here is accepted. No sign-off was run.
 
 | Criterion | Result |
 |---|---|
-| Money fields bound and reconcile with the classic PDF on 10 real invoices | pass |
+| Money fields bound and reconcile with the classic PDF on 10 real invoices | fail |
 | Party and shipment fields are bound, or listed in docs/reports/backend-requirements-invoice.md with table and column | pass |
 | Leak check is clean | pass |
 | Logo draws from the organization logo fetch. No bytes leaves the slot empty | pass |
@@ -42,7 +42,7 @@ Raster ratios: non-text 0, text ink 0.079, masked fraction 0.1127. Failure class
 | INV/26/00099 | pass |
 | INV/26/00097 | pass |
 | INV/26/00094 | pass |
-| INV/26/00095 | pass |
+| INV/26/00095 | fail |
 | INV/26/00098 | pass |
 | INV/26/00089 | pass |
 
@@ -54,16 +54,16 @@ Counts are the 10 real invoices. Blank ratio is bound-but-empty divided by 10.
 |---|---:|---:|---:|---:|
 | shipper | 3 | 7 | 0 | 0.70 |
 | consignee | 0 | 9 | 1 | 0.90 |
-| vessel | 0 | 9 | 1 | 0.90 |
-| voyage | 0 | 9 | 1 | 0.90 |
+| vessel | 1 | 9 | 0 | 0.90 |
+| voyage | 1 | 9 | 0 | 0.90 |
 | HBL | 0 | 8 | 2 | 0.80 |
 | container | 2 | 8 | 0 | 0.80 |
 | bill-to | 2 | 0 | 8 | 0.00 |
 | quantity | 10 | 0 | 0 | 0.00 |
-| rate | 10 | 0 | 0 | 0.00 |
+| rate | 7 | 0 | 3 | 0.00 |
 | currency | 10 | 0 | 0 | 0.00 |
 | subtotal | 10 | 0 | 0 | 0.00 |
-| tax | 10 | 0 | 0 | 0.00 |
+| tax | 9 | 0 | 1 | 0.00 |
 | total | 10 | 0 | 0 | 0.00 |
 | amount in words | 10 | 0 | 0 | 0.00 |
 
@@ -86,12 +86,11 @@ Typical invoice: INV/26/00102. It has a linked job, a shipper, a consignee, and 
 
 | Empty box | Why | Count |
 |---|---|---:|
-| FREIGHT CHARGE | no source | 2 |
-| 4G LOGISTICS INDIA PVT LTD | no source | 2 |
-| DUE DATE | empty in the record | 2 |
-| 28-JAN-19 | no source | 1 |
-| 125 PACKAGES | no source | 1 |
+| 4G LOGISTICS INDIA PVT LTD | no source | 3 |
+| DUE DATE | empty in the record | 1 |
 | SHIPMENT | empty in the record | 1 |
+| 4G LOGISTICS INDIA PVT LTD | empty in the record | 1 |
+| Bank Details | empty in the record | 1 |
 
 ## Logo and pages
 

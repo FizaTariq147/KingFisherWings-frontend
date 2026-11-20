@@ -23,14 +23,14 @@
     }
   ],
   "totals": {
-    "extractMs": 24664,
-    "renderMs": 15527,
-    "rasterReferenceMs": 254,
-    "rasterRenderedMs": 395710,
-    "diffMs": 1659593,
-    "specHit": 399,
+    "extractMs": 31055,
+    "renderMs": 21080,
+    "rasterReferenceMs": 224,
+    "rasterRenderedMs": 384596,
+    "diffMs": 1824542,
+    "specHit": 398,
     "specMiss": 0,
-    "goldenHit": 399,
+    "goldenHit": 398,
     "goldenMiss": 0
   },
   "version": {

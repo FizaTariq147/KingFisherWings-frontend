@@ -138,11 +138,23 @@ export function layoutRepeatingCharges(spec, record) {
       if (side?.role === 'static') captionIds.add(side.id);
     }
   }
+  // Static qty / currency samples in the charge band must not keep Fresa values.
+  const chargeSampleStatics = spans.filter((span) => {
+    if (span.role !== 'static') return false;
+    if (!rows.some((row) => Math.abs(row.y - span.y) <= 3)) return false;
+    const text = String(span.text || '').trim();
+    return /^(INR|USD|AED|EUR|GBP|SGD|VND|PKR)$/i.test(text) || /^-?[\d,]+(\.\d+)?$/.test(text);
+  });
+  const chargeSampleIds = new Set(chargeSampleStatics.map((span) => span.id));
+  const qtyTemplate = chargeSampleStatics
+    .filter((span) => /^-?[\d,]+(\.\d+)?$/.test(String(span.text || '').trim()))
+    .sort((a, b) => a.x - b.x)[0] || null;
   for (const id of chargeIds) values[id] = '';
   for (const id of captionIds) values[id] = '';
+  for (const id of chargeSampleIds) values[id] = '';
 
-  const footer = spans.filter((span) => span.y < bandBottom - 6 && !chargeIds.has(span.id) && !captionIds.has(span.id));
-  const header = spans.filter((span) => span.y > top + 4 && !chargeIds.has(span.id));
+  const footer = spans.filter((span) => span.y < bandBottom - 6 && !chargeIds.has(span.id) && !captionIds.has(span.id) && !chargeSampleIds.has(span.id));
+  const header = spans.filter((span) => span.y > top + 4 && !chargeIds.has(span.id) && !chargeSampleIds.has(span.id));
   const margin = 56;
   const totalsReserve = 88;
 
@@ -165,18 +177,20 @@ export function layoutRepeatingCharges(spec, record) {
       });
       values[id] = description;
     }
+    // Anchor the charge header band to the template row, not the highest
+    // numeric row (which can be a totals strip sitting under shipment fields).
     const headerAnchors = spans.filter((span) => (
       span.role === 'static'
       && /\b(qty|quantity|currency|ex\.?\s*rate|sgst|cgst|igst|ugst|fcy|sac|amount)\b/i.test(String(span.text || ''))
-      && span.y > top
-      && span.y < top + 50
+      && span.y > template.y
+      && span.y < template.y + 50
     ));
     const headerBandLo = headerAnchors.length
       ? Math.min(...headerAnchors.map((span) => span.y)) - 8
-      : top + 4;
+      : template.y + 4;
     const headerBandHi = headerAnchors.length
       ? Math.max(...headerAnchors.map((span) => span.y)) + 8
-      : top + 45;
+      : template.y + 45;
     function headersAbove(cell) {
       return spans.filter((other) => {
         if (other.role !== 'static' || other.y < headerBandLo || other.y > headerBandHi) return false;
@@ -221,6 +235,8 @@ export function layoutRepeatingCharges(spec, record) {
       if (/\b(exchange|ex rate|exrate)\b/.test(label)) return 'exchange';
       if (/\b(rate|price)\b/.test(label)) return 'rate';
       if (/\b(currency|curr)\b/.test(label) && !/\b(amount|sgst|cgst|igst)\b/.test(label)) return 'currency';
+      // "FCY Amount" is a money column (Format 10); bare "FCY" is the foreign base.
+      if (/\bfcy\b/.test(label) && /\bamount\b/.test(label)) return 'money:';
       if (/\bfcy\b/.test(label)) return 'fcy';
       // GST fragments must win over neighbouring Taxable / Non Taxable headers.
       if (/\b(sgst|cgst|igst|ugst|sac)\b/.test(label)) return 'gst';
@@ -275,8 +291,14 @@ export function layoutRepeatingCharges(spec, record) {
       if (!Number.isFinite(rate)) return '';
       return classicMoney(Math.round(amount * rate * 100) / 100);
     }
-    const currencyCell = spans.find((span) => Math.abs(span.y - template.y) <= 4 && /^(INR|USD|AED|EUR|GBP|SGD|VND|PKR)$/.test(String(span.text || '').trim()));
+    const currencyCell = chargeSampleStatics.find((span) => /^(INR|USD|AED|EUR|GBP|SGD|VND|PKR)$/i.test(String(span.text || '').trim()))
+      || spans.find((span) => Math.abs(span.y - template.y) <= 4 && /^(INR|USD|AED|EUR|GBP|SGD|VND|PKR)$/i.test(String(span.text || '').trim()));
     const lineCurrency = String(line.currency_code || currency || '').trim();
+    if (qtyTemplate) {
+      const id = `line-${index}-qty`;
+      made.push({ ...qtyTemplate, id, role: 'dynamic', y, text: '' });
+      values[id] = line.quantity == null ? '' : String(line.quantity);
+    }
     if (currencyCell && lineCurrency) {
       const id = `line-${index}-ccy`;
       made.push({ ...currencyCell, id, role: 'dynamic', y, text: '' });
@@ -334,46 +356,70 @@ export function layoutRepeatingCharges(spec, record) {
   }
 
   function freshPage(includeFooter) {
+    // Keep the reference table/frame geometry. Dropping charge-band lines and
+    // paths was creating unmatched geometry outside logo/letterhead boxes.
     const copy = {
       ...page,
       spans: header.map((span) => ({ ...span })),
-      lines: (page.lines || []).filter((line) => line.y1 > top && line.y2 > top),
-      rects: (page.rects || []).filter((rect) => rect.y > top),
+      lines: (page.lines || []).map((line) => ({ ...line })),
+      rects: (page.rects || []).map((rect) => ({ ...rect })),
       images: (page.images || []).filter((image) => image.proposedClass === 'logo' || image.y > top),
-      paths: [],
+      paths: (page.paths || []).map((item) => ({ ...item })),
     };
     if (includeFooter) copy.footer = footer.map((span) => ({ ...span }));
     return copy;
   }
 
+  const sampleYs = rows.map((row) => row.y).sort((a, b) => b.y - a.y);
+
   const built = [];
   let current = freshPage(false);
-  current.spans = current.spans.filter((span) => !chargeIds.has(span.id) && !captionIds.has(span.id));
+  current.spans = current.spans.filter((span) => !chargeIds.has(span.id) && !captionIds.has(span.id) && !chargeSampleIds.has(span.id));
   let y = top;
+  let pageRow = 0;
   lines.forEach((line, index) => {
     const last = index === lines.length - 1;
+    // On page 1, reuse uneven sample Y positions when the invoice still fits.
+    // Continuation pages use a constant pitch from the top of the charge band.
+    const nextY = built.length === 0 && pageRow < sampleYs.length
+      ? sampleYs[pageRow]
+      : top - pageRow * pitch;
     const limit = margin + (last ? totalsReserve : 0);
-    if (y < limit) {
+    if (nextY < limit) {
       built.push(current);
       current = freshPage(false);
-      y = top;
+      current.spans = current.spans.filter((span) => !chargeIds.has(span.id) && !captionIds.has(span.id) && !chargeSampleIds.has(span.id));
+      pageRow = 0;
+      current.spans.push(...rowSpans(line, index, top));
+      y = top - pitch;
+      pageRow = 1;
+      return;
     }
-    current.spans.push(...rowSpans(line, index, y));
-    y -= pitch;
+    current.spans.push(...rowSpans(line, index, nextY));
+    y = nextY - pitch;
+    pageRow += 1;
   });
   if (!lines.length) {
     blanks.push({ span: 'line-amount', label: 'line amount', binding: 'invoice.lines', why: 'empty in the record' });
   }
   const footerTop = Math.max(...footer.map((span) => span.y), 0);
-  const shift = footer.length ? (y - footerTop) : 0;
+  const alignedWithSample = built.length === 0 && lines.length > 0 && lines.length <= sampleYs.length;
+  const shift = alignedWithSample ? 0 : (footer.length ? (y - footerTop) : 0);
   for (const span of footer) {
     current.spans.push({ ...span, y: span.y + shift });
-    if (chargeIds.has(span.id)) values[span.id] = '';
+    if (chargeIds.has(span.id) || chargeSampleIds.has(span.id)) values[span.id] = '';
   }
-  for (const line of page.lines || []) {
-    if (line.y1 < bandBottom && line.y2 < bandBottom) {
-      current.lines.push({ ...line, y1: line.y1 + shift, y2: line.y2 + shift });
-    }
+  // Shift only footer-region geometry when the charge band grew or shrank.
+  if (shift) {
+    current.lines = current.lines.map((line) => {
+      if (line.y1 < bandBottom && line.y2 < bandBottom) {
+        return { ...line, y1: line.y1 + shift, y2: line.y2 + shift };
+      }
+      return line;
+    });
+    current.rects = current.rects.map((rect) => (
+      rect.y < bandBottom ? { ...rect, y: rect.y + shift } : rect
+    ));
   }
   built.push(current);
   spec.pages = built.map((item) => {

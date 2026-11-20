@@ -96,12 +96,6 @@
     "binding": "invoice.cgstTotal"
   },
   {
-    "span": "p1s212",
-    "label": "I/UGST",
-    "why": "empty in the record",
-    "binding": "invoice.igstTotal"
-  },
-  {
     "span": "p1s40",
     "label": "Due Date",
     "why": "empty in the record",

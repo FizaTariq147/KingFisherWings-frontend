@@ -113,7 +113,9 @@ function looksLikeSampleValue(text) {
   if (/^(bill to|shipper|consignee|invoice no|invoice no date|due date|tax invoice|amount|total|qty|currency|phone|gstin no)$/.test(key)) return false;
   if (/\bno\s*\/?\s*date\b/.test(key) && !/\d/.test(raw)) return false;
   if (isNumericText(raw)) return true;
+  if (/^(INR|USD|AED|EUR|GBP|SGD|VND|PKR)$/i.test(raw)) return true;
   if (/^\d{1,2}[/-][A-Za-z]{3}[/-]\d{2,4}$/.test(raw)) return true;
+  if (/^\d{1,2}-[A-Za-z]{3}-\d{2}$/i.test(raw)) return true;
   if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return true;
   if (/^[A-Z0-9][A-Z0-9 /&.,'-]{5,}$/i.test(raw) && /[A-Za-z]{3}/.test(raw) && /\d/.test(raw)) return true;
   if (/^[A-Z0-9][A-Z0-9 /&.,'-]{8,}$/i.test(raw) && /(?:PVT|LTD|LLC|INC|CO\.|COMPANY|LOGISTICS|TRADING)/i.test(raw)) return true;
@@ -241,7 +243,7 @@ export function aliasBinding(key) {
   if (key === 'pol' || key.startsWith('pol ')) return 'shipment.pol';
   if (key === 'pod' || key.startsWith('pod ')) return 'shipment.pod';
   if (key === 'etd' || key.startsWith('etd ')) return 'shipment.etd';
-  if (key === 'eta' || key.startsWith('eta ')) return 'shipment.eta';
+  if (key === 'eta' || key.startsWith('eta ') || key === 'et a' || key.startsWith('et a')) return 'shipment.eta';
   if (key.includes('place of origin') || key === 'origin') return 'shipment.pol';
   if ((key.includes('hawb') || key.includes('hbl')) && (key.includes('mawb') || key.includes('mbl'))) return 'shipment.transportDocs';
   if ((/\b(hbl|hawb)\b/.test(key) && /\bwb\b/.test(key)) || key.includes('hawb') && key.includes('hbl')) return 'shipment.houseDoc';
@@ -733,18 +735,23 @@ export function fillInvoiceSpans(spec, record) {
         values[span.id] = phone ? `Phone : ${phone}` : '';
         continue;
       }
-      if (!looksLikeSampleValue(span.text) && !/^(INMAA|AEJEA|CHENNAI|JEBEL|MSC |HDFC|CFR|REFE )/i.test(demo)) continue;
-      if (isAllowlisted(span.text)) {
-        if (/rupee|fils|paise|dollars/i.test(span.text || '') && byPath['invoice.amountWords']) {
-          values[span.id] = byPath['invoice.amountWords'];
-        }
-        continue;
-      }
-      if (/rupee|fils|paise|dollars|only$/i.test(span.text || '') && byPath['invoice.amountWords']) {
+      // Amount-in-words samples often have no digits ("Dirham … Only"), so they
+      // fail looksLikeSampleValue — bind them before that gate.
+      if (/rupee|fils|paise|dollars|dirham|cent|only$/i.test(span.text || '') && byPath['invoice.amountWords']) {
         values[span.id] = byPath['invoice.amountWords'];
         continue;
       }
+      if (!looksLikeSampleValue(span.text) && !/^(INMAA|AEJEA|CHENNAI|JEBEL|MSC |HDFC|CFR|REFE )/i.test(demo)) continue;
+      if (isAllowlisted(span.text)) {
+        continue;
+      }
       let binding = aliasBinding(key) || bindingForLabel(label?.text || '', dictionary);
+      if (!binding && /^(INR|USD|AED|EUR|GBP|SGD|VND|PKR)$/i.test(demo) && /currency/i.test(key)) {
+        binding = 'invoice.currency';
+      }
+      if (!binding && /^(INR|USD|AED|EUR|GBP|SGD|VND|PKR)$/i.test(demo)) {
+        binding = 'invoice.currency';
+      }
       if (!binding && /^(INMAA|AEJEA)$/i.test(demo)) {
         const left = spans.filter((other) => other.role === 'static' && Math.abs(other.y - span.y) <= 2 && other.x < span.x)
           .sort((a, b) => (span.x - (a.x + (a.width || 0))) - (span.x - (b.x + (b.width || 0))));

@@ -59,5 +59,5 @@ Statuses are across the 10 real invoices. GST split cells stay blank until the A
 | p1s208 | SGST | 792.00 | invoice.sgstTotal | needs GST breakdown |
 | p1s209 | CGST | 792.00 | invoice.cgstTotal | needs GST breakdown |
 | p1s210 | (INR) | 17,384.00 | invoice.lines (column role) | filled |
-| p1s212 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only | 17,384.00 | invoice.amountWords | filled on 3/10; empty in the record on 7 |
+| p1s212 | Rupee Seventeen Thousand Three Hundred Eighty-Four Only | 17,384.00 | invoice.amountWords | filled |
 
