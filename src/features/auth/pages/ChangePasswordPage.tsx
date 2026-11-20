@@ -8,6 +8,7 @@ import { AlertCircle, Eye, EyeOff, Loader2, Lock, ShieldCheck } from 'lucide-rea
 import { Button } from '@/components/ui/Button'
 import { authService } from '@/features/auth/services/auth.service'
 import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage'
+import { markMustChangePasswordCleared } from '@/features/auth/utils/mustChangePasswordGate'
 import {
   getErpHomePath,
   isTenantUserManagerRole,
@@ -59,7 +60,8 @@ export default function ChangePasswordPage() {
   const user = useAuthStore((s) => s.user)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const clearMustChangePassword = useAuthStore((s) => s.clearMustChangePassword)
-  const forced = Boolean(user?.mustChangePassword)
+  const mustChangeSatisfied = useAuthStore((s) => s.mustChangePasswordSatisfied)
+  const forced = Boolean(user?.mustChangePassword) && !mustChangeSatisfied
   const isTenantAdmin = isTenantUserManagerRole(resolveAuthRoleSlug(user?.role))
 
   const [showCurrent, setShowCurrent] = useState(false)
@@ -104,19 +106,15 @@ export default function ChangePasswordPage() {
       if (isTenantAdmin) {
         // Workspace slug+password credential (POST /auth/tenant/change-password).
         await authService.changeTenantPassword(dto)
-        // Some tenants also carry User.must_change_password; clear that too when possible.
-        if (forced) {
-          try {
-            await authService.changePassword(dto)
-          } catch {
-            /* tenant principal may not be a staff user — ignore */
-          }
-        }
       } else {
         await authService.changePassword(dto)
       }
-      // Clears flag + marks session satisfied so /auth/me cannot bounce back here.
+
+      // Durable localStorage + session flag so login /auth/me cannot bounce back here
+      // even when the API still returns must_change_password=true.
+      markMustChangePasswordCleared(user?.id, user?.tenantId)
       clearMustChangePassword()
+
       navigate(getErpHomePath(resolveAuthRoleSlug(user?.role)), { replace: true })
     } catch (err) {
       setApiError(extractErrorMessage(err))
