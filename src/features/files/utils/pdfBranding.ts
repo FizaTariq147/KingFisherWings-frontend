@@ -98,18 +98,21 @@ export function openPdfBlobInNewTab(
   targetWindow?: Window | null,
   _filename?: string,
 ): void {
-  const objectUrl = URL.createObjectURL(blob);
-  const previewWindow =
-    targetWindow && !targetWindow.closed
-      ? targetWindow
-      : window.open(objectUrl, '_blank', 'noopener,noreferrer');
+  // Prefer application/pdf so browsers render instead of downloading / blanking.
+  const typed =
+    blob.type === 'application/pdf'
+      ? blob
+      : new Blob([blob], { type: 'application/pdf' });
+  const objectUrl = URL.createObjectURL(typed);
+  if (targetWindow && !targetWindow.closed) {
+    navigatePreviewToUrl(targetWindow, objectUrl);
+    return;
+  }
+  // Do not use noopener here — Chrome often opens about:blank for blob: + noopener.
+  const previewWindow = window.open(objectUrl, '_blank');
   if (!previewWindow) {
     URL.revokeObjectURL(objectUrl);
     throw new Error('Pop-up blocked. Allow pop-ups to preview this file.');
-  }
-  if (targetWindow && !targetWindow.closed) {
-    navigatePreviewToUrl(previewWindow, objectUrl);
-    return;
   }
   window.setTimeout(() => URL.revokeObjectURL(objectUrl), 300_000);
 }

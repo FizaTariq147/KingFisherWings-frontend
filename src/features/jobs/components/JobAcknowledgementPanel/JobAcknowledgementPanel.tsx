@@ -13,7 +13,11 @@ import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
 import { openPdfBlobInNewTab } from '@/features/files/utils/pdfBranding';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import {
+  openBlankPreviewTab,
+  openBlobInNewTab,
+  triggerBlobDownload,
+} from '@/features/files/utils/triggerBlobDownload';
 import { ApiDataView } from '../ApiDataView';
 import { jobService } from '../../services/job.service';
 import { jobKeys, useJobContainers } from '../../hooks/useJobs';
@@ -142,6 +146,7 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
     mutationFn: async ({
       attachment,
       open,
+      previewWindow,
     }: {
       attachment: {
         id?: string;
@@ -154,32 +159,39 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
       };
       /** Open in a new tab (PDF/image) instead of forcing a download. */
       open?: boolean;
+      /** Sync-opened tab from click — required on live so Open is not left on about:blank. */
+      previewWindow?: Window | null;
     }) => {
       const name = attachment.file_name || 'acknowledgement-proof';
-      const blob = await jobService.fetchAcknowledgementProofBlob(
-        jobId,
-        attachment,
-        tenantId,
-      );
-      if (open) {
-        if (await blobLooksLikePdf(blob)) {
-          openPdfBlobInNewTab(blob, undefined, name);
+      try {
+        const blob = await jobService.fetchAcknowledgementProofBlob(
+          jobId,
+          attachment,
+          tenantId,
+        );
+        if (open) {
+          if (blob.size < 64) {
+            throw new Error('Downloaded file is empty or not a viewable document.');
+          }
+          // Proof files: open as-is (no invoice PDF branding stamp).
+          if (await blobLooksLikePdf(blob)) {
+            openPdfBlobInNewTab(blob, previewWindow ?? undefined, name);
+            return;
+          }
+          await openBlobInNewTab(blob, previewWindow ?? null, { filename: name });
           return;
         }
-        const type = (blob.type || '').toLowerCase();
-        if (!type.startsWith('image/') && blob.size < 64) {
-          throw new Error('Downloaded file is empty or not a viewable document.');
+        triggerBlobDownload(blob, name);
+      } catch (err) {
+        if (previewWindow && !previewWindow.closed) {
+          try {
+            previewWindow.close();
+          } catch {
+            /* ignore */
+          }
         }
-        const objectUrl = URL.createObjectURL(blob);
-        const opened = window.open(objectUrl, '_blank');
-        if (!opened) {
-          URL.revokeObjectURL(objectUrl);
-          throw new Error('Pop-up blocked. Allow pop-ups to preview this file.');
-        }
-        window.setTimeout(() => URL.revokeObjectURL(objectUrl), 120_000);
-        return;
+        throw err;
       }
-      triggerBlobDownload(blob, name);
     },
   });
 
@@ -484,8 +496,21 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                             disabled={busy}
                             onClick={() => {
                               setError(null);
+                              let preview: Window | null = null;
+                              try {
+                                // Must open synchronously on click — after await, live browsers
+                                // leave about:blank / block the popup.
+                                preview = openBlankPreviewTab({ filename: name });
+                              } catch (err) {
+                                setError(getErrorMessage(err));
+                                return;
+                              }
                               void downloadProof
-                                .mutateAsync({ attachment, open: true })
+                                .mutateAsync({
+                                  attachment,
+                                  open: true,
+                                  previewWindow: preview,
+                                })
                                 .catch((err) => setError(getErrorMessage(err)));
                             }}
                           >
