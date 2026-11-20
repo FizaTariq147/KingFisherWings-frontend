@@ -1,7 +1,10 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { AppShellSkeleton } from '@/components/skeletons/AppShellSkeleton'
-import { hasMustChangePasswordCleared } from '@/features/auth/utils/mustChangePasswordGate'
+import {
+  hasMustChangePasswordCleared,
+  shouldSkipMustChangePasswordRedirect,
+} from '@/features/auth/utils/mustChangePasswordGate'
 import { useAuthStore } from '@/store/authStore'
 import type { PermissionKey } from '@/types/auth.types'
 
@@ -48,12 +51,17 @@ export default function ProtectedRoute({
   const storeAuthenticated = useAuthStore((s) => s.isAuthenticated && Boolean(s.accessToken))
   const storeUser = useAuthStore((s) => s.user)
   const mustChangeSatisfied = useAuthStore((s) => s.mustChangePasswordSatisfied)
+  const location = useLocation()
+  const sessionPending = Boolean(accessToken) && !isAuthenticated
+
+  // After a successful Set password, never bounce back — even if /auth/me still
+  // returns must_change_password=true or principal ids don't match storage marks.
+  const skipMustChange = shouldSkipMustChangePasswordRedirect()
   const mustChangePassword =
+    !skipMustChange &&
     Boolean(storeUser?.mustChangePassword) &&
     !mustChangeSatisfied &&
     !hasMustChangePasswordCleared(storeUser?.id, storeUser?.tenantId)
-  const location = useLocation()
-  const sessionPending = Boolean(accessToken) && !isAuthenticated
 
   // ── Auth still resolving — show full shell skeleton so layout doesn't flash
   if (isLoading || sessionPending) {
@@ -66,7 +74,6 @@ export default function ProtectedRoute({
   }
 
   // Staff / Tenant Admin with a temporary password must set their own before using the app.
-  // Skip when this session already completed Set password (avoids /auth/me bounce loop).
   if (mustChangePassword && location.pathname !== CHANGE_PASSWORD_PATH) {
     return <Navigate to={CHANGE_PASSWORD_PATH} replace />
   }

@@ -19,8 +19,10 @@ import {
 import { withGatewayRetry } from '@/lib/wakeApi'
 import { AUTH_THROTTLE_USER_MESSAGE } from '@/features/auth/utils/authThrottleMessage'
 import {
+  armMustChangePasswordSkip,
   hasMustChangePasswordCleared,
   markMustChangePasswordCleared,
+  shouldSkipMustChangePasswordRedirect,
 } from '@/features/auth/utils/mustChangePasswordGate'
 import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore'
@@ -319,10 +321,9 @@ async function applyLoginSuccess(
     undefined
   const sessionId =
     result.sessionId || sessionIdFromAccessToken(result.accessToken) || null
-  const clearedLocally = hasMustChangePasswordCleared(
-    result.user.id,
-    tenantId,
-  )
+  const clearedLocally =
+    shouldSkipMustChangePasswordRedirect() ||
+    hasMustChangePasswordCleared(result.user.id, tenantId)
   const mustChangePassword = clearedLocally
     ? false
     : Boolean(result.user.mustChangePassword)
@@ -686,6 +687,7 @@ export const useAuthStore = create<AuthStore>()(
 
       clearMustChangePassword: () => {
         const current = get().user
+        armMustChangePasswordSkip()
         markMustChangePasswordCleared(current?.id, current?.tenantId)
         set({
           mustChangePasswordSatisfied: true,

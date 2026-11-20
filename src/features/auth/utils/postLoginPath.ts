@@ -2,7 +2,10 @@ import {
   getErpHomePath,
   resolveAuthRoleSlug,
 } from '@/features/users/constants/userPermissions'
-import { hasMustChangePasswordCleared } from '@/features/auth/utils/mustChangePasswordGate'
+import {
+  hasMustChangePasswordCleared,
+  shouldSkipMustChangePasswordRedirect,
+} from '@/features/auth/utils/mustChangePasswordGate'
 
 /** Post-login destination for ERP sessions. */
 export function erpPostAuthPath(user?: {
@@ -11,6 +14,9 @@ export function erpPostAuthPath(user?: {
   role?: string | null
   mustChangePassword?: boolean
 } | null): string {
+  if (shouldSkipMustChangePasswordRedirect()) {
+    return getErpHomePath(resolveAuthRoleSlug(user?.role))
+  }
   const cleared = hasMustChangePasswordCleared(user?.id, user?.tenantId)
   if (user?.mustChangePassword && !cleared) return '/change-password'
   const roleSlug = resolveAuthRoleSlug(user?.role)

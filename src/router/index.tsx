@@ -489,10 +489,12 @@ export const router = createBrowserRouter([
     ],
   },
 
+  // Outside ProtectedRoute must-change redirect so a successful Set password can
+  // navigate to /dashboard without bouncing back when /auth/me is still stale.
+  { path: '/change-password', element: <ChangePasswordPage /> },
   {
     element: <ProtectedRoute />,
     children: [
-      { path: '/change-password', element: <ChangePasswordPage /> },
       {
         element: <AppShell title="KingFisher Tech Gold" />,
         children: [
