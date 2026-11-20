@@ -5,6 +5,7 @@ import {
   type FresaPageColumnId,
 } from '../../constants/fresaPageColumns';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
+import { invoiceV2Rank } from '../../engine/invoiceV2Codes';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { FormatStatusBadge } from './FormatStatusBadge';
@@ -14,6 +15,8 @@ import {
 } from '../../utils/reportConformanceStatus';
 
 function compareByName(a: ReportTemplate, b: ReportTemplate): number {
+  const rank = invoiceV2Rank(a.code) - invoiceV2Rank(b.code);
+  if (rank !== 0) return rank;
   const na = parseInvoiceFormatNumber(a.code);
   const nb = parseInvoiceFormatNumber(b.code);
   if (na != null && nb != null && na !== nb) return na - nb;

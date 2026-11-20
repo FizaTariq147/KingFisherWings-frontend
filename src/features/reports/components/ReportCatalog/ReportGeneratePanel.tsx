@@ -62,11 +62,9 @@ import { InvoiceFormatAutoPdf } from './InvoiceFormatAutoPdf';
 import { ReportParameterForm } from './ReportParameterForm';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import { reportsEngine } from '../../engine/reportsEngine';
-import {
-  INVOICE_V2_FALLBACK_NOTICE,
-  renderInvoiceV2InBrowser,
-  shouldUseInvoiceV2,
-} from '../../engine/invoiceV2Gate';
+import { shouldUseInvoiceV2 } from '../../engine/invoiceV2Gate';
+import { invoiceV2SpecCodes } from '../../engine/invoiceV2Codes';
+import { InvoiceV2Preview } from './InvoiceV2Preview';
 
 type ReportGeneratePanelProps = {
   template: ReportTemplate;
@@ -155,7 +153,6 @@ export function ReportGeneratePanel({
   const [jobId, setJobId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const [v2Notice, setV2Notice] = useState<string | null>(null);
   const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
   const [pdfReadyUrl, setPdfReadyUrl] = useState<string | null>(null);
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
@@ -369,22 +366,6 @@ export function ReportGeneratePanel({
     const runClientSamplePdf = async () => {
       setClientGenerating(true);
       try {
-        if (shouldUseInvoiceV2({
-          engine: reportsEngine(),
-          entry: 'formats',
-          document: 'invoice',
-          style: 'classic',
-        }) && isInvoiceFormatPdf) {
-          try {
-            const blob = await renderInvoiceV2InBrowser();
-            setPdfReadyBlob(blob);
-            setPdfReadyOpen(true);
-            setV2Notice(null);
-            return;
-          } catch {
-            setV2Notice(INVOICE_V2_FALLBACK_NOTICE);
-          }
-        }
         // Empty / partial data keeps layout JSON `demo` (Fresa sample dummy fields).
         // Entity-bound overlays live values via mergeInvoiceFormatDemo.
         let data = await resolveCatalogContextPdfData(contextIds, {
@@ -709,6 +690,17 @@ export function ReportGeneratePanel({
       </div>
 
       {isInvoiceFormat &&
+      invoiceV2SpecCodes.has(resolved.code) &&
+      shouldUseInvoiceV2({
+        engine: reportsEngine(),
+        entry: 'formats',
+        document: 'invoice',
+        style: 'classic',
+      }) ? (
+        <InvoiceV2Preview code={resolved.code} invoiceId={context?.invoice_id} />
+      ) : null}
+
+      {isInvoiceFormat &&
       !omitClientPreview &&
       allowClientLayoutGenerate({
         packReady: packReadyForGenerate,
@@ -906,7 +898,6 @@ export function ReportGeneratePanel({
       ) : null}
 
       {error ? <p className="text-sm text-[var(--color-danger-600)]">{error}</p> : null}
-      {v2Notice ? <p className="text-sm text-[var(--color-warning-700)]">{v2Notice}</p> : null}
       {message ? <p className="text-sm text-[var(--color-success-700)]">{message}</p> : null}
       {jobQuery.data?.status === 'failed' ? (
         <p className="text-sm text-[var(--color-danger-600)]">

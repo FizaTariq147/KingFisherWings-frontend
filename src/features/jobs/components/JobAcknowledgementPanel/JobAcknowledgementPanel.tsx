@@ -11,7 +11,10 @@ import {
 } from '@/lib/fileUploadValidation';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import {
+  openBlobInNewTab,
+  triggerBlobDownload,
+} from '@/features/files/utils/triggerBlobDownload';
 import { ApiDataView } from '../ApiDataView';
 import { jobService } from '../../services/job.service';
 import { jobKeys, useJobContainers } from '../../hooks/useJobs';
@@ -135,15 +138,23 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
     mutationFn: async ({
       attachmentId,
       fileName,
+      open,
     }: {
       attachmentId: string;
       fileName?: string;
+      /** Open in a new tab (PDF/image) instead of forcing a download. */
+      open?: boolean;
     }) => {
       const blob = await jobService.downloadAcknowledgementAttachment(
         jobId,
         attachmentId,
       );
-      triggerBlobDownload(blob, fileName || 'acknowledgement-proof');
+      const name = fileName || 'acknowledgement-proof';
+      if (open) {
+        await openBlobInNewTab(blob, null, { filename: name });
+        return;
+      }
+      triggerBlobDownload(blob, name);
     },
   });
 
@@ -390,7 +401,8 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                   const name = String(
                     rec.file_name ?? rec.fileName ?? rec.name ?? id.slice(0, 8),
                   );
-                  const url = typeof rec.file_url === 'string' ? rec.file_url : undefined;
+                  // Never use raw file_url as <a href> — /files/… paths hit SPA 404.
+                  // Always open via authenticated attachment download.
                   return (
                     <li
                       key={id || name}
@@ -398,29 +410,24 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                     >
                       <span className="truncate font-medium text-[#0f172a]">{name}</span>
                       <div className="flex gap-1">
-                        {url ? (
-                          <a
-                            className="text-[var(--color-primary)] underline"
-                            href={url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Open
-                          </a>
-                        ) : id ? (
+                        {id ? (
                           <Button
                             type="button"
                             size="sm"
                             variant="secondary"
                             disabled={downloadProof.isPending}
-                            onClick={() =>
-                              void downloadProof.mutateAsync({
-                                attachmentId: id,
-                                fileName: name,
-                              })
-                            }
+                            onClick={() => {
+                              setError(null);
+                              void downloadProof
+                                .mutateAsync({
+                                  attachmentId: id,
+                                  fileName: name,
+                                  open: true,
+                                })
+                                .catch((err) => setError(getErrorMessage(err)));
+                            }}
                           >
-                            Download
+                            Open
                           </Button>
                         ) : null}
                       </div>

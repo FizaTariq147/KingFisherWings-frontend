@@ -583,7 +583,7 @@ export async function renderSpec(code, options = {}) {
       const demo = span.text;
       let text = options.overflow && span.role === 'dynamic' ? replacement(span, spec) : demo;
       let mode = options.overflow ? overflowMode(span, spec) : 'none';
-      if ((options.organization || options.values) && span.role === 'static' && fresaFragment(demo)) {
+      if ((options.organization || options.values) && span.role === 'static' && fresaFragment(demo) && !options.values?.[span.id]) {
         continue;
       }
       if (options.organization && span.role === 'branding') {
@@ -594,6 +594,9 @@ export async function renderSpec(code, options = {}) {
       } else if (options.values && span.role === 'dynamic') {
         text = options.values[span.id] ?? '';
         mode = overflowMode(span, spec);
+      } else if (options.values && span.role === 'static' && options.values[span.id]) {
+        text = options.values[span.id];
+        mode = 'wrap-shrink-clip';
       }
       if (!text) continue;
       const color = parseColor(span.color);

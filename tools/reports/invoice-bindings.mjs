@@ -56,6 +56,220 @@ export function invoiceFamilyCodes() {
   return codes;
 }
 
+function classicMoney(value) {
+  const number = value == null || value === '' ? 0 : Number(value);
+  if (!Number.isFinite(number)) return '0.00';
+  return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function lineAmount(line) {
+  if (line?.line_total != null && Number.isFinite(Number(line.line_total))) return Number(line.line_total);
+  const qty = Number(line?.quantity ?? 0);
+  const price = Number(line?.unit_price ?? 0);
+  const tax = Number(line?.tax_amount ?? 0);
+  return qty * price + tax;
+}
+
+function isNumericText(text) {
+  return /^-?[\d,]+(\.\d+)?$/.test(String(text || '').trim());
+}
+
+function aliasBinding(key) {
+  if (!key) return '';
+  if (/\b(sgst|cgst|igst)\b/.test(key)) return '';
+  if (key === 'subtotal' || key.startsWith('subtotal') || key.startsWith('sub total')) return 'invoice.amount';
+  if (key === 'taxable' || key.startsWith('taxable')) return 'invoice.amount';
+  if (key === 'vat' || key.startsWith('vat ') || key === 'tax' || key === 'gst') return 'invoice.tax';
+  if (key === 'grand total' || key.startsWith('grand total') || key === 'total amount') return 'invoice.total';
+  return '';
+}
+
+function pathValues(record) {
+  const org = record.organization || {};
+  const invoice = record.invoice || {};
+  const job = record.job || {};
+  const party = record.party || {};
+  const sea = job.sea_fcl_details || job.sea_lcl_details || {};
+  const air = job.air_details || {};
+  const text = (value) => (value == null ? '' : String(value).trim());
+  return {
+    'company.name': text(org.display_name) || text(org.name),
+    'company.address': [org.address, org.city, org.country_code].map(text).filter(Boolean).join(', '),
+    'company.phone': text(org.phone),
+    'company.email': text(org.email),
+    'party.billTo': [text(invoice.party_name) || text(party.name), party.address, party.city].map(text).filter(Boolean).join(', '),
+    'party.shipper': text(job.shipper_name),
+    'party.consignee': text(job.consignee_name),
+    'party.notify': '',
+    'job.number': text(invoice.job_number) || text(job.job_number),
+    'invoice.number': text(invoice.invoice_number),
+    'invoice.date': text(invoice.invoice_date),
+    'invoice.currency': text(invoice.currency_code),
+    'invoice.amount': classicMoney(invoice.subtotal ?? 0),
+    'invoice.tax': classicMoney(invoice.tax_total ?? 0),
+    'invoice.total': classicMoney(invoice.total_amount ?? (Number(invoice.subtotal ?? 0) + Number(invoice.tax_total ?? 0))),
+    'shipment.mawb': text(air.mawb_number),
+    'shipment.hawb': text(air.hawb_number),
+    'shipment.hbl': text(sea.hbl_number),
+    'shipment.mbl': text(sea.mbl_number),
+    'shipment.pol': text(job.origin_port_code),
+    'shipment.pod': text(job.dest_port_code),
+    'shipment.placeOfReceipt': text(sea.place_of_receipt),
+    'shipment.placeOfDelivery': text(sea.place_of_delivery),
+    'shipment.finalDestination': text(job.dest_door_address),
+    'shipment.vessel': text(job.vessel_name) || text(sea.vessel_name),
+    'shipment.voyage': text(job.voyage_number) || text(sea.voyage_number),
+    'shipment.etd': text(job.etd) || text(sea.etd),
+    'shipment.eta': text(job.eta) || text(sea.eta),
+    'shipment.carrier': text(sea.shipping_line_name),
+    'shipment.freightTerms': text(sea.freight_terms),
+    'shipment.serviceType': text(job.service_scope),
+    'cargo.description': text(job.commodity_description) || text(job.commodity),
+    'cargo.marks': text(job.cargo?.[0]?.marks_numbers),
+    'cargo.pieces': job.pieces == null ? '' : String(job.pieces),
+    'cargo.grossWeight': job.gross_weight == null ? '' : String(job.gross_weight),
+    'cargo.netWeight': '',
+    'cargo.measurement': job.volume_cbm == null ? '' : String(job.volume_cbm),
+    'cargo.containerNo': text(job.primary_container_number) || text(job.containers?.[0]?.container_number),
+    'cargo.containerType': text(job.containers?.[0]?.container_type_code),
+    'cargo.sealNo': text(job.containers?.[0]?.seal_number),
+  };
+}
+
+const NO_SOURCE = new Set(['party.notify', 'cargo.netWeight']);
+
+/**
+ * Fill one invoice spec from a record. Totals and line amounts use the same
+ * numbers the classic PDF prints. Split GST cells stay empty.
+ */
+export function fillInvoiceSpans(spec, record) {
+  const dictionary = loadDictionary();
+  const byPath = pathValues(record);
+  const values = {};
+  const blanks = [];
+  const invoice = record.invoice || {};
+  const lines = invoice.lines || [];
+  const subtotal = classicMoney(invoice.subtotal ?? 0);
+  const tax = classicMoney(invoice.tax_total ?? 0);
+  const total = byPath['invoice.total'];
+  let taxPlaced = false;
+  const pages = spec.pages?.length ? spec.pages : [spec];
+
+  for (const page of pages) {
+    const spans = page.spans || [];
+    const dynamic = spans.filter((span) => span.role === 'dynamic');
+    const rows = [];
+    for (const span of dynamic) {
+      const row = rows.find((item) => Math.abs(item.y - span.y) <= 3);
+      if (row) row.spans.push(span);
+      else rows.push({ y: span.y, spans: [span] });
+    }
+    const chargeRows = rows.filter((row) => {
+      const numeric = row.spans.filter((span) => isNumericText(span.text));
+      if (numeric.length < 4) return false;
+      const keys = row.spans.map((span) => normalizeLabel(nearestLabel(span, spans)?.text || '')).join(' ');
+      return !/\b(sgst|cgst|igst)\b/.test(keys);
+    }).sort((a, b) => b.y - a.y);
+
+    chargeRows.forEach((row, index) => {
+      const right = row.spans.slice().sort((a, b) => b.x - a.x)[0];
+      const line = lines[index];
+      if (!line) {
+        blanks.push({ span: right.id, label: 'line amount', binding: 'invoice.lines', why: 'empty in the record' });
+        return;
+      }
+      values[right.id] = classicMoney(lineAmount(line));
+      const caption = nearestLabel(right, spans);
+      if (caption?.role === 'static' && String(line.description || line.charge_code || '').trim()) {
+        values[caption.id] = String(line.description || line.charge_code);
+      }
+      for (const span of row.spans) {
+        if (span.id === right.id) continue;
+        values[span.id] = '';
+        const side = nearestLabel(span, spans);
+        blanks.push({ span: span.id, label: side?.text || 'charge column', binding: '', why: 'no source' });
+      }
+    });
+    if (lines.length > chargeRows.length) {
+      for (let index = chargeRows.length; index < lines.length; index += 1) {
+        blanks.push({
+          span: `line-${index + 1}`,
+          label: lines[index].description || 'line amount',
+          binding: 'invoice.lines',
+          why: 'no source',
+        });
+      }
+    }
+    const totalRows = rows.filter((row) => {
+      const keys = row.spans.map((span) => normalizeLabel(nearestLabel(span, spans)?.text || '')).join(' ');
+      return /\b(sgst|cgst|igst)\b/.test(keys);
+    });
+    for (const row of totalRows) {
+      const numeric = row.spans.filter((span) => isNumericText(span.text)).sort((a, b) => a.x - b.x);
+      const right = numeric[numeric.length - 1];
+      if (right && total) values[right.id] = total;
+    }
+
+    for (const span of dynamic) {
+      if (values[span.id] != null) continue;
+      const label = nearestLabel(span, spans);
+      const key = normalizeLabel(label?.text || '');
+      if (/\b(sgst|cgst|igst)\b/.test(key)) {
+        if (!taxPlaced) {
+          values[span.id] = tax;
+          taxPlaced = true;
+          continue;
+        }
+        blanks.push({ span: span.id, label: label?.text || '', binding: '', why: 'no source' });
+        values[span.id] = '';
+        continue;
+      }
+      const binding = aliasBinding(key) || bindingForLabel(label?.text || '', dictionary);
+      if (!binding) {
+        blanks.push({ span: span.id, label: label?.text || '', binding: '', why: 'no source' });
+        values[span.id] = '';
+        continue;
+      }
+      if (!(binding in byPath)) {
+        blanks.push({ span: span.id, label: label?.text || '', binding, why: 'wrong path' });
+        values[span.id] = '';
+        continue;
+      }
+      if (NO_SOURCE.has(binding)) {
+        blanks.push({ span: span.id, label: label?.text || '', binding, why: 'no source' });
+        values[span.id] = '';
+        continue;
+      }
+      if (binding === 'invoice.amount') {
+        values[span.id] = subtotal;
+        continue;
+      }
+      if (binding === 'invoice.tax') {
+        values[span.id] = tax;
+        taxPlaced = true;
+        continue;
+      }
+      if (binding === 'invoice.total') {
+        values[span.id] = total;
+        continue;
+      }
+      const text = byPath[binding];
+      if (!String(text || '').trim()) {
+        blanks.push({ span: span.id, label: label?.text || '', binding, why: 'empty in the record' });
+        values[span.id] = '';
+        continue;
+      }
+      values[span.id] = String(text);
+    }
+  }
+
+  return {
+    values,
+    blanks,
+    totals: { subtotal, tax, total, lines: lines.map((line) => classicMoney(lineAmount(line))) },
+  };
+}
+
 function csv(value) {
   const text = String(value ?? '');
   return /[",\n]/.test(text) ? `"${text.replaceAll('"', '""')}"` : text;

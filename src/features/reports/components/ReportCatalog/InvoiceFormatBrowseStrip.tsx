@@ -1,5 +1,7 @@
 import { listInvoiceFormatPreviews } from '../../data/invoiceFormatPreviews';
+import { invoiceV2BadgeText, invoiceV2Rank } from '../../engine/invoiceV2Codes';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
+import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
 import { FresaCatalogSection, FresaFormatCard } from './FresaCatalogSection';
 
@@ -23,7 +25,7 @@ export function InvoiceFormatBrowseStrip({
 
   const all = listInvoiceFormatPreviews()
     .slice()
-    .sort((a, b) => a.formatNumber - b.formatNumber);
+    .sort((a, b) => invoiceV2Rank(a.code) - invoiceV2Rank(b.code) || a.formatNumber - b.formatNumber);
   const { items, scopedTotal, filterActive } = filterCatalogStripRows(all, {
     searchQuery,
     allowedCodes,
@@ -55,6 +57,7 @@ export function InvoiceFormatBrowseStrip({
           badge={`#${row.formatNumber}`}
           name={row.name}
           status={resolveCatalogFormatStatus(row.code)}
+          sharedHint={invoiceV2Rank(row.code) === 0 ? invoiceV2BadgeText(reportConformanceStatus(row.code)) : null}
           onClick={() => onSelect(row.code)}
         />
       ))}
