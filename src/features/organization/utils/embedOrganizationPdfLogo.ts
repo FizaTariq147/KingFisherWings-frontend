@@ -143,9 +143,9 @@ function dataUrlToBytes(dataUrl: string): ArrayBuffer | null {
 }
 
 /**
- * Map an API-relative logo path onto axiosInstance.baseURL.
- * Local: `/files/x` + base `/backend` → request `/backend/files/x` (vite proxy).
- * Live absolute API: `/files/x` + base `https://api…` → `https://api…/files/x`.
+ * Path for axiosInstance.get — must NOT include `/backend`.
+ * axios baseURL is already `VITE_API_URL` (`/backend` or `https://host/backend`);
+ * prepending `/backend` produced live 404s: `/backend/backend/organization/logo`.
  */
 function toAxiosPath(url: string): string {
   const relative = toApiRelativeLogoUrl(url);
@@ -162,17 +162,26 @@ function toAxiosPath(url: string): string {
   }
   if (!path.startsWith('/') || path.startsWith('//')) return path;
 
+  // Strip proxy / absolute-base prefixes; axiosInstance.baseURL supplies them.
   const apiBase = getConfiguredApiBase();
-
-  if (!apiBase.startsWith('/')) {
-    // Absolute API host — never keep a /backend proxy prefix.
-    if (path.startsWith('/backend/')) return path.slice('/backend'.length) || '/';
-    if (path === '/backend') return '/';
-    return path;
+  while (path.startsWith('/backend/')) {
+    path = path.slice('/backend'.length) || '/';
   }
-
-  if (path === apiBase || path.startsWith(`${apiBase}/`)) return path;
-  return `${apiBase}${path}`;
+  if (path === '/backend') path = '/';
+  if (apiBase.startsWith('/') && (path === apiBase || path.startsWith(`${apiBase}/`))) {
+    path = path.slice(apiBase.length) || '/';
+  }
+  if (!apiBase.startsWith('/')) {
+    try {
+      const basePath = new URL(apiBase).pathname.replace(/\/$/, '');
+      if (basePath && (path === basePath || path.startsWith(`${basePath}/`))) {
+        path = path.slice(basePath.length) || '/';
+      }
+    } catch {
+      /* keep */
+    }
+  }
+  return path.startsWith('/') ? path : `/${path}`;
 }
 
 function sniffMime(bytes: ArrayBuffer): string | undefined {
