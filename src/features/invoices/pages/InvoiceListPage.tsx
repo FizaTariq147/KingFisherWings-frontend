@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState, ErrorState } from '@/components/erp';
+import { useAuth } from '@/hooks/useAuth';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import {
   InvoiceFilters,
@@ -13,10 +14,13 @@ import {
 import { InvoiceTable } from '../components/InvoiceTable';
 import { DEFAULT_INVOICE_PAGE_SIZE } from '../constants/invoice.constants';
 import { useInvoices } from '../hooks/useInvoices';
+import { canAccessInvoiceSide } from '../utils/invoiceListVisibility';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function InvoiceListPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const allowed = canAccessInvoiceSide(user, 'sale');
   const [page, setPage] = useState(1);
   const { draft, setDraft, applied, submit } = useInvoiceFilterDraft(
     DEFAULT_INVOICE_PAGE_SIZE,
@@ -31,9 +35,37 @@ export default function InvoiceListPage() {
     [applied, page],
   );
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useInvoices(listParams);
+  const { data, isLoading, isFetching, isError, error, refetch } = useInvoices(
+    listParams,
+    { enabled: allowed },
+  );
   const invoices = data?.invoices ?? [];
   const meta = data?.meta;
+
+  if (!allowed) {
+    return (
+      <div className={listShell.page}>
+        <div className={listShell.card}>
+          <div className={listShell.header}>
+            <div className="min-w-0">
+              <button
+                type="button"
+                className={appType.backLink}
+                onClick={() => navigate('/finance')}
+              >
+                ← Finance
+              </button>
+              <h2 className={`${appType.pageTitle} mt-0.5`}>All Invoices</h2>
+            </div>
+          </div>
+          <EmptyState
+            title="Sale invoices are not enabled for your account."
+            description="Ask a Tenant Admin to enable “Can see sale invoices” on your user profile."
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={listShell.page}>

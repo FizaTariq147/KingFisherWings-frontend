@@ -6,12 +6,11 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import {
-  ATTACHMENT_UPLOAD_OPTIONS,
-  handleValidatedFileInput,
+  ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
+  handleValidatedMultiFileInput,
 } from '@/lib/fileUploadValidation';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
-import { useFileDownload } from '@/features/files/hooks/useFileDownload';
 import { openPdfBlobInNewTab } from '@/features/files/utils/pdfBranding';
 import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
 import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
@@ -19,7 +18,6 @@ import { ApiDataView } from '../ApiDataView';
 import { jobService } from '../../services/job.service';
 import { jobKeys, useJobContainers } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
-import { resolveJobDocumentFileUrl } from '../../utils/resolveJobDocumentFileUrl';
 import type { DeliveryAcknowledgement } from '../../types/job.types';
 
 function statusVariant(
@@ -42,7 +40,6 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   const accessToken = useAuthStore((s) => s.accessToken);
   const tenantId = useAuthStore((s) => s.user?.tenantId);
   const qc = useQueryClient();
-  const { openStoredFile, isPending: storedFilePending } = useFileDownload();
   const fileRef = useRef<HTMLInputElement>(null);
   const proofRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -57,8 +54,8 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
 
   const [containerId, setContainerId] = useState('');
   const [message, setMessage] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [proofFile, setProofFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [proofFiles, setProofFiles] = useState<File[]>([]);
   const [receiveNotes, setReceiveNotes] = useState('');
 
   const containerOptions = useMemo(
@@ -109,28 +106,32 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   });
 
   const send = useMutation({
-    mutationFn: (opts?: { proofOnly?: boolean; proof?: File | null }) =>
+    mutationFn: (opts?: { proofOnly?: boolean; proof?: File[] }) =>
       jobService.sendAcknowledgement(jobId, {
         ...(opts?.proofOnly
-          ? { proof_only: true, file: opts.proof ?? undefined }
+          ? {
+              proof_only: true,
+              files: opts.proof?.length ? opts.proof : undefined,
+            }
           : {
               message: message.trim(),
               ...(containerId.trim() ? { container_id: containerId.trim() } : {}),
-              ...(file ? { file } : {}),
+              ...(files.length ? { files } : {}),
             }),
       }),
     onSuccess: (data) => {
       qc.setQueryData([...jobKeys.all, 'acknowledgement', jobId], data);
       void qc.invalidateQueries({ queryKey: [...jobKeys.all, 'acknowledgement', jobId] });
-      setFile(null);
-      setProofFile(null);
+      setFiles([]);
+      setProofFiles([]);
       if (fileRef.current) fileRef.current.value = '';
       if (proofRef.current) proofRef.current.value = '';
     },
   });
 
   const uploadProof = useMutation({
-    mutationFn: (f: File) => jobService.uploadAcknowledgementAttachment(jobId, f),
+    mutationFn: (picked: File[]) =>
+      jobService.uploadAcknowledgementAttachments(jobId, picked),
     onSuccess: () => {
       void attachmentsQuery.refetch();
       void qc.invalidateQueries({ queryKey: [...jobKeys.all, 'acknowledgement', jobId] });
@@ -139,25 +140,35 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
 
   const downloadProof = useMutation({
     mutationFn: async ({
-      attachmentId,
-      fileName,
+      attachment,
       open,
     }: {
-      attachmentId: string;
-      fileName?: string;
+      attachment: {
+        id?: string;
+        file_name?: string;
+        file_url?: string;
+        s3_key?: string;
+        download_url?: string;
+        download_path?: string;
+        url?: string;
+      };
       /** Open in a new tab (PDF/image) instead of forcing a download. */
       open?: boolean;
     }) => {
-      const blob = await jobService.downloadAcknowledgementAttachment(
+      const name = attachment.file_name || 'acknowledgement-proof';
+      const blob = await jobService.fetchAcknowledgementProofBlob(
         jobId,
-        attachmentId,
+        attachment,
+        tenantId,
       );
-      const name = fileName || 'acknowledgement-proof';
       if (open) {
-        // Skip PDF chrome re-stamp — proof files should open as stored.
         if (await blobLooksLikePdf(blob)) {
           openPdfBlobInNewTab(blob, undefined, name);
           return;
+        }
+        const type = (blob.type || '').toLowerCase();
+        if (!type.startsWith('image/') && blob.size < 64) {
+          throw new Error('Downloaded file is empty or not a viewable document.');
         }
         const objectUrl = URL.createObjectURL(blob);
         const opened = window.open(objectUrl, '_blank');
@@ -357,13 +368,14 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
               <input
                 ref={fileRef}
                 type="file"
+                multiple
                 className="hidden"
                 onChange={(e) =>
-                  handleValidatedFileInput(
+                  handleValidatedMultiFileInput(
                     e.target.files,
-                    setFile,
-                    undefined,
-                    ATTACHMENT_UPLOAD_OPTIONS,
+                    setFiles,
+                    (msg) => setError(msg),
+                    ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
                   )
                 }
               />
@@ -374,7 +386,9 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                 leftIcon={<Paperclip className="h-3.5 w-3.5" />}
                 onClick={() => fileRef.current?.click()}
               >
-                {file ? file.name : 'Optional attachment with send'}
+                {files.length
+                  ? `${files.length} file${files.length === 1 ? '' : 's'} selected`
+                  : 'Optional attachments with send'}
               </Button>
               <Button
                 type="button"
@@ -411,27 +425,49 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
               <ul className="space-y-1.5">
                 {proofRows.map((row) => {
                   const rec = row as Record<string, unknown>;
-                  const id = String(rec.id ?? '');
+                  const id = String(rec.id ?? rec.attachment_id ?? '');
                   const name = String(
-                    rec.file_name ?? rec.fileName ?? rec.name ?? id.slice(0, 8),
+                    (rec.file_name ??
+                      rec.fileName ??
+                      rec.filename ??
+                      rec.name ??
+                      id.slice(0, 8)) ||
+                      'proof',
                   );
-                  const storedUrl = resolveJobDocumentFileUrl(
-                    {
-                      file_url:
-                        (typeof rec.file_url === 'string' && rec.file_url) ||
-                        (typeof rec.fileUrl === 'string' && rec.fileUrl) ||
-                        (typeof rec.url === 'string' && rec.url) ||
-                        (typeof rec.download_url === 'string' && rec.download_url) ||
-                        undefined,
-                      s3_key:
-                        (typeof rec.s3_key === 'string' && rec.s3_key) ||
-                        (typeof rec.s3Key === 'string' && rec.s3Key) ||
-                        undefined,
-                      file_name: name,
-                    },
-                    tenantId,
+                  const attachment = {
+                    id: id || undefined,
+                    file_name: name,
+                    file_url:
+                      (typeof rec.file_url === 'string' && rec.file_url) ||
+                      (typeof rec.fileUrl === 'string' && rec.fileUrl) ||
+                      undefined,
+                    url: typeof rec.url === 'string' ? rec.url : undefined,
+                    s3_key:
+                      (typeof rec.s3_key === 'string' && rec.s3_key) ||
+                      (typeof rec.s3Key === 'string' && rec.s3Key) ||
+                      undefined,
+                    download_url:
+                      typeof rec.download_url === 'string'
+                        ? rec.download_url
+                        : typeof rec.downloadUrl === 'string'
+                          ? rec.downloadUrl
+                          : undefined,
+                    download_path:
+                      typeof rec.download_path === 'string'
+                        ? rec.download_path
+                        : typeof rec.downloadPath === 'string'
+                          ? rec.downloadPath
+                          : undefined,
+                  };
+                  const canFetch = Boolean(
+                    attachment.id ||
+                      attachment.file_url ||
+                      attachment.url ||
+                      attachment.s3_key ||
+                      attachment.download_url ||
+                      attachment.download_path,
                   );
-                  const busy = downloadProof.isPending || storedFilePending;
+                  const busy = downloadProof.isPending;
                   // Never use raw file_url as <a href> — /files/… paths hit SPA 404.
                   return (
                     <li
@@ -440,39 +476,7 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                     >
                       <span className="truncate font-medium text-[#0f172a]">{name}</span>
                       <div className="flex gap-1">
-                        {storedUrl || id ? (
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="secondary"
-                            disabled={busy}
-                            onClick={() => {
-                              setError(null);
-                              void (async () => {
-                                try {
-                                  if (storedUrl) {
-                                    await openStoredFile(storedUrl, {
-                                      displayName: name,
-                                    });
-                                    return;
-                                  }
-                                  if (id) {
-                                    await downloadProof.mutateAsync({
-                                      attachmentId: id,
-                                      fileName: name,
-                                      open: true,
-                                    });
-                                  }
-                                } catch (err) {
-                                  setError(getErrorMessage(err));
-                                }
-                              })();
-                            }}
-                          >
-                            Open
-                          </Button>
-                        ) : null}
-                        {id ? (
+                        {canFetch ? (
                           <Button
                             type="button"
                             size="sm"
@@ -481,11 +485,23 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                             onClick={() => {
                               setError(null);
                               void downloadProof
-                                .mutateAsync({
-                                  attachmentId: id,
-                                  fileName: name,
-                                  open: false,
-                                })
+                                .mutateAsync({ attachment, open: true })
+                                .catch((err) => setError(getErrorMessage(err)));
+                            }}
+                          >
+                            Open
+                          </Button>
+                        ) : null}
+                        {canFetch ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="secondary"
+                            disabled={busy}
+                            onClick={() => {
+                              setError(null);
+                              void downloadProof
+                                .mutateAsync({ attachment, open: false })
                                 .catch((err) => setError(getErrorMessage(err)));
                             }}
                           >
@@ -504,13 +520,14 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                 <input
                   ref={proofRef}
                   type="file"
+                  multiple
                   className="hidden"
                   onChange={(e) =>
-                    handleValidatedFileInput(
+                    handleValidatedMultiFileInput(
                       e.target.files,
-                      setProofFile,
-                      undefined,
-                      ATTACHMENT_UPLOAD_OPTIONS,
+                      setProofFiles,
+                      (msg) => setError(msg),
+                      ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
                     )
                   }
                 />
@@ -522,18 +539,20 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                   disabled={uploadProof.isPending}
                   onClick={() => proofRef.current?.click()}
                 >
-                  {proofFile ? proofFile.name : 'Choose proof file'}
+                  {proofFiles.length
+                    ? `${proofFiles.length} file${proofFiles.length === 1 ? '' : 's'} selected`
+                    : 'Choose proof files'}
                 </Button>
                 <Button
                   type="button"
                   size="sm"
                   variant="create"
-                  disabled={!proofFile || uploadProof.isPending}
+                  disabled={!proofFiles.length || uploadProof.isPending}
                   onClick={() =>
                     void run(async () => {
-                      if (!proofFile) return;
-                      await uploadProof.mutateAsync(proofFile);
-                      setProofFile(null);
+                      if (!proofFiles.length) return;
+                      await uploadProof.mutateAsync(proofFiles);
+                      setProofFiles([]);
                       if (proofRef.current) proofRef.current.value = '';
                     }, 'Proof attached.')
                   }
@@ -545,10 +564,14 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                     type="button"
                     size="sm"
                     leftIcon={<Send className="h-3.5 w-3.5" />}
-                    disabled={!proofFile || send.isPending}
+                    disabled={!proofFiles.length || send.isPending}
                     onClick={() =>
                       void run(
-                        () => send.mutateAsync({ proofOnly: true, proof: proofFile }),
+                        () =>
+                          send.mutateAsync({
+                            proofOnly: true,
+                            proof: proofFiles,
+                          }),
                         'Proof resent to customer.',
                       )
                     }

@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
+import { EmptyState } from '@/components/erp';
+import { useAuth } from '@/hooks/useAuth';
+import { canAccessInvoiceSide } from '@/features/invoices/utils/invoiceListVisibility';
 import { PURCHASE_INVOICE_ROUTE_PREFIX } from '../api/purchaseInvoice.api';
 import { PurchaseInvoiceForm } from '../components/PurchaseInvoiceForm';
 import { useCreatePurchaseInvoice } from '../hooks/usePurchaseInvoices';
@@ -9,8 +12,28 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function PurchaseInvoiceCreatePage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const allowed = canAccessInvoiceSide(user, 'purchase');
   const create = useCreatePurchaseInvoice();
   const [error, setError] = useState<string | null>(null);
+
+  if (!allowed) {
+    return (
+      <div className="space-y-4">
+        <button
+          type="button"
+          className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
+          onClick={() => navigate('/finance')}
+        >
+          ← Finance
+        </button>
+        <EmptyState
+          title="Purchase invoices are not enabled for your account."
+          description="Ask a Tenant Admin to enable “Can see purchase invoices” on your user profile."
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

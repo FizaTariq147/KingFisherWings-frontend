@@ -282,8 +282,11 @@ export function usePortalAcknowledgementAttachmentMutations(shipmentId: string) 
   };
   return {
     upload: useMutation({
-      mutationFn: (file: File) =>
-        portalShipmentsService.uploadAcknowledgementAttachment(shipmentId, file),
+      mutationFn: (files: File | File[]) =>
+        portalShipmentsService.uploadAcknowledgementAttachments(
+          shipmentId,
+          Array.isArray(files) ? files : [files],
+        ),
       onSuccess: () => invalidate(),
     }),
     download: useMutation({

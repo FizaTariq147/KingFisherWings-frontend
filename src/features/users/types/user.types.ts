@@ -22,6 +22,10 @@ export interface UserVisibility {
   can_see_cost: boolean;
   can_see_gp: boolean;
   can_see_invoices: boolean;
+  /** Staff finance: customer invoices + debit notes (independent of costing can_see_sales). */
+  can_see_sale_invoices: boolean;
+  /** Staff finance: purchase invoices + credit notes (independent of costing can_see_cost). */
+  can_see_purchase_invoices: boolean;
   can_see_payments: boolean;
   can_see_bank_balances: boolean;
   can_see_ar_ap: boolean;

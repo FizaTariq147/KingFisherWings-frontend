@@ -333,6 +333,19 @@ const MOCK_USER: AuthUser = {
   product:     'KingFisher Tech Gold',
 }
 
+/** Parse optional boolean user flags from /auth/me (snake or camel). */
+function pickOptionalBool(
+  record: Record<string, unknown>,
+  ...keys: string[]
+): boolean | undefined {
+  for (const key of keys) {
+    const v = record[key]
+    if (v === true || v === 'true' || v === 1 || v === '1') return true
+    if (v === false || v === 'false' || v === 0 || v === '0') return false
+  }
+  return undefined
+}
+
 function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser | null {
   if (!raw || typeof raw !== 'object') return null
   let record = raw as Record<string, unknown>
@@ -437,18 +450,18 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
   const unrestrictedOps = pickUnrestrictedOpsFromRecord(record)
   const canGrantPortalAccess = pickCanGrantPortalAccessFromRecord(record)
   const idleTimeoutMinutes = pickIdleTimeoutMinutesFromRecord(record)
-  const canSeeSales = (() => {
-    const v = record.can_see_sales ?? record.canSeeSales
-    if (v === true || v === 'true' || v === 1 || v === '1') return true
-    if (v === false || v === 'false' || v === 0 || v === '0') return false
-    return undefined
-  })()
-  const canSeeCost = (() => {
-    const v = record.can_see_cost ?? record.canSeeCost
-    if (v === true || v === 'true' || v === 1 || v === '1') return true
-    if (v === false || v === 'false' || v === 0 || v === '0') return false
-    return undefined
-  })()
+  const canSeeSales = pickOptionalBool(record, 'can_see_sales', 'canSeeSales')
+  const canSeeCost = pickOptionalBool(record, 'can_see_cost', 'canSeeCost')
+  const canSeeSaleInvoices = pickOptionalBool(
+    record,
+    'can_see_sale_invoices',
+    'canSeeSaleInvoices',
+  )
+  const canSeePurchaseInvoices = pickOptionalBool(
+    record,
+    'can_see_purchase_invoices',
+    'canSeePurchaseInvoices',
+  )
 
   return {
     id: id || email,
@@ -470,6 +483,8 @@ function normalizeAuthUser(raw: unknown, accessToken?: string | null): AuthUser 
     ...(idleTimeoutMinutes !== undefined ? { idleTimeoutMinutes } : {}),
     ...(canSeeSales !== undefined ? { canSeeSales } : {}),
     ...(canSeeCost !== undefined ? { canSeeCost } : {}),
+    ...(canSeeSaleInvoices !== undefined ? { canSeeSaleInvoices } : {}),
+    ...(canSeePurchaseInvoices !== undefined ? { canSeePurchaseInvoices } : {}),
   }
 }
 

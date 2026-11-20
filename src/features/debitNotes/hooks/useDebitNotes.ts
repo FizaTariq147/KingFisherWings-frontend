@@ -14,12 +14,15 @@ export const debitNoteKeys = {
   detail: (id: string) => [...debitNoteKeys.all, 'detail', id] as const,
 };
 
-export function useDebitNotes(params: DebitNoteListParams) {
+export function useDebitNotes(
+  params: DebitNoteListParams,
+  options?: { enabled?: boolean },
+) {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: debitNoteKeys.list(params),
     queryFn: () => debitNoteService.list(params),
-    enabled: Boolean(accessToken),
+    enabled: Boolean(accessToken) && options?.enabled !== false,
     placeholderData: keepPreviousData,
     staleTime: 30_000,
   });

@@ -3,6 +3,10 @@ import { Download, Paperclip, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import {
+  ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
+  pickValidatedUploadFiles,
+} from '@/lib/fileUploadValidation';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { PortalPanel } from '@/features/portal-auth/components/portal-ui';
 import {
@@ -467,9 +471,25 @@ export function PortalAcknowledgementPanel({
                   multiple
                   className="hidden"
                   onChange={(e) => {
-                    const files = Array.from(e.target.files ?? []);
+                    const { files, error: pickError } = pickValidatedUploadFiles(
+                      e.target.files,
+                      ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
+                    );
+                    if (pickError) {
+                      setError(pickError);
+                      if (attachmentInputRef.current) attachmentInputRef.current.value = '';
+                      return;
+                    }
                     if (!files.length) return;
-                    setPendingFiles((prev) => [...prev, ...files]);
+                    setPendingFiles((prev) => {
+                      const next = [...prev, ...files];
+                      if (next.length > 10) {
+                        setError('Select at most 10 files.');
+                        return prev;
+                      }
+                      setError(null);
+                      return next;
+                    });
                     if (attachmentInputRef.current) attachmentInputRef.current.value = '';
                   }}
                 />
@@ -494,9 +514,7 @@ export function PortalAcknowledgementPanel({
                     setError(null);
                     void (async () => {
                       try {
-                        for (const file of pendingFiles) {
-                          await attachmentMutations.upload.mutateAsync(file);
-                        }
+                        await attachmentMutations.upload.mutateAsync(pendingFiles);
                         setPendingFiles([]);
                         setMsg('Attachments uploaded.');
                         await attachmentsQuery.refetch();

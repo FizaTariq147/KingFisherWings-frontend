@@ -27,6 +27,8 @@ const userFlagsSchema = z.object({
   can_see_cost: z.boolean().default(false),
   can_see_gp: z.boolean().default(false),
   can_see_invoices: z.boolean().default(false),
+  can_see_sale_invoices: z.boolean().default(false),
+  can_see_purchase_invoices: z.boolean().default(false),
   can_see_payments: z.boolean().default(false),
   can_see_bank_balances: z.boolean().default(false),
   can_see_ar_ap: z.boolean().default(false),

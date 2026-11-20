@@ -145,6 +145,13 @@ export interface AuthUser {
    */
   canSeeSales?: boolean
   canSeeCost?: boolean
+  /**
+   * Staff invoice list/mutate side flags from GET /auth/me
+   * (User.can_see_sale_invoices / can_see_purchase_invoices).
+   * Independent of costing can_see_sales / can_see_cost. Legacy can_see_invoices is not the gate.
+   */
+  canSeeSaleInvoices?: boolean
+  canSeePurchaseInvoices?: boolean
 }
 
 // Decoded JWT payload shape from NestJS backend
