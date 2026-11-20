@@ -8,12 +8,16 @@ import { AlertCircle, Eye, EyeOff, Loader2, Lock, ShieldCheck } from 'lucide-rea
 import { Button } from '@/components/ui/Button'
 import { authService } from '@/features/auth/services/auth.service'
 import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage'
-import { markMustChangePasswordCleared } from '@/features/auth/utils/mustChangePasswordGate'
+import {
+  armMustChangePasswordSkip,
+  markMustChangePasswordCleared,
+} from '@/features/auth/utils/mustChangePasswordGate'
 import {
   getErpHomePath,
   isTenantUserManagerRole,
   resolveAuthRoleSlug,
 } from '@/features/users/constants/userPermissions'
+import { tenantSlugFromAccessToken } from '@/lib/tenantFromAuth'
 import { useAuthStore } from '@/store/authStore'
 
 const NAVY = '#0A2942'
@@ -60,6 +64,7 @@ export default function ChangePasswordPage() {
   const user = useAuthStore((s) => s.user)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const clearMustChangePassword = useAuthStore((s) => s.clearMustChangePassword)
+  const accessToken = useAuthStore((s) => s.accessToken)
   const mustChangeSatisfied = useAuthStore((s) => s.mustChangePasswordSatisfied)
   const forced = Boolean(user?.mustChangePassword) && !mustChangeSatisfied
   const isTenantAdmin = isTenantUserManagerRole(resolveAuthRoleSlug(user?.role))
@@ -110,10 +115,22 @@ export default function ChangePasswordPage() {
         await authService.changePassword(dto)
       }
 
-      // Durable localStorage + session flag so login /auth/me cannot bounce back here
-      // even when the API still returns must_change_password=true.
-      markMustChangePasswordCleared(user?.id, user?.tenantId)
+      // Arm skip FIRST (sync) so ProtectedRoute cannot bounce back to this page
+      // even if /auth/me still returns must_change_password=true.
+      armMustChangePasswordSkip()
+      markMustChangePasswordCleared(
+        user?.id,
+        user?.tenantId,
+        tenantSlugFromAccessToken(accessToken),
+      )
       clearMustChangePassword()
+      // Atomic store write — belt and suspenders with clearMustChangePassword.
+      useAuthStore.setState((state) => ({
+        mustChangePasswordSatisfied: true,
+        user: state.user
+          ? { ...state.user, mustChangePassword: false }
+          : state.user,
+      }))
 
       navigate(getErpHomePath(resolveAuthRoleSlug(user?.role)), { replace: true })
     } catch (err) {

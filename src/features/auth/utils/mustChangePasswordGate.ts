@@ -1,20 +1,72 @@
 /**
- * Durable gate for forced "Set your password".
+ * Forced "Set your password" gate.
  *
- * Some tenants keep returning must_change_password=true from login /auth/me even
- * after POST /auth/tenant/change-password succeeds — which re-opens the loop on
- * every new session. Remember a successful change per principal id.
+ * Backend often keeps returning must_change_password=true after
+ * POST /auth/tenant/change-password, which re-opens the Set password screen.
+ * After a successful change we set a browser skip flag (id-agnostic) plus
+ * optional per-principal marks.
  */
 
 const STORAGE_PREFIX = 'kf-must-change-password-cleared:'
+const SKIP_KEY = 'kf-must-change-password-skip-until'
 
 function storageKey(principalId: string): string {
   return `${STORAGE_PREFIX}${principalId.trim()}`
 }
 
+/** In-memory + sessionStorage: skip must-change redirect until this epoch ms. */
+let skipUntilMs = 0
+
+/** Call immediately after a successful password change (before navigate). */
+export function armMustChangePasswordSkip(durationMs = 24 * 60 * 60 * 1000): void {
+  skipUntilMs = Date.now() + durationMs
+  try {
+    sessionStorage.setItem(SKIP_KEY, String(skipUntilMs))
+  } catch {
+    /* private mode */
+  }
+  try {
+    localStorage.setItem(SKIP_KEY, String(skipUntilMs))
+  } catch {
+    /* private mode */
+  }
+}
+
+export function shouldSkipMustChangePasswordRedirect(): boolean {
+  let until = skipUntilMs
+  try {
+    const sessionUntil = Number(sessionStorage.getItem(SKIP_KEY) || 0)
+    if (Number.isFinite(sessionUntil)) until = Math.max(until, sessionUntil)
+  } catch {
+    /* ignore */
+  }
+  try {
+    const localUntil = Number(localStorage.getItem(SKIP_KEY) || 0)
+    if (Number.isFinite(localUntil)) until = Math.max(until, localUntil)
+  } catch {
+    /* ignore */
+  }
+  return Date.now() < until
+}
+
+export function clearMustChangePasswordSkip(): void {
+  skipUntilMs = 0
+  try {
+    sessionStorage.removeItem(SKIP_KEY)
+  } catch {
+    /* ignore */
+  }
+  try {
+    localStorage.removeItem(SKIP_KEY)
+  } catch {
+    /* ignore */
+  }
+}
+
 export function markMustChangePasswordCleared(
   ...principalIds: Array<string | null | undefined>
 ): void {
+  armMustChangePasswordSkip()
   const now = String(Date.now())
   for (const principalId of principalIds) {
     const id = typeof principalId === 'string' ? principalId.trim() : ''
@@ -30,6 +82,7 @@ export function markMustChangePasswordCleared(
 export function hasMustChangePasswordCleared(
   ...principalIds: Array<string | null | undefined>
 ): boolean {
+  if (shouldSkipMustChangePasswordRedirect()) return true
   try {
     for (const principalId of principalIds) {
       const id = typeof principalId === 'string' ? principalId.trim() : ''
@@ -41,7 +94,7 @@ export function hasMustChangePasswordCleared(
   return false
 }
 
-/** When /auth/me explicitly says the flag is off, drop the local override. */
+/** When /auth/me explicitly says the flag is off, drop per-id marks (keep skip). */
 export function clearMustChangePasswordClearedMark(principalId?: string | null): void {
   const id = typeof principalId === 'string' ? principalId.trim() : ''
   if (!id) return
@@ -54,7 +107,7 @@ export function clearMustChangePasswordClearedMark(principalId?: string | null):
 
 /**
  * Resolve effective must-change for login /me.
- * Local clearance wins over a stale true from the API.
+ * Skip flag / local clearance wins over a stale true from the API.
  */
 export function resolveMustChangePassword(options: {
   principalId?: string | null
@@ -63,7 +116,11 @@ export function resolveMustChangePassword(options: {
   sessionSatisfied?: boolean
 }): boolean {
   const { principalId, apiFlag, priorFlag = false, sessionSatisfied = false } = options
-  if (sessionSatisfied || hasMustChangePasswordCleared(principalId)) {
+  if (
+    sessionSatisfied ||
+    shouldSkipMustChangePasswordRedirect() ||
+    hasMustChangePasswordCleared(principalId)
+  ) {
     return false
   }
   if (apiFlag === undefined) return priorFlag
