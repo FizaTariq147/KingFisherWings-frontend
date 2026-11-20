@@ -2512,7 +2512,7 @@ export interface CreateProofOfDeliveryDto {
   remarks?: string;
 }
 
-/** Delivery acknowledgement (extends ProofOfDelivery / 1:1 job). */
+/** Delivery acknowledgement (extends ProofOfDelivery; 1:N per container). */
 export type DeliveryAcknowledgementStatus =
   | 'DRAFT'
   | 'SENT_TO_CUSTOMER'
@@ -2526,6 +2526,26 @@ export interface DeliveryAcknowledgementAttachment {
   file_name?: string;
   file_url?: string;
   mime_type?: string;
+}
+
+/** One job container with its acknowledgement row (GET acknowledgement envelope). */
+export interface JobAcknowledgementContainerEntry {
+  id: string;
+  container_number?: string;
+  acknowledgement: DeliveryAcknowledgement | null;
+}
+
+/**
+ * Staff GET …/detail/acknowledgement — containers[] each with nested acknowledgement,
+ * or a single job-level acknowledgement when the job has no containers.
+ */
+export interface JobAcknowledgementView {
+  job_id?: string;
+  job_number?: string;
+  containers: JobAcknowledgementContainerEntry[];
+  /** Job-level ack when container_id is null (no containers on the job). */
+  acknowledgement?: DeliveryAcknowledgement | null;
+  raw?: Record<string, unknown>;
 }
 
 export interface DeliveryAcknowledgement {

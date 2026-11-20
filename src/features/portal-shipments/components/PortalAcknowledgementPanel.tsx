@@ -125,11 +125,6 @@ export function PortalAcknowledgementPanel({
   unitLabel = 'Container',
 }: PortalAcknowledgementPanelProps) {
   const unitLabelLower = unitLabel === 'MAWB' ? 'MAWB' : 'container';
-  const query = usePortalShipmentAcknowledgement(shipmentId);
-  const submit = useSubmitPortalShipmentAcknowledgement(shipmentId);
-  const uploadSig = useUploadPortalAcknowledgementSignature(shipmentId);
-  const attachmentsQuery = usePortalAcknowledgementAttachments(shipmentId);
-  const attachmentMutations = usePortalAcknowledgementAttachmentMutations(shipmentId);
   const attachmentInputRef = useRef<HTMLInputElement>(null);
 
   const [receiverName, setReceiverName] = useState('');
@@ -141,6 +136,23 @@ export function PortalAcknowledgementPanel({
   const [hydrated, setHydrated] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+
+  const query = usePortalShipmentAcknowledgement(
+    shipmentId,
+    true,
+    containerId.trim() || null,
+  );
+  const submit = useSubmitPortalShipmentAcknowledgement(shipmentId);
+  const uploadSig = useUploadPortalAcknowledgementSignature(shipmentId);
+  const attachmentsQuery = usePortalAcknowledgementAttachments(
+    shipmentId,
+    true,
+    containerId.trim() || null,
+  );
+  const attachmentMutations = usePortalAcknowledgementAttachmentMutations(
+    shipmentId,
+    containerId.trim() || null,
+  );
 
   const ack = query.data;
   const status = (ack?.status || statusHint || 'DRAFT').toUpperCase();
@@ -185,14 +197,24 @@ export function PortalAcknowledgementPanel({
   );
 
   useEffect(() => {
+    if (containerOptions.length === 1 && !containerId) {
+      setContainerId(containerOptions[0].value);
+    }
+  }, [containerOptions, containerId]);
+
+  useEffect(() => {
+    setHydrated(false);
+  }, [containerId]);
+
+  useEffect(() => {
     if (!ack || hydrated) return;
     if (ack.receiver_name) setReceiverName(ack.receiver_name);
     if (ack.receiver_title) setReceiverTitle(ack.receiver_title);
     if (ack.goods_condition) setGoodsCondition(ack.goods_condition);
     if (ack.remarks) setRemarks(ack.remarks);
-    if (ack.container_id) setContainerId(ack.container_id);
+    if (ack.container_id && !containerId) setContainerId(ack.container_id);
     setHydrated(true);
-  }, [ack, hydrated]);
+  }, [ack, hydrated, containerId]);
 
   const onSubmit = async () => {
     setError(null);
@@ -414,7 +436,12 @@ export function PortalAcknowledgementPanel({
                     if (!file) return;
                     setError(null);
                     void uploadSig
-                      .mutateAsync(file)
+                      .mutateAsync({
+                        file,
+                        ...(containerId.trim()
+                          ? { container_id: containerId.trim() }
+                          : {}),
+                      })
                       .then(() => setMsg('Signature uploaded.'))
                       .catch((err) =>
                         setError(

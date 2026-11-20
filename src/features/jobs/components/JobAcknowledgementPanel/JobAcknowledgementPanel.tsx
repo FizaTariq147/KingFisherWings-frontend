@@ -23,6 +23,7 @@ import { jobService } from '../../services/job.service';
 import { jobKeys, useJob, useJobContainers } from '../../hooks/useJobs';
 import { isAirwayBillJobType } from '../../utils/jobDetailTabs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { pickAcknowledgementFromView } from '../../utils/normalizeJob';
 import type { DeliveryAcknowledgement } from '../../types/job.types';
 
 function statusVariant(
@@ -62,62 +63,41 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   const [files, setFiles] = useState<File[]>([]);
   const [proofFiles, setProofFiles] = useState<File[]>([]);
   const [receiveNotes, setReceiveNotes] = useState('');
-  /** Session fallback when BE still returns one job-wide ack without container_id. */
-  const [sentContainerIds, setSentContainerIds] = useState<Set<string>>(() => new Set());
 
-  const containerOptions = useMemo(
-    () =>
-      containers
-        .filter((c) => isUuid(c.id))
-        .map((c) => ({
-          value: c.id,
-          label: c.container_number?.trim() || c.id.slice(0, 8).toUpperCase(),
-        })),
-    [containers],
-  );
+  // Full envelope once — BE returns containers[] each with nested acknowledgement.
+  const viewQuery = useQuery({
+    queryKey: [...jobKeys.all, 'acknowledgement', jobId, 'view'] as const,
+    queryFn: () => jobService.getAcknowledgementView(jobId),
+    enabled: Boolean(accessToken) && isUuid(jobId) && !containersLoading,
+  });
+
+  const containerOptions = useMemo(() => {
+    const fromView = (viewQuery.data?.containers ?? [])
+      .filter((c) => isUuid(c.id))
+      .map((c) => ({
+        value: c.id,
+        label: c.container_number?.trim() || c.id.slice(0, 8).toUpperCase(),
+      }));
+    if (fromView.length) return fromView;
+    return containers
+      .filter((c) => isUuid(c.id))
+      .map((c) => ({
+        value: c.id,
+        label: c.container_number?.trim() || c.id.slice(0, 8).toUpperCase(),
+      }));
+  }, [viewQuery.data?.containers, containers]);
   const hasContainers = containerOptions.length > 0;
   const containerRequired = hasContainers;
   const containerReady = !containerRequired || isUuid(containerId);
 
-  // Load acknowledgement for the selected container when the job has containers.
-  const query = useQuery({
-    queryKey: [...jobKeys.all, 'acknowledgement', jobId, containerId || 'none'] as const,
-    queryFn: () =>
-      jobService.getAcknowledgement(jobId, {
-        ...(isUuid(containerId) ? { container_id: containerId } : {}),
-      }),
-    enabled:
-      Boolean(accessToken) &&
-      isUuid(jobId) &&
-      !containersLoading &&
-      (!hasContainers || isUuid(containerId)),
-  });
-
-  const rawAck: DeliveryAcknowledgement | undefined = query.data;
-  /**
-   * Scope UI to the selected container so a 2nd/3rd container still gets
-   * "Message to customer" even if GET returns another container's (or job-wide) row.
-   */
   const ack: DeliveryAcknowledgement | undefined = useMemo(() => {
-    if (!rawAck) return undefined;
-    if (!hasContainers || !isUuid(containerId)) return rawAck;
-    const ackCid = String(rawAck.container_id ?? '').trim();
-    if (ackCid && isUuid(ackCid) && ackCid !== containerId) {
-      return undefined;
-    }
-    // Job-wide row (no container_id): only apply to containers already sent this session.
-    if (
-      !ackCid &&
-      containerOptions.length > 1 &&
-      !sentContainerIds.has(containerId) &&
-      Boolean(rawAck.id) &&
-      String(rawAck.status || '').toUpperCase() !== 'DRAFT' &&
-      String(rawAck.status || '') !== ''
-    ) {
-      return undefined;
-    }
-    return rawAck;
-  }, [rawAck, hasContainers, containerId, containerOptions.length, sentContainerIds]);
+    if (!viewQuery.data) return undefined;
+    if (hasContainers && !isUuid(containerId)) return undefined;
+    return pickAcknowledgementFromView(
+      viewQuery.data,
+      hasContainers ? containerId : null,
+    );
+  }, [viewQuery.data, hasContainers, containerId]);
 
   const status = (ack?.status || 'DRAFT').toUpperCase();
   const customerMarked =
@@ -156,14 +136,17 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
       containerId || 'none',
       'attachments',
     ] as const,
-    queryFn: () => jobService.listAcknowledgementAttachments(jobId),
+    queryFn: () =>
+      jobService.listAcknowledgementAttachments(jobId, {
+        ...(isUuid(containerId) ? { container_id: containerId } : {}),
+      }),
     enabled:
       Boolean(accessToken) &&
       isUuid(jobId) &&
       containerReady &&
       (canAttachProof || hasProof || fieldsLocked),
   });
-
+  const query = viewQuery;
   const send = useMutation({
     mutationFn: (opts?: { proofOnly?: boolean; proof?: File[] }) => {
       if (containerRequired && !isUuid(containerId)) {
@@ -183,24 +166,7 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
             }),
       });
     },
-    onSuccess: (data, vars) => {
-      if (!vars?.proofOnly && isUuid(containerId)) {
-        setSentContainerIds((prev) => {
-          const next = new Set(prev);
-          next.add(containerId);
-          return next;
-        });
-      }
-      const scoped =
-        data?.container_id && isUuid(data.container_id)
-          ? data
-          : isUuid(containerId)
-            ? { ...data, container_id: containerId }
-            : data;
-      qc.setQueryData(
-        [...jobKeys.all, 'acknowledgement', jobId, containerId || 'none'],
-        scoped,
-      );
+    onSuccess: () => {
       void qc.invalidateQueries({
         queryKey: [...jobKeys.all, 'acknowledgement', jobId],
       });
@@ -213,7 +179,9 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
 
   const uploadProof = useMutation({
     mutationFn: (picked: File[]) =>
-      jobService.uploadAcknowledgementAttachments(jobId, picked),
+      jobService.uploadAcknowledgementAttachments(jobId, picked, {
+        ...(isUuid(containerId) ? { container_id: containerId } : {}),
+      }),
     onSuccess: () => {
       void attachmentsQuery.refetch();
       void qc.invalidateQueries({ queryKey: [...jobKeys.all, 'acknowledgement', jobId] });
@@ -277,12 +245,9 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
     mutationFn: () =>
       jobService.receiveAcknowledgement(jobId, {
         ...(receiveNotes.trim() ? { notes: receiveNotes.trim() } : {}),
+        ...(isUuid(containerId) ? { container_id: containerId } : {}),
       }),
-    onSuccess: (data) => {
-      qc.setQueryData(
-        [...jobKeys.all, 'acknowledgement', jobId, containerId || 'none'],
-        data,
-      );
+    onSuccess: () => {
       void qc.invalidateQueries({
         queryKey: [...jobKeys.all, 'acknowledgement', jobId],
       });
@@ -290,10 +255,13 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   });
 
   const generatePdf = useMutation({
-    mutationFn: () => jobService.generateAcknowledgementPdf(jobId),
+    mutationFn: () =>
+      jobService.generateAcknowledgementPdf(jobId, {
+        ...(isUuid(containerId) ? { container_id: containerId } : {}),
+      }),
   });
 
-  // Prefer a single container automatically; keep user choice otherwise.
+  // Auto-select single container; keep multi selection valid.
   useEffect(() => {
     if (!hasContainers) {
       if (containerId) setContainerId('');
@@ -314,28 +282,6 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
     const seed = (ack?.template_message || ack?.admin_message || '').trim();
     if (seed) setMessage(seed);
   }, [canFirstSend, ack?.template_message, ack?.admin_message, message]);
-
-  useEffect(() => {
-    // Seed from ack only when user has not picked a container yet.
-    if (!rawAck?.container_id || containerId) return;
-    if (containerOptions.some((o) => o.value === rawAck.container_id)) {
-      setContainerId(rawAck.container_id);
-    }
-  }, [rawAck?.container_id, containerId, containerOptions]);
-
-  // Remember containers already acknowledged when GET returns a matching container_id.
-  useEffect(() => {
-    const cid = String(rawAck?.container_id ?? '').trim();
-    if (!isUuid(cid)) return;
-    const st = String(rawAck?.status ?? '').toUpperCase();
-    if (!st || st === 'DRAFT') return;
-    setSentContainerIds((prev) => {
-      if (prev.has(cid)) return prev;
-      const next = new Set(prev);
-      next.add(cid);
-      return next;
-    });
-  }, [rawAck?.container_id, rawAck?.status]);
 
   const firstSendDisabled =
     send.isPending ||

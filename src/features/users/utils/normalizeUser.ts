@@ -124,6 +124,11 @@ export function normalizeUser(raw: Record<string, unknown>): User {
         : undefined),
     ...(visibleJobTypes !== undefined ? { visible_job_types: visibleJobTypes } : {}),
     ...(unrestrictedOps !== undefined ? { unrestricted_ops: unrestrictedOps } : {}),
+    password_plain: (() => {
+      const v = raw.password_plain ?? raw.passwordPlain;
+      if (typeof v === 'string' && v.trim()) return v.trim();
+      return null;
+    })(),
   };
 }
 

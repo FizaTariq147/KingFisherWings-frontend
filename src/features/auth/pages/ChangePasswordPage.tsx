@@ -109,14 +109,13 @@ export default function ChangePasswordPage() {
     }
     try {
       if (isTenantAdmin) {
-        // Workspace slug+password credential (POST /auth/tenant/change-password).
+        // Workspace slug+password — BE clears owner User.must_change_password + syncs hash.
         await authService.changeTenantPassword(dto)
       } else {
         await authService.changePassword(dto)
       }
 
-      // Arm skip FIRST (sync) so ProtectedRoute cannot bounce back to this page
-      // even if /auth/me still returns must_change_password=true.
+      // Arm skip FIRST (sync) so ProtectedRoute cannot bounce back if /me is briefly stale.
       armMustChangePasswordSkip()
       markMustChangePasswordCleared(
         user?.id,
@@ -124,13 +123,31 @@ export default function ChangePasswordPage() {
         tenantSlugFromAccessToken(accessToken),
       )
       clearMustChangePassword()
-      // Atomic store write — belt and suspenders with clearMustChangePassword.
       useAuthStore.setState((state) => ({
         mustChangePasswordSatisfied: true,
         user: state.user
           ? { ...state.user, mustChangePassword: false }
           : state.user,
       }))
+
+      // Prefer server truth after BE clears the flag on tenant/staff change-password.
+      try {
+        const me = await authService.me()
+        const stillForced =
+          (me as { must_change_password?: boolean; mustChangePassword?: boolean })
+            .must_change_password === true ||
+          (me as { mustChangePassword?: boolean }).mustChangePassword === true
+        if (!stillForced) {
+          useAuthStore.setState((state) => ({
+            mustChangePasswordSatisfied: true,
+            user: state.user
+              ? { ...state.user, mustChangePassword: false }
+              : state.user,
+          }))
+        }
+      } catch {
+        /* local clear already applied */
+      }
 
       navigate(getErpHomePath(resolveAuthRoleSlug(user?.role)), { replace: true })
     } catch (err) {
