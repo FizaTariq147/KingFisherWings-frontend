@@ -2561,14 +2561,18 @@ export const jobService = {
     }
   },
 
-  /** POST /jobs/:id/acknowledgement/attachments — proof after first send (single file). */
+  /** Attach proof after first send (single file). */
   async uploadAcknowledgementAttachment(id: string, file: File): Promise<unknown> {
     return this.uploadAcknowledgementAttachments(id, [file]);
   },
 
   /**
-   * POST /jobs/:id/acknowledgement/attachments — `file` (1) or `files` (2+), never both.
-   * Cap: 10 files × 25MB (enforced by BE; FE validates before send).
+   * Attach proof file(s) after first send.
+   *
+   * Prefer POST …/acknowledgement/attachments. On live Nest, that path is often
+   * captured by POST …/:section/attachments with section="acknowledgement"
+   * ("Unknown section …"). Fall back to POST …/acknowledgement/send with file(s)
+   * only — the documented post-send attach/resend path (no proof_only field).
    */
   async uploadAcknowledgementAttachments(
     id: string,
@@ -2578,16 +2582,25 @@ export const jobService = {
     const list = (files ?? []).filter(Boolean);
     if (!list.length) throw new Error('Select at least one proof file.');
     if (list.length > 10) throw new Error('Select at most 10 files.');
+
+    const isUnknownSectionError = (err: unknown): boolean => {
+      const formatted = formatAxiosError(err).message;
+      return /unknown section[\s\S]*acknowledgement/i.test(formatted);
+    };
+
     try {
       const form = new FormData();
       appendAcknowledgementMultipartFiles(form, list);
-      // Let the browser/axios set multipart boundary — do not force Content-Type.
       const res = await withGatewayRetry(() =>
         axiosInstance.post(JOB_API.acknowledgementAttachments(id), form),
       );
       return unwrapEntity(res.data) ?? res.data;
     } catch (error) {
-      throw formatAxiosError(error);
+      if (!isUnknownSectionError(error)) {
+        throw formatAxiosError(error);
+      }
+      // Route conflict with JobOps `{section}/attachments` — use send + files.
+      return this.sendAcknowledgement(id, { proof_only: true, files: list });
     }
   },
 

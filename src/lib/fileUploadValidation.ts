@@ -4,6 +4,8 @@ export type FileUploadValidationOptions = {
   maxBytes?: number;
   allowedMimeTypes?: string[];
   allowedExtensions?: string[];
+  /** When true, skip extension / MIME / filename checks — only empty + size. */
+  allowAnyFile?: boolean;
 };
 
 export type FileUploadValidationResult =
@@ -15,11 +17,51 @@ function extensionOf(name: string): string {
   return index >= 0 ? name.slice(index + 1).toLowerCase() : '';
 }
 
-/** Reject names like `report.pdf.exe` (double extension). */
+/**
+ * Reject names like `report.pdf.exe` where a *middle* segment is a real extension.
+ * Do not reject dots in the basename (e.g. WhatsApp `3.52.24 PM.jpeg`).
+ */
+const DANGEROUS_INNER_EXTENSIONS = new Set([
+  'exe',
+  'bat',
+  'cmd',
+  'com',
+  'msi',
+  'scr',
+  'js',
+  'jse',
+  'vbs',
+  'vbe',
+  'wsf',
+  'wsh',
+  'ps1',
+  'jar',
+  'apk',
+  'dll',
+  'html',
+  'htm',
+  'svg',
+  'php',
+  'asp',
+  'aspx',
+  'cgi',
+  'sh',
+  'pdf', // report.pdf.exe style
+  'doc',
+  'docx',
+  'xls',
+  'xlsx',
+  'zip',
+  'rar',
+]);
+
 function hasSuspiciousDoubleExtension(name: string): boolean {
   const base = name.replace(/\\/g, '/').split('/').pop() ?? name;
   const parts = base.split('.');
-  return parts.length > 2;
+  if (parts.length <= 2) return false;
+  // Middle segments only (exclude basename + final extension).
+  const inner = parts.slice(1, -1).map((p) => p.trim().toLowerCase());
+  return inner.some((p) => DANGEROUS_INNER_EXTENSIONS.has(p));
 }
 
 export function validateUploadFile(
@@ -35,6 +77,10 @@ export function validateUploadFile(
   if (file.size > maxBytes) {
     const limitMb = Math.round(maxBytes / (1024 * 1024));
     return { ok: false, message: `File must be ${limitMb} MB or smaller.` };
+  }
+
+  if (options.allowAnyFile) {
+    return { ok: true };
   }
 
   if (hasSuspiciousDoubleExtension(file.name)) {
@@ -133,24 +179,14 @@ export function handleValidatedMultiFileInput(
   onValid(files);
 }
 
-/** Delivery acknowledgement proofs — BE cap 10 × 25MB; field `files` (multi) or `file` (single). */
+/**
+ * Delivery acknowledgement proofs — any file type/name.
+ * Cap only: 10 files × 25MB (`file` single / `files` multi).
+ */
 export const ACKNOWLEDGEMENT_UPLOAD_OPTIONS: MultiFileUploadValidationOptions = {
   maxBytes: 25 * 1024 * 1024,
   maxFiles: 10,
-  allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt'],
-  allowedMimeTypes: [
-    'application/pdf',
-    'image/png',
-    'image/jpeg',
-    'image/gif',
-    'image/webp',
-    'application/msword',
-    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-    'application/vnd.ms-excel',
-    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-    'text/csv',
-    'text/plain',
-  ],
+  allowAnyFile: true,
 };
 
 /** Common attachment presets for portal / CRM uploads. */
