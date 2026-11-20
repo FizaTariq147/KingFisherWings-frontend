@@ -86,3 +86,16 @@ Staff `POST …/acknowledgement/attachments` and send, and portal attachment upl
 - Live Nest may route `POST …/acknowledgement/attachments` into ops
   `POST …/:section/attachments` → `Unknown section "acknowledgement"`. FE retries
   via `POST …/acknowledgement/send` with files only.
+
+### Acknowledgement per container
+
+When the job has containers, staff pick a container (dropdown) and send with `container_id`
+(already on `POST …/acknowledgement/send`). FE also calls
+`GET …/detail/acknowledgement?container_id=` to load that container’s ack.
+
+**Backend needed for full multi-container flow** (if not already):
+
+- Persist **one acknowledgement per container** (not only 1:N job-level).
+- Honor `container_id` on GET so switching container returns that container’s status
+  (draft vs sent), not a single job-wide locked row.
+- Optionally scope attachments / receive by `container_id` the same way.

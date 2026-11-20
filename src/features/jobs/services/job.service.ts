@@ -2443,12 +2443,25 @@ export const jobService = {
     }
   },
 
-  /** GET /jobs/:id/detail/acknowledgement */
-  async getAcknowledgement(id: string): Promise<DeliveryAcknowledgement> {
+  /**
+   * GET /jobs/:id/detail/acknowledgement
+   * Optional `container_id` scopes the acknowledgement when the job has containers
+   * (same field accepted on POST …/acknowledgement/send).
+   */
+  async getAcknowledgement(
+    id: string,
+    opts?: { container_id?: string | null },
+  ): Promise<DeliveryAcknowledgement> {
     assertId(id);
+    const containerId = String(opts?.container_id ?? '').trim();
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.get(JOB_API.acknowledgement(id)),
+        axiosInstance.get(JOB_API.acknowledgement(id), {
+          params:
+            containerId && isUuid(containerId)
+              ? { container_id: containerId }
+              : undefined,
+        }),
       );
       return normalizeDeliveryAcknowledgement(res.data);
     } catch (error) {
