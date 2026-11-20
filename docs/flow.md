@@ -53,3 +53,32 @@ Ops / admin still passes with required **user** (branch + assignee). That sets `
 ### Tenant Admin / Branch Manager
 
 Sees-all roles keep the **full** job UI even when a job is in Transport. They are not put into handoff-limited mode.
+
+---
+
+## Staff invoice sale / purchase flags + acknowledgement multi-file
+
+### User form flags (admin-managed)
+
+Independent of costing `can_see_sales` / `can_see_cost`. Legacy `can_see_invoices` is kept on the form but is **not** the gate.
+
+| Flag | Opens |
+|------|--------|
+| `can_see_sale_invoices` | Customer invoices + debit notes (list / get / edit / post / create) |
+| `can_see_purchase_invoices` | Purchase invoices + credit notes (same) |
+
+Neither flag (and not Tenant Admin / sees-all) → no invoice access on those routes. Costing tab visibility stays on `can_see_sales` / `can_see_cost`.
+
+### Finance UI
+
+- Finance hub tiles filter by the two flags (sale tiles vs purchase / credit).
+- List pages short-circuit with an empty state when the side flag is off.
+- Job invoices panel lists/generates sale only when sale flag; purchase rows when purchase flag.
+- Costing “Generate Sales/Purchase Invoice” requires the matching invoice flag **and** costing side visibility.
+
+### Acknowledgement multi-file
+
+Staff `POST …/acknowledgement/attachments` and send, and portal attachment upload:
+
+- Multipart field **`files`** (array, preferred) and/or **`file`** (single, backward compatible).
+- Cap: **10 files × 25MB** each (`ACKNOWLEDGEMENT_UPLOAD_OPTIONS`).

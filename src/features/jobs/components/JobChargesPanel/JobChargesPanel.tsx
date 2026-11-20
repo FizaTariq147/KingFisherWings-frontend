@@ -41,6 +41,7 @@ import { useParties } from '@/features/parties/hooks/useParties';
 import { JobSearchSelect, ShipmentSearchSelect } from '@/features/shared/entity-search';
 import { useAuth } from '@/hooks/useAuth';
 import { useAuthStore } from '@/store/authStore';
+import { resolveInvoiceListVisibility } from '@/features/invoices/utils/invoiceListVisibility';
 import { resolveJobCostingAudience } from '../../utils/jobCostingVisibility';
 import { VOUCHER_ROUTE_PREFIX } from '@/features/vouchers/api/voucher.api';
 import {
@@ -564,6 +565,9 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
   const costingAudience = resolveJobCostingAudience(job, user);
   const showSaleSide = costingAudience === 'sale' || costingAudience === 'both';
   const showCostSide = costingAudience === 'cost' || costingAudience === 'both';
+  const invoiceVis = resolveInvoiceListVisibility(user);
+  const canGenerateSaleInvoice = showSaleSide && invoiceVis.canSeeSaleInvoices;
+  const canGeneratePurchaseInvoice = showCostSide && invoiceVis.canSeePurchaseInvoices;
 
   const [showHistory, setShowHistory] = useState(false);
   const [gridFilter, setGridFilter] = useState<GridFilter>(() =>
@@ -1800,35 +1804,37 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           >
             Accrued Cost
           </CostingBtn>
-          <CostingBtn
-            color={COSTING_COLORS.vendorInv}
-            icon={<Truck className={ICO} />}
-            title="Purchase / vendor invoice form from cost amounts (vendor required)"
-            onClick={() => {
-              const missingVendor = costCharges.some((c) => {
-                const vendor =
-                  c.cost?.vendor ||
-                  (c.is_cost || c.cost_amount != null ? c.party_id : undefined);
-                return !vendor || !isUuid(String(vendor));
-              });
-              if (costCharges.length === 0) {
-                setError(
-                  'No cost lines found. Add costing cost amounts with a vendor (cost_party_id) before generating a purchase invoice.',
-                );
-                return;
-              }
-              if (missingVendor) {
-                setError(
-                  'Each cost line needs a vendor (cost_party_id) before generating a purchase invoice. Set vendors on cost lines, then try again.',
-                );
-                return;
-              }
-              setError(null);
-              setInvoiceForm({ kind: 'purchase', allowPdf: true });
-            }}
-          >
-            Vendor INV Upload
-          </CostingBtn>
+          {canGeneratePurchaseInvoice ? (
+            <CostingBtn
+              color={COSTING_COLORS.vendorInv}
+              icon={<Truck className={ICO} />}
+              title="Purchase / vendor invoice form from cost amounts (vendor required)"
+              onClick={() => {
+                const missingVendor = costCharges.some((c) => {
+                  const vendor =
+                    c.cost?.vendor ||
+                    (c.is_cost || c.cost_amount != null ? c.party_id : undefined);
+                  return !vendor || !isUuid(String(vendor));
+                });
+                if (costCharges.length === 0) {
+                  setError(
+                    'No cost lines found. Add costing cost amounts with a vendor (cost_party_id) before generating a purchase invoice.',
+                  );
+                  return;
+                }
+                if (missingVendor) {
+                  setError(
+                    'Each cost line needs a vendor (cost_party_id) before generating a purchase invoice. Set vendors on cost lines, then try again.',
+                  );
+                  return;
+                }
+                setError(null);
+                setInvoiceForm({ kind: 'purchase', allowPdf: true });
+              }}
+            >
+              Vendor INV Upload
+            </CostingBtn>
+          ) : null}
           <CostingBtn
             color={COSTING_COLORS.profitShare}
             icon={<Calculator className={ICO} />}
@@ -1924,52 +1930,58 @@ export function JobChargesPanel({ job, onChanged }: JobChargesPanelProps) {
           >
             Generate Voucher
           </CostingBtn>
-          <CostingBtn
-            color={COSTING_COLORS.salesInv}
-            icon={<FileText className={ICO} />}
-            title="Sales invoice from job costing sale amounts only (source=job, no quotation fallback)"
-            onClick={() => setInvoiceForm({ kind: 'sale', source: 'job' })}
-          >
-            Generate Sales Invoice
-          </CostingBtn>
-          <CostingBtn
-            color={COSTING_COLORS.purchaseInv}
-            icon={<FileText className={ICO} />}
-            title="Purchase invoice from cost amounts (vendor / cost_party_id required)"
-            onClick={() => {
-              const missingVendor = costCharges.some((c) => {
-                const vendor =
-                  c.cost?.vendor ||
-                  (c.is_cost || c.cost_amount != null ? c.party_id : undefined);
-                return !vendor || !isUuid(String(vendor));
-              });
-              if (costCharges.length === 0) {
-                setError(
-                  'No cost lines found. Add costing cost amounts with a vendor (cost_party_id) before generating a purchase invoice.',
-                );
-                return;
-              }
-              if (missingVendor) {
-                setError(
-                  'Each cost line needs a vendor (cost_party_id) before generating a purchase invoice. Set vendors on cost lines, then try again.',
-                );
-                return;
-              }
-              setError(null);
-              setInvoiceForm({ kind: 'purchase' });
-            }}
-          >
-            Generate Purchase Invoice
-          </CostingBtn>
-          <CostingBtn
-            color={COSTING_COLORS.purchaseBulk}
-            icon={<FileSpreadsheet className={ICO} />}
-            title="Bulk purchase invoice preview + generate (one PI per vendor)"
-            disabled={actions.generateBulkPurchaseInvoice.isPending}
-            onClick={() => openDialog('bulkPurchase')}
-          >
-            Bulk Purchase Invoice
-          </CostingBtn>
+          {canGenerateSaleInvoice ? (
+            <CostingBtn
+              color={COSTING_COLORS.salesInv}
+              icon={<FileText className={ICO} />}
+              title="Sales invoice from job costing sale amounts only (source=job, no quotation fallback)"
+              onClick={() => setInvoiceForm({ kind: 'sale', source: 'job' })}
+            >
+              Generate Sales Invoice
+            </CostingBtn>
+          ) : null}
+          {canGeneratePurchaseInvoice ? (
+            <>
+              <CostingBtn
+                color={COSTING_COLORS.purchaseInv}
+                icon={<FileText className={ICO} />}
+                title="Purchase invoice from cost amounts (vendor / cost_party_id required)"
+                onClick={() => {
+                  const missingVendor = costCharges.some((c) => {
+                    const vendor =
+                      c.cost?.vendor ||
+                      (c.is_cost || c.cost_amount != null ? c.party_id : undefined);
+                    return !vendor || !isUuid(String(vendor));
+                  });
+                  if (costCharges.length === 0) {
+                    setError(
+                      'No cost lines found. Add costing cost amounts with a vendor (cost_party_id) before generating a purchase invoice.',
+                    );
+                    return;
+                  }
+                  if (missingVendor) {
+                    setError(
+                      'Each cost line needs a vendor (cost_party_id) before generating a purchase invoice. Set vendors on cost lines, then try again.',
+                    );
+                    return;
+                  }
+                  setError(null);
+                  setInvoiceForm({ kind: 'purchase' });
+                }}
+              >
+                Generate Purchase Invoice
+              </CostingBtn>
+              <CostingBtn
+                color={COSTING_COLORS.purchaseBulk}
+                icon={<FileSpreadsheet className={ICO} />}
+                title="Bulk purchase invoice preview + generate (one PI per vendor)"
+                disabled={actions.generateBulkPurchaseInvoice.isPending}
+                onClick={() => openDialog('bulkPurchase')}
+              >
+                Bulk Purchase Invoice
+              </CostingBtn>
+            </>
+          ) : null}
           <CostingBtn
             color={COSTING_COLORS.jobProfit}
             icon={<Calculator className={ICO} />}

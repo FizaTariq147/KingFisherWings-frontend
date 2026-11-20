@@ -1,19 +1,42 @@
 import { useState } from 'react';
 import { appType } from '@/lib/erpTypography';
 import { useNavigate } from 'react-router-dom';
+import { EmptyState } from '@/components/erp';
+import { useAuth } from '@/hooks/useAuth';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import { InvoiceForm } from '../components/InvoiceForm';
 import { useCreateInvoiceFromJob } from '../hooks/useInvoiceActions';
 import { useCreateInvoice } from '../hooks/useInvoices';
 import type { CreateInvoiceFormValues } from '../types/invoice.types';
+import { canAccessInvoiceSide } from '../utils/invoiceListVisibility';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function InvoiceCreatePage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const allowed = canAccessInvoiceSide(user, 'sale');
   const create = useCreateInvoice();
   const createFromJob = useCreateInvoiceFromJob();
   const [error, setError] = useState<string | null>(null);
   const busy = create.isPending || createFromJob.isPending;
+
+  if (!allowed) {
+    return (
+      <div className="space-y-4">
+        <button
+          type="button"
+          className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)]"
+          onClick={() => navigate('/finance')}
+        >
+          ← Finance
+        </button>
+        <EmptyState
+          title="Sale invoices are not enabled for your account."
+          description="Ask a Tenant Admin to enable “Can see sale invoices” on your user profile."
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

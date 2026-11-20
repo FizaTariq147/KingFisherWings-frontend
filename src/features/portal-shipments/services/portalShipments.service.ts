@@ -327,8 +327,21 @@ export const portalShipmentsService = {
   },
 
   async uploadAcknowledgementAttachment(id: string, file: File): Promise<unknown> {
+    return this.uploadAcknowledgementAttachments(id, [file]);
+  },
+
+  /** Multi-file upload via `files` (+ `file` when one). Cap 10 × 25MB. */
+  async uploadAcknowledgementAttachments(id: string, files: File[]): Promise<unknown> {
+    const list = (files ?? []).filter(Boolean);
+    if (!list.length) throw new Error('Select at least one file.');
+    if (list.length > 10) throw new Error('Select at most 10 files.');
     const form = new FormData();
-    form.append('file', file);
+    for (const f of list) {
+      form.append('files', f, f.name);
+    }
+    if (list.length === 1) {
+      form.append('file', list[0], list[0].name);
+    }
     const res = await portalApiClient.post(
       PORTAL_SHIPMENTS_API.acknowledgementAttachments(id),
       form,

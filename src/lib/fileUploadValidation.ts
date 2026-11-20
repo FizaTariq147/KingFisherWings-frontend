@@ -88,6 +88,71 @@ export function handleValidatedFileInput(
   onValid(file);
 }
 
+export type MultiFileUploadValidationOptions = FileUploadValidationOptions & {
+  /** Max files accepted in one pick (default 10). */
+  maxFiles?: number;
+};
+
+/** Validate multiple files; returns only files that pass, or error if none / over cap. */
+export function pickValidatedUploadFiles(
+  fileList: FileList | null,
+  options: MultiFileUploadValidationOptions = {},
+): { files: File[]; error?: string } {
+  const maxFiles = options.maxFiles ?? 10;
+  const picked = Array.from(fileList ?? []);
+  if (!picked.length) return { files: [] };
+  if (picked.length > maxFiles) {
+    return {
+      files: [],
+      error: `Select at most ${maxFiles} files.`,
+    };
+  }
+  const files: File[] = [];
+  for (const file of picked) {
+    const result = validateUploadFile(file, options);
+    if (!result.ok) {
+      return { files: [], error: `${file.name}: ${result.message}` };
+    }
+    files.push(file);
+  }
+  return { files };
+}
+
+export function handleValidatedMultiFileInput(
+  fileList: FileList | null,
+  onValid: (files: File[]) => void,
+  onError?: (message: string) => void,
+  options?: MultiFileUploadValidationOptions,
+): void {
+  const { files, error } = pickValidatedUploadFiles(fileList, options);
+  if (error) {
+    onError?.(error);
+    onValid([]);
+    return;
+  }
+  onValid(files);
+}
+
+/** Delivery acknowledgement proofs — BE cap 10 × 25MB; field `files` (multi) or `file` (single). */
+export const ACKNOWLEDGEMENT_UPLOAD_OPTIONS: MultiFileUploadValidationOptions = {
+  maxBytes: 25 * 1024 * 1024,
+  maxFiles: 10,
+  allowedExtensions: ['pdf', 'png', 'jpg', 'jpeg', 'gif', 'webp', 'doc', 'docx', 'xls', 'xlsx', 'csv', 'txt'],
+  allowedMimeTypes: [
+    'application/pdf',
+    'image/png',
+    'image/jpeg',
+    'image/gif',
+    'image/webp',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'text/csv',
+    'text/plain',
+  ],
+};
+
 /** Common attachment presets for portal / CRM uploads. */
 export const ATTACHMENT_UPLOAD_OPTIONS: FileUploadValidationOptions = {
   maxBytes: DEFAULT_MAX_UPLOAD_BYTES,

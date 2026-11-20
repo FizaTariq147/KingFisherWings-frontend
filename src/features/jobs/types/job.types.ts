@@ -2582,9 +2582,11 @@ export interface SendDeliveryAcknowledgementDto {
   message?: string;
   remarks?: string;
   container_id?: string;
-  /** Optional multipart attachment (or proof-only resend). */
+  /** Optional single multipart attachment (backward compatible). */
   file?: File;
-  /** When true, send file only after fields are locked. */
+  /** Optional multi multipart attachments (`files` field; max 10 × 25MB). */
+  files?: File[];
+  /** When true, send file(s) only after fields are locked. */
   proof_only?: boolean;
 }
 

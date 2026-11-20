@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { EmptyState, ErrorState } from '@/components/erp';
+import { useAuth } from '@/hooks/useAuth';
+import { canAccessInvoiceSide } from '@/features/invoices/utils/invoiceListVisibility';
 import { PURCHASE_INVOICE_ROUTE_PREFIX } from '../api/purchaseInvoice.api';
 import {
   PurchaseInvoiceFilters,
@@ -17,6 +19,8 @@ import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function PurchaseInvoiceListPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const allowed = canAccessInvoiceSide(user, 'purchase');
   const [page, setPage] = useState(1);
   const { draft, setDraft, applied, submit } = usePurchaseInvoiceFilterDraft(
     DEFAULT_PURCHASE_INVOICE_PAGE_SIZE,
@@ -32,9 +36,34 @@ export default function PurchaseInvoiceListPage() {
   );
 
   const { data, isLoading, isFetching, isError, error, refetch } =
-    usePurchaseInvoices(listParams);
+    usePurchaseInvoices(listParams, { enabled: allowed });
   const purchaseInvoices = data?.purchaseInvoices ?? [];
   const meta = data?.meta;
+
+  if (!allowed) {
+    return (
+      <div className={listShell.page}>
+        <div className={listShell.card}>
+          <div className={listShell.header}>
+            <div className="min-w-0">
+              <button
+                type="button"
+                className={appType.backLink}
+                onClick={() => navigate('/finance')}
+              >
+                ← Finance
+              </button>
+              <h2 className={`${appType.pageTitle} mt-0.5`}>All Purchase Invoices</h2>
+            </div>
+          </div>
+          <EmptyState
+            title="Purchase invoices are not enabled for your account."
+            description="Ask a Tenant Admin to enable “Can see purchase invoices” on your user profile."
+          />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className={listShell.page}>

@@ -14,12 +14,15 @@ export const creditNoteKeys = {
   detail: (id: string) => [...creditNoteKeys.all, 'detail', id] as const,
 };
 
-export function useCreditNotes(params: CreditNoteListParams) {
+export function useCreditNotes(
+  params: CreditNoteListParams,
+  options?: { enabled?: boolean },
+) {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: creditNoteKeys.list(params),
     queryFn: () => creditNoteService.list(params),
-    enabled: Boolean(accessToken),
+    enabled: Boolean(accessToken) && options?.enabled !== false,
     placeholderData: keepPreviousData,
     staleTime: 30_000,
   });
