@@ -1,6 +1,7 @@
 import { Navigate, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '@/hooks/useAuth'
 import { AppShellSkeleton } from '@/components/skeletons/AppShellSkeleton'
+import { hasMustChangePasswordCleared } from '@/features/auth/utils/mustChangePasswordGate'
 import { useAuthStore } from '@/store/authStore'
 import type { PermissionKey } from '@/types/auth.types'
 
@@ -48,7 +49,9 @@ export default function ProtectedRoute({
   const storeUser = useAuthStore((s) => s.user)
   const mustChangeSatisfied = useAuthStore((s) => s.mustChangePasswordSatisfied)
   const mustChangePassword =
-    Boolean(storeUser?.mustChangePassword) && !mustChangeSatisfied
+    Boolean(storeUser?.mustChangePassword) &&
+    !mustChangeSatisfied &&
+    !hasMustChangePasswordCleared(storeUser?.id, storeUser?.tenantId)
   const location = useLocation()
   const sessionPending = Boolean(accessToken) && !isAuthenticated
 

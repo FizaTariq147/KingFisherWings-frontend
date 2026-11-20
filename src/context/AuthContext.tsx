@@ -5,6 +5,11 @@ import {
 import { authService } from '@/features/auth/services/auth.service'
 import { pickMustChangePassword, hasMustChangePasswordFlag } from '@/features/auth/utils/normalizeAuthResponse'
 import {
+  clearMustChangePasswordClearedMark,
+  hasMustChangePasswordCleared,
+  resolveMustChangePassword,
+} from '@/features/auth/utils/mustChangePasswordGate'
+import {
   companyIdFromAccessToken,
   enabledModulesFromAccessToken,
   normalizePermissionKeys,
@@ -600,17 +605,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Keep Zustand in sync so services (user.service) can resolve tenant without AuthContext.
         // Never overwrite a known tenantId with an empty /me payload.
         // Preserve mustChangePassword from login when /me omits the flag.
-        // After a successful Set password in this session, never re-force from stale /me.
+        // After a successful Set password, never re-force from stale /me or re-login.
         const authSnap = useAuthStore.getState()
-        const priorMustChange = Boolean(authSnap.user?.mustChangePassword)
-        const satisfied = Boolean(authSnap.mustChangePasswordSatisfied)
-        const nextMustChange = satisfied
-          ? false
-          : normalized.mustChangePassword === undefined
-            ? priorMustChange
-            : Boolean(normalized.mustChangePassword)
-        if (satisfied && normalized.mustChangePassword) {
-          normalized.mustChangePassword = false
+        const apiMustChange = normalized.mustChangePassword
+        const clearedLocally = hasMustChangePasswordCleared(
+          normalized.id,
+          normalized.tenantId,
+        )
+        const nextMustChange = resolveMustChangePassword({
+          principalId: normalized.id,
+          apiFlag: apiMustChange,
+          priorFlag: Boolean(authSnap.user?.mustChangePassword),
+          sessionSatisfied:
+            Boolean(authSnap.mustChangePasswordSatisfied) || clearedLocally,
+        })
+        normalized.mustChangePassword = nextMustChange
+        // API explicitly cleared the flag — drop durable override.
+        if (apiMustChange === false) {
+          clearMustChangePasswordClearedMark(normalized.id)
+          clearMustChangePasswordClearedMark(normalized.tenantId)
         }
         patchSessionUser({
           id: normalized.id,
@@ -621,6 +634,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           ...(normalized.companyId ? { companyId: normalized.companyId } : {}),
           mustChangePassword: nextMustChange,
         })
+        if (!nextMustChange) {
+          useAuthStore.setState({ mustChangePasswordSatisfied: true })
+        }
         if (normalized.idleTimeoutMinutes != null) {
           setIdleTimeoutMinutes(normalized.idleTimeoutMinutes)
         }
