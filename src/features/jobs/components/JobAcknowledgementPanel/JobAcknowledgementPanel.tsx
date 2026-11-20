@@ -11,14 +11,15 @@ import {
 } from '@/lib/fileUploadValidation';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
-import {
-  openBlobInNewTab,
-  triggerBlobDownload,
-} from '@/features/files/utils/triggerBlobDownload';
+import { useFileDownload } from '@/features/files/hooks/useFileDownload';
+import { openPdfBlobInNewTab } from '@/features/files/utils/pdfBranding';
+import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
+import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
 import { ApiDataView } from '../ApiDataView';
 import { jobService } from '../../services/job.service';
 import { jobKeys, useJobContainers } from '../../hooks/useJobs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { resolveJobDocumentFileUrl } from '../../utils/resolveJobDocumentFileUrl';
 import type { DeliveryAcknowledgement } from '../../types/job.types';
 
 function statusVariant(
@@ -39,7 +40,9 @@ interface JobAcknowledgementPanelProps {
 /** Admin delivery acknowledgement — send → proof attach / resend → customer → receive. */
 export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   const qc = useQueryClient();
+  const { openStoredFile, isPending: storedFilePending } = useFileDownload();
   const fileRef = useRef<HTMLInputElement>(null);
   const proofRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
@@ -151,7 +154,18 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
       );
       const name = fileName || 'acknowledgement-proof';
       if (open) {
-        await openBlobInNewTab(blob, null, { filename: name });
+        // Skip PDF chrome re-stamp — proof files should open as stored.
+        if (await blobLooksLikePdf(blob)) {
+          openPdfBlobInNewTab(blob, undefined, name);
+          return;
+        }
+        const objectUrl = URL.createObjectURL(blob);
+        const opened = window.open(objectUrl, '_blank');
+        if (!opened) {
+          URL.revokeObjectURL(objectUrl);
+          throw new Error('Pop-up blocked. Allow pop-ups to preview this file.');
+        }
+        window.setTimeout(() => URL.revokeObjectURL(objectUrl), 120_000);
         return;
       }
       triggerBlobDownload(blob, name);
@@ -401,8 +415,24 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                   const name = String(
                     rec.file_name ?? rec.fileName ?? rec.name ?? id.slice(0, 8),
                   );
+                  const storedUrl = resolveJobDocumentFileUrl(
+                    {
+                      file_url:
+                        (typeof rec.file_url === 'string' && rec.file_url) ||
+                        (typeof rec.fileUrl === 'string' && rec.fileUrl) ||
+                        (typeof rec.url === 'string' && rec.url) ||
+                        (typeof rec.download_url === 'string' && rec.download_url) ||
+                        undefined,
+                      s3_key:
+                        (typeof rec.s3_key === 'string' && rec.s3_key) ||
+                        (typeof rec.s3Key === 'string' && rec.s3Key) ||
+                        undefined,
+                      file_name: name,
+                    },
+                    tenantId,
+                  );
+                  const busy = downloadProof.isPending || storedFilePending;
                   // Never use raw file_url as <a href> — /files/… paths hit SPA 404.
-                  // Always open via authenticated attachment download.
                   return (
                     <li
                       key={id || name}
@@ -410,24 +440,56 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                     >
                       <span className="truncate font-medium text-[#0f172a]">{name}</span>
                       <div className="flex gap-1">
+                        {storedUrl || id ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="secondary"
+                            disabled={busy}
+                            onClick={() => {
+                              setError(null);
+                              void (async () => {
+                                try {
+                                  if (storedUrl) {
+                                    await openStoredFile(storedUrl, {
+                                      displayName: name,
+                                    });
+                                    return;
+                                  }
+                                  if (id) {
+                                    await downloadProof.mutateAsync({
+                                      attachmentId: id,
+                                      fileName: name,
+                                      open: true,
+                                    });
+                                  }
+                                } catch (err) {
+                                  setError(getErrorMessage(err));
+                                }
+                              })();
+                            }}
+                          >
+                            Open
+                          </Button>
+                        ) : null}
                         {id ? (
                           <Button
                             type="button"
                             size="sm"
                             variant="secondary"
-                            disabled={downloadProof.isPending}
+                            disabled={busy}
                             onClick={() => {
                               setError(null);
                               void downloadProof
                                 .mutateAsync({
                                   attachmentId: id,
                                   fileName: name,
-                                  open: true,
+                                  open: false,
                                 })
                                 .catch((err) => setError(getErrorMessage(err)));
                             }}
                           >
-                            Open
+                            Download
                           </Button>
                         ) : null}
                       </div>
