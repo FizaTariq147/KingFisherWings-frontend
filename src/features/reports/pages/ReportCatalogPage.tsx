@@ -28,6 +28,7 @@ import { hasCatalogLayoutPdf } from '../utils/generateCatalogLayoutPdf';
 import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
 import { FresaSamplePageTable } from '../components/ReportCatalog/FresaSamplePageTable';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
+import type { InvoiceFitInput } from '../engine/invoiceV2Applicability';
 import { isUuid } from '@/lib/isUuid';
 import {
   FRESA_PAGE_COLUMNS,
@@ -179,7 +180,7 @@ export default function ReportCatalogPage() {
   const jobId = searchParams.get('job_id') || undefined;
   const quotationId = searchParams.get('quotation_id') || undefined;
   const invoiceId = searchParams.get('invoice_id') || undefined;
-  const [invoiceCurrency, setInvoiceCurrency] = useState<string | null>(null);
+  const [invoiceCurrency, setInvoiceCurrency] = useState<InvoiceFitInput>(null);
   useEffect(() => {
     if (!invoiceId || !isUuid(invoiceId)) {
       setInvoiceCurrency(null);
@@ -187,7 +188,7 @@ export default function ReportCatalogPage() {
     }
     let cancelled = false;
     invoiceService.getById(invoiceId).then((invoice) => {
-      if (!cancelled) setInvoiceCurrency(invoice.currency_code || null);
+      if (!cancelled) setInvoiceCurrency(invoice);
     }).catch(() => {
       if (!cancelled) setInvoiceCurrency(null);
     });

@@ -5,7 +5,7 @@ import {
   type FresaPageColumnId,
 } from '../../constants/fresaPageColumns';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
-import { invoiceV2ListRank, invoiceV2ApplicabilityHint } from '../../engine/invoiceV2Applicability';
+import { invoiceV2ListRank, invoiceV2ApplicabilityHint, type InvoiceFitInput } from '../../engine/invoiceV2Applicability';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { FormatStatusBadge } from './FormatStatusBadge';
@@ -14,7 +14,7 @@ import {
   reportConformanceStatus,
 } from '../../utils/reportConformanceStatus';
 
-function compareByName(a: ReportTemplate, b: ReportTemplate, currency?: string | null): number {
+function compareByName(a: ReportTemplate, b: ReportTemplate, currency?: InvoiceFitInput): number {
   const rank = invoiceV2ListRank(a.code, currency) - invoiceV2ListRank(b.code, currency);
   if (rank !== 0) return rank;
   const na = parseInvoiceFormatNumber(a.code);
@@ -27,7 +27,7 @@ function compareByName(a: ReportTemplate, b: ReportTemplate, currency?: string |
 
 function groupByFresaColumn(
   items: ReportTemplate[],
-  currency?: string | null,
+  currency?: InvoiceFitInput,
 ): Record<FresaPageColumnId, ReportTemplate[]> {
   const map: Record<FresaPageColumnId, ReportTemplate[]> = {
     sea: [],
@@ -52,7 +52,7 @@ type FresaSamplePageTableProps = {
   emptyHint?: string;
   /** Highlight a single Fresa column (from family filter). */
   focusColumn?: FresaPageColumnId | null;
-  invoiceCurrency?: string | null;
+  invoiceCurrency?: InvoiceFitInput;
 };
 
 /**
@@ -204,7 +204,7 @@ function FormatLink({
   index: number;
   active: boolean;
   onSelect: (template: ReportTemplate) => void;
-  invoiceCurrency?: string | null;
+  invoiceCurrency?: InvoiceFitInput;
   compact?: boolean;
 }) {
   const formatNo = parseInvoiceFormatNumber(template.code);

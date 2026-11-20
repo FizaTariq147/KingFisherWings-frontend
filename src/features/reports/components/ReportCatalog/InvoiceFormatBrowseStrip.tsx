@@ -1,6 +1,6 @@
 import { listInvoiceFormatPreviews } from '../../data/invoiceFormatPreviews';
 import { invoiceV2BadgeText } from '../../engine/invoiceV2Codes';
-import { invoiceV2ListRank, invoiceV2ApplicabilityHint } from '../../engine/invoiceV2Applicability';
+import { invoiceV2ListRank, invoiceV2ApplicabilityHint, type InvoiceFitInput } from '../../engine/invoiceV2Applicability';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
@@ -12,7 +12,7 @@ type InvoiceFormatBrowseStripProps = {
   visible: boolean;
   searchQuery?: string;
   allowedCodes?: ReadonlySet<string> | null;
-  invoiceCurrency?: string | null;
+  invoiceCurrency?: InvoiceFitInput;
 };
 
 /** Invoice Formats — https://fresatechnologies.com/sample-report-formats/ */
