@@ -2586,7 +2586,10 @@ export interface SendDeliveryAcknowledgementDto {
   file?: File;
   /** Optional multi multipart attachments (`files` field; max 10 × 25MB). */
   files?: File[];
-  /** When true, send file(s) only after fields are locked. */
+  /**
+   * FE-only: resend with file(s) and no message after fields are locked.
+   * Never sent on the wire — BE ValidationPipe rejects `proof_only`.
+   */
   proof_only?: boolean;
 }
 

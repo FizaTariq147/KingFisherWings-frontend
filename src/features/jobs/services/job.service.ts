@@ -316,6 +316,20 @@ async function assertUsableFileBlob(blob: Blob): Promise<Blob> {
   return blob;
 }
 
+/**
+ * Ack multipart: Swagger accepts `file` (single) or `files` (multi).
+ * Never append both — Multer File(s)Interceptor rejects the other as Unexpected field.
+ */
+function appendAcknowledgementMultipartFiles(form: FormData, files: File[]): void {
+  if (files.length === 1) {
+    form.append('file', files[0], files[0].name);
+    return;
+  }
+  for (const f of files) {
+    form.append('files', f, f.name);
+  }
+}
+
 async function getAcknowledgementBinaryBlob(path: string): Promise<Blob> {
   try {
     const res = await withGatewayRetry(() =>
@@ -2445,8 +2459,8 @@ export const jobService = {
   /**
    * POST /jobs/:id/acknowledgement/send —
    * first send: message (+ optional file/files);
-   * later: file-only resend when fields are locked (proof_only).
-   * Multipart: prefer `files` (multi); also send `file` for single backward compat.
+   * later: file(s) only to resend after fields are locked (do NOT send proof_only — BE rejects it).
+   * Multipart: `file` when one, `files` when 2+ — never both (Multer Unexpected field).
    */
   async sendAcknowledgement(
     id: string,
@@ -2458,7 +2472,10 @@ export const jobService = {
       ...(Array.isArray(body.files) ? body.files.filter(Boolean) : []),
       ...(body.file ? [body.file] : []),
     ];
-    const uniqueFiles = Array.from(new Map(files.map((f) => [`${f.name}:${f.size}`, f])).values());
+    const uniqueFiles = Array.from(
+      new Map(files.map((f) => [`${f.name}:${f.size}`, f])).values(),
+    );
+    // FE-only: resend path after first send (API has no proof_only field).
     const proofOnly =
       body.proof_only === true || (!message && uniqueFiles.length > 0);
     if (!proofOnly && !message) {
@@ -2471,22 +2488,14 @@ export const jobService = {
       let res;
       if (uniqueFiles.length > 0) {
         const form = new FormData();
-        if (proofOnly) {
-          form.append('proof_only', 'true');
-        } else if (message) {
+        if (!proofOnly && message) {
           form.append('message', message);
           form.append('remarks', message);
           if (body.container_id?.trim()) {
             form.append('container_id', body.container_id.trim());
           }
         }
-        for (const f of uniqueFiles) {
-          form.append('files', f, f.name);
-        }
-        // Backward compatible single-file field when only one proof.
-        if (uniqueFiles.length === 1) {
-          form.append('file', uniqueFiles[0], uniqueFiles[0].name);
-        }
+        appendAcknowledgementMultipartFiles(form, uniqueFiles);
         res = await withGatewayRetry(() =>
           axiosInstance.post(JOB_API.acknowledgementSend(id), form),
         );
@@ -2558,7 +2567,7 @@ export const jobService = {
   },
 
   /**
-   * POST /jobs/:id/acknowledgement/attachments — multi-file via `files` (+ `file` when one).
+   * POST /jobs/:id/acknowledgement/attachments — `file` (1) or `files` (2+), never both.
    * Cap: 10 files × 25MB (enforced by BE; FE validates before send).
    */
   async uploadAcknowledgementAttachments(
@@ -2571,16 +2580,10 @@ export const jobService = {
     if (list.length > 10) throw new Error('Select at most 10 files.');
     try {
       const form = new FormData();
-      for (const f of list) {
-        form.append('files', f, f.name);
-      }
-      if (list.length === 1) {
-        form.append('file', list[0], list[0].name);
-      }
+      appendAcknowledgementMultipartFiles(form, list);
+      // Let the browser/axios set multipart boundary — do not force Content-Type.
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(JOB_API.acknowledgementAttachments(id), form, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }),
+        axiosInstance.post(JOB_API.acknowledgementAttachments(id), form),
       );
       return unwrapEntity(res.data) ?? res.data;
     } catch (error) {
