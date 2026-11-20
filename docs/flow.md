@@ -80,5 +80,6 @@ Neither flag (and not Tenant Admin / sees-all) → no invoice access on those ro
 
 Staff `POST …/acknowledgement/attachments` and send, and portal attachment upload:
 
-- Multipart field **`files`** (array, preferred) and/or **`file`** (single, backward compatible).
+- Multipart: **`file`** when one file; **`files`** when 2+ — never both (Multer Unexpected field).
+- Do **not** send `proof_only` on send — BE rejects it; resend = multipart files only (no message).
 - Cap: **10 files × 25MB** each (`ACKNOWLEDGEMENT_UPLOAD_OPTIONS`).
