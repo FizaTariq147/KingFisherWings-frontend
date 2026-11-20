@@ -83,3 +83,6 @@ Staff `POST …/acknowledgement/attachments` and send, and portal attachment upl
 - Multipart: **`file`** when one file; **`files`** when 2+ — never both (Multer Unexpected field).
 - Do **not** send `proof_only` on send — BE rejects it; resend = multipart files only (no message).
 - Cap: **10 files × 25MB** each (`ACKNOWLEDGEMENT_UPLOAD_OPTIONS`).
+- Live Nest may route `POST …/acknowledgement/attachments` into ops
+  `POST …/:section/attachments` → `Unknown section "acknowledgement"`. FE retries
+  via `POST …/acknowledgement/send` with files only.
