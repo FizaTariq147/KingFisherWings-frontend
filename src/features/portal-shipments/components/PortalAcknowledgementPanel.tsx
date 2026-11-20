@@ -113,6 +113,8 @@ interface PortalAcknowledgementPanelProps {
   statusHint?: string;
   /** Containers on the shipment/job — required when more than one. */
   containers?: Array<{ id: string; label: string }>;
+  /** Air jobs: show MAWB instead of Container (API still uses container_id). */
+  unitLabel?: 'Container' | 'MAWB';
 }
 
 /** Customer delivery acknowledgement — load template fields, signature, submit. */
@@ -120,7 +122,9 @@ export function PortalAcknowledgementPanel({
   shipmentId,
   statusHint,
   containers = [],
+  unitLabel = 'Container',
 }: PortalAcknowledgementPanelProps) {
+  const unitLabelLower = unitLabel === 'MAWB' ? 'MAWB' : 'container';
   const query = usePortalShipmentAcknowledgement(shipmentId);
   const submit = useSubmitPortalShipmentAcknowledgement(shipmentId);
   const uploadSig = useUploadPortalAcknowledgementSignature(shipmentId);
@@ -198,7 +202,7 @@ export function PortalAcknowledgementPanel({
       return;
     }
     if (containerOptions.length > 1 && !containerId.trim()) {
-      setError('Select the container you are acknowledging.');
+      setError(`Select the ${unitLabelLower} you are acknowledging.`);
       return;
     }
     try {
@@ -340,7 +344,7 @@ export function PortalAcknowledgementPanel({
               {containerOptions.length > 1 ? (
                 <label className="block text-sm sm:col-span-2">
                   <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-                    Container *
+                    {unitLabel} *
                   </span>
                   <select
                     className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
@@ -348,7 +352,7 @@ export function PortalAcknowledgementPanel({
                     value={containerId}
                     onChange={(e) => setContainerId(e.target.value)}
                   >
-                    <option value="">Select container…</option>
+                    <option value="">Select {unitLabelLower}…</option>
                     {containerOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}
