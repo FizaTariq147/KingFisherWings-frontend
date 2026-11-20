@@ -1,6 +1,14 @@
 # Release pack: INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA
 
-Nothing here is accepted. No sign-off was run.
+Not in phase 1. Nothing here is accepted. No sign-off was run. Hard mode withholds this code.
+
+## Defects
+
+- `32.AMOUNT IN USD` is static. The value beside it is the repeating cell `line-0-p1s96`, copied from sample span `p1s96` (`275.000` at x 370.1). That sample has three decimals, so the old row rule treated it as the quantity column. On INV/26/00102 the painted value was `10`, which is the line quantity, not the amount and not `exchange_rate`.
+- `33.QUANTITY` is the header for sample span `p1s97` (`1.000`). That cell is `line-0-p1s97`.
+- `34.Amount (AED)` is static. The line cell under it is `line-0-p1s98` (sample `275.00`). It is the rightmost amount cell, so it was filled with the line total (`120.00` on INV/26/00102). It was not an empty span. An earlier audit missed it because the label comparison dropped the parentheses.
+- The general fix binds a column from the header above it. Quantity comes only from a qty or quantity header. A header that names USD, AED, or another currency gets the line amount when that currency is the invoice currency, and the line amount times `exchange_rate` otherwise. A missing `exchange_rate` leaves the other currency column blank. The ten real invoices have `exchange_rate` `"1"`, so both money columns show the line amount. There is no separate conversion to invent.
+- The layout still has no Sub Total, VAT, or Discount row. Applicability currency is USD.
 
 ## Criteria
 

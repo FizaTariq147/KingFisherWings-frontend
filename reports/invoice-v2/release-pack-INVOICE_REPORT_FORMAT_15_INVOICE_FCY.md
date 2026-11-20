@@ -1,6 +1,25 @@
 # Release pack: INVOICE_REPORT_FORMAT_15_INVOICE_FCY
 
-Nothing here is accepted. No sign-off was run.
+Not in phase 1. Nothing here is accepted. No sign-off was run. Hard mode withholds this code.
+
+## Why the charge lines are missing
+
+`chargeRows` in `tools/reports/invoice-rows.mjs` keeps a row only when it has at least three numeric dynamic spans and the row is not a GST or subtotal row. Format 15's charge samples are pairs:
+
+| y | cells |
+|---|---|
+| 404.2 | 100.00 and 95.89, under FREIGHT CHARGE |
+| 392.2 | 5,500.00 and 88.90 |
+| 380.2 | 300.00 and 4.84, under SEAL FEE |
+| 368.2 | 3,000.00 and 48.49, under BILL OF LADING |
+
+The headers above that band are Rate/Unit, Qty, and Total Amt (USD). The Qty sample is not a numeric dynamic span on those rows, so each row has two numbers. `layoutRepeatingCharges` returns no values. `fillInvoiceSpans` has a fallback that also requires four numeric spans, so it does not write the lines either.
+
+INV/26/00101 has three charge lines (1,560.00, 55.00, and 216.00). None of those amounts is placed. The 40-line invoice stays on one page and none of the "Charge line NN" descriptions is drawn. The repeating band never starts, so this is not the overflow rule and not a page-capacity limit.
+
+The single-number spans at y 356.2 (238.12) and y 212.7 (238.10) are totals. Dropping the three-cell minimum to two would treat other layouts' total pairs as charge rows. That change was not made.
+
+`Total Amt (USD)` and the sentence "6. Exchange rate applied is subject to upward revisions." are static. No dynamic span beside them is bound to `invoice.exchange_rate`.
 
 ## Criteria
 

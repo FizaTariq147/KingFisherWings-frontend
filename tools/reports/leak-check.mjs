@@ -7,7 +7,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { isAllowlisted } from './allowlist.mjs';
+import { isAllowlisted, leaksOnEmptyRecord } from './allowlist.mjs';
 import { fillInvoiceSpans } from './invoice-bindings.mjs';
 import { renderSpec } from './render-spec.mjs';
 
@@ -45,7 +45,7 @@ for (const code of codes) {
     outputPath: outPath,
   });
   fs.rmSync(outPath, { force: true });
-  const leaks = [...new Set(painted.filter((text) => text && !isAllowlisted(text) && !supplied.has(text)))];
+  const leaks = [...new Set(painted.filter((text) => leaksOnEmptyRecord(text, supplied)))];
   const pages = spec.pages?.length ? spec.pages : [spec];
   const suppressed = [];
   for (const page of pages) {

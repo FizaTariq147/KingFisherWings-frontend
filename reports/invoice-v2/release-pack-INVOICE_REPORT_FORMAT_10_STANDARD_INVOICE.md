@@ -31,6 +31,46 @@ Page, geometry, static text, dynamic text, and raster pass. Pagination is single
 
 Raster ratios: non-text 0, text ink 0.0703, masked fraction 0.095. Failure class: none.
 
+## What classic prints that Format 10 cannot
+
+Format 10 has a charge-line amount and a total. It has no Sub Total row, no VAT/tax row, and no Discount row. Classic always prints all three. Classic Sub Total is `invoice.subtotal`. Classic VAT is `tax_total ?? 0`, so it prints 0.00 when `tax_total` is absent. Classic Discount is hardcoded to 0. None of the ten real invoices has a discount field.
+
+| Invoice | Sub Total | VAT/tax row | Discount row |
+|---|---|---|---|
+| INV/26/00102 | 120.00 non-zero | 0.00 | 0.00 |
+| INV/26/00093 | 900.00 non-zero | 0.00 | 0.00 |
+| INV/26/00101 | 1,831.00 non-zero | 0.00 | 0.00 |
+| INV/26/00100 | 1,200.00 non-zero | 0.00 | 0.00 |
+| INV/26/00099 | 22.00 non-zero | 0.00 | 0.00 |
+| INV/26/00097 | 70.00 non-zero | 0.00 | 0.00 |
+| INV/26/00094 | 152,567.00 non-zero | 0.00 | 0.00 |
+| INV/26/00095 | 56,789.00 non-zero | 0.00 | 0.00 |
+| INV/26/00098 | 1,520,000.00 non-zero | 0.00 | 0.00 |
+| INV/26/00089 | 90.00 non-zero | 0.00 | 0.00 |
+
+Non-zero Sub Total: all ten. Non-zero classic VAT row: none. Non-zero classic Discount row: none.
+
+Six of the ten have a non-zero header `tax_amount` and the same amount on the lines (INV/26/00093 45.00, INV/26/00097 3.50, INV/26/00094 7,628.35, INV/26/00095 2,839.45, INV/26/00098 76,000.00, INV/26/00089 4.50). Classic does not print that figure, because `tax_total` is absent and the VAT row uses `tax_total ?? 0`. Format 10's line amount is `line_total`, which already includes that line tax, and the printed total matches the sum of those lines.
+
+## Printed lines and the printed total
+
+The rightmost money cell on each charge line was summed and compared with the total Format 10 prints.
+
+All 10 real invoices add up. INV/26/00101 is the three-line case (1,560.00 + 55.00 + 216.00 = 1,831.00).
+
+Of the 15 synthetic records, these add up: SYN-01, SYN-02, SYN-03, SYN-07, SYN-08, SYN-10, SYN-11, SYN-13, SYN-14.
+
+These do not, because Format 10 prints the line totals and the invoice total, and has no row for the discount or the rounding that sits between them:
+
+| Record | Printed line sum | Printed total | Why |
+|---|---:|---:|---|
+| SYN-04 | 315.00 | 275.00 | discount 40.00 |
+| SYN-05 | 73.00 | 73.04 | rounding 0.04 |
+| SYN-06 | 170.50 | 155.50 | discount 15.00 |
+| SYN-09 | 78.10 | 78.07 | rounding -0.03 |
+| SYN-12 | 168.00 | 148.00 | discount 20.00 |
+| SYN-15 | 2,944.00 | 2,844.05 | discount 100.00 and rounding 0.05 |
+
 ## Money
 
 A row fails when an amount is on one PDF and not the other. These layouts print a total and no tax row. Classic always prints a VAT row from `tax_total`, and 0.00 when that key is absent. Classic hardcodes Discount to 0.

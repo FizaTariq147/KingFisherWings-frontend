@@ -6,13 +6,29 @@ Nothing in this release is accepted. No threshold, mask, status value, or sign-o
 
 The v2 invoice renderer stays behind `VITE_REPORTS_ENGINE`. Credit notes, debit notes, and quotations stay on the classic generator.
 
-Release codes, taken from the suitability matrix. None of these is accepted:
+Phase 1 release set:
 
 - INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE
-- INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA
-- INVOICE_REPORT_FORMAT_15_INVOICE_FCY
 
-The catalogue badge stays "approximate, not final" until the steps under "How a code becomes accepted" have been run and a new build has been made.
+It is not accepted. The catalogue badge stays "approximate, not final" until the steps under "How a code becomes accepted" have been run and a new build has been made.
+
+## Not in phase 1
+
+These stay gated. Hard mode withholds them because their status is not `accepted`.
+
+### INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA
+
+- The span under `32.AMOUNT IN USD` is the repeating cell `line-0-p1s96` (sample span `p1s96`, sample text `275.000`). It was painted with the line quantity. On INV/26/00102 that quantity is 10. The cause was the charge-row rule that treated any sample with three decimals as a quantity column. Quantity is now taken from a qty or quantity header. A column whose header names a currency is money: the line amount when that currency is the invoice currency, otherwise the line amount times `exchange_rate`. When `exchange_rate` is missing, the other currency column is left blank.
+- `34.Amount (AED)` is the repeating cell `line-0-p1s98` (sample span `p1s98`). It was already filled with the line total, because it is the rightmost amount cell. It is not an exchange conversion unless `exchange_rate` is a real rate. On the ten downloaded invoices `exchange_rate` is `"1"`.
+- The layout has no Sub Total, VAT, or Discount row, so those classic figures are not printed.
+- Applicability currency is USD, so only INV/26/00101 and INV/26/00100 are the matching real invoices.
+
+### INVOICE_REPORT_FORMAT_15_INVOICE_FCY
+
+- Charge lines are not drawn. `chargeRows` keeps a row only when it has at least three numeric dynamic spans. Format 15's charge rows have two (rate and USD total) at y 404.2, 392.2, 380.2, and 368.2. The single-number rows at y 356.2 and y 212.7 are totals. `layoutRepeatingCharges` therefore returns no band, and the fallback in `fillInvoiceSpans` also skips a row with fewer than four numeric spans. INV/26/00101's three charge amounts (1,560.00, 55.00, 216.00) are never written.
+- The 40-line invoice stays on one page and draws no "Charge line NN" descriptions, for the same reason. This is the missing charge band, not an overflow rule.
+- `Total Amt (USD)` and the exchange-rate sentence are static text. `invoice.exchange_rate` is not bound on this layout.
+- Lowering the three-cell rule was not applied. A two-cell rule would also pick up totals rows on other layouts, and that is not a safe general change in this session.
 
 ## Production environment
 
@@ -21,7 +37,7 @@ The catalogue badge stays "approximate, not final" until the steps under "How a 
 | `VITE_REPORTS_ENGINE` | `v2` |
 | `VITE_REPORTS_GATE` | `hard` |
 
-`reports.engine` is not a stored field. Hard mode previews and generates a v2 invoice code only when `reports/status.json` says `accepted`. Until that is true, these three codes show "format not available yet" and Generate stays on the classic invoice.
+`reports.engine` is not a stored field. Hard mode previews and generates a v2 invoice code only when `reports/status.json` says `accepted`. Until that is true, Format 10 shows "format not available yet" and Generate stays on the classic invoice. Formats 9 and 15 stay withheld for the same reason.
 
 ## Turning v2 on and off
 
@@ -56,7 +72,7 @@ A hard-gated code that is not accepted is not attempted. Generate stays on class
 ## Manual staging test
 
 1. Deploy with `VITE_REPORTS_ENGINE` unset. Open an invoice and use Generate PDF. The file is the classic invoice.
-2. Set `VITE_REPORTS_ENGINE=v2` and leave `VITE_REPORTS_GATE` unset. Open Formats for an invoice. One of the three codes above shows "approximate, not final" and can be previewed.
+2. Set `VITE_REPORTS_ENGINE=v2` and leave `VITE_REPORTS_GATE` unset. Open Formats for an invoice. Format 10 shows "approximate, not final" and can be previewed.
 3. Force the preview to fail (stop the dev renderer, or pick a code whose spec cannot be built). The screen shows the classic invoice and the notice in Fallback.
 4. Set `VITE_REPORTS_GATE=hard` without a rebuilt `accepted` status. The same code shows "format not available yet" and Generate does not run v2.
 5. Do not mark a code accepted from this checklist.

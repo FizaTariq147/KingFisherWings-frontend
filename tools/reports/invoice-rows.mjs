@@ -52,9 +52,8 @@ function chargeRows(spans) {
 
 function columnValue(cell, spans, line, currency) {
   const label = normalizeLabel(nearestLabel(cell, spans)?.text || '');
-  const demo = String(cell.text || '');
   if (/\b(sgst|cgst|igst)\b/.test(label)) return '';
-  if (/\b(qty|quantity|unit)\b/.test(label) || /\.\d{3,}/.test(demo)) {
+  if (/\b(qty|quantity)\b/.test(label)) {
     return line.quantity == null ? '' : String(line.quantity);
   }
   if (/\b(rate|price)\b/.test(label)) return classicMoney(line.unit_price ?? 0);
@@ -148,9 +147,44 @@ export function layoutRepeatingCharges(spec, record) {
       });
       values[id] = description;
     }
-    const qtyCell = cells.find((cell) => /\.\d{3,}/.test(String(cell.text)));
-    const rateCell = cells.find((cell) => cell !== amountCell && cell !== qtyCell && cell.x > (qtyCell?.x || 0) && cell.x < amountCell.x);
-    const currencyCell = spans.find((span) => Math.abs(span.y - template.y) <= 4 && /^(INR|USD|AED|EUR|GBP|SGD|VND)$/.test(String(span.text || '').trim()));
+    function headerAbove(cell) {
+      const candidates = spans.filter((other) => {
+        if (other.role !== 'static' || other.y <= cell.y + 2 || other.y > cell.y + 40) return false;
+        const left = other.x;
+        const right = other.x + (other.width || 0);
+        return left < cell.x + (cell.width || 0) + 12 && right > cell.x - 12;
+      });
+      candidates.sort((a, b) => {
+        const center = cell.x + (cell.width || 0) / 2;
+        const distance = (span) => Math.abs(span.x + (span.width || 0) / 2 - center);
+        return distance(a) - distance(b);
+      });
+      return candidates[0] || null;
+    }
+    function columnRole(cell) {
+      const header = headerAbove(cell) || nearestLabel(cell, spans);
+      const label = normalizeLabel(header?.text || '');
+      if (/\b(qty|quantity)\b/.test(label)) return 'qty';
+      if (/\b(exchange|ex rate|exrate)\b/.test(label)) return 'exchange';
+      if (/\b(rate|price)\b/.test(label)) return 'rate';
+      if (/\b(currency|curr)\b/.test(label)) return 'currency';
+      if (/\b(sgst|cgst|igst)\b/.test(label)) return 'gst';
+      if (/\btax\b/.test(label)) return 'tax';
+      const named = label.match(/\b(inr|usd|aed|eur|gbp|sgd|vnd|pkr)\b/);
+      if (named) return `money:${named[1].toUpperCase()}`;
+      if (/\b(amount|fcy|total)\b/.test(label)) return 'money:';
+      if (/\.\d{3,}/.test(String(cell.text || ''))) return 'qty';
+      return '';
+    }
+    function moneyFor(named, line) {
+      const amount = lineAmount(line);
+      const code = currency.toUpperCase();
+      if (!named || named === code) return classicMoney(amount);
+      const rate = Number(invoice.exchange_rate);
+      if (!Number.isFinite(rate)) return '';
+      return classicMoney(Math.round(amount * rate * 100) / 100);
+    }
+    const currencyCell = spans.find((span) => Math.abs(span.y - template.y) <= 4 && /^(INR|USD|AED|EUR|GBP|SGD|VND|PKR)$/.test(String(span.text || '').trim()));
     if (currencyCell && currency) {
       const id = `line-${index}-ccy`;
       made.push({ ...currencyCell, id, role: 'dynamic', y, text: '' });
@@ -159,10 +193,17 @@ export function layoutRepeatingCharges(spec, record) {
     for (const cell of cells) {
       const id = `line-${index}-${cell.id}`;
       made.push({ ...cell, id, role: 'dynamic', y, text: '' });
+      const role = columnRole(cell);
       let bound = '';
-      if (cell === amountCell) bound = classicMoney(lineAmount(line));
-      else if (cell === qtyCell) bound = line.quantity == null ? '' : String(line.quantity);
-      else if (cell === rateCell) bound = classicMoney(line.unit_price ?? 0);
+      if (role === 'qty') bound = line.quantity == null ? '' : String(line.quantity);
+      else if (role === 'rate') bound = classicMoney(line.unit_price ?? 0);
+      else if (role === 'currency') bound = currency;
+      else if (role === 'exchange') {
+        const rate = Number(invoice.exchange_rate);
+        bound = Number.isFinite(rate) ? String(rate) : '';
+      } else if (role === 'tax') bound = line.tax_amount == null ? '' : classicMoney(line.tax_amount);
+      else if (role.startsWith('money:')) bound = moneyFor(role.slice(6), line);
+      else if (cell === amountCell) bound = classicMoney(lineAmount(line));
       else {
         const labeled = columnValue(cell, spans, line, currency);
         bound = labeled == null ? '' : labeled;

@@ -44,7 +44,7 @@ const {
 const CODE128AUTO = require('jsbarcode/bin/barcodes/CODE128/CODE128_AUTO.js').default;
 const QRCode = require('qrcode');
 import { fontFile, mapFont } from './font-map.mjs';
-import { isAllowlisted } from './allowlist.mjs';
+import { isAllowlisted, isBareSample } from './allowlist.mjs';
 
 const CHAR_FALLBACK = JSON.parse(fs.readFileSync(path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), 'reports/char-fallback.json'), 'utf8'));
 
@@ -602,7 +602,7 @@ export async function renderSpec(code, options = {}) {
       if ((options.organization || options.values) && span.role === 'static' && fresaFragment(demo) && !options.values?.[span.id]) {
         continue;
       }
-      if (options.values && span.role === 'static' && !options.values[span.id] && !isAllowlisted(demo)) {
+      if (options.values && span.role === 'static' && !options.values[span.id] && (!isAllowlisted(demo) || isBareSample(demo))) {
         continue;
       }
       if (options.organization && span.role === 'branding') {
