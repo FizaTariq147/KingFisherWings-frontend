@@ -170,6 +170,13 @@ interface AuthState {
   /** Protected ERP APIs returned REQUIRES_2FA_SETUP after login. */
   erpAccessBlocked: boolean
   erpAccessMessage: string | null
+  /**
+   * Set after a successful forced password change in this session.
+   * Prevents GET /auth/me from re-forcing the Set password screen when the API
+   * still returns must_change_password (common for Tenant Admin after
+   * POST /auth/tenant/change-password).
+   */
+  mustChangePasswordSatisfied: boolean
 }
 
 interface AuthActions {
@@ -184,6 +191,8 @@ interface AuthActions {
   patchSessionUser: (partial: Partial<AuthUser>) => void
   setIdleTimeoutMinutes: (minutes: number) => void
   clearMustChangePassword: () => void
+  /** True when this session already completed forced password change. */
+  isMustChangePasswordSatisfied: () => boolean
   touchSessionActivity: () => void
   /** Idle expiry — flush draft (if any), soft-clear session, navigate to login. */
   markSessionExpired: () => void
@@ -321,6 +330,8 @@ async function applyLoginSuccess(
     subscriptionMessage: null,
     erpAccessBlocked: false,
     erpAccessMessage: null,
+    // Fresh login — honor must_change_password from this login payload /me.
+    mustChangePasswordSatisfied: false,
   })
   try {
     sessionStorage.removeItem(ERP_AUTH_SIGNOUT_FLAG)
@@ -350,6 +361,7 @@ function clearAuthState(): Partial<AuthState> {
     subscriptionMessage: null,
     erpAccessBlocked: false,
     erpAccessMessage: null,
+    mustChangePasswordSatisfied: false,
   }
 }
 
@@ -456,6 +468,7 @@ export const useAuthStore = create<AuthStore>()(
       subscriptionMessage: null,
       erpAccessBlocked: false,
       erpAccessMessage: null,
+      mustChangePasswordSatisfied: false,
 
       loginTenant: async (dto) => {
         set({
@@ -661,9 +674,15 @@ export const useAuthStore = create<AuthStore>()(
 
       clearMustChangePassword: () => {
         const current = get().user
-        if (!current?.mustChangePassword) return
-        set({ user: { ...current, mustChangePassword: false } })
+        set({
+          mustChangePasswordSatisfied: true,
+          ...(current
+            ? { user: { ...current, mustChangePassword: false } }
+            : {}),
+        })
       },
+
+      isMustChangePasswordSatisfied: () => Boolean(get().mustChangePasswordSatisfied),
 
       touchSessionActivity: () => {
         if (!get().isAuthenticated) return
@@ -721,6 +740,7 @@ export const useAuthStore = create<AuthStore>()(
         lastActiveAt: state.lastActiveAt,
         idleTimeoutMinutes: state.idleTimeoutMinutes,
         sessionExpired: state.sessionExpired,
+        mustChangePasswordSatisfied: state.mustChangePasswordSatisfied,
       }),
       // If Revoke/logout set the sign-out flag, ignore any late-written persist blob.
       merge: (persisted, current) => {

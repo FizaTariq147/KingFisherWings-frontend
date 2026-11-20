@@ -600,7 +600,18 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Keep Zustand in sync so services (user.service) can resolve tenant without AuthContext.
         // Never overwrite a known tenantId with an empty /me payload.
         // Preserve mustChangePassword from login when /me omits the flag.
-        const priorMustChange = Boolean(useAuthStore.getState().user?.mustChangePassword)
+        // After a successful Set password in this session, never re-force from stale /me.
+        const authSnap = useAuthStore.getState()
+        const priorMustChange = Boolean(authSnap.user?.mustChangePassword)
+        const satisfied = Boolean(authSnap.mustChangePasswordSatisfied)
+        const nextMustChange = satisfied
+          ? false
+          : normalized.mustChangePassword === undefined
+            ? priorMustChange
+            : Boolean(normalized.mustChangePassword)
+        if (satisfied && normalized.mustChangePassword) {
+          normalized.mustChangePassword = false
+        }
         patchSessionUser({
           id: normalized.id,
           name: normalized.name,
@@ -608,10 +619,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           role: normalized.role.slug || normalized.role.name || 'TENANT_ADMIN',
           ...(normalized.tenantId ? { tenantId: normalized.tenantId } : {}),
           ...(normalized.companyId ? { companyId: normalized.companyId } : {}),
-          mustChangePassword:
-            normalized.mustChangePassword === undefined
-              ? priorMustChange
-              : Boolean(normalized.mustChangePassword),
+          mustChangePassword: nextMustChange,
         })
         if (normalized.idleTimeoutMinutes != null) {
           setIdleTimeoutMinutes(normalized.idleTimeoutMinutes)

@@ -46,7 +46,9 @@ export default function ProtectedRoute({
   const accessToken = useAuthStore((s) => s.accessToken)
   const storeAuthenticated = useAuthStore((s) => s.isAuthenticated && Boolean(s.accessToken))
   const storeUser = useAuthStore((s) => s.user)
-  const mustChangePassword = Boolean(storeUser?.mustChangePassword)
+  const mustChangeSatisfied = useAuthStore((s) => s.mustChangePasswordSatisfied)
+  const mustChangePassword =
+    Boolean(storeUser?.mustChangePassword) && !mustChangeSatisfied
   const location = useLocation()
   const sessionPending = Boolean(accessToken) && !isAuthenticated
 
@@ -60,7 +62,8 @@ export default function ProtectedRoute({
     return <Navigate to={redirectTo} state={{ from: location }} replace />
   }
 
-  // Staff with a temporary password must set their own before using the app.
+  // Staff / Tenant Admin with a temporary password must set their own before using the app.
+  // Skip when this session already completed Set password (avoids /auth/me bounce loop).
   if (mustChangePassword && location.pathname !== CHANGE_PASSWORD_PATH) {
     return <Navigate to={CHANGE_PASSWORD_PATH} replace />
   }
