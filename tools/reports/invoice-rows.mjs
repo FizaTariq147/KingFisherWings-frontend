@@ -65,6 +65,34 @@ function columnValue(cell, spans, line, currency) {
   return null;
 }
 
+/** How many charge lines fit on the first page before the totals reserve. */
+export function chargePageCapacity(spec) {
+  const page = spec?.pages?.[0];
+  if (!page) return { hasBand: false, capacity: 0 };
+  const rows = chargeRows(page.spans || []);
+  if (!rows.length) return { hasBand: false, capacity: 0 };
+  const pitch = rows.length > 1 ? Math.max(12, Math.abs(rows[0].y - rows[1].y)) : 16;
+  const top = rows[0].y;
+  const margin = 56;
+  const totalsReserve = 88;
+  let capacity = 0;
+  for (let count = 1; count <= 80; count += 1) {
+    let y = top;
+    let fits = true;
+    for (let index = 0; index < count; index += 1) {
+      const limit = margin + (index === count - 1 ? totalsReserve : 0);
+      if (y < limit) {
+        fits = false;
+        break;
+      }
+      y -= pitch;
+    }
+    if (!fits) break;
+    capacity = count;
+  }
+  return { hasBand: true, capacity };
+}
+
 export function layoutRepeatingCharges(spec, record) {
   const invoice = record?.invoice || {};
   const lines = invoice.lines || [];

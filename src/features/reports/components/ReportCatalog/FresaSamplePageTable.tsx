@@ -6,6 +6,8 @@ import {
 } from '../../constants/fresaPageColumns';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
 import { invoiceV2ListRank, invoiceV2ApplicabilityHint, type InvoiceFitInput } from '../../engine/invoiceV2Applicability';
+import { FORMAT_NOT_AVAILABLE_YET, invoiceV2HardBlocked } from '../../engine/invoiceV2Gate';
+import { reportsCatalogueGate } from '../../engine/reportsEngine';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { FormatStatusBadge } from './FormatStatusBadge';
@@ -210,6 +212,11 @@ function FormatLink({
   const formatNo = parseInvoiceFormatNumber(template.code);
   const sharedHint = catalogSharedLayoutHint(template.code);
   const applicability = invoiceV2ApplicabilityHint(template.code, invoiceCurrency);
+  const hardBlocked = invoiceV2HardBlocked({
+    gate: reportsCatalogueGate(),
+    code: template.code,
+    status: reportConformanceStatus(template.code),
+  });
   const status = resolveCatalogFormatStatus(template.code);
   return (
     <button
@@ -237,6 +244,9 @@ function FormatLink({
         {reportConformanceLabel(reportConformanceStatus(template.code))}
         {reportConformanceStatus(template.code) === 'accepted' ? '' : ' · approximate, not final'}
       </span>
+      {hardBlocked ? (
+        <span className="mt-0.5 block text-[9px] font-semibold text-amber-800">{FORMAT_NOT_AVAILABLE_YET}</span>
+      ) : null}
       {applicability ? (
         <span className="mt-0.5 block text-[9px] font-semibold text-amber-800">{applicability}</span>
       ) : null}

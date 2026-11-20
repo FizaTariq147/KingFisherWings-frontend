@@ -1,6 +1,8 @@
 import { listInvoiceFormatPreviews } from '../../data/invoiceFormatPreviews';
 import { invoiceV2BadgeText } from '../../engine/invoiceV2Codes';
 import { invoiceV2ListRank, invoiceV2ApplicabilityHint, type InvoiceFitInput } from '../../engine/invoiceV2Applicability';
+import { FORMAT_NOT_AVAILABLE_YET, invoiceV2HardBlocked } from '../../engine/invoiceV2Gate';
+import { reportsCatalogueGate } from '../../engine/reportsEngine';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
 import { filterCatalogStripRows } from '../../utils/filterCatalogStripRows';
@@ -63,6 +65,13 @@ export function InvoiceFormatBrowseStrip({
           sharedHint={
             [
               invoiceV2ListRank(row.code, invoiceCurrency) < 2 ? invoiceV2BadgeText(reportConformanceStatus(row.code)) : null,
+              invoiceV2HardBlocked({
+                gate: reportsCatalogueGate(),
+                code: row.code,
+                status: reportConformanceStatus(row.code),
+              })
+                ? FORMAT_NOT_AVAILABLE_YET
+                : null,
               invoiceV2ApplicabilityHint(row.code, invoiceCurrency),
             ].filter(Boolean).join(' · ') || null
           }

@@ -4,181 +4,207 @@
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": true
   },
   "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE": {
     "subtotal": true,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": true
+    "total": true,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": true
+    "total": true,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": true
+    "total": true,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": true
+    "total": true,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": true
+    "total": true,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_14_INVOICE": {
     "subtotal": true,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": true
+    "total": true,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_15_INVOICE_FCY": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": true
+    "total": true,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED": {
     "subtotal": true,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": true
+    "total": true,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER": {
     "subtotal": true,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": true
+    "total": true,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "PURCHASE_INVOICE_REPORT_FORMAT_1": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   },
   "PURCHASE_INVOICE_REPORT_FORMAT_2": {
     "subtotal": false,
     "tax": false,
     "discount": false,
     "rounding": false,
-    "total": false
+    "total": false,
+    "lineTax": false
   }
 }

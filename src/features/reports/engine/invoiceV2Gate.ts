@@ -1,7 +1,28 @@
+import { invoiceV2SpecCodes } from './invoiceV2Codes';
+import { reportsCatalogueGate, type ReportsCatalogueGate } from './reportsEngine';
+import { reportConformanceStatus, type ReportConformanceStatus } from '../utils/reportConformanceStatus';
+
 export type InvoicePdfEntry = 'generate' | 'reports' | 'formats';
 export type InvoicePdfDocument = 'quotation' | 'invoice' | 'credit_note' | 'debit_note';
 
 export const INVOICE_V2_FALLBACK_NOTICE = 'Showing the classic invoice. The selected format could not be built.';
+export const FORMAT_NOT_AVAILABLE_YET = 'format not available yet';
+
+/**
+ * Hard gating withholds a v2 invoice code until its status is accepted.
+ * Soft gating leaves it available. Nothing in this function marks a code accepted.
+ */
+export function invoiceV2HardBlocked(input: {
+  gate?: ReportsCatalogueGate;
+  code: string;
+  status?: ReportConformanceStatus;
+}): boolean {
+  const gate = input.gate ?? reportsCatalogueGate();
+  if (gate !== 'hard') return false;
+  if (!invoiceV2SpecCodes.has(input.code)) return false;
+  const status = input.status ?? reportConformanceStatus(input.code);
+  return status !== 'accepted';
+}
 
 /**
  * v2 runs for an invoice only from Reports or Formats, or from Generate PDF
@@ -14,9 +35,14 @@ export function shouldUseInvoiceV2(input: {
   entry: InvoicePdfEntry;
   document: InvoicePdfDocument;
   style: string;
+  code?: string;
+  gate?: ReportsCatalogueGate;
+  status?: ReportConformanceStatus;
 }): boolean {
   if (input.document !== 'invoice') return false;
   if (input.engine !== 'v2') return false;
+  const code = input.code || input.style;
+  if (invoiceV2HardBlocked({ gate: input.gate, code, status: input.status })) return false;
   if (input.entry === 'reports' || input.entry === 'formats') return true;
   return input.style.trim() !== '' && input.style !== 'classic';
 }

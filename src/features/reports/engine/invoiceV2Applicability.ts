@@ -15,7 +15,11 @@ export type InvoiceTotalsProfile = {
   discount: boolean;
   rounding: boolean;
   total: boolean;
+  /** A per-line tax column, not an SGST/CGST/IGST split. */
+  lineTax?: boolean;
 };
+
+export const INVOICE_V2_TAX_NOTE = 'suitable for arithmetic, tax not shown';
 
 export type InvoiceFitLine = {
   quantity?: number | null;
@@ -58,6 +62,12 @@ export function invoiceV2TotalsProfile(code: string): InvoiceTotalsProfile {
   return TOTALS[code] || EMPTY_PROFILE;
 }
 
+/** A tax row or a single per-line tax column. SGST/CGST/IGST columns do not count. */
+export function invoicePrintsTaxFigure(code: string): boolean {
+  const profile = invoiceV2TotalsProfile(code);
+  return profile.tax || profile.lineTax === true;
+}
+
 function num(value: unknown): number {
   if (value == null || value === '') return 0;
   const parsed = Number(value);
@@ -78,6 +88,12 @@ function asFit(input?: InvoiceFitInput) {
 function lineAmount(line: InvoiceFitLine): number {
   if (line.line_total != null && Number.isFinite(Number(line.line_total))) return Number(line.line_total);
   return num(line.quantity) * num(line.unit_price) + num(line.tax_amount);
+}
+
+function recordHasTax(invoice: Exclude<InvoiceFitInput, string | null>, lines: InvoiceFitLine[]): boolean {
+  if (invoice.tax_total != null && Math.abs(num(invoice.tax_total)) > 0.009) return true;
+  if (invoice.tax_amount != null && invoice.tax_amount !== '' && Math.abs(num(invoice.tax_amount)) > 0.009) return true;
+  return lines.some((line) => Math.abs(num(line.tax_amount)) > 0.009);
 }
 
 function taxOwed(invoice: Exclude<InvoiceFitInput, string | null>, lines: InvoiceFitLine[]): number {
@@ -140,12 +156,26 @@ export function invoiceV2Applies(code: string, input?: InvoiceFitInput): boolean
   return expected.toUpperCase() === currency.toUpperCase();
 }
 
+/**
+ * Shown when the printed rows already add up, the invoice has tax, and this
+ * layout prints no tax figure. The code stays suitable and stays openable.
+ */
+export function invoiceV2TaxVisibilityNote(code: string, input?: InvoiceFitInput): string | null {
+  if (!invoiceV2SpecCodes.has(code)) return null;
+  const fit = asFit(input);
+  if (!fit.amounts) return null;
+  if (!invoiceV2Suitability(code, input).suitable) return null;
+  if (!recordHasTax(fit.invoice, fit.invoice.lines || [])) return null;
+  if (invoicePrintsTaxFigure(code)) return null;
+  return INVOICE_V2_TAX_NOTE;
+}
+
 export function invoiceV2ApplicabilityHint(code: string, input?: InvoiceFitInput): string | null {
   if (!invoiceV2SpecCodes.has(code)) return null;
   const suitability = invoiceV2Suitability(code, input);
   if (!suitability.suitable && suitability.reason) return `not suitable for this invoice: ${suitability.reason}`;
   if (!invoiceV2Applies(code, input)) return 'not applicable to this invoice';
-  return null;
+  return invoiceV2TaxVisibilityNote(code, input);
 }
 
 export function invoiceV2ListRank(code: string, input?: InvoiceFitInput): number {

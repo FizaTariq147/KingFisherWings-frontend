@@ -110,7 +110,7 @@ Status: 0 accepted, 6 in progress, 846 reference only.
 - 376 of 402 PDFs are their own layout at a 1 pt geometry rounding. Eighteen clusters have more than one member, and some of those mix families (a MAWB draft sits with several HBL files; an arrival confirmation sits with delivery confirmations). Phase 1 should review those clusters before treating one cluster as one spec. I did not loosen the match to force a smaller number.
 - 545 registered codes had no phase-0 filename match. 135 pinned files had no registered code. The code map and the triage CSVs below are that split. `ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1` is a proposed code for the Location Wise- 1 file. It is not in the 852-code registry.
 - The 402 PDFs and 49 Excel files were committed in `ce4a25f0` as normal git objects, not Git LFS. This phase removes the Fresa Gold brochure from that pin. PNGs stay gitignored.
-- Catalogue gating stays soft. Hard gating is Phase 7 and was not implemented.
+- Catalogue gating defaults to soft (`VITE_REPORTS_GATE` unset). Hard gating is implemented for v2 invoice codes: they are previewed and generated only when status is `accepted`. Nothing is accepted, so hard mode withholds all 26. Browse still opens the entry and shows "format not available yet".
 - `defaultPdfStyle` is not a field on `OrganizationProfile` or `Company`, and `reports.engine` is not a stored setting. The four Generate PDF screens call `generateInvoicePdf` (quotation and credit/debit notes through their mappers). Treating a missing value as classic matches current behavior. A stored per-company style needs a backend column that this repo cannot name. Do not invent the column.
 
 ## Verification log

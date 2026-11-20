@@ -10,6 +10,14 @@ export function reportsEngine(): ReportsEngine {
   return raw === 'v2' ? 'v2' : 'legacy';
 }
 
+/** Catalogue gating. Soft is the default. Hard does not change status or sign-off. */
+export type ReportsCatalogueGate = 'soft' | 'hard';
+
+export function reportsCatalogueGate(raw?: string): ReportsCatalogueGate {
+  const value = String(raw ?? import.meta.env?.VITE_REPORTS_GATE ?? '').trim().toLowerCase();
+  return value === 'hard' ? 'hard' : 'soft';
+}
+
 /**
  * Organization and company records in this frontend have no defaultPdfStyle.
  * A missing value is classic. This reads the property only when a payload

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   invoiceV2ApplicabilityHint,
+  invoiceV2ListRank,
   invoiceV2Suitability,
   invoiceV2TotalsProfile,
 } from './invoiceV2Applicability';
@@ -47,7 +48,7 @@ const formats = {
 
 describe('invoice v2 arithmetic suitability', () => {
   it('reads the totals rows from the spec profile', () => {
-    expect(invoiceV2TotalsProfile('INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE')).toEqual({
+    expect(invoiceV2TotalsProfile('INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE')).toMatchObject({
       subtotal: false, tax: false, discount: false, rounding: false, total: true,
     });
     expect(invoiceV2TotalsProfile('INVOICE_REPORT_FORMAT_17_INVOICE_JASPER')).toMatchObject({
@@ -77,5 +78,13 @@ describe('invoice v2 arithmetic suitability', () => {
 
   it('still opens a code that is not suitable', () => {
     expect(invoiceV2ApplicabilityHint('INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE', invoice00094)).toMatch(/^not suitable/);
+  });
+
+  it('notes unprinted tax without blocking a layout whose rows already add up', () => {
+    const code = 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE';
+    expect(invoiceV2Suitability(code, invoice00094).suitable).toBe(true);
+    expect(invoiceV2ListRank(code, invoice00094)).toBe(0);
+    expect(invoiceV2ApplicabilityHint(code, invoice00094)).toBe('suitable for arithmetic, tax not shown');
+    expect(invoiceV2ApplicabilityHint(code, realInvoices[0])).toBeNull();
   });
 });

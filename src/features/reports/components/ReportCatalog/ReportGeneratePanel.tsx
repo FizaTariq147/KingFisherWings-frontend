@@ -61,8 +61,9 @@ import { isInvoiceReportFormatCode } from '../../types/invoiceFormatPreview.type
 import { InvoiceFormatAutoPdf } from './InvoiceFormatAutoPdf';
 import { ReportParameterForm } from './ReportParameterForm';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
-import { reportsEngine } from '../../engine/reportsEngine';
-import { shouldUseInvoiceV2 } from '../../engine/invoiceV2Gate';
+import { reportsCatalogueGate, reportsEngine } from '../../engine/reportsEngine';
+import { FORMAT_NOT_AVAILABLE_YET, invoiceV2HardBlocked, shouldUseInvoiceV2 } from '../../engine/invoiceV2Gate';
+import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
 import { invoiceV2SpecCodes } from '../../engine/invoiceV2Codes';
 import { InvoiceV2Preview } from './InvoiceV2Preview';
 
@@ -635,9 +636,15 @@ export function ReportGeneratePanel({
       entityBound: entityBoundForUi,
       hasOfficialSample: officialSampleForUi,
     });
+  const v2HardBlocked = invoiceV2HardBlocked({
+    gate: reportsCatalogueGate(),
+    code: resolved.code,
+    status: reportConformanceStatus(resolved.code),
+  });
   const generateBlocked =
     busy ||
     detail.isLoading ||
+    v2HardBlocked ||
     (!packReadyForGenerate && !canClientLayoutPdf);
 
   const rendererStatus = reportRendererStatus(resolved);
@@ -689,13 +696,19 @@ export function ReportGeneratePanel({
         {previewSource.detail}
       </div>
 
+      {v2HardBlocked ? (
+        <p className="text-xs font-semibold text-amber-800">{FORMAT_NOT_AVAILABLE_YET}</p>
+      ) : null}
+
       {isInvoiceFormat &&
       invoiceV2SpecCodes.has(resolved.code) &&
+      !v2HardBlocked &&
       shouldUseInvoiceV2({
         engine: reportsEngine(),
         entry: 'formats',
         document: 'invoice',
         style: 'classic',
+        code: resolved.code,
       }) ? (
         <InvoiceV2Preview code={resolved.code} invoiceId={context?.invoice_id} />
       ) : null}

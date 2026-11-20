@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { generateInvoicePdfChoice, generateWithFallback, INVOICE_V2_FALLBACK_NOTICE, shouldUseInvoiceV2 } from './invoiceV2Gate';
+import { generateInvoicePdfChoice, generateWithFallback, invoiceV2HardBlocked, INVOICE_V2_FALLBACK_NOTICE, shouldUseInvoiceV2 } from './invoiceV2Gate';
 import { readDefaultPdfStyle } from './reportsEngine';
 import type { Invoice } from '@/features/invoices/types/invoice.types';
 import { valueForInvoiceBinding } from './invoiceReportContract';
@@ -24,6 +24,60 @@ describe('invoice v2 gate', () => {
       document: 'invoice',
       style: 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA',
     })).toBe(false);
+  });
+
+  it('soft gate still offers an unaccepted v2 invoice code', () => {
+    const code = 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE';
+    expect(invoiceV2HardBlocked({ gate: 'soft', code, status: 'in_progress' })).toBe(false);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'formats',
+      document: 'invoice',
+      style: 'classic',
+      code,
+      gate: 'soft',
+      status: 'reference_only',
+    })).toBe(true);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'generate',
+      document: 'invoice',
+      style: code,
+      gate: 'soft',
+      status: 'in_progress',
+    })).toBe(true);
+  });
+
+  it('hard gate offers a v2 invoice code only when it is accepted', () => {
+    const code = 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE';
+    expect(invoiceV2HardBlocked({ gate: 'hard', code, status: 'in_progress' })).toBe(true);
+    expect(invoiceV2HardBlocked({ gate: 'hard', code, status: 'reference_only' })).toBe(true);
+    expect(invoiceV2HardBlocked({ gate: 'hard', code, status: 'accepted' })).toBe(false);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'formats',
+      document: 'invoice',
+      style: 'classic',
+      code,
+      gate: 'hard',
+      status: 'reference_only',
+    })).toBe(false);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'generate',
+      document: 'invoice',
+      style: code,
+      gate: 'hard',
+      status: 'in_progress',
+    })).toBe(false);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'generate',
+      document: 'invoice',
+      style: code,
+      gate: 'hard',
+      status: 'accepted',
+    })).toBe(true);
   });
 
   it('does not route credit notes, debit notes, or quotations to v2', () => {
