@@ -102,10 +102,20 @@ export default function ChangePasswordPage() {
     }
     try {
       if (isTenantAdmin) {
+        // Workspace slug+password credential (POST /auth/tenant/change-password).
         await authService.changeTenantPassword(dto)
+        // Some tenants also carry User.must_change_password; clear that too when possible.
+        if (forced) {
+          try {
+            await authService.changePassword(dto)
+          } catch {
+            /* tenant principal may not be a staff user — ignore */
+          }
+        }
       } else {
         await authService.changePassword(dto)
       }
+      // Clears flag + marks session satisfied so /auth/me cannot bounce back here.
       clearMustChangePassword()
       navigate(getErpHomePath(resolveAuthRoleSlug(user?.role)), { replace: true })
     } catch (err) {
