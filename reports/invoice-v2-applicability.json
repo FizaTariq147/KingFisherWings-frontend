@@ -13,7 +13,7 @@
   "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED": { "currency": null, "country": null, "taxRegime": null, "taxMode": "single" },
   "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA": { "currency": "USD", "country": "US", "taxRegime": "sales-tax", "taxMode": "single" },
   "INVOICE_REPORT_FORMAT_14_INVOICE": { "currency": null, "country": null, "taxRegime": null, "taxMode": "single" },
-  "INVOICE_REPORT_FORMAT_15_INVOICE_FCY": { "currency": null, "country": null, "taxRegime": null, "taxMode": "single" },
+  "INVOICE_REPORT_FORMAT_15_INVOICE_FCY": { "currency": "USD", "country": null, "taxRegime": null, "taxMode": "single" },
   "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED": { "currency": null, "country": null, "taxRegime": "vat", "taxMode": "single" },
   "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER": { "currency": null, "country": null, "taxRegime": null, "taxMode": "single" },
   "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE": { "currency": null, "country": null, "taxRegime": null, "taxMode": "single" },

@@ -6,9 +6,9 @@ Nothing here is accepted. No sign-off was run.
 
 | Criterion | Result |
 |---|---|
-| Money fields bound and reconcile with the classic PDF on 10 real invoices | fail |
+| Money fields reconcile with the classic PDF on 10 real invoices and 15 synthetic records | fail |
 | Party and shipment fields are bound, or listed in docs/reports/backend-requirements-invoice.md with table and column | pass |
-| Leak check is clean | pass |
+| Leak check is clean | pass (0 leaks, 55 suppressed) |
 | Logo draws from the organization logo fetch. No bytes leaves the slot empty | pass |
 | Lines paginate | pass |
 | Blank ratio on the 10 real invoices is reported per field | pass |
@@ -33,20 +33,35 @@ Raster ratios: non-text 0, text ink 0.0703, masked fraction 0.095. Failure class
 
 ## Money
 
-| Invoice | Classic PDF and this v2 PDF |
-|---|---|
-| INV/26/00102 | pass |
-| INV/26/00093 | pass |
-| INV/26/00101 | pass |
-| INV/26/00100 | pass |
-| INV/26/00099 | pass |
-| INV/26/00097 | pass |
-| INV/26/00094 | fail |
+A row fails when an amount is on one PDF and not the other. These layouts print a total and no tax row. Classic always prints a VAT row from `tax_total`, and 0.00 when that key is absent. Classic hardcodes Discount to 0.
 
-This layout has a Total row and no Sub Total row. On INV/26/00094 the classic PDF prints subtotal 152,567.00. That number is not a line amount and it is not the grand total, so it is not on this PDF. The grand total matches the classic PDF. The other nine invoices pass because their subtotal is also a line amount.
-| INV/26/00095 | pass |
-| INV/26/00098 | pass |
-| INV/26/00089 | pass |
+| Record | Kind | Result |
+|---|---|---|
+| INV/26/00102 | real | tax 0.00 classic=true v2=false |
+| INV/26/00093 | real | tax 0.00 classic=true v2=false |
+| INV/26/00101 | real | tax 0.00 classic=true v2=false |
+| INV/26/00100 | real | tax 0.00 classic=true v2=false |
+| INV/26/00099 | real | tax 0.00 classic=true v2=false |
+| INV/26/00097 | real | tax 0.00 classic=true v2=false |
+| INV/26/00094 | real | subtotal 152567.00 classic=true v2=false; tax 0.00 classic=true v2=false |
+| INV/26/00095 | real | tax 0.00 classic=true v2=false |
+| INV/26/00098 | real | subtotal 1520000.00 classic=true v2=false; tax 0.00 classic=true v2=false |
+| INV/26/00089 | real | tax 0.00 classic=true v2=false |
+| SYN-01 | synthetic | tax 0.00 classic=true v2=false |
+| SYN-02 | synthetic | subtotal 162.00 classic=true v2=false; tax 16.20 classic=true v2=false |
+| SYN-03 | synthetic | subtotal 2725.00 classic=true v2=false; tax 490.50 classic=true v2=false |
+| SYN-04 | synthetic | subtotal 300.00 classic=true v2=false; tax 15.00 classic=true v2=false |
+| SYN-05 | synthetic | subtotal 73.00 classic=true v2=false; tax 0.00 classic=true v2=false |
+| SYN-06 | synthetic | subtotal 155.00 classic=true v2=false; tax 15.50 classic=true v2=false |
+| SYN-07 | synthetic | subtotal 133.00 classic=true v2=false; tax 6.65 classic=true v2=false |
+| SYN-08 | synthetic | tax 0.00 classic=true v2=false |
+| SYN-09 | synthetic | subtotal 71.00 classic=true v2=false; tax 7.10 classic=true v2=false |
+| SYN-10 | synthetic | subtotal 7800.00 classic=true v2=false; tax 1404.00 classic=true v2=false |
+| SYN-11 | synthetic | subtotal 595.00 classic=true v2=false; tax 29.75 classic=true v2=false |
+| SYN-12 | synthetic | subtotal 140.00 classic=true v2=false; tax 28.00 classic=true v2=false |
+| SYN-13 | synthetic | tax 0.00 classic=true v2=false |
+| SYN-14 | synthetic | subtotal 3410.00 classic=true v2=false; tax 170.50 classic=true v2=false |
+| SYN-15 | synthetic | subtotal 2560.00 classic=true v2=false; tax 384.00 classic=true v2=false |
 
 ## Blank ratio
 
@@ -69,22 +84,11 @@ Counts are the 10 real invoices. Blank ratio is bound-but-empty divided by 10.
 | total | 10 | 0 | 0 | 0.00 |
 | amount in words | 10 | 0 | 0 | 0.00 |
 
-## Resolver misses and empty fields
-
-Checked on the 10 real invoices against the invoice, the linked job, the invoice shipment, sea and air legs, bills of lading, the booking form, and parties.
-
-| Field | Resolver miss | Genuinely empty |
-|---|---|---|
-| Shipper | None. `Job.shipper.name` is now used when `shipper_name` is blank. The billed party is not treated as the shipper. | INV/26/00093, INV/26/00100, INV/26/00097, INV/26/00094, INV/26/00095, INV/26/00098, INV/26/00089 |
-| Consignee | None. `Job.consignee.name` is now used when `consignee_name` is blank. | Every real invoice except INV/26/00102 |
-| Vessel | None. Invoice shipment `vessel_name` and `vessel_flight`, and the linked bill vessel, are now read. | Every real invoice except INV/26/00099 |
-| Voyage | INV/26/00099 stores the voyage on the booking `voyage_ref`. That is now bound. | The other nine real invoices |
-| HBL | INV/26/00102 has no house-bill column. Its invoice shipment `bl_awb` is now bound. | The other real invoices except INV/26/00099, which already had `hbl_number` |
-| Container | None. Numbers on the job and on the sea leg are now joined. | Every real invoice except INV/26/00102 and INV/26/00099 |
-
 ## What a customer sees
 
-Typical invoice: INV/26/00102. It has a linked job, a shipper, a consignee, and a container. Empty boxes on this code:
+### INV/26/00102
+
+No tax. INV/26/00102 has header tax_amount 0 and one line with tax 0.
 
 | Empty box | Why | Count |
 |---|---|---:|
@@ -99,11 +103,43 @@ Typical invoice: INV/26/00102. It has a linked job, a shipper, a consignee, and 
 | Payment shall be made for full amount on or prior to due date, free of charges,  | empty in the record | 1 |
 | Telex Released issued in USA: Please note that a local service charge of $50 app | empty in the record | 1 |
 
+### INV/26/00094
+
+Has tax. INV/26/00094 has header tax_amount 7628.35 and line tax 7600 and 28.35. tax_total is absent.
+
+| Empty box | Why | Count |
+|---|---|---:|
+| MAWB/MBL No. | empty in the record | 6 |
+| ETD | empty in the record | 5 |
+| Department | empty in the record | 5 |
+| Shipper | empty in the record | 5 |
+| Consignee | empty in the record | 5 |
+| ETA | empty in the record | 5 |
+| AED | no source | 2 |
+| Shipment No. | empty in the record | 2 |
+| Job No. | empty in the record | 2 |
+| HAWB/HBL No. | empty in the record | 2 |
+| Terms and conditions | no source | 2 |
+| ACCOUNT | no source | 1 |
+| BUR DUBAI, | no source | 1 |
+| DUBAI UAE | no source | 1 |
+| Place of Receipt | empty in the record | 1 |
+| Telex Released issued in USA: Please note that a local service charge of $50 app | empty in the record | 1 |
+
+
 ## Logo and pages
 
-The header image is a letterhead band, not a separate logo box. On a live invoice the organization logo is drawn inside that band, at the left, in its own proportions, from `fetchOrganizationLogoBytes` (the same fetch the classic generator uses). No bytes leaves the band empty. The sample letterhead art is not copied.
+The header image is a letterhead band, not a separate logo box. On a live invoice the organization logo is drawn inside that band, at the left, in its own proportions, from `fetchOrganizationLogoBytes`. No bytes leaves the band empty. The sample letterhead art is not copied.
 
 A 40-line invoice produced 6 page(s). Every charge line is present.
+
+## Currency and exchange rate
+
+Counts are dynamic spans on the 10 real invoices whose nearest label matches currency, exchange, FCY, amount in USD, amount (AED), or total amt (USD). `invoice.exchange_rate` is on every downloaded invoice (the value is 1) and is not a binding in `invoice-bindings.mjs`.
+
+| Label | Filled spans | Empty spans | Sample filled value |
+|---|---:|---:|---|
+| (no matching span) | 0 | 0 | — |
 
 ## Review sheet
 
@@ -114,15 +150,4 @@ A 40-line invoice produced 6 page(s). Every charge line is present.
 Generate PDF calls `generateInvoicePdfChoice`. When `VITE_REPORTS_ENGINE=v2` and the company or organization payload carries a non-classic `defaultPdfStyle`, that code is built first. A thrown error returns the classic PDF and the notice: "Showing the classic invoice. The selected format could not be built."
 
 The unit test `Generate PDF falls back to classic and shows a notice when the selected style throws` forces that error for this path. A classic style does not call v2.
-
-## How a company sets this code as the default invoice style
-
-There is no settings screen for this. `OrganizationProfile` and company records in this frontend have no stored default style. Generate PDF stays classic until a payload already contains `defaultPdfStyle`.
-
-1. Store `defaultPdfStyle` as exactly `INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE` on the company, or on the organization profile if the company has none.
-2. Run the app with `VITE_REPORTS_ENGINE=v2`.
-3. Open an invoice and click Generate PDF.
-4. If the format builds, that PDF is the file. If it throws, the classic PDF is shown with the notice above.
-
-Choosing the code under Formats previews that invoice only. It does not save a company default.
 
