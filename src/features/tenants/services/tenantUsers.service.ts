@@ -1,20 +1,13 @@
 import { isUuid } from '@/lib/isUuid';
 import { superAdminApiClient, type ApiEnvelope } from '@/lib/superAdminApiClient';
-import { USER_API } from '@/features/users/api/user.api';
+import { TENANT_API } from '../api/tenant.api';
+import {
+  extractUsersFromTenantPayload,
+  normalizeTenantCreatedUser,
+  type TenantCreatedUser,
+} from '../utils/extractTenantUsers';
 
-export interface TenantCreatedUser {
-  id: string;
-  email?: string;
-  first_name?: string;
-  last_name?: string;
-  full_name?: string;
-  role?: string;
-  status?: string;
-  phone?: string;
-  last_login_at?: string | null;
-  created_at?: string;
-  must_change_password?: boolean;
-}
+export type { TenantCreatedUser };
 
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
@@ -22,11 +15,15 @@ function asRecord(value: unknown): Record<string, unknown> | null {
     : null;
 }
 
-function pickString(...values: unknown[]): string {
-  for (const value of values) {
-    if (typeof value === 'string' && value.trim()) return value.trim();
-  }
-  return '';
+function unwrapList(data: unknown): unknown[] {
+  if (Array.isArray(data)) return data;
+  const record = asRecord(data);
+  if (!record) return [];
+  if (Array.isArray(record.data)) return record.data;
+  if (Array.isArray(record.items)) return record.items;
+  if (Array.isArray(record.results)) return record.results;
+  if (Array.isArray(record.users)) return record.users;
+  return [];
 }
 
 function coerceOptionalNumber(value: unknown): number | undefined {
@@ -48,136 +45,65 @@ function pickMetaTotal(payload: unknown): number | undefined {
   );
 }
 
-function unwrapList(data: unknown): unknown[] {
-  if (Array.isArray(data)) return data;
-  const record = asRecord(data);
-  if (!record) return [];
-  if (Array.isArray(record.data)) return record.data;
-  if (Array.isArray(record.items)) return record.items;
-  if (Array.isArray(record.results)) return record.results;
-  if (Array.isArray(record.users)) return record.users;
-  return [];
-}
-
-function normalizeTenantCreatedUser(raw: unknown): TenantCreatedUser | null {
-  const r = asRecord(raw);
-  if (!r) return null;
-  const id = pickString(r.id);
-  if (!id || !isUuid(id)) return null;
-  if (r.deleted_at || r.deletedAt) return null;
-
-  const first = pickString(r.first_name, r.firstName);
-  const last = pickString(r.last_name, r.lastName);
-  const full =
-    pickString(r.full_name, r.fullName, r.name) ||
-    [first, last].filter(Boolean).join(' ').trim();
-
-  return {
-    id,
-    email: pickString(r.email) || undefined,
-    first_name: first || undefined,
-    last_name: last || undefined,
-    full_name: full || undefined,
-    role: pickString(r.role, r.role_slug, r.roleSlug) || undefined,
-    status: pickString(r.status) || undefined,
-    phone: pickString(r.phone) || undefined,
-    last_login_at:
-      pickString(r.last_login_at, r.lastLoginAt) ||
-      (r.last_login_at === null || r.lastLoginAt === null ? null : undefined),
-    created_at: pickString(r.created_at, r.createdAt) || undefined,
-    must_change_password:
-      r.must_change_password === true ||
-      r.mustChangePassword === true ||
-      undefined,
-  };
-}
-
 /**
- * Super Admin: list users belonging to a tenant.
- * Uses GET /users with tenant_id + X-Tenant-Id (platform token has no tenant scope).
+ * Super Admin only — never call tenant ERP GET /users (403 for platform tokens).
+ *
+ * Sources:
+ * 1) GET /tenants/{id}/users (platform nested route, when BE exposes it)
+ * 2) GET /tenants/{id} payload embedded users / owner / admin_user
  */
 export async function listUsersForTenant(
   tenantId: string,
 ): Promise<TenantCreatedUser[]> {
   if (!isUuid(tenantId)) return [];
 
-  const pageSize = 100;
-  let page = 1;
-  let totalPages = 1;
-  const users: TenantCreatedUser[] = [];
-  const seen = new Set<string>();
-
-  while (page <= totalPages && page <= 50) {
-    const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(USER_API.list, {
-      params: { page, limit: pageSize, tenant_id: tenantId },
-      headers: { 'X-Tenant-Id': tenantId },
-    });
-
+  // 1) Nested under /tenants (platform) — preferred when available.
+  try {
+    const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(
+      TENANT_API.users(tenantId),
+      { params: { page: 1, limit: 100 } },
+    );
     const envelope = res.data ?? res;
     const rows = unwrapList(asRecord(envelope)?.data ?? envelope)
       .map(normalizeTenantCreatedUser)
       .filter((u): u is TenantCreatedUser => Boolean(u));
-
-    for (const user of rows) {
-      if (seen.has(user.id)) continue;
-      seen.add(user.id);
-      users.push(user);
+    if (rows.length > 0) return rows;
+    // Empty array with 200 → tenant has no users yet.
+    if (Array.isArray(asRecord(envelope)?.data) || Array.isArray(envelope)) {
+      return rows;
     }
-
-    const metaTotal = pickMetaTotal(envelope);
-    if (metaTotal != null && metaTotal >= 0) {
-      totalPages = Math.max(1, Math.ceil(metaTotal / pageSize));
-    } else {
-      totalPages = rows.length < pageSize ? page : page + 1;
-    }
-
-    if (rows.length === 0) break;
-    page += 1;
+  } catch {
+    /* fall through to tenant detail embed */
   }
 
-  return users;
+  // 2) Embedded on GET /tenants/{id}
+  const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(
+    TENANT_API.byId(tenantId),
+  );
+  const payload = (res.data?.data ?? res.data ?? res) as unknown;
+  return extractUsersFromTenantPayload(payload);
 }
 
-/** Count users for a tenant (prefer pagination meta.total). */
+/** Count users for a tenant via /tenants only (no ERP /users). */
 export async function countUsersForTenant(
   tenantId: string,
 ): Promise<number | undefined> {
   if (!isUuid(tenantId)) return undefined;
 
-  const attempts: Array<{
-    params: Record<string, string | number>;
-    headers?: Record<string, string>;
-  }> = [
-    {
-      params: { page: 1, limit: 1, tenant_id: tenantId },
-      headers: { 'X-Tenant-Id': tenantId },
-    },
-    {
-      params: { page: 1, limit: 1 },
-      headers: { 'X-Tenant-Id': tenantId },
-    },
-    {
-      params: { page: 1, limit: 1, tenantId },
-      headers: { 'X-Tenant-Id': tenantId },
-    },
-  ];
-
-  for (const attempt of attempts) {
-    try {
-      const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(USER_API.list, {
-        params: attempt.params,
-        headers: attempt.headers,
-      });
-      const envelope = res.data ?? res;
-      const metaTotal = pickMetaTotal(envelope);
-      if (metaTotal != null) return metaTotal;
-
-      const rows = unwrapList(asRecord(envelope)?.data ?? envelope);
-      // If the API ignored tenant scope and returned a large unscoped page, don't trust length=1.
-      if (rows.length === 0) return 0;
-    } catch {
-      /* try next shape */
+  try {
+    const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(
+      TENANT_API.users(tenantId),
+      { params: { page: 1, limit: 1 } },
+    );
+    const envelope = res.data ?? res;
+    const metaTotal = pickMetaTotal(envelope);
+    if (metaTotal != null) return metaTotal;
+    const rows = unwrapList(asRecord(envelope)?.data ?? envelope);
+    if (Array.isArray(asRecord(envelope)?.data) || Array.isArray(envelope)) {
+      return rows.length;
     }
+  } catch {
+    /* fall through */
   }
 
   try {
