@@ -1,6 +1,6 @@
 # Invoice v2 live-path binding diff
 
-Before: `reports/invoice-v2` @ `8cb2709c`. After: current `reports/format1-polish` tree.
+Before: `origin/reports/invoice-v2` @ `8cb2709c`. After: current `reports/integration` tree.
 Codes: 26. Records per code: 10 real + 15 synthetic.
 Changed fields: 14642. Flagged label swaps: 0.
 
