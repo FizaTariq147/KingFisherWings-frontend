@@ -17,6 +17,11 @@ type Props = {
   authLogoUrl?: string | null;
   alt?: string;
   className?: string;
+  /**
+   * Skip authenticated org/files logo fetch — use the bundled system mark only.
+   * Use on login / Super Admin chrome (no tenant org branding).
+   */
+  systemOnly?: boolean;
 };
 
 /**
@@ -33,8 +38,9 @@ function needsAuthFetch(url: string): boolean {
 }
 
 /**
- * Brand mark with dynamic URL + hard fallback to assets/logo.png.
- * Always prefers authenticated byte fetch so sidebar matches PDFs on every device.
+ * Brand mark with dynamic URL + hard fallback to the bundled King Fisher system logo.
+ * Authenticated chrome prefers org/files byte fetch so sidebar matches PDFs.
+ * Login / Super Admin use `systemOnly` (or no custom URL) to avoid /organization/logo 401s.
  */
 export function BrandLogo({
   logoUrl,
@@ -43,13 +49,16 @@ export function BrandLogo({
   authLogoUrl,
   alt = 'Company logo',
   className,
+  systemOnly = false,
 }: Props) {
-  const resolved = resolveBrandLogoUrl({
-    logoUrl,
-    organizationLogoUrl,
-    tenantLogoUrl,
-    authLogoUrl,
-  });
+  const resolved = systemOnly
+    ? DEFAULT_BRAND_LOGO_URL
+    : resolveBrandLogoUrl({
+        logoUrl,
+        organizationLogoUrl,
+        tenantLogoUrl,
+        authLogoUrl,
+      });
   const [src, setSrc] = useState(resolved || DEFAULT_BRAND_LOGO_URL);
 
   useEffect(() => {
@@ -57,11 +66,23 @@ export function BrandLogo({
     let objectUrl: string | null = null;
 
     const run = async () => {
+      if (systemOnly) {
+        setSrc(DEFAULT_BRAND_LOGO_URL);
+        return;
+      }
+
       const preferred =
         resolved && resolved !== DEFAULT_BRAND_LOGO_URL ? resolved : null;
 
-      // Network-first (profile → /files → /organization/logo) so all sessions stay in sync.
-      // Do not rely on this browser’s localStorage as the source of truth.
+      // No tenant/org URL → show bundled system mark. Do not probe /organization/logo
+      // (401 on login / Super Admin / unauthenticated pages).
+      if (!preferred) {
+        setSrc(DEFAULT_BRAND_LOGO_URL);
+        return;
+      }
+
+      // Network-first (profile → /files → /organization/logo) so authenticated
+      // sessions stay in sync. Do not rely on this browser’s localStorage alone.
       try {
         const bytes = await fetchOrganizationLogoBytes(preferred);
         if (cancelled) return;
@@ -79,7 +100,7 @@ export function BrandLogo({
       if (cancelled) return;
 
       // Truly public CDN (not our private object store) — <img> is fine.
-      if (preferred && !needsAuthFetch(preferred)) {
+      if (!needsAuthFetch(preferred)) {
         setSrc(preferred);
         return;
       }
@@ -92,7 +113,7 @@ export function BrandLogo({
       cancelled = true;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [resolved]);
+  }, [resolved, systemOnly]);
 
   return (
     <img

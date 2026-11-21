@@ -44,8 +44,9 @@ export function LoginPopupFrame({
         <div className={`flex justify-center ${compact ? 'mb-2' : 'mb-3'}`}>
           <BrandLogo
             logoUrl={logoUrl}
-            alt="KingFisher Wings"
-            className={compact ? 'h-10 w-auto' : 'h-12 w-auto'}
+            systemOnly={!logoUrl}
+            alt="King Fisher Technologies"
+            className={compact ? 'h-10 w-auto max-w-[180px] object-contain' : 'h-12 w-auto max-w-[220px] object-contain'}
           />
         </div>
         <p
