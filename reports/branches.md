@@ -58,7 +58,7 @@ Base: **`origin/reports/invoice-v2` @ `8cb2709c`**
 | `report:leak-check` | same | 0 leaks |
 | Binding diff (26 codes × 10 real + 15 synthetic) | step 2 | **0 flagged** label swaps |
 | Qty proof Format 10 (2, 3, 12.5) | step 2 | pass (values + PDF) |
-| 399 verify (`verify-pool full`) | after last completed step | *(run / record at push time)* |
+| 399 verify (`verify-pool full`) | after last completed step | **pass** (exit 0). Same 3 known geometry-only raster regressions: `ADVANCE_SHIPPING_NOTE_FORMAT_1`, `FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431`, `FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007`. No new regressions. |
 
 ---
 
