@@ -9,6 +9,8 @@ import { JOB_API } from '../api/job.api';
 import {
   normalizeAirUldRequest,
   normalizeDeliveryAcknowledgement,
+  normalizeJobAcknowledgementView,
+  pickAcknowledgementFromView,
   normalizeJob,
   normalizeJobCharges,
   normalizeJobPnl,
@@ -123,6 +125,7 @@ import type {
   CreatePaymentRequestFromJobDto,
   CreateProofOfDeliveryDto,
   DeliveryAcknowledgement,
+  JobAcknowledgementView,
   SendDeliveryAcknowledgementDto,
   CreateStuffingRecordDto,
   CreateSubJobDto,
@@ -2444,14 +2447,14 @@ export const jobService = {
   },
 
   /**
-   * GET /jobs/:id/detail/acknowledgement
-   * Optional `container_id` scopes the acknowledgement when the job has containers
-   * (same field accepted on POST …/acknowledgement/send).
+   * GET /jobs/:id/detail/acknowledgement — full envelope
+   * (`containers[]` with nested acknowledgement, or job-level when no containers).
+   * Pass `container_id` when BE should return a single scoped row.
    */
-  async getAcknowledgement(
+  async getAcknowledgementView(
     id: string,
     opts?: { container_id?: string | null },
-  ): Promise<DeliveryAcknowledgement> {
+  ): Promise<JobAcknowledgementView> {
     assertId(id);
     const containerId = String(opts?.container_id ?? '').trim();
     try {
@@ -2463,10 +2466,22 @@ export const jobService = {
               : undefined,
         }),
       );
-      return normalizeDeliveryAcknowledgement(res.data);
+      return normalizeJobAcknowledgementView(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }
+  },
+
+  /**
+   * GET /jobs/:id/detail/acknowledgement — acknowledgement for one container
+   * (or job-level when the job has no containers).
+   */
+  async getAcknowledgement(
+    id: string,
+    opts?: { container_id?: string | null },
+  ): Promise<DeliveryAcknowledgement> {
+    const view = await this.getAcknowledgementView(id, opts);
+    return pickAcknowledgementFromView(view, opts?.container_id);
   },
 
   /**
@@ -2504,9 +2519,9 @@ export const jobService = {
         if (!proofOnly && message) {
           form.append('message', message);
           form.append('remarks', message);
-          if (body.container_id?.trim()) {
-            form.append('container_id', body.container_id.trim());
-          }
+        }
+        if (body.container_id?.trim()) {
+          form.append('container_id', body.container_id.trim());
         }
         appendAcknowledgementMultipartFiles(form, uniqueFiles);
         res = await withGatewayRetry(() =>
@@ -2528,13 +2543,19 @@ export const jobService = {
   /** POST /jobs/:id/acknowledgement/receive — mark RECEIVED_BY_ADMIN. */
   async receiveAcknowledgement(
     id: string,
-    body: { notes?: string } | Record<string, unknown> = {},
+    body: { notes?: string; container_id?: string } | Record<string, unknown> = {},
   ): Promise<DeliveryAcknowledgement> {
     assertId(id);
     try {
       const payload: Record<string, unknown> = {};
       if (typeof body.notes === 'string' && body.notes.trim()) {
         payload.notes = body.notes.trim();
+      }
+      const containerId = String(
+        (body as { container_id?: string }).container_id ?? '',
+      ).trim();
+      if (containerId && isUuid(containerId)) {
+        payload.container_id = containerId;
       }
       const res = await withGatewayRetry(() =>
         axiosInstance.post(JOB_API.acknowledgementReceive(id), payload),
@@ -2546,11 +2567,18 @@ export const jobService = {
   },
 
   /** Optional formal PDF → JobDocument PROOF_OF_DELIVERY (visible_to_customer). */
-  async generateAcknowledgementPdf(id: string): Promise<unknown> {
+  async generateAcknowledgementPdf(
+    id: string,
+    opts?: { container_id?: string | null },
+  ): Promise<unknown> {
     assertId(id);
+    const containerId = String(opts?.container_id ?? '').trim();
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(JOB_API.acknowledgementGeneratePdf(id)),
+        axiosInstance.post(
+          JOB_API.acknowledgementGeneratePdf(id),
+          containerId && isUuid(containerId) ? { container_id: containerId } : {},
+        ),
       );
       return unwrapEntity(res.data) ?? res.data;
     } catch (error) {
@@ -2558,12 +2586,21 @@ export const jobService = {
     }
   },
 
-  /** GET /jobs/:id/acknowledgement/attachments */
-  async listAcknowledgementAttachments(id: string): Promise<unknown[]> {
+  /** GET /jobs/:id/acknowledgement/attachments — optional `container_id` scopes the ack row. */
+  async listAcknowledgementAttachments(
+    id: string,
+    opts?: { container_id?: string | null },
+  ): Promise<unknown[]> {
     assertId(id);
+    const containerId = String(opts?.container_id ?? '').trim();
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.get(JOB_API.acknowledgementAttachments(id)),
+        axiosInstance.get(JOB_API.acknowledgementAttachments(id), {
+          params:
+            containerId && isUuid(containerId)
+              ? { container_id: containerId }
+              : undefined,
+        }),
       );
       if (Array.isArray(res.data)) return res.data;
       const unwrapped = unwrapEntity(res.data);
@@ -2575,8 +2612,12 @@ export const jobService = {
   },
 
   /** Attach proof after first send (single file). */
-  async uploadAcknowledgementAttachment(id: string, file: File): Promise<unknown> {
-    return this.uploadAcknowledgementAttachments(id, [file]);
+  async uploadAcknowledgementAttachment(
+    id: string,
+    file: File,
+    opts?: { container_id?: string | null },
+  ): Promise<unknown> {
+    return this.uploadAcknowledgementAttachments(id, [file], opts);
   },
 
   /**
@@ -2590,11 +2631,13 @@ export const jobService = {
   async uploadAcknowledgementAttachments(
     id: string,
     files: File[],
+    opts?: { container_id?: string | null },
   ): Promise<{ attachments?: unknown[] } | unknown> {
     assertId(id);
     const list = (files ?? []).filter(Boolean);
     if (!list.length) throw new Error('Select at least one proof file.');
     if (list.length > 10) throw new Error('Select at most 10 files.');
+    const containerId = String(opts?.container_id ?? '').trim();
 
     const isUnknownSectionError = (err: unknown): boolean => {
       const formatted = formatAxiosError(err).message;
@@ -2603,6 +2646,9 @@ export const jobService = {
 
     try {
       const form = new FormData();
+      if (containerId && isUuid(containerId)) {
+        form.append('container_id', containerId);
+      }
       appendAcknowledgementMultipartFiles(form, list);
       const res = await withGatewayRetry(() =>
         axiosInstance.post(JOB_API.acknowledgementAttachments(id), form),
@@ -2613,7 +2659,11 @@ export const jobService = {
         throw formatAxiosError(error);
       }
       // Route conflict with JobOps `{section}/attachments` — use send + files.
-      return this.sendAcknowledgement(id, { proof_only: true, files: list });
+      return this.sendAcknowledgement(id, {
+        proof_only: true,
+        files: list,
+        ...(containerId && isUuid(containerId) ? { container_id: containerId } : {}),
+      });
     }
   },
 

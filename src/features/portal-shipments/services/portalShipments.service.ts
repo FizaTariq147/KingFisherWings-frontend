@@ -259,15 +259,21 @@ export const portalShipmentsService = {
     return (asRecord(unwrapData(res.data)) ?? asRecord(res.data) ?? {}) as Record<string, unknown>;
   },
 
-  /** GET /portal/shipments/:id/acknowledgement */
+  /** GET /portal/shipments/:id/acknowledgement — optional container_id for per-container row. */
   async getAcknowledgement(
     id: string,
+    opts?: { container_id?: string | null },
   ): Promise<import('@/features/jobs/types/job.types').DeliveryAcknowledgement> {
-    const { normalizeDeliveryAcknowledgement } = await import(
-      '@/features/jobs/utils/normalizeJob'
-    );
-    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.acknowledgement(id));
-    return normalizeDeliveryAcknowledgement(res.data);
+    const {
+      normalizeJobAcknowledgementView,
+      pickAcknowledgementFromView,
+    } = await import('@/features/jobs/utils/normalizeJob');
+    const containerId = String(opts?.container_id ?? '').trim();
+    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.acknowledgement(id), {
+      params: containerId ? { container_id: containerId } : undefined,
+    });
+    const view = normalizeJobAcknowledgementView(res.data);
+    return pickAcknowledgementFromView(view, containerId || null);
   },
 
   /** POST submit acknowledgement (fields + optional signature already uploaded). */
@@ -282,9 +288,15 @@ export const portalShipmentsService = {
     return normalizeDeliveryAcknowledgement(res.data);
   },
 
-  async uploadAcknowledgementSignature(id: string, file: File): Promise<unknown> {
+  async uploadAcknowledgementSignature(
+    id: string,
+    file: File,
+    opts?: { container_id?: string | null },
+  ): Promise<unknown> {
     const form = new FormData();
     form.append('file', file);
+    const containerId = String(opts?.container_id ?? '').trim();
+    if (containerId) form.append('container_id', containerId);
     const res = await portalApiClient.post(
       PORTAL_SHIPMENTS_API.acknowledgementSignature(id),
       form,
@@ -294,10 +306,16 @@ export const portalShipmentsService = {
   },
 
   /** GET /portal/shipments/:id/acknowledgement/attachments */
-  async listAcknowledgementAttachments(id: string): Promise<
+  async listAcknowledgementAttachments(
+    id: string,
+    opts?: { container_id?: string | null },
+  ): Promise<
     Array<{ id: string; file_name?: string; mime_type?: string; size_bytes?: number }>
   > {
-    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.acknowledgementAttachments(id));
+    const containerId = String(opts?.container_id ?? '').trim();
+    const res = await portalApiClient.get(PORTAL_SHIPMENTS_API.acknowledgementAttachments(id), {
+      params: containerId ? { container_id: containerId } : undefined,
+    });
     const data = unwrapData(res.data) ?? res.data;
     const rec = asRecord(data);
     const list =
@@ -326,16 +344,26 @@ export const portalShipmentsService = {
       .filter((row): row is NonNullable<typeof row> => Boolean(row));
   },
 
-  async uploadAcknowledgementAttachment(id: string, file: File): Promise<unknown> {
-    return this.uploadAcknowledgementAttachments(id, [file]);
+  async uploadAcknowledgementAttachment(
+    id: string,
+    file: File,
+    opts?: { container_id?: string | null },
+  ): Promise<unknown> {
+    return this.uploadAcknowledgementAttachments(id, [file], opts);
   },
 
   /** Multi-file upload: `file` when one, `files` when 2+ (never both). Cap 10 × 25MB. */
-  async uploadAcknowledgementAttachments(id: string, files: File[]): Promise<unknown> {
+  async uploadAcknowledgementAttachments(
+    id: string,
+    files: File[],
+    opts?: { container_id?: string | null },
+  ): Promise<unknown> {
     const list = (files ?? []).filter(Boolean);
     if (!list.length) throw new Error('Select at least one file.');
     if (list.length > 10) throw new Error('Select at most 10 files.');
     const form = new FormData();
+    const containerId = String(opts?.container_id ?? '').trim();
+    if (containerId) form.append('container_id', containerId);
     if (list.length === 1) {
       form.append('file', list[0], list[0].name);
     } else {

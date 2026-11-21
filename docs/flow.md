@@ -89,13 +89,25 @@ Staff `POST …/acknowledgement/attachments` and send, and portal attachment upl
 
 ### Acknowledgement per container
 
-When the job has containers, staff pick a container (dropdown) and send with `container_id`
-(already on `POST …/acknowledgement/send`). FE also calls
-`GET …/detail/acknowledgement?container_id=` to load that container’s ack.
+BE stores **one acknowledgement row per container** (partial unique on
+`tenant_id + job_id + container_id`). Jobs with no containers keep a single job-level
+row (`container_id` null).
 
-**Backend needed for full multi-container flow** (if not already):
+Staff FE:
 
-- Persist **one acknowledgement per container** (not only 1:N job-level).
-- Honor `container_id` on GET so switching container returns that container’s status
-  (draft vs sent), not a single job-wide locked row.
-- Optionally scope attachments / receive by `container_id` the same way.
+- `GET …/detail/acknowledgement` → envelope `containers: [{ id, container_number, acknowledgement }]`
+  (or job-level ack when empty). Panel picks the selected container’s nested row.
+- Send / attachments / receive / PDF pass `container_id` when containers exist.
+- Each container keeps its own message lock after first send; other containers stay sendable.
+- Multi-file attach unchanged (`file` XOR `files`).
+
+Portal: same `container_id` on get / submit / signature / attachments.
+
+### Tenant Admin password + Super Admin plaintext
+
+- `POST /auth/tenant/change-password` must clear owner `User.must_change_password`, sync
+  owner hash to the new tenant password, and set `password_plain` on Tenant + owner User.
+- Staff `POST /auth/change-password` clears the flag and sets `User.password_plain` as today.
+- Super Admin platform: tenant detail shows `password_plain`; tech activity
+  `PASSWORD_CHANGED` metadata may include `password_plain` (product request — high risk).
+- Tenant JWT user responses must **not** include plaintext.

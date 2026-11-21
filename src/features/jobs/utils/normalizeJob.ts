@@ -13,6 +13,8 @@ import type {
   JobAirWaybill,
   AirUldRequest,
   DeliveryAcknowledgement,
+  JobAcknowledgementContainerEntry,
+  JobAcknowledgementView,
 } from '../types/job.types';
 import type { JobStatus } from '../constants/job.constants';
 import { canonicalizeJobType } from './canonicalizeJobType';
@@ -1981,6 +1983,119 @@ export function normalizeDeliveryAcknowledgement(raw: unknown): DeliveryAcknowle
     path_hints,
     raw: { ...r, ...nested },
   };
+}
+
+function emptyDraftAcknowledgement(
+  containerId?: string | null,
+): DeliveryAcknowledgement {
+  return {
+    status: 'DRAFT',
+    ...(containerId ? { container_id: containerId } : {}),
+  };
+}
+
+/**
+ * Normalize staff GET …/detail/acknowledgement envelope:
+ * `{ containers: [{ id, container_number, acknowledgement }] }` and/or job-level ack.
+ * Backward compatible with a bare acknowledgement object.
+ */
+export function normalizeJobAcknowledgementView(raw: unknown): JobAcknowledgementView {
+  const r = asRecord(unwrapEntity(raw)) ?? asRecord(raw) ?? {};
+  const containersRaw =
+    r.containers ??
+    r.job_containers ??
+    r.jobContainers ??
+    asRecord(r.data)?.containers ??
+    asRecord(r.data)?.job_containers;
+
+  const containers: JobAcknowledgementContainerEntry[] = Array.isArray(containersRaw)
+    ? containersRaw
+        .map((row) => {
+          const c = asRecord(row);
+          if (!c) return null;
+          const id = pickString(c, 'id', 'container_id', 'containerId');
+          if (!id) return null;
+          const ackRaw =
+            c.acknowledgement ??
+            c.delivery_acknowledgement ??
+            c.deliveryAcknowledgement ??
+            c.ack;
+          const acknowledgement =
+            ackRaw == null
+              ? null
+              : normalizeDeliveryAcknowledgement(ackRaw);
+          return {
+            id,
+            container_number:
+              pickString(c, 'container_number', 'containerNumber', 'number') ||
+              undefined,
+            acknowledgement: acknowledgement
+              ? {
+                  ...acknowledgement,
+                  container_id: acknowledgement.container_id || id,
+                }
+              : null,
+          };
+        })
+        .filter((row): row is JobAcknowledgementContainerEntry => Boolean(row))
+    : [];
+
+  const jobLevelRaw =
+    r.acknowledgement ??
+    r.delivery_acknowledgement ??
+    r.deliveryAcknowledgement ??
+    (containers.length === 0 &&
+    (r.status != null || r.admin_message != null || r.id != null || r.template != null)
+      ? r
+      : null);
+
+  const acknowledgement =
+    jobLevelRaw && containers.length === 0
+      ? normalizeDeliveryAcknowledgement(jobLevelRaw)
+      : jobLevelRaw && asRecord(jobLevelRaw) && !Array.isArray(containersRaw)
+        ? normalizeDeliveryAcknowledgement(jobLevelRaw)
+        : null;
+
+  return {
+    job_id: pickString(r, 'job_id', 'jobId') || acknowledgement?.job_id || undefined,
+    job_number:
+      pickString(r, 'job_number', 'jobNumber') || acknowledgement?.job_number || undefined,
+    containers,
+    acknowledgement:
+      containers.length > 0
+        ? acknowledgement && !acknowledgement.container_id
+          ? acknowledgement
+          : null
+        : acknowledgement,
+    raw: r,
+  };
+}
+
+/** Pick the acknowledgement row for a selected container (or job-level when none). */
+export function pickAcknowledgementFromView(
+  view: JobAcknowledgementView,
+  containerId?: string | null,
+): DeliveryAcknowledgement {
+  const cid = String(containerId ?? '').trim();
+  if (cid) {
+    const row = view.containers.find((c) => c.id === cid);
+    if (row?.acknowledgement) {
+      return {
+        ...row.acknowledgement,
+        container_id: row.acknowledgement.container_id || cid,
+      };
+    }
+    return emptyDraftAcknowledgement(cid);
+  }
+  if (view.acknowledgement) return view.acknowledgement;
+  if (view.containers.length === 1 && view.containers[0].acknowledgement) {
+    const only = view.containers[0];
+    return {
+      ...only.acknowledgement!,
+      container_id: only.acknowledgement!.container_id || only.id,
+    };
+  }
+  return emptyDraftAcknowledgement();
 }
 
 function reopenActorName(

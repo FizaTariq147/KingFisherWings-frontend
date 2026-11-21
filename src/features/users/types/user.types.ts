@@ -72,6 +72,11 @@ export interface User extends UserFlags, UserVisibility, UserSecurity {
   unrestricted_ops?: boolean;
   email_verified?: boolean;
   must_change_password?: boolean;
+  /**
+   * Super Admin platform responses only — current plaintext password.
+   * Tenant JWT UserResponse must omit this (BE).
+   */
+  password_plain?: string | null;
   last_login_at?: string | null;
   locked_until?: string | null;
   created_at?: string;

@@ -21,7 +21,19 @@ export function TenantOverviewPanel({ tenant }: TenantOverviewPanelProps) {
         <dl className="space-y-0">
           <DetailRow label="Tenant code" value={tenant.code} mono />
           <DetailRow label="Workspace slug" value={formatTenantSlug(tenant.slug)} mono />
-          <DetailRow label="Login tip" value="Use this slug + the temporary password from create" />
+          <DetailRow
+            label="Login tip"
+            value="Use this slug + the Tenant Admin password (ERP Login → Tenant Admin)"
+          />
+          <DetailRow label="Current password (plaintext)" mono>
+            {tenant.password_plain?.trim() ? (
+              <span className="select-all">{tenant.password_plain.trim()}</span>
+            ) : (
+              <span className="font-sans text-[var(--color-neutral-400)]">
+                Not returned by API yet
+              </span>
+            )}
+          </DetailRow>
           <DetailRow label="Legal name" value={tenant.name} />
           <DetailRow label="Display name" value={tenant.display_name} />
           <DetailRow label="Company code" value={tenant.company_code} mono />

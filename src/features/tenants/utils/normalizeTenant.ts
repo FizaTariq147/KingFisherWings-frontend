@@ -210,6 +210,11 @@ export function normalizeTenant(raw: Record<string, unknown>): Tenant {
       return modules.length ? modules : undefined;
     })(),
     quote_requests_bridge: pickQuoteRequestsBridge(raw),
+    password_plain: (() => {
+      const v = raw.password_plain ?? raw.passwordPlain;
+      if (typeof v === 'string' && v.trim()) return v.trim();
+      return null;
+    })(),
   };
 }
 

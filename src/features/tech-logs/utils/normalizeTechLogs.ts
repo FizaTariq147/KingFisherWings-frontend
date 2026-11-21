@@ -137,6 +137,9 @@ export function normalizeTechActivityRow(raw: unknown): TechActivityRow | null {
     message:
       pickString(rec.message, rec.error_message, rec.errorMessage, rec.summary) ||
       undefined,
+    action:
+      pickString(rec.action, rec.event, rec.activity_action, rec.activityAction) ||
+      undefined,
     principal: (pickString(rec.principal, rec.actor_type, rec.actorType) ||
       undefined) as TechLogPrincipal | undefined,
     user_id: pickString(rec.user_id, rec.userId, asRecord(rec.user)?.id) || undefined,
@@ -146,6 +149,10 @@ export function normalizeTechActivityRow(raw: unknown): TechActivityRow | null {
       pickString(rec.tenant_id, rec.tenantId, asRecord(rec.tenant)?.id) || undefined,
     tenant_name: pickTenantName(rec),
     duration_ms: num(rec.duration_ms ?? rec.durationMs ?? rec.latency_ms),
+    metadata: (() => {
+      const meta = asRecord(rec.metadata) ?? asRecord(rec.meta);
+      return meta ?? undefined;
+    })(),
     raw: rec,
   };
 }

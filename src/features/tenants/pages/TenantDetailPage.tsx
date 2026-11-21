@@ -185,7 +185,7 @@ export default function TenantDetailPage() {
                 Tenant Admin login credentials
               </h3>
               <p className="text-xs text-[var(--color-neutral-500)] mt-1">
-                Tenant Admin uses <strong className="font-semibold text-[var(--color-neutral-700)]">slug + password only</strong> (no email) on ERP Login → Tenant Admin. Save the password now — it is not shown again.
+                Tenant Admin uses <strong className="font-semibold text-[var(--color-neutral-700)]">slug + password only</strong> (no email) on ERP Login → Tenant Admin. Current plaintext is also kept on this tenant detail for Super Admin (product request).
               </p>
             </div>
             <Button

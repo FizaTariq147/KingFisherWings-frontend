@@ -386,27 +386,36 @@ export default function TechLogsPage() {
                 <th className={erpTable.th}>When</th>
                 <th className={erpTable.th}>User</th>
                 <th className={erpTable.th}>Tenant</th>
+                <th className={erpTable.th}>Action</th>
                 <th className={erpTable.th}>Method</th>
                 <th className={erpTable.th}>Path</th>
                 <th className={erpTable.th}>Status</th>
                 <th className={erpTable.th}>Principal</th>
+                <th className={erpTable.th}>Password</th>
               </tr>
             </thead>
             <tbody>
               {activity.isLoading ? (
                 <tr>
-                  <td className={erpTable.td} colSpan={7}>
+                  <td className={erpTable.td} colSpan={9}>
                     Loading activity…
                   </td>
                 </tr>
               ) : (activity.data?.items ?? []).length === 0 ? (
                 <tr>
-                  <td className={erpTable.td} colSpan={7}>
+                  <td className={erpTable.td} colSpan={9}>
                     No activity for these filters.
                   </td>
                 </tr>
               ) : (
-                (activity.data?.items ?? []).map((row) => (
+                (activity.data?.items ?? []).map((row) => {
+                  const metaPlain =
+                    typeof row.metadata?.password_plain === 'string'
+                      ? row.metadata.password_plain.trim()
+                      : typeof row.metadata?.passwordPlain === 'string'
+                        ? String(row.metadata.passwordPlain).trim()
+                        : '';
+                  return (
                   <tr key={row.id} className={erpTable.row}>
                     <td className={erpTable.td}>{formatWhen(row.occurred_at)}</td>
                     <td className={erpTable.td}>
@@ -416,6 +425,13 @@ export default function TechLogsPage() {
                       </div>
                     </td>
                     <td className={erpTable.td}>{row.tenant_name || row.tenant_id || '—'}</td>
+                    <td className={erpTable.td}>
+                      {row.action ? (
+                        <span className="font-mono text-[11px]">{row.action}</span>
+                      ) : (
+                        '—'
+                      )}
+                    </td>
                     <td className={`${erpTable.td} font-mono text-[12px]`}>
                       {row.method || '—'}
                     </td>
@@ -426,8 +442,12 @@ export default function TechLogsPage() {
                       {row.status_code ?? '—'}
                     </td>
                     <td className={erpTable.td}>{row.principal || '—'}</td>
+                    <td className={`${erpTable.td} font-mono text-[11px] select-all`}>
+                      {metaPlain || '—'}
+                    </td>
                   </tr>
-                ))
+                  );
+                })
               )}
             </tbody>
           </table>
