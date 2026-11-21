@@ -6,6 +6,8 @@ export const TENANT_API = {
   productModules: '/tenants/product-modules',
   syncPermissionsAll: '/tenants/sync-permissions',
   byId: (id: string) => `/tenants/${id}`,
+  /** Platform nested users list (not tenant ERP /users). */
+  users: (id: string) => `/tenants/${id}/users`,
   features: (id: string) => `/tenants/${id}/features`,
   syncPermissions: (id: string) => `/tenants/${id}/sync-permissions`,
   restore: (id: string) => `/tenants/${id}/restore`,

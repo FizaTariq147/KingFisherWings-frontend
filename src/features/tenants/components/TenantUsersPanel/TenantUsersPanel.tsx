@@ -95,7 +95,11 @@ export function TenantUsersPanel({ tenant }: TenantUsersPanelProps) {
 
       {!query.isLoading && !query.isError && (query.data?.length ?? 0) === 0 ? (
         <p className="text-sm text-[var(--color-neutral-500)]">
-          No users returned for this tenant yet.
+          No users on this tenant from{' '}
+          <code className="text-[11px]">GET /tenants/{'{id}'}/users</code> or the tenant
+          detail payload. Platform Super Admin cannot call tenant ERP{' '}
+          <code className="text-[11px]">/users</code> — backend must return users under{' '}
+          <code className="text-[11px]">/tenants</code>.
         </p>
       ) : null}
 
