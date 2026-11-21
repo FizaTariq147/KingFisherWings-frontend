@@ -280,27 +280,8 @@ export default function TenantDetailPage() {
         backLabel="Back to tenants"
         actions={actions}
         actionsDisabled={pendingAction}
-        sidebar={
-          <Card>
-            <CardHeader className="mb-0 pb-3">
-              <CardTitle>Quick summary</CardTitle>
-            </CardHeader>
-            <dl className="space-y-3 text-sm">
-              <SummaryItem label="Status">
-                <TenantStatusBadge tenant={tenant} />
-              </SummaryItem>
-              <SummaryItem label="Company" value={tenant.company_name || '—'} />
-              <SummaryItem label="Plan" value={String(tenant.subscription_plan)} />
-              <SummaryItem
-                label="Users"
-                value={`${typeof tenant.total_users === 'number' ? tenant.total_users : '—'} / ${tenant.max_users}`}
-              />
-              <SummaryItem label="Branches" value={String(tenant.max_branches)} />
-              <SummaryItem label="Storage" value={formatStorageUsage(tenant)} />
-              <SummaryItem label="Country" value={tenant.country_code} />
-            </dl>
-          </Card>
-        }
+        sidebar={<TenantQuickSummaryCard tenant={tenant} />}
+        hideSidebarOnTabs={['users']}
         tabs={[
           {
             key: 'overview',
@@ -315,7 +296,10 @@ export default function TenantDetailPage() {
                 Restore this tenant to view its users.
               </p>
             ) : (
-              <TenantUsersPanel tenant={tenant} />
+              <div className="space-y-4">
+                <TenantUsersPanel tenant={tenant} />
+                <TenantQuickSummaryCard tenant={tenant} />
+              </div>
             ),
           },
           {
@@ -353,6 +337,30 @@ export default function TenantDetailPage() {
         />
       )}
     </>
+  );
+}
+
+function TenantQuickSummaryCard({ tenant }: { tenant: Tenant }) {
+  return (
+    <Card>
+      <CardHeader className="mb-0 pb-3">
+        <CardTitle>Quick summary</CardTitle>
+      </CardHeader>
+      <dl className="space-y-3 text-sm">
+        <SummaryItem label="Status">
+          <TenantStatusBadge tenant={tenant} />
+        </SummaryItem>
+        <SummaryItem label="Company" value={tenant.company_name || '—'} />
+        <SummaryItem label="Plan" value={String(tenant.subscription_plan)} />
+        <SummaryItem
+          label="Users"
+          value={`${typeof tenant.total_users === 'number' ? tenant.total_users : '—'} / ${tenant.max_users}`}
+        />
+        <SummaryItem label="Branches" value={String(tenant.max_branches)} />
+        <SummaryItem label="Storage" value={formatStorageUsage(tenant)} />
+        <SummaryItem label="Country" value={tenant.country_code} />
+      </dl>
+    </Card>
   );
 }
 
