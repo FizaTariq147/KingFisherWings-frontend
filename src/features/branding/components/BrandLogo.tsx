@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { isApiOriginUrl } from '@/lib/safeHttpUrl';
+import { useAuthStore } from '@/store/authStore';
 import {
   isStoredFileUrl,
   toDurableFilesApiPath,
@@ -39,8 +40,9 @@ function needsAuthFetch(url: string): boolean {
 
 /**
  * Brand mark with dynamic URL + hard fallback to the bundled King Fisher system logo.
- * Authenticated chrome prefers org/files byte fetch so sidebar matches PDFs.
- * Login / Super Admin use `systemOnly` (or no custom URL) to avoid /organization/logo 401s.
+ *
+ * - Login / Super Admin (`systemOnly`): always system mark — never call /organization/logo.
+ * - Authenticated staff: org logo_url + GET /organization/logo bytes (same source as invoices).
  */
 export function BrandLogo({
   logoUrl,
@@ -51,6 +53,7 @@ export function BrandLogo({
   className,
   systemOnly = false,
 }: Props) {
+  const accessToken = useAuthStore((s) => s.accessToken);
   const resolved = systemOnly
     ? DEFAULT_BRAND_LOGO_URL
     : resolveBrandLogoUrl({
@@ -73,16 +76,17 @@ export function BrandLogo({
 
       const preferred =
         resolved && resolved !== DEFAULT_BRAND_LOGO_URL ? resolved : null;
+      const hasStaffSession = Boolean(accessToken);
 
-      // No tenant/org URL → show bundled system mark. Do not probe /organization/logo
-      // (401 on login / Super Admin / unauthenticated pages).
-      if (!preferred) {
+      // Unauthenticated pages with no tenant logo: system mark only.
+      // Do not probe /organization/logo (401 without staff JWT).
+      if (!preferred && !hasStaffSession) {
         setSrc(DEFAULT_BRAND_LOGO_URL);
         return;
       }
 
-      // Network-first (profile → /files → /organization/logo) so authenticated
-      // sessions stay in sync. Do not rely on this browser’s localStorage alone.
+      // Staff session: network-first (profile URL → /files → /organization/logo)
+      // so Tenant Admin uploads appear in sidebar for every staff user/device.
       try {
         const bytes = await fetchOrganizationLogoBytes(preferred);
         if (cancelled) return;
@@ -100,7 +104,7 @@ export function BrandLogo({
       if (cancelled) return;
 
       // Truly public CDN (not our private object store) — <img> is fine.
-      if (!needsAuthFetch(preferred)) {
+      if (preferred && !needsAuthFetch(preferred)) {
         setSrc(preferred);
         return;
       }
@@ -113,7 +117,7 @@ export function BrandLogo({
       cancelled = true;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [resolved, systemOnly]);
+  }, [resolved, systemOnly, accessToken]);
 
   return (
     <img
