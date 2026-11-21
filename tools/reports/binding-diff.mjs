@@ -212,7 +212,7 @@ for (const code of Object.keys(after)) {
 const lines = [
   '# Invoice v2 live-path binding diff',
   '',
-  `Before: \`reports/invoice-v2\` @ \`${beforeSha}\`. After: current \`reports/format1-polish\` tree.`,
+  `Before: \`origin/reports/invoice-v2\` @ \`${beforeSha}\`. After: current \`reports/integration\` tree.`,
   `Codes: ${Object.keys(after).length}. Records per code: ${real.length} real + ${syntheticRecords().length} synthetic.`,
   `Changed fields: ${changes.length}. Flagged label swaps: ${flagged.length}.`,
   '',
