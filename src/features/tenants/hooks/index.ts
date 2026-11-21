@@ -18,3 +18,5 @@ export {
 
 export { useTenantConfirmState } from './useTenantConfirmState';
 export type { TenantConfirmState } from './useTenantConfirmState';
+
+export { useTenantUsers } from './useTenantUsers';
