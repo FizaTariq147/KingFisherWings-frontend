@@ -64,6 +64,8 @@ interface DetailPageTemplateProps {
   toolbar?: ReactNode;
   toolbarLabel?: string;
   sidebar?: ReactNode;
+  /** Hide the side summary when one of these tab keys is active. */
+  hideSidebarOnTabs?: string[];
   /**
    * Optional back handler. Prefer omitting — chrome Back uses history /
    * `state.from`, then `backTo` as fallback (so Dashboard → Jobs → Back works).
@@ -136,6 +138,7 @@ export function DetailPageTemplate({
   toolbar,
   toolbarLabel = '',
   sidebar,
+  hideSidebarOnTabs,
   onBack,
   backTo,
   backLabel = 'Back',
@@ -285,12 +288,26 @@ export function DetailPageTemplate({
             </button>
           ))}
         </div>
-        <div className={sidebar ? 'grid grid-cols-1 gap-4 p-3 lg:grid-cols-12' : 'p-3'}>
-          <div className={sidebar ? 'lg:col-span-8' : ''}>
-            {tabs.find((t) => t.key === activeTab)?.content}
-          </div>
-          {sidebar ? <div className="lg:col-span-4">{sidebar}</div> : null}
-        </div>
+        {(() => {
+          const showSidebar =
+            Boolean(sidebar) &&
+            !(
+              activeTab &&
+              hideSidebarOnTabs?.includes(activeTab)
+            );
+          return (
+            <div
+              className={
+                showSidebar ? 'grid grid-cols-1 gap-4 p-3 lg:grid-cols-12' : 'p-3'
+              }
+            >
+              <div className={showSidebar ? 'lg:col-span-8' : ''}>
+                {tabs.find((t) => t.key === activeTab)?.content}
+              </div>
+              {showSidebar ? <div className="lg:col-span-4">{sidebar}</div> : null}
+            </div>
+          );
+        })()}
       </section>
     </div>
   );

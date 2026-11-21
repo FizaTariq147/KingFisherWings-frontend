@@ -57,17 +57,17 @@ export function deriveTenantStatisticsFromList(
   apiStats?: TenantStatistics | null,
 ): TenantStatistics {
   const base = normalizeTenantStatistics(apiStats);
+  // Same roster as Tenants → All (soft-deleted omitted from GET /tenants).
   const live = tenants.filter((t) => !t.deleted_at);
 
   const trial = live.filter(isTrialTenant).length;
   const active = live.filter((t) => t.is_active === true).length;
   const inactive = live.filter((t) => t.is_active !== true).length;
 
-  // Prefer list-derived active/inactive/trial so a stale API inactive count
-  // (or missing is_active flags) cannot inflate the Inactive card.
+  // Total tenants must match All-tab list count — never inflate from stale API totals.
   if (live.length > 0) {
     return {
-      total: Math.max(base.total, live.length),
+      total: live.length,
       active,
       inactive,
       trial,
@@ -76,10 +76,10 @@ export function deriveTenantStatisticsFromList(
   }
 
   return {
-    total: base.total,
-    active: base.active,
-    inactive: base.inactive,
-    trial: base.trial,
+    total: 0,
+    active: 0,
+    inactive: 0,
+    trial: 0,
     mrr: base.mrr,
   };
 }
