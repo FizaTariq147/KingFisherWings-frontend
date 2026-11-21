@@ -1,11 +1,12 @@
-import { invoiceV2SpecCodes } from './invoiceV2Codes';
+import { INVOICE_V2_FALLBACK_NOTICE, isReportsV2Code } from './reportsV2Gate';
 import { reportsCatalogueGate, type ReportsCatalogueGate } from './reportsEngine';
 import { reportConformanceStatus, type ReportConformanceStatus } from '../utils/reportConformanceStatus';
 
 export type InvoicePdfEntry = 'generate' | 'reports' | 'formats';
 export type InvoicePdfDocument = 'quotation' | 'invoice' | 'credit_note' | 'debit_note';
 
-export const INVOICE_V2_FALLBACK_NOTICE = 'Showing the classic invoice. The selected format could not be built.';
+/** 'Showing the classic invoice. The selected format could not be built.' Defined once in reportsV2Gate. */
+export { INVOICE_V2_FALLBACK_NOTICE };
 export const FORMAT_NOT_AVAILABLE_YET = 'format not available yet';
 
 /**
@@ -19,7 +20,7 @@ export function invoiceV2HardBlocked(input: {
 }): boolean {
   const gate = input.gate ?? reportsCatalogueGate();
   if (gate !== 'hard') return false;
-  if (!invoiceV2SpecCodes.has(input.code)) return false;
+  if (!isReportsV2Code(input.code)) return false;
   const status = input.status ?? reportConformanceStatus(input.code);
   return status !== 'accepted';
 }
@@ -28,7 +29,7 @@ export function invoiceV2HardBlocked(input: {
  * v2 runs for an invoice only from Reports or Formats, or from Generate PDF
  * when the company style is an explicit non-classic code. Credit notes and
  * debit notes stay on the classic generator. Quotation stays classic in this
- * pass.
+ * pass. A code that is neither classic nor wired never runs v2.
  */
 export function shouldUseInvoiceV2(input: {
   engine: 'legacy' | 'v2';
@@ -42,9 +43,12 @@ export function shouldUseInvoiceV2(input: {
   if (input.document !== 'invoice') return false;
   if (input.engine !== 'v2') return false;
   const code = input.code || input.style;
+  const classicOrEmpty = code.trim() === '' || code === 'classic';
   if (invoiceV2HardBlocked({ gate: input.gate, code, status: input.status })) return false;
-  if (input.entry === 'reports' || input.entry === 'formats') return true;
-  return input.style.trim() !== '' && input.style !== 'classic';
+  if (input.entry === 'reports' || input.entry === 'formats') {
+    return classicOrEmpty || isReportsV2Code(code);
+  }
+  return input.style.trim() !== '' && input.style !== 'classic' && isReportsV2Code(input.style);
 }
 
 /** Generate PDF. A non-classic company style is attempted, then classic. */
@@ -89,19 +93,33 @@ export class InvoiceV2Unavailable extends Error {
   }
 }
 
+/** Dev routes, tried in order. /__reports/v2 draws any wired spec; the invoice route is the older one. */
+const V2_ROUTES = ['/__reports/v2', '/__reports/invoice-v2'] as const;
+
 export async function renderInvoiceV2InBrowser(body: {
   code: string;
   invoice?: unknown;
   job?: unknown;
   party?: unknown;
   organization?: unknown;
+  quotation?: unknown;
+  voucher?: unknown;
+  bank?: unknown;
+  session?: unknown;
   logoBase64?: string;
 }): Promise<Blob> {
-  const response = await fetch('/__reports/invoice-v2', {
-    method: 'POST',
-    headers: { 'content-type': 'application/json' },
-    body: JSON.stringify(body),
-  });
-  if (!response.ok) throw new InvoiceV2Unavailable();
-  return response.blob();
+  const payload = JSON.stringify(body);
+  for (const route of V2_ROUTES) {
+    try {
+      const response = await fetch(route, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: payload,
+      });
+      if (response.ok) return await response.blob();
+    } catch {
+      /* try the next route */
+    }
+  }
+  throw new InvoiceV2Unavailable();
 }

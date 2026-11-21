@@ -8,6 +8,7 @@ import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNa
 import { invoiceV2ListRank, invoiceV2ApplicabilityHint, type InvoiceFitInput } from '../../engine/invoiceV2Applicability';
 import { FORMAT_NOT_AVAILABLE_YET, invoiceV2HardBlocked } from '../../engine/invoiceV2Gate';
 import { reportsCatalogueGate } from '../../engine/reportsEngine';
+import { reportsV2BadgeText, reportsV2BrowseHint } from '../../engine/reportsV2Gate';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { FormatStatusBadge } from './FormatStatusBadge';
@@ -17,6 +18,7 @@ import {
 } from '../../utils/reportConformanceStatus';
 
 function compareByName(a: ReportTemplate, b: ReportTemplate, currency?: InvoiceFitInput): number {
+  // Wired codes list first (rank 0 or 1), browse-only codes after (rank 2).
   const rank = invoiceV2ListRank(a.code, currency) - invoiceV2ListRank(b.code, currency);
   if (rank !== 0) return rank;
   const na = parseInvoiceFormatNumber(a.code);
@@ -218,6 +220,8 @@ function FormatLink({
     status: reportConformanceStatus(template.code),
   });
   const status = resolveCatalogFormatStatus(template.code);
+  const conformance = reportConformanceStatus(template.code);
+  const browseHint = reportsV2BrowseHint(template.code);
   return (
     <button
       type="button"
@@ -241,8 +245,12 @@ function FormatLink({
       </span>
       <span className="mt-0.5 line-clamp-2 leading-snug">{template.name}</span>
       <span className="mt-0.5 block text-[9px] font-semibold uppercase tracking-wide text-amber-800">
-        {reportConformanceLabel(reportConformanceStatus(template.code))}
-        {reportConformanceStatus(template.code) === 'accepted' ? '' : ' · approximate, not final'}
+        {reportConformanceLabel(conformance)}
+        {browseHint
+          ? ` · ${browseHint}`
+          : conformance === 'accepted'
+            ? ''
+            : ` · ${reportsV2BadgeText(conformance)}`}
       </span>
       {hardBlocked ? (
         <span className="mt-0.5 block text-[9px] font-semibold text-amber-800">{FORMAT_NOT_AVAILABLE_YET}</span>

@@ -1,0 +1,748 @@
+{
+  "record": "reports/output/invoice-v2/batch-live.json (INV/26/00102)",
+  "samples": [
+    {
+      "code": "ARRIVAL_CONFIRMATION",
+      "registryFamily": "sea_docs",
+      "module": "arrival_notice",
+      "file": "reports/breadth/samples/sea_docs/ARRIVAL_CONFIRMATION.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "ARRIVAL_CONFIRMATION_RPM_REF_152",
+      "registryFamily": "unregistered",
+      "module": "arrival_notice",
+      "file": "reports/breadth/samples/unregistered/ARRIVAL_CONFIRMATION_RPM_REF_152.pdf",
+      "pages": 1,
+      "warnings": 1
+    },
+    {
+      "code": "CARGO_MANIFEST_REPORT_FORMAT",
+      "registryFamily": "sea_docs",
+      "module": "manifest",
+      "file": "reports/breadth/samples/sea_docs/CARGO_MANIFEST_REPORT_FORMAT.pdf",
+      "pages": 2,
+      "warnings": 0
+    },
+    {
+      "code": "DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT",
+      "registryFamily": "sea_docs",
+      "module": "delivery_order",
+      "file": "reports/breadth/samples/sea_docs/DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT.pdf",
+      "pages": 1,
+      "warnings": 1
+    },
+    {
+      "code": "DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT",
+      "registryFamily": "air_docs",
+      "module": "delivery_order",
+      "file": "reports/breadth/samples/air_docs/DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT.pdf",
+      "pages": 2,
+      "warnings": 0
+    },
+    {
+      "code": "DELIVERY_ORDER_REPORT_FORMAT_14",
+      "registryFamily": "air_docs",
+      "module": "delivery_order",
+      "file": "reports/breadth/samples/air_docs/DELIVERY_ORDER_REPORT_FORMAT_14.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "DELIVERY_ORDER_REPORT_FORMAT_15",
+      "registryFamily": "air_docs",
+      "module": "delivery_order",
+      "file": "reports/breadth/samples/air_docs/DELIVERY_ORDER_REPORT_FORMAT_15.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT.pdf",
+      "pages": 1,
+      "warnings": 6
+    },
+    {
+      "code": "FG_CARGO_ARRIVAL_NOTICE_SEA_FORMAT3_RPM_REF_1322",
+      "registryFamily": "unregistered",
+      "module": "arrival_notice",
+      "file": "reports/breadth/samples/unregistered/FG_CARGO_ARRIVAL_NOTICE_SEA_FORMAT3_RPM_REF_1322.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "FG_DELIVERY_ORDER_AIR_FORMAT_1",
+      "registryFamily": "sea_docs",
+      "module": "delivery_order",
+      "file": "reports/breadth/samples/sea_docs/FG_DELIVERY_ORDER_AIR_FORMAT_1.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "FG_DELIVERY_ORDER_AIR_USA_RPM_REF_650",
+      "registryFamily": "unregistered",
+      "module": "delivery_order",
+      "file": "reports/breadth/samples/unregistered/FG_DELIVERY_ORDER_AIR_USA_RPM_REF_650.pdf",
+      "pages": 2,
+      "warnings": 0
+    },
+    {
+      "code": "FG_DELIVERY_ORDER_FORMAT3_RPM_REF_629",
+      "registryFamily": "unregistered",
+      "module": "delivery_order",
+      "file": "reports/breadth/samples/unregistered/FG_DELIVERY_ORDER_FORMAT3_RPM_REF_629.pdf",
+      "pages": 2,
+      "warnings": 0
+    },
+    {
+      "code": "FG_DELIVERY_ORDER_SEA_FORMAT7_RPM_REF_755",
+      "registryFamily": "unregistered",
+      "module": "delivery_order",
+      "file": "reports/breadth/samples/unregistered/FG_DELIVERY_ORDER_SEA_FORMAT7_RPM_REF_755.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "FG_HBL_FORMAT_14",
+      "registryFamily": "unregistered",
+      "module": "shipment",
+      "file": "reports/breadth/samples/unregistered/FG_HBL_FORMAT_14.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "FG_INVOICE_FORMAT1_RPM_REF_443",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT1_RPM_REF_443.pdf",
+      "pages": 1,
+      "warnings": 5
+    },
+    {
+      "code": "FG_INVOICE_FORMAT14_RPM_REF_1325",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT14_RPM_REF_1325.pdf",
+      "pages": 1,
+      "warnings": 18
+    },
+    {
+      "code": "FG_INVOICE_FORMAT15_RPM_REF_1384",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT15_RPM_REF_1384.pdf",
+      "pages": 1,
+      "warnings": 5
+    },
+    {
+      "code": "FG_INVOICE_FORMAT15_STANDARD_RPM_REF_1394",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT15_STANDARD_RPM_REF_1394.pdf",
+      "pages": 1,
+      "warnings": 5
+    },
+    {
+      "code": "FG_INVOICE_FORMAT2_FCY_RPM_REF_490",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT2_FCY_RPM_REF_490.pdf",
+      "pages": 1,
+      "warnings": 5
+    },
+    {
+      "code": "FG_INVOICE_FORMAT3_FCY_RPM_REF_1012",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT3_FCY_RPM_REF_1012.pdf",
+      "pages": 1,
+      "warnings": 7
+    },
+    {
+      "code": "FG_INVOICE_FORMAT3_RPM_REF_478",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT3_RPM_REF_478.pdf",
+      "pages": 1,
+      "warnings": 5
+    },
+    {
+      "code": "FG_INVOICE_FORMAT4_FCY_RPM_REF_1433",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT4_FCY_RPM_REF_1433.pdf",
+      "pages": 2,
+      "warnings": 5
+    },
+    {
+      "code": "FG_INVOICE_FORMAT5_RPM_REF_672",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT5_RPM_REF_672.pdf",
+      "pages": 1,
+      "warnings": 21
+    },
+    {
+      "code": "FG_INVOICE_FORMAT7_INR_RPM_REF_897",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT7_INR_RPM_REF_897.pdf",
+      "pages": 1,
+      "warnings": 6
+    },
+    {
+      "code": "FG_INVOICE_FORMAT7_RPM_REF_894",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT7_RPM_REF_894.pdf",
+      "pages": 1,
+      "warnings": 6
+    },
+    {
+      "code": "FG_INVOICE_FORMAT8_RPM_REF_1011",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT8_RPM_REF_1011.pdf",
+      "pages": 1,
+      "warnings": 5
+    },
+    {
+      "code": "FG_INVOICE_FORMAT9_RPM_REF_1055",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_INVOICE_FORMAT9_RPM_REF_1055.pdf",
+      "pages": 1,
+      "warnings": 6
+    },
+    {
+      "code": "FG_OVERSEAS_DEBIT_NOTE_FORMAT2_RPM_REF_1343",
+      "registryFamily": "unregistered",
+      "module": "credit_debit",
+      "file": "reports/breadth/samples/unregistered/FG_OVERSEAS_DEBIT_NOTE_FORMAT2_RPM_REF_1343.pdf",
+      "pages": 1,
+      "warnings": 21
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939.pdf",
+      "pages": 1,
+      "warnings": 9
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941.pdf",
+      "pages": 1,
+      "warnings": 9
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_FCY_RPM_REF_1029",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_INVOICE_FCY_RPM_REF_1029.pdf",
+      "pages": 1,
+      "warnings": 27
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778.pdf",
+      "pages": 1,
+      "warnings": 21
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_FORMAT4_RPM_REF_1419",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_INVOICE_FORMAT4_RPM_REF_1419.pdf",
+      "pages": 1,
+      "warnings": 24
+    },
+    {
+      "code": "FG_STANDARD_INVOICE_RPM_REF_217",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_INVOICE_RPM_REF_217.pdf",
+      "pages": 1,
+      "warnings": 21
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT10_RPM_REF_801",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT10_RPM_REF_801.pdf",
+      "pages": 1,
+      "warnings": 22
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT12_LETTERHEAD_RPM_REF_869",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT12_LETTERHEAD_RPM_REF_869.pdf",
+      "pages": 1,
+      "warnings": 20
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT13_RPM_REF_882",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT13_RPM_REF_882.pdf",
+      "pages": 1,
+      "warnings": 18
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT14_RPM_REF_921",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT14_RPM_REF_921.pdf",
+      "pages": 1,
+      "warnings": 19
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT16_RPM_REF_1170",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT16_RPM_REF_1170.pdf",
+      "pages": 1,
+      "warnings": 12
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT19_RPM_REF_1344",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT19_RPM_REF_1344.pdf",
+      "pages": 1,
+      "warnings": 11
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT20_RPM_REF_1345",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT20_RPM_REF_1345.pdf",
+      "pages": 1,
+      "warnings": 14
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT21_RPM_REF_1407",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT21_RPM_REF_1407.pdf",
+      "pages": 1,
+      "warnings": 22
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT22_RPM_REF_1425",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT22_RPM_REF_1425.pdf",
+      "pages": 1,
+      "warnings": 10
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT3_RPM_REF_687",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT3_RPM_REF_687.pdf",
+      "pages": 1,
+      "warnings": 11
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT5_RPM_REF_699",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT5_RPM_REF_699.pdf",
+      "pages": 1,
+      "warnings": 20
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT6_RPM_REF_751",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT6_RPM_REF_751.pdf",
+      "pages": 1,
+      "warnings": 22
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_FORMAT9_RPM_REF_799",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_FORMAT9_RPM_REF_799.pdf",
+      "pages": 1,
+      "warnings": 20
+    },
+    {
+      "code": "FG_STANDARD_TAX_INVOICE_RPM_REF_385",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_STANDARD_TAX_INVOICE_RPM_REF_385.pdf",
+      "pages": 1,
+      "warnings": 23
+    },
+    {
+      "code": "FG_TAX_INVOICE_INDIA_FORMAT5_RPM_REF_1009",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_TAX_INVOICE_INDIA_FORMAT5_RPM_REF_1009.pdf",
+      "pages": 1,
+      "warnings": 3
+    },
+    {
+      "code": "FG_TAX_INVOICE_MALAYSIA_RPM_REF_736",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_TAX_INVOICE_MALAYSIA_RPM_REF_736.pdf",
+      "pages": 1,
+      "warnings": 6
+    },
+    {
+      "code": "FG_TAX_INVOICE_SINGAPORE_RPM_REF_737",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/FG_TAX_INVOICE_SINGAPORE_RPM_REF_737.pdf",
+      "pages": 1,
+      "warnings": 6
+    },
+    {
+      "code": "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT",
+      "registryFamily": "sea_docs",
+      "module": "manifest",
+      "file": "reports/breadth/samples/sea_docs/FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT.pdf",
+      "pages": 2,
+      "warnings": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_114",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/HBL_DRAFT_REPORT_FORMAT_114.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_135",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/HBL_DRAFT_REPORT_FORMAT_135.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_145",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/HBL_DRAFT_REPORT_FORMAT_145.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_45",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/HBL_DRAFT_REPORT_FORMAT_45.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_56",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/HBL_DRAFT_REPORT_FORMAT_56.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "HBL_DRAFT_REPORT_FORMAT_86",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/HBL_DRAFT_REPORT_FORMAT_86.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA.pdf",
+      "pages": 1,
+      "warnings": 26
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE.pdf",
+      "pages": 1,
+      "warnings": 19
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND.pdf",
+      "pages": 1,
+      "warnings": 23
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED.pdf",
+      "pages": 1,
+      "warnings": 18
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA.pdf",
+      "pages": 1,
+      "warnings": 8
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_14_INVOICE.pdf",
+      "pages": 1,
+      "warnings": 5
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_15_INVOICE_FCY.pdf",
+      "pages": 1,
+      "warnings": 7
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED.pdf",
+      "pages": 1,
+      "warnings": 17
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_17_INVOICE_JASPER.pdf",
+      "pages": 1,
+      "warnings": 5
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE.pdf",
+      "pages": 1,
+      "warnings": 17
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
+      "registryFamily": "commercial",
+      "module": "credit_debit",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM.pdf",
+      "pages": 1,
+      "warnings": 7
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA.pdf",
+      "pages": 1,
+      "warnings": 3
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA.pdf",
+      "pages": 1,
+      "warnings": 31
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE.pdf",
+      "pages": 1,
+      "warnings": 39
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE.pdf",
+      "pages": 1,
+      "warnings": 31
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE.pdf",
+      "pages": 1,
+      "warnings": 17
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA.pdf",
+      "pages": 1,
+      "warnings": 30
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA.pdf",
+      "pages": 1,
+      "warnings": 11
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE.pdf",
+      "pages": 1,
+      "warnings": 16
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC.pdf",
+      "pages": 1,
+      "warnings": 21
+    },
+    {
+      "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA.pdf",
+      "pages": 1,
+      "warnings": 16
+    },
+    {
+      "code": "LAND_FREIGHT_TRANSPORTATION_INVOICEFORMAT1_RPM_REF_1485",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/LAND_FREIGHT_TRANSPORTATION_INVOICEFORMAT1_RPM_REF_1485.pdf",
+      "pages": 1,
+      "warnings": 17
+    },
+    {
+      "code": "PAYMENT_VOUCHER_REPORT_FORMAT_3",
+      "registryFamily": "finance",
+      "module": "voucher",
+      "file": "reports/breadth/samples/finance/PAYMENT_VOUCHER_REPORT_FORMAT_3.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT.pdf",
+      "pages": 1,
+      "warnings": 32
+    },
+    {
+      "code": "PROFORMA_INVOICE_FORMAT_1_RPM_REF_815",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/PROFORMA_INVOICE_FORMAT_1_RPM_REF_815.pdf",
+      "pages": 1,
+      "warnings": 48
+    },
+    {
+      "code": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES.pdf",
+      "pages": 1,
+      "warnings": 25
+    },
+    {
+      "code": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES.pdf",
+      "pages": 1,
+      "warnings": 7
+    },
+    {
+      "code": "PURCHASE_INVOICE_REPORT_FORMAT_1",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/PURCHASE_INVOICE_REPORT_FORMAT_1.pdf",
+      "pages": 1,
+      "warnings": 4
+    },
+    {
+      "code": "PURCHASE_INVOICE_REPORT_FORMAT_2",
+      "registryFamily": "commercial",
+      "module": "invoice",
+      "file": "reports/breadth/samples/commercial/PURCHASE_INVOICE_REPORT_FORMAT_2.pdf",
+      "pages": 1,
+      "warnings": 4
+    },
+    {
+      "code": "SAILING_CONFIRMATION_REPORT_FORMAT",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/SAILING_CONFIRMATION_REPORT_FORMAT.pdf",
+      "pages": 1,
+      "warnings": 0
+    },
+    {
+      "code": "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/STUFFING_REPORT_JASPER_REPORT_FORMAT.pdf",
+      "pages": 2,
+      "warnings": 5
+    },
+    {
+      "code": "TAX_INVOICE_INDIA_FORMAT1_RPM_REF_458",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/TAX_INVOICE_INDIA_FORMAT1_RPM_REF_458.pdf",
+      "pages": 1,
+      "warnings": 41
+    },
+    {
+      "code": "TAX_INVOICE_INDIA_FORMAT2_RPM_REF_449",
+      "registryFamily": "unregistered",
+      "module": "invoice",
+      "file": "reports/breadth/samples/unregistered/TAX_INVOICE_INDIA_FORMAT2_RPM_REF_449.pdf",
+      "pages": 1,
+      "warnings": 51
+    },
+    {
+      "code": "TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT",
+      "registryFamily": "sea_docs",
+      "module": "shipment",
+      "file": "reports/breadth/samples/sea_docs/TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT.pdf",
+      "pages": 1,
+      "warnings": 6
+    }
+  ],
+  "contactSheets": [
+    "reports/breadth/samples/air_docs/_contact-sheet.pdf",
+    "reports/breadth/samples/commercial/_contact-sheet.pdf",
+    "reports/breadth/samples/finance/_contact-sheet.pdf",
+    "reports/breadth/samples/sea_docs/_contact-sheet.pdf",
+    "reports/breadth/samples/unregistered/_contact-sheet.pdf"
+  ]
+}

@@ -62,3 +62,50 @@ total,invoice.total,invoice
 amount,invoice.amount,invoice
 company,company.name,invoice
 beneficiary,company.name,invoice
+shipment no,shipment.number,document
+shipment number,shipment.number,document
+reference,shipment.reference,document
+ref no,shipment.reference,document
+reference no,shipment.reference,document
+due date,invoice.dueDate,document
+remarks,invoice.remarks,document
+lpo,invoice.lpo,document
+quotation no,quotation.number,document
+quotation date,quotation.date,document
+voucher no,voucher.number,document
+voucher date,voucher.date,document
+incoterms,job.incoterms,document
+department,job.department,document
+phone,company.phone,document
+email,company.email,document
+address,company.address,document
+website,company.website,document
+web,company.website,document
+bank,bank.name,document
+account,bank.accountNo,document
+iban,bank.iban,document
+swift,bank.swift,document
+created by,session.createdBy,document
+printed,session.printedAt,document
+user,document.user,document
+airline,shipment.carrier,document
+shipping line,shipment.carrier,document
+pkgs,cargo.pieces,document
+packages,cargo.pieces,document
+seal no,cargo.sealNo,document
+container number,cargo.containerNo,document
+hawb hbl,shipment.houseDoc,document
+mawb mbl,shipment.masterDoc,document
+vsl voyage,shipment.vessel,document
+flight,shipment.voyage,document
+origin,shipment.pol,document
+destination,shipment.pod,document
+place of origin,shipment.pol,document
+delivery order no,job.number,document
+do no,job.number,document
+arrival notice no,job.number,document
+manifest no,job.number,document
+credit note no,invoice.number,document
+debit note no,invoice.number,document
+cn no,invoice.number,document
+dn no,invoice.number,document

@@ -1,80 +1,63 @@
 import { useEffect, useState } from 'react';
 import { PdfViewerModal } from '@/features/files/components/PdfViewerModal';
 import { usePdfViewer } from '@/features/files/hooks/usePdfViewer';
-import { invoiceService } from '@/features/invoices/services/invoice.service';
 import { generateInvoicePdf } from '@/features/invoices/utils/generateInvoicePdf';
 import { invoiceToPdfModel } from '@/features/invoices/utils/invoiceToPdfModel';
 import { resolveInvoicePdfCompany } from '@/features/invoices/utils/resolveInvoicePdfCompany';
-import type { OrganizationProfile } from '@/features/organization/types/organization.types';
-import { fetchOrganizationLogoBytes } from '@/features/organization/utils/embedOrganizationPdfLogo';
-import { jobService } from '@/features/jobs/services/job.service';
-import { organizationService } from '@/features/organization/services/organization.service';
-import { partyService } from '@/features/parties/services/party.service';
-import { isUuid } from '@/lib/isUuid';
 import {
   INVOICE_V2_FALLBACK_NOTICE,
-  renderInvoiceV2InBrowser,
 } from '../../engine/invoiceV2Gate';
-import { invoiceV2BadgeText } from '../../engine/invoiceV2Codes';
+import { reportsV2BadgeText, REPORTS_V2_FALLBACK_NOTICE } from '../../engine/reportsV2Gate';
 import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
+import {
+  hasReportsV2Record,
+  loadReportsV2Source,
+  renderReportsV2,
+  type ReportsV2Source,
+} from '../../utils/reportsV2Source';
 
 type Props = {
   code: string;
   invoiceId?: string;
+  jobId?: string;
+  partyId?: string;
 };
 
 /**
- * Opens the spec PDF for the invoice that was open when Formats or Reports was clicked.
+ * Opens the spec PDF for the record that was open when Formats or Reports was clicked.
+ * An invoice falls back to the classic invoice. Other documents show a notice only.
  */
-export function InvoiceV2Preview({ code, invoiceId }: Props) {
+export function InvoiceV2Preview({ code, invoiceId, jobId, partyId }: Props) {
   const viewer = usePdfViewer();
   const [notice, setNotice] = useState<string | null>(null);
-  const badge = invoiceV2BadgeText(reportConformanceStatus(code));
+  const badge = reportsV2BadgeText(reportConformanceStatus(code));
 
   useEffect(() => {
     let cancelled = false;
     setNotice(null);
-    if (!invoiceId || !isUuid(invoiceId)) {
-      setNotice('Open an invoice, then choose a format. There is no record to draw.');
+    const ids = { invoiceId, jobId, partyId };
+    if (!hasReportsV2Record(ids)) {
+      setNotice('Open a record, then choose a format. There is no record to draw.');
       return;
     }
     (async () => {
-      let invoice: Awaited<ReturnType<typeof invoiceService.getById>> | null = null;
-      let job: Awaited<ReturnType<typeof jobService.getById>> | null = null;
-      let party: Awaited<ReturnType<typeof partyService.getById>> | null = null;
-      let organization: OrganizationProfile | null = null;
+      let source: ReportsV2Source | null = null;
       try {
-        invoice = await invoiceService.getById(invoiceId);
-        const loaded = await Promise.all([
-          invoice.job_id && isUuid(invoice.job_id) ? jobService.getById(invoice.job_id).catch(() => null) : null,
-          invoice.party_id && isUuid(invoice.party_id) ? partyService.getById(invoice.party_id).catch(() => null) : null,
-          organizationService.getProfile().catch(() => null),
-        ]);
-        job = loaded[0];
-        party = loaded[1];
-        organization = loaded[2] as OrganizationProfile | null;
-        const profile = organization as { logo_url?: string; logoUrl?: string } | null;
-        const logoBytes = await fetchOrganizationLogoBytes(profile?.logo_url || profile?.logoUrl || null);
-        let logoBase64: string | undefined;
-        if (logoBytes) {
-          const view = new Uint8Array(logoBytes);
-          let binary = '';
-          for (let index = 0; index < view.length; index += 0x8000) {
-            binary += String.fromCharCode(...view.subarray(index, index + 0x8000));
-          }
-          logoBase64 = btoa(binary);
-        }
-        const blob = await renderInvoiceV2InBrowser({ code, invoice, job, party, organization, logoBase64 });
+        source = await loadReportsV2Source(ids);
+        const blob = await renderReportsV2(code, source);
         if (cancelled) return;
         viewer.showBlob(blob, { fileName: `${code}.pdf`, title: code });
       } catch {
-        if (cancelled || !invoice) {
-          if (!cancelled) setNotice(INVOICE_V2_FALLBACK_NOTICE);
+        if (cancelled) return;
+        if (!source?.invoice) {
+          setNotice(source ? REPORTS_V2_FALLBACK_NOTICE : INVOICE_V2_FALLBACK_NOTICE);
           return;
         }
         try {
-          const company = resolveInvoicePdfCompany({ profile: organization });
-          const classic = await generateInvoicePdf(invoiceToPdfModel(invoice, { party, job, company }));
+          const company = resolveInvoicePdfCompany({ profile: source.organization });
+          const classic = await generateInvoicePdf(
+            invoiceToPdfModel(source.invoice, { party: source.party, job: source.job, company }),
+          );
           if (cancelled) return;
           setNotice(INVOICE_V2_FALLBACK_NOTICE);
           viewer.showBlob(classic, { fileName: 'invoice.pdf', title: 'Classic invoice' });
@@ -86,9 +69,9 @@ export function InvoiceV2Preview({ code, invoiceId }: Props) {
     return () => {
       cancelled = true;
     };
-    // viewer.showBlob is stable enough for one open per code and invoice.
+    // viewer.showBlob is stable enough for one open per code and record.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [code, invoiceId]);
+  }, [code, invoiceId, jobId, partyId]);
 
   return (
     <div className="space-y-2">

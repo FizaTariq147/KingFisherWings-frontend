@@ -1,0 +1,738 @@
+[
+  {
+    "code": "ARRIVAL_CONFIRMATION",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.667,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "ARRIVAL_CONFIRMATION_RPM_REF_152",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 1,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "CARGO_MANIFEST_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "manifest",
+    "boundRatio": 0.536,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_14",
+    "registryFamily": "air_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.563,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_15",
+    "registryFamily": "air_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.571,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "FG_CARGO_ARRIVAL_NOTICE_SEA_FORMAT3_RPM_REF_1322",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.571,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_AIR_FORMAT_1",
+    "registryFamily": "sea_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.75,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_AIR_USA_RPM_REF_650",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 1,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_FORMAT3_RPM_REF_629",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 1,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_SEA_FORMAT7_RPM_REF_755",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.6,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "FG_HBL_FORMAT_14",
+    "registryFamily": "unregistered",
+    "module": "shipment",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT1_RPM_REF_443",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.545,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT14_RPM_REF_1325",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.552,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT15_RPM_REF_1384",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.55,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT15_STANDARD_RPM_REF_1394",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.524,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT2_FCY_RPM_REF_490",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.524,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT3_FCY_RPM_REF_1012",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.55,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT3_RPM_REF_478",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.567,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT4_FCY_RPM_REF_1433",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.524,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT5_RPM_REF_672",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.739,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT7_INR_RPM_REF_897",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.625,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT7_RPM_REF_894",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.611,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT8_RPM_REF_1011",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.563,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT9_RPM_REF_1055",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.63,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_OVERSEAS_DEBIT_NOTE_FORMAT2_RPM_REF_1343",
+    "registryFamily": "unregistered",
+    "module": "credit_debit",
+    "boundRatio": 0.611,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.571,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.571,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_FCY_RPM_REF_1029",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.565,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.7,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_FORMAT4_RPM_REF_1419",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.75,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_RPM_REF_217",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.81,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT10_RPM_REF_801",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.692,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT12_LETTERHEAD_RPM_REF_869",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.607,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT13_RPM_REF_882",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.577,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT14_RPM_REF_921",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.586,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT16_RPM_REF_1170",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.667,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT19_RPM_REF_1344",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.727,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT20_RPM_REF_1345",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.625,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT21_RPM_REF_1407",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.567,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT22_RPM_REF_1425",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.556,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT3_RPM_REF_687",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.739,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT5_RPM_REF_699",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.696,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT6_RPM_REF_751",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.813,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT9_RPM_REF_799",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_RPM_REF_385",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.696,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_FORMAT5_RPM_REF_1009",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_TAX_INVOICE_MALAYSIA_RPM_REF_736",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.538,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FG_TAX_INVOICE_SINGAPORE_RPM_REF_737",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.577,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "manifest",
+    "boundRatio": 0.536,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_114",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.556,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_135",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.8,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_145",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.538,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_45",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_56",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.6,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_86",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.6,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.457,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.69,
+    "forced": true,
+    "arithmetic": "adds up 15/15"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.6,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.615,
+    "forced": true,
+    "arithmetic": "adds up 15/15"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.4,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.559,
+    "forced": true,
+    "arithmetic": "mismatch 6/15: subtotal does not reach the total"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.591,
+    "forced": true,
+    "arithmetic": "adds up 15/15"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.647,
+    "forced": true,
+    "arithmetic": "mismatch 6/15: subtotal does not reach the total"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.714,
+    "forced": true,
+    "arithmetic": "mismatch 6/15: subtotal does not reach the total"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.138,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
+    "registryFamily": "commercial",
+    "module": "credit_debit",
+    "boundRatio": 0.526,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.227,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.491,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.452,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.469,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.618,
+    "forced": true,
+    "arithmetic": "mismatch 6/15: subtotal does not reach the total"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.488,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.357,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.483,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.778,
+    "forced": true,
+    "arithmetic": "adds up 15/15"
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.556,
+    "forced": true,
+    "arithmetic": "adds up 15/15"
+  },
+  {
+    "code": "LAND_FREIGHT_TRANSPORTATION_INVOICEFORMAT1_RPM_REF_1485",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.643,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_3",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.441,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "PROFORMA_INVOICE_FORMAT_1_RPM_REF_815",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.538,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.605,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.391,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "PURCHASE_INVOICE_REPORT_FORMAT_1",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.333,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "PURCHASE_INVOICE_REPORT_FORMAT_2",
+    "registryFamily": "commercial",
+    "module": "invoice",
+    "boundRatio": 0.316,
+    "forced": true,
+    "arithmetic": "mismatch 15/15: no total printed"
+  },
+  {
+    "code": "SAILING_CONFIRMATION_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.8,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "STUFFING_REPORT_JASPER_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.614,
+    "forced": false,
+    "arithmetic": "n/a"
+  },
+  {
+    "code": "TAX_INVOICE_INDIA_FORMAT1_RPM_REF_458",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.519,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "TAX_INVOICE_INDIA_FORMAT2_RPM_REF_449",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "no totals profile"
+  },
+  {
+    "code": "TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.5,
+    "forced": false,
+    "arithmetic": "n/a"
+  }
+]

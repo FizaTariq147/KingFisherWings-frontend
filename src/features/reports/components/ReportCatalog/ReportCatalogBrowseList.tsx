@@ -3,13 +3,16 @@ import { reportFamilyLabel } from '../../types/reportCatalog.types';
 import { REPORT_TEMPLATE_FAMILY_ENUM } from '../../api/reportCatalog.api';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
+import { reportsV2BadgeText, reportsV2BrowseHint, reportsV2ListRank } from '../../engine/reportsV2Gate';
 import {
   reportConformanceLabel,
   reportConformanceStatus,
 } from '../../utils/reportConformanceStatus';
 
-/** Invoice formats by Format-N; everything else A–Z by name. */
+/** Wired codes first. Then invoice formats by Format-N; everything else A–Z by name. */
 function compareCatalogItems(a: ReportTemplate, b: ReportTemplate): number {
+  const rank = reportsV2ListRank(a.code) - reportsV2ListRank(b.code);
+  if (rank !== 0) return rank;
   const na = parseInvoiceFormatNumber(a.code);
   const nb = parseInvoiceFormatNumber(b.code);
   if (na != null && nb != null && na !== nb) return na - nb;
@@ -180,6 +183,8 @@ export function ReportCatalogBrowseList({
               {section.items.map((t, index) => {
                 const active = selectedCode === t.code;
                 const sharedHint = catalogSharedLayoutHint(t.code);
+                const conformance = reportConformanceStatus(t.code);
+                const browseHint = reportsV2BrowseHint(t.code);
                 return (
                   <button
                     key={`${t.id}-${t.code}`}
@@ -208,8 +213,12 @@ export function ReportCatalogBrowseList({
                       {t.name}
                     </p>
                     <p className="mt-1 pl-1.5 text-[9px] font-semibold uppercase tracking-wide text-amber-800">
-                      {reportConformanceLabel(reportConformanceStatus(t.code))}
-                      {reportConformanceStatus(t.code) === 'accepted' ? '' : ' · approximate, not final'}
+                      {reportConformanceLabel(conformance)}
+                      {browseHint
+                        ? ` · ${browseHint}`
+                        : conformance === 'accepted'
+                          ? ''
+                          : ` · ${reportsV2BadgeText(conformance)}`}
                     </p>
                     {sharedHint ? (
                       <p className="mt-1 line-clamp-2 pl-1.5 text-[9px] font-medium leading-snug text-[var(--color-neutral-500)]">

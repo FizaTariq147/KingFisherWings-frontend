@@ -1,5 +1,6 @@
 /**
- * Render every invoice v2 spec with an empty record and an empty organization.
+ * Render every invoice v2 spec and every breadth-wired spec with an empty
+ * record and an empty organization.
  * Fail when a painted string is neither an allowlisted label nor a value we filled.
  *
  *   npm run report:leak-check
@@ -8,12 +9,16 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { isAllowlisted, leaksOnEmptyRecord } from './allowlist.mjs';
-import { fillInvoiceSpans } from './invoice-bindings.mjs';
+import { fillSpecSpans } from './fill-spec-spans.mjs';
 import { renderSpec } from './render-spec.mjs';
 
 const root = process.cwd();
 const codeSource = fs.readFileSync(path.join(root, 'src/features/reports/engine/invoiceV2Codes.ts'), 'utf8');
-const codes = [...codeSource.matchAll(/'([A-Z][A-Z0-9_]+)'/g)].map((match) => match[1]);
+const invoiceCodes = [...codeSource.matchAll(/'([A-Z][A-Z0-9_]+)'/g)].map((match) => match[1]);
+const breadthSource = fs.readFileSync(path.join(root, 'src/features/reports/engine/breadthCodes.ts'), 'utf8');
+const breadthBlock = breadthSource.match(/BREADTH_WIRED_CODES[^=]*=\s*\[([\s\S]*?)\];/)?.[1] || '';
+const breadthCodes = [...breadthBlock.matchAll(/'([A-Z][A-Z0-9_]+)'/g)].map((match) => match[1]);
+const codes = [...new Set([...invoiceCodes, ...breadthCodes])];
 const record = {
   invoice: { lines: [], subtotal: 0, tax_total: 0, total_amount: 0 },
   job: {},
@@ -32,7 +37,7 @@ for (const code of codes) {
     continue;
   }
   const spec = JSON.parse(fs.readFileSync(specPath, 'utf8'));
-  const filled = fillInvoiceSpans(spec, record);
+  const filled = fillSpecSpans(spec, record);
   const supplied = new Set(Object.values(filled.values).map((value) => String(value).replace(/\s+/g, ' ').trim()).filter(Boolean));
   const painted = [];
   const outPath = path.join(os.tmpdir(), `leak-${code}.pdf`);

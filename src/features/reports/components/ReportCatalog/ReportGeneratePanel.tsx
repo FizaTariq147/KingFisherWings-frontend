@@ -62,9 +62,19 @@ import { InvoiceFormatAutoPdf } from './InvoiceFormatAutoPdf';
 import { ReportParameterForm } from './ReportParameterForm';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import { reportsCatalogueGate, reportsEngine } from '../../engine/reportsEngine';
-import { FORMAT_NOT_AVAILABLE_YET, invoiceV2HardBlocked, shouldUseInvoiceV2 } from '../../engine/invoiceV2Gate';
+import { FORMAT_NOT_AVAILABLE_YET, invoiceV2HardBlocked } from '../../engine/invoiceV2Gate';
+import {
+  generateReportsV2WithFallback,
+  isReportsV2Code,
+  reportsV2BrowseHint,
+  shouldUseReportsV2,
+} from '../../engine/reportsV2Gate';
 import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
-import { invoiceV2SpecCodes } from '../../engine/invoiceV2Codes';
+import {
+  hasReportsV2Record,
+  loadReportsV2Source,
+  renderReportsV2,
+} from '../../utils/reportsV2Source';
 import { InvoiceV2Preview } from './InvoiceV2Preview';
 
 type ReportGeneratePanelProps = {
@@ -154,6 +164,7 @@ export function ReportGeneratePanel({
   const [jobId, setJobId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [v2Notice, setV2Notice] = useState<string | null>(null);
   const [pdfReadyOpen, setPdfReadyOpen] = useState(false);
   const [pdfReadyUrl, setPdfReadyUrl] = useState<string | null>(null);
   const [pdfReadyBlob, setPdfReadyBlob] = useState<Blob | null>(null);
@@ -277,6 +288,7 @@ export function ReportGeneratePanel({
   const onGenerate = async () => {
     setError(null);
     setMessage(null);
+    setV2Notice(null);
 
     const hasLayout = hasCatalogLayoutPdf(resolved.code);
     const contextIds = mergeReportContextIds(context, params);
@@ -329,6 +341,45 @@ export function ReportGeneratePanel({
         setClientGenerating(false);
       }
       return;
+    }
+
+    // Spec renderer first when the engine is v2 and the code is wired. A failure
+    // shows the classic notice and continues on the existing generate path.
+    const v2Ids = {
+      invoiceId: contextIds.invoice_id,
+      jobId: contextIds.job_id,
+      partyId: contextIds.party_id,
+    };
+    if (
+      format === 'PDF' &&
+      hasReportsV2Record(v2Ids) &&
+      shouldUseReportsV2({ engine: reportsEngine(), entry: 'reports', code: resolved.code })
+    ) {
+      setClientGenerating(true);
+      try {
+        let builtByV2 = false;
+        const result = await generateReportsV2WithFallback({
+          attemptV2: true,
+          renderV2: async () => {
+            const blob = await renderReportsV2(resolved.code, await loadReportsV2Source(v2Ids));
+            builtByV2 = true;
+            return blob;
+          },
+          renderClassic: async () => new Blob(),
+        });
+        if (builtByV2) {
+          setPdfReadyName(formatPdfFilename(resolved.code, 'report'));
+          setPdfReadyBlob(result.blob);
+          setPdfReadyUrl(null);
+          setPdfReadyOpen(true);
+          setJobId(null);
+          setMessage('Report ready from the selected format (approximate, not final).');
+          return;
+        }
+        setV2Notice(result.notice);
+      } finally {
+        setClientGenerating(false);
+      }
     }
 
     const { parameters, error: coerceError } = coerceReportParameters(fields, params);
@@ -641,6 +692,7 @@ export function ReportGeneratePanel({
     code: resolved.code,
     status: reportConformanceStatus(resolved.code),
   });
+  const browseOnlyHint = reportsV2BrowseHint(resolved.code);
   const generateBlocked =
     busy ||
     detail.isLoading ||
@@ -700,17 +752,23 @@ export function ReportGeneratePanel({
         <p className="text-xs font-semibold text-amber-800">{FORMAT_NOT_AVAILABLE_YET}</p>
       ) : null}
 
-      {isInvoiceFormat &&
-      invoiceV2SpecCodes.has(resolved.code) &&
+      {browseOnlyHint ? (
+        <p className="text-xs font-semibold text-amber-800">{browseOnlyHint}</p>
+      ) : null}
+
+      {isReportsV2Code(resolved.code) &&
       !v2HardBlocked &&
-      shouldUseInvoiceV2({
+      shouldUseReportsV2({
         engine: reportsEngine(),
         entry: 'formats',
-        document: 'invoice',
-        style: 'classic',
         code: resolved.code,
       }) ? (
-        <InvoiceV2Preview code={resolved.code} invoiceId={context?.invoice_id} />
+        <InvoiceV2Preview
+          code={resolved.code}
+          invoiceId={context?.invoice_id}
+          jobId={context?.job_id}
+          partyId={context?.party_id}
+        />
       ) : null}
 
       {isInvoiceFormat &&
@@ -911,6 +969,9 @@ export function ReportGeneratePanel({
       ) : null}
 
       {error ? <p className="text-sm text-[var(--color-danger-600)]">{error}</p> : null}
+      {v2Notice ? (
+        <p role="status" className="text-sm text-[var(--color-warning-700)]">{v2Notice}</p>
+      ) : null}
       {message ? <p className="text-sm text-[var(--color-success-700)]">{message}</p> : null}
       {jobQuery.data?.status === 'failed' ? (
         <p className="text-sm text-[var(--color-danger-600)]">

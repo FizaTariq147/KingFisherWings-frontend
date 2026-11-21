@@ -1,6 +1,7 @@
 import applicability from '../../../../reports/invoice-v2-applicability.json';
 import totalsProfile from '../../../../reports/invoice-v2-totals.json';
 import { invoiceV2SpecCodes } from './invoiceV2Codes';
+import { isReportsV2Code } from './reportsV2Gate';
 
 export type InvoiceV2Applicability = {
   currency: string | null;
@@ -178,8 +179,10 @@ export function invoiceV2ApplicabilityHint(code: string, input?: InvoiceFitInput
   return invoiceV2TaxVisibilityNote(code, input);
 }
 
+/** 2 for a code that is not wired. 0 or 1 for an invoice v2 code by fit. 0 for any other wired code. */
 export function invoiceV2ListRank(code: string, input?: InvoiceFitInput): number {
-  if (!invoiceV2SpecCodes.has(code)) return 2;
+  if (!isReportsV2Code(code)) return 2;
+  if (!invoiceV2SpecCodes.has(code)) return 0;
   const suitability = invoiceV2Suitability(code, input);
   return invoiceV2Applies(code, input) && suitability.suitable ? 0 : 1;
 }

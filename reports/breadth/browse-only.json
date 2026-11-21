@@ -1,0 +1,2109 @@
+[
+  {
+    "code": "ADVANCE_SHIPPING_NOTE",
+    "registryFamily": "wms",
+    "module": "job",
+    "boundRatio": 0.018,
+    "reason": "only 2% of its data fields have a source"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_FORMAT_1",
+    "registryFamily": "wms",
+    "module": "job",
+    "boundRatio": 0.091,
+    "reason": "only 9% of its data fields have a source"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_LOCATION_WISE",
+    "registryFamily": "wms",
+    "module": "job",
+    "boundRatio": 0.04,
+    "reason": "only 4% of its data fields have a source"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1",
+    "registryFamily": "unregistered",
+    "module": "job",
+    "boundRatio": 0.04,
+    "reason": "only 4% of its data fields have a source"
+  },
+  {
+    "code": "ADVANCE_SHIPPING_NOTE_SUMMARY",
+    "registryFamily": "wms",
+    "module": "job",
+    "boundRatio": 0.033,
+    "reason": "only 3% of its data fields have a source"
+  },
+  {
+    "code": "AIR_FREIGHT_ATD_CONFIRMATION_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "job",
+    "boundRatio": 0.364,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "AIR_QUOTATION_REPORT_FORMAT",
+    "registryFamily": "quotation",
+    "module": "quotation",
+    "boundRatio": 0.164,
+    "reason": "only 16% of its data fields have a source"
+  },
+  {
+    "code": "AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT",
+    "registryFamily": "quotation",
+    "module": "quotation",
+    "boundRatio": 0.074,
+    "reason": "only 7% of its data fields have a source"
+  },
+  {
+    "code": "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "job",
+    "boundRatio": 0.069,
+    "reason": "only 7% of its data fields have a source"
+  },
+  {
+    "code": "AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1",
+    "registryFamily": "air_docs",
+    "module": "job",
+    "boundRatio": 0.088,
+    "reason": "only 9% of its data fields have a source"
+  },
+  {
+    "code": "AP_AGING_SUMMARY_REPORT_FORMAT",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.077,
+    "reason": "only 8% of its data fields have a source"
+  },
+  {
+    "code": "AP_OUTSTANDING_STATEMENT_REPORT_FORMAT",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "AR_AGING_SUMMARY_REPORT_FORMAT",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.029,
+    "reason": "only 3% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_CONFIRMATION_FORMAT1_RPM_REF_732",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.462,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_INFORMATION_RPM_REF_839",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.182,
+    "reason": "only 18% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.314,
+    "reason": "only 31% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.042,
+    "reason": "only 4% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_2_CARGO_ARRIVAL_NOTICE_JASPER",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.281,
+    "reason": "only 28% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.194,
+    "reason": "only 19% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.241,
+    "reason": "only 24% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.171,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.189,
+    "reason": "only 19% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.184,
+    "reason": "only 18% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.353,
+    "reason": "only 35% of its data fields have a source"
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES",
+    "registryFamily": "sea_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "BARCODE_AWB_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "excluded from the breadth pass"
+  },
+  {
+    "code": "BOOKING_CONFIRMATION_AIR_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "shipment",
+    "boundRatio": 0.16,
+    "reason": "only 16% of its data fields have a source"
+  },
+  {
+    "code": "BOOKING_CONFIRMATION_REPORT_FORMAT_1",
+    "registryFamily": "other",
+    "module": "shipment",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "BOOKING_CONFIRMATION_REPORT_FORMAT_2",
+    "registryFamily": "other",
+    "module": "shipment",
+    "boundRatio": 0.412,
+    "reason": "only 41% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_AIR_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.143,
+    "reason": "only 14% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_AIR_RPM_REF_49",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.095,
+    "reason": "only 10% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "arrival_notice",
+    "boundRatio": 0.231,
+    "reason": "only 23% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_RPM_REF_363",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.13,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3_RPM_REF_1376",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.14,
+    "reason": "only 14% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_SEA_FORMAT1_RPM_REF_446",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.167,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_SEA_FORMAT2_RPM_REF_592",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.122,
+    "reason": "only 12% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_SEA_RPM_REF_27",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.133,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_FORMAT1_RPM_REF_447",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.167,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_RPM_REF_251",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.231,
+    "reason": "only 23% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_MANIFEST_AIR_HOUSE_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "manifest",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "manifest",
+    "boundRatio": 0.053,
+    "reason": "only 5% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "manifest",
+    "boundRatio": 0.053,
+    "reason": "only 5% of its data fields have a source"
+  },
+  {
+    "code": "CARGO_RECEIPT_NOTE_FOR_EXPORT_CFS_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.207,
+    "reason": "only 21% of its data fields have a source"
+  },
+  {
+    "code": "CARTING_CONFIRMATION_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.36,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "CONSOL_IGM_FILLING_LETTER_JASPER_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.158,
+    "reason": "only 16% of its data fields have a source"
+  },
+  {
+    "code": "CONTAINER_LOAD_PLAN_REPORT_FORMAT",
+    "registryFamily": "other",
+    "module": "shipment",
+    "boundRatio": 0.463,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "CONTAINER_MOVEMENT_FACILITATION_CELL_NOTE_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "CONTAINER_OUTTURN_REPORT_FORMAT",
+    "registryFamily": "other",
+    "module": "shipment",
+    "boundRatio": 0.152,
+    "reason": "only 15% of its data fields have a source"
+  },
+  {
+    "code": "CONTAINER_UNLOAD_PLAN_REPORT_FORMAT",
+    "registryFamily": "other",
+    "module": "shipment",
+    "boundRatio": 0.206,
+    "reason": "only 21% of its data fields have a source"
+  },
+  {
+    "code": "CONTAINER_VGM_FORM_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "D_O_FCL_VIETNAM_RPM_REF_411",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.167,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_1",
+    "registryFamily": "ops_list",
+    "module": "job",
+    "boundRatio": 0.059,
+    "reason": "only 6% of its data fields have a source"
+  },
+  {
+    "code": "DAILY_STATUS_REPORT_FORMAT_2",
+    "registryFamily": "ops_list",
+    "module": "job",
+    "boundRatio": 0.038,
+    "reason": "only 4% of its data fields have a source"
+  },
+  {
+    "code": "DELIVERY_CONFIRMATION_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.391,
+    "reason": "only 39% of its data fields have a source"
+  },
+  {
+    "code": "DELIVERY_CONFIRMATION_RPM_REF_153",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.462,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "DELIVERY_ORDER_FORMAT_17_RPM_REF_1496",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.118,
+    "reason": "only 12% of its data fields have a source"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_13",
+    "registryFamily": "air_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.316,
+    "reason": "only 32% of its data fields have a source"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_16",
+    "registryFamily": "air_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.353,
+    "reason": "only 35% of its data fields have a source"
+  },
+  {
+    "code": "DELIVERY_ORDER_REPORT_FORMAT_18",
+    "registryFamily": "sea_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.348,
+    "reason": "only 35% of its data fields have a source"
+  },
+  {
+    "code": "FCL_QUOTATION_REPORT_FORMAT",
+    "registryFamily": "quotation",
+    "module": "quotation",
+    "boundRatio": 0.233,
+    "reason": "only 23% of its data fields have a source"
+  },
+  {
+    "code": "FCR_DOCUMENT_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.3,
+    "reason": "only 30% of its data fields have a source"
+  },
+  {
+    "code": "FG_ARRIVAL_INFORMATION_RPM_REF_871",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.438,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "FG_ARRIVAL_NOTICE_FORMAT2_RPM_REF_593",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.375,
+    "reason": "only 38% of its data fields have a source"
+  },
+  {
+    "code": "FG_ARRIVAL_NOTICE_FORMAT3_RPM_REF_893",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.346,
+    "reason": "only 35% of its data fields have a source"
+  },
+  {
+    "code": "FG_ARRIVAL_NOTICE_RPM_REF_399",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.286,
+    "reason": "only 29% of its data fields have a source"
+  },
+  {
+    "code": "FG_ARRIVALNOTICE_WITHOUT_CHG_RPM_REF_633",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.375,
+    "reason": "only 38% of its data fields have a source"
+  },
+  {
+    "code": "FG_CARGO_ARRIVAL_NOTICE_FORMAT1_RPM_REF_553",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.417,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "FG_CARGO_ARRIVAL_NOTICE_RPM_REF_233",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.255,
+    "reason": "only 26% of its data fields have a source"
+  },
+  {
+    "code": "FG_CARGO_ARRIVAL_NOTICE_SEA_RPM_REF_1172",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "FG_CONSIGNMENT_DELIVERY_NOTE_FORMAT_1",
+    "registryFamily": "sea_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.278,
+    "reason": "only 28% of its data fields have a source"
+  },
+  {
+    "code": "FG_CONSIGNMENT_DELIVERY_NOTE_RPM_REF_1379",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.162,
+    "reason": "only 16% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_NOTE_FORMAT_UK_RPM_REF_1305",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_ABUDHABI_RPM_REF_808",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.438,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_AIR_FORMAT_2",
+    "registryFamily": "sea_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.4,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_FOR_TRUCKER",
+    "registryFamily": "sea_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_FORMAT_16",
+    "registryFamily": "sea_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.167,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_FORMAT10_RPM_REF_835",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_FORMAT8_RPM_REF_777",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.4,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_FORMAT9_RPM_REF_803",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.143,
+    "reason": "only 14% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_SEA_FORMAT_1",
+    "registryFamily": "sea_docs",
+    "module": "delivery_order",
+    "boundRatio": 0.4,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_SEA_FORMAT10_RPM_REF_1395",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.417,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_SEA_FORMAT3_RPM_REF_560",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.417,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_SEA_FORMAT5_RPM_REF_628",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.462,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "FG_DELIVERY_ORDER_SEA_FORMAT6_RPM_REF_668",
+    "registryFamily": "unregistered",
+    "module": "delivery_order",
+    "boundRatio": 0.417,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "FG_HBL_FORMAT_1",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.15,
+    "reason": "only 15% of its data fields have a source"
+  },
+  {
+    "code": "FG_HBL_FORMAT_16",
+    "registryFamily": "unregistered",
+    "module": "shipment",
+    "boundRatio": 0.357,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "FG_HBL_FORMAT_20",
+    "registryFamily": "unregistered",
+    "module": "shipment",
+    "boundRatio": 0.385,
+    "reason": "only 39% of its data fields have a source"
+  },
+  {
+    "code": "FG_HBL_FORMAT10_RPM_REF_472",
+    "registryFamily": "unregistered",
+    "module": "shipment",
+    "boundRatio": 0.083,
+    "reason": "only 8% of its data fields have a source"
+  },
+  {
+    "code": "FG_HBL_HKG",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.133,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "FG_HBL_MAGICLOGISYS",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "FG_HBL_ORIGINAL_FORMAT_87",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.133,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT12_RPM_REF_1199",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.435,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "FG_INVOICE_FORMAT6_RPM_REF_691",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.471,
+    "reason": "only 47% of its data fields have a source"
+  },
+  {
+    "code": "FG_INVOICE_SINGAPORE_RPM_REF_1069",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.167,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "FG_KSA_INVOICE_ARABIC_RPM_REF_1161",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.304,
+    "reason": "only 30% of its data fields have a source"
+  },
+  {
+    "code": "FG_NOTICE_OF_DELIVERY_RPM_REF_905",
+    "registryFamily": "unregistered",
+    "module": "job",
+    "boundRatio": 0.444,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "FG_PROOF_OF_DELIVERY_RPM_REF_847",
+    "registryFamily": "unregistered",
+    "module": "shipment",
+    "boundRatio": 0.118,
+    "reason": "only 12% of its data fields have a source"
+  },
+  {
+    "code": "FG_SIMPLE_INVOICE_INDIA_RPM_REF_862",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.118,
+    "reason": "only 12% of its data fields have a source"
+  },
+  {
+    "code": "FG_SIMPLE_INVOICE_RPM_REF_861",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.421,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "FG_SIMPLE_INVOICE_USA_RPM_REF_1274",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.4,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_COURIER_INVOICE_RPM_REF_773",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.125,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT2_RPM_REF_1171",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.444,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT3_RPM_REF_1183",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.357,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT4_RPM_REF_1215",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.444,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT5_RPM_REF_1385",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.423,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_FORMAT7_RPM_REF_1400",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_OMAN_RPM_REF_747",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.387,
+    "reason": "only 39% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_ARABIC_RPM_REF_464",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.414,
+    "reason": "only 41% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.4,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT15_RPM_REF_997",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.182,
+    "reason": "only 18% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT16_CUM_AN_RPM_REF_1186",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.34,
+    "reason": "only 34% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT17_RPM_REF_1309",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.462,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "FG_STANDARD_TAX_INVOICE_FORMAT18_RPM_REF_1319",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.464,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.238,
+    "reason": "only 24% of its data fields have a source"
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_FORMAT2_RPM_REF_911",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.424,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_FORMAT3_RPM_REF_977",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.438,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.397,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_FORMAT6_RPM_REF_1059",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.405,
+    "reason": "only 41% of its data fields have a source"
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_FORMAT7_RPM_REF_1067",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.412,
+    "reason": "only 41% of its data fields have a source"
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_FORMAT8_RPM_REF_1159",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.469,
+    "reason": "only 47% of its data fields have a source"
+  },
+  {
+    "code": "FG_TAX_INVOICE_INDIA_RPM_REF_237",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.324,
+    "reason": "only 32% of its data fields have a source"
+  },
+  {
+    "code": "FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "manifest",
+    "boundRatio": 0.072,
+    "reason": "only 7% of its data fields have a source"
+  },
+  {
+    "code": "GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0.057,
+    "reason": "only 6% of its data fields have a source"
+  },
+  {
+    "code": "GL_REPORT_CURRENCY_WISE_VOUCHER_REPORT_FORMAT",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "GL_REPORT_VOUCHER_REPORT_FORMAT",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0.014,
+    "reason": "only 1% of its data fields have a source"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "shipment",
+    "boundRatio": 0.095,
+    "reason": "only 10% of its data fields have a source"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_1",
+    "registryFamily": "air_docs",
+    "module": "shipment",
+    "boundRatio": 0.176,
+    "reason": "only 18% of its data fields have a source"
+  },
+  {
+    "code": "HAWB_DRAFT_REPORT_FORMAT_2",
+    "registryFamily": "air_docs",
+    "module": "shipment",
+    "boundRatio": 0.15,
+    "reason": "only 15% of its data fields have a source"
+  },
+  {
+    "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1",
+    "registryFamily": "air_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2",
+    "registryFamily": "air_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_10",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.211,
+    "reason": "only 21% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_100",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.318,
+    "reason": "only 32% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_101",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.375,
+    "reason": "only 38% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_102",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.375,
+    "reason": "only 38% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_107",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_109",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.172,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_11",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.3,
+    "reason": "only 30% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_116",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.429,
+    "reason": "only 43% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_117",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.167,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_118",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_12",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.421,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_120",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_122",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_127",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_128",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.25,
+    "reason": "only 25% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_129",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.25,
+    "reason": "only 25% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_13",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.176,
+    "reason": "only 18% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_130",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_132",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_134",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_136",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.444,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_137",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.433,
+    "reason": "only 43% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_138",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.455,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_139",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.222,
+    "reason": "only 22% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_14",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.294,
+    "reason": "only 29% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_140",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_141",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_142",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.25,
+    "reason": "only 25% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_143",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.462,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_144",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_146",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.364,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_147",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.314,
+    "reason": "only 31% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_148",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.25,
+    "reason": "only 25% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_149",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.313,
+    "reason": "only 31% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_15",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.182,
+    "reason": "only 18% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_151",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.455,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_16",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_17",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.208,
+    "reason": "only 21% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_171",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.357,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_172",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.353,
+    "reason": "only 35% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_18",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.375,
+    "reason": "only 38% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_19",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.353,
+    "reason": "only 35% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_2",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_20",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.353,
+    "reason": "only 35% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_23",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.286,
+    "reason": "only 29% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_25",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.292,
+    "reason": "only 29% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_26",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.357,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_27",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_29",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_33",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_36",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_4",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_40",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.222,
+    "reason": "only 22% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_41",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_42",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.231,
+    "reason": "only 23% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_43",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.455,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_44",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.174,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_46",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.278,
+    "reason": "only 28% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_47",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.385,
+    "reason": "only 39% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_48",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.25,
+    "reason": "only 25% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_49",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.467,
+    "reason": "only 47% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_5",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.294,
+    "reason": "only 29% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_50",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.25,
+    "reason": "only 25% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_51",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.278,
+    "reason": "only 28% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_52",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.368,
+    "reason": "only 37% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_53",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.25,
+    "reason": "only 25% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_54",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.357,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_55",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_59",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.421,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_6",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.125,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_60",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.278,
+    "reason": "only 28% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_61",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.263,
+    "reason": "only 26% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_63",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.368,
+    "reason": "only 37% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_64",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_65",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.294,
+    "reason": "only 29% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_66",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.154,
+    "reason": "only 15% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_67",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.267,
+    "reason": "only 27% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_68",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.286,
+    "reason": "only 29% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_69",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.357,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_7",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.176,
+    "reason": "only 18% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_70",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.308,
+    "reason": "only 31% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_72",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.29,
+    "reason": "only 29% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_73",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.077,
+    "reason": "only 8% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_75",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.286,
+    "reason": "only 29% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_77",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_8",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.316,
+    "reason": "only 32% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_83",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.4,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_84",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.313,
+    "reason": "only 31% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_85",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.056,
+    "reason": "only 6% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_87",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.3,
+    "reason": "only 30% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_88",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.16,
+    "reason": "only 16% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_89",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.4,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_9",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.192,
+    "reason": "only 19% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_90",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.417,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_92",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.429,
+    "reason": "only 43% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_95",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.235,
+    "reason": "only 24% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_96",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.462,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_97",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.385,
+    "reason": "only 39% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_99",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.235,
+    "reason": "only 24% of its data fields have a source"
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "IMPORT_CARGO_MANIFEST_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "manifest",
+    "boundRatio": 0.219,
+    "reason": "only 22% of its data fields have a source"
+  },
+  {
+    "code": "IMPORT_SECURITY_FILLING_JASPER_AMS_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "job",
+    "boundRatio": 0.16,
+    "reason": "only 16% of its data fields have a source"
+  },
+  {
+    "code": "IMPORT_TALLY_SHEET_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "job",
+    "boundRatio": 0.471,
+    "reason": "only 47% of its data fields have a source"
+  },
+  {
+    "code": "ISF_FILING_DOCUMENT_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.105,
+    "reason": "only 11% of its data fields have a source"
+  },
+  {
+    "code": "JOB_CARD_REPORT_FORMAT",
+    "registryFamily": "other",
+    "module": "job",
+    "boundRatio": 0.152,
+    "reason": "only 15% of its data fields have a source"
+  },
+  {
+    "code": "JOB_HOUSE_RECORD_LIST_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "job",
+    "boundRatio": 0.125,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "JOB_HOUSE_RECORD_LIST_REPORT_FORMAT_1",
+    "registryFamily": "air_docs",
+    "module": "job",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "JOB_HOUSES_RECORD_LIST_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "job",
+    "boundRatio": 0.073,
+    "reason": "only 7% of its data fields have a source"
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_1",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0.171,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "JOURNAL_VOUCHER_REPORT_FORMAT_2",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0.091,
+    "reason": "only 9% of its data fields have a source"
+  },
+  {
+    "code": "LAND_FREIGHT_TRANSPORTATION_INVOICE_RPM_REF_525",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.154,
+    "reason": "only 15% of its data fields have a source"
+  },
+  {
+    "code": "LETTER_OF_GUARANTEE_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.1,
+    "reason": "only 10% of its data fields have a source"
+  },
+  {
+    "code": "LOADING_CONFIRMATION_REPORT_FORMAT",
+    "registryFamily": "other",
+    "module": "shipment",
+    "boundRatio": 0.375,
+    "reason": "only 38% of its data fields have a source"
+  },
+  {
+    "code": "MAWB_DRAFT_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT",
+    "registryFamily": "air_docs",
+    "module": "shipment",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_1_OUTSTANDING_LETTER",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.079,
+    "reason": "only 8% of its data fields have a source"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.026,
+    "reason": "only 3% of its data fields have a source"
+  },
+  {
+    "code": "OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_1",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0.2,
+    "reason": "only 20% of its data fields have a source"
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_2",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0.091,
+    "reason": "only 9% of its data fields have a source"
+  },
+  {
+    "code": "PAYMENT_VOUCHER_REPORT_FORMAT_4_VIETNAM",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0.05,
+    "reason": "only 5% of its data fields have a source"
+  },
+  {
+    "code": "PICKUP_CONFIRMATION_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.375,
+    "reason": "only 38% of its data fields have a source"
+  },
+  {
+    "code": "PRE_ALERT_AIR_REPORT_FORMAT",
+    "registryFamily": "other",
+    "module": "shipment",
+    "boundRatio": 0.171,
+    "reason": "only 17% of its data fields have a source"
+  },
+  {
+    "code": "PRE_ALERT_TO_CLIENT_REPORT_FORMAT",
+    "registryFamily": "other",
+    "module": "shipment",
+    "boundRatio": 0.357,
+    "reason": "only 36% of its data fields have a source"
+  },
+  {
+    "code": "PREALERT_USA_JASPER_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.348,
+    "reason": "only 35% of its data fields have a source"
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.048,
+    "reason": "only 5% of its data fields have a source"
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_2_JASPER",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.077,
+    "reason": "only 8% of its data fields have a source"
+  },
+  {
+    "code": "PROOF_OF_DELIVERY_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.323,
+    "reason": "only 32% of its data fields have a source"
+  },
+  {
+    "code": "PROOF_OF_DELIVERY_RPM_REF_275",
+    "registryFamily": "unregistered",
+    "module": "shipment",
+    "boundRatio": 0.118,
+    "reason": "only 12% of its data fields have a source"
+  },
+  {
+    "code": "RECEIPT_VOUCHER_REPORT_FORMAT_1",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "RECEIPT_VOUCHER_REPORT_FORMAT_2",
+    "registryFamily": "finance",
+    "module": "voucher",
+    "boundRatio": 0.222,
+    "reason": "only 22% of its data fields have a source"
+  },
+  {
+    "code": "RIDER_SHEET_FOR_EXPORT_MANIFEST_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "manifest",
+    "boundRatio": 0.4,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "SEA_ARRIVAL_NOTICE_FCL_VIETNAM_RPM_REF_420",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "SEA_ARRIVAL_NOTICE_LCL_VIETNAM_RPM_REF_422",
+    "registryFamily": "unregistered",
+    "module": "arrival_notice",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "manifest",
+    "boundRatio": 0.125,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "job",
+    "boundRatio": 0.127,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "SHIPMENT_STATUS_CONFIRMATION_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.214,
+    "reason": "only 21% of its data fields have a source"
+  },
+  {
+    "code": "SHIPPING_INSTRUCTION_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.179,
+    "reason": "only 18% of its data fields have a source"
+  },
+  {
+    "code": "SIMPLE_INVOICE_INDIA_RPM_REF_575",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.222,
+    "reason": "only 22% of its data fields have a source"
+  },
+  {
+    "code": "SIMPLE_INVOICE_INDIA_WITH_OS_RPM_REF_767",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.346,
+    "reason": "only 35% of its data fields have a source"
+  },
+  {
+    "code": "SIMPLE_INVOICE_RPM_REF_325",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.421,
+    "reason": "only 42% of its data fields have a source"
+  },
+  {
+    "code": "SIMPLE_INVOICE_WITH_OS_RPM_REF_76",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.464,
+    "reason": "only 46% of its data fields have a source"
+  },
+  {
+    "code": "SIMPLE_INVOICEVAT_RPM_REF_673",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.407,
+    "reason": "only 41% of its data fields have a source"
+  },
+  {
+    "code": "STANDARD_INVOICE_FCY_FORMAT2_RPM_REF_850",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.111,
+    "reason": "only 11% of its data fields have a source"
+  },
+  {
+    "code": "STANDARD_INVOICE_FCY_RPM_REF_486",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.4,
+    "reason": "only 40% of its data fields have a source"
+  },
+  {
+    "code": "STANDARD_INVOICE_KAMPALA_RPM_REF_879",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.391,
+    "reason": "only 39% of its data fields have a source"
+  },
+  {
+    "code": "STANDARD_INVOICE_RPM_REF_79",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0,
+    "reason": "excluded from the breadth pass"
+  },
+  {
+    "code": "STANDARD_INVOICELAND_RPM_REF_419",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.444,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "STANDARD_INVOICEMALAYSIA_RPM_REF_611",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.48,
+    "reason": "only 48% of its data fields have a source"
+  },
+  {
+    "code": "STANDARD_INVOICEUSA_FORMAT_2_RPM_REF_698",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.211,
+    "reason": "only 21% of its data fields have a source"
+  },
+  {
+    "code": "STANDARD_INVOICEUSA_RPM_REF_412",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.25,
+    "reason": "only 25% of its data fields have a source"
+  },
+  {
+    "code": "STATEMENT_OF_ACCOUNTS_REPORT_FORMAT",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.015,
+    "reason": "only 2% of its data fields have a source"
+  },
+  {
+    "code": "STUFFING_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.125,
+    "reason": "only 13% of its data fields have a source"
+  },
+  {
+    "code": "SUMMARY_INVOICE_RPM_REF_202",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.333,
+    "reason": "only 33% of its data fields have a source"
+  },
+  {
+    "code": "SURRENDERED_LETTER_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.308,
+    "reason": "only 31% of its data fields have a source"
+  },
+  {
+    "code": "TAX_INVOICE_INDIA_REIMBURSEMENT_BILL_RPM_REF_713",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.444,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "TAX_INVOICE_INDIA_RPM_REF_351",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.444,
+    "reason": "only 44% of its data fields have a source"
+  },
+  {
+    "code": "TRANSSHIPMENT_LIST_REPORT_FORMAT",
+    "registryFamily": "ops_list",
+    "module": "shipment",
+    "boundRatio": 0.065,
+    "reason": "only 7% of its data fields have a source"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.256,
+    "reason": "only 26% of its data fields have a source"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_2_TRIAL_BALANCE_SUMMARY",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_3_TRIAL_BALANCE_SUMMARY_BRANCHWISE",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.068,
+    "reason": "only 7% of its data fields have a source"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.256,
+    "reason": "only 26% of its data fields have a source"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_5_TRIAL_BALANCE_SUMMARY_EXTENDED",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0,
+    "reason": "only 0% of its data fields have a source"
+  },
+  {
+    "code": "TRIAL_BALANCE_REPORT_FORMAT_6_TRIAL_BALANCE_SUMMARY_EXTENDED_BRANCHWISE",
+    "registryFamily": "finance",
+    "module": "job",
+    "boundRatio": 0.068,
+    "reason": "only 7% of its data fields have a source"
+  },
+  {
+    "code": "TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT",
+    "registryFamily": "sea_docs",
+    "module": "shipment",
+    "boundRatio": 0.231,
+    "reason": "only 23% of its data fields have a source"
+  },
+  {
+    "code": "WAREHOUSE_INVOICE_INDIA_FORMAT_RPM_REF_1109",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.313,
+    "reason": "only 31% of its data fields have a source"
+  },
+  {
+    "code": "WAREHOUSE_INVOICE_RPM_REF_201",
+    "registryFamily": "unregistered",
+    "module": "invoice",
+    "boundRatio": 0.176,
+    "reason": "only 18% of its data fields have a source"
+  }
+]

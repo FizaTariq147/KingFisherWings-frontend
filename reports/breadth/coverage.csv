@@ -1,0 +1,394 @@
+code,registryFamily,module,dynamic,bound,filled,empty,noSource,boundRatio,wired,forced,reason,leaks,pages,warnings,arithmetic
+ADVANCE_SHIPPING_NOTE,wms,job,55,1,1,0,54,0.018,false,false,only 2% of its data fields have a source,0,,,n/a
+ADVANCE_SHIPPING_NOTE_FORMAT_1,wms,job,33,3,3,0,30,0.091,false,false,only 9% of its data fields have a source,0,,,n/a
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE,wms,job,25,1,1,0,24,0.04,false,false,only 4% of its data fields have a source,0,,,n/a
+ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1,unregistered,job,25,1,1,0,24,0.04,false,false,only 4% of its data fields have a source,0,,,n/a
+ADVANCE_SHIPPING_NOTE_SUMMARY,wms,job,30,1,1,0,29,0.033,false,false,only 3% of its data fields have a source,0,,,n/a
+AIR_FREIGHT_ATD_CONFIRMATION_REPORT_FORMAT,air_docs,job,11,4,4,0,7,0.364,false,false,only 36% of its data fields have a source,0,,,n/a
+AIR_QUOTATION_REPORT_FORMAT,quotation,quotation,55,9,9,0,46,0.164,false,false,only 16% of its data fields have a source,0,,,n/a
+AIR_QUOTATION_WITH_AIRLINE_REPORT_FORMAT,quotation,quotation,27,2,2,0,25,0.074,false,false,only 7% of its data fields have a source,0,,,n/a
+AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,air_docs,job,58,4,4,0,54,0.069,false,false,only 7% of its data fields have a source,0,,,n/a
+AIR_SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT_1,air_docs,job,34,3,3,0,31,0.088,false,false,only 9% of its data fields have a source,0,,,n/a
+AP_AGING_SUMMARY_REPORT_FORMAT,finance,job,13,1,1,0,12,0.077,false,false,only 8% of its data fields have a source,0,,,n/a
+AP_OUTSTANDING_STATEMENT_REPORT_FORMAT,finance,job,32,0,0,0,32,0,false,false,only 0% of its data fields have a source,0,,,n/a
+AR_AGING_SUMMARY_REPORT_FORMAT,finance,job,35,1,1,0,34,0.029,false,false,only 3% of its data fields have a source,0,,,n/a
+ARRIVAL_CONFIRMATION,sea_docs,arrival_notice,6,4,4,0,2,0.667,true,false,,0,1,0,n/a
+ARRIVAL_CONFIRMATION_FORMAT1_RPM_REF_732,unregistered,arrival_notice,13,6,6,0,7,0.462,false,false,only 46% of its data fields have a source,0,,,n/a
+ARRIVAL_CONFIRMATION_RPM_REF_152,unregistered,arrival_notice,6,6,6,0,0,1,true,false,,0,1,1,n/a
+ARRIVAL_INFORMATION_RPM_REF_839,unregistered,arrival_notice,33,6,6,0,27,0.182,false,false,only 18% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER,sea_docs,arrival_notice,35,11,11,0,24,0.314,false,false,only 31% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_10_SEA_ARRIVAL_NOTICE_FCL_VIETNAM,sea_docs,arrival_notice,24,1,1,0,23,0.042,false,false,only 4% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_2_CARGO_ARRIVAL_NOTICE_JASPER,sea_docs,arrival_notice,32,9,9,0,23,0.281,false,false,only 28% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_3_ARRIVAL_NOTICE_USA,sea_docs,arrival_notice,36,7,7,0,29,0.194,false,false,only 19% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_4_ARRIVAL_NOTICE_USA,sea_docs,arrival_notice,29,7,7,0,22,0.241,false,false,only 24% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_5_CARGO_ARRIVAL_NOTICE_SEA,sea_docs,arrival_notice,41,7,7,0,34,0.171,false,false,only 17% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_6_CARGO_ARRIVAL_NOTICE_SEA,sea_docs,arrival_notice,37,7,7,0,30,0.189,false,false,only 19% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_7_CARGO_ARRIVAL_NOTICE_SEA,sea_docs,arrival_notice,38,7,7,0,31,0.184,false,false,only 18% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_8_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,sea_docs,arrival_notice,17,6,6,0,11,0.353,false,false,only 35% of its data fields have a source,0,,,n/a
+ARRIVAL_NOTICE_REPORT_FORMAT_9_CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES,sea_docs,arrival_notice,18,6,6,0,12,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+BARCODE_AWB_REPORT_FORMAT,air_docs,shipment,0,0,0,0,0,0,false,false,excluded from the breadth pass,0,,,n/a
+BOOKING_CONFIRMATION_AIR_REPORT_FORMAT,air_docs,shipment,25,4,4,0,21,0.16,false,false,only 16% of its data fields have a source,0,,,n/a
+BOOKING_CONFIRMATION_REPORT_FORMAT_1,other,shipment,15,3,3,0,12,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+BOOKING_CONFIRMATION_REPORT_FORMAT_2,other,shipment,17,7,7,0,10,0.412,false,false,only 41% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_AIR_REPORT_FORMAT,air_docs,arrival_notice,21,3,3,0,18,0.143,false,false,only 14% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_AIR_RPM_REF_49,unregistered,arrival_notice,42,4,4,0,38,0.095,false,false,only 10% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_REPORT_FORMAT,air_docs,arrival_notice,13,3,3,0,10,0.231,false,false,only 23% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_AIR_WITHOUT_CHARGES_RPM_REF_363,unregistered,arrival_notice,23,3,3,0,20,0.13,false,false,only 13% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT_3_RPM_REF_1376,unregistered,arrival_notice,43,6,6,0,37,0.14,false,false,only 14% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT1_RPM_REF_446,unregistered,arrival_notice,12,2,2,0,10,0.167,false,false,only 17% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_SEA_FORMAT2_RPM_REF_592,unregistered,arrival_notice,41,5,5,0,36,0.122,false,false,only 12% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_SEA_RPM_REF_27,unregistered,arrival_notice,45,6,6,0,39,0.133,false,false,only 13% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_FORMAT1_RPM_REF_447,unregistered,arrival_notice,12,2,2,0,10,0.167,false,false,only 17% of its data fields have a source,0,,,n/a
+CARGO_ARRIVAL_NOTICE_SEA_WITHOUT_CHARGES_RPM_REF_251,unregistered,arrival_notice,13,3,3,0,10,0.231,false,false,only 23% of its data fields have a source,0,,,n/a
+CARGO_MANIFEST_AIR_HOUSE_REPORT_FORMAT,air_docs,manifest,15,0,0,0,15,0,false,false,only 0% of its data fields have a source,0,,,n/a
+CARGO_MANIFEST_AIR_JASPER_REPORT_FORMAT,air_docs,manifest,19,1,0,1,18,0.053,false,false,only 5% of its data fields have a source,0,,,n/a
+CARGO_MANIFEST_AIR_LC_JASPER_REPORT_FORMAT,air_docs,manifest,19,1,0,1,18,0.053,false,false,only 5% of its data fields have a source,0,,,n/a
+CARGO_MANIFEST_REPORT_FORMAT,sea_docs,manifest,84,45,45,0,39,0.536,true,false,,0,2,0,n/a
+CARGO_RECEIPT_NOTE_FOR_EXPORT_CFS_REPORT_FORMAT,sea_docs,shipment,29,6,6,0,23,0.207,false,false,only 21% of its data fields have a source,0,,,n/a
+CARTING_CONFIRMATION_REPORT_FORMAT,sea_docs,shipment,25,9,9,0,16,0.36,false,false,only 36% of its data fields have a source,0,,,n/a
+CONSOL_IGM_FILLING_LETTER_JASPER_REPORT_FORMAT,sea_docs,shipment,19,3,3,0,16,0.158,false,false,only 16% of its data fields have a source,0,,,n/a
+CONTAINER_LOAD_PLAN_REPORT_FORMAT,other,shipment,80,37,37,0,43,0.463,false,false,only 46% of its data fields have a source,0,,,n/a
+CONTAINER_MOVEMENT_FACILITATION_CELL_NOTE_REPORT_FORMAT,sea_docs,shipment,4,0,0,0,4,0,false,false,only 0% of its data fields have a source,0,,,n/a
+CONTAINER_OUTTURN_REPORT_FORMAT,other,shipment,46,7,7,0,39,0.152,false,false,only 15% of its data fields have a source,0,,,n/a
+CONTAINER_UNLOAD_PLAN_REPORT_FORMAT,other,shipment,34,7,7,0,27,0.206,false,false,only 21% of its data fields have a source,0,,,n/a
+CONTAINER_VGM_FORM_REPORT_FORMAT,sea_docs,shipment,7,0,0,0,7,0,false,false,only 0% of its data fields have a source,0,,,n/a
+D_O_FCL_VIETNAM_RPM_REF_411,unregistered,delivery_order,8,0,0,0,8,0,false,false,only 0% of its data fields have a source,0,,,n/a
+D_O_LCL_VIETNAM_WITHOUT_STAMP_RPM_REF_427,unregistered,delivery_order,6,1,1,0,5,0.167,false,false,only 17% of its data fields have a source,0,,,n/a
+DAILY_STATUS_REPORT_FORMAT_1,ops_list,job,34,2,2,0,32,0.059,false,false,only 6% of its data fields have a source,0,,,n/a
+DAILY_STATUS_REPORT_FORMAT_2,ops_list,job,52,2,2,0,50,0.038,false,false,only 4% of its data fields have a source,0,,,n/a
+DELIVERY_CONFIRMATION_OSA_REPORT_FORMAT,sea_docs,delivery_order,12,6,6,0,6,0.5,true,false,,0,1,1,n/a
+DELIVERY_CONFIRMATION_REPORT_FORMAT,sea_docs,delivery_order,23,9,9,0,14,0.391,false,false,only 39% of its data fields have a source,0,,,n/a
+DELIVERY_CONFIRMATION_RPM_REF_153,unregistered,delivery_order,13,6,6,0,7,0.462,false,false,only 46% of its data fields have a source,0,,,n/a
+DELIVERY_ORDER_AIR_JASPER_REPORT_FORMAT,air_docs,delivery_order,12,6,4,2,6,0.5,true,false,,0,2,0,n/a
+DELIVERY_ORDER_FORMAT_17_RPM_REF_1496,unregistered,delivery_order,17,2,2,0,15,0.118,false,false,only 12% of its data fields have a source,0,,,n/a
+DELIVERY_ORDER_REPORT_FORMAT_13,air_docs,delivery_order,19,6,6,0,13,0.316,false,false,only 32% of its data fields have a source,0,,,n/a
+DELIVERY_ORDER_REPORT_FORMAT_14,air_docs,delivery_order,16,9,9,0,7,0.563,true,false,,0,1,0,n/a
+DELIVERY_ORDER_REPORT_FORMAT_15,air_docs,delivery_order,8,4,4,0,4,0.5,true,false,,0,1,0,n/a
+DELIVERY_ORDER_REPORT_FORMAT_16,air_docs,delivery_order,17,6,6,0,11,0.353,false,false,only 35% of its data fields have a source,0,,,n/a
+DELIVERY_ORDER_REPORT_FORMAT_18,sea_docs,delivery_order,23,8,8,0,15,0.348,false,false,only 35% of its data fields have a source,0,,,n/a
+EXCHANGE_LETTER_TO_CARRIER_AGENT_REPORT_FORMAT,sea_docs,shipment,7,4,4,0,3,0.571,true,false,,0,1,6,n/a
+FCL_QUOTATION_REPORT_FORMAT,quotation,quotation,43,10,10,0,33,0.233,false,false,only 23% of its data fields have a source,0,,,n/a
+FCR_DOCUMENT_REPORT_FORMAT,sea_docs,shipment,20,6,6,0,14,0.3,false,false,only 30% of its data fields have a source,0,,,n/a
+FG_ARRIVAL_INFORMATION_RPM_REF_871,unregistered,arrival_notice,16,7,7,0,9,0.438,false,false,only 44% of its data fields have a source,0,,,n/a
+FG_ARRIVAL_NOTICE_FORMAT2_RPM_REF_593,unregistered,arrival_notice,16,6,6,0,10,0.375,false,false,only 38% of its data fields have a source,0,,,n/a
+FG_ARRIVAL_NOTICE_FORMAT3_RPM_REF_893,unregistered,arrival_notice,26,9,9,0,17,0.346,false,false,only 35% of its data fields have a source,0,,,n/a
+FG_ARRIVAL_NOTICE_RPM_REF_399,unregistered,arrival_notice,28,8,8,0,20,0.286,false,false,only 29% of its data fields have a source,0,,,n/a
+FG_ARRIVALNOTICE_WITHOUT_CHG_RPM_REF_633,unregistered,arrival_notice,16,6,6,0,10,0.375,false,false,only 38% of its data fields have a source,0,,,n/a
+FG_CARGO_ARRIVAL_NOTICE_FORMAT1_RPM_REF_553,unregistered,arrival_notice,12,5,5,0,7,0.417,false,false,only 42% of its data fields have a source,0,,,n/a
+FG_CARGO_ARRIVAL_NOTICE_RPM_REF_233,unregistered,arrival_notice,51,13,13,0,38,0.255,false,false,only 26% of its data fields have a source,0,,,n/a
+FG_CARGO_ARRIVAL_NOTICE_SEA_FORMAT3_RPM_REF_1322,unregistered,arrival_notice,7,4,4,0,3,0.571,true,false,,0,1,0,n/a
+FG_CARGO_ARRIVAL_NOTICE_SEA_RPM_REF_1172,unregistered,arrival_notice,50,10,10,0,40,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+FG_CONSIGNMENT_DELIVERY_NOTE_FORMAT_1,sea_docs,delivery_order,36,10,10,0,26,0.278,false,false,only 28% of its data fields have a source,0,,,n/a
+FG_CONSIGNMENT_DELIVERY_NOTE_RPM_REF_1379,unregistered,delivery_order,37,6,6,0,31,0.162,false,false,only 16% of its data fields have a source,0,,,n/a
+FG_DELIVERY_NOTE_FORMAT_UK_RPM_REF_1305,unregistered,delivery_order,9,3,3,0,6,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_ABUDHABI_RPM_REF_808,unregistered,delivery_order,16,7,7,0,9,0.438,false,false,only 44% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_AIR_FORMAT_1,sea_docs,delivery_order,8,6,6,0,2,0.75,true,false,,0,1,0,n/a
+FG_DELIVERY_ORDER_AIR_FORMAT_2,sea_docs,delivery_order,10,4,4,0,6,0.4,false,false,only 40% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_AIR_USA_RPM_REF_650,unregistered,delivery_order,6,6,6,0,0,1,true,false,,0,2,0,n/a
+FG_DELIVERY_ORDER_FOR_TRUCKER,sea_docs,delivery_order,6,2,2,0,4,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_FORMAT_16,sea_docs,delivery_order,6,1,1,0,5,0.167,false,false,only 17% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_FORMAT10_RPM_REF_835,unregistered,delivery_order,10,0,0,0,10,0,false,false,only 0% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_FORMAT3_RPM_REF_629,unregistered,delivery_order,10,10,10,0,0,1,true,false,,0,2,0,n/a
+FG_DELIVERY_ORDER_FORMAT8_RPM_REF_777,unregistered,delivery_order,10,4,4,0,6,0.4,false,false,only 40% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_FORMAT9_RPM_REF_803,unregistered,delivery_order,14,2,2,0,12,0.143,false,false,only 14% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_SEA_FORMAT_1,sea_docs,delivery_order,15,6,6,0,9,0.4,false,false,only 40% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_SEA_FORMAT10_RPM_REF_1395,unregistered,delivery_order,12,5,5,0,7,0.417,false,false,only 42% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_SEA_FORMAT3_RPM_REF_560,unregistered,delivery_order,12,5,5,0,7,0.417,false,false,only 42% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_SEA_FORMAT5_RPM_REF_628,unregistered,delivery_order,13,6,6,0,7,0.462,false,false,only 46% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_SEA_FORMAT6_RPM_REF_668,unregistered,delivery_order,12,5,5,0,7,0.417,false,false,only 42% of its data fields have a source,0,,,n/a
+FG_DELIVERY_ORDER_SEA_FORMAT7_RPM_REF_755,unregistered,delivery_order,5,3,3,0,2,0.6,true,false,,0,1,0,n/a
+FG_HBL_FORMAT_1,sea_docs,shipment,20,3,3,0,17,0.15,false,false,only 15% of its data fields have a source,0,,,n/a
+FG_HBL_FORMAT_14,unregistered,shipment,8,4,4,0,4,0.5,true,false,,0,1,0,n/a
+FG_HBL_FORMAT_16,unregistered,shipment,14,5,5,0,9,0.357,false,false,only 36% of its data fields have a source,0,,,n/a
+FG_HBL_FORMAT_20,unregistered,shipment,13,5,5,0,8,0.385,false,false,only 39% of its data fields have a source,0,,,n/a
+FG_HBL_FORMAT10_RPM_REF_472,unregistered,shipment,12,1,1,0,11,0.083,false,false,only 8% of its data fields have a source,0,,,n/a
+FG_HBL_HKG,sea_docs,shipment,15,2,2,0,13,0.133,false,false,only 13% of its data fields have a source,0,,,n/a
+FG_HBL_MAGICLOGISYS,sea_docs,shipment,6,2,2,0,4,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+FG_HBL_ORIGINAL_FORMAT_87,sea_docs,shipment,15,2,2,0,13,0.133,false,false,only 13% of its data fields have a source,0,,,n/a
+FG_INVOICE_FORMAT1_RPM_REF_443,unregistered,invoice,33,18,18,0,15,0.545,true,false,,0,1,5,no totals profile
+FG_INVOICE_FORMAT12_RPM_REF_1199,unregistered,invoice,23,10,10,0,13,0.435,false,false,only 44% of its data fields have a source,0,,,n/a
+FG_INVOICE_FORMAT14_RPM_REF_1325,unregistered,invoice,29,16,16,0,13,0.552,true,false,,0,1,18,no totals profile
+FG_INVOICE_FORMAT15_RPM_REF_1384,unregistered,invoice,20,11,11,0,9,0.55,true,false,,0,1,5,no totals profile
+FG_INVOICE_FORMAT15_STANDARD_RPM_REF_1394,unregistered,invoice,21,11,11,0,10,0.524,true,false,,0,1,5,no totals profile
+FG_INVOICE_FORMAT2_FCY_RPM_REF_490,unregistered,invoice,21,11,11,0,10,0.524,true,false,,0,1,5,no totals profile
+FG_INVOICE_FORMAT3_FCY_RPM_REF_1012,unregistered,invoice,20,11,11,0,9,0.55,true,false,,0,1,7,no totals profile
+FG_INVOICE_FORMAT3_RPM_REF_478,unregistered,invoice,30,17,17,0,13,0.567,true,false,,0,1,5,no totals profile
+FG_INVOICE_FORMAT4_FCY_RPM_REF_1433,unregistered,invoice,21,11,11,0,10,0.524,true,false,,0,2,5,no totals profile
+FG_INVOICE_FORMAT5_RPM_REF_672,unregistered,invoice,23,17,17,0,6,0.739,true,false,,0,1,21,no totals profile
+FG_INVOICE_FORMAT6_RPM_REF_691,unregistered,invoice,17,8,8,0,9,0.471,false,false,only 47% of its data fields have a source,0,,,n/a
+FG_INVOICE_FORMAT7_INR_RPM_REF_897,unregistered,invoice,24,15,15,0,9,0.625,true,false,,0,1,6,no totals profile
+FG_INVOICE_FORMAT7_RPM_REF_894,unregistered,invoice,18,11,11,0,7,0.611,true,false,,0,1,6,no totals profile
+FG_INVOICE_FORMAT8_RPM_REF_1011,unregistered,invoice,32,18,18,0,14,0.563,true,false,,0,1,5,no totals profile
+FG_INVOICE_FORMAT9_RPM_REF_1055,unregistered,invoice,27,17,17,0,10,0.63,true,false,,0,1,6,no totals profile
+FG_INVOICE_SINGAPORE_RPM_REF_1069,unregistered,invoice,18,3,3,0,15,0.167,false,false,only 17% of its data fields have a source,0,,,n/a
+FG_KSA_INVOICE_ARABIC_RPM_REF_1161,unregistered,invoice,23,7,7,0,16,0.304,false,false,only 30% of its data fields have a source,0,,,n/a
+FG_NOTICE_OF_DELIVERY_RPM_REF_905,unregistered,job,9,4,4,0,5,0.444,false,false,only 44% of its data fields have a source,0,,,n/a
+FG_OVERSEAS_DEBIT_NOTE_FORMAT2_RPM_REF_1343,unregistered,credit_debit,18,11,11,0,7,0.611,true,false,,0,1,21,no totals profile
+FG_PROOF_OF_DELIVERY_RPM_REF_847,unregistered,shipment,17,2,2,0,15,0.118,false,false,only 12% of its data fields have a source,0,,,n/a
+FG_SIMPLE_INVOICE_INDIA_RPM_REF_862,unregistered,invoice,17,2,2,0,15,0.118,false,false,only 12% of its data fields have a source,0,,,n/a
+FG_SIMPLE_INVOICE_RPM_REF_861,unregistered,invoice,19,8,8,0,11,0.421,false,false,only 42% of its data fields have a source,0,,,n/a
+FG_SIMPLE_INVOICE_USA_RPM_REF_1274,unregistered,invoice,20,8,8,0,12,0.4,false,false,only 40% of its data fields have a source,0,,,n/a
+FG_STANDARD_COURIER_INVOICE_RPM_REF_773,unregistered,invoice,8,1,1,0,7,0.125,false,false,only 13% of its data fields have a source,0,,,n/a
+FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_939,unregistered,invoice,21,12,12,0,9,0.571,true,false,,0,1,9,no totals profile
+FG_STANDARD_INVOICE_ARABIC_FORMAT1_RPM_REF_941,unregistered,invoice,21,12,12,0,9,0.571,true,false,,0,1,9,no totals profile
+FG_STANDARD_INVOICE_ARABIC_FORMAT2_RPM_REF_1171,unregistered,invoice,27,12,12,0,15,0.444,false,false,only 44% of its data fields have a source,0,,,n/a
+FG_STANDARD_INVOICE_ARABIC_FORMAT3_RPM_REF_1183,unregistered,invoice,28,10,10,0,18,0.357,false,false,only 36% of its data fields have a source,0,,,n/a
+FG_STANDARD_INVOICE_ARABIC_FORMAT4_RPM_REF_1215,unregistered,invoice,27,12,12,0,15,0.444,false,false,only 44% of its data fields have a source,0,,,n/a
+FG_STANDARD_INVOICE_ARABIC_FORMAT5_RPM_REF_1385,unregistered,invoice,26,11,11,0,15,0.423,false,false,only 42% of its data fields have a source,0,,,n/a
+FG_STANDARD_INVOICE_ARABIC_FORMAT7_RPM_REF_1400,unregistered,invoice,24,8,8,0,16,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+FG_STANDARD_INVOICE_ARABIC_OMAN_RPM_REF_747,unregistered,invoice,31,12,12,0,19,0.387,false,false,only 39% of its data fields have a source,0,,,n/a
+FG_STANDARD_INVOICE_ARABIC_RPM_REF_464,unregistered,invoice,29,12,12,0,17,0.414,false,false,only 41% of its data fields have a source,0,,,n/a
+FG_STANDARD_INVOICE_FCY_RPM_REF_1029,unregistered,invoice,23,13,13,0,10,0.565,true,false,,0,1,27,no totals profile
+FG_STANDARD_INVOICE_FORMAT2_RPM_REF_778,unregistered,invoice,20,14,14,0,6,0.7,true,false,,0,1,21,no totals profile
+FG_STANDARD_INVOICE_FORMAT4_RPM_REF_1419,unregistered,invoice,24,18,18,0,6,0.75,true,false,,0,1,24,no totals profile
+FG_STANDARD_INVOICE_RPM_REF_217,unregistered,invoice,21,17,17,0,4,0.81,true,false,,0,1,21,no totals profile
+FG_STANDARD_INVOICE_TANZANIA_RPM_REF_1431,unregistered,invoice,20,8,8,0,12,0.4,false,false,only 40% of its data fields have a source,0,,,n/a
+FG_STANDARD_TAX_INVOICE_FORMAT10_RPM_REF_801,unregistered,invoice,26,18,18,0,8,0.692,true,false,,0,1,22,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT12_LETTERHEAD_RPM_REF_869,unregistered,invoice,28,17,17,0,11,0.607,true,false,,0,1,20,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT13_RPM_REF_882,unregistered,invoice,26,15,15,0,11,0.577,true,false,,0,1,18,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT14_RPM_REF_921,unregistered,invoice,29,17,17,0,12,0.586,true,false,,0,1,19,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT15_RPM_REF_997,unregistered,invoice,11,2,2,0,9,0.182,false,false,only 18% of its data fields have a source,0,,,n/a
+FG_STANDARD_TAX_INVOICE_FORMAT16_CUM_AN_RPM_REF_1186,unregistered,invoice,53,18,18,0,35,0.34,false,false,only 34% of its data fields have a source,0,,,n/a
+FG_STANDARD_TAX_INVOICE_FORMAT16_RPM_REF_1170,unregistered,invoice,30,20,20,0,10,0.667,true,false,,0,1,12,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT17_RPM_REF_1309,unregistered,invoice,26,12,12,0,14,0.462,false,false,only 46% of its data fields have a source,0,,,n/a
+FG_STANDARD_TAX_INVOICE_FORMAT18_RPM_REF_1319,unregistered,invoice,28,13,13,0,15,0.464,false,false,only 46% of its data fields have a source,0,,,n/a
+FG_STANDARD_TAX_INVOICE_FORMAT19_RPM_REF_1344,unregistered,invoice,22,16,16,0,6,0.727,true,false,,0,1,11,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT20_RPM_REF_1345,unregistered,invoice,32,20,20,0,12,0.625,true,false,,0,1,14,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT21_RPM_REF_1407,unregistered,invoice,30,17,17,0,13,0.567,true,false,,0,1,22,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT22_RPM_REF_1425,unregistered,invoice,18,10,10,0,8,0.556,true,false,,0,1,10,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT3_RPM_REF_687,unregistered,invoice,23,17,17,0,6,0.739,true,false,,0,1,11,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT5_RPM_REF_699,unregistered,invoice,23,16,16,0,7,0.696,true,false,,0,1,20,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT6_RPM_REF_751,unregistered,invoice,16,13,13,0,3,0.813,true,false,,0,1,22,no totals profile
+FG_STANDARD_TAX_INVOICE_FORMAT9_RPM_REF_799,unregistered,invoice,24,12,12,0,12,0.5,true,false,,0,1,20,no totals profile
+FG_STANDARD_TAX_INVOICE_RPM_REF_385,unregistered,invoice,23,16,16,0,7,0.696,true,false,,0,1,23,no totals profile
+FG_TAX_INVOICE_INDIA_FORMAT1_RPM_REF_796,unregistered,invoice,21,5,5,0,16,0.238,false,false,only 24% of its data fields have a source,0,,,n/a
+FG_TAX_INVOICE_INDIA_FORMAT2_RPM_REF_911,unregistered,invoice,33,14,14,0,19,0.424,false,false,only 42% of its data fields have a source,0,,,n/a
+FG_TAX_INVOICE_INDIA_FORMAT3_RPM_REF_977,unregistered,invoice,32,14,14,0,18,0.438,false,false,only 44% of its data fields have a source,0,,,n/a
+FG_TAX_INVOICE_INDIA_FORMAT4_RPM_REF_1007,unregistered,invoice,58,23,23,0,35,0.397,false,false,only 40% of its data fields have a source,0,,,n/a
+FG_TAX_INVOICE_INDIA_FORMAT5_RPM_REF_1009,unregistered,invoice,22,11,11,0,11,0.5,true,false,,0,1,3,no totals profile
+FG_TAX_INVOICE_INDIA_FORMAT6_RPM_REF_1059,unregistered,invoice,37,15,15,0,22,0.405,false,false,only 41% of its data fields have a source,0,,,n/a
+FG_TAX_INVOICE_INDIA_FORMAT7_RPM_REF_1067,unregistered,invoice,34,14,14,0,20,0.412,false,false,only 41% of its data fields have a source,0,,,n/a
+FG_TAX_INVOICE_INDIA_FORMAT8_RPM_REF_1159,unregistered,invoice,32,15,15,0,17,0.469,false,false,only 47% of its data fields have a source,0,,,n/a
+FG_TAX_INVOICE_INDIA_RPM_REF_237,unregistered,invoice,37,12,12,0,25,0.324,false,false,only 32% of its data fields have a source,0,,,n/a
+FG_TAX_INVOICE_MALAYSIA_RPM_REF_736,unregistered,invoice,26,14,14,0,12,0.538,true,false,,0,1,6,no totals profile
+FG_TAX_INVOICE_SINGAPORE_RPM_REF_737,unregistered,invoice,26,15,15,0,11,0.577,true,false,,0,1,6,no totals profile
+FREIGHT_MANIFEST_FOR_GROUPAGE_IMPORTS_LCL_REPORT_FORMAT,sea_docs,manifest,83,6,6,0,77,0.072,false,false,only 7% of its data fields have a source,0,,,n/a
+FREIGHT_MANIFEST_LCL_EXPORTS_REPORT_FORMAT,sea_docs,manifest,84,45,45,0,39,0.536,true,false,,0,2,0,n/a
+GL_LISTING_SORT_BY_CUSTOMER_CODE_VOUCHER_REPORT_FORMAT,finance,voucher,35,2,2,0,33,0.057,false,false,only 6% of its data fields have a source,0,,,n/a
+GL_REPORT_CURRENCY_WISE_VOUCHER_REPORT_FORMAT,finance,voucher,55,0,0,0,55,0,false,false,only 0% of its data fields have a source,0,,,n/a
+GL_REPORT_VOUCHER_REPORT_FORMAT,finance,voucher,72,1,1,0,71,0.014,false,false,only 1% of its data fields have a source,0,,,n/a
+HAWB_DRAFT_REPORT_FORMAT,air_docs,shipment,21,2,2,0,19,0.095,false,false,only 10% of its data fields have a source,0,,,n/a
+HAWB_DRAFT_REPORT_FORMAT_1,air_docs,shipment,153,27,27,0,126,0.176,false,false,only 18% of its data fields have a source,0,,,n/a
+HAWB_DRAFT_REPORT_FORMAT_2,air_docs,shipment,20,3,3,0,17,0.15,false,false,only 15% of its data fields have a source,0,,,n/a
+HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1,air_docs,shipment,14,0,0,0,14,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2,air_docs,shipment,16,0,0,0,16,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_10,sea_docs,shipment,19,4,4,0,15,0.211,false,false,only 21% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_100,sea_docs,shipment,22,7,7,0,15,0.318,false,false,only 32% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_101,sea_docs,shipment,8,3,3,0,5,0.375,false,false,only 38% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_102,sea_docs,shipment,8,3,3,0,5,0.375,false,false,only 38% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_107,sea_docs,shipment,5,1,1,0,4,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_109,sea_docs,shipment,29,5,5,0,24,0.172,false,false,only 17% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_11,sea_docs,shipment,20,6,6,0,14,0.3,false,false,only 30% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_114,sea_docs,shipment,9,5,5,0,4,0.556,true,false,,0,1,0,n/a
+HBL_DRAFT_REPORT_FORMAT_116,sea_docs,shipment,7,3,3,0,4,0.429,false,false,only 43% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_117,sea_docs,shipment,6,1,1,0,5,0.167,false,false,only 17% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_118,sea_docs,shipment,7,0,0,0,7,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_12,sea_docs,shipment,19,8,8,0,11,0.421,false,false,only 42% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_120,sea_docs,shipment,20,4,4,0,16,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_122,sea_docs,shipment,10,2,2,0,8,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_127,sea_docs,shipment,6,0,0,0,6,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_128,sea_docs,shipment,12,3,3,0,9,0.25,false,false,only 25% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_129,sea_docs,shipment,8,2,2,0,6,0.25,false,false,only 25% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_13,sea_docs,shipment,17,3,3,0,14,0.176,false,false,only 18% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_130,sea_docs,shipment,5,0,0,0,5,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_132,sea_docs,shipment,7,0,0,0,7,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_134,sea_docs,shipment,8,0,0,0,8,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_135,sea_docs,shipment,5,4,4,0,1,0.8,true,false,,0,1,0,n/a
+HBL_DRAFT_REPORT_FORMAT_136,sea_docs,shipment,9,4,4,0,5,0.444,false,false,only 44% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_137,sea_docs,shipment,30,13,13,0,17,0.433,false,false,only 43% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_138,sea_docs,shipment,11,5,5,0,6,0.455,false,false,only 46% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_139,sea_docs,shipment,9,2,2,0,7,0.222,false,false,only 22% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_14,sea_docs,shipment,17,5,5,0,12,0.294,false,false,only 29% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_140,sea_docs,shipment,5,0,0,0,5,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_141,sea_docs,shipment,5,0,0,0,5,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_142,sea_docs,shipment,16,4,4,0,12,0.25,false,false,only 25% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_143,sea_docs,shipment,13,6,6,0,7,0.462,false,false,only 46% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_144,sea_docs,shipment,12,4,4,0,8,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_145,sea_docs,shipment,13,7,7,0,6,0.538,true,false,,0,1,0,n/a
+HBL_DRAFT_REPORT_FORMAT_146,sea_docs,shipment,11,4,4,0,7,0.364,false,false,only 36% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_147,sea_docs,shipment,35,11,11,0,24,0.314,false,false,only 31% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_148,sea_docs,shipment,8,2,2,0,6,0.25,false,false,only 25% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_149,sea_docs,shipment,16,5,5,0,11,0.313,false,false,only 31% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_15,sea_docs,shipment,33,6,6,0,27,0.182,false,false,only 18% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_151,sea_docs,shipment,22,10,10,0,12,0.455,false,false,only 46% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_16,sea_docs,shipment,15,5,5,0,10,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_17,sea_docs,shipment,24,5,5,0,19,0.208,false,false,only 21% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_171,sea_docs,shipment,14,5,5,0,9,0.357,false,false,only 36% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_172,sea_docs,shipment,17,6,6,0,11,0.353,false,false,only 35% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_18,sea_docs,shipment,16,6,6,0,10,0.375,false,false,only 38% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_19,sea_docs,shipment,17,6,6,0,11,0.353,false,false,only 35% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_2,sea_docs,shipment,20,4,4,0,16,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_20,sea_docs,shipment,17,6,6,0,11,0.353,false,false,only 35% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_23,sea_docs,shipment,14,4,4,0,10,0.286,false,false,only 29% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_25,sea_docs,shipment,24,7,7,0,17,0.292,false,false,only 29% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_26,sea_docs,shipment,14,5,5,0,9,0.357,false,false,only 36% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_27,sea_docs,shipment,15,3,3,0,12,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_29,sea_docs,shipment,1,0,0,0,1,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_33,sea_docs,shipment,8,0,0,0,8,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_36,sea_docs,shipment,8,0,0,0,8,0,false,false,only 0% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_4,sea_docs,shipment,20,4,4,0,16,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_40,sea_docs,shipment,18,4,4,0,14,0.222,false,false,only 22% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_41,sea_docs,shipment,12,4,4,0,8,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_42,sea_docs,shipment,13,3,3,0,10,0.231,false,false,only 23% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_43,sea_docs,shipment,11,5,5,0,6,0.455,false,false,only 46% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_44,sea_docs,shipment,23,4,4,0,19,0.174,false,false,only 17% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_45,sea_docs,shipment,10,5,5,0,5,0.5,true,false,,0,1,0,n/a
+HBL_DRAFT_REPORT_FORMAT_46,sea_docs,shipment,18,5,5,0,13,0.278,false,false,only 28% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_47,sea_docs,shipment,13,5,5,0,8,0.385,false,false,only 39% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_48,sea_docs,shipment,24,6,6,0,18,0.25,false,false,only 25% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_49,sea_docs,shipment,15,7,7,0,8,0.467,false,false,only 47% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_5,sea_docs,shipment,17,5,5,0,12,0.294,false,false,only 29% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_50,sea_docs,shipment,16,4,4,0,12,0.25,false,false,only 25% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_51,sea_docs,shipment,18,5,5,0,13,0.278,false,false,only 28% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_52,sea_docs,shipment,19,7,7,0,12,0.368,false,false,only 37% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_53,sea_docs,shipment,16,4,4,0,12,0.25,false,false,only 25% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_54,sea_docs,shipment,14,5,5,0,9,0.357,false,false,only 36% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_55,sea_docs,shipment,12,4,4,0,8,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_56,sea_docs,shipment,15,9,9,0,6,0.6,true,false,,0,1,0,n/a
+HBL_DRAFT_REPORT_FORMAT_59,sea_docs,shipment,19,8,8,0,11,0.421,false,false,only 42% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_6,sea_docs,shipment,16,2,2,0,14,0.125,false,false,only 13% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_60,sea_docs,shipment,18,5,5,0,13,0.278,false,false,only 28% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_61,sea_docs,shipment,19,5,5,0,14,0.263,false,false,only 26% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_63,sea_docs,shipment,19,7,7,0,12,0.368,false,false,only 37% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_64,sea_docs,shipment,12,4,4,0,8,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_65,sea_docs,shipment,17,5,5,0,12,0.294,false,false,only 29% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_66,sea_docs,shipment,26,4,4,0,22,0.154,false,false,only 15% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_67,sea_docs,shipment,15,4,4,0,11,0.267,false,false,only 27% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_68,sea_docs,shipment,14,4,4,0,10,0.286,false,false,only 29% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_69,sea_docs,shipment,14,5,5,0,9,0.357,false,false,only 36% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_7,sea_docs,shipment,17,3,3,0,14,0.176,false,false,only 18% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_70,sea_docs,shipment,13,4,4,0,9,0.308,false,false,only 31% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_72,sea_docs,shipment,31,9,9,0,22,0.29,false,false,only 29% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_73,sea_docs,shipment,13,1,1,0,12,0.077,false,false,only 8% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_75,sea_docs,shipment,21,6,6,0,15,0.286,false,false,only 29% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_77,sea_docs,shipment,9,3,3,0,6,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_8,sea_docs,shipment,19,6,6,0,13,0.316,false,false,only 32% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_83,sea_docs,shipment,15,6,6,0,9,0.4,false,false,only 40% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_84,sea_docs,shipment,16,5,5,0,11,0.313,false,false,only 31% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_85,sea_docs,shipment,36,2,2,0,34,0.056,false,false,only 6% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_86,sea_docs,shipment,15,9,9,0,6,0.6,true,false,,0,1,0,n/a
+HBL_DRAFT_REPORT_FORMAT_87,sea_docs,shipment,20,6,6,0,14,0.3,false,false,only 30% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_88,sea_docs,shipment,25,4,4,0,21,0.16,false,false,only 16% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_89,sea_docs,shipment,10,4,4,0,6,0.4,false,false,only 40% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_9,sea_docs,shipment,26,5,5,0,21,0.192,false,false,only 19% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_90,sea_docs,shipment,12,5,5,0,7,0.417,false,false,only 42% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_92,sea_docs,shipment,21,9,9,0,12,0.429,false,false,only 43% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_95,sea_docs,shipment,17,4,4,0,13,0.235,false,false,only 24% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_96,sea_docs,shipment,13,6,6,0,7,0.462,false,false,only 46% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_97,sea_docs,shipment,13,5,5,0,8,0.385,false,false,only 39% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_99,sea_docs,shipment,17,4,4,0,13,0.235,false,false,only 24% of its data fields have a source,0,,,n/a
+HBL_DRAFT_REPORT_FORMAT_JASPER,sea_docs,shipment,20,4,4,0,16,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+IMPORT_CARGO_MANIFEST_REPORT_FORMAT,sea_docs,manifest,32,7,7,0,25,0.219,false,false,only 22% of its data fields have a source,0,,,n/a
+IMPORT_SECURITY_FILLING_JASPER_AMS_REPORT_FORMAT,sea_docs,job,25,4,4,0,21,0.16,false,false,only 16% of its data fields have a source,0,,,n/a
+IMPORT_TALLY_SHEET_REPORT_FORMAT,sea_docs,job,17,8,8,0,9,0.471,false,false,only 47% of its data fields have a source,0,,,n/a
+INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA,commercial,invoice,46,21,21,0,25,0.457,true,true,,0,1,26,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE,commercial,invoice,29,20,20,0,9,0.69,true,true,,0,1,19,adds up 15/15
+INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND,commercial,invoice,40,24,24,0,16,0.6,true,true,,0,1,23,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED,commercial,invoice,26,16,16,0,10,0.615,true,true,,0,1,18,adds up 15/15
+INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA,commercial,invoice,20,8,8,0,12,0.4,true,true,,0,1,8,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_14_INVOICE,commercial,invoice,34,19,19,0,15,0.559,true,true,,0,1,5,mismatch 6/15: subtotal does not reach the total
+INVOICE_REPORT_FORMAT_15_INVOICE_FCY,commercial,invoice,22,13,13,0,9,0.591,true,true,,0,1,7,adds up 15/15
+INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED,commercial,invoice,34,22,22,0,12,0.647,true,true,,0,1,17,mismatch 6/15: subtotal does not reach the total
+INVOICE_REPORT_FORMAT_17_INVOICE_JASPER,commercial,invoice,28,20,20,0,8,0.714,true,true,,0,1,5,mismatch 6/15: subtotal does not reach the total
+INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE,commercial,invoice,29,4,4,0,25,0.138,true,true,,0,1,17,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM,commercial,credit_debit,19,10,10,0,9,0.526,true,true,,0,1,7,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA,commercial,invoice,22,5,5,0,17,0.227,true,true,,0,1,3,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA,commercial,invoice,55,27,27,0,28,0.491,true,true,,0,1,31,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE,commercial,invoice,31,14,14,0,17,0.452,true,true,,0,1,39,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE,commercial,invoice,32,15,15,0,17,0.469,true,true,,0,1,31,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE,commercial,invoice,34,21,21,0,13,0.618,true,true,,0,1,17,mismatch 6/15: subtotal does not reach the total
+INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA,commercial,invoice,43,21,21,0,22,0.488,true,true,,0,1,30,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA,commercial,invoice,42,15,15,0,27,0.357,true,true,,0,1,11,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE,commercial,invoice,29,14,14,0,15,0.483,true,true,,0,1,16,mismatch 15/15: no total printed
+INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC,commercial,invoice,36,28,28,0,8,0.778,true,true,,0,1,21,adds up 15/15
+INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA,commercial,invoice,27,15,15,0,12,0.556,true,true,,0,1,16,adds up 15/15
+ISF_FILING_DOCUMENT_REPORT_FORMAT,sea_docs,shipment,19,2,2,0,17,0.105,false,false,only 11% of its data fields have a source,0,,,n/a
+JOB_CARD_REPORT_FORMAT,other,job,46,7,7,0,39,0.152,false,false,only 15% of its data fields have a source,0,,,n/a
+JOB_HOUSE_RECORD_LIST_REPORT_FORMAT,air_docs,job,16,2,2,0,14,0.125,false,false,only 13% of its data fields have a source,0,,,n/a
+JOB_HOUSE_RECORD_LIST_REPORT_FORMAT_1,air_docs,job,20,4,4,0,16,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+JOB_HOUSES_RECORD_LIST_REPORT_FORMAT,sea_docs,job,41,3,3,0,38,0.073,false,false,only 7% of its data fields have a source,0,,,n/a
+JOURNAL_VOUCHER_REPORT_FORMAT_1,finance,voucher,35,6,6,0,29,0.171,false,false,only 17% of its data fields have a source,0,,,n/a
+JOURNAL_VOUCHER_REPORT_FORMAT_2,finance,voucher,44,4,4,0,40,0.091,false,false,only 9% of its data fields have a source,0,,,n/a
+LAND_FREIGHT_TRANSPORTATION_INVOICE_RPM_REF_525,unregistered,invoice,26,4,4,0,22,0.154,false,false,only 15% of its data fields have a source,0,,,n/a
+LAND_FREIGHT_TRANSPORTATION_INVOICEFORMAT1_RPM_REF_1485,unregistered,invoice,14,9,9,0,5,0.643,true,false,,0,1,17,no totals profile
+LETTER_OF_GUARANTEE_REPORT_FORMAT,sea_docs,shipment,10,1,1,0,9,0.1,false,false,only 10% of its data fields have a source,0,,,n/a
+LOADING_CONFIRMATION_REPORT_FORMAT,other,shipment,24,9,9,0,15,0.375,false,false,only 38% of its data fields have a source,0,,,n/a
+MAWB_DRAFT_REPORT_FORMAT,air_docs,shipment,143,0,0,0,143,0,false,false,only 0% of its data fields have a source,0,,,n/a
+MAWB_ORIGINAL_PREPRINTED_KC_REPORT_FORMAT,air_docs,shipment,144,0,0,0,144,0,false,false,only 0% of its data fields have a source,0,,,n/a
+OUTSTANDING_LETTER_REPORT_FORMAT_1_OUTSTANDING_LETTER,finance,job,42,0,0,0,42,0,false,false,only 0% of its data fields have a source,0,,,n/a
+OUTSTANDING_LETTER_REPORT_FORMAT_2_OUTSTANDING_LETTER_JASPER,finance,job,38,0,0,0,38,0,false,false,only 0% of its data fields have a source,0,,,n/a
+OUTSTANDING_LETTER_REPORT_FORMAT_3_OUTSTANDING_LETTER_WITH_AGING,finance,job,63,5,5,0,58,0.079,false,false,only 8% of its data fields have a source,0,,,n/a
+OUTSTANDING_LETTER_REPORT_FORMAT_4_OUTSTANDING_LETTER_WITH_BL_DETAILS,finance,job,76,2,2,0,74,0.026,false,false,only 3% of its data fields have a source,0,,,n/a
+OUTSTANDING_LETTER_REPORT_FORMAT_5_OUTSTANDING_LETTER_WITH_INVOICES,finance,job,48,0,0,0,48,0,false,false,only 0% of its data fields have a source,0,,,n/a
+PAYMENT_VOUCHER_REPORT_FORMAT_1,finance,voucher,10,2,2,0,8,0.2,false,false,only 20% of its data fields have a source,0,,,n/a
+PAYMENT_VOUCHER_REPORT_FORMAT_2,finance,voucher,11,1,1,0,10,0.091,false,false,only 9% of its data fields have a source,0,,,n/a
+PAYMENT_VOUCHER_REPORT_FORMAT_3,finance,voucher,10,5,5,0,5,0.5,true,false,,0,1,0,n/a
+PAYMENT_VOUCHER_REPORT_FORMAT_4_VIETNAM,finance,voucher,20,1,1,0,19,0.05,false,false,only 5% of its data fields have a source,0,,,n/a
+PICKUP_CONFIRMATION_REPORT_FORMAT,sea_docs,shipment,24,9,9,0,15,0.375,false,false,only 38% of its data fields have a source,0,,,n/a
+PRE_ALERT_AIR_REPORT_FORMAT,other,shipment,35,6,6,0,29,0.171,false,false,only 17% of its data fields have a source,0,,,n/a
+PRE_ALERT_TO_CLIENT_REPORT_FORMAT,other,shipment,14,5,5,0,9,0.357,false,false,only 36% of its data fields have a source,0,,,n/a
+PREALERT_USA_JASPER_REPORT_FORMAT,sea_docs,shipment,23,8,8,0,15,0.348,false,false,only 35% of its data fields have a source,0,,,n/a
+PROFIT_AND_LOSS_REPORT_FORMAT_1_LANDSCAPE,finance,job,21,1,1,0,20,0.048,false,false,only 5% of its data fields have a source,0,,,n/a
+PROFIT_AND_LOSS_REPORT_FORMAT_2_JASPER,finance,job,18,0,0,0,18,0,false,false,only 0% of its data fields have a source,0,,,n/a
+PROFIT_AND_LOSS_REPORT_FORMAT_3_SUMMARY_PERIODWISE,finance,job,52,4,4,0,48,0.077,false,false,only 8% of its data fields have a source,0,,,n/a
+PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT,commercial,invoice,34,15,15,0,19,0.441,true,true,,0,1,32,mismatch 15/15: no total printed
+PROFORMA_INVOICE_FORMAT_1_RPM_REF_815,unregistered,invoice,26,14,14,0,12,0.538,true,false,,0,1,48,no totals profile
+PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES,commercial,invoice,38,23,23,0,15,0.605,true,true,,0,1,25,mismatch 15/15: no total printed
+PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES,commercial,invoice,23,9,9,0,14,0.391,true,true,,0,1,7,mismatch 15/15: no total printed
+PROOF_OF_DELIVERY_REPORT_FORMAT,sea_docs,shipment,31,10,10,0,21,0.323,false,false,only 32% of its data fields have a source,0,,,n/a
+PROOF_OF_DELIVERY_RPM_REF_275,unregistered,shipment,17,2,2,0,15,0.118,false,false,only 12% of its data fields have a source,0,,,n/a
+PURCHASE_INVOICE_REPORT_FORMAT_1,commercial,invoice,15,5,5,0,10,0.333,true,true,,0,1,4,mismatch 15/15: no total printed
+PURCHASE_INVOICE_REPORT_FORMAT_2,commercial,invoice,19,6,6,0,13,0.316,true,true,,0,1,4,mismatch 15/15: no total printed
+RECEIPT_VOUCHER_REPORT_FORMAT_1,finance,voucher,5,0,0,0,5,0,false,false,only 0% of its data fields have a source,0,,,n/a
+RECEIPT_VOUCHER_REPORT_FORMAT_2,finance,voucher,9,2,2,0,7,0.222,false,false,only 22% of its data fields have a source,0,,,n/a
+RIDER_SHEET_FOR_EXPORT_MANIFEST_REPORT_FORMAT,sea_docs,manifest,5,2,2,0,3,0.4,false,false,only 40% of its data fields have a source,0,,,n/a
+SAILING_CONFIRMATION_REPORT_FORMAT,sea_docs,shipment,10,8,8,0,2,0.8,true,false,,0,1,0,n/a
+SEA_ARRIVAL_NOTICE_FCL_VIETNAM_RPM_REF_420,unregistered,arrival_notice,7,0,0,0,7,0,false,false,only 0% of its data fields have a source,0,,,n/a
+SEA_ARRIVAL_NOTICE_LCL_VIETNAM_RPM_REF_422,unregistered,arrival_notice,6,0,0,0,6,0,false,false,only 0% of its data fields have a source,0,,,n/a
+SHIPMENT_FREIGHT_MANIFEST_REPORT_FORMAT,sea_docs,manifest,16,2,2,0,14,0.125,false,false,only 13% of its data fields have a source,0,,,n/a
+SHIPMENT_PROFIT_AND_LOSS_REPORT_FORMAT,sea_docs,job,63,8,8,0,55,0.127,false,false,only 13% of its data fields have a source,0,,,n/a
+SHIPMENT_STATUS_CONFIRMATION_REPORT_FORMAT,sea_docs,shipment,14,3,3,0,11,0.214,false,false,only 21% of its data fields have a source,0,,,n/a
+SHIPPING_INSTRUCTION_REPORT_FORMAT,sea_docs,shipment,28,5,5,0,23,0.179,false,false,only 18% of its data fields have a source,0,,,n/a
+SIMPLE_INVOICE_INDIA_RPM_REF_575,unregistered,invoice,18,4,4,0,14,0.222,false,false,only 22% of its data fields have a source,0,,,n/a
+SIMPLE_INVOICE_INDIA_WITH_OS_RPM_REF_767,unregistered,invoice,26,9,9,0,17,0.346,false,false,only 35% of its data fields have a source,0,,,n/a
+SIMPLE_INVOICE_RPM_REF_325,unregistered,invoice,19,8,8,0,11,0.421,false,false,only 42% of its data fields have a source,0,,,n/a
+SIMPLE_INVOICE_WITH_OS_RPM_REF_76,unregistered,invoice,28,13,13,0,15,0.464,false,false,only 46% of its data fields have a source,0,,,n/a
+SIMPLE_INVOICEVAT_RPM_REF_673,unregistered,invoice,27,11,11,0,16,0.407,false,false,only 41% of its data fields have a source,0,,,n/a
+STANDARD_INVOICE_FCY_FORMAT2_RPM_REF_850,unregistered,invoice,9,1,1,0,8,0.111,false,false,only 11% of its data fields have a source,0,,,n/a
+STANDARD_INVOICE_FCY_RPM_REF_486,unregistered,invoice,20,8,8,0,12,0.4,false,false,only 40% of its data fields have a source,0,,,n/a
+STANDARD_INVOICE_KAMPALA_RPM_REF_879,unregistered,invoice,23,9,9,0,14,0.391,false,false,only 39% of its data fields have a source,0,,,n/a
+STANDARD_INVOICE_RPM_REF_79,unregistered,invoice,0,0,0,0,0,0,false,false,excluded from the breadth pass,0,,,n/a
+STANDARD_INVOICELAND_RPM_REF_419,unregistered,invoice,27,12,12,0,15,0.444,false,false,only 44% of its data fields have a source,0,,,n/a
+STANDARD_INVOICEMALAYSIA_RPM_REF_611,unregistered,invoice,25,12,12,0,13,0.48,false,false,only 48% of its data fields have a source,0,,,n/a
+STANDARD_INVOICEUSA_FORMAT_2_RPM_REF_698,unregistered,invoice,19,4,4,0,15,0.211,false,false,only 21% of its data fields have a source,0,,,n/a
+STANDARD_INVOICEUSA_RPM_REF_412,unregistered,invoice,12,3,3,0,9,0.25,false,false,only 25% of its data fields have a source,0,,,n/a
+STATEMENT_OF_ACCOUNTS_REPORT_FORMAT,finance,job,136,2,2,0,134,0.015,false,false,only 2% of its data fields have a source,0,,,n/a
+STUFFING_REPORT_FORMAT,sea_docs,shipment,64,8,8,0,56,0.125,false,false,only 13% of its data fields have a source,0,,,n/a
+STUFFING_REPORT_JASPER_REPORT_FORMAT,sea_docs,shipment,88,54,54,0,34,0.614,true,false,,0,2,5,n/a
+SUMMARY_INVOICE_RPM_REF_202,unregistered,invoice,21,7,7,0,14,0.333,false,false,only 33% of its data fields have a source,0,,,n/a
+SURRENDERED_LETTER_REPORT_FORMAT,sea_docs,shipment,13,4,4,0,9,0.308,false,false,only 31% of its data fields have a source,0,,,n/a
+TAX_INVOICE_INDIA_FORMAT1_RPM_REF_458,unregistered,invoice,27,14,14,0,13,0.519,true,false,,0,1,41,no totals profile
+TAX_INVOICE_INDIA_FORMAT2_RPM_REF_449,unregistered,invoice,26,13,13,0,13,0.5,true,false,,0,1,51,no totals profile
+TAX_INVOICE_INDIA_REIMBURSEMENT_BILL_RPM_REF_713,unregistered,invoice,27,12,12,0,15,0.444,false,false,only 44% of its data fields have a source,0,,,n/a
+TAX_INVOICE_INDIA_RPM_REF_351,unregistered,invoice,27,12,12,0,15,0.444,false,false,only 44% of its data fields have a source,0,,,n/a
+TERMINAL_DEPARTURE_REPORT_TDR_REPORT_FORMAT,sea_docs,shipment,8,4,4,0,4,0.5,true,false,,0,1,6,n/a
+TRANSSHIPMENT_LIST_REPORT_FORMAT,ops_list,shipment,31,2,2,0,29,0.065,false,false,only 7% of its data fields have a source,0,,,n/a
+TRIAL_BALANCE_REPORT_FORMAT_1_TRIAL_BALANCE_SUMMARY,finance,job,168,43,43,0,125,0.256,false,false,only 26% of its data fields have a source,0,,,n/a
+TRIAL_BALANCE_REPORT_FORMAT_2_TRIAL_BALANCE_SUMMARY,finance,job,27,0,0,0,27,0,false,false,only 0% of its data fields have a source,0,,,n/a
+TRIAL_BALANCE_REPORT_FORMAT_3_TRIAL_BALANCE_SUMMARY_BRANCHWISE,finance,job,44,3,3,0,41,0.068,false,false,only 7% of its data fields have a source,0,,,n/a
+TRIAL_BALANCE_REPORT_FORMAT_4_TRIAL_BALANCE_SUMMARY_EXTENDED,finance,job,168,43,43,0,125,0.256,false,false,only 26% of its data fields have a source,0,,,n/a
+TRIAL_BALANCE_REPORT_FORMAT_5_TRIAL_BALANCE_SUMMARY_EXTENDED,finance,job,114,0,0,0,114,0,false,false,only 0% of its data fields have a source,0,,,n/a
+TRIAL_BALANCE_REPORT_FORMAT_6_TRIAL_BALANCE_SUMMARY_EXTENDED_BRANCHWISE,finance,job,44,3,3,0,41,0.068,false,false,only 7% of its data fields have a source,0,,,n/a
+TRUCK_CARGO_PICKUP_REQUEST_REPORT_FORMAT,sea_docs,shipment,26,6,6,0,20,0.231,false,false,only 23% of its data fields have a source,0,,,n/a
+WAREHOUSE_INVOICE_INDIA_FORMAT_RPM_REF_1109,unregistered,invoice,32,10,10,0,22,0.313,false,false,only 31% of its data fields have a source,0,,,n/a
+WAREHOUSE_INVOICE_RPM_REF_201,unregistered,invoice,17,3,3,0,14,0.176,false,false,only 18% of its data fields have a source,0,,,n/a

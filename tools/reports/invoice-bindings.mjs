@@ -23,6 +23,8 @@ export function loadDictionary() {
   for (const line of lines) {
     const [label, binding, family] = line.split(',');
     if (!label || !binding) continue;
+    // Document-family aliases belong to fill-spec-spans. The invoice binder keeps its own set.
+    if (family === 'document') continue;
     if (!rows.has(label) || family === 'invoice') rows.set(label, binding);
   }
   return rows;
