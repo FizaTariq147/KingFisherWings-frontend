@@ -39,10 +39,21 @@ function statusVariant(
 }
 
 /**
- * Super Admin — users created under this tenant (GET /users scoped by tenant).
+ * Super Admin — same tenant users Tenant Admin manages at /admin/users,
+ * loaded only via platform /tenants (never ERP GET /users).
  */
 export function TenantUsersPanel({ tenant }: TenantUsersPanelProps) {
   const query = useTenantUsers(tenant.id);
+  const users = query.data?.users ?? [];
+  const source = query.data?.source;
+  const platformRouteMissing = query.data?.platformRouteMissing;
+
+  const countLabel =
+    typeof tenant.total_users === 'number'
+      ? `${tenant.total_users} total`
+      : users.length
+        ? `${users.length} loaded`
+        : null;
 
   return (
     <Card className="p-4 space-y-3">
@@ -50,12 +61,8 @@ export function TenantUsersPanel({ tenant }: TenantUsersPanelProps) {
         <div>
           <CardTitle className="text-base">Created users</CardTitle>
           <p className="mt-0.5 text-xs text-[var(--color-neutral-500)]">
-            Users returned by the API for this tenant
-            {typeof tenant.total_users === 'number'
-              ? ` · ${tenant.total_users} total`
-              : query.data
-                ? ` · ${query.data.length} loaded`
-                : ''}
+            Same roster as Tenant Admin <code className="text-[11px]">/admin/users</code>
+            {countLabel ? ` · ${countLabel}` : ''}
             {typeof tenant.max_users === 'number' ? ` · limit ${tenant.max_users}` : ''}
           </p>
         </div>
@@ -89,21 +96,52 @@ export function TenantUsersPanel({ tenant }: TenantUsersPanelProps) {
         </div>
       ) : null}
 
+      {!query.isLoading && !query.isError && platformRouteMissing ? (
+        <div
+          role="status"
+          className="flex items-start gap-2 rounded-lg border px-3 py-2 text-sm"
+          style={{
+            background: 'var(--color-warning-50, #FFFBEB)',
+            borderColor: 'var(--color-warning-200, #FDE68A)',
+            color: 'var(--color-warning-800, #92400E)',
+          }}
+        >
+          <AlertCircle className="mt-0.5 h-4 w-4 shrink-0" />
+          <span>
+            Platform route <code className="text-[11px]">GET /tenants/{'{id}'}/users</code>{' '}
+            is not available yet (live API returns 404). Super Admin cannot call ERP{' '}
+            <code className="text-[11px]">GET /users</code>. Until backend adds that nested
+            list, only users embedded on tenant detail (often the owner) can appear here —
+            not the full <code className="text-[11px]">/admin/users</code> roster. See{' '}
+            <code className="text-[11px]">docs/be-brief-superadmin-tenant-users.md</code>.
+          </span>
+        </div>
+      ) : null}
+
       {query.isLoading ? (
         <p className="text-sm text-[var(--color-neutral-500)]">Loading users…</p>
       ) : null}
 
-      {!query.isLoading && !query.isError && (query.data?.length ?? 0) === 0 ? (
+      {!query.isLoading && !query.isError && users.length === 0 && !platformRouteMissing ? (
         <p className="text-sm text-[var(--color-neutral-500)]">
-          No users on this tenant from{' '}
-          <code className="text-[11px]">GET /tenants/{'{id}'}/users</code> or the tenant
-          detail payload. Platform Super Admin cannot call tenant ERP{' '}
-          <code className="text-[11px]">/users</code> — backend must return users under{' '}
-          <code className="text-[11px]">/tenants</code>.
+          No users returned for this tenant yet.
         </p>
       ) : null}
 
-      {(query.data?.length ?? 0) > 0 ? (
+      {!query.isLoading && !query.isError && users.length === 0 && platformRouteMissing ? (
+        <p className="text-sm text-[var(--color-neutral-500)]">
+          No embedded users on <code className="text-[11px]">GET /tenants/{'{id}'}</code>.
+        </p>
+      ) : null}
+
+      {source === 'tenant_embed' && users.length > 0 ? (
+        <p className="text-xs text-[var(--color-neutral-500)]">
+          Showing users from tenant detail embed only (may be incomplete vs{' '}
+          <code className="text-[11px]">/admin/users</code>).
+        </p>
+      ) : null}
+
+      {users.length > 0 ? (
         <div className="overflow-x-auto rounded-md border border-[var(--color-neutral-200)]">
           <table className="w-full min-w-[40rem] border-collapse text-left text-sm">
             <thead>
@@ -119,7 +157,7 @@ export function TenantUsersPanel({ tenant }: TenantUsersPanelProps) {
               </tr>
             </thead>
             <tbody>
-              {query.data!.map((user) => (
+              {users.map((user) => (
                 <tr
                   key={user.id}
                   className="border-b border-[var(--color-neutral-50)] last:border-0"

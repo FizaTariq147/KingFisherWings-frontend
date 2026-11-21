@@ -563,6 +563,7 @@ These endpoints are tagged **Auth** in Swagger but are part of the tenant login 
 | `UpdateTenantDto` is empty | PATCH body undocumented |
 | `subscription_plan` / `status` typed as `object` | No enum validation in spec |
 | `GET /tenants` missing `page`, `limit`, `status` query params | Frontend sends params not in Swagger |
+| **Missing `GET /tenants/{id}/users`** | Super Admin cannot list Tenant Admin `/admin/users` roster (ERP `/users` returns 403 for platform tokens). See `docs/be-brief-superadmin-tenant-users.md`. |
 | Super-admin login path | Swagger: `/auth/super-admin/login` vs frontend: `/auth/superadmin/login` |
 | Error responses (`400`, `401`, `403`, `404`, `409`) | Not documented per endpoint |
 
