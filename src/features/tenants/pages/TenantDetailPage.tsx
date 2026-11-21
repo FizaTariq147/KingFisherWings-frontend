@@ -10,6 +10,7 @@ import { TenantDetailSkeleton } from '../components/TenantDetailSkeleton';
 import { TenantFeaturesPanel } from '../components/TenantFeaturesPanel';
 import { TenantOverviewPanel } from '../components/TenantOverviewPanel';
 import { TenantStatusBadge } from '../components/TenantStatusBadge';
+import { TenantUsersPanel } from '../components/TenantUsersPanel';
 import { useTenantConfirmState } from '../hooks/useTenantConfirmState';
 import {
   useTenant,
@@ -305,6 +306,17 @@ export default function TenantDetailPage() {
             key: 'overview',
             label: 'Overview',
             content: <TenantOverviewPanel tenant={tenant} />,
+          },
+          {
+            key: 'users',
+            label: 'Created users',
+            content: isDeleted ? (
+              <p className="text-sm text-[var(--color-neutral-500)]">
+                Restore this tenant to view its users.
+              </p>
+            ) : (
+              <TenantUsersPanel tenant={tenant} />
+            ),
           },
           {
             key: 'features',

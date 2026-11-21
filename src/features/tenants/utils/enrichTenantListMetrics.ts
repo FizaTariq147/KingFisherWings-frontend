@@ -1,6 +1,7 @@
 import { superAdminApiClient, type ApiEnvelope } from '@/lib/superAdminApiClient';
 import { USER_API } from '@/features/users/api/user.api';
 import { TENANT_API } from '../api/tenant.api';
+import { countUsersForTenant } from '../services/tenantUsers.service';
 import type { Tenant } from '../types/tenant.types';
 import { normalizeTenant } from './normalizeTenant';
 
@@ -240,9 +241,11 @@ async function fetchTenantDetailCount(tenantId: string): Promise<number | undefi
 /**
  * Fill each tenant row with company name + user count for that tenant.
  *
- * Maps only to documented Super Admin APIs:
- * - GET /tenants and GET /tenants/{id} payload fields
- * - GET /users (paginated) grouped by tenant_id when the platform token can list users
+ * Sources (in order, no hardcoding):
+ * - GET /tenants list/detail payload fields (_count / total_users / embedded users[])
+ * - GET /users grouped by tenant_id when platform token can list globally
+ * - GET /users?tenant_id=… + X-Tenant-Id per tenant (Super Admin has no tenant scope)
+ * - GET /tenants/{id} detail fallback
  */
 export async function enrichTenantListMetrics(tenants: Tenant[]): Promise<Tenant[]> {
   if (!tenants.length) return tenants;
@@ -257,6 +260,10 @@ export async function enrichTenantListMetrics(tenants: Tenant[]): Promise<Tenant
 
       if (total_users == null && globalCounts) {
         total_users = globalCounts.get(tenant.id) ?? 0;
+      }
+
+      if (total_users == null) {
+        total_users = await countUsersForTenant(tenant.id);
       }
 
       if (total_users == null) {
