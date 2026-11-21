@@ -15,9 +15,6 @@ import { metaToTemplate } from '../utils/normalizeReportCatalog';
 import { reportFamilyAllowed } from '../utils/reportModuleAccess';
 import { useAuth } from '@/hooks/useAuth';
 import {
-  catalogStripVisibleForAllowList,
-} from '../utils/filterCatalogStripRows';
-import {
   isReportSearchActive,
 } from '../utils/reportCatalogSearch';
 import { parseCatalogFamiliesParam } from '../utils/moduleCatalogFamily';
@@ -25,7 +22,8 @@ import { hasReportEntityContext } from '../utils/reportParameterUtils';
 import { templateCompatibleWithEntityContext } from '../utils/reportContextCompatibility';
 import { isClientLayoutFallbackEnabled } from '../utils/clientLayoutFallback';
 import { hasCatalogLayoutPdf } from '../utils/generateCatalogLayoutPdf';
-import { ReportCatalogBrowseList } from '../components/ReportCatalog/ReportCatalogBrowseList';
+import { CatalogStripsView } from '../components/ReportCatalog/CatalogStripsView';
+import { isCatalogBrowseReferenceEnabled } from '../utils/catalogBrowseReferenceFlag';
 import { FresaSamplePageTable } from '../components/ReportCatalog/FresaSamplePageTable';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import type { InvoiceFitInput } from '../engine/invoiceV2Applicability';
@@ -35,31 +33,18 @@ import {
   fresaColumnForFamily,
   type FresaPageColumnId,
 } from '../constants/fresaPageColumns';
-import { InvoiceFormatBrowseStrip } from '../components/ReportCatalog/InvoiceFormatBrowseStrip';
 import { InvoiceFormatAutoPdf } from '../components/ReportCatalog/InvoiceFormatAutoPdf';
-import { AccountsFormatBrowseStrip } from '../components/ReportCatalog/AccountsFormatBrowseStrip';
 import { AccountsFormatAutoPdf } from '../components/ReportCatalog/AccountsFormatAutoPdf';
-import { WmsFormatBrowseStrip } from '../components/ReportCatalog/WmsFormatBrowseStrip';
 import { WmsFormatAutoPdf } from '../components/ReportCatalog/WmsFormatAutoPdf';
-import { ArrivalNoticeFormatBrowseStrip } from '../components/ReportCatalog/ArrivalNoticeFormatBrowseStrip';
 import { ArrivalNoticeFormatAutoPdf } from '../components/ReportCatalog/ArrivalNoticeFormatAutoPdf';
-import { DeliveryOrderFormatBrowseStrip } from '../components/ReportCatalog/DeliveryOrderFormatBrowseStrip';
 import { DeliveryOrderFormatAutoPdf } from '../components/ReportCatalog/DeliveryOrderFormatAutoPdf';
-import { HawbFormatBrowseStrip } from '../components/ReportCatalog/HawbFormatBrowseStrip';
 import { HawbFormatAutoPdf } from '../components/ReportCatalog/HawbFormatAutoPdf';
-import { HblFormatBrowseStrip } from '../components/ReportCatalog/HblFormatBrowseStrip';
 import { HblFormatAutoPdf } from '../components/ReportCatalog/HblFormatAutoPdf';
-import { OtherReportsFormatBrowseStrip } from '../components/ReportCatalog/OtherReportsFormatBrowseStrip';
 import { OtherReportsFormatAutoPdf } from '../components/ReportCatalog/OtherReportsFormatAutoPdf';
-import { QuotationFormatBrowseStrip } from '../components/ReportCatalog/QuotationFormatBrowseStrip';
 import { QuotationFormatAutoPdf } from '../components/ReportCatalog/QuotationFormatAutoPdf';
-import { OpsListFormatBrowseStrip } from '../components/ReportCatalog/OpsListFormatBrowseStrip';
 import { OpsListFormatAutoPdf } from '../components/ReportCatalog/OpsListFormatAutoPdf';
-import { CommercialExtraFormatBrowseStrip } from '../components/ReportCatalog/CommercialExtraFormatBrowseStrip';
 import { CommercialExtraFormatAutoPdf } from '../components/ReportCatalog/CommercialExtraFormatAutoPdf';
-import { SeaDocsExtraFormatBrowseStrip } from '../components/ReportCatalog/SeaDocsExtraFormatBrowseStrip';
 import { SeaDocsExtraFormatAutoPdf } from '../components/ReportCatalog/SeaDocsExtraFormatAutoPdf';
-import { LeftoverFormatBrowseStrip } from '../components/ReportCatalog/LeftoverFormatBrowseStrip';
 import { LeftoverFormatAutoPdf } from '../components/ReportCatalog/LeftoverFormatAutoPdf';
 import { CatalogReportAutoPdf } from '../components/ReportCatalog/CatalogReportAutoPdf';
 import { ReportGeneratePanel } from '../components/ReportCatalog/ReportGeneratePanel';
@@ -96,74 +81,52 @@ import { FormatStatusBadge } from '../components/ReportCatalog/FormatStatusBadge
 import {
   isAccountsFormatCode,
   listAccountsFormats,
-  accountsFormatsMatchSearch,
 } from '../constants/accountsFormatCatalog';
 import {
   isWmsFormatCode,
   listWmsFormats,
-  wmsFormatsMatchSearch,
 } from '../constants/wmsFormatCatalog';
-import { invoiceFormatsMatchSearch } from '../constants/invoiceFormatCatalogNames';
 import { listInvoiceFormatPreviews } from '../data/invoiceFormatPreviews';
 import {
   getArrivalNoticeFormatSpec,
   isArrivalNoticeFormatCode,
-  listArrivalNoticeFormats,
-  arrivalNoticeFormatsMatchSearch,
 } from '../constants/arrivalNoticeFormatCatalog';
 import {
   getDeliveryOrderFormatSpec,
   isDeliveryOrderFormatCode,
-  listDeliveryOrderFormats,
-  deliveryOrderFormatsMatchSearch,
 } from '../constants/deliveryOrderFormatCatalog';
 import {
   getHawbFormatSpec,
   isHawbFormatCode,
-  listHawbFormats,
-  hawbFormatsMatchSearch,
 } from '../constants/hawbFormatCatalog';
 import {
   getHblFormatSpec,
   isHblFormatCode,
-  listOfficialHblFormats,
-  hblFormatsMatchSearch,
 } from '../constants/hblFormatCatalog';
 import {
   getOtherReportsFormatSpec,
   isOtherReportsFormatCode,
-  listOtherReportsFormats,
-  otherReportsFormatsMatchSearch,
 } from '../constants/otherReportsFormatCatalog';
 import {
   getQuotationFormatSpec,
   isQuotationFormatCode,
   listQuotationFormats,
-  quotationFormatsMatchSearch,
 } from '../constants/quotationFormatCatalog';
 import {
   getOpsListFormatSpec,
   isOpsListFormatCode,
-  listOpsListFormats,
-  opsListFormatsMatchSearch,
 } from '../constants/opsListFormatCatalog';
 import {
   getCommercialExtraFormatSpec,
   isCommercialExtraFormatCode,
-  listCommercialExtraFormats,
-  commercialExtraFormatsMatchSearch,
 } from '../constants/commercialExtraFormatCatalog';
 import {
   getSeaDocsExtraFormatSpec,
   isSeaDocsExtraFormatCode,
-  listSeaDocsExtraFormats,
-  seaDocsExtraFormatsMatchSearch,
 } from '../constants/seaDocsExtraFormatCatalog';
 import {
   getLeftoverFormatSpec,
   isLeftoverFormatCode,
-  listLeftoverFormats,
-  leftoverFormatsMatchSearch,
 } from '../constants/leftoverFormatCatalog';
 
 const CATALOG_STATE_KEY = 'kfg-report-catalog-url';
@@ -538,40 +501,7 @@ export default function ReportCatalogPage() {
       ).length,
     [registeredLayoutEntries, enabledModules],
   );
-  const listLoading = liveBrowse.isLoading && !liveBrowse.data;  /** Family/Context allow-list for browse strips (null = no restriction). */
-  const allowedCodes = useMemo(() => {
-    const multi = familiesFilter.length > 0;
-    if (family === 'all' && contextFilter === 'all' && !multi) return null;
-    const familyAllow = multi ? new Set(familiesFilter) : null;
-    const set = new Set<string>();
-    for (const entry of registeredLayoutEntries) {
-      if (familyAllow) {
-        if (!familyAllow.has(entry.family as ReportFamily)) continue;
-        // Multi-family deep-links (job/shipment) use family allow-list only —
-        // do not also require contexts[] to include `job` (many sea/air docs omit it).
-      } else {
-        if (family !== 'all' && entry.family !== family) continue;
-        if (
-          contextFilter !== 'all' &&
-          !(entry.contexts ?? []).includes(
-            contextFilter as 'job' | 'quotation' | 'list' | 'invoice' | 'gl' | 'wms' | 'party',
-          )
-        ) {
-          continue;
-        }
-      }
-      if (
-        !templateCompatibleWithEntityContext(
-          { contexts: entry.contexts ?? [] },
-          reportContext,
-        )
-      ) {
-        continue;
-      }
-      set.add(entry.code.toUpperCase());
-    }
-    return set;
-  }, [registeredLayoutEntries, family, familiesFilter, contextFilter, reportContext]);
+  const listLoading = liveBrowse.isLoading && !liveBrowse.data;
 
   const familyOptions = useMemo(() => {
     const fromCatalog = new Set<string>();
@@ -864,179 +794,6 @@ export default function ReportCatalogPage() {
     patchParams({ code: t.code }, false);
   };
 
-  /** Open a format PDF — do not change Family/Context (user controls those filters). */
-  const selectFormatCode = (code: string) => {
-    patchParams({ code }, false);
-  };
-
-  const selectInvoiceFormatCode = selectFormatCode;
-  const selectAccountsFormatCode = selectFormatCode;
-  const selectWmsFormatCode = selectFormatCode;
-  const selectArrivalNoticeFormatCode = selectFormatCode;
-  const selectDeliveryOrderFormatCode = selectFormatCode;
-  const selectHawbFormatCode = selectFormatCode;
-  const selectHblFormatCode = selectFormatCode;
-  const selectOtherReportsFormatCode = selectFormatCode;
-  const selectQuotationFormatCode = selectFormatCode;
-  const selectOpsListFormatCode = selectFormatCode;
-  const selectCommercialExtraFormatCode = selectFormatCode;
-  const selectSeaDocsExtraFormatCode = selectFormatCode;
-  const selectLeftoverFormatCode = selectFormatCode;
-
-  const searchActive = isReportSearchActive(searchQuery);
-
-  const invoiceStripCodes = useMemo(
-    () => listInvoiceFormatPreviews().map((r) => r.code),
-    [],
-  );
-  const accountsStripCodes = useMemo(() => listAccountsFormats().map((r) => r.code), []);
-  const wmsStripCodes = useMemo(() => listWmsFormats().map((r) => r.code), []);
-  const arrivalStripCodes = useMemo(() => listArrivalNoticeFormats().map((r) => r.code), []);
-  const deliveryStripCodes = useMemo(() => listDeliveryOrderFormats().map((r) => r.code), []);
-  const hawbStripCodes = useMemo(() => listHawbFormats().map((r) => r.code), []);
-  // Official Fresa HBL catalogue = 113 (95 Jasper/FG + 18 legacy).
-  const hblStripCodes = useMemo(() => listOfficialHblFormats().map((r) => r.code), []);
-  const otherStripCodes = useMemo(() => listOtherReportsFormats().map((r) => r.code), []);
-  const quotationStripCodes = useMemo(() => listQuotationFormats().map((r) => r.code), []);
-  const opsStripCodes = useMemo(() => listOpsListFormats().map((r) => r.code), []);
-  const commercialExtraStripCodes = useMemo(
-    () => listCommercialExtraFormats().map((r) => r.code),
-    [],
-  );
-  const seaDocsExtraStripCodes = useMemo(() => listSeaDocsExtraFormats().map((r) => r.code), []);
-  const leftoverStripCodes = useMemo(() => listLeftoverFormats().map((r) => r.code), []);
-
-  const showInvoiceFormatStrip =
-    catalogStripVisibleForAllowList(
-      invoiceStripCodes,
-      allowedCodes,
-      Boolean(invoiceId) || isInvoiceReportFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      invoiceFormatsMatchSearch(searchQuery) ||
-      isInvoiceReportFormatCode(selectedCode));
-
-  const showAccountsFormatStrip =
-    catalogStripVisibleForAllowList(
-      accountsStripCodes,
-      allowedCodes,
-      Boolean(partyId) || isAccountsFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      accountsFormatsMatchSearch(searchQuery) ||
-      isAccountsFormatCode(selectedCode));
-
-  const showWmsFormatStrip =
-    catalogStripVisibleForAllowList(
-      wmsStripCodes,
-      allowedCodes,
-      Boolean(jobId) || isWmsFormatCode(selectedCode),
-    ) &&
-    (!searchActive || wmsFormatsMatchSearch(searchQuery) || isWmsFormatCode(selectedCode));
-
-  const showArrivalNoticeFormatStrip =
-    catalogStripVisibleForAllowList(
-      arrivalStripCodes,
-      allowedCodes,
-      Boolean(jobId) || isArrivalNoticeFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      arrivalNoticeFormatsMatchSearch(searchQuery) ||
-      isArrivalNoticeFormatCode(selectedCode));
-
-  const showDeliveryOrderFormatStrip =
-    catalogStripVisibleForAllowList(
-      deliveryStripCodes,
-      allowedCodes,
-      Boolean(jobId) || isDeliveryOrderFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      deliveryOrderFormatsMatchSearch(searchQuery) ||
-      isDeliveryOrderFormatCode(selectedCode));
-
-  const showHawbFormatStrip =
-    catalogStripVisibleForAllowList(
-      hawbStripCodes,
-      allowedCodes,
-      Boolean(jobId) || isHawbFormatCode(selectedCode),
-    ) &&
-    (!searchActive || hawbFormatsMatchSearch(searchQuery) || isHawbFormatCode(selectedCode));
-
-  const showHblFormatStrip =
-    catalogStripVisibleForAllowList(
-      hblStripCodes,
-      allowedCodes,
-      Boolean(jobId) || isHblFormatCode(selectedCode),
-    ) &&
-    (!searchActive || hblFormatsMatchSearch(searchQuery) || isHblFormatCode(selectedCode));
-
-  const showOtherReportsFormatStrip =
-    catalogStripVisibleForAllowList(
-      otherStripCodes,
-      allowedCodes,
-      Boolean(jobId) || Boolean(partyId) || isOtherReportsFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      otherReportsFormatsMatchSearch(searchQuery) ||
-      isOtherReportsFormatCode(selectedCode));
-
-  const showQuotationFormatStrip =
-    catalogStripVisibleForAllowList(
-      quotationStripCodes,
-      allowedCodes,
-      Boolean(quotationId) || isQuotationFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      quotationFormatsMatchSearch(searchQuery) ||
-      isQuotationFormatCode(selectedCode));
-
-  const showOpsListFormatStrip =
-    catalogStripVisibleForAllowList(
-      opsStripCodes,
-      allowedCodes,
-      Boolean(jobId) || isOpsListFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      opsListFormatsMatchSearch(searchQuery) ||
-      isOpsListFormatCode(selectedCode));
-
-  const showCommercialExtraFormatStrip =
-    catalogStripVisibleForAllowList(
-      commercialExtraStripCodes,
-      allowedCodes,
-      Boolean(jobId) ||
-        Boolean(quotationId) ||
-        Boolean(invoiceId) ||
-        isCommercialExtraFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      commercialExtraFormatsMatchSearch(searchQuery) ||
-      isCommercialExtraFormatCode(selectedCode));
-
-  const showSeaDocsExtraFormatStrip =
-    catalogStripVisibleForAllowList(
-      seaDocsExtraStripCodes,
-      allowedCodes,
-      Boolean(jobId) || isSeaDocsExtraFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      seaDocsExtraFormatsMatchSearch(searchQuery) ||
-      isSeaDocsExtraFormatCode(selectedCode));
-
-  const showLeftoverFormatStrip =
-    catalogStripVisibleForAllowList(
-      leftoverStripCodes,
-      allowedCodes,
-      Boolean(jobId) ||
-        Boolean(quotationId) ||
-        Boolean(invoiceId) ||
-        Boolean(partyId) ||
-        isLeftoverFormatCode(selectedCode),
-    ) &&
-    (!searchActive ||
-      leftoverFormatsMatchSearch(searchQuery) ||
-      isLeftoverFormatCode(selectedCode));
-
   const isInvoiceSelected = isInvoiceReportFormatCode(selectedCode);
   const isAccountsSelected = isAccountsFormatCode(selectedCode);
   const isWmsSelected = isWmsFormatCode(selectedCode);
@@ -1128,19 +885,21 @@ export default function ReportCatalogPage() {
               : ''}
             .
           </p>
-          <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
-            Reference catalogue:{' '}
-            <a
-              className="underline underline-offset-2"
-              href="https://fresatechnologies.com/sample-report-formats/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              sample report formats
-            </a>
-            {' '}
-            ({FRESA_PAGE_COLUMNS.map((c) => c.title).join(' · ')}).
-          </p>
+          {isCatalogBrowseReferenceEnabled() ? (
+            <p className="mt-1 text-xs text-[var(--color-neutral-500)]">
+              Reference catalogue:{' '}
+              <a
+                className="underline underline-offset-2"
+                href="https://fresatechnologies.com/sample-report-formats/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                sample report formats
+              </a>
+              {' '}
+              ({FRESA_PAGE_COLUMNS.map((c) => c.title).join(' · ')}).
+            </p>
+          ) : null}
         </div>
         <div className="flex shrink-0 flex-col items-stretch gap-1 sm:items-end">
           <Button
@@ -1376,125 +1135,33 @@ export default function ReportCatalogPage() {
           invoiceCurrency={invoiceCurrency}
         />
       ) : (
-        <>
-          <InvoiceFormatBrowseStrip
-            visible={showInvoiceFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectInvoiceFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-            invoiceCurrency={invoiceCurrency}
-          />
-
-          <AccountsFormatBrowseStrip
-            visible={showAccountsFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectAccountsFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-          />
-
-          <WmsFormatBrowseStrip
-            visible={showWmsFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectWmsFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-          />
-
-          <ArrivalNoticeFormatBrowseStrip
-            visible={showArrivalNoticeFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectArrivalNoticeFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-            distinctLayoutsOnly={distinctLayoutsOnly}
-          />
-
-          <DeliveryOrderFormatBrowseStrip
-            visible={showDeliveryOrderFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectDeliveryOrderFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-            distinctLayoutsOnly={distinctLayoutsOnly}
-          />
-
-          <HawbFormatBrowseStrip
-            visible={showHawbFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectHawbFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-            distinctLayoutsOnly={distinctLayoutsOnly}
-          />
-
-          <HblFormatBrowseStrip
-            visible={showHblFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectHblFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-            distinctLayoutsOnly={distinctLayoutsOnly}
-          />
-
-          <OtherReportsFormatBrowseStrip
-            visible={showOtherReportsFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectOtherReportsFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-          />
-
-          <QuotationFormatBrowseStrip
-            visible={showQuotationFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectQuotationFormatCode}
-            searchQuery={searchQuery}
-            // Deep-link with quotation_id: show all quotation formats (don't hide via family allow-list).
-            allowedCodes={quotationId ? null : allowedCodes}
-          />
-
-          <OpsListFormatBrowseStrip
-            visible={showOpsListFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectOpsListFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-          />
-
-          <CommercialExtraFormatBrowseStrip
-            visible={showCommercialExtraFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectCommercialExtraFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-          />
-
-          <SeaDocsExtraFormatBrowseStrip
-            visible={showSeaDocsExtraFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectSeaDocsExtraFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-          />
-
-          <LeftoverFormatBrowseStrip
-            visible={showLeftoverFormatStrip}
-            selectedCode={selectedCode || undefined}
-            onSelect={selectLeftoverFormatCode}
-            searchQuery={searchQuery}
-            allowedCodes={allowedCodes}
-          />
-
-          <ReportCatalogBrowseList
-            items={items}
-            selectedCode={selectedCode}
-            onSelect={selectTemplate}
-            loading={listLoading}
-            emptyHint="No reports match these filters."
-          />
-        </>
+        <CatalogStripsView
+          items={items}
+          selectedCode={selectedCode || undefined}
+          context={reportContext}
+          invoiceCurrency={invoiceCurrency}
+          loading={listLoading}
+          searchQuery={searchInput}
+          onSearchChange={(q) => {
+            setSearchInput(q);
+          }}
+          familyFilter={family}
+          onFamilyFilterChange={(f) => patchParams({ family: f === 'all' ? null : f, page: '1' })}
+          familyOptions={familyOptions}
+          recordLabel={entityBannerLabel}
+          onPreview={selectTemplate}
+          onGenerate={(t) => {
+            selectTemplate(t);
+            window.requestAnimationFrame(() => {
+              document
+                .getElementById('report-generate-panel')
+                ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+          }}
+          onBrowseReference={
+            isCatalogBrowseReferenceEnabled() ? selectTemplate : undefined
+          }
+        />
       )}
 
       {showClientLayoutPreview && hasInvoiceLayout ? (
@@ -1547,7 +1214,7 @@ export default function ReportCatalogPage() {
       ) : null}
 
       {selected ? (
-        <div className="space-y-3">
+        <div id="report-generate-panel" className="space-y-3">
           <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-[var(--color-neutral-200)] bg-white px-4 py-3">
             <div className="min-w-0 space-y-1.5">
               <div className="flex flex-wrap items-center gap-2">
