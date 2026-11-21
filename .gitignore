@@ -78,8 +78,10 @@ reports/references/png/
 reports/references/page-snapshot.html
 
 # Generated verify / last-run artifacts (regenerate with verify-pool / binding-diff).
+# Keep reports/references/*-summary.json tracked (Phase 0 code-map / review).
 reports/**/*-last.csv
-reports/**/*-summary.json
+reports/*-summary.json
+reports/full-run-*-summary.json
 reports/output/
 reports/classic-snapshots/work/
 tools/before-bindings/
