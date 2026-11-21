@@ -39,7 +39,7 @@ function tpl(
 
 const fixtures: ReportTemplate[] = [
   tpl({
-    code: 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE',
+    code: 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA',
     name: 'Tax Invoice Format 1',
     family: 'commercial',
   }),
@@ -72,12 +72,9 @@ describe('CatalogStripsView', () => {
     expect(screen.getByText(/Formats for/)).toBeInTheDocument();
     expect(screen.getByText('Invoice (live data)')).toBeInTheDocument();
 
-    // Other families are present as collapsible headers with counts
-    const sea = screen.queryByTestId('catalog-section-sea-documents');
-    if (sea) {
-      expect(within(sea).getByText(/\(1\)/)).toBeInTheDocument();
-      expect(sea).toHaveAttribute('aria-expanded', 'false');
-    }
+    const more = screen.getByTestId('catalog-section-more-formats');
+    expect(more.textContent).toMatch(/\(1\)/);
+    expect(more).toHaveAttribute('aria-expanded', 'false');
   });
 
   it('filters rows by search', () => {
@@ -91,9 +88,8 @@ describe('CatalogStripsView', () => {
       />,
     );
 
-    const seaHeaders = screen.queryAllByTestId('catalog-section-sea-documents');
-    expect(seaHeaders.length).toBeGreaterThan(0);
-    fireEvent.click(seaHeaders[0]!);
+    const more = screen.getByTestId('catalog-section-more-formats');
+    fireEvent.click(more);
 
     expect(screen.getAllByText('Sea Draft Browse').length).toBeGreaterThan(0);
     expect(screen.queryByText('Tax Invoice Format 1')).toBeNull();

@@ -76,7 +76,7 @@ export function CatalogStripsView({
       return 'all';
     }
   });
-  const [collapsedFamilies, setCollapsedFamilies] = useState<Record<string, boolean>>({});
+  const [moreFormatsCollapsed, setMoreFormatsCollapsed] = useState(true);
   const [notSuitableCollapsed, setNotSuitableCollapsed] = useState(true);
 
   const searchQuery = searchQueryProp ?? localSearch;
@@ -155,18 +155,18 @@ export function CatalogStripsView({
       }
     }
 
-    for (const group of filtered.otherByFamily) {
-      const collapsed = collapsedFamilies[group.family] !== false; // default collapsed
+    const moreItems = filtered.otherByFamily.flatMap((g) => g.items);
+    if (moreItems.length > 0) {
       out.push({
         kind: 'section',
-        id: `sec-other-${group.family}`,
-        title: group.familyLabel,
-        count: group.items.length,
+        id: 'sec-more-formats',
+        title: 'More formats',
+        count: moreItems.length,
         collapsible: true,
-        collapsed,
+        collapsed: moreFormatsCollapsed,
       });
-      if (!collapsed) {
-        for (const row of group.items) {
+      if (!moreFormatsCollapsed) {
+        for (const row of moreItems) {
           out.push({
             kind: 'row',
             id: `other-${row.template.code}`,
@@ -199,7 +199,7 @@ export function CatalogStripsView({
     }
 
     return out;
-  }, [filtered, collapsedFamilies, notSuitableCollapsed]);
+  }, [filtered, moreFormatsCollapsed, notSuitableCollapsed]);
 
   const totalVisible =
     filtered.recommended.length +
@@ -220,15 +220,14 @@ export function CatalogStripsView({
     overscan: 6,
   });
 
-  const toggleFamily = (familyKey: string) => {
-    if (familyKey === 'not-suitable') {
+  const toggleSection = (sectionKey: string) => {
+    if (sectionKey === 'not-suitable') {
       setNotSuitableCollapsed((v) => !v);
       return;
     }
-    setCollapsedFamilies((prev) => {
-      const currentlyCollapsed = prev[familyKey] !== false;
-      return { ...prev, [familyKey]: !currentlyCollapsed };
-    });
+    if (sectionKey === 'more-formats') {
+      setMoreFormatsCollapsed((v) => !v);
+    }
   };
 
   if (loading) {
@@ -347,10 +346,8 @@ export function CatalogStripsView({
                       collapsible={item.collapsible}
                       collapsed={item.collapsed}
                       onToggle={() => {
-                        if (item.id === 'sec-not-suitable') toggleFamily('not-suitable');
-                        else if (item.id.startsWith('sec-other-')) {
-                          toggleFamily(item.id.replace('sec-other-', ''));
-                        }
+                        if (item.id === 'sec-not-suitable') toggleSection('not-suitable');
+                        else if (item.id === 'sec-more-formats') toggleSection('more-formats');
                       }}
                     />
                   ) : null}

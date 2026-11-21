@@ -255,6 +255,10 @@ export default function ReportCatalogPage() {
         next.set('context', 'invoice');
         changed = true;
       }
+      if (next.get('view') !== 'strips') {
+        next.set('view', 'strips');
+        changed = true;
+      }
       if (!next.get('code')) {
         const first =
           listInvoiceFormatPreviews().find((r) => isDistinctLayoutCode(r.code))?.code ||

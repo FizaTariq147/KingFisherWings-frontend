@@ -98,5 +98,6 @@ export function buildInvoiceFresaCatalogPath(invoiceId: string, opts?: { code?: 
     family: 'commercial',
     invoice_id: invoiceId,
     code: opts?.code ?? FRESA_INVOICE_FORMAT_1.code,
+    view: 'strips',
   });
 }

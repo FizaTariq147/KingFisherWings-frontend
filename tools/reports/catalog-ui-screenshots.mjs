@@ -167,7 +167,7 @@ const afterHtml = `<!doctype html><html><head><meta charset="utf-8"><style>${chr
         <div class="actions"><span class="btn btn-primary">Preview</span><span class="btn btn-secondary">Generate</span></div>
       </div>
     </div>
-    <div class="sec"><span>▸ Sea documents</span><span>(1)</span></div>
+    <div class="sec"><span>▸ More formats</span><span>(1)</span></div>
     <div class="sec"><span>▸ Not suitable</span><span>(1)</span></div>
     <div class="row">
       <div class="thumb">Our preview</div>
