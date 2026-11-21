@@ -573,9 +573,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (lastAccessTokenRef.current === accessToken) {
       return
     }
+    // Silent JWT refresh already had a token + seeded user — revalidate /me in
+    // the background. Do NOT flip isLoading (AuthLoadingGate would unmount the
+    // router and wipe in-progress form data). Idle 20‑min logout is unchanged.
+    const isSilentTokenRefresh =
+      Boolean(lastAccessTokenRef.current) && Boolean(seeded)
     lastAccessTokenRef.current = accessToken
 
-    setLoading(true)
+    if (!isSilentTokenRefresh) {
+      setLoading(true)
+    }
     authService
       .me()
       .then((data) => {
