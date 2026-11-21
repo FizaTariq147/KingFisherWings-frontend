@@ -20,6 +20,18 @@ export interface TenantUsersListResult {
   platformRouteMissing?: boolean;
 }
 
+/**
+ * Live BE currently has no GET /tenants/{id}/users (404). After the first miss,
+ * skip further probes for this page session so the Network console is not flooded.
+ * Cleared when a probe succeeds (BE shipped the route).
+ */
+let tenantsUsersRouteMissing = false;
+
+/** Test / manual retry helper — does not clear automatically on navigation. */
+export function resetTenantsUsersRouteProbe(): void {
+  tenantsUsersRouteMissing = false;
+}
+
 function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
     ? (value as Record<string, unknown>)
@@ -89,9 +101,12 @@ const MAX_PAGES = 50;
 async function fetchAllFromTenantsUsersRoute(
   tenantId: string,
 ): Promise<{ users: TenantCreatedUser[]; ok: boolean; missingRoute: boolean }> {
+  if (tenantsUsersRouteMissing) {
+    return { users: [], ok: false, missingRoute: true };
+  }
+
   const collected: TenantCreatedUser[] = [];
   const seen = new Set<string>();
-  let missingRoute = false;
 
   try {
     for (let page = 1; page <= MAX_PAGES; page += 1) {
@@ -128,29 +143,20 @@ async function fetchAllFromTenantsUsersRoute(
       if (rows.length === 0) break;
     }
 
+    tenantsUsersRouteMissing = false;
     return { users: collected, ok: true, missingRoute: false };
   } catch (error) {
-    missingRoute = isMissingRouteError(error);
-    return { users: [], ok: false, missingRoute };
+    if (isMissingRouteError(error)) {
+      tenantsUsersRouteMissing = true;
+      return { users: [], ok: false, missingRoute: true };
+    }
+    return { users: [], ok: false, missingRoute: false };
   }
 }
 
 async function fetchEmbeddedOnTenantDetail(
   tenantId: string,
 ): Promise<TenantCreatedUser[]> {
-  // Try include hints some backends honor; ignore if ignored.
-  try {
-    const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(
-      TENANT_API.byId(tenantId),
-      { params: { include: 'users', with: 'users' } },
-    );
-    const payload = (res.data?.data ?? res.data ?? res) as unknown;
-    const users = extractUsersFromTenantPayload(payload);
-    if (users.length > 0) return users;
-  } catch {
-    /* fall through to plain detail */
-  }
-
   const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(
     TENANT_API.byId(tenantId),
   );
@@ -186,13 +192,13 @@ export async function listUsersForTenantDetailed(
     return {
       users: embedded,
       source: embedded.length > 0 ? 'tenant_embed' : 'unavailable',
-      platformRouteMissing: nested.missingRoute,
+      platformRouteMissing: nested.missingRoute || tenantsUsersRouteMissing,
     };
   } catch {
     return {
       users: [],
       source: 'unavailable',
-      platformRouteMissing: nested.missingRoute,
+      platformRouteMissing: nested.missingRoute || tenantsUsersRouteMissing,
     };
   }
 }
@@ -210,20 +216,25 @@ export async function countUsersForTenant(
 ): Promise<number | undefined> {
   if (!isUuid(tenantId)) return undefined;
 
-  try {
-    const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(
-      TENANT_API.users(tenantId),
-      { params: { page: 1, limit: 1 } },
-    );
-    const envelope = res.data ?? res;
-    const meta = pickMeta(envelope);
-    if (meta.total != null) return meta.total;
-    const rows = unwrapList(asRecord(envelope)?.data ?? envelope);
-    if (Array.isArray(asRecord(envelope)?.data) || Array.isArray(envelope)) {
-      return rows.length;
+  if (!tenantsUsersRouteMissing) {
+    try {
+      const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(
+        TENANT_API.users(tenantId),
+        { params: { page: 1, limit: 1 } },
+      );
+      const envelope = res.data ?? res;
+      tenantsUsersRouteMissing = false;
+      const meta = pickMeta(envelope);
+      if (meta.total != null) return meta.total;
+      const rows = unwrapList(asRecord(envelope)?.data ?? envelope);
+      if (Array.isArray(asRecord(envelope)?.data) || Array.isArray(envelope)) {
+        return rows.length;
+      }
+    } catch (error) {
+      if (isMissingRouteError(error)) {
+        tenantsUsersRouteMissing = true;
+      }
     }
-  } catch {
-    /* fall through */
   }
 
   try {

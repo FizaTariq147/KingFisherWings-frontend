@@ -123,7 +123,11 @@ export function AuthLandingShell({
         <main className="relative z-10 flex min-h-screen flex-col items-center justify-center px-4 py-10">
           <div className="w-full max-w-[440px]">
             <div className="mx-auto mb-4 flex w-fit items-center justify-center rounded-2xl bg-white px-4 py-2.5 shadow-lg">
-              <BrandLogo alt="KingFisher Wings" className="h-12 w-auto sm:h-14" />
+              <BrandLogo
+                systemOnly
+                alt="King Fisher Technologies"
+                className="h-12 w-auto max-w-[220px] object-contain sm:h-14"
+              />
             </div>
             <h1 className="text-center text-[22px] font-semibold tracking-tight text-white sm:text-[24px]">
               KingFisher Wings
