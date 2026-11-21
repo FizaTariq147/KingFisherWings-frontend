@@ -1,5 +1,5 @@
 {
-  "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA": { "currency": "INR", "country": "IN", "taxRegime": "gst", "taxMode": "single" },
+  "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA": { "currency": "INR", "country": "IN", "taxRegime": "gst", "taxMode": "split" },
   "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA": { "currency": "INR", "country": "IN", "taxRegime": "gst", "taxMode": "single" },
   "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE": { "currency": null, "country": null, "taxRegime": null, "taxMode": "single" },
   "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE": { "currency": null, "country": null, "taxRegime": "vat", "taxMode": "single" },
