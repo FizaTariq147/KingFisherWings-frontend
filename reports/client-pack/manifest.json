@@ -1,0 +1,85 @@
+{
+  "differences": [
+    {
+      "record": "INV/26/00102",
+      "type": "invoice",
+      "nearestFresa": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "flowLeak": false,
+      "knownDifferences": [
+        "Flow uses tax_amount; classic VAT uses tax_total when set.",
+        "Flow layout is pdfmake Format-1-inspired, not a pixel match to the Fresa sample.",
+        "Empty record fields stay blank — never filled from the Fresa sample."
+      ],
+      "blanks": []
+    },
+    {
+      "record": "INV/26/00094",
+      "type": "invoice",
+      "nearestFresa": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+      "flowLeak": false,
+      "knownDifferences": [
+        "Flow uses tax_amount; classic VAT uses tax_total when set.",
+        "Flow layout is pdfmake Format-1-inspired, not a pixel match to the Fresa sample.",
+        "Empty record fields stay blank — never filled from the Fresa sample."
+      ],
+      "blanks": [
+        "job context empty in record"
+      ]
+    },
+    {
+      "record": "QT/FE/26/00119",
+      "type": "quotation-fcl",
+      "id": "3a66be78-c5c0-4fc1-8020-ee06b46b9692",
+      "nearestFresa": "FCL_QUOTATION_REPORT_FORMAT",
+      "flowLeak": false,
+      "knownDifferences": [
+        "Flow quotation is a commercial face (pdfmake), not the FCL Quotation Jasper/Fresa sample layout.",
+        "Incoterms bind from incoterm or incoterms; blank when the record has neither.",
+        "Carrier binds carrier_name or carrier_preference; blank when both empty."
+      ],
+      "blanks": [
+        "Incoterms empty in record",
+        "Carrier empty in record",
+        "Valid until empty in record",
+        "Department name empty in record (job_type still prints under Job / Service)"
+      ]
+    },
+    {
+      "record": "QT/AE/26/00105",
+      "type": "quotation-air",
+      "id": "bba3d296-270b-427b-92c2-a42a86f849b8",
+      "nearestFresa": "FCL_QUOTATION_REPORT_FORMAT",
+      "flowLeak": false,
+      "knownDifferences": [
+        "Flow quotation is a commercial face (pdfmake), not the FCL Quotation Jasper/Fresa sample layout.",
+        "Incoterms bind from incoterm or incoterms; blank when the record has neither.",
+        "Carrier binds carrier_name or carrier_preference; blank when both empty."
+      ],
+      "blanks": [
+        "Incoterms empty in record",
+        "Carrier empty in record",
+        "Valid until empty in record",
+        "Department name empty in record (job_type still prints under Job / Service)"
+      ]
+    },
+    {
+      "record": "QT/LE/26/00063",
+      "type": "quotation-lcl",
+      "id": "7ca53052-0cf3-47c4-8c21-6037dbaea8dd",
+      "nearestFresa": "FCL_QUOTATION_REPORT_FORMAT",
+      "flowLeak": false,
+      "knownDifferences": [
+        "Flow quotation is a commercial face (pdfmake), not the FCL Quotation Jasper/Fresa sample layout.",
+        "Incoterms bind from incoterm or incoterms; blank when the record has neither.",
+        "Carrier binds carrier_name or carrier_preference; blank when both empty."
+      ],
+      "blanks": [
+        "Incoterms empty in record",
+        "Carrier empty in record",
+        "Valid until empty in record",
+        "Department name empty in record (job_type still prints under Job / Service)"
+      ]
+    }
+  ],
+  "outDir": "reports/client-pack"
+}

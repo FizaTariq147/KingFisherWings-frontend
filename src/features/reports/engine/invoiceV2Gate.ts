@@ -1,5 +1,7 @@
 import { invoiceV2SpecCodes } from './invoiceV2Codes';
-import { reportsCatalogueGate, type ReportsCatalogueGate } from './reportsEngine';
+import { isFlowInvoiceCode } from '../flow/invoiceFlowCode';
+import { isReportsV2Code } from './reportsV2Gate';
+import { reportsCatalogueGate, reportsEngine, type ReportsCatalogueGate, type ReportsEngine } from './reportsEngine';
 import { reportConformanceStatus, type ReportConformanceStatus } from '../utils/reportConformanceStatus';
 
 export type InvoicePdfEntry = 'generate' | 'reports' | 'formats';
@@ -8,8 +10,14 @@ export type InvoicePdfDocument = 'quotation' | 'invoice' | 'credit_note' | 'debi
 export const INVOICE_V2_FALLBACK_NOTICE = 'Showing the classic invoice. The selected format could not be built.';
 export const FORMAT_NOT_AVAILABLE_YET = 'format not available yet';
 
+/** True when the code is a gated v2-spec or flow catalogue entry. */
+export function isGatedReportsCode(code: string): boolean {
+  const key = String(code || '').trim().toUpperCase();
+  return invoiceV2SpecCodes.has(key) || isFlowInvoiceCode(key) || isReportsV2Code(key);
+}
+
 /**
- * Hard gating withholds a v2 invoice code until its status is accepted.
+ * Hard gating withholds a v2 / flow code until its status is accepted.
  * Soft gating leaves it available. Nothing in this function marks a code accepted.
  */
 export function invoiceV2HardBlocked(input: {
@@ -19,9 +27,29 @@ export function invoiceV2HardBlocked(input: {
 }): boolean {
   const gate = input.gate ?? reportsCatalogueGate();
   if (gate !== 'hard') return false;
-  if (!invoiceV2SpecCodes.has(input.code)) return false;
+  if (!isGatedReportsCode(input.code)) return false;
   const status = input.status ?? reportConformanceStatus(input.code);
   return status !== 'accepted';
+}
+
+/**
+ * Whether a catalogue entry should appear at all.
+ * - Engine unset/legacy: no v2 or flow codes anywhere.
+ * - Hard gate: only accepted v2/flow codes (staging CN/DN still require the staging flag via listFlowCatalogEntries).
+ * Soft gate: all non-staging flow + v2 codes remain listed (badge may say approximate).
+ */
+export function reportsCatalogCodeVisible(input: {
+  code: string;
+  engine?: ReportsEngine;
+  gate?: ReportsCatalogueGate;
+  status?: ReportConformanceStatus;
+}): boolean {
+  const code = String(input.code || '').trim().toUpperCase();
+  if (!isGatedReportsCode(code)) return true;
+  const engine = input.engine ?? reportsEngine();
+  if (engine !== 'v2') return false;
+  if (invoiceV2HardBlocked({ gate: input.gate, code, status: input.status })) return false;
+  return true;
 }
 
 /**

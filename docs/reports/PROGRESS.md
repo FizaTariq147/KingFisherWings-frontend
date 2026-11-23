@@ -785,3 +785,10 @@ No threshold/mask/status/signoff changes. Classic generators untouched. No new t
 - Flow tax: `tax_amount` only; `assertFlowTaxIntegrity` on every record. Classic `tax_total` difference listed in `docs/reports/RELEASE_NOTES_PHASE1.md` for INV/26/00089, 00093, 00094, 00095, 00097, 00098.
 - Quotation flow binds transit, weight, volume, containers, incoterm|incoterms, terms_and_conditions, carrier/airline, flight/voyage, remarks. Fill share after: air 33.3%, FCL 45.0%, LCL 46.7%.
 - CN/DN wording: Related Invoice; invented terms sentences removed.
+
+## Flow release pack (status path, staging docs, client pack)
+
+- Temporary signoff proof (not committed): `reports/flow-spike/status-path-proof.json` — both flow release codes `accepted` under temp status; hard gate lists exactly those two; legacy engine lists none.
+- `build-status` now includes flow option codes (remain `reference_only` until a real sign-off). Committed `status.json` has 0 accepted.
+- Kill switch: `VITE_REPORTS_ENGINE` unset/legacy. Fallback notice tested. Docs: `STAGING_TEST.md`, `ROLLBACK.md`, RELEASE_NOTES kill switch section.
+- Quotation screen vs flow: 0 shown-but-blank after binding commodity/department/status/shipment/job. Client pack under `reports/client-pack/`.

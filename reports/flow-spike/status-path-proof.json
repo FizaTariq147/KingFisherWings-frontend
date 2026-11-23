@@ -1,0 +1,25 @@
+{
+  "acceptedFlow": [
+    {
+      "code": "INVOICE_FLOW_TAX_INVOICE_1",
+      "status": "accepted"
+    },
+    {
+      "code": "QUOTATION_FLOW_1",
+      "status": "accepted"
+    }
+  ],
+  "bothAccepted": true,
+  "hardGateList": [
+    "INVOICE_FLOW_TAX_INVOICE_1",
+    "QUOTATION_FLOW_1"
+  ],
+  "hardGateExactlyRelease": true,
+  "hardGateHasCreditOrDebit": false,
+  "hardGateHasOtherV2": false,
+  "legacyList": [],
+  "legacyEmpty": true,
+  "softIncludesRelease": true,
+  "softExcludesStagingNotes": true,
+  "note": "Temporary signoff/status restored after this proof. Nothing committed as accepted."
+}

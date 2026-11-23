@@ -51,6 +51,24 @@ These stay gated. Hard mode withholds them because their status is not `accepted
 | unset or `soft` | A v2 invoice code can be previewed and generated while it is not accepted. The badge says "approximate, not final". |
 | `hard` | A v2 invoice code is previewed and generated only when its status is `accepted`. Otherwise the catalogue says "format not available yet" and Generate stays off for that code. Browse still opens the entry. |
 
+## Kill switch (production, no code deploy)
+
+To turn **all** flow and v2 formats off without deploying a git revert:
+
+1. Set `VITE_REPORTS_ENGINE` to unset or `legacy` on the host (same env the frontend build/runtime reads).
+2. Restart or rebuild so the process picks up the value.
+3. Catalogue listing hides gated flow / v2 codes. Generate PDF stays classic.
+
+Flow release codes (`INVOICE_FLOW_TAX_INVOICE_1`, `QUOTATION_FLOW_1`) use the same kill switch. Credit/debit flow codes additionally require `VITE_REPORTS_FLOW_STAGING=1` under soft gate and are labelled `staging only: no real records tested`.
+
+## Fallback (tested)
+
+If a selected flow / v2 render throws while being built, Generate returns the classic PDF and shows:
+
+`Showing the classic invoice. The selected format could not be built.`
+
+Covered by `generateWithFallback` / `invoiceV2Gate` unit tests (forced throw → classic blob + notice). With `VITE_REPORTS_ENGINE` unset/`legacy`, `attemptV2` is false and classic runs with no notice.
+
 ## How a code becomes accepted
 
 `npm run report:signoff -- <code> <reviewer>` does not change what the app shows. It appends or updates one row in `reports/signoff.csv` only when every acceptance layer passes, or when that code's own line in `reports/exceptions.md` contains the word approved. It does not write `reports/status.json`.

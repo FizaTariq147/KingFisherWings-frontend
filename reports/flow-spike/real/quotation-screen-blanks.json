@@ -1,0 +1,260 @@
+{
+  "summary": {
+    "quotes": 10,
+    "stillShownButBlank": 0
+  },
+  "rows": [
+    {
+      "id": "3a66be78-c5c0-4fc1-8020-ee06b46b9692",
+      "number": "QT/FE/26/00119",
+      "bucket": "fcl",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Client",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Incoterms",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Carrier",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "id": "8b79e809-0a7e-42e4-810c-49c7b25d0892",
+      "number": "QT/FE/26/00118",
+      "bucket": "fcl",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Incoterms",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Commodity",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Carrier",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "id": "6f2e73be-202f-4648-a5f3-4842bd62d9a4",
+      "number": "QT/FE/26/00117",
+      "bucket": "fcl",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Incoterms",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Carrier",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "id": "86f8e73d-2f23-4da9-b020-34de44cff7f6",
+      "number": "QT/FE/26/00116",
+      "bucket": "fcl",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "id": "bba3d296-270b-427b-92c2-a42a86f849b8",
+      "number": "QT/AE/26/00105",
+      "bucket": "air",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Incoterms",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Carrier",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "id": "3695fb32-c43b-4724-a22c-3f974cbf115e",
+      "number": "QT/AE/26/00089",
+      "bucket": "air",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Incoterms",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Carrier",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "id": "a78a69a5-44fa-4783-87ef-26098774fc40",
+      "number": "QT/AE/26/00073",
+      "bucket": "air",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Incoterms",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Carrier",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "id": "7ca53052-0cf3-47c4-8c21-6037dbaea8dd",
+      "number": "QT/LE/26/00063",
+      "bucket": "lcl",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Incoterms",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Carrier",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "id": "f01855ec-db1a-4c35-858a-ac79b984360a",
+      "number": "QT/LE/26/00014",
+      "bucket": "lcl",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Incoterms",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "POL",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "POD",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Carrier",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Valid until",
+          "reason": "empty in the record"
+        }
+      ]
+    },
+    {
+      "id": "41838462-d764-4a8d-a5eb-ba68b3088c16",
+      "number": "QT/LE/26/00003",
+      "bucket": "lcl",
+      "shownButBlank": [],
+      "remainingEmpty": [
+        {
+          "field": "Shipment No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "Job No",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "POL",
+          "reason": "empty in the record"
+        },
+        {
+          "field": "POD",
+          "reason": "empty in the record"
+        }
+      ]
+    }
+  ]
+}

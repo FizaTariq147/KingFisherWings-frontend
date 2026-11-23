@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { generateInvoicePdfChoice, generateWithFallback, invoiceV2HardBlocked, INVOICE_V2_FALLBACK_NOTICE, shouldUseInvoiceV2 } from './invoiceV2Gate';
+import {
+  generateInvoicePdfChoice,
+  generateWithFallback,
+  invoiceV2HardBlocked,
+  INVOICE_V2_FALLBACK_NOTICE,
+  reportsCatalogCodeVisible,
+  shouldUseInvoiceV2,
+} from './invoiceV2Gate';
 import { readDefaultPdfStyle } from './reportsEngine';
 import type { Invoice } from '@/features/invoices/types/invoice.types';
 import { valueForInvoiceBinding } from './invoiceReportContract';
@@ -78,6 +85,25 @@ describe('invoice v2 gate', () => {
       gate: 'hard',
       status: 'accepted',
     })).toBe(true);
+  });
+
+  it('hard gate treats flow release codes the same as v2 specs', () => {
+    expect(invoiceV2HardBlocked({ gate: 'hard', code: 'INVOICE_FLOW_TAX_INVOICE_1', status: 'reference_only' })).toBe(true);
+    expect(invoiceV2HardBlocked({ gate: 'hard', code: 'QUOTATION_FLOW_1', status: 'accepted' })).toBe(false);
+    expect(invoiceV2HardBlocked({ gate: 'hard', code: 'CREDIT_NOTE_FLOW_1', status: 'reference_only' })).toBe(true);
+  });
+
+  it('hides v2/flow from the catalogue when the engine is legacy', () => {
+    expect(reportsCatalogCodeVisible({ code: 'INVOICE_FLOW_TAX_INVOICE_1', engine: 'legacy', gate: 'soft', status: 'accepted' })).toBe(false);
+    expect(reportsCatalogCodeVisible({ code: 'QUOTATION_FLOW_1', engine: 'legacy', gate: 'soft', status: 'accepted' })).toBe(false);
+    expect(reportsCatalogCodeVisible({ code: 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE', engine: 'legacy', gate: 'soft', status: 'accepted' })).toBe(false);
+  });
+
+  it('hard gate catalogue lists only accepted gated codes', () => {
+    expect(reportsCatalogCodeVisible({ code: 'INVOICE_FLOW_TAX_INVOICE_1', engine: 'v2', gate: 'hard', status: 'accepted' })).toBe(true);
+    expect(reportsCatalogCodeVisible({ code: 'QUOTATION_FLOW_1', engine: 'v2', gate: 'hard', status: 'accepted' })).toBe(true);
+    expect(reportsCatalogCodeVisible({ code: 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE', engine: 'v2', gate: 'hard', status: 'reference_only' })).toBe(false);
+    expect(reportsCatalogCodeVisible({ code: 'CREDIT_NOTE_FLOW_1', engine: 'v2', gate: 'hard', status: 'reference_only' })).toBe(false);
   });
 
   it('does not route credit notes, debit notes, or quotations to v2', () => {

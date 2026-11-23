@@ -36,6 +36,7 @@ import {
 } from './leftoverFormatUiLayouts';
 import { getRegistryByCode } from './fresaReportRegistry';
 import { listFlowCatalogEntries } from '../flow/invoiceFlowCode';
+import { reportsCatalogCodeVisible } from '../engine/invoiceV2Gate';
 
 export type RegisteredFormatCatalogEntry = {
   code: string;
@@ -108,7 +109,7 @@ export function listAllRegisteredFormatCatalogEntries(): RegisteredFormatCatalog
     if (!byCode.has(key)) byCode.set(key, row);
   }
   const flowFirst = listFlowCatalogEntries().map((entry) => entry.code.toUpperCase());
-  return [...byCode.values()].sort((a, b) => {
+  return [...byCode.values()].filter((row) => reportsCatalogCodeVisible({ code: row.code })).sort((a, b) => {
     const ai = flowFirst.indexOf(a.code.toUpperCase());
     const bi = flowFirst.indexOf(b.code.toUpperCase());
     if (ai >= 0 || bi >= 0) {
