@@ -8,6 +8,7 @@
  *   3. Register the catalogue name in resolveAnyFormatUiLayout (or the flow
  *      registry list). No new pdfmake template file is required.
  */
+
 export const FLOW_CHARGE_COLUMN_PRESETS = {
   /** Format-1-like charge grid without forced GST split. */
   format1: [
@@ -28,19 +29,18 @@ export const FLOW_CHARGE_COLUMN_PRESETS = {
 };
 
 /**
- * @typedef {object} FlowInvoiceOptions
- * @property {'flow'} engine
- * @property {string} title
- * @property {keyof typeof FLOW_CHARGE_COLUMN_PRESETS | string[]} columns
- * @property {boolean} showContainers
- * @property {boolean} showBank
- * @property {boolean} showTerms
- * @property {'auto'|'single'|'split'|'none'} taxMode
- * @property {string|null} currency  catalogue applicability hint; null = any
- * @property {string} catalogName
+ * Soft gate + VITE_REPORTS_FLOW_STAGING for staging-only codes.
+ * Mirrors src/features/reports/engine/reportsFlowStaging.ts
  */
+export function reportsFlowStagingCatalogAllowed(env = process.env) {
+  const gate = String(env.VITE_REPORTS_GATE || '').trim().toLowerCase();
+  const soft = gate !== 'hard';
+  const flag = String(env.VITE_REPORTS_FLOW_STAGING || '').trim();
+  const staging = flag === '1' || flag.toLowerCase() === 'true';
+  return soft && staging;
+}
 
-/** @type {Record<string, FlowInvoiceOptions>} */
+/** @type {Record<string, object>} */
 export const FLOW_INVOICE_OPTIONS = {
   INVOICE_FLOW_TAX_INVOICE_1: {
     engine: 'flow',
@@ -77,9 +77,10 @@ export const FLOW_INVOICE_OPTIONS = {
     showTerms: true,
     taxMode: 'auto',
     currency: null,
-    catalogName: 'Credit Note (flow layout)',
+    catalogName: 'staging only: no real records tested',
     family: 'commercial',
     contexts: ['invoice'],
+    stagingOnly: true,
   },
   DEBIT_NOTE_FLOW_1: {
     engine: 'flow',
@@ -90,9 +91,10 @@ export const FLOW_INVOICE_OPTIONS = {
     showTerms: true,
     taxMode: 'auto',
     currency: null,
-    catalogName: 'Debit Note (flow layout)',
+    catalogName: 'staging only: no real records tested',
     family: 'commercial',
     contexts: ['invoice'],
+    stagingOnly: true,
   },
 };
 
@@ -113,4 +115,18 @@ export function resolveChargeColumns(options) {
     return FLOW_CHARGE_COLUMN_PRESETS[columns];
   }
   return FLOW_CHARGE_COLUMN_PRESETS.format1;
+}
+
+export function listFlowCatalogEntries(env = process.env) {
+  const stagingAllowed = reportsFlowStagingCatalogAllowed(env);
+  return Object.entries(FLOW_INVOICE_OPTIONS)
+    .filter(([, options]) => !options.stagingOnly || stagingAllowed)
+    .map(([code, options]) => ({
+      code,
+      name: options.catalogName,
+      family: options.family || 'commercial',
+      contexts: options.contexts || ['invoice'],
+      kind: `flow_${code}`,
+      stagingOnly: Boolean(options.stagingOnly),
+    }));
 }

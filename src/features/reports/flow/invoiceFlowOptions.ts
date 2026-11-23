@@ -7,6 +7,8 @@
  *   3. Register the catalogue name via listFlowCatalogEntries / resolveAnyFormatUiLayout.
  * No new pdfmake layout file is required when only columns or title change.
  */
+import { reportsFlowStagingCatalogAllowed } from '../engine/reportsFlowStaging';
+
 export const FLOW_CHARGE_COLUMN_PRESETS = {
   format1: [
     'charges',
@@ -39,6 +41,11 @@ export type FlowInvoiceOptions = {
   catalogName: string;
   family?: 'commercial' | 'quotation';
   contexts?: Array<'invoice' | 'quotation'>;
+  /**
+   * When true, the code stays out of the catalogue unless soft gate AND
+   * VITE_REPORTS_FLOW_STAGING are both on. Synthetic-only testing codes.
+   */
+  stagingOnly?: boolean;
 };
 
 export const FLOW_INVOICE_OPTIONS: Record<string, FlowInvoiceOptions> = {
@@ -77,9 +84,10 @@ export const FLOW_INVOICE_OPTIONS: Record<string, FlowInvoiceOptions> = {
     showTerms: true,
     taxMode: 'auto',
     currency: null,
-    catalogName: 'Credit Note (flow layout)',
+    catalogName: 'staging only: no real records tested',
     family: 'commercial',
     contexts: ['invoice'],
+    stagingOnly: true,
   },
   DEBIT_NOTE_FLOW_1: {
     engine: 'flow',
@@ -90,9 +98,10 @@ export const FLOW_INVOICE_OPTIONS: Record<string, FlowInvoiceOptions> = {
     showTerms: true,
     taxMode: 'auto',
     currency: null,
-    catalogName: 'Debit Note (flow layout)',
+    catalogName: 'staging only: no real records tested',
     family: 'commercial',
     contexts: ['invoice'],
+    stagingOnly: true,
   },
 };
 
@@ -124,12 +133,17 @@ export function listFlowCatalogEntries(): Array<{
   family: 'commercial' | 'quotation';
   contexts: Array<'invoice' | 'quotation'>;
   kind: string;
+  stagingOnly?: boolean;
 }> {
-  return Object.entries(FLOW_INVOICE_OPTIONS).map(([code, options]) => ({
-    code,
-    name: options.catalogName,
-    family: options.family || 'commercial',
-    contexts: options.contexts || ['invoice'],
-    kind: `flow_${code}`,
-  }));
+  const stagingAllowed = reportsFlowStagingCatalogAllowed();
+  return Object.entries(FLOW_INVOICE_OPTIONS)
+    .filter(([, options]) => !options.stagingOnly || stagingAllowed)
+    .map(([code, options]) => ({
+      code,
+      name: options.catalogName,
+      family: options.family || 'commercial',
+      contexts: options.contexts || ['invoice'],
+      kind: `flow_${code}`,
+      stagingOnly: Boolean(options.stagingOnly),
+    }));
 }

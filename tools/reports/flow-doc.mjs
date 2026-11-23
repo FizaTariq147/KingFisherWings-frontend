@@ -141,14 +141,43 @@ function chargeTable(style, lines, currency) {
 }
 
 function noteTotals(doc) {
+  // tax_amount only — never tax_total (flowTaxAmount falls back to line tax_amount).
   return flowTotalsRows({
     subtotal: doc.subtotal,
-    tax_amount: doc.tax_amount ?? doc.tax_total,
-    discount: doc.discount,
+    tax_amount: doc.tax_amount,
+    discount: doc.discount ?? doc.discount_amount,
     rounding: doc.rounding,
     total_amount: doc.total_amount,
     lines: doc.lines,
   });
+}
+
+function heldText(...values) {
+  return firstText(...values);
+}
+
+function transitText(quotation) {
+  if (quotation.transit_time_days == null || quotation.transit_time_days === '') return '';
+  return `Transit ${quotation.transit_time_days} day(s)`;
+}
+
+function weightText(quotation) {
+  if (quotation.gross_weight == null || quotation.gross_weight === '') return '';
+  return `${quotation.gross_weight} kg`;
+}
+
+function volumeText(quotation) {
+  if (quotation.volume_cbm == null || quotation.volume_cbm === '') return '';
+  return `${quotation.volume_cbm} CBM`;
+}
+
+function containersText(quotation) {
+  const count = quotation.container_count;
+  const typeId = text(quotation.container_type_id);
+  if (count == null && !typeId) return '';
+  if (count != null && typeId) return `${count} × ${typeId}`;
+  if (count != null) return String(count);
+  return typeId;
 }
 
 function listBlanks(paths, context) {
@@ -169,11 +198,35 @@ export function buildQuotationFlowDocDefinition(record = {}) {
   const lines = quotation.lines || [];
   const total = quotation.total_amount ?? quotation.total;
   const words = firstText(quotation.amount_in_words, total == null || total === '' ? '' : amountInWords(total, currency));
+  const incoterm = heldText(quotation.incoterms, quotation.incoterm, context['job.incoterms']);
+  const carrier = heldText(
+    quotation.carrier_name,
+    quotation.carrier_preference,
+    quotation.airline_name,
+    quotation.airline,
+    context['shipment.carrier'],
+  );
+  const flight = heldText(
+    quotation.flight_number,
+    quotation.flight_no,
+    quotation.voyage_number,
+    quotation.vessel_name,
+  );
+  const terms = heldText(quotation.terms, quotation.terms_and_conditions, context['quotation.terms']);
+  const remarks = heldText(quotation.remarks, quotation.special_requirements, quotation.notes);
+  const validity = formatDate(firstText(quotation.valid_until, context['quotation.validUntil']));
+  const transit = transitText(quotation);
+  const weight = weightText(quotation);
+  const volume = volumeText(quotation);
+  const containers = containersText(quotation);
+
   const blanks = listBlanks(
     ['company.name', 'party.billTo', 'quotation.number', 'quotation.date', 'quotation.validUntil', 'quotation.terms', 'quotation.total'],
     {
       ...context,
-      'party.billTo': firstText(quotation.party_name, party.name, context['party.billTo']),
+      'party.billTo': firstText(quotation.party_name, quotation.customer_name, party.name, context['party.billTo']),
+      'quotation.validUntil': validity,
+      'quotation.terms': terms,
     },
   );
 
@@ -183,31 +236,36 @@ export function buildQuotationFlowDocDefinition(record = {}) {
     blockTwoColumnPartyMeta(style, {
       leftStack: [
         { text: 'Bill To', bold: true, fontSize: style.fonts.body, margin: [0, 0, 0, 3] },
-        { text: firstText(quotation.party_name, party.name, context['party.billTo']) || ' ', fontSize: style.fonts.body },
-        { text: joinParts(party.address, party.city) || ' ', fontSize: style.fonts.body, margin: [0, 1, 0, 0] },
+        { text: firstText(quotation.party_name, quotation.customer_name, party.name, context['party.billTo']) || ' ', fontSize: style.fonts.body },
+        { text: joinParts(party.address, party.city, quotation.customer_address) || ' ', fontSize: style.fonts.body, margin: [0, 1, 0, 0] },
       ],
       rightStack: [
         { text: [{ text: 'Quotation No.: ', bold: true, fontSize: style.fonts.body }, { text: firstText(quotation.quotation_number, quotation.number, context['quotation.number']) || ' ', fontSize: style.fonts.body }], margin: [0, 0, 0, 2] },
         { text: [{ text: 'Date: ', bold: true, fontSize: style.fonts.body }, { text: formatDate(firstText(quotation.quotation_date, quotation.date, context['quotation.date'])) || ' ', fontSize: style.fonts.body }], margin: [0, 0, 0, 2] },
-        { text: [{ text: 'Valid Until: ', bold: true, fontSize: style.fonts.body }, { text: formatDate(firstText(quotation.valid_until, context['quotation.validUntil'])) || ' ', fontSize: style.fonts.body }], margin: [0, 0, 0, 2] },
+        { text: [{ text: 'Valid Until: ', bold: true, fontSize: style.fonts.body }, { text: validity || ' ', fontSize: style.fonts.body }], margin: [0, 0, 0, 2] },
         { text: [{ text: 'Currency: ', bold: true, fontSize: style.fonts.body }, { text: currency || ' ', fontSize: style.fonts.body }] },
       ],
     }),
     blockFieldGrid(style, [
       ['Job / Service', firstText(quotation.job_type, quotation.service_type, context['job.department'])],
-      ['Incoterms', firstText(quotation.incoterms, context['job.incoterms'])],
-      ['POL', firstText(quotation.origin_port_code, context['shipment.pol'])],
-      ['POD', firstText(quotation.dest_port_code, context['shipment.pod'])],
-      ['Carrier', firstText(quotation.carrier_name, context['shipment.carrier'])],
-      ['Remarks', firstText(quotation.remarks, quotation.notes)],
+      ['Incoterms', incoterm],
+      ['POL', firstText(quotation.origin_port_code, quotation.origin_port_name, context['shipment.pol'])],
+      ['POD', firstText(quotation.dest_port_code, quotation.dest_port_name, context['shipment.pod'])],
+      ['Carrier / Airline', carrier],
+      ['Flight / Voyage', flight],
+      ['Transit', transit],
+      ['Gross weight', weight],
+      ['Volume', volume],
+      ['Containers', containers],
+      ['Remarks', remarks],
     ]),
     chargeTable(style, lines, currency),
     blockWordsAndTotals(style, {
       words,
       totalsRows: noteTotals({
         subtotal: quotation.subtotal,
-        tax_amount: quotation.tax_amount ?? quotation.tax_total,
-        discount: quotation.discount,
+        tax_amount: quotation.tax_amount,
+        discount: quotation.discount ?? quotation.discount_amount,
         rounding: quotation.rounding,
         total_amount: total,
         lines,
@@ -223,16 +281,48 @@ export function buildQuotationFlowDocDefinition(record = {}) {
         context['bank.iban'] ? `IBAN Code : ${context['bank.iban']}` : ' ',
         context['bank.swift'] ? `Swift Code : ${context['bank.swift']}` : ' ',
       ],
-      termsLines: [
-        firstText(quotation.terms, context['quotation.terms']) || ' ',
-      ],
+      termsLines: [terms || ' '],
     }),
     blockFooter(style, firstText(context['session.user'], context['session.printedAt']) || ' '),
   ];
 
-  return { definition: flowDocument(style, content), blanks, context };
+  return {
+    definition: flowDocument(style, content),
+    blanks,
+    context,
+    bound: {
+      validity,
+      transit,
+      weight,
+      volume,
+      containers,
+      incoterm,
+      terms,
+      carrier,
+      flight,
+      remarks,
+    },
+  };
 }
 
+/**
+ * Fixed wording retained on credit/debit flow templates and its source.
+ * Anything without a classic labelsFor / generateInvoicePdf source or a record
+ * field was removed (invented terms sentences, "Original Invoice", Status).
+ *
+ * | Wording | Source |
+ * | CREDIT NOTE / DEBIT NOTE (title) | classic commercialNoteToPdfModel labelsFor documentTitle |
+ * | Credit Note # / Debit Note # | classic labelsFor numberLabel |
+ * | Credit Note Date / Debit Note Date | classic labelsFor dateLabel |
+ * | Related Invoice | classic jobRefLabel when credited_invoice_* set |
+ * | Due Date | classic labelsFor dueDateLabel + record.due_date |
+ * | Bill To | shared flow invoice face (classic CUSTOMER block role) |
+ * | Charges / Qty / Rate / Tax / Total | shared flow charge table (classic QTY table role) |
+ * | Sub Total / Discount / Tax / Rounding / Total | shared flow totals (classic Subtotal/Tax/TOTAL) |
+ * | Bank Details labels | printed only when bank.* record fields are set |
+ * | Terms | record.remarks only (classic TERMS & CONDITIONS ← remarks) |
+ * | Amount in words | record.amount_in_words or derived from total+currency (same as invoice flow) |
+ */
 function buildCreditOrDebit(record, kind) {
   const style = FLOW_STYLES[kind];
   const code = kind === 'credit_note' ? 'CREDIT_NOTE_FLOW_1' : 'DEBIT_NOTE_FLOW_1';
@@ -252,8 +342,7 @@ function buildCreditOrDebit(record, kind) {
       invoice_date: doc.invoice_date,
       currency_code: doc.currency_code,
       subtotal: doc.subtotal,
-      tax_total: doc.tax_total,
-      tax_amount: doc.tax_amount ?? doc.tax_total,
+      tax_amount: doc.tax_amount,
       total_amount: doc.total_amount,
       remarks: doc.remarks,
       party_name: doc.party_name,
@@ -264,12 +353,15 @@ function buildCreditOrDebit(record, kind) {
   const lines = doc.lines || [];
   const total = doc.total_amount;
   const words = firstText(doc.amount_in_words, total == null || total === '' ? '' : amountInWords(total, currency));
-  const originalInvoice = firstText(doc.credited_invoice_number, record.invoice?.invoice_number, context['invoice.number']);
+  const relatedInvoice = firstText(doc.credited_invoice_number, record.invoice?.invoice_number);
+  const numberLabel = kind === 'credit_note' ? 'Credit Note # ' : 'Debit Note # ';
+  const dateLabel = kind === 'credit_note' ? 'Credit Note Date: ' : 'Debit Note Date: ';
+  const remarks = firstText(doc.remarks, doc.description);
   const blanks = [
     !companyName ? 'company.name' : null,
     !firstText(doc.party_name, party.name) ? 'party.billTo' : null,
     !firstText(doc.credit_note_number, doc.debit_note_number, doc.invoice_number) ? 'document.number' : null,
-    !originalInvoice ? 'original.invoice' : null,
+    !relatedInvoice ? 'related.invoice' : null,
     !currency ? 'currency' : null,
     total == null || total === '' ? 'total' : null,
   ].filter(Boolean);
@@ -286,22 +378,29 @@ function buildCreditOrDebit(record, kind) {
       rightStack: [
         {
           text: [
-            { text: kind === 'credit_note' ? 'Credit Note No.: ' : 'Debit Note No.: ', bold: true, fontSize: style.fonts.body },
+            { text: numberLabel, bold: true, fontSize: style.fonts.body },
             { text: firstText(doc.credit_note_number, doc.debit_note_number, doc.invoice_number) || ' ', fontSize: style.fonts.body },
           ],
           margin: [0, 0, 0, 2],
         },
         {
           text: [
-            { text: 'Date: ', bold: true, fontSize: style.fonts.body },
+            { text: dateLabel, bold: true, fontSize: style.fonts.body },
             { text: formatDate(doc.invoice_date) || ' ', fontSize: style.fonts.body },
           ],
           margin: [0, 0, 0, 2],
         },
         {
           text: [
-            { text: 'Original Invoice: ', bold: true, fontSize: style.fonts.body },
-            { text: originalInvoice || ' ', fontSize: style.fonts.body },
+            { text: 'Related Invoice: ', bold: true, fontSize: style.fonts.body },
+            { text: relatedInvoice || ' ', fontSize: style.fonts.body },
+          ],
+          margin: [0, 0, 0, 2],
+        },
+        {
+          text: [
+            { text: 'Due Date: ', bold: true, fontSize: style.fonts.body },
+            { text: formatDate(doc.due_date) || ' ', fontSize: style.fonts.body },
           ],
           margin: [0, 0, 0, 2],
         },
@@ -314,18 +413,16 @@ function buildCreditOrDebit(record, kind) {
       ],
     }),
     blockFieldGrid(style, [
-      ['Status', text(doc.status)],
       ['Job', firstText(doc.job_number, context['job.number'])],
-      ['Due Date', formatDate(doc.due_date)],
-      ['Remarks', firstText(doc.remarks, doc.description)],
+      ['Remarks', remarks],
     ]),
     chargeTable(style, lines, currency),
     blockWordsAndTotals(style, {
       words,
       totalsRows: noteTotals({
         subtotal: doc.subtotal,
-        tax_amount: doc.tax_amount ?? doc.tax_total,
-        discount: doc.discount,
+        tax_amount: doc.tax_amount,
+        discount: doc.discount ?? doc.discount_amount,
         rounding: doc.rounding,
         total_amount: total,
         lines,
@@ -339,16 +436,27 @@ function buildCreditOrDebit(record, kind) {
         context['bank.name'] ? `Bank : ${context['bank.name']}` : ' ',
         context['bank.accountNo'] ? `A/c No : ${context['bank.accountNo']}` : ' ',
       ],
-      termsLines: [
-        kind === 'credit_note'
-          ? 'This credit note adjusts the original invoice. Please apply it against the outstanding balance.'
-          : 'This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.',
-      ],
+      // Classic TERMS & CONDITIONS prints note.remarks — no invented sentence.
+      termsLines: [remarks || ' '],
     }),
     blockFooter(style, firstText(context['session.user'], context['session.printedAt']) || ' '),
   ];
 
-  return { definition: flowDocument(style, content), blanks, context, originalInvoice, tax: flowTaxAmount({ tax_amount: doc.tax_amount ?? doc.tax_total, lines }) };
+  return {
+    definition: flowDocument(style, content),
+    blanks,
+    context,
+    relatedInvoice,
+    tax: flowTaxAmount({ tax_amount: doc.tax_amount, lines }),
+    wording: {
+      title: options.title,
+      numberLabel: numberLabel.trim(),
+      dateLabel: dateLabel.replace(/:\s*$/, ''),
+      relatedInvoiceLabel: 'Related Invoice',
+      dueDateLabel: 'Due Date',
+      termsSource: 'record.remarks (classic TERMS & CONDITIONS)',
+    },
+  };
 }
 
 export function buildCreditNoteFlowDocDefinition(record = {}) {

@@ -76,3 +76,18 @@ A hard-gated code that is not accepted is not attempted. Generate stays on class
 3. Force the preview to fail (stop the dev renderer, or pick a code whose spec cannot be built). The screen shows the classic invoice and the notice in Fallback.
 4. Set `VITE_REPORTS_GATE=hard` without a rebuilt `accepted` status. The same code shows "format not available yet" and Generate does not run v2.
 5. Do not mark a code accepted from this checklist.
+
+## Flow tax vs classic (`tax_amount` vs `tax_total`)
+
+Flow prints header and line **`tax_amount` only** — never `tax_total`. Classic Generate PDF (commercial notes and the classic invoice VAT figure) still reads **`tax_total`**.
+
+On these six live invoices the header has `tax_amount` set and `tax_total` null/absent, so classic Tax prints 0 while flow Tax prints `tax_amount`:
+
+- INV/26/00089
+- INV/26/00093
+- INV/26/00094
+- INV/26/00095
+- INV/26/00097
+- INV/26/00098
+
+This is an intentional field-mapping difference, not an invented amount. Nothing here is accepted.

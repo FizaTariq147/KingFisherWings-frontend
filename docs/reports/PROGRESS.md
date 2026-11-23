@@ -778,3 +778,10 @@ No threshold/mask/status/signoff changes. Classic generators untouched. No new t
 - Artifacts: `reports/flow-spike/real/<type>/<id>-compare.png`, `blanks.md`, `summary.json`, `quotation-fields.md`, `credit-note-sign.md`, `decisions-needed.md`.
 - Money: quotation diffs 0. CN/DN tax diffs where `tax_total` null and `tax_amount` set (classic reads `tax_total` only; flow reads `tax_amount`).
 - Stress: 40-line quote paginated (2 pages, last line present); long name not clipped; multi-currency EUR printed; missing party/job renders; flow failure falls back with classic notice.
+
+## Flow decisions (staging CN/DN, tax_amount, quotation binds)
+
+- CREDIT_NOTE_FLOW_1 / DEBIT_NOTE_FLOW_1 catalogue only when soft gate AND `VITE_REPORTS_FLOW_STAGING=1`, labelled `staging only: no real records tested`. Synthetic notes do not count toward release.
+- Flow tax: `tax_amount` only; `assertFlowTaxIntegrity` on every record. Classic `tax_total` difference listed in `docs/reports/RELEASE_NOTES_PHASE1.md` for INV/26/00089, 00093, 00094, 00095, 00097, 00098.
+- Quotation flow binds transit, weight, volume, containers, incoterm|incoterms, terms_and_conditions, carrier/airline, flight/voyage, remarks. Fill share after: air 33.3%, FCL 45.0%, LCL 46.7%.
+- CN/DN wording: Related Invoice; invented terms sentences removed.

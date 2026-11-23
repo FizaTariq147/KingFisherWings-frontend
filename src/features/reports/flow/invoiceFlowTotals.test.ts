@@ -69,4 +69,22 @@ describe('flow totals and suitability', () => {
     };
     expect(flowTaxAmount(invoice)).toBe(10);
   });
+
+  it('assertFlowTaxIntegrity flags header vs line mismatch and equation failures', async () => {
+    const { assertFlowTaxIntegrity } = await import('./invoiceFlowTotals');
+    const ok = assertFlowTaxIntegrity(invoice00094);
+    expect(ok.ok).toBe(true);
+    const badHeader = assertFlowTaxIntegrity({
+      ...invoice00094,
+      tax_amount: 1,
+    });
+    expect(badHeader.ok).toBe(false);
+    expect(badHeader.violations.some((row) => row.code === 'header_vs_line_tax')).toBe(true);
+    const badTotal = assertFlowTaxIntegrity({
+      ...invoice00094,
+      total_amount: 1,
+    });
+    expect(badTotal.ok).toBe(false);
+    expect(badTotal.violations.some((row) => row.code === 'totals_equation')).toBe(true);
+  });
 });
