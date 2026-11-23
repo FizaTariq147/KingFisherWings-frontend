@@ -769,3 +769,12 @@ Full verify, 399 documents, cache hits on every spec and golden render. Counts s
 ```
 
 
+
+## Flow real-record compare (quotations / CN / DN)
+
+No threshold/mask/status/signoff changes. Classic generators untouched. No new templates.
+
+- Endpoints: `GET /quotations` (10 real: 4 FCL, 3 air, 3 LCL), `GET /credit-notes` (0 real), `GET /debit-notes` (0 real). CN/DN used anonymized synthetic copies from real invoices (marked synthetic).
+- Artifacts: `reports/flow-spike/real/<type>/<id>-compare.png`, `blanks.md`, `summary.json`, `quotation-fields.md`, `credit-note-sign.md`, `decisions-needed.md`.
+- Money: quotation diffs 0. CN/DN tax diffs where `tax_total` null and `tax_amount` set (classic reads `tax_total` only; flow reads `tax_amount`).
+- Stress: 40-line quote paginated (2 pages, last line present); long name not clipped; multi-currency EUR printed; missing party/job renders; flow failure falls back with classic notice.
