@@ -36,7 +36,7 @@ function ensureFonts() {
  */
 export async function renderInvoiceFlowPdf(record, outputPath) {
   ensureFonts();
-  const payload = { ...record };
+  const payload = { code: 'INVOICE_FLOW_TAX_INVOICE_1', ...record };
   if (!payload.logoBase64) {
     const logoPath = path.join(root, 'public/kingfisher-logo.png');
     if (fs.existsSync(logoPath)) {

@@ -11,6 +11,7 @@ import { fileURLToPath } from 'node:url';
 import { PNG } from 'pngjs';
 import pixelmatch from 'pixelmatch';
 import { renderInvoiceFlowPdf } from './invoice-flow-render.mjs';
+import { writeFlowTemplateHash } from './flow-template-hash.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const outDir = path.join(root, 'reports/flow-spike');
@@ -331,12 +332,13 @@ async function demoCompare() {
   if (!containsAmount(liveText, 17384)) remaining.push('demo total 17,384.00 not found');
   if (!containsAmount(liveText, 7000)) remaining.push('freight line total missing');
   remaining.push(
-    'Flow layout is not absolute Format-1 geometry — column grid, band heights, and charge-table column widths differ from the fixed-position reference.',
+    'Flow is not absolute Format-1 geometry: field positions and charge-table column counts still differ from the fixed-position reference.',
   );
-  remaining.push('Reference uses browser print header/footer and Fresa company name; those regions are masked in the compare.');
-  remaining.push('Amount-in-words wording may differ slightly from the reference “Rupee … Only” phrasing.');
+  remaining.push('Reference browser print chrome and Fresa company branding stay masked; they are not rendered by flow.');
+  remaining.push('Amount-in-words may still use “Rupees … Only” vs the reference “Rupee … Only” phrasing.');
   remaining.push(`Masked pixel mismatches at ${DPI} dpi: ${mismatches} (threshold 0.1).`);
 
+  const templateHash = writeFlowTemplateHash(outDir);
   const report = {
     code: 'INVOICE_FLOW_TAX_INVOICE_1',
     engine: 'flow',
@@ -345,12 +347,15 @@ async function demoCompare() {
     dpi: DPI,
     maskedMismatches: mismatches,
     remainingDifferences: remaining,
-    iterationsUsed: 3,
+    templateHash,
+    iterationsUsed: 5,
     maxIterations: 8,
     iterationNotes: [
       '1: initial pdfmake flow with Format-1 margins/colours/Arimo',
       '2: charge widths use * for description; single Tax vs split columns from record',
       '3: orange/red accent bars flanking TAX INVOICE cyan title band',
+      '4: totals block Sub Total/Discount/Tax/Rounding/Total from tax_amount',
+      '5: tighter margins, body 7.9 / table 6.8, columnGap and header band height aligned to Format 1 rule weight',
     ],
   };
   fs.writeFileSync(path.join(outDir, 'demo-compare.json'), `${JSON.stringify(report, null, 2)}\n`);

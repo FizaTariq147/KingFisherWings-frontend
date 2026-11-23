@@ -35,10 +35,7 @@ import {
   getLeftoverFormatUiLayout,
 } from './leftoverFormatUiLayouts';
 import { getRegistryByCode } from './fresaReportRegistry';
-import {
-  INVOICE_FLOW_CATALOG_NAME,
-  INVOICE_FLOW_TAX_INVOICE_1,
-} from '../flow/invoiceFlowCode';
+import { listFlowCatalogEntries } from '../flow/invoiceFlowCode';
 
 export type RegisteredFormatCatalogEntry = {
   code: string;
@@ -46,14 +43,6 @@ export type RegisteredFormatCatalogEntry = {
   family: ReportFamily;
   contexts: ReportContext[];
   kind: string;
-};
-
-const FLOW_CATALOG_ENTRY: RegisteredFormatCatalogEntry = {
-  code: INVOICE_FLOW_TAX_INVOICE_1,
-  name: INVOICE_FLOW_CATALOG_NAME,
-  family: 'commercial',
-  contexts: ['invoice'],
-  kind: 'invoice_flow_1',
 };
 
 function familyFromCode(code: string, fallback: ReportFamily): ReportFamily {
@@ -86,7 +75,7 @@ function fromLayouts(
 /** Every permanent JSON layout as a catalogue entry (openable PDF). */
 export function listAllRegisteredFormatCatalogEntries(): RegisteredFormatCatalogEntry[] {
   const rows: RegisteredFormatCatalogEntry[] = [
-    FLOW_CATALOG_ENTRY,
+    ...listFlowCatalogEntries(),
     ...fromLayouts(listInvoiceFormatUiLayouts(), 'commercial', ['invoice'], 'invoice'),
     ...fromLayouts(listAccountsFormatUiLayouts(), 'finance', ['gl'], 'accounts'),
     ...fromLayouts(listWmsFormatUiLayouts(), 'wms', ['wms'], 'wms'),

@@ -1,6 +1,7 @@
 import applicability from '../../../../reports/invoice-v2-applicability.json';
 import totalsProfile from '../../../../reports/invoice-v2-totals.json';
 import { isInvoiceFlowCode } from '../flow/invoiceFlowCode';
+import { flowTaxAmount, flowTotalsAddUp } from '../flow/invoiceFlowTotals';
 import { invoiceV2SpecCodes } from './invoiceV2Codes';
 
 /** Codes that participate in arithmetic suitability (v2 specs + flow template). */
@@ -70,8 +71,14 @@ export function invoiceV2TotalsProfile(code: string): InvoiceTotalsProfile {
 
 /** A tax row or a single per-line tax column. SGST/CGST/IGST columns do not count. */
 export function invoicePrintsTaxFigure(code: string): boolean {
+  if (isInvoiceFlowCode(code)) return true;
   const profile = invoiceV2TotalsProfile(code);
   return profile.tax || profile.lineTax === true;
+}
+
+/** Exported for tests — flow tax figure from tax_amount only. */
+export function invoiceFlowTaxAmountForTest(invoice: Exclude<InvoiceFitInput, string | null>): number {
+  return flowTaxAmount(invoice);
 }
 
 function num(value: unknown): number {
@@ -120,9 +127,20 @@ export function invoiceV2Suitability(code: string, input?: InvoiceFitInput): Inv
   if (!suitabilityTracked(code)) return { suitable: true, reason: null };
   const fit = asFit(input);
   if (!fit.amounts) return { suitable: true, reason: null };
+  const invoice = fit.invoice;
+
+  /**
+   * Engine=flow: suitable when Sub Total + Tax(tax_amount) − Discount + Rounding
+   * equals Total. Those rows are always printed.
+   */
+  if (isInvoiceFlowCode(code)) {
+    if (invoice.total_amount == null) return { suitable: false, reason: 'the total is not on the invoice' };
+    if (flowTotalsAddUp(invoice)) return { suitable: true, reason: null };
+    return { suitable: false, reason: 'the printed totals do not add up to the total' };
+  }
+
   const profile = invoiceV2TotalsProfile(code);
   if (!profile.total) return { suitable: false, reason: 'this layout does not print a total' };
-  const invoice = fit.invoice;
   if (invoice.total_amount == null) return { suitable: false, reason: 'the total is not on the invoice' };
 
   const lines = invoice.lines || [];

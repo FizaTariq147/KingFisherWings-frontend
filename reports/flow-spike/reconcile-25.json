@@ -1,0 +1,1478 @@
+{
+  "summary": {
+    "total": 25,
+    "recordPass": 25,
+    "flowClassicTaxDiffers": [
+      "INV/26/00093",
+      "INV/26/00097",
+      "INV/26/00094",
+      "INV/26/00095",
+      "INV/26/00098",
+      "INV/26/00089",
+      "SYN-02",
+      "SYN-03",
+      "SYN-04",
+      "SYN-06",
+      "SYN-07",
+      "SYN-09",
+      "SYN-10",
+      "SYN-11",
+      "SYN-12",
+      "SYN-14",
+      "SYN-15"
+    ],
+    "classicVatZeroWithLineTax": [
+      "INV/26/00093",
+      "INV/26/00097",
+      "INV/26/00094",
+      "INV/26/00095",
+      "INV/26/00098",
+      "INV/26/00089"
+    ]
+  },
+  "results": [
+    {
+      "invoice": "INV/26/00102",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 120,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 120,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 0,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": false
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": []
+    },
+    {
+      "invoice": "INV/26/00093",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 900,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 45,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 945,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 45,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "INV/26/00101",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 1831,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 1831,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 0,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": false
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "INV/26/00100",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 1200,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 1200,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 0,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": false
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "INV/26/00099",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 22,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 22,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 0,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": false
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": []
+    },
+    {
+      "invoice": "INV/26/00097",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 70,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 3.5,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 73.5,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 3.5,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "INV/26/00094",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 152567,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 7628.35,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 160195.35,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 7628.35,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "INV/26/00095",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 56789,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 2839.45,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 59628.45,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 2839.45,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "INV/26/00098",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 1520000,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 76000,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 1596000,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 76000,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "INV/26/00089",
+      "synthetic": false,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 90,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 4.5,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 94.5,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 4.5,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-01",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 195,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 195,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 0,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": false
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-02",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 162,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 16.2,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 178.2,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 16.2,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-03",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 2725,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 490.5,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 3215.5,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 490.5,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-04",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 300,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 40,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 15,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 275,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 15,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-05",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 73,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0.04,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 73.04,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 0,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": false
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-06",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 155,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 15,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 15.5,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 155.5,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 15.5,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-07",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 133,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 6.65,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 139.65,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 6.65,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-08",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 1490,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 1490,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 0,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": false
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-09",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 71,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 7.1,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": -0.03,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 78.07,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 7.1,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-10",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 7800,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 1404,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 9204,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 1404,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-11",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 595,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 29.75,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 624.75,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 29.75,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-12",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 140,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 20,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 28,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 148,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 28,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-13",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 105,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 105,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 0,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": false
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-14",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 3410,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 170.5,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 3580.5,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 170.5,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    },
+    {
+      "invoice": "SYN-15",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "label": "Sub Total",
+          "amount": 2560,
+          "inFlow": true
+        },
+        {
+          "key": "discount",
+          "label": "Discount",
+          "amount": 100,
+          "inFlow": true
+        },
+        {
+          "key": "tax",
+          "label": "Tax",
+          "amount": 384,
+          "inFlow": true
+        },
+        {
+          "key": "rounding",
+          "label": "Rounding",
+          "amount": 0.05,
+          "inFlow": true
+        },
+        {
+          "key": "total",
+          "label": "Total",
+          "amount": 2844.05,
+          "inFlow": true
+        }
+      ],
+      "vsClassic": {
+        "subtotal": {
+          "flow": true,
+          "classic": true
+        },
+        "tax": {
+          "flowAmount": 384,
+          "classicVat": 0,
+          "flowPrintsTax": true,
+          "classicPrintsVat": true,
+          "differs": true
+        },
+        "total": {
+          "flow": true,
+          "classic": true
+        }
+      },
+      "blanks": [
+        "job missing",
+        "containers empty"
+      ]
+    }
+  ]
+}

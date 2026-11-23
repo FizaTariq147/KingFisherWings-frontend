@@ -16,8 +16,6 @@ import {
   renderInvoiceV2InBrowser,
 } from '../../engine/invoiceV2Gate';
 import { invoiceV2BadgeText } from '../../engine/invoiceV2Codes';
-import { isInvoiceFlowCode } from '../../flow/invoiceFlowCode';
-import { renderInvoiceFlowPdf } from '../../flow/renderInvoiceFlowPdf';
 import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
 
 type Props = {
@@ -66,15 +64,8 @@ export function InvoiceV2Preview({ code, invoiceId }: Props) {
           }
           logoBase64 = btoa(binary);
         }
-        const blob = isInvoiceFlowCode(code)
-          ? await renderInvoiceFlowPdf({
-              invoice: invoice as unknown as Record<string, unknown>,
-              job: job as unknown as Record<string, unknown> | null,
-              party: party as unknown as Record<string, unknown> | null,
-              organization: organization as unknown as Record<string, unknown> | null,
-              logoBase64,
-            })
-          : await renderInvoiceV2InBrowser({ code, invoice, job, party, organization, logoBase64 });
+        // Flow codes are rendered by the same /__reports/invoice-v2 plugin via pdfmake.
+        const blob = await renderInvoiceV2InBrowser({ code, invoice, job, party, organization, logoBase64 });
         if (cancelled) return;
         viewer.showBlob(blob, { fileName: `${code}.pdf`, title: code });
       } catch {

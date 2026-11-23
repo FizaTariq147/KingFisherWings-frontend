@@ -1,9 +1,9 @@
 {
   "INVOICE_FLOW_TAX_INVOICE_1": {
-    "subtotal": false,
-    "tax": false,
-    "discount": false,
-    "rounding": false,
+    "subtotal": true,
+    "tax": true,
+    "discount": true,
+    "rounding": true,
     "total": true,
     "lineTax": true
   },

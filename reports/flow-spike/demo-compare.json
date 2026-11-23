@@ -4,18 +4,21 @@
   "library": "pdfmake",
   "why": "pdfmake provides flowing tables with headerRows repeated across page breaks; jspdf/pdf-lib do not. Already installed; Arimo embedded.",
   "dpi": 150,
-  "maskedMismatches": 199576,
+  "maskedMismatches": 245787,
   "remainingDifferences": [
-    "Flow layout is not absolute Format-1 geometry — column grid, band heights, and charge-table column widths differ from the fixed-position reference.",
-    "Reference uses browser print header/footer and Fresa company name; those regions are masked in the compare.",
-    "Amount-in-words wording may differ slightly from the reference “Rupee … Only” phrasing.",
-    "Masked pixel mismatches at 150 dpi: 199576 (threshold 0.1)."
+    "Flow is not absolute Format-1 geometry: field positions and charge-table column counts still differ from the fixed-position reference.",
+    "Reference browser print chrome and Fresa company branding stay masked; they are not rendered by flow.",
+    "Amount-in-words may still use “Rupees … Only” vs the reference “Rupee … Only” phrasing.",
+    "Masked pixel mismatches at 150 dpi: 245787 (threshold 0.1)."
   ],
-  "iterationsUsed": 3,
+  "templateHash": "ef9401de87c9ca9f927b54c3ca79982ca3fb3496c7162d842935220e162ea288",
+  "iterationsUsed": 5,
   "maxIterations": 8,
   "iterationNotes": [
     "1: initial pdfmake flow with Format-1 margins/colours/Arimo",
     "2: charge widths use * for description; single Tax vs split columns from record",
-    "3: orange/red accent bars flanking TAX INVOICE cyan title band"
+    "3: orange/red accent bars flanking TAX INVOICE cyan title band",
+    "4: totals block Sub Total/Discount/Tax/Rounding/Total from tax_amount",
+    "5: tighter margins, body 7.9 / table 6.8, columnGap and header band height aligned to Format 1 rule weight"
   ]
 }

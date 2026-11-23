@@ -11,8 +11,8 @@ export const INVOICE_FLOW_STYLE = {
   margins: {
     left: 16,
     right: 16,
-    top: 16,
-    bottom: 28,
+    top: 14,
+    bottom: 26,
   },
   fonts: {
     family: 'Arimo',
@@ -22,6 +22,7 @@ export const INVOICE_FLOW_STYLE = {
       body: 7.9,
       small: 6.8,
       meta: 8,
+      table: 6.8,
     },
   },
   colors: {
@@ -63,7 +64,7 @@ export const INVOICE_FLOW_STYLE = {
   table: {
     headerFill: '#9AD7FF',
     cellPadding: 2,
-    fontSize: 6.5,
+    fontSize: 6.8,
   },
 } as const;
 

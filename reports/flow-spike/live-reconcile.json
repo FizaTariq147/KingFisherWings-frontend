@@ -51,8 +51,7 @@
       "moneyMatch": true,
       "blanks": [
         "job context missing",
-        "containers empty",
-        "subtotal 152567 not printed (no subtotal row in flow layout)"
+        "containers empty"
       ],
       "leak": false
     },

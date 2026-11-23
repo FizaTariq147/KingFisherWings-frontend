@@ -1,18 +1,17 @@
-# Tax fields on the invoice API
+# Backend note: classic VAT vs line tax_amount
 
-No change to the classic generator. Classic still reads `tax_total` only (`invoiceToPdfModel`: `vatAmount = invoice.tax_total ?? 0`).
+Classic `invoiceToPdfModel` sets `vatAmount = invoice.tax_total ?? 0`.
+It does not read `invoice.tax_amount` or sum line `tax_amount`.
+Flow prints Tax from header/line `tax_amount` and never uses `tax_total`.
 
-The 10 downloaded `GET /invoices/:id` bodies have no `tax_total` key. They do have header `tax_amount` (a string) and line `tax_amount`. `normalizeInvoice` sets `tax_total` from `tax_total`, then `vat_amount`, then `taxTotal`. It does not copy header `tax_amount`, so the mapped invoice has no `tax_total`.
+Real invoices where classic would print VAT 0.00 while lines (or header tax_amount) contain tax:
 
-Invoices with line tax and no `tax_total`:
+- **INV/26/00093** — header tax_amount=45, tax_total=null, line tax sum=45, classic VAT=0, flow Tax=45
+- **INV/26/00097** — header tax_amount=3.5, tax_total=null, line tax sum=3.5, classic VAT=0, flow Tax=3.5
+- **INV/26/00094** — header tax_amount=7628.35, tax_total=null, line tax sum=7628.35, classic VAT=0, flow Tax=7628.35
+- **INV/26/00095** — header tax_amount=2839.45, tax_total=null, line tax sum=2839.45, classic VAT=0, flow Tax=2839.45
+- **INV/26/00098** — header tax_amount=76000, tax_total=null, line tax sum=76000, classic VAT=0, flow Tax=76000
+- **INV/26/00089** — header tax_amount=4.5, tax_total=null, line tax sum=4.5, classic VAT=0, flow Tax=4.5
 
-- INV/26/00093
-- INV/26/00097
-- INV/26/00094
-- INV/26/00095
-- INV/26/00098
-- INV/26/00089
+Do not change the classic generator. Backend should populate `tax_total` when VAT must appear on classic PDFs, or clients should prefer flow for tax_amount-backed totals.
 
-The other four (INV/26/00102, INV/26/00101, INV/26/00100, INV/26/00099) have header `tax_amount` 0 and line tax 0, and also have no `tax_total` key.
-
-What the backend needs to send, when it is ready: `tax_total` as a number on the invoice, equal to the sum of the line `tax_amount` values. Do not invent an SGST, CGST, or IGST split in that field.
