@@ -1,0 +1,9 @@
+{
+  "code": "INVOICE_FLOW_TAX_INVOICE_1",
+  "invoice": "INV/26/00094",
+  "bytesEqual": false,
+  "textEqual": true,
+  "beforeSize": 211673,
+  "afterSize": 211673,
+  "note": "pdftotext layout output identical after extracting reusable flow-blocks; PDF byte hash differs only by generator IDs/timestamps."
+}

@@ -52,12 +52,53 @@ export const FLOW_INVOICE_OPTIONS = {
     taxMode: 'auto',
     currency: null,
     catalogName: 'Tax Invoice (flow layout)',
+    family: 'commercial',
+    contexts: ['invoice'],
+  },
+  QUOTATION_FLOW_1: {
+    engine: 'flow',
+    title: 'QUOTATION',
+    columns: 'simple',
+    showContainers: false,
+    showBank: true,
+    showTerms: true,
+    taxMode: 'auto',
+    currency: null,
+    catalogName: 'Quotation (flow layout)',
+    family: 'quotation',
+    contexts: ['quotation'],
+  },
+  CREDIT_NOTE_FLOW_1: {
+    engine: 'flow',
+    title: 'CREDIT NOTE',
+    columns: 'simple',
+    showContainers: false,
+    showBank: true,
+    showTerms: true,
+    taxMode: 'auto',
+    currency: null,
+    catalogName: 'Credit Note (flow layout)',
+    family: 'commercial',
+    contexts: ['invoice'],
+  },
+  DEBIT_NOTE_FLOW_1: {
+    engine: 'flow',
+    title: 'DEBIT NOTE',
+    columns: 'simple',
+    showContainers: false,
+    showBank: true,
+    showTerms: true,
+    taxMode: 'auto',
+    currency: null,
+    catalogName: 'Debit Note (flow layout)',
+    family: 'commercial',
+    contexts: ['invoice'],
   },
 };
 
 export function isFlowInvoiceCode(code) {
   const key = String(code || '').trim().toUpperCase();
-  return Boolean(FLOW_INVOICE_OPTIONS[key]) || /^INVOICE_FLOW_/i.test(key);
+  return Boolean(FLOW_INVOICE_OPTIONS[key]) || /^(INVOICE|QUOTATION|CREDIT_NOTE|DEBIT_NOTE)_FLOW_/i.test(key);
 }
 
 export function flowInvoiceOptions(code) {

@@ -107,9 +107,17 @@ export function listAllRegisteredFormatCatalogEntries(): RegisteredFormatCatalog
     const key = row.code.toUpperCase();
     if (!byCode.has(key)) byCode.set(key, row);
   }
-  return [...byCode.values()].sort((a, b) =>
-    a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }),
-  );
+  const flowFirst = listFlowCatalogEntries().map((entry) => entry.code.toUpperCase());
+  return [...byCode.values()].sort((a, b) => {
+    const ai = flowFirst.indexOf(a.code.toUpperCase());
+    const bi = flowFirst.indexOf(b.code.toUpperCase());
+    if (ai >= 0 || bi >= 0) {
+      if (ai < 0) return 1;
+      if (bi < 0) return -1;
+      return ai - bi;
+    }
+    return a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' });
+  });
 }
 
 /** Resolve a permanent JSON layout for any FRESA catalog / registry report code. */

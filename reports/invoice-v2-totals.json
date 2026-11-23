@@ -7,6 +7,30 @@
     "total": true,
     "lineTax": true
   },
+  "QUOTATION_FLOW_1": {
+    "subtotal": true,
+    "tax": true,
+    "discount": true,
+    "rounding": true,
+    "total": true,
+    "lineTax": true
+  },
+  "CREDIT_NOTE_FLOW_1": {
+    "subtotal": true,
+    "tax": true,
+    "discount": true,
+    "rounding": true,
+    "total": true,
+    "lineTax": true
+  },
+  "DEBIT_NOTE_FLOW_1": {
+    "subtotal": true,
+    "tax": true,
+    "discount": true,
+    "rounding": true,
+    "total": true,
+    "lineTax": true
+  },
   "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA": {
     "subtotal": false,
     "tax": false,

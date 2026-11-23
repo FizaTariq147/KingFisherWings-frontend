@@ -1,29 +1,26 @@
 /**
  * Build a pdfmake docDefinition for engine=flow invoices.
- * Options come from invoice-flow-options.mjs. Empty values stay empty in
- * field grids; totals always print Sub Total / Discount / Tax / Rounding /
- * Total using tax_amount (never tax_total).
+ * Composed from reusable flow-blocks. Totals use tax_amount (never tax_total).
  */
 import { amountInWords } from './amount-words.mjs';
 import { flowInvoiceOptions, resolveChargeColumns } from './invoice-flow-options.mjs';
-import { flowTotalsRows, money2 } from './invoice-flow-totals.mjs';
+import { flowTotalsRows } from './invoice-flow-totals.mjs';
+import {
+  blockBankAndTerms,
+  blockFieldGrid,
+  blockFooter,
+  blockHeader,
+  blockTable,
+  blockTitle,
+  blockTwoColumnPartyMeta,
+  blockWordsAndTotals,
+  cell,
+  createFlowStyle,
+  flowDocument,
+  headerCell,
+} from './flow-blocks.mjs';
 
-const STYLE = {
-  page: { width: 594, height: 841.9 },
-  /** Format 1 content margins (~16.6 left from span census). */
-  margins: [16, 14, 16, 26],
-  colors: {
-    ink: '#101010',
-    gray: '#656565',
-    headerFill: '#9AD7FF',
-    panelFill: '#FCFCFC',
-    white: '#FFFFFF',
-    accentOrange: '#F7A21C',
-    accentRed: '#DE1F26',
-  },
-  rule: 0.5653,
-  fonts: { body: 7.9, title: 11.9, company: 15.8, small: 6.8, table: 6.8 },
-};
+const STYLE = createFlowStyle();
 
 const COLUMN_LABELS = {
   charges: 'Charges',
@@ -35,6 +32,7 @@ const COLUMN_LABELS = {
   fcy: 'FCY',
   taxable: 'Taxable',
   nonTax: 'Non Tax',
+  pretax: 'Amount',
   tax: 'Tax',
   total: 'Total',
   sgstPct: 'SGST%',
@@ -59,7 +57,7 @@ function money(value) {
   if (value == null || value === '') return '';
   const number = Number(value);
   if (!Number.isFinite(number)) return '';
-  return money2(number);
+  return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function numberText(value) {
@@ -83,41 +81,6 @@ function formatDate(value) {
   return `${match[3]}-${month}-${match[1].slice(2)}`;
 }
 
-function cell(value, opts = {}) {
-  return {
-    text: value == null || value === '' ? ' ' : String(value),
-    fontSize: opts.fontSize ?? STYLE.fonts.table,
-    bold: Boolean(opts.bold),
-    alignment: opts.alignment || 'left',
-    color: opts.color || STYLE.colors.ink,
-    margin: [1, 1, 1, 1],
-  };
-}
-
-function headerCell(label) {
-  return {
-    text: label,
-    fontSize: STYLE.fonts.table,
-    bold: true,
-    color: STYLE.colors.ink,
-    fillColor: STYLE.colors.headerFill,
-    margin: [1, 2, 1, 2],
-  };
-}
-
-function thinLayout() {
-  return {
-    hLineWidth: () => STYLE.rule,
-    vLineWidth: () => STYLE.rule,
-    hLineColor: () => STYLE.colors.gray,
-    vLineColor: () => STYLE.colors.gray,
-    paddingLeft: () => 2,
-    paddingRight: () => 2,
-    paddingTop: () => 1,
-    paddingBottom: () => 1,
-  };
-}
-
 function lineHasSplitTax(line) {
   return [line?.sgst_amount, line?.cgst_amount, line?.igst_amount, line?.ugst_amount].some(
     (value) => value != null && value !== '' && Math.abs(Number(value)) > 0.0001,
@@ -133,7 +96,7 @@ function resolveTaxMode(options, lines) {
 }
 
 function chargeColumnsForMode(baseColumns, taxMode) {
-  const withoutTax = baseColumns.filter((key) => !['tax', 'sgstPct', 'sgst', 'cgstPct', 'cgst', 'iugstPct', 'iugst'].includes(key));
+  const withoutTax = baseColumns.filter((key) => !['tax', 'sgstPct', 'sgst', 'cgstPct', 'cgst', 'iugstPct', 'iugst', 'pretax'].includes(key));
   if (taxMode === 'none') return withoutTax;
   if (taxMode === 'split') {
     const insertAt = withoutTax.indexOf('total');
@@ -160,6 +123,7 @@ function widthForColumn(key) {
     fcy: 40,
     taxable: 42,
     nonTax: 42,
+    pretax: 44,
     tax: 40,
     total: 48,
     sgstPct: 28,
@@ -170,6 +134,19 @@ function widthForColumn(key) {
     iugst: 34,
   };
   return map[key] ?? 36;
+}
+
+/** Pre-tax line amount: qty×rate when both present, else line_total − tax. */
+export function linePreTaxAmount(line) {
+  const qty = Number(line?.quantity);
+  const rate = Number(line?.unit_price);
+  if (Number.isFinite(qty) && Number.isFinite(rate) && line?.quantity !== '' && line?.unit_price !== '' && line?.quantity != null && line?.unit_price != null) {
+    return Math.round(qty * rate * 100) / 100;
+  }
+  const total = Number(line?.line_total);
+  const tax = Number(line?.tax_amount || 0);
+  if (Number.isFinite(total)) return Math.round((total - (Number.isFinite(tax) ? tax : 0)) * 100) / 100;
+  return 0;
 }
 
 function lineCellValue(key, line, currency) {
@@ -194,6 +171,8 @@ function lineCellValue(key, line, currency) {
         : money(line.taxable_amount ?? Number(line.unit_price) * Number(line.quantity || 0));
     case 'nonTax':
       return line.is_taxable === false ? money(line.line_total) : money(line.non_taxable_amount);
+    case 'pretax':
+      return money(linePreTaxAmount(line));
     case 'tax':
       return money(line.tax_amount);
     case 'total':
@@ -218,7 +197,33 @@ function lineCellValue(key, line, currency) {
 }
 
 function rightAligned(key) {
-  return ['qty', 'rate', 'exRate', 'fcy', 'taxable', 'nonTax', 'tax', 'total', 'sgstPct', 'sgst', 'cgstPct', 'cgst', 'iugstPct', 'iugst'].includes(key);
+  return ['qty', 'rate', 'exRate', 'fcy', 'taxable', 'nonTax', 'pretax', 'tax', 'total', 'sgstPct', 'sgst', 'cgstPct', 'cgst', 'iugstPct', 'iugst'].includes(key);
+}
+
+function linesHaveTax(lines) {
+  return (lines || []).some((line) => line?.tax_amount != null && line.tax_amount !== '' && Math.abs(Number(line.tax_amount)) > 0.0001);
+}
+
+/**
+ * When lines carry tax, ensure Amount (pre-tax) + Tax + Total columns so
+ * Sub Total + Tax = Total is visible in the charge table.
+ */
+function ensurePreTaxColumns(columns, lines) {
+  if (!linesHaveTax(lines)) return columns;
+  let next = [...columns];
+  if (!next.includes('pretax')) {
+    const taxAt = next.indexOf('tax');
+    if (taxAt >= 0) next = [...next.slice(0, taxAt), 'pretax', ...next.slice(taxAt)];
+    else {
+      const totalAt = next.indexOf('total');
+      next = totalAt >= 0 ? [...next.slice(0, totalAt), 'pretax', ...next.slice(totalAt)] : [...next, 'pretax'];
+    }
+  }
+  if (!next.includes('tax')) {
+    const totalAt = next.indexOf('total');
+    next = totalAt >= 0 ? [...next.slice(0, totalAt), 'tax', ...next.slice(totalAt)] : [...next, 'tax'];
+  }
+  return next;
 }
 
 /**
@@ -252,13 +257,16 @@ export function buildInvoiceFlowDocDefinition(record = {}, optionsOverride = nul
   );
 
   const taxMode = resolveTaxMode(options, lines);
-  const chargeKeys = chargeColumnsForMode(resolveChargeColumns(options), taxMode);
+  const chargeKeys = ensurePreTaxColumns(
+    chargeColumnsForMode(resolveChargeColumns(options), taxMode),
+    lines,
+  );
   const chargeWidths = chargeKeys.map(widthForColumn);
   const chargeBody = [
-    chargeKeys.map((key) => headerCell(COLUMN_LABELS[key] || key)),
+    chargeKeys.map((key) => headerCell(STYLE, COLUMN_LABELS[key] || key)),
     ...lines.map((line) =>
       chargeKeys.map((key) =>
-        cell(lineCellValue(key, line, currency), {
+        cell(STYLE, lineCellValue(key, line, currency), {
           alignment: rightAligned(key) ? 'right' : 'left',
           bold: key === 'total',
         }),
@@ -278,17 +286,17 @@ export function buildInvoiceFlowDocDefinition(record = {}, optionsOverride = nul
   }
 
   const containerBody = [
-    ['Container No.', 'Type', 'No of Pcs', 'Gross Weight', 'Volume', 'Volume Weight'].map(headerCell),
+    ['Container No.', 'Type', 'No of Pcs', 'Gross Weight', 'Volume', 'Volume Weight'].map((label) => headerCell(STYLE, label)),
     ...(containers.length
       ? containers.map((item) => [
-          cell(firstText(item.container_number, item.number)),
-          cell(firstText(item.container_type_code, item.type)),
-          cell(firstText(item.packages, item.no_of_pcs, job.pieces)),
-          cell(firstText(item.gross_weight, job.gross_weight)),
-          cell(firstText(item.cbm, item.volume, job.volume_cbm)),
-          cell(firstText(item.volume_weight, item.vol_weight)),
+          cell(STYLE, firstText(item.container_number, item.number)),
+          cell(STYLE, firstText(item.container_type_code, item.type)),
+          cell(STYLE, firstText(item.packages, item.no_of_pcs, job.pieces)),
+          cell(STYLE, firstText(item.gross_weight, job.gross_weight)),
+          cell(STYLE, firstText(item.cbm, item.volume, job.volume_cbm)),
+          cell(STYLE, firstText(item.volume_weight, item.vol_weight)),
         ])
-      : [[cell(''), cell(''), cell(''), cell(''), cell(''), cell('')]]),
+      : [[cell(STYLE, ''), cell(STYLE, ''), cell(STYLE, ''), cell(STYLE, ''), cell(STYLE, ''), cell(STYLE, '')]]),
   ];
 
   const hbl = firstText(sea.hbl_number, ship.hbl_number, air.hawb_number, ship.hawb_number);
@@ -317,247 +325,81 @@ export function buildInvoiceFlowDocDefinition(record = {}, optionsOverride = nul
     ['Remarks', firstText(invoice.remarks)],
   ];
 
-  const leftFields = fieldRows.filter((_, index) => index % 2 === 0);
-  const rightFields = fieldRows.filter((_, index) => index % 2 === 1);
-
-  const logoBlock = record.logoBase64
-    ? { image: `data:image/png;base64,${record.logoBase64}`, width: 82, height: 40, margin: [0, 0, 10, 0] }
-    : { text: ' ', width: 82, height: 40, margin: [0, 0, 10, 0] };
-
-  const totalsRows = flowTotalsRows(invoice);
-  const totalsBody = totalsRows.map((row) => [
-    {
-      text: row.label,
-      fontSize: STYLE.fonts.body,
-      bold: row.key === 'total',
-      alignment: 'left',
-      margin: [2, 2, 2, 2],
-    },
-    {
-      text: money2(row.amount),
-      fontSize: STYLE.fonts.body,
-      bold: row.key === 'total',
-      alignment: 'right',
-      margin: [2, 2, 2, 2],
-    },
-  ]);
-
   const content = [
-    {
-      columns: [
-        logoBlock,
+    blockHeader(STYLE, {
+      logoBase64: record.logoBase64,
+      companyName,
+      companyAddress,
+      contactLine: [org.phone, org.email, org.website].map(text).filter(Boolean).join('  ') || ' ',
+    }),
+    blockTitle(STYLE, { title: options.title || 'TAX INVOICE' }),
+    blockTwoColumnPartyMeta(STYLE, {
+      leftStack: [
+        { text: 'Bill To', bold: true, fontSize: STYLE.fonts.body, margin: [0, 0, 0, 3] },
+        { text: billToName || ' ', fontSize: STYLE.fonts.body },
+        { text: billToAddress || ' ', fontSize: STYLE.fonts.body, margin: [0, 1, 0, 0] },
+        { text: billToGstin ? `GSTIN: ${billToGstin}` : ' ', fontSize: STYLE.fonts.body, margin: [0, 1, 0, 0] },
+        { text: party.phone ? `Phone: ${party.phone}` : ' ', fontSize: STYLE.fonts.body, margin: [0, 1, 0, 0] },
+      ],
+      rightStack: [
         {
-          width: '*',
-          stack: [
-            { text: companyName || ' ', fontSize: STYLE.fonts.company, bold: true, alignment: 'right', color: STYLE.colors.ink },
-            { text: companyAddress || ' ', fontSize: STYLE.fonts.body, alignment: 'right', color: STYLE.colors.ink, margin: [0, 1, 0, 0] },
+          text: [
+            { text: 'Invoice No./Date: ', bold: true, fontSize: STYLE.fonts.body },
             {
-              text: [org.phone, org.email, org.website].map(text).filter(Boolean).join('  ') || ' ',
-              fontSize: STYLE.fonts.small,
-              alignment: 'right',
-              color: STYLE.colors.gray,
-              margin: [0, 1, 0, 0],
+              text: joinParts(
+                text(invoice.invoice_number),
+                formatDate(invoice.invoice_date),
+                invoice.status ? `(${invoice.status})` : '',
+              ) || ' ',
+              fontSize: STYLE.fonts.body,
             },
+          ],
+          margin: [0, 0, 0, 3],
+        },
+        {
+          text: [
+            { text: 'Credit Term: ', bold: true, fontSize: STYLE.fonts.body },
+            { text: firstText(invoice.credit_term, invoice.payment_term) || ' ', fontSize: STYLE.fonts.body },
           ],
         },
       ],
-      columnGap: 8,
-      margin: [0, 0, 0, 8],
-    },
-    {
-      columns: [
-        { width: 6, canvas: [{ type: 'rect', x: 0, y: 0, w: 6, h: 24, color: STYLE.colors.accentOrange }] },
-        {
-          width: '*',
-          table: {
-            widths: ['*'],
-            body: [[{
-              text: options.title || 'TAX INVOICE',
-              alignment: 'center',
-              bold: true,
-              fontSize: STYLE.fonts.title,
-              color: STYLE.colors.ink,
-              fillColor: STYLE.colors.headerFill,
-              margin: [0, 5, 0, 5],
-            }]],
-          },
-          layout: thinLayout(),
-        },
-        { width: 6, canvas: [{ type: 'rect', x: 0, y: 0, w: 6, h: 24, color: STYLE.colors.accentRed }] },
-      ],
-      columnGap: 0,
-      margin: [0, 0, 0, 8],
-    },
-    {
-      columns: [
-        {
-          width: '48%',
-          stack: [
-            { text: 'Bill To', bold: true, fontSize: STYLE.fonts.body, margin: [0, 0, 0, 3] },
-            { text: billToName || ' ', fontSize: STYLE.fonts.body },
-            { text: billToAddress || ' ', fontSize: STYLE.fonts.body, margin: [0, 1, 0, 0] },
-            { text: billToGstin ? `GSTIN: ${billToGstin}` : ' ', fontSize: STYLE.fonts.body, margin: [0, 1, 0, 0] },
-            { text: party.phone ? `Phone: ${party.phone}` : ' ', fontSize: STYLE.fonts.body, margin: [0, 1, 0, 0] },
-          ],
-        },
-        {
-          width: '52%',
-          stack: [
-            {
-              text: [
-                { text: 'Invoice No./Date: ', bold: true, fontSize: STYLE.fonts.body },
-                {
-                  text: joinParts(
-                    text(invoice.invoice_number),
-                    formatDate(invoice.invoice_date),
-                    invoice.status ? `(${invoice.status})` : '',
-                  ) || ' ',
-                  fontSize: STYLE.fonts.body,
-                },
-              ],
-              margin: [0, 0, 0, 3],
-            },
-            {
-              text: [
-                { text: 'Credit Term: ', bold: true, fontSize: STYLE.fonts.body },
-                { text: firstText(invoice.credit_term, invoice.payment_term) || ' ', fontSize: STYLE.fonts.body },
-              ],
-            },
-          ],
-        },
-      ],
-      columnGap: 12,
-      margin: [0, 0, 0, 8],
-    },
-    {
-      columns: [
-        {
-          width: '50%',
-          stack: leftFields.map(([label, value]) => ({
-            text: [
-              { text: `${label}: `, bold: true, fontSize: STYLE.fonts.body },
-              { text: value || ' ', fontSize: STYLE.fonts.body },
-            ],
-            margin: [0, 0, 0, 2],
-          })),
-        },
-        {
-          width: '50%',
-          stack: rightFields.map(([label, value]) => ({
-            text: [
-              { text: `${label}: `, bold: true, fontSize: STYLE.fonts.body },
-              { text: value || ' ', fontSize: STYLE.fonts.body },
-            ],
-            margin: [0, 0, 0, 2],
-          })),
-        },
-      ],
-      columnGap: 10,
-      margin: [0, 0, 0, 8],
-    },
+    }),
+    blockFieldGrid(STYLE, fieldRows),
   ];
 
   if (options.showContainers !== false) {
-    content.push({
-      table: {
-        headerRows: 1,
-        widths: [100, 55, 55, 80, 55, 70],
-        body: containerBody,
-        dontBreakRows: true,
-      },
-      layout: thinLayout(),
-      margin: [0, 0, 0, 8],
-    });
+    content.push(blockTable(STYLE, { widths: [100, 55, 55, 80, 55, 70], body: containerBody }));
   }
 
-  content.push({
-    table: {
-      headerRows: 1,
-      widths: chargeWidths,
-      body: chargeBody,
-      dontBreakRows: true,
-    },
-    layout: thinLayout(),
-    margin: [0, 0, 0, 8],
-  });
+  content.push(blockTable(STYLE, { widths: chargeWidths, body: chargeBody }));
+  content.push(blockWordsAndTotals(STYLE, { words, totalsRows: flowTotalsRows(invoice) }));
 
-  content.push({
-    columns: [
-      {
-        width: '*',
-        stack: [
-          {
-            text: [
-              { text: 'Amount in words: ', bold: true, fontSize: STYLE.fonts.body },
-              { text: words || ' ', fontSize: STYLE.fonts.body },
-            ],
-          },
-        ],
-      },
-      {
-        width: 160,
-        table: {
-          widths: ['*', 70],
-          body: totalsBody,
-        },
-        layout: thinLayout(),
-      },
+  const bankAndTerms = blockBankAndTerms(STYLE, {
+    showBank: options.showBank !== false,
+    showTerms: options.showTerms !== false,
+    bankLines: [
+      firstText(bank.account_name, bank.account_holder, companyName) ? `Beneficiary Name: ${firstText(bank.account_name, bank.account_holder, companyName)}` : ' ',
+      firstText(bank.bank_name, bank.name) ? `Bank : ${firstText(bank.bank_name, bank.name)}` : ' ',
+      firstText(bank.account_number, bank.account_no) ? `A/c No : ${firstText(bank.account_number, bank.account_no)}` : ' ',
+      text(bank.iban) ? `IBAN Code : ${text(bank.iban)}` : ' ',
+      firstText(bank.swift_code, bank.swift) ? `Swift Code : ${firstText(bank.swift_code, bank.swift)}` : ' ',
+      firstText(bank.address, companyAddress) ? `Address : ${firstText(bank.address, companyAddress)}` : ' ',
     ],
-    columnGap: 12,
-    margin: [0, 0, 0, 10],
+    termsLines: [
+      '1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.',
+      '2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.',
+    ],
   });
+  if (bankAndTerms) content.push(bankAndTerms);
 
-  if (options.showBank !== false || options.showTerms !== false) {
-    content.push({
-      columns: [
-        options.showBank !== false
-          ? {
-              width: '55%',
-              stack: [
-                { text: 'Bank Details', bold: true, fontSize: STYLE.fonts.body, margin: [0, 0, 0, 3] },
-                { text: firstText(bank.account_name, bank.account_holder, companyName) ? `Beneficiary Name: ${firstText(bank.account_name, bank.account_holder, companyName)}` : ' ', fontSize: STYLE.fonts.small, margin: [0, 0, 0, 1] },
-                { text: firstText(bank.bank_name, bank.name) ? `Bank : ${firstText(bank.bank_name, bank.name)}` : ' ', fontSize: STYLE.fonts.small, margin: [0, 0, 0, 1] },
-                { text: firstText(bank.account_number, bank.account_no) ? `A/c No : ${firstText(bank.account_number, bank.account_no)}` : ' ', fontSize: STYLE.fonts.small, margin: [0, 0, 0, 1] },
-                { text: text(bank.iban) ? `IBAN Code : ${text(bank.iban)}` : ' ', fontSize: STYLE.fonts.small, margin: [0, 0, 0, 1] },
-                { text: firstText(bank.swift_code, bank.swift) ? `Swift Code : ${firstText(bank.swift_code, bank.swift)}` : ' ', fontSize: STYLE.fonts.small, margin: [0, 0, 0, 1] },
-                { text: firstText(bank.address, companyAddress) ? `Address : ${firstText(bank.address, companyAddress)}` : ' ', fontSize: STYLE.fonts.small },
-              ],
-            }
-          : { width: '55%', text: ' ' },
-        options.showTerms !== false
-          ? {
-              width: '45%',
-              stack: [
-                { text: 'Terms', bold: true, fontSize: STYLE.fonts.body, margin: [0, 0, 0, 3] },
-                { text: '1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.', fontSize: STYLE.fonts.small, margin: [0, 0, 0, 2] },
-                { text: '2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.', fontSize: STYLE.fonts.small },
-              ],
-            }
-          : { width: '45%', text: ' ' },
-      ],
-      columnGap: 12,
-      margin: [0, 0, 0, 8],
-    });
-  }
+  content.push(blockFooter(STYLE, [
+    firstText(session.createdBy, session.created_by, invoice.created_by_email, session.user)
+      ? `User : ${firstText(session.createdBy, session.created_by, invoice.created_by_email, session.user)}`
+      : '',
+    firstText(session.printedAt, session.printed_at) || '',
+  ].filter(Boolean).join('   ') || ' '));
 
-  content.push({
-    text: [
-      firstText(session.createdBy, session.created_by, invoice.created_by_email, session.user)
-        ? `User : ${firstText(session.createdBy, session.created_by, invoice.created_by_email, session.user)}`
-        : '',
-      firstText(session.printedAt, session.printed_at) || '',
-    ].filter(Boolean).join('   ') || ' ',
-    fontSize: STYLE.fonts.small,
-    color: STYLE.colors.gray,
-    margin: [0, 4, 0, 0],
-  });
-
-  return {
-    pageSize: { width: STYLE.page.width, height: STYLE.page.height },
-    pageMargins: STYLE.margins,
-    defaultStyle: { font: 'Arimo', fontSize: STYLE.fonts.body, color: STYLE.colors.ink },
-    content,
-  };
+  return flowDocument(STYLE, content);
 }
 
 export { STYLE as INVOICE_FLOW_STYLE_NODE };

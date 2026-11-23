@@ -37,6 +37,8 @@ export type FlowInvoiceOptions = {
   taxMode: 'auto' | 'single' | 'split' | 'none';
   currency: string | null;
   catalogName: string;
+  family?: 'commercial' | 'quotation';
+  contexts?: Array<'invoice' | 'quotation'>;
 };
 
 export const FLOW_INVOICE_OPTIONS: Record<string, FlowInvoiceOptions> = {
@@ -50,12 +52,56 @@ export const FLOW_INVOICE_OPTIONS: Record<string, FlowInvoiceOptions> = {
     taxMode: 'auto',
     currency: null,
     catalogName: 'Tax Invoice (flow layout)',
+    family: 'commercial',
+    contexts: ['invoice'],
+  },
+  QUOTATION_FLOW_1: {
+    engine: 'flow',
+    title: 'QUOTATION',
+    columns: 'simple',
+    showContainers: false,
+    showBank: true,
+    showTerms: true,
+    taxMode: 'auto',
+    currency: null,
+    catalogName: 'Quotation (flow layout)',
+    family: 'quotation',
+    contexts: ['quotation'],
+  },
+  CREDIT_NOTE_FLOW_1: {
+    engine: 'flow',
+    title: 'CREDIT NOTE',
+    columns: 'simple',
+    showContainers: false,
+    showBank: true,
+    showTerms: true,
+    taxMode: 'auto',
+    currency: null,
+    catalogName: 'Credit Note (flow layout)',
+    family: 'commercial',
+    contexts: ['invoice'],
+  },
+  DEBIT_NOTE_FLOW_1: {
+    engine: 'flow',
+    title: 'DEBIT NOTE',
+    columns: 'simple',
+    showContainers: false,
+    showBank: true,
+    showTerms: true,
+    taxMode: 'auto',
+    currency: null,
+    catalogName: 'Debit Note (flow layout)',
+    family: 'commercial',
+    contexts: ['invoice'],
   },
 };
 
 export function isFlowInvoiceCode(code: string): boolean {
   const key = String(code || '').trim().toUpperCase();
-  return Boolean(FLOW_INVOICE_OPTIONS[key]) || /^INVOICE_FLOW_/i.test(key);
+  return (
+    Boolean(FLOW_INVOICE_OPTIONS[key]) ||
+    /^(INVOICE|QUOTATION|CREDIT_NOTE|DEBIT_NOTE)_FLOW_/i.test(key)
+  );
 }
 
 export function flowInvoiceOptions(code: string): FlowInvoiceOptions | null {
@@ -75,15 +121,15 @@ export function resolveChargeColumns(options: FlowInvoiceOptions | null | undefi
 export function listFlowCatalogEntries(): Array<{
   code: string;
   name: string;
-  family: 'commercial';
-  contexts: ['invoice'];
+  family: 'commercial' | 'quotation';
+  contexts: Array<'invoice' | 'quotation'>;
   kind: string;
 }> {
   return Object.entries(FLOW_INVOICE_OPTIONS).map(([code, options]) => ({
     code,
     name: options.catalogName,
-    family: 'commercial' as const,
-    contexts: ['invoice'] as ['invoice'],
-    kind: `invoice_flow_${code}`,
+    family: options.family || 'commercial',
+    contexts: options.contexts || ['invoice'],
+    kind: `flow_${code}`,
   }));
 }

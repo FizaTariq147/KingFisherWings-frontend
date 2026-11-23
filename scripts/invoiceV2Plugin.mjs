@@ -57,7 +57,7 @@ export function invoiceV2Plugin() {
           }
           const body = JSON.parse(raw || '{}');
           const code = String(body.code || '');
-          if (code === FLOW_CODE || /^INVOICE_FLOW_/i.test(code)) {
+          if (code === FLOW_CODE || /^(INVOICE|QUOTATION|CREDIT_NOTE|DEBIT_NOTE)_FLOW_/i.test(code)) {
             const outPath = path.join(os.tmpdir(), `invoice-flow-${Date.now()}.pdf`);
             await renderInvoiceFlowPdf({ ...body, code }, outPath);
             const bytes = fs.readFileSync(outPath);

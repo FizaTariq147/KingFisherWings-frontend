@@ -1,14 +1,11 @@
 /**
- * Node pdfmake renderer for INVOICE_FLOW_TAX_INVOICE_1.
- * Chosen library: pdfmake — table headerRows + automatic page breaks,
- * runs in Node and the browser, embeds Arimo. jspdf/pdf-lib lack repeated
- * header rows with flowing tables; @react-pdf was not required once pdfmake
- * was available.
+ * Node pdfmake renderer for engine=flow codes (invoice, quotation, CN, DN).
  */
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import pdfmake from 'pdfmake';
+import { buildFlowDocDefinition } from './flow-doc.mjs';
 import { buildInvoiceFlowDocDefinition } from './invoice-flow-doc.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
@@ -43,9 +40,10 @@ export async function renderInvoiceFlowPdf(record, outputPath) {
       payload.logoBase64 = fs.readFileSync(logoPath).toString('base64');
     }
   }
-  const docDefinition = buildInvoiceFlowDocDefinition(payload);
+  const code = String(payload.code || 'INVOICE_FLOW_TAX_INVOICE_1');
+  const docDefinition = buildFlowDocDefinition(code, payload);
   await pdfmake.createPdf(docDefinition).write(outputPath);
   return outputPath;
 }
 
-export { buildInvoiceFlowDocDefinition };
+export { buildInvoiceFlowDocDefinition, buildFlowDocDefinition };

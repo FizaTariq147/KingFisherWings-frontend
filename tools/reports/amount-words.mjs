@@ -1,6 +1,8 @@
 /**
- * English amount in words. INR uses lakh and crore. Other currencies use
- * thousand grouping. The minor unit is paise for INR and cents otherwise.
+ * English amount in words with correct major/minor units and grouping.
+ * INR and PKR use Indian (lakh/crore) grouping; AED/USD/EUR/GBP use
+ * thousand/million/billion. Minor units: Paise (INR/PKR), Fils (AED),
+ * Cents (USD/EUR), Pence (GBP).
  */
 const SMALL = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve', 'Thirteen', 'Fourteen', 'Fifteen', 'Sixteen', 'Seventeen', 'Eighteen', 'Nineteen'];
 const TENS = ['', '', 'Twenty', 'Thirty', 'Forty', 'Fifty', 'Sixty', 'Seventy', 'Eighty', 'Ninety'];
@@ -52,12 +54,14 @@ function indianWords(value) {
   return parts.join(' ');
 }
 
+/** @type {Record<string, { major: string, minor: string, grouping: 'indian'|'western' }>} */
 const UNIT = {
-  INR: ['Rupees', 'Paise'],
-  USD: ['Dollars', 'Cents'],
-  AED: ['Dirhams', 'Fils'],
-  EUR: ['Euros', 'Cents'],
-  GBP: ['Pounds', 'Pence'],
+  INR: { major: 'Rupees', minor: 'Paise', grouping: 'indian' },
+  PKR: { major: 'Rupees', minor: 'Paise', grouping: 'indian' },
+  AED: { major: 'Dirhams', minor: 'Fils', grouping: 'western' },
+  USD: { major: 'Dollars', minor: 'Cents', grouping: 'western' },
+  EUR: { major: 'Euros', minor: 'Cents', grouping: 'western' },
+  GBP: { major: 'Pounds', minor: 'Pence', grouping: 'western' },
 };
 
 export function amountInWords(amount, currency) {
@@ -68,9 +72,12 @@ export function amountInWords(amount, currency) {
   const whole = Math.floor(absolute + 1e-8);
   const minor = Math.round((absolute - whole) * 100);
   const code = String(currency || '').toUpperCase();
-  const words = code === 'INR' ? indianWords(whole) : englishWords(whole);
-  const [major, minorName] = UNIT[code] || ['Units', 'Cents'];
-  if (!minor) return `${sign}${major} ${words} Only`;
-  const minorWords = code === 'INR' ? indianWords(minor) : englishWords(minor);
-  return `${sign}${major} ${words} and ${minorWords} ${minorName} Only`;
+  const unit = UNIT[code] || { major: 'Units', minor: 'Cents', grouping: 'western' };
+  const toWords = unit.grouping === 'indian' ? indianWords : englishWords;
+  const words = toWords(whole);
+  if (!minor) return `${sign}${unit.major} ${words} Only`;
+  const minorWords = toWords(minor);
+  return `${sign}${unit.major} ${words} and ${minorWords} ${unit.minor} Only`;
 }
+
+export const AMOUNT_WORDS_CURRENCIES = Object.keys(UNIT);

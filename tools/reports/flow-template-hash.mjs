@@ -9,9 +9,12 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 
 const FILES = [
+  'tools/reports/flow-blocks.mjs',
+  'tools/reports/flow-doc.mjs',
   'tools/reports/invoice-flow-doc.mjs',
   'tools/reports/invoice-flow-options.mjs',
   'tools/reports/invoice-flow-totals.mjs',
+  'tools/reports/amount-words.mjs',
   'src/features/reports/flow/invoiceFlowStyle.ts',
   'src/features/reports/flow/invoiceFlowOptions.ts',
 ];
