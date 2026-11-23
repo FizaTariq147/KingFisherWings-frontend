@@ -32,34 +32,63 @@ These stay gated. Hard mode withholds them because their status is not `accepted
 
 ## Production environment
 
-| Variable | Production value |
+Build-time defaults (baked into the JS bundle; changing them **requires a rebuild**):
+
+| Variable | Production build default |
 |---|---|
 | `VITE_REPORTS_ENGINE` | `v2` |
 | `VITE_REPORTS_GATE` | `hard` |
 
-`reports.engine` is not a stored field. Hard mode previews and generates a v2 invoice code only when `reports/status.json` says `accepted`. Until that is true, Format 10 shows "format not available yet" and Generate stays on the classic invoice. Formats 9 and 15 stay withheld for the same reason.
+`VITE_*` values are fixed at build time. They are **not** a runtime kill switch. They apply only when the runtime config omits a field, or before the runtime file is loaded.
+
+There is no settings/API field for reports engine today. Runtime control is the static file:
+
+**`public/reports-config.json`** (served as `/reports-config.json`)
+
+```json
+{ "engine": "v2", "gate": "soft", "disabledCodes": [] }
+```
+
+The app fetches it once at start with `cache: 'no-store'`. If the fetch fails or is unreachable, **engine defaults to `legacy`** (safe off). Successful responses may omit fields; omitted fields fall back to the build-time `VITE_*` defaults.
+
+Hard mode (runtime or build gate `hard`) previews and generates a non-flow v2 invoice code only when `reports/status.json` says `accepted`. Flow codes always require `accepted` to generate (even under soft gate). Formats 9 and 15 stay withheld until accepted under hard gate.
 
 ## Turning v2 on and off
 
-| Environment | `VITE_REPORTS_ENGINE` | Result |
-|---|---|---|
-| Off | unset or `legacy` | Classic Generate PDF. v2 is not used. |
-| On | `v2` | Reports and Formats can draw a v2 invoice spec. Generate PDF uses v2 only when `defaultPdfStyle` is an explicit report code. |
+### Runtime (no rebuild) — preferred kill switch
 
-| `VITE_REPORTS_GATE` | Result |
+| Action | Exact change | Result | Rebuild? |
+|---|---|---|---|
+| Turn **all** v2/flow off for everyone | Set `"engine": "legacy"` in `public/reports-config.json` on the host (CDN/static root). Reload the app (new sessions fetch the file). | Catalogue lists **no** gated v2/flow codes. Generate stays classic. | **No** |
+| Disable **one** code | Add its code to `"disabledCodes"` (e.g. `["INVOICE_FLOW_TAX_INVOICE_1"]`). Leave `"engine": "v2"`. | That code is hidden from the catalogue and not generatable. Others unchanged. | **No** |
+| Turn v2 **back on** | Set `"engine": "v2"` and clear or trim `disabledCodes`. Reload. | Catalogue follows gate + status again. | **No** |
+
+**Cache lifetime:** the fetch uses `cache: 'no-store'`, so the browser does not keep a stale copy of `/reports-config.json`. Users must reload (or open a new tab) so the app re-runs boot and re-fetches. No CDN purge of the JS bundle is required for a config-only flip; ensure the static host serves the updated JSON immediately (no long-lived CDN cache on that path, or purge that one object).
+
+**What still needs a rebuild**
+
+| Change | Rebuild required? |
 |---|---|
-| unset or `soft` | A v2 invoice code can be previewed and generated while it is not accepted. The badge says "approximate, not final". |
-| `hard` | A v2 invoice code is previewed and generated only when its status is `accepted`. Otherwise the catalogue says "format not available yet" and Generate stays off for that code. Browse still opens the entry. |
+| Flip `public/reports-config.json` (`engine` / `gate` / `disabledCodes`) | No |
+| Change `VITE_REPORTS_ENGINE` / `VITE_REPORTS_GATE` / `VITE_REPORTS_FLOW_STAGING` | Yes |
+| Change `reports/status.json` (acceptance) | Yes — status is imported into the bundle via `reportConformanceStatus.ts` |
+| Code / classic generator changes | Yes |
 
-## Kill switch (production, no code deploy)
+### Build-time defaults (require rebuild)
 
-To turn **all** flow and v2 formats off without deploying a git revert:
+| `VITE_REPORTS_ENGINE` | Used when |
+|---|---|
+| unset or `legacy` | Runtime file omits `engine`, or as the soft default before load |
+| `v2` | Runtime file omits `engine` and the build was shipped with v2 |
 
-1. Set `VITE_REPORTS_ENGINE` to unset or `legacy` on the host (same env the frontend build/runtime reads).
-2. Restart or rebuild so the process picks up the value.
-3. Catalogue listing hides gated flow / v2 codes. Generate PDF stays classic.
+| Runtime / build `gate` | Result for non-flow v2 specs |
+|---|---|
+| unset or `soft` | Spec can be previewed while not accepted (badge: approximate). |
+| `hard` | Spec only when status is `accepted`; otherwise "format not available yet". |
 
-Flow release codes (`INVOICE_FLOW_TAX_INVOICE_1`, `QUOTATION_FLOW_1`) use the same kill switch. Credit/debit flow codes additionally require `VITE_REPORTS_FLOW_STAGING=1` under soft gate and are labelled `staging only: no real records tested`.
+Flow release codes (`INVOICE_FLOW_TAX_INVOICE_1`, `QUOTATION_FLOW_1`): generatable only when **accepted** in `status.json` **and** runtime `engine` is `v2` **and** the code is not in `disabledCodes`. Credit/debit flow codes additionally require `VITE_REPORTS_FLOW_STAGING=1` under soft gate and are labelled `staging only: no real records tested`.
+
+Proof that a runtime flip hides the catalogue without rebuild: `node tools/reports/prove-runtime-kill-switch.mjs` → `reports/output/runtime-kill-switch-proof/proof.json`.
 
 ## Fallback (tested)
 
@@ -67,7 +96,7 @@ If a selected flow / v2 render throws while being built, Generate returns the cl
 
 `Showing the classic invoice. The selected format could not be built.`
 
-Covered by `generateWithFallback` / `invoiceV2Gate` unit tests (forced throw → classic blob + notice). With `VITE_REPORTS_ENGINE` unset/`legacy`, `attemptV2` is false and classic runs with no notice.
+Covered by `generateWithFallback` / `invoiceV2Gate` unit tests (forced throw → classic blob + notice). With runtime or build engine `legacy`, `attemptV2` is false and classic runs with no notice.
 
 ## How a code becomes accepted
 

@@ -6,8 +6,8 @@ import {
 } from '../../constants/fresaPageColumns';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
 import { invoiceV2ListRank, invoiceV2ApplicabilityHint, type InvoiceFitInput } from '../../engine/invoiceV2Applicability';
-import { FORMAT_NOT_AVAILABLE_YET, invoiceV2HardBlocked } from '../../engine/invoiceV2Gate';
-import { reportsCatalogueGate } from '../../engine/reportsEngine';
+import { FORMAT_NOT_AVAILABLE_YET, reportsCodeGenerateBlocked } from '../../engine/invoiceV2Gate';
+import { reportsCatalogueGate, reportsEngine } from '../../engine/reportsEngine';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { FormatStatusBadge } from './FormatStatusBadge';
@@ -212,8 +212,9 @@ function FormatLink({
   const formatNo = parseInvoiceFormatNumber(template.code);
   const sharedHint = catalogSharedLayoutHint(template.code);
   const applicability = invoiceV2ApplicabilityHint(template.code, invoiceCurrency);
-  const hardBlocked = invoiceV2HardBlocked({
+  const hardBlocked = reportsCodeGenerateBlocked({
     gate: reportsCatalogueGate(),
+    engine: reportsEngine(),
     code: template.code,
     status: reportConformanceStatus(template.code),
   });

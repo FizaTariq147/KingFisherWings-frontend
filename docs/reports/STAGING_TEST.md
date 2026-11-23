@@ -64,11 +64,14 @@ For each of FCL / Air / LCL ids above:
    Without accepted rows in the **deployed** `status.json`, flow and v2 codes show as not available / are withheld from the catalogue.
 2. Status-path proof (already run in CI tooling, not a production accept): temporary signoff → `report:status` → hard catalogue lists **only** `INVOICE_FLOW_TAX_INVOICE_1` and `QUOTATION_FLOW_1`. See `reports/flow-spike/status-path-proof.json`. Do **not** commit that temporary signoff.
 
-## F. Kill switch (no code deploy)
+## F. Kill switch (no rebuild — runtime file)
 
-1. Set `VITE_REPORTS_ENGINE` to unset or `legacy` on the host and restart the frontend process / CDN build that reads that env.
+`VITE_REPORTS_ENGINE` is build-time only. Use `public/reports-config.json`:
+
+1. Set `"engine": "legacy"` in `public/reports-config.json` on the static host. Reload the app (fetch uses `cache: 'no-store'`).
 2. Confirm **no** flow or v2 format appears in Formats / catalogue, and Generate PDF stays classic.
-3. Restore `VITE_REPORTS_ENGINE=v2` when finished.
+3. Restore `"engine": "v2"` (and clear `disabledCodes` if used) when finished.
+4. Optional: `node tools/reports/prove-runtime-kill-switch.mjs` writes `reports/output/runtime-kill-switch-proof/proof.json`.
 
 ## G. Credit / debit notes
 

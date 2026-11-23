@@ -1,21 +1,34 @@
 /**
- * The spec renderer runs only when this is `v2`.
- * There is no stored reports.engine field. The env value defaults to legacy,
- * which leaves Generate PDF on the classic generator.
+ * Reports engine / catalogue gate.
+ *
+ * Prefer the runtime config loaded at app start (`/reports-config.json`).
+ * Build-time `VITE_REPORTS_*` values are defaults only when the runtime file
+ * omits a field. A failed fetch forces engine `legacy` (see reportsRuntimeConfig).
  */
+import {
+  buildTimeReportsEngine,
+  buildTimeReportsGate,
+  getReportsRuntimeConfig,
+} from './reportsRuntimeConfig';
+
 export type ReportsEngine = 'legacy' | 'v2';
-
-export function reportsEngine(): ReportsEngine {
-  const raw = String(import.meta.env?.VITE_REPORTS_ENGINE ?? '').trim().toLowerCase();
-  return raw === 'v2' ? 'v2' : 'legacy';
-}
-
-/** Catalogue gating. Soft is the default. Hard does not change status or sign-off. */
 export type ReportsCatalogueGate = 'soft' | 'hard';
 
+export function reportsEngine(): ReportsEngine {
+  const runtime = getReportsRuntimeConfig();
+  if (runtime.source === 'build-default') return buildTimeReportsEngine();
+  return runtime.engine;
+}
+
+/** Catalogue gating. Soft is the default when runtime/build omit gate. */
 export function reportsCatalogueGate(raw?: string): ReportsCatalogueGate {
-  const value = String(raw ?? import.meta.env?.VITE_REPORTS_GATE ?? '').trim().toLowerCase();
-  return value === 'hard' ? 'hard' : 'soft';
+  if (raw != null && String(raw).trim() !== '') {
+    const value = String(raw).trim().toLowerCase();
+    return value === 'hard' ? 'hard' : 'soft';
+  }
+  const runtime = getReportsRuntimeConfig();
+  if (runtime.source === 'build-default') return buildTimeReportsGate();
+  return runtime.gate;
 }
 
 /**

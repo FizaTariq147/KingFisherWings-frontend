@@ -62,7 +62,7 @@ import { InvoiceFormatAutoPdf } from './InvoiceFormatAutoPdf';
 import { ReportParameterForm } from './ReportParameterForm';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import { reportsCatalogueGate, reportsEngine } from '../../engine/reportsEngine';
-import { FORMAT_NOT_AVAILABLE_YET, invoiceV2HardBlocked, shouldUseInvoiceV2 } from '../../engine/invoiceV2Gate';
+import { FORMAT_NOT_AVAILABLE_YET, reportsCodeGenerateBlocked, shouldUseInvoiceV2 } from '../../engine/invoiceV2Gate';
 import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
 import { invoiceV2SpecCodes } from '../../engine/invoiceV2Codes';
 import { InvoiceV2Preview } from './InvoiceV2Preview';
@@ -636,8 +636,9 @@ export function ReportGeneratePanel({
       entityBound: entityBoundForUi,
       hasOfficialSample: officialSampleForUi,
     });
-  const v2HardBlocked = invoiceV2HardBlocked({
+  const v2HardBlocked = reportsCodeGenerateBlocked({
     gate: reportsCatalogueGate(),
+    engine: reportsEngine(),
     code: resolved.code,
     status: reportConformanceStatus(resolved.code),
   });

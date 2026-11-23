@@ -2,6 +2,7 @@ import { invoiceV2SpecCodes } from './invoiceV2Codes';
 import { isFlowInvoiceCode } from '../flow/invoiceFlowCode';
 import { isReportsV2Code } from './reportsV2Gate';
 import { reportsCatalogueGate, reportsEngine, type ReportsCatalogueGate, type ReportsEngine } from './reportsEngine';
+import { isReportsCodeRuntimeDisabled } from './reportsRuntimeConfig';
 import { reportConformanceStatus, type ReportConformanceStatus } from '../utils/reportConformanceStatus';
 
 export type InvoicePdfEntry = 'generate' | 'reports' | 'formats';
@@ -33,21 +34,95 @@ export function invoiceV2HardBlocked(input: {
 }
 
 /**
+ * A flow code may be generated only when:
+ * 1. status.json says accepted
+ * 2. runtime engine is v2
+ * 3. the code is not in runtime disabledCodes
+ *
+ * Non-flow codes return false (caller should use other gates).
+ */
+export function flowCodeGeneratable(input: {
+  code: string;
+  engine?: ReportsEngine;
+  status?: ReportConformanceStatus;
+  disabledCodes?: string[];
+}): boolean {
+  const code = String(input.code || '').trim().toUpperCase();
+  if (!isFlowInvoiceCode(code)) return false;
+  const engine = input.engine ?? reportsEngine();
+  if (engine !== 'v2') return false;
+  const status = input.status ?? reportConformanceStatus(code);
+  if (status !== 'accepted') return false;
+  if (input.disabledCodes != null) {
+    const set = new Set(input.disabledCodes.map((c) => String(c || '').trim().toUpperCase()).filter(Boolean));
+    if (set.has(code)) return false;
+  } else if (isReportsCodeRuntimeDisabled(code)) {
+    return false;
+  }
+  return true;
+}
+
+/**
+ * Whether Generate / preview should withhold a gated code.
+ * Flow codes always need accepted + runtime v2 + not disabled (even under soft gate).
+ * Other gated codes follow hard/soft plus disabledCodes.
+ */
+export function reportsCodeGenerateBlocked(input: {
+  code: string;
+  engine?: ReportsEngine;
+  gate?: ReportsCatalogueGate;
+  status?: ReportConformanceStatus;
+  disabledCodes?: string[];
+}): boolean {
+  const code = String(input.code || '').trim().toUpperCase();
+  if (!isGatedReportsCode(code)) return false;
+  const engine = input.engine ?? reportsEngine();
+  if (engine !== 'v2') return true;
+  if (input.disabledCodes != null) {
+    const set = new Set(input.disabledCodes.map((c) => String(c || '').trim().toUpperCase()).filter(Boolean));
+    if (set.has(code)) return true;
+  } else if (isReportsCodeRuntimeDisabled(code)) {
+    return true;
+  }
+  if (isFlowInvoiceCode(code)) {
+    return !flowCodeGeneratable({
+      code,
+      engine,
+      status: input.status,
+      disabledCodes: input.disabledCodes,
+    });
+  }
+  return invoiceV2HardBlocked({
+    gate: input.gate,
+    code,
+    status: input.status,
+  });
+}
+
+/**
  * Whether a catalogue entry should appear at all.
  * - Engine unset/legacy: no v2 or flow codes anywhere.
  * - Hard gate: only accepted v2/flow codes (staging CN/DN still require the staging flag via listFlowCatalogEntries).
  * Soft gate: all non-staging flow + v2 codes remain listed (badge may say approximate).
+ * - disabledCodes: hidden regardless of soft/hard.
  */
 export function reportsCatalogCodeVisible(input: {
   code: string;
   engine?: ReportsEngine;
   gate?: ReportsCatalogueGate;
   status?: ReportConformanceStatus;
+  disabledCodes?: string[];
 }): boolean {
   const code = String(input.code || '').trim().toUpperCase();
   if (!isGatedReportsCode(code)) return true;
   const engine = input.engine ?? reportsEngine();
   if (engine !== 'v2') return false;
+  if (input.disabledCodes != null) {
+    const set = new Set(input.disabledCodes.map((c) => String(c || '').trim().toUpperCase()).filter(Boolean));
+    if (set.has(code)) return false;
+  } else if (isReportsCodeRuntimeDisabled(code)) {
+    return false;
+  }
   if (invoiceV2HardBlocked({ gate: input.gate, code, status: input.status })) return false;
   return true;
 }
@@ -70,7 +145,12 @@ export function shouldUseInvoiceV2(input: {
   if (input.document !== 'invoice') return false;
   if (input.engine !== 'v2') return false;
   const code = input.code || input.style;
-  if (invoiceV2HardBlocked({ gate: input.gate, code, status: input.status })) return false;
+  if (reportsCodeGenerateBlocked({
+    gate: input.gate,
+    code,
+    status: input.status,
+    engine: input.engine,
+  })) return false;
   if (input.entry === 'reports' || input.entry === 'formats') return true;
   return input.style.trim() !== '' && input.style !== 'classic';
 }
