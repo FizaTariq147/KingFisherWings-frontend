@@ -7,6 +7,7 @@ import {
   invoiceV2Applies,
   type InvoiceFitInput,
 } from '../engine/invoiceV2Applicability';
+import { isInvoiceFlowCode } from '../flow/invoiceFlowCode';
 import { invoiceV2SpecCodes } from '../engine/invoiceV2Codes';
 import { isReportsV2Code } from '../engine/reportsV2Gate';
 import { reportConformanceStatus } from './reportConformanceStatus';
@@ -90,14 +91,14 @@ export function partitionCatalogStrips(
 
     const v2 = isReportsV2Code(code);
     if (v2) {
-      if (invoiceV2SpecCodes.has(code)) {
+      if (invoiceV2SpecCodes.has(code) || isInvoiceFlowCode(code)) {
         const suitable = invoiceV2Suitability(code, invoiceCurrency).suitable;
         const applies = invoiceV2Applies(code, invoiceCurrency);
         if (suitable && applies) {
           recommended.push(row);
           continue;
         }
-        // Wired invoice code that is not a fit → other (hint already handled unsuitable).
+        // Wired invoice / flow code that is not a fit → other (hint already handled unsuitable).
         other.push(row);
         continue;
       }

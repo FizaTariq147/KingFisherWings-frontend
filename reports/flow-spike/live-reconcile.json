@@ -1,0 +1,105 @@
+{
+  "results": [
+    {
+      "invoice": "INV/26/00102",
+      "flowPdf": "reports\\flow-spike\\live-INV_26_00102.pdf",
+      "classicOk": true,
+      "money": [
+        {
+          "role": "total",
+          "amount": "120",
+          "inFlow": true,
+          "inClassic": true
+        },
+        {
+          "role": "line:0",
+          "amount": 120,
+          "inFlow": true,
+          "inClassic": true
+        }
+      ],
+      "moneyMatch": true,
+      "blanks": [
+        "no tax figure on record — Tax column omitted / empty"
+      ],
+      "leak": false
+    },
+    {
+      "invoice": "INV/26/00094",
+      "flowPdf": "reports\\flow-spike\\live-INV_26_00094.pdf",
+      "classicOk": true,
+      "money": [
+        {
+          "role": "total",
+          "amount": "160195.35",
+          "inFlow": true,
+          "inClassic": true
+        },
+        {
+          "role": "line:0",
+          "amount": 159600,
+          "inFlow": true,
+          "inClassic": true
+        },
+        {
+          "role": "line:1",
+          "amount": 595.35,
+          "inFlow": true,
+          "inClassic": true
+        }
+      ],
+      "moneyMatch": true,
+      "blanks": [
+        "job context missing",
+        "containers empty",
+        "subtotal 152567 not printed (no subtotal row in flow layout)"
+      ],
+      "leak": false
+    },
+    {
+      "invoice": "INV/26/00101",
+      "flowPdf": "reports\\flow-spike\\live-INV_26_00101.pdf",
+      "classicOk": true,
+      "money": [
+        {
+          "role": "total",
+          "amount": "1831",
+          "inFlow": true,
+          "inClassic": true
+        },
+        {
+          "role": "line:0",
+          "amount": 1560,
+          "inFlow": true,
+          "inClassic": true
+        },
+        {
+          "role": "line:1",
+          "amount": 55,
+          "inFlow": true,
+          "inClassic": true
+        },
+        {
+          "role": "line:2",
+          "amount": 216,
+          "inFlow": true,
+          "inClassic": true
+        }
+      ],
+      "moneyMatch": true,
+      "blanks": [
+        "containers empty",
+        "no tax figure on record — Tax column omitted / empty"
+      ],
+      "leak": false
+    },
+    {
+      "invoice": "INV/26/00101-40LINES",
+      "flowPdf": "reports\\flow-spike\\live-40-lines.pdf",
+      "pagesHint": "multi-page expected",
+      "lineCount": 40,
+      "totalInPdf": true,
+      "leak": false
+    }
+  ]
+}

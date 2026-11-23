@@ -1,0 +1,457 @@
+/**
+ * Build a pdfmake docDefinition for INVOICE_FLOW_TAX_INVOICE_1.
+ * Same record contexts as other invoice codes. Empty values stay empty.
+ * Does not invent SGST/CGST/IGST — split columns only when the record has them.
+ */
+import { amountInWords } from './amount-words.mjs';
+
+const STYLE = {
+  page: { width: 594, height: 841.9 },
+  margins: [16, 16, 16, 28],
+  colors: {
+    ink: '#101010',
+    gray: '#656565',
+    headerFill: '#9AD7FF',
+    panelFill: '#FCFCFC',
+    white: '#FFFFFF',
+    accentOrange: '#F7A21C',
+    accentRed: '#DE1F26',
+  },
+  rule: 0.5653,
+  fonts: { body: 7.9, title: 11.9, company: 15.8, small: 6.8, table: 6.5 },
+};
+
+const text = (value) => (value == null ? '' : String(value).trim());
+
+function firstText(...values) {
+  for (const value of values) {
+    const cleaned = text(value);
+    if (cleaned) return cleaned;
+  }
+  return '';
+}
+
+function money(value) {
+  if (value == null || value === '') return '';
+  const number = Number(value);
+  if (!Number.isFinite(number)) return '';
+  return number.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+}
+
+function numberText(value) {
+  if (value == null || value === '') return '';
+  const number = Number(value);
+  if (!Number.isFinite(number)) return text(value);
+  return String(number);
+}
+
+function joinParts(...parts) {
+  return parts.map(text).filter(Boolean).join(', ');
+}
+
+function formatDate(value) {
+  const raw = text(value);
+  if (!raw) return '';
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(raw);
+  if (!match) return raw;
+  const months = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'];
+  const month = months[Number(match[2]) - 1] || match[2];
+  return `${match[3]}-${month}-${match[1].slice(2)}`;
+}
+
+function cell(value, opts = {}) {
+  return {
+    text: value == null || value === '' ? ' ' : String(value),
+    fontSize: opts.fontSize ?? STYLE.fonts.table,
+    bold: Boolean(opts.bold),
+    alignment: opts.alignment || 'left',
+    color: opts.color || STYLE.colors.ink,
+    margin: [1, 1, 1, 1],
+  };
+}
+
+function headerCell(label) {
+  return {
+    text: label,
+    fontSize: STYLE.fonts.table,
+    bold: true,
+    color: STYLE.colors.ink,
+    fillColor: STYLE.colors.headerFill,
+    margin: [1, 2, 1, 2],
+  };
+}
+
+function thinLayout() {
+  return {
+    hLineWidth: () => STYLE.rule,
+    vLineWidth: () => STYLE.rule,
+    hLineColor: () => STYLE.colors.gray,
+    vLineColor: () => STYLE.colors.gray,
+    paddingLeft: () => 2,
+    paddingRight: () => 2,
+    paddingTop: () => 1,
+    paddingBottom: () => 1,
+  };
+}
+
+function lineHasSplitTax(line) {
+  return [line?.sgst_amount, line?.cgst_amount, line?.igst_amount, line?.ugst_amount].some(
+    (value) => value != null && value !== '' && Math.abs(Number(value)) > 0.0001,
+  );
+}
+
+function recordHasSplitTax(lines) {
+  return (lines || []).some(lineHasSplitTax);
+}
+
+function recordHasSingleTax(invoice, lines) {
+  if (invoice?.tax_total != null && Math.abs(Number(invoice.tax_total)) > 0.0001) return true;
+  if (invoice?.tax_amount != null && invoice.tax_amount !== '' && Math.abs(Number(invoice.tax_amount)) > 0.0001) {
+    return true;
+  }
+  return (lines || []).some((line) => line?.tax_amount != null && line.tax_amount !== '' && Math.abs(Number(line.tax_amount)) > 0.0001);
+}
+
+function kv(label, value) {
+  return [
+    { text: label, bold: true, fontSize: STYLE.fonts.body, color: STYLE.colors.ink },
+    { text: value ? ` ${value}` : ' ', fontSize: STYLE.fonts.body, color: STYLE.colors.ink },
+  ];
+}
+
+/**
+ * @param {object} record - { organization, invoice, job, party, bank, session, logoBase64? }
+ */
+export function buildInvoiceFlowDocDefinition(record = {}) {
+  const org = record.organization || {};
+  const invoice = record.invoice || {};
+  const job = record.job || {};
+  const party = record.party || {};
+  const bank = record.bank || org.bank || org.bank_details || {};
+  const session = record.session || {};
+  const ship = invoice.shipment || {};
+  const sea = job.sea_fcl_details || job.sea_lcl_details || {};
+  const air = job.air_details || {};
+  const lines = invoice.lines || [];
+
+  const companyName = firstText(org.display_name, org.name);
+  const companyAddress = joinParts(org.address, org.city, org.country_code);
+  const billToName = firstText(invoice.party_name, party.name);
+  const billToAddress = joinParts(party.address, party.city, party.country_code);
+  const billToGstin = firstText(party.vat_number, party.gstin, party.tax_number);
+  const currency = text(invoice.currency_code);
+  const total = invoice.total_amount;
+  const words = firstText(
+    invoice.amount_in_words,
+    total == null || total === '' ? '' : amountInWords(total, currency),
+  );
+
+  const useSplit = recordHasSplitTax(lines);
+  const useTaxCol = !useSplit && recordHasSingleTax(invoice, lines);
+
+  const chargeHeaders = useSplit
+    ? ['Charges', 'SAC', 'Qty', 'Rate', 'Curr', 'Ex.Rate', 'FCY', 'Taxable', 'Non Tax', 'SGST%', 'SGST', 'CGST%', 'CGST', 'I/UGST%', 'I/UGST', 'Total']
+    : useTaxCol
+      ? ['Charges', 'SAC', 'Qty', 'Rate', 'Curr', 'Ex.Rate', 'FCY', 'Taxable', 'Non Tax', 'Tax', 'Total']
+      : ['Charges', 'SAC', 'Qty', 'Rate', 'Curr', 'Ex.Rate', 'FCY', 'Taxable', 'Non Tax', 'Total'];
+
+  const chargeWidths = useSplit
+    ? ['*', 24, 20, 32, 24, 28, 32, 34, 34, 24, 32, 24, 32, 28, 32, 40]
+    : useTaxCol
+      ? ['*', 32, 24, 40, 30, 36, 40, 44, 44, 40, 50]
+      : ['*', 36, 28, 44, 32, 40, 44, 48, 48, 54];
+
+  const chargeBody = [
+    chargeHeaders.map(headerCell),
+    ...lines.map((line) => {
+      const qty = numberText(line.quantity);
+      const rate = money(line.unit_price);
+      const lineCurrency = firstText(line.currency_code, currency);
+      const exRate = line.exchange_rate == null || line.exchange_rate === '' ? '' : Number(line.exchange_rate).toFixed(5);
+      const fcy = money(line.unit_price);
+      const taxable = line.is_taxable === false ? '' : money(line.taxable_amount ?? (Number(line.unit_price) * Number(line.quantity || 0)));
+      const nonTax = line.is_taxable === false ? money(line.line_total) : money(line.non_taxable_amount);
+      const totalCell = money(line.line_total);
+      const base = [
+        cell(firstText(line.description, line.charge_code_name)),
+        cell(text(line.sac_code)),
+        cell(qty, { alignment: 'right' }),
+        cell(rate, { alignment: 'right' }),
+        cell(lineCurrency),
+        cell(exRate, { alignment: 'right' }),
+        cell(fcy, { alignment: 'right' }),
+        cell(line.is_taxable === false ? '' : taxable, { alignment: 'right' }),
+        cell(nonTax, { alignment: 'right' }),
+      ];
+      if (useSplit) {
+        return [
+          ...base,
+          cell(line.sgst_rate == null ? '' : Number(line.sgst_rate).toFixed(2), { alignment: 'right' }),
+          cell(money(line.sgst_amount), { alignment: 'right' }),
+          cell(line.cgst_rate == null ? '' : Number(line.cgst_rate).toFixed(2), { alignment: 'right' }),
+          cell(money(line.cgst_amount), { alignment: 'right' }),
+          cell(line.igst_rate == null && line.ugst_rate == null ? '' : Number(line.igst_rate ?? line.ugst_rate).toFixed(2), { alignment: 'right' }),
+          cell(money(line.igst_amount ?? line.ugst_amount), { alignment: 'right' }),
+          cell(totalCell, { alignment: 'right', bold: true }),
+        ];
+      }
+      if (useTaxCol) {
+        return [...base, cell(money(line.tax_amount), { alignment: 'right' }), cell(totalCell, { alignment: 'right', bold: true })];
+      }
+      return [...base, cell(totalCell, { alignment: 'right', bold: true })];
+    }),
+  ];
+
+  const containers = [...(job.containers || [])];
+  if (!containers.length && job.primary_container_number) {
+    containers.push({
+      container_number: job.primary_container_number,
+      container_type_code: '',
+      packages: job.pieces,
+      gross_weight: job.gross_weight,
+      cbm: job.volume_cbm,
+    });
+  }
+
+  const containerBody = [
+    ['Container No.', 'Type', 'No of Pcs', 'Gross Weight', 'Volume', 'Volume Weight'].map(headerCell),
+    ...(containers.length
+      ? containers.map((item) => [
+          cell(firstText(item.container_number, item.number)),
+          cell(firstText(item.container_type_code, item.type)),
+          cell(firstText(item.packages, item.no_of_pcs, job.pieces)),
+          cell(firstText(item.gross_weight, job.gross_weight)),
+          cell(firstText(item.cbm, item.volume, job.volume_cbm)),
+          cell(firstText(item.volume_weight, item.vol_weight)),
+        ])
+      : [[cell(''), cell(''), cell(''), cell(''), cell(''), cell('')]]),
+  ];
+
+  const hbl = firstText(sea.hbl_number, ship.hbl_number, air.hawb_number, ship.hawb_number);
+  const mbl = firstText(sea.mbl_number, ship.mbl_number, air.mawb_number, ship.mawb_number);
+  const fieldRows = [
+    ['Due Date', formatDate(invoice.due_date)],
+    ['Shipper', firstText(job.shipper_name, billToName)],
+    ['Consignee', firstText(job.consignee_name)],
+    ['Job No.', joinParts(firstText(invoice.job_number, job.job_number), formatDate(job.job_date))],
+    ['Shipment No.', joinParts(firstText(job.shipment_number, ship.shipment_number), formatDate(firstText(job.shipment_date, ship.shipment_date)))],
+    ['MBL / MAWB No.', joinParts(mbl, formatDate(ship.mbl_date))],
+    ['HBL / HAWB No.', joinParts(hbl, formatDate(ship.hbl_date))],
+    ['Place of Receipt', firstText(sea.place_of_receipt, ship.place_of_receipt)],
+    ['POR', firstText(ship.por, job.origin_port_code)],
+    ['POL', firstText(job.origin_port_code, ship.pol)],
+    ['POD', firstText(job.dest_port_code, ship.pod)],
+    ['Place of Delivery', firstText(sea.place_of_delivery, ship.place_of_delivery)],
+    ['Vessel / Voyage', joinParts(firstText(job.vessel_name, sea.vessel_name, ship.vessel_name), firstText(job.voyage_number, sea.voyage_number, ship.voyage_number))],
+    ['ETD', formatDate(firstText(job.etd, sea.etd))],
+    ['ETA', formatDate(firstText(job.eta, sea.eta))],
+    ['Reference No.', joinParts(firstText(job.client_reference_no, ship.reference_no), formatDate(firstText(job.reference_date, ship.reference_date)))],
+    ['Currency', currency ? `${currency}${invoice.exchange_rate != null && invoice.exchange_rate !== '' ? ` ${Number(invoice.exchange_rate).toFixed(6)}` : ''}` : ''],
+    ['IGM No.', joinParts(ship.igm_number, formatDate(ship.igm_date))],
+    ['INCO Terms', text(job.incoterms)],
+    ['Narration', firstText(invoice.narration)],
+    ['Remarks', firstText(invoice.remarks)],
+  ];
+
+  const leftFields = fieldRows.filter((_, index) => index % 2 === 0);
+  const rightFields = fieldRows.filter((_, index) => index % 2 === 1);
+
+  const logoBlock = record.logoBase64
+    ? { image: `data:image/png;base64,${record.logoBase64}`, width: 82, height: 40, margin: [0, 0, 8, 0] }
+    : { text: ' ', width: 82, height: 40, margin: [0, 0, 8, 0] };
+
+  const content = [
+    {
+      columns: [
+        logoBlock,
+        {
+          width: '*',
+          stack: [
+            { text: companyName || ' ', fontSize: STYLE.fonts.company, bold: true, alignment: 'right', color: STYLE.colors.ink },
+            { text: companyAddress || ' ', fontSize: STYLE.fonts.body, alignment: 'right', color: STYLE.colors.ink },
+            {
+              text: [org.phone, org.email, org.website].map(text).filter(Boolean).join('  ') || ' ',
+              fontSize: STYLE.fonts.small,
+              alignment: 'right',
+              color: STYLE.colors.gray,
+            },
+          ],
+        },
+      ],
+      margin: [0, 0, 0, 6],
+    },
+    {
+      columns: [
+        { width: 8, canvas: [{ type: 'rect', x: 0, y: 0, w: 8, h: 22, color: STYLE.colors.accentOrange || '#F7A21C' }] },
+        {
+          width: '*',
+          table: {
+            widths: ['*'],
+            body: [[{
+              text: 'TAX INVOICE',
+              alignment: 'center',
+              bold: true,
+              fontSize: STYLE.fonts.title,
+              color: STYLE.colors.ink,
+              fillColor: STYLE.colors.headerFill,
+              margin: [0, 4, 0, 4],
+            }]],
+          },
+          layout: thinLayout(),
+        },
+        { width: 8, canvas: [{ type: 'rect', x: 0, y: 0, w: 8, h: 22, color: STYLE.colors.accentRed || '#DE1F26' }] },
+      ],
+      margin: [0, 0, 0, 6],
+    },
+    {
+      columns: [
+        {
+          width: '50%',
+          stack: [
+            { text: 'Bill To', bold: true, fontSize: STYLE.fonts.body, margin: [0, 0, 0, 2] },
+            { text: billToName || ' ', fontSize: STYLE.fonts.body },
+            { text: billToAddress || ' ', fontSize: STYLE.fonts.body },
+            { text: billToGstin ? `GSTIN: ${billToGstin}` : ' ', fontSize: STYLE.fonts.body },
+            { text: party.phone ? `Phone: ${party.phone}` : ' ', fontSize: STYLE.fonts.body },
+          ],
+        },
+        {
+          width: '50%',
+          stack: [
+            {
+              text: [
+                ...kv('Invoice No./Date', joinParts(text(invoice.invoice_number), formatDate(invoice.invoice_date), invoice.status ? `(${invoice.status})` : '')),
+              ],
+              margin: [0, 0, 0, 2],
+            },
+            { text: [{ text: 'Credit Term: ', bold: true, fontSize: STYLE.fonts.body }, { text: firstText(invoice.credit_term, invoice.payment_term) || ' ', fontSize: STYLE.fonts.body }] },
+          ],
+        },
+      ],
+      margin: [0, 0, 0, 6],
+    },
+    {
+      columns: [
+        {
+          width: '50%',
+          stack: leftFields.map(([label, value]) => ({
+            text: [{ text: `${label}: `, bold: true, fontSize: STYLE.fonts.body }, { text: value || ' ', fontSize: STYLE.fonts.body }],
+            margin: [0, 0, 0, 1],
+          })),
+        },
+        {
+          width: '50%',
+          stack: rightFields.map(([label, value]) => ({
+            text: [{ text: `${label}: `, bold: true, fontSize: STYLE.fonts.body }, { text: value || ' ', fontSize: STYLE.fonts.body }],
+            margin: [0, 0, 0, 1],
+          })),
+        },
+      ],
+      margin: [0, 0, 0, 6],
+    },
+    {
+      table: {
+        headerRows: 1,
+        widths: [90, 50, 55, 70, 55, 70],
+        body: containerBody,
+        dontBreakRows: true,
+      },
+      layout: thinLayout(),
+      margin: [0, 0, 0, 6],
+    },
+    {
+      table: {
+        headerRows: 1,
+        widths: chargeWidths,
+        body: chargeBody,
+        dontBreakRows: true,
+      },
+      layout: thinLayout(),
+      margin: [0, 0, 0, 6],
+    },
+    {
+      columns: [
+        {
+          width: '*',
+          stack: [
+            { text: [{ text: 'Amount in words: ', bold: true, fontSize: STYLE.fonts.body }, { text: words || ' ', fontSize: STYLE.fonts.body }] },
+            ...(useSplit
+              ? [
+                  { text: 'Tax summary', bold: true, fontSize: STYLE.fonts.body, margin: [0, 4, 0, 2] },
+                  {
+                    text: lines
+                      .flatMap((line) => {
+                        const bits = [];
+                        if (line.sgst_amount != null && Math.abs(Number(line.sgst_amount)) > 0) {
+                          bits.push(`SGST ${line.sgst_rate ?? ''}% ${money(line.sgst_amount)}`);
+                        }
+                        if (line.cgst_amount != null && Math.abs(Number(line.cgst_amount)) > 0) {
+                          bits.push(`CGST ${line.cgst_rate ?? ''}% ${money(line.cgst_amount)}`);
+                        }
+                        return bits;
+                      })
+                      .filter((value, index, all) => all.indexOf(value) === index)
+                      .join('  ') || ' ',
+                    fontSize: STYLE.fonts.small,
+                  },
+                ]
+              : useTaxCol
+                ? [{ text: [{ text: 'Tax: ', bold: true, fontSize: STYLE.fonts.body }, { text: money(invoice.tax_total ?? invoice.tax_amount) || ' ', fontSize: STYLE.fonts.body }], margin: [0, 4, 0, 0] }]
+                : []),
+          ],
+        },
+        {
+          width: 140,
+          stack: [
+            { text: [{ text: 'Total: ', bold: true, fontSize: STYLE.fonts.body }, { text: money(total) || ' ', fontSize: STYLE.fonts.body, bold: true }], alignment: 'right' },
+          ],
+        },
+      ],
+      margin: [0, 0, 0, 8],
+    },
+    {
+      columns: [
+        {
+          width: '55%',
+          stack: [
+            { text: 'Bank Details', bold: true, fontSize: STYLE.fonts.body, margin: [0, 0, 0, 2] },
+            { text: firstText(bank.account_name, bank.account_holder, companyName) ? `Beneficiary Name: ${firstText(bank.account_name, bank.account_holder, companyName)}` : ' ', fontSize: STYLE.fonts.small },
+            { text: firstText(bank.bank_name, bank.name) ? `Bank : ${firstText(bank.bank_name, bank.name)}` : ' ', fontSize: STYLE.fonts.small },
+            { text: firstText(bank.account_number, bank.account_no) ? `A/c No : ${firstText(bank.account_number, bank.account_no)}` : ' ', fontSize: STYLE.fonts.small },
+            { text: text(bank.iban) ? `IBAN Code : ${text(bank.iban)}` : ' ', fontSize: STYLE.fonts.small },
+            { text: firstText(bank.swift_code, bank.swift) ? `Swift Code : ${firstText(bank.swift_code, bank.swift)}` : ' ', fontSize: STYLE.fonts.small },
+            { text: firstText(bank.address, companyAddress) ? `Address : ${firstText(bank.address, companyAddress)}` : ' ', fontSize: STYLE.fonts.small },
+          ],
+        },
+        {
+          width: '45%',
+          stack: [
+            { text: 'Terms', bold: true, fontSize: STYLE.fonts.body, margin: [0, 0, 0, 2] },
+            { text: '1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt.', fontSize: STYLE.fonts.small },
+            { text: '2. Any discrepancy should be notified to us in writing within 15 days from the invoice date after which NONE will be accepted.', fontSize: STYLE.fonts.small },
+          ],
+        },
+      ],
+      margin: [0, 0, 0, 8],
+    },
+    {
+      text: [
+        firstText(session.createdBy, session.created_by, invoice.created_by_email, session.user) ? `User : ${firstText(session.createdBy, session.created_by, invoice.created_by_email, session.user)}` : '',
+        firstText(session.printedAt, session.printed_at) || '',
+      ].filter(Boolean).join('   ') || ' ',
+      fontSize: STYLE.fonts.small,
+      color: STYLE.colors.gray,
+      margin: [0, 4, 0, 0],
+    },
+  ];
+
+  return {
+    pageSize: { width: STYLE.page.width, height: STYLE.page.height },
+    pageMargins: STYLE.margins,
+    defaultStyle: { font: 'Arimo', fontSize: STYLE.fonts.body, color: STYLE.colors.ink },
+    content,
+    // Never emit browser chrome or raw HTML title tags from the reference.
+  };
+}
+
+export { STYLE as INVOICE_FLOW_STYLE_NODE };

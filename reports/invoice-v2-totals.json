@@ -1,4 +1,12 @@
 {
+  "INVOICE_FLOW_TAX_INVOICE_1": {
+    "subtotal": false,
+    "tax": false,
+    "discount": false,
+    "rounding": false,
+    "total": true,
+    "lineTax": true
+  },
   "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA": {
     "subtotal": false,
     "tax": false,

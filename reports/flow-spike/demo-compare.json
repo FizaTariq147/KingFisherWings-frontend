@@ -1,0 +1,21 @@
+{
+  "code": "INVOICE_FLOW_TAX_INVOICE_1",
+  "engine": "flow",
+  "library": "pdfmake",
+  "why": "pdfmake provides flowing tables with headerRows repeated across page breaks; jspdf/pdf-lib do not. Already installed; Arimo embedded.",
+  "dpi": 150,
+  "maskedMismatches": 199576,
+  "remainingDifferences": [
+    "Flow layout is not absolute Format-1 geometry — column grid, band heights, and charge-table column widths differ from the fixed-position reference.",
+    "Reference uses browser print header/footer and Fresa company name; those regions are masked in the compare.",
+    "Amount-in-words wording may differ slightly from the reference “Rupee … Only” phrasing.",
+    "Masked pixel mismatches at 150 dpi: 199576 (threshold 0.1)."
+  ],
+  "iterationsUsed": 3,
+  "maxIterations": 8,
+  "iterationNotes": [
+    "1: initial pdfmake flow with Format-1 margins/colours/Arimo",
+    "2: charge widths use * for description; single Tax vs split columns from record",
+    "3: orange/red accent bars flanking TAX INVOICE cyan title band"
+  ]
+}

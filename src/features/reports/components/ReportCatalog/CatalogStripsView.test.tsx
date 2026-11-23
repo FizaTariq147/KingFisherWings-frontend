@@ -122,9 +122,12 @@ describe('CatalogStripsView', () => {
 
     const notSuitable = screen.getByTestId('catalog-section-not-suitable');
     fireEvent.click(notSuitable);
-    const reason = screen.getByTestId('catalog-unsuitable-reason');
-    expect(reason.textContent).toMatch(/^not suitable for this invoice:/);
-    expect(reason.textContent!.includes('\n')).toBe(false);
+    const reasons = screen.getAllByTestId('catalog-unsuitable-reason');
+    expect(reasons.length).toBeGreaterThan(0);
+    for (const reason of reasons) {
+      expect(reason.textContent).toMatch(/^not suitable for this invoice:/);
+      expect(reason.textContent!.includes('\n')).toBe(false);
+    }
   });
 
   it('shows empty state when nothing matches', () => {

@@ -1,6 +1,12 @@
 import applicability from '../../../../reports/invoice-v2-applicability.json';
 import totalsProfile from '../../../../reports/invoice-v2-totals.json';
+import { isInvoiceFlowCode } from '../flow/invoiceFlowCode';
 import { invoiceV2SpecCodes } from './invoiceV2Codes';
+
+/** Codes that participate in arithmetic suitability (v2 specs + flow template). */
+function suitabilityTracked(code: string): boolean {
+  return invoiceV2SpecCodes.has(code) || isInvoiceFlowCode(code);
+}
 
 export type InvoiceV2Applicability = {
   currency: string | null;
@@ -111,7 +117,7 @@ export type InvoiceSuitability = { suitable: boolean; reason: string | null };
  * has to reach that total the same way. No row is added to a layout.
  */
 export function invoiceV2Suitability(code: string, input?: InvoiceFitInput): InvoiceSuitability {
-  if (!invoiceV2SpecCodes.has(code)) return { suitable: true, reason: null };
+  if (!suitabilityTracked(code)) return { suitable: true, reason: null };
   const fit = asFit(input);
   if (!fit.amounts) return { suitable: true, reason: null };
   const profile = invoiceV2TotalsProfile(code);
@@ -149,7 +155,7 @@ export function invoiceV2Suitability(code: string, input?: InvoiceFitInput): Inv
 
 /** A code with no currency applies to every invoice. No currency on the invoice means nothing is marked off. */
 export function invoiceV2Applies(code: string, input?: InvoiceFitInput): boolean {
-  if (!invoiceV2SpecCodes.has(code)) return true;
+  if (!suitabilityTracked(code)) return true;
   const expected = TABLE[code]?.currency;
   const currency = asFit(input).currency;
   if (!expected || !currency) return true;
@@ -161,7 +167,7 @@ export function invoiceV2Applies(code: string, input?: InvoiceFitInput): boolean
  * layout prints no tax figure. The code stays suitable and stays openable.
  */
 export function invoiceV2TaxVisibilityNote(code: string, input?: InvoiceFitInput): string | null {
-  if (!invoiceV2SpecCodes.has(code)) return null;
+  if (!suitabilityTracked(code)) return null;
   const fit = asFit(input);
   if (!fit.amounts) return null;
   if (!invoiceV2Suitability(code, input).suitable) return null;
@@ -171,7 +177,7 @@ export function invoiceV2TaxVisibilityNote(code: string, input?: InvoiceFitInput
 }
 
 export function invoiceV2ApplicabilityHint(code: string, input?: InvoiceFitInput): string | null {
-  if (!invoiceV2SpecCodes.has(code)) return null;
+  if (!suitabilityTracked(code)) return null;
   const suitability = invoiceV2Suitability(code, input);
   if (!suitability.suitable && suitability.reason) return `not suitable for this invoice: ${suitability.reason}`;
   if (!invoiceV2Applies(code, input)) return 'not applicable to this invoice';
@@ -179,6 +185,10 @@ export function invoiceV2ApplicabilityHint(code: string, input?: InvoiceFitInput
 }
 
 export function invoiceV2ListRank(code: string, input?: InvoiceFitInput): number {
+  if (isInvoiceFlowCode(code)) {
+    const suitability = invoiceV2Suitability(code, input);
+    return invoiceV2Applies(code, input) && suitability.suitable ? -1 : 1;
+  }
   if (!invoiceV2SpecCodes.has(code)) return 2;
   const suitability = invoiceV2Suitability(code, input);
   return invoiceV2Applies(code, input) && suitability.suitable ? 0 : 1;
