@@ -1,0 +1,219 @@
+[
+  {
+    "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+    "page": {
+      "ref": [
+        594,
+        841.9,
+        1
+      ],
+      "gen": [
+        594,
+        841.9,
+        1
+      ]
+    },
+    "logo": [
+      {
+        "x": 27.4,
+        "y": 784.6,
+        "width": 82,
+        "height": 32.2,
+        "format": "unknown",
+        "slot": "",
+        "name": "img_p0_1"
+      }
+    ],
+    "sampleImages": [
+      {
+        "x": 27.4,
+        "y": 784.6,
+        "width": 82,
+        "height": 39.6,
+        "format": "unknown",
+        "slot": "",
+        "name": "img_p0_1"
+      }
+    ],
+    "barcode": null,
+    "fresa": false,
+    "raster": {
+      "px": [
+        1238,
+        1754,
+        1238,
+        1754
+      ],
+      "mismatches": 64511,
+      "ratio": 0.0297,
+      "mask": {
+        "x0": 57,
+        "y0": 36,
+        "x1": 228,
+        "y1": 120
+      }
+    }
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+    "page": {
+      "ref": [
+        595,
+        842,
+        1
+      ],
+      "gen": [
+        595,
+        842,
+        1
+      ]
+    },
+    "logo": [
+      {
+        "x": 360,
+        "y": 627,
+        "width": 155,
+        "height": 60.9,
+        "format": "unknown",
+        "slot": "",
+        "name": "img_p0_1"
+      }
+    ],
+    "sampleImages": [
+      {
+        "x": 360,
+        "y": 627,
+        "width": 155.4,
+        "height": 75,
+        "format": "unknown",
+        "slot": "",
+        "name": "img_p0_1"
+      },
+      {
+        "x": 380,
+        "y": 795,
+        "width": 194,
+        "height": 17,
+        "format": "unknown",
+        "slot": "",
+        "name": "img_p0_2",
+        "barcode": {
+          "symbology": "CODE_128",
+          "payload": "PLMAAJEA00081",
+          "moduleWidth": 0.96,
+          "quietZone": 9.83,
+          "decoded": true
+        }
+      }
+    ],
+    "barcode": {
+      "bars": 43,
+      "firstX": 391,
+      "lastX": 563,
+      "expectedSpan": [
+        380,
+        574
+      ],
+      "moduleWidth": 1.102,
+      "bits": 176
+    },
+    "fresa": false,
+    "raster": {
+      "px": [
+        1240,
+        1755,
+        1240,
+        1755
+      ],
+      "mismatches": 35711,
+      "ratio": 0.0164,
+      "mask": {
+        "x0": 750,
+        "y0": 291,
+        "x1": 1073,
+        "y1": 448
+      }
+    }
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+    "page": {
+      "ref": [
+        595,
+        842,
+        1
+      ],
+      "gen": [
+        595,
+        842,
+        1
+      ]
+    },
+    "logo": [
+      {
+        "x": 21,
+        "y": 742.7,
+        "width": 195.8,
+        "height": 77,
+        "format": "unknown",
+        "slot": "",
+        "name": "img_p0_1"
+      }
+    ],
+    "sampleImages": [
+      {
+        "x": 21,
+        "y": 742.7,
+        "width": 552,
+        "height": 77.3,
+        "format": "unknown",
+        "slot": "",
+        "name": "img_p0_1"
+      },
+      {
+        "x": 350,
+        "y": 211,
+        "width": 220,
+        "height": 35,
+        "format": "unknown",
+        "slot": "",
+        "name": "img_p0_2",
+        "barcode": {
+          "symbology": "CODE_128",
+          "payload": "PLJEAMAA00001 / 16-JAN-19",
+          "moduleWidth": 0.48,
+          "quietZone": 6.72,
+          "decoded": true
+        }
+      }
+    ],
+    "barcode": {
+      "bars": 34,
+      "firstX": 365.4,
+      "lastX": 554.6,
+      "expectedSpan": [
+        350,
+        570
+      ],
+      "moduleWidth": 1.538,
+      "bits": 143
+    },
+    "fresa": false,
+    "raster": {
+      "px": [
+        1240,
+        1755,
+        1240,
+        1755
+      ],
+      "mismatches": 74600,
+      "ratio": 0.0343,
+      "mask": {
+        "x0": 43,
+        "y0": 46,
+        "x1": 452,
+        "y1": 207
+      }
+    }
+  }
+]

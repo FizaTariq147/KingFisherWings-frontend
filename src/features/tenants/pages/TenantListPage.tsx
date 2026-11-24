@@ -65,7 +65,13 @@ export default function TenantListPage() {
 
   const { data, isLoading, isFetching, isError, error, refetch } = useTenantsList(listParams);
   const { data: stats, isLoading: statsLoading } = useTenantStatistics();
-  const { activateTenant, deactivateTenant, deleteTenant, restoreTenant } = useTenantMutations();
+  const {
+    activateTenant,
+    deactivateTenant,
+    deleteTenant,
+    restoreTenant,
+    permanentDeleteTenant,
+  } = useTenantMutations();
   const syncAllPermissions = useSyncAllTenantPermissions();
   const [syncNotice, setSyncNotice] = useState<string | null>(null);
   const draftCompanies = usePlatformOnboardingStore((s) => s.draftCompanies);
@@ -103,6 +109,7 @@ export default function TenantListPage() {
   const handleDeactivate = (t: Tenant) => requestConfirm('deactivate', t);
   const handleRestore = (t: Tenant) => requestConfirm('restore', t);
   const handleDelete = (t: Tenant) => requestConfirm('delete', t);
+  const handlePermanentDelete = (t: Tenant) => requestConfirm('permanent', t);
 
   const handleConfirmAction = async () => {
     if (!confirm) return;
@@ -112,7 +119,9 @@ export default function TenantListPage() {
         ? () => deleteTenant.mutateAsync({ id: tenant.id, tenant })
         : action === 'deactivate'
           ? () => deactivateTenant.mutateAsync(tenant.id)
-          : () => restoreTenant.mutateAsync(tenant.id);
+          : action === 'permanent'
+            ? () => permanentDeleteTenant.mutateAsync(tenant.id)
+            : () => restoreTenant.mutateAsync(tenant.id);
 
     setActionError(null);
     setPendingActionId(tenant.id);
@@ -120,7 +129,7 @@ export default function TenantListPage() {
       await mutation();
       closeConfirm();
       if (action === 'delete') setStatus('deleted');
-      if (action === 'restore') setStatus('all');
+      if (action === 'restore' || action === 'permanent') setStatus('all');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Action failed. Please try again.';
       setActionError(message);
@@ -264,6 +273,7 @@ export default function TenantListPage() {
             onDeactivate={handleDeactivate}
             onDelete={handleDelete}
             onRestore={handleRestore}
+            onPermanentDelete={handlePermanentDelete}
           />
         </Card>
       )}

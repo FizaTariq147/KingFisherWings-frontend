@@ -1,0 +1,837 @@
+[
+  {
+    "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+    "face": {
+      "w": 594,
+      "h": 841.9,
+      "rects": 28,
+      "lines": 269,
+      "texts": 199
+    },
+    "unmatchedRects": 8,
+    "sampleRectKeys": [
+      "x",
+      "y",
+      "width",
+      "height",
+      "strokeWidth",
+      "stroke",
+      "fill",
+      "lineCap",
+      "lineJoin",
+      "miterLimit",
+      "dash",
+      "dashPhase",
+      "order"
+    ],
+    "sampleRectExample": [
+      {
+        "x": 0,
+        "y": -280.0799,
+        "width": 791.9999,
+        "height": 1121.9999,
+        "strokeWidth": 0.6,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 0,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 0
+      },
+      {
+        "x": 7,
+        "y": 8.4484,
+        "width": 579.9999,
+        "height": 826.4716,
+        "strokeWidth": 0.6,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 0,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 1
+      }
+    ],
+    "unmatchedExample": [
+      {
+        "x": 0,
+        "y": -280.0799,
+        "width": 791.9999,
+        "height": 1121.9999,
+        "strokeWidth": 0.6,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 0,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 0
+      },
+      {
+        "x": 7,
+        "y": 8.4484,
+        "width": 579.9999,
+        "height": 826.4716,
+        "strokeWidth": 0.6,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 0,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 1
+      },
+      {
+        "x": 14.3489,
+        "y": 826.4404,
+        "width": 565.3021,
+        "height": 1.1306,
+        "strokeWidth": 0.6,
+        "stroke": null,
+        "fill": "0.396078,0.396078,0.396078",
+        "lineCap": 0,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 274
+      },
+      {
+        "x": 14.3489,
+        "y": 47.4542,
+        "width": 565.3021,
+        "height": 1.1306,
+        "strokeWidth": 0.6,
+        "stroke": null,
+        "fill": "0.396078,0.396078,0.396078",
+        "lineCap": 0,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 275
+      },
+      {
+        "x": 14.3489,
+        "y": 47.4542,
+        "width": 1.1306,
+        "height": 780.1169,
+        "strokeWidth": 0.6,
+        "stroke": null,
+        "fill": "0.396078,0.396078,0.396078",
+        "lineCap": 0,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 276
+      },
+      {
+        "x": 578.5204,
+        "y": 47.4542,
+        "width": 1.1306,
+        "height": 780.1169,
+        "strokeWidth": 0.6,
+        "stroke": null,
+        "fill": "0.396078,0.396078,0.396078",
+        "lineCap": 0,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 277
+      }
+    ],
+    "buckets": {
+      "blackFill": 0,
+      "whiteFill": 0,
+      "otherFill": 8,
+      "stroke": 0,
+      "tiny": 0
+    },
+    "faceHits": [
+      {
+        "text": "<h3>TAX INVOICE</h3>",
+        "x": 285.5,
+        "y": 819.9,
+        "size": 8,
+        "bold": 0
+      },
+      {
+        "text": "TAX INVOICE",
+        "x": 259.5,
+        "y": 759.2,
+        "size": 11.9,
+        "bold": 0
+      },
+      {
+        "text": "BILL OF LADING",
+        "x": 18.9,
+        "y": 413.8,
+        "size": 7.9,
+        "bold": 0
+      }
+    ],
+    "present": {
+      "100200300": true,
+      "dueDate": false,
+      "etd": false,
+      "eta": true,
+      "incoterm": false,
+      "PO-44190": true,
+      "20DC": true,
+      "SL-90821": false,
+      "HARBUS44": true,
+      "US00HARB": true,
+      "12-DEC-2026": true,
+      "12-NOV-2026": true,
+      "02-NOV-2026": true,
+      "18-NOV-2026": true,
+      "FOB": true,
+      "0.00": true
+    },
+    "boldTitles": [
+      {
+        "text": "TAX INVOICE",
+        "font": "Helvetica",
+        "x": 285.5,
+        "y": 819.9,
+        "size": 8
+      },
+      {
+        "text": "TAX INVOICE",
+        "font": "Helvetica",
+        "x": 259.5,
+        "y": 759.2,
+        "size": 11.9
+      },
+      {
+        "text": "Northwind Freight LLC",
+        "font": "Helvetica-Bold",
+        "x": 400,
+        "y": 812,
+        "size": 8
+      },
+      {
+        "text": "Northwind Freight LLC",
+        "font": "Helvetica",
+        "x": 110,
+        "y": 269.1,
+        "size": 7.9
+      }
+    ],
+    "sampleTitles": [
+      {
+        "text": "FRESA DEMO INDIA PVT L",
+        "font": "Arial-BoldMT",
+        "x": 352.9,
+        "y": 811.7,
+        "size": 15.8285
+      },
+      {
+        "text": "BILL OF LADING",
+        "font": "ArialMT",
+        "x": 18.9,
+        "y": 413.8,
+        "size": 7.9142
+      }
+    ],
+    "bands": [
+      {
+        "from": 0,
+        "to": 0.15,
+        "mismatches": 325594,
+        "ratio": 1
+      },
+      {
+        "from": 0.15,
+        "to": 0.4,
+        "mismatches": 542244,
+        "ratio": 1
+      },
+      {
+        "from": 0.4,
+        "to": 0.7,
+        "mismatches": 651188,
+        "ratio": 1
+      },
+      {
+        "from": 0.7,
+        "to": 0.85,
+        "mismatches": 325594,
+        "ratio": 1
+      },
+      {
+        "from": 0.85,
+        "to": 1,
+        "mismatches": 326832,
+        "ratio": 1
+      }
+    ]
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+    "face": {
+      "w": 595,
+      "h": 842,
+      "rects": 11,
+      "lines": 93,
+      "texts": 82
+    },
+    "unmatchedRects": 56,
+    "sampleRectKeys": [
+      "x",
+      "y",
+      "width",
+      "height",
+      "strokeWidth",
+      "stroke",
+      "fill",
+      "lineCap",
+      "lineJoin",
+      "miterLimit",
+      "dash",
+      "dashPhase",
+      "order"
+    ],
+    "sampleRectExample": [
+      {
+        "x": 380,
+        "y": 801,
+        "width": 9.798,
+        "height": 11.7576,
+        "strokeWidth": 1,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 3
+      },
+      {
+        "x": 389.798,
+        "y": 801,
+        "width": 1.9596,
+        "height": 11.7576,
+        "strokeWidth": 1,
+        "stroke": null,
+        "fill": "0.000000,0.000000,0.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 4
+      }
+    ],
+    "unmatchedExample": [
+      {
+        "x": 380,
+        "y": 801,
+        "width": 9.798,
+        "height": 11.7576,
+        "strokeWidth": 1,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 3
+      },
+      {
+        "x": 389.798,
+        "y": 801,
+        "width": 1.9596,
+        "height": 11.7576,
+        "strokeWidth": 1,
+        "stroke": null,
+        "fill": "0.000000,0.000000,0.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 4
+      },
+      {
+        "x": 393.7172,
+        "y": 801,
+        "width": 3.9192,
+        "height": 11.7576,
+        "strokeWidth": 1,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 7
+      },
+      {
+        "x": 398.6162,
+        "y": 801,
+        "width": 1.9596,
+        "height": 11.7576,
+        "strokeWidth": 1,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 9
+      },
+      {
+        "x": 400.5758,
+        "y": 801,
+        "width": 2.9394,
+        "height": 11.7576,
+        "strokeWidth": 1,
+        "stroke": null,
+        "fill": "0.000000,0.000000,0.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 10
+      },
+      {
+        "x": 404.495,
+        "y": 801,
+        "width": 2.9394,
+        "height": 11.7576,
+        "strokeWidth": 1,
+        "stroke": null,
+        "fill": "0.000000,0.000000,0.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 12
+      }
+    ],
+    "buckets": {
+      "blackFill": 0,
+      "whiteFill": 0,
+      "otherFill": 56,
+      "stroke": 0,
+      "tiny": 0
+    },
+    "faceHits": [
+      {
+        "text": "BILL OF LADING",
+        "x": 21,
+        "y": 797.5,
+        "size": 11,
+        "bold": 0
+      }
+    ],
+    "present": {
+      "100200300": false,
+      "dueDate": false,
+      "etd": false,
+      "eta": true,
+      "incoterm": false,
+      "PO-44190": false,
+      "20DC": false,
+      "SL-90821": false,
+      "HARBUS44": false,
+      "US00HARB": false,
+      "12-DEC-2026": false,
+      "12-NOV-2026": true,
+      "02-NOV-2026": false,
+      "18-NOV-2026": false,
+      "FOB": false,
+      "0.00": false
+    },
+    "boldTitles": [
+      {
+        "text": "BILL OF LADING",
+        "font": "Helvetica",
+        "x": 21,
+        "y": 797.5,
+        "size": 11
+      },
+      {
+        "text": "Northwind Freight LLC",
+        "font": "Helvetica-Bold",
+        "x": 330,
+        "y": 77.7,
+        "size": 8
+      }
+    ],
+    "sampleTitles": [
+      {
+        "text": "BILL OF LADING",
+        "font": "Helvetica-Bold",
+        "x": 21,
+        "y": 797.5,
+        "size": 11
+      },
+      {
+        "text": "FRESA DEMO DUBAI UAE LLC",
+        "font": "RHQBFJ+ArialUnicodeMS",
+        "x": 302,
+        "y": 753.5,
+        "size": 8
+      },
+      {
+        "text": "FRESA DEMO INDIA PVT LTD",
+        "font": "Helvetica-Bold",
+        "x": 302,
+        "y": 618.7,
+        "size": 8
+      },
+      {
+        "text": "FRESA DEMO INDIA PVT LTD",
+        "font": "RHQBFJ+ArialUnicodeMS",
+        "x": 330,
+        "y": 77.5,
+        "size": 8
+      }
+    ],
+    "bands": [
+      {
+        "from": 0,
+        "to": 0.15,
+        "mismatches": 326120,
+        "ratio": 1
+      },
+      {
+        "from": 0.15,
+        "to": 0.4,
+        "mismatches": 544360,
+        "ratio": 1
+      },
+      {
+        "from": 0.4,
+        "to": 0.7,
+        "mismatches": 652240,
+        "ratio": 1
+      },
+      {
+        "from": 0.7,
+        "to": 0.85,
+        "mismatches": 326120,
+        "ratio": 1
+      },
+      {
+        "from": 0.85,
+        "to": 1,
+        "mismatches": 327360,
+        "ratio": 1
+      }
+    ]
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+    "face": {
+      "w": 595,
+      "h": 842,
+      "rects": 26,
+      "lines": 329,
+      "texts": 121
+    },
+    "unmatchedRects": 139,
+    "sampleRectKeys": [
+      "x",
+      "y",
+      "width",
+      "height",
+      "strokeWidth",
+      "stroke",
+      "fill",
+      "lineCap",
+      "lineJoin",
+      "miterLimit",
+      "dash",
+      "dashPhase",
+      "order"
+    ],
+    "sampleRectExample": [
+      {
+        "x": 20,
+        "y": 442,
+        "width": 80,
+        "height": 25,
+        "strokeWidth": 0.5,
+        "stroke": null,
+        "fill": "0.960784,0.960784,0.960784",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 14
+      },
+      {
+        "x": 100,
+        "y": 442,
+        "width": 60,
+        "height": 25,
+        "strokeWidth": 0.5,
+        "stroke": null,
+        "fill": "0.960784,0.960784,0.960784",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 19
+      }
+    ],
+    "unmatchedExample": [
+      {
+        "x": 20,
+        "y": 428,
+        "width": 80,
+        "height": 14,
+        "strokeWidth": 0.5,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 54
+      },
+      {
+        "x": 100,
+        "y": 428,
+        "width": 60,
+        "height": 14,
+        "strokeWidth": 0.5,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 59
+      },
+      {
+        "x": 160,
+        "y": 428,
+        "width": 70,
+        "height": 14,
+        "strokeWidth": 0.5,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 64
+      },
+      {
+        "x": 230,
+        "y": 428,
+        "width": 132,
+        "height": 14,
+        "strokeWidth": 0.5,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 69
+      },
+      {
+        "x": 362,
+        "y": 428,
+        "width": 48,
+        "height": 14,
+        "strokeWidth": 0.5,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 74
+      },
+      {
+        "x": 410,
+        "y": 428,
+        "width": 50,
+        "height": 14,
+        "strokeWidth": 0.5,
+        "stroke": null,
+        "fill": "1.000000,1.000000,1.000000",
+        "lineCap": 2,
+        "lineJoin": 0,
+        "miterLimit": 10,
+        "dash": [],
+        "dashPhase": 0,
+        "order": 79
+      }
+    ],
+    "buckets": {
+      "blackFill": 0,
+      "whiteFill": 0,
+      "otherFill": 139,
+      "stroke": 0,
+      "tiny": 0
+    },
+    "faceHits": [
+      {
+        "text": "ARRIVAL NOTICE",
+        "x": 229.5,
+        "y": 723,
+        "size": 16,
+        "bold": 1
+      },
+      {
+        "text": "1. Kindly contact our Imports Department/Customer ",
+        "x": 31.9,
+        "y": 308.7,
+        "size": 8,
+        "bold": 0
+      },
+      {
+        "text": "4. Partial Payments are not acceptable.",
+        "x": 31.9,
+        "y": 276.6,
+        "size": 8,
+        "bold": 0
+      },
+      {
+        "text": "6. After Free days storage charges applicable",
+        "x": 31.9,
+        "y": 255.1,
+        "size": 8,
+        "bold": 0
+      },
+      {
+        "text": "of 1",
+        "x": 539.9,
+        "y": 23.2,
+        "size": 7,
+        "bold": 0
+      }
+    ],
+    "present": {
+      "100200300": false,
+      "dueDate": false,
+      "etd": false,
+      "eta": true,
+      "incoterm": false,
+      "PO-44190": false,
+      "20DC": true,
+      "SL-90821": true,
+      "HARBUS44": false,
+      "US00HARB": false,
+      "12-DEC-2026": false,
+      "12-NOV-2026": false,
+      "02-NOV-2026": true,
+      "18-NOV-2026": true,
+      "FOB": false,
+      "0.00": true
+    },
+    "boldTitles": [
+      {
+        "text": "ARRIVAL NOTICE",
+        "font": "Helvetica-Bold",
+        "x": 229.5,
+        "y": 723,
+        "size": 16
+      },
+      {
+        "text": "Northwind Freight LLC",
+        "font": "Helvetica-Bold",
+        "x": 360,
+        "y": 760,
+        "size": 9
+      },
+      {
+        "text": "3. Cheque in favor of \"Northwind Freight LLC\".",
+        "font": "Helvetica",
+        "x": 31.9,
+        "y": 287,
+        "size": 8
+      }
+    ],
+    "sampleTitles": [
+      {
+        "text": "ARRIVAL NOTICE",
+        "font": "Helvetica-Bold",
+        "x": 229.5,
+        "y": 723,
+        "size": 16
+      },
+      {
+        "text": "3. Cheque in favor of “FRESA DEMO COMPAN",
+        "font": "NODUGB+ArialUnicodeMS",
+        "x": 23,
+        "y": 287.3,
+        "size": 8
+      },
+      {
+        "text": "FRESA DEMO INDIA PVT LTD",
+        "font": "NODUGB+ArialUnicodeMS",
+        "x": 29,
+        "y": 200.4,
+        "size": 9
+      },
+      {
+        "text": "RAM@FRESATECHNOLOGIES.COM",
+        "font": "Helvetica",
+        "x": 63,
+        "y": 23.1,
+        "size": 7
+      }
+    ],
+    "bands": [
+      {
+        "from": 0,
+        "to": 0.15,
+        "mismatches": 326120,
+        "ratio": 1
+      },
+      {
+        "from": 0.15,
+        "to": 0.4,
+        "mismatches": 544360,
+        "ratio": 1
+      },
+      {
+        "from": 0.4,
+        "to": 0.7,
+        "mismatches": 652240,
+        "ratio": 1
+      },
+      {
+        "from": 0.7,
+        "to": 0.85,
+        "mismatches": 326120,
+        "ratio": 1
+      },
+      {
+        "from": 0.85,
+        "to": 1,
+        "mismatches": 327360,
+        "ratio": 1
+      }
+    ]
+  }
+]

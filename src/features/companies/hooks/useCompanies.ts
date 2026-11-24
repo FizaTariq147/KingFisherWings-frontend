@@ -47,6 +47,8 @@ export {
   useCreateCompany,
   useUpdateCompany,
   useDeleteCompany,
+  useRestoreCompany,
+  usePermanentDeleteCompany,
   useCompanyMutations,
   useSetCompanyActive,
 } from './useCompanyMutations';

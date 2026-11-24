@@ -6,7 +6,6 @@ import type {
   UpdateTenantDto,
   UpdateTenantFeaturesDto,
 } from '../types/tenant.types';
-import { rememberDeletedTenant } from '../utils/deletedTenantsRegistry';
 import { tenantKeys } from './useTenants';
 
 function useInvalidateTenants() {
@@ -37,19 +36,18 @@ export function useTenantMutations() {
   const deleteTenant = useMutation({
     mutationFn: ({ id, tenant }: { id: string; tenant?: Tenant }) =>
       tenantService.softDelete(id, tenant),
-    onSuccess: (_, { id, tenant }) => {
-      if (tenant) {
-        rememberDeletedTenant({
-          ...tenant,
-          deleted_at: tenant.deleted_at || new Date().toISOString(),
-        });
-      }
+    onSuccess: (_, { id }) => {
       invalidate(id);
     },
   });
 
   const restoreTenant = useMutation({
     mutationFn: (id: string) => tenantService.restore(id),
+    onSuccess: (_, id) => invalidate(id),
+  });
+
+  const permanentDeleteTenant = useMutation({
+    mutationFn: (id: string) => tenantService.permanentDelete(id),
     onSuccess: (_, id) => invalidate(id),
   });
 
@@ -68,6 +66,7 @@ export function useTenantMutations() {
     updateTenant,
     deleteTenant,
     restoreTenant,
+    permanentDeleteTenant,
     activateTenant,
     deactivateTenant,
   };
@@ -107,6 +106,11 @@ export function useDeleteTenant() {
 export function useRestoreTenant() {
   const { restoreTenant } = useTenantMutations();
   return restoreTenant;
+}
+
+export function usePermanentDeleteTenant() {
+  const { permanentDeleteTenant } = useTenantMutations();
+  return permanentDeleteTenant;
 }
 
 export function useSyncTenantPermissions() {

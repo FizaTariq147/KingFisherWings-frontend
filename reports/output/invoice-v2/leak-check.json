@@ -1,0 +1,392 @@
+[
+  {
+    "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+    "leaks": [],
+    "suppressed": 106,
+    "examples": [
+      "1/28/2019",
+      "<h3>T",
+      "AX INVOICE</h3>",
+      "Chennai- 600 100",
+      "T",
+      "amil Nadu, India",
+      "WEB : www",
+      "AX INVOICE"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_2_TAX_INVOICE_INDIA",
+    "leaks": [],
+    "suppressed": 51,
+    "examples": [
+      "354.00",
+      "Client :",
+      "ETD",
+      "Vessel / Voyage",
+      "ETA",
+      "MBL / MAWB No.",
+      "4G LOGISTICS INDIA PVT LTD",
+      "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD,"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_3_SUMMARY_INVOICE",
+    "leaks": [],
+    "suppressed": 105,
+    "examples": [
+      "1/28/2019",
+      "Invoive-INV1800564",
+      "T",
+      "ax",
+      "Amount (AED)",
+      "V",
+      "A",
+      "-05"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_4_STANDARD_TAX_INVOICE",
+    "leaks": [],
+    "suppressed": 56,
+    "examples": [
+      "AL NABHA, DUBAI",
+      "GSTIN No. : 29760737473",
+      "Credit Term : CASH",
+      "INV1800564",
+      "27-NOV-18 (CREATED)",
+      "BDXBSI180115 / 27-NOV-18",
+      "Department",
+      "LCL IMPORT"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_5_TAX_INVOICE_INDIA",
+    "leaks": [],
+    "suppressed": 104,
+    "examples": [
+      "1/28/2019",
+      "T",
+      "AX_INVOICE_MAAINV1900717",
+      "Chennai- 600 100",
+      "amil Nadu, India",
+      "WEB : www",
+      "Bill T",
+      "o"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_6_SIMPLE_INVOICE_INDIA",
+    "leaks": [],
+    "suppressed": 78,
+    "examples": [
+      "1/28/2019",
+      "Standard Invoice-MAAINV1900716",
+      "Chennai- 600 100",
+      "T",
+      "amil Nadu, India",
+      "WEB : www",
+      "AX INVOICE - MAAINV1900716",
+      "Bill T"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_7_SIMPLE_INVOICE",
+    "leaks": [],
+    "suppressed": 70,
+    "examples": [
+      "1/28/2019",
+      "Standard Invoice-INV1800562",
+      "Dubai,",
+      "U.A.E.",
+      "WEB : www",
+      "T",
+      "AX INVOICE - INV1800562",
+      "Bill T"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC",
+    "leaks": [],
+    "suppressed": 93,
+    "examples": [
+      "ﺔﻴﺒﻳﺮﺿ ﺓﺭﻮﺗﺎﻓ",
+      ":",
+      "Customer",
+      "AL NABHA, DUBAI",
+      "GSTIN No. : 29760737473",
+      "Credit Term : CASH",
+      "ﻞﻴﻤﻌﻟﺍ",
+      "ﺔﻓﺎﻀﻤﻟﺍ ﺔﻤﻴﻘﻟﺍ ﺔﺒﻳﺮﺿ ﻢﻗﺭ"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_9_STANDARD_INVOICE_USA",
+    "leaks": [],
+    "suppressed": 85,
+    "examples": [
+      "1.Invoice No.",
+      "INV1800564",
+      "2.Invoice Date",
+      "27-NOV-18 (CREATED)",
+      "7.BL No's",
+      "BDXBSI180115 / 10-OCT-18",
+      "6.Booking No.",
+      "NSA.JEA.18/26917 / 12-OCT-18"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE",
+    "leaks": [],
+    "suppressed": 55,
+    "examples": [
+      "AL NABHA, DUBAI",
+      "GSTIN No. : 29760737473",
+      "Credit Term : CASH",
+      "INV1800564",
+      "27-NOV-18 (CREATED)",
+      "BDXBSI180115 / 10-OCT-18",
+      "CCDXBSI18000061 / 27-NOV-18",
+      ":"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_11_STANDARD_INVOICE_LAND",
+    "leaks": [],
+    "suppressed": 119,
+    "examples": [
+      "1/28/2019",
+      "Standard Invoice-INV1800564",
+      "Dubai,",
+      "U.A.E.",
+      "WEB : www",
+      "T",
+      "AX INVOICE - INV1800564",
+      "TRN NO ABC123"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_12_STANDARD_INVOICE_PREPRINTED",
+    "leaks": [],
+    "suppressed": 48,
+    "examples": [
+      "AL NABHA, DUBAI",
+      "GSTIN No. : 29760737473",
+      "INV1800564",
+      "27-NOV-18 (CREATED)",
+      "500138050266 / 10-OCT-18",
+      "CCDXBSI18000061 / 27-NOV-18",
+      ":",
+      "Port of Loading"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_13_STANDARD_INVOICE_USA",
+    "leaks": [],
+    "suppressed": 56,
+    "examples": [
+      "1/28/2019",
+      "Standard Invoice-INV1800564",
+      "ANY L",
+      "TD",
+      "DUBAI",
+      "BILL T",
+      "O",
+      ":"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_14_INVOICE",
+    "leaks": [],
+    "suppressed": 73,
+    "examples": [
+      "MAAINV1900716",
+      "4G LOGISTICS INDIA PVT LTD",
+      "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD, NUNGAMBAKKAM, CHENNAI,",
+      "TAMILNADU, INDIA, 600084",
+      "GSTIN No. : GSTNO9876666554",
+      "28-JAN-19",
+      "B/EXP/19/0251",
+      "TERMS"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_15_INVOICE_FCY",
+    "leaks": [],
+    "suppressed": 80,
+    "examples": [
+      "MAAINV1900720",
+      "4G LOGISTICS INDIA PVT LTD",
+      "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD, NUNGAMBAKKAM, CHENNAI,",
+      "TAMILNADU, INDIA, 600084",
+      "GSTIN No. : GSTNO9876666554",
+      "SHIPMENT DETAILS",
+      "Page 1",
+      "of 1"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_16_STANDARD_TAX_INVOICE_PREPRINTED",
+    "leaks": [],
+    "suppressed": 57,
+    "examples": [
+      "AL NABHA, DUBAI",
+      "GSTIN No. : 29760737473",
+      "Credit Term : CASH",
+      "INV1800564",
+      "27-NOV-18 (CREATED)",
+      "BDXBSI180115 / 27-NOV-18",
+      "Department",
+      "LCL IMPORT"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_17_INVOICE_JASPER",
+    "leaks": [],
+    "suppressed": 67,
+    "examples": [
+      "MAAINV1900716",
+      "4G LOGISTICS INDIA PVT LTD",
+      "10, DBS CENTRE, NUNGAMBAKKAM HIGH ROAD, NUNGAMBAKKAM, CHENNAI,",
+      "TAMILNADU, INDIA, 600084",
+      "GSTIN No. : GSTNO9876666554",
+      "28-JAN-19",
+      "JOB NUMBER",
+      "CEXP190148"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_18_LAND_FREIGHT_TRANSPORTATION_INVOICE",
+    "leaks": [],
+    "suppressed": 89,
+    "examples": [
+      "1/28/2019",
+      "LAND_FREIGHT__TRANSPOR",
+      "T",
+      "A",
+      "TION_INVOICE_MAAINV1900716",
+      "PORTS SHIPPING's REFERENCE",
+      ":",
+      "MAAINV1900716"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_19_DEBIT_NOTE_VIETNAM",
+    "leaks": [],
+    "suppressed": 59,
+    "examples": [
+      "1/28/2019",
+      "Debit Note -MAAINV1900716",
+      "Chennai- 600 100",
+      "T",
+      "amil Nadu, India",
+      "WEB : www",
+      "DEBIT NOTE - MAAINV1900716",
+      "Invoice ref no. : MAAINV1900716"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_20_TAX_INVOICE_INDIA",
+    "leaks": [],
+    "suppressed": 122,
+    "examples": [
+      "1/28/2019",
+      "T",
+      "AX_INVOICE_MAAINV1900717",
+      "Chennai- 600 100",
+      "amil Nadu, India",
+      "WEB : www",
+      "AX INVOICE - MAAINV1900717",
+      "Bill T"
+    ]
+  },
+  {
+    "code": "INVOICE_REPORT_FORMAT_21_WAREHOUSE_INVOICE",
+    "leaks": [],
+    "suppressed": 86,
+    "examples": [
+      "1/28/2019",
+      "Standard Invoice-INV1800564",
+      "Dubai,",
+      "U.A.E.",
+      "WEB : www",
+      "INVOICE - INV1800564",
+      ":",
+      "AL NABHA, DUBAI"
+    ]
+  },
+  {
+    "code": "PROFORMA_INVOICE_ALL_CHARGES_REPORT_FORMAT",
+    "leaks": [],
+    "suppressed": 92,
+    "examples": [
+      "2/18/2019",
+      "Proforma Invoice-CAE190028",
+      "Chennai- 600 100",
+      "T",
+      "amil Nadu, India",
+      "WEB : www",
+      "Bill T",
+      "o"
+    ]
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_1_PROFORMA_INVOICE_ALL_CHARGES",
+    "leaks": [],
+    "suppressed": 85,
+    "examples": [
+      "2/8/2019",
+      "Proforma Invoice-CSI190007",
+      "Chennai- 600 100",
+      "T",
+      "amil Nadu, India",
+      "WEB : www",
+      "Bill T",
+      "o"
+    ]
+  },
+  {
+    "code": "PROFORMA_INVOICE_REPORT_FORMAT_2_PROFORMA_INVOICE_ALL_CHARGES",
+    "leaks": [],
+    "suppressed": 38,
+    "examples": [
+      "2/8/2019",
+      "Proforma Invoice-CSI190007",
+      "Chennai- 600 100",
+      "T",
+      "amil Nadu, India",
+      "WEB : www",
+      "Bill T",
+      "o"
+    ]
+  },
+  {
+    "code": "PURCHASE_INVOICE_REPORT_FORMAT_1",
+    "leaks": [],
+    "suppressed": 49,
+    "examples": [
+      "MAAPI1900248",
+      "PI No.",
+      ":",
+      "GL Date",
+      "28-JAN-19 (CREATED)",
+      "A/C Name",
+      "CMA CGM",
+      "28-JAN-19"
+    ]
+  },
+  {
+    "code": "PURCHASE_INVOICE_REPORT_FORMAT_2",
+    "leaks": [],
+    "suppressed": 64,
+    "examples": [
+      "1/29/2019",
+      "Purchase Invoice-MAAPI1900248",
+      "1706283581",
+      "1:::3002:P3002_CPY_ID,P3002_USR_ID,P3002_RPM_ID,P3002_T",
+      "…",
+      "1",
+      "/",
+      "Chennai- 600 100"
+    ]
+  }
+]

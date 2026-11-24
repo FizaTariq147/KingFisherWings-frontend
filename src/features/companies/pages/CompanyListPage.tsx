@@ -9,7 +9,11 @@ import { CompanyConfirmModal } from '../components/CompanyConfirmModal';
 import { CompanyFilters } from '../components/CompanyFilters';
 import { CompanyTable } from '../components/CompanyTable';
 import { useCompanyRegistry, useDeleteCompany } from '../hooks/useCompanies';
-import { useSetCompanyActive } from '../hooks/useCompanyMutations';
+import {
+  usePermanentDeleteCompany,
+  useRestoreCompany,
+  useSetCompanyActive,
+} from '../hooks/useCompanyMutations';
 import { useCompanyTenantScope } from '../hooks/useCompanyTenantScope';
 import type { RegistryCompany } from '../services/companyRegistry.service';
 import { mergeDraftCompaniesIntoList, type CompanyListItem } from '../utils/mergeDraftCompanies';
@@ -65,6 +69,8 @@ export default function CompanyListPage() {
   const activeTenantId =
     confirmTarget && !confirmTarget.company.is_draft ? confirmTarget.company.tenant_id : '';
   const deleteCompany = useDeleteCompany(activeTenantId);
+  const restoreCompany = useRestoreCompany(activeTenantId);
+  const permanentDeleteCompany = usePermanentDeleteCompany(activeTenantId);
   const setCompanyActive = useSetCompanyActive(activeTenantId);
 
   const companies = useMemo(
@@ -84,6 +90,10 @@ export default function CompanyListPage() {
     setConfirmTarget({ company, action: 'activate' });
   const handleDeactivate = (company: CompanyListItem) =>
     setConfirmTarget({ company, action: 'deactivate' });
+  const handleRestore = (company: CompanyListItem) =>
+    setConfirmTarget({ company, action: 'restore' });
+  const handlePermanentDelete = (company: CompanyListItem) =>
+    setConfirmTarget({ company, action: 'permanent' });
 
   const handleConfirmAction = async () => {
     if (!confirmTarget) return;
@@ -100,6 +110,12 @@ export default function CompanyListPage() {
         }
         await deleteCompany.mutateAsync({ id: company.id, company });
         setStatus('deleted');
+      } else if (action === 'restore' && !company.is_draft) {
+        await restoreCompany.mutateAsync();
+        setStatus('all');
+      } else if (action === 'permanent' && !company.is_draft) {
+        await permanentDeleteCompany.mutateAsync();
+        setStatus('all');
       } else if (!company.is_draft) {
         await setCompanyActive.mutateAsync({
           id: company.id,
@@ -222,6 +238,8 @@ export default function CompanyListPage() {
             onDelete={handleDelete}
             onActivate={handleActivate}
             onDeactivate={handleDeactivate}
+            onRestore={handleRestore}
+            onPermanentDelete={handlePermanentDelete}
             onContinueSetup={() => navigate('/superadmin/tenants/new')}
             detailPath={(id) => {
               const company = companies.find((c) => c.id === id);

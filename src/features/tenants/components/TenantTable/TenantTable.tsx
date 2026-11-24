@@ -29,6 +29,7 @@ interface TenantTableProps {
   onDeactivate: (t: Tenant) => void;
   onDelete: (t: Tenant) => void;
   onRestore: (t: Tenant) => void;
+  onPermanentDelete?: (t: Tenant) => void;
   pendingActionId?: string | null;
 }
 
@@ -44,6 +45,7 @@ export function TenantTable({
   onDeactivate,
   onDelete,
   onRestore,
+  onPermanentDelete,
   pendingActionId,
 }: TenantTableProps) {
   const navigate = useNavigate();
@@ -156,6 +158,7 @@ export function TenantTable({
                   onDeactivate={onDeactivate}
                   onDelete={onDelete}
                   onRestore={onRestore}
+                  onPermanentDelete={onPermanentDelete}
                 />
               </TableCell>
             </TableRow>

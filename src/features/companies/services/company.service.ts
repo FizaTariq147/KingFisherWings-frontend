@@ -1,13 +1,13 @@
 import { isUuid } from '@/lib/isUuid';
 import { ApiError, superAdminApiClient, type ApiEnvelope } from '@/lib/superAdminApiClient';
 import { TENANT_API } from '@/features/tenants/api/tenant.api';
+import { tenantService } from '@/features/tenants/services/tenant.service';
 import { normalizeTenant } from '@/features/tenants/utils/normalizeTenant';
 import {
   companyFromTenant,
   companyRegistryService,
   type RegistryCompany,
 } from './companyRegistry.service';
-import { listRememberedDeletedCompanies } from '../utils/deletedCompaniesRegistry';
 import { filterCompaniesByStatus } from '../utils/filterCompanies';
 import type {
   Company,
@@ -40,16 +40,6 @@ function assertTenantId(tenantId?: string): asserts tenantId is string {
   }
 }
 
-function defaultMeta(params: CompanyListParams, total: number): PaginationMeta {
-  const limit = params.limit ?? 20;
-  return {
-    page: params.page ?? 1,
-    limit,
-    total,
-    totalPages: Math.max(1, Math.ceil(total / limit)),
-  };
-}
-
 function toCompany(registry: RegistryCompany): Company {
   const { tenant_id: _tenantId, tenant_name: _tenantName, tenant_code: _tenantCode, ...company } =
     registry;
@@ -64,16 +54,9 @@ export const companyService = {
   async list(params: CompanyListParams): Promise<CompanyListResult> {
     assertTenantId(params.tenantId);
 
-    if (params.status === 'deleted') {
-      const companies = listRememberedDeletedCompanies().filter(
-        (company) => company.tenant_id === params.tenantId,
-      ) as Company[];
-      return { companies, meta: defaultMeta(params, companies.length) };
-    }
-
     const result = await companyRegistryService.list(params);
     let companies = result.companies.map(toCompany);
-    if (params.status) {
+    if (params.status && params.status !== 'deleted') {
       companies = filterCompaniesByStatus(companies, params.status);
     }
     return { companies, meta: result.meta };
@@ -130,10 +113,22 @@ export const companyService = {
     return toCompany(company);
   },
 
-  async softDelete(_tenantId: string, _id: string, _snapshot?: CompanyDeleteSnapshot): Promise<void> {
-    throw new ApiError(
-      `${PLATFORM_COMPANY_ERP_MESSAGE} Soft-delete a company from ERP as Tenant Admin, or deactivate the tenant from /tenants.`,
-      403,
-    );
+  /**
+   * Platform SA company trash maps to the linked tenant:
+   * soft-delete → DELETE /tenants/:id, restore → PATCH restore, permanent → DELETE permanent.
+   */
+  async softDelete(tenantId: string, _id: string, _snapshot?: CompanyDeleteSnapshot): Promise<void> {
+    assertTenantId(tenantId);
+    await tenantService.softDelete(tenantId);
+  },
+
+  async restore(tenantId: string): Promise<void> {
+    assertTenantId(tenantId);
+    await tenantService.restore(tenantId);
+  },
+
+  async permanentDelete(tenantId: string): Promise<void> {
+    assertTenantId(tenantId);
+    await tenantService.permanentDelete(tenantId);
   },
 };

@@ -3,6 +3,10 @@ export const AUTH_API = {
   login: '/auth/login',
   tenantLogin: '/auth/tenant-login',
   superAdminLogin: '/auth/super-admin/login',
+  /** Complete Super Admin login with email OTP (after password step). */
+  superAdminVerifyOtp: '/auth/super-admin/login/verify-otp',
+  /** Resend Super Admin login OTP (rate-limited). */
+  superAdminResendOtp: '/auth/super-admin/login/resend-otp',
   superAdminSignup: '/auth/super-admin/signup',
   refresh: '/auth/refresh',
   logout: '/auth/logout',

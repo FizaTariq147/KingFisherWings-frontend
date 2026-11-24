@@ -35,6 +35,22 @@ sequenceDiagram
 
 ---
 
+## Super Admin email OTP (platform)
+
+**Page:** `src/features/superadmin/pages/SuperAdminLoginPage.tsx`  
+**Service:** `src/features/superadmin/services/superAdminAuth.service.ts`
+
+Staff TOTP (`AUTH_2FA_LINKED`) is **not** used for Super Admin. Every Super Admin login uses an emailed 6-digit code:
+
+1. `POST /auth/super-admin/login` — email + password. On success returns `{ requires_otp: true, challenge_id, expires_in }` (no JWTs).
+2. User enters the code from email.
+3. `POST /auth/super-admin/login/verify-otp` — `{ challenge_id, otp }` → SA JWTs.
+4. `POST /auth/super-admin/login/resend-otp` — same `challenge_id`, rate-limited.
+
+Signup (`POST /auth/super-admin/signup`) must **not** auto-issue tokens; FE shows “Account created — sign in” so OTP always runs on first login.
+
+---
+
 ## 1. Login
 
 **Page:** `src/features/auth/pages/LoginPage.tsx`

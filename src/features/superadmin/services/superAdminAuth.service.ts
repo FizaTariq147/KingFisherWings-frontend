@@ -15,6 +15,44 @@ export interface SuperAdminLoginResponse {
   refresh_token: string;
 }
 
+/** Password step succeeded — tokens are issued only after verify-otp. */
+export interface SuperAdminOtpChallenge {
+  requires_otp: true;
+  challenge_id: string;
+  expires_in?: number;
+  message?: string;
+}
+
+export type SuperAdminLoginResult = SuperAdminLoginResponse | SuperAdminOtpChallenge;
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return value && typeof value === 'object' && !Array.isArray(value)
+    ? (value as Record<string, unknown>)
+    : null;
+}
+
+function unwrapPayload(raw: unknown): unknown {
+  const envelope = asRecord(raw);
+  if (envelope && 'data' in envelope) return envelope.data;
+  return raw;
+}
+
+function pickString(...values: unknown[]): string {
+  for (const value of values) {
+    if (typeof value === 'string' && value.trim()) return value.trim();
+  }
+  return '';
+}
+
+function coerceOptionalNumber(value: unknown): number | undefined {
+  if (typeof value === 'number' && Number.isFinite(value)) return value;
+  if (typeof value === 'string' && value.trim() !== '') {
+    const n = Number(value);
+    if (Number.isFinite(n)) return n;
+  }
+  return undefined;
+}
+
 function toSuperAdminUser(raw: {
   id: string;
   name: string;
@@ -29,27 +67,90 @@ function toSuperAdminUser(raw: {
   };
 }
 
+function parseOtpChallenge(payload: unknown): SuperAdminOtpChallenge | null {
+  const root = asRecord(payload) ?? {};
+  const nested = asRecord(root.data) ?? root;
+  const requiresOtp =
+    nested.requires_otp === true ||
+    nested.requiresOtp === true ||
+    root.requires_otp === true ||
+    root.requiresOtp === true;
+  const challengeId = pickString(
+    nested.challenge_id,
+    nested.challengeId,
+    root.challenge_id,
+    root.challengeId,
+  );
+  if (!requiresOtp && !challengeId) return null;
+  if (!challengeId) return null;
+  return {
+    requires_otp: true,
+    challenge_id: challengeId,
+    expires_in: coerceOptionalNumber(
+      nested.expires_in ?? nested.expiresIn ?? root.expires_in ?? root.expiresIn,
+    ),
+    message: pickString(nested.message, root.message) || undefined,
+  };
+}
+
+function parseLoginTokens(payload: unknown): SuperAdminLoginResponse {
+  const normalized = normalizeAuthLoginResponse(payload, 'SUPER_ADMIN');
+  if (!normalized) {
+    throw new Error('Login succeeded but the server response was incomplete.');
+  }
+  return {
+    user: toSuperAdminUser(normalized.user),
+    access_token: normalized.accessToken,
+    refresh_token: normalized.refreshToken,
+  };
+}
+
+export function isSuperAdminOtpChallenge(
+  value: SuperAdminLoginResult,
+): value is SuperAdminOtpChallenge {
+  return (value as SuperAdminOtpChallenge).requires_otp === true;
+}
+
 export const superAdminAuthService = {
-  async login(dto: SuperAdminLoginDto): Promise<SuperAdminLoginResponse> {
+  /**
+   * POST /auth/super-admin/login — password step.
+   * New BE returns OTP challenge (no tokens). Legacy may still return tokens.
+   */
+  async login(dto: SuperAdminLoginDto): Promise<SuperAdminLoginResult> {
     const res = await superAdminApiClient.post<unknown>(AUTH_API.superAdminLogin, dto);
-    const payload =
-      res.data && typeof res.data === 'object' && 'data' in (res.data as object)
-        ? (res.data as ApiEnvelope<unknown>).data
-        : res.data;
+    const payload = unwrapPayload(res.data);
 
-    const normalized = normalizeAuthLoginResponse(payload, 'SUPER_ADMIN');
-    if (!normalized) {
-      throw new Error('Login succeeded but the server response was incomplete.');
-    }
+    const challenge = parseOtpChallenge(payload) ?? parseOtpChallenge(res.data);
+    if (challenge) return challenge;
 
+    return parseLoginTokens(payload);
+  },
+
+  /** POST /auth/super-admin/login/verify-otp — issue SA JWTs. */
+  async verifyOtp(dto: {
+    challenge_id: string;
+    otp: string;
+  }): Promise<SuperAdminLoginResponse> {
+    const res = await superAdminApiClient.post<unknown>(AUTH_API.superAdminVerifyOtp, {
+      challenge_id: dto.challenge_id,
+      otp: dto.otp.trim(),
+    });
+    return parseLoginTokens(unwrapPayload(res.data));
+  },
+
+  /** POST /auth/super-admin/login/resend-otp — rate-limited. */
+  async resendOtp(challengeId: string): Promise<{ expires_in?: number; message?: string }> {
+    const res = await superAdminApiClient.post<unknown>(AUTH_API.superAdminResendOtp, {
+      challenge_id: challengeId,
+    });
+    const payload = asRecord(unwrapPayload(res.data)) ?? asRecord(res.data) ?? {};
     return {
-      user: toSuperAdminUser(normalized.user),
-      access_token: normalized.accessToken,
-      refresh_token: normalized.refreshToken,
+      expires_in: coerceOptionalNumber(payload.expires_in ?? payload.expiresIn),
+      message: pickString(payload.message) || undefined,
     };
   },
 
-  /** POST /auth/super-admin/signup — platform self-registration */
+  /** POST /auth/super-admin/signup — never auto-issues tokens; sign in with OTP next. */
   async signup(dto: SuperAdminSignupDto): Promise<void> {
     await superAdminApiClient.post(AUTH_API.superAdminSignup, {
       email: dto.email.trim().toLowerCase(),

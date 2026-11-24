@@ -2,7 +2,12 @@ import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 
-export type CompanyConfirmAction = 'delete' | 'activate' | 'deactivate';
+export type CompanyConfirmAction =
+  | 'delete'
+  | 'activate'
+  | 'deactivate'
+  | 'restore'
+  | 'permanent';
 
 interface CompanyConfirmModalProps {
   open: boolean;
@@ -34,19 +39,35 @@ export function CompanyConfirmModal({
       ? 'Delete company?'
       : action === 'activate'
         ? 'Activate company?'
-        : 'Deactivate company?';
+        : action === 'deactivate'
+          ? 'Deactivate company?'
+          : action === 'restore'
+            ? 'Restore company?'
+            : 'Permanently delete company?';
 
   const description = isBlockedDefaultDelete
     ? `${label} is the default company. Soft-delete is blocked until another company is set as default.`
     : action === 'delete'
-      ? `${label} will be soft-deleted.`
+      ? `${label} will be soft-deleted and appear in Deleted trash until permanently removed.`
       : action === 'activate'
         ? `${label} will be marked active.`
-        : `${label} will be marked inactive.`;
+        : action === 'deactivate'
+          ? `${label} will be marked inactive.`
+          : action === 'restore'
+            ? `${label} will be restored from trash.`
+            : `${label} will be permanently deleted. This cannot be undone. Related data may return 409.`;
 
   const confirmLabel =
-    action === 'delete' ? 'Delete company' : action === 'activate' ? 'Activate' : 'Deactivate';
-  const confirmVariant = action === 'activate' ? 'primary' : 'danger';
+    action === 'delete'
+      ? 'Delete company'
+      : action === 'activate'
+        ? 'Activate'
+        : action === 'deactivate'
+          ? 'Deactivate'
+          : action === 'restore'
+            ? 'Restore'
+            : 'Delete permanently';
+  const confirmVariant = action === 'activate' || action === 'restore' ? 'primary' : 'danger';
 
   return (
     <Modal
@@ -83,7 +104,7 @@ export function CompanyConfirmModal({
           <p>{description}</p>
           {action === 'delete' && !isBlockedDefaultDelete && (
             <p className="text-xs text-[var(--color-neutral-400)]">
-              The API also blocks delete if this is the only company in the tenant.
+              Platform company profiles map to tenants — soft-delete uses the tenant trash.
             </p>
           )}
         </div>

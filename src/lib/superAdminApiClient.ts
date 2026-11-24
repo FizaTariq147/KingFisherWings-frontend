@@ -70,6 +70,8 @@ const processQueue = (error: unknown, token: string | null) => {
 
 const SUPERADMIN_PUBLIC = [
   AUTH_API.superAdminLogin,
+  AUTH_API.superAdminVerifyOtp,
+  AUTH_API.superAdminResendOtp,
   AUTH_API.superAdminSignup,
   AUTH_API.refresh,
 ] as const;
