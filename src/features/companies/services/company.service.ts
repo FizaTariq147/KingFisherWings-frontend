@@ -7,7 +7,6 @@ import {
   companyRegistryService,
   type RegistryCompany,
 } from './companyRegistry.service';
-import { listRememberedDeletedCompanies } from '../utils/deletedCompaniesRegistry';
 import { filterCompaniesByStatus } from '../utils/filterCompanies';
 import type {
   Company,
@@ -40,16 +39,6 @@ function assertTenantId(tenantId?: string): asserts tenantId is string {
   }
 }
 
-function defaultMeta(params: CompanyListParams, total: number): PaginationMeta {
-  const limit = params.limit ?? 20;
-  return {
-    page: params.page ?? 1,
-    limit,
-    total,
-    totalPages: Math.max(1, Math.ceil(total / limit)),
-  };
-}
-
 function toCompany(registry: RegistryCompany): Company {
   const { tenant_id: _tenantId, tenant_name: _tenantName, tenant_code: _tenantCode, ...company } =
     registry;
@@ -64,16 +53,9 @@ export const companyService = {
   async list(params: CompanyListParams): Promise<CompanyListResult> {
     assertTenantId(params.tenantId);
 
-    if (params.status === 'deleted') {
-      const companies = listRememberedDeletedCompanies().filter(
-        (company) => company.tenant_id === params.tenantId,
-      ) as Company[];
-      return { companies, meta: defaultMeta(params, companies.length) };
-    }
-
     const result = await companyRegistryService.list(params);
     let companies = result.companies.map(toCompany);
-    if (params.status) {
+    if (params.status && params.status !== 'deleted') {
       companies = filterCompaniesByStatus(companies, params.status);
     }
     return { companies, meta: result.meta };
