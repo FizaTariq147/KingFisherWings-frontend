@@ -47,6 +47,7 @@ export {
   useDeactivateTenant,
   useDeleteTenant,
   useRestoreTenant,
+  usePermanentDeleteTenant,
   useSyncTenantPermissions,
   useTenantMutations,
 } from './useTenantMutations';

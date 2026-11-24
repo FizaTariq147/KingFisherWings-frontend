@@ -2,7 +2,7 @@ import { AlertTriangle, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Modal } from '@/components/ui/Modal';
 
-export type TenantConfirmAction = 'delete' | 'deactivate' | 'restore';
+export type TenantConfirmAction = 'delete' | 'deactivate' | 'restore' | 'permanent';
 
 const ACTION_CONFIG: Record<
   TenantConfirmAction,
@@ -11,7 +11,7 @@ const ACTION_CONFIG: Record<
   delete: {
     title: 'Delete tenant?',
     description: (name) =>
-      `${name} will be soft-deleted. You can restore this workspace later from the deleted filter.`,
+      `${name} will be soft-deleted. You can restore it later from the Deleted trash tab.`,
     confirmLabel: 'Delete tenant',
     variant: 'danger',
   },
@@ -25,9 +25,16 @@ const ACTION_CONFIG: Record<
   restore: {
     title: 'Restore tenant?',
     description: (name) =>
-      `${name} will be restored from deleted state and become available again.`,
+      `${name} will be restored from trash and become available again.`,
     confirmLabel: 'Restore tenant',
     variant: 'primary',
+  },
+  permanent: {
+    title: 'Permanently delete tenant?',
+    description: (name) =>
+      `${name} will be permanently deleted. This cannot be undone. If related ERP data still exists, the API returns 409.`,
+    confirmLabel: 'Delete permanently',
+    variant: 'danger',
   },
 };
 

@@ -1,6 +1,7 @@
 import { isUuid } from '@/lib/isUuid';
 import { ApiError, superAdminApiClient, type ApiEnvelope } from '@/lib/superAdminApiClient';
 import { TENANT_API } from '@/features/tenants/api/tenant.api';
+import { tenantService } from '@/features/tenants/services/tenant.service';
 import { normalizeTenant } from '@/features/tenants/utils/normalizeTenant';
 import {
   companyFromTenant,
@@ -112,10 +113,22 @@ export const companyService = {
     return toCompany(company);
   },
 
-  async softDelete(_tenantId: string, _id: string, _snapshot?: CompanyDeleteSnapshot): Promise<void> {
-    throw new ApiError(
-      `${PLATFORM_COMPANY_ERP_MESSAGE} Soft-delete a company from ERP as Tenant Admin, or deactivate the tenant from /tenants.`,
-      403,
-    );
+  /**
+   * Platform SA company trash maps to the linked tenant:
+   * soft-delete → DELETE /tenants/:id, restore → PATCH restore, permanent → DELETE permanent.
+   */
+  async softDelete(tenantId: string, _id: string, _snapshot?: CompanyDeleteSnapshot): Promise<void> {
+    assertTenantId(tenantId);
+    await tenantService.softDelete(tenantId);
+  },
+
+  async restore(tenantId: string): Promise<void> {
+    assertTenantId(tenantId);
+    await tenantService.restore(tenantId);
+  },
+
+  async permanentDelete(tenantId: string): Promise<void> {
+    assertTenantId(tenantId);
+    await tenantService.permanentDelete(tenantId);
   },
 };

@@ -29,10 +29,27 @@ const emptyCreateForm = (): CreateBillingPlanDto => ({
   description: '',
   subscription_plan: '',
   amount: 0,
-  currency_code: '',
+  currency_code: 'USD',
   interval: 'MONTH',
   sync_to_stripe: true,
 });
+
+/** Prefill helper for the seeded low-paid Developer plan (BE upserts defaults). */
+function developerPlanDefaults(): CreateBillingPlanDto {
+  return {
+    code: 'DEVELOPER',
+    name: 'Developer',
+    description: 'Low-paid developer tier',
+    subscription_plan: 'DEVELOPER',
+    amount: 29,
+    currency_code: 'USD',
+    interval: 'MONTH',
+    sync_to_stripe: true,
+    max_users: 10,
+    max_branches: 3,
+    max_storage_gb: 20,
+  };
+}
 
 export default function PlatformBillingPlansPage() {
   const [page, setPage] = useState(1);
@@ -50,9 +67,17 @@ export default function PlatformBillingPlansPage() {
   const plans = data?.items ?? [];
 
   const subscriptionPlanOptions = useMemo(() => {
-    const set = new Set<string>();
+    // Seed-known tiers (incl. low-paid DEVELOPER) plus any codes already on plans.
+    const set = new Set<string>([
+      'TRIAL',
+      'DEVELOPER',
+      'BASIC',
+      'STANDARD',
+      'PROFESSIONAL',
+      'ENTERPRISE',
+    ]);
     for (const plan of plans) {
-      if (plan.subscriptionPlan?.trim()) set.add(plan.subscriptionPlan.trim());
+      if (plan.subscriptionPlan?.trim()) set.add(plan.subscriptionPlan.trim().toUpperCase());
     }
     return [...set].sort((a, b) => a.localeCompare(b));
   }, [plans]);
@@ -107,9 +132,23 @@ export default function PlatformBillingPlansPage() {
           <h2 className={appType.pageTitle}>Billing plans</h2>
           <p className="text-sm text-[var(--color-neutral-400)]">Platform subscription plans and Stripe sync</p>
         </div>
-        <Button type="button" size="sm" onClick={() => setShowCreate((v) => !v)}>
-          {showCreate ? 'Hide form' : 'New plan'}
-        </Button>
+        <div className="flex flex-wrap gap-2">
+          <Button
+            type="button"
+            size="sm"
+            variant="secondary"
+            onClick={() => {
+              setCreateForm(developerPlanDefaults());
+              setShowCreate(true);
+              setCreateError(null);
+            }}
+          >
+            Prefill Developer ($29)
+          </Button>
+          <Button type="button" size="sm" onClick={() => setShowCreate((v) => !v)}>
+            {showCreate ? 'Hide form' : 'New plan'}
+          </Button>
+        </div>
       </div>
 
       {showCreate && (

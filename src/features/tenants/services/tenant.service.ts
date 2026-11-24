@@ -53,8 +53,8 @@ async function fetchTenantsFromApi(
 }
 
 /**
- * Soft-deleted tenants for Deleted tab — server-backed (all devices).
- * Tries status=deleted, then include_deleted / with_deleted, then filters deleted_at.
+ * Soft-deleted tenants for Deleted trash — server-backed (all devices).
+ * Prefer GET /tenants/deleted, then legacy status/include_deleted fallbacks.
  */
 async function fetchDeletedTenantsFromApi(
   params: TenantListParams,
@@ -62,19 +62,43 @@ async function fetchDeletedTenantsFromApi(
   const search = params.search?.trim() ? { search: params.search.trim() } : {};
 
   try {
-    const { tenants } = await fetchTenantsFromApi({ ...search, status: 'deleted' });
-    const marked = tenants.filter(isDeletedTenant);
-    if (marked.length > 0) return marked;
-    // Some BEs return only deleted rows without deleted_at when status=deleted.
+    const res = await superAdminApiClient.get<ApiEnvelope<Tenant[], PaginationMeta>>(
+      TENANT_API.deleted,
+      { params: search },
+    );
+    const tenants = normalizeTenants(res.data?.data ?? res.data);
     if (tenants.length > 0) {
       return tenants.map((tenant) =>
         isDeletedTenant(tenant)
           ? tenant
-          : { ...tenant, deleted_at: tenant.deleted_at || new Date().toISOString(), is_active: false },
+          : {
+              ...tenant,
+              deleted_at: tenant.deleted_at || new Date().toISOString(),
+              is_active: false,
+            },
       );
     }
   } catch {
-    /* try include_deleted */
+    /* fall through */
+  }
+
+  try {
+    const { tenants } = await fetchTenantsFromApi({ ...search, status: 'deleted' });
+    const marked = tenants.filter(isDeletedTenant);
+    if (marked.length > 0) return marked;
+    if (tenants.length > 0) {
+      return tenants.map((tenant) =>
+        isDeletedTenant(tenant)
+          ? tenant
+          : {
+              ...tenant,
+              deleted_at: tenant.deleted_at || new Date().toISOString(),
+              is_active: false,
+            },
+      );
+    }
+  } catch {
+    /* fall through */
   }
 
   try {
@@ -259,6 +283,17 @@ export const tenantService = {
       id: tenant.id || id,
       deleted_at: null,
     };
+  },
+
+  /**
+   * DELETE /tenants/{id}/permanent — irreversible hard-delete (soft-deleted only).
+   * BE returns 409 when related records still exist.
+   */
+  async permanentDelete(id: string): Promise<void> {
+    if (!isUuid(id)) {
+      throw new Error('Invalid tenant id.');
+    }
+    await superAdminApiClient.delete(TENANT_API.permanent(id));
   },
 
   /** PATCH /tenants/{id}/activate */

@@ -1,37 +1,18 @@
-# BE brief: Super Admin Deleted tab (tenants / companies)
+# BE brief: Super Admin Deleted trash (tenants / companies)
 
-## Goal
+## Status
 
-Soft-deleted **tenants** (and their company profiles) must appear on the Super Admin **Deleted** tab on **every device**. FE no longer uses `sessionStorage` / local registries.
+Live OpenAPI now exposes:
 
-## Required
+- `GET /tenants/deleted`
+- `DELETE /tenants/{id}/permanent`
+- Tenant ERP: `GET /companies/deleted`, `POST /companies/{id}/restore`, `DELETE /companies/{id}/permanent`
 
-`GET /tenants` must support listing soft-deleted rows for platform Super Admin, e.g.:
-
-```http
-GET /tenants?status=deleted
-Authorization: Bearer <super_admin_token>
-```
-
-**or**
-
-```http
-GET /tenants?include_deleted=true
-```
-
-(then FE filters `deleted_at != null`).
-
-Restore remains `PATCH /tenants/{id}/restore`. Soft delete remains `DELETE /tenants/{id}`.
+FE Super Admin uses `/tenants/deleted` + restore + permanent for tenants and for platform company profiles (mapped from tenants). Active `GET /tenants` stays `deleted_at: null` only.
 
 ## Acceptance
 
-1. Soft-delete a tenant on device A.
-2. On device B, Super Admin → Tenants → **Deleted** shows that tenant.
-3. Companies → **Deleted** shows that tenant’s company profile (derived from the same tenant list).
-4. Restore removes it from Deleted and returns it to All.
-
-## FE behavior (shipped)
-
-- Deleted tenants: `GET /tenants` with `status=deleted`, fallback `include_deleted` / `with_deleted`.
-- Deleted companies: same deleted tenants mapped to company profiles (platform cannot call ERP `/companies`).
-- No browser storage for deleted rosters.
+1. Soft-delete a tenant → appears on Tenants → **Deleted** on every device.
+2. Restore returns it to All.
+3. Permanent delete removes it; `409` when related data remains.
+4. Companies → **Deleted** shows soft-deleted tenant company profiles; Restore / Permanent map to the linked tenant trash APIs.

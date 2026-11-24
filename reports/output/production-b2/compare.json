@@ -1,0 +1,461 @@
+[
+  {
+    "code": "INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA",
+    "page": {
+      "ref": [
+        594,
+        841.9,
+        1
+      ],
+      "gen": [
+        594,
+        841.9,
+        1
+      ]
+    },
+    "geometry": {
+      "refLines": 265,
+      "genLines": 269,
+      "matchedLines": 265,
+      "refRects": 38,
+      "genRects": 28,
+      "matchedRects": 30
+    },
+    "images": {
+      "ref": [
+        {
+          "x": 27.4,
+          "y": 784.6,
+          "width": 82,
+          "height": 39.6,
+          "class": "logo",
+          "barcode": null
+        }
+      ],
+      "gen": [
+        {
+          "x": 500,
+          "y": 812,
+          "width": 56,
+          "height": 22,
+          "class": "logo",
+          "barcode": null
+        }
+      ]
+    },
+    "fonts": {
+      "ref": {
+        "ArialMT": 107,
+        "Arial-BoldMT": 118,
+        "Consolas": 11
+      },
+      "gen": {
+        "Helvetica": 134,
+        "Helvetica-Bold": 1
+      }
+    },
+    "sharedLabels": 78,
+    "shiftedLabels": [
+      {
+        "text": "1",
+        "dx": -431.1,
+        "dy": 470.9,
+        "ref": [
+          556.4,
+          16.9
+        ],
+        "gen": [
+          125.3,
+          487.8
+        ],
+        "size": [
+          8,
+          7.9
+        ]
+      },
+      {
+        "text": "USD",
+        "dx": 231,
+        "dy": 98.4,
+        "ref": [
+          184.1,
+          487.8
+        ],
+        "gen": [
+          415.1,
+          586.2
+        ],
+        "size": [
+          7.9142,
+          7.9
+        ]
+      }
+    ],
+    "shiftedCount": 2,
+    "probes": {
+      "Northwind Freight LLC": true,
+      "Harbor Steel Co": true,
+      "Gulf Metals Trading": true,
+      "INV-2026-0142": true,
+      "JOB-FE-11-26-0142": true,
+      "SHP-88421": true,
+      "HBL-HOU-4421": true,
+      "MBL-MAEU-9981": true,
+      "MAERSK DENVER": true,
+      "Houston": true,
+      "Jebel Ali": true,
+      "MSCU1234567": true,
+      "Steel valves": true,
+      "8400 KGS": true,
+      "18.4 CBM": true,
+      "1850.00": true,
+      "Ocean freight": true,
+      "First Harbor Bank": true,
+      "FRESA": false,
+      "fresa": false,
+      "Powered": false,
+      "TAX INVOICE": true,
+      "BILL OF LADING": false,
+      "ARRIVAL NOTICE": false
+    },
+    "fresaInGenerated": false,
+    "fresaInReference": true,
+    "raster": {
+      "refPx": [
+        1238,
+        1754
+      ],
+      "genPx": [
+        1238,
+        1754
+      ],
+      "compared": [
+        1238,
+        1754
+      ],
+      "mismatches": 64472,
+      "ratio": 0.0297,
+      "mask": {
+        "x0": 1041,
+        "y0": 16,
+        "x1": 1205,
+        "y1": 63
+      }
+    }
+  },
+  {
+    "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+    "page": {
+      "ref": [
+        595,
+        842,
+        1
+      ],
+      "gen": [
+        595,
+        842,
+        1
+      ]
+    },
+    "geometry": {
+      "refLines": 64,
+      "genLines": 93,
+      "matchedLines": 64,
+      "refRects": 56,
+      "genRects": 0,
+      "matchedRects": 0
+    },
+    "images": {
+      "ref": [
+        {
+          "x": 360,
+          "y": 627,
+          "width": 155.4,
+          "height": 75,
+          "class": "logo",
+          "barcode": null
+        },
+        {
+          "x": 380,
+          "y": 795,
+          "width": 194,
+          "height": 17,
+          "class": "barcode",
+          "barcode": {
+            "symbology": "CODE_128",
+            "payload": "PLMAAJEA00081",
+            "moduleWidth": 0.96,
+            "quietZone": 9.83,
+            "decoded": true
+          }
+        }
+      ],
+      "gen": [
+        {
+          "x": 430,
+          "y": 808,
+          "width": 61,
+          "height": 24,
+          "class": "logo",
+          "barcode": null
+        }
+      ]
+    },
+    "fonts": {
+      "ref": {
+        "Helvetica-Bold": 7,
+        "Helvetica": 40,
+        "RHQBFJ+ArialUnicodeMS": 41
+      },
+      "gen": {
+        "Helvetica": 62,
+        "Helvetica-Bold": 1
+      }
+    },
+    "sharedLabels": 44,
+    "shiftedLabels": [],
+    "shiftedCount": 0,
+    "probes": {
+      "Northwind Freight LLC": true,
+      "Harbor Steel Co": true,
+      "Gulf Metals Trading": true,
+      "INV-2026-0142": false,
+      "JOB-FE-11-26-0142": true,
+      "SHP-88421": false,
+      "HBL-HOU-4421": true,
+      "MBL-MAEU-9981": false,
+      "MAERSK DENVER": true,
+      "Houston": true,
+      "Jebel Ali": true,
+      "MSCU1234567": true,
+      "Steel valves": true,
+      "8400 KGS": true,
+      "18.4 CBM": true,
+      "1850.00": false,
+      "Ocean freight": false,
+      "First Harbor Bank": false,
+      "FRESA": false,
+      "fresa": false,
+      "Powered": false,
+      "TAX INVOICE": false,
+      "BILL OF LADING": true,
+      "ARRIVAL NOTICE": false
+    },
+    "fresaInGenerated": false,
+    "fresaInReference": true,
+    "raster": {
+      "refPx": [
+        1240,
+        1755
+      ],
+      "genPx": [
+        1240,
+        1755
+      ],
+      "compared": [
+        1240,
+        1755
+      ],
+      "mismatches": 38077,
+      "ratio": 0.0175,
+      "mask": {
+        "x0": 895,
+        "y0": 20,
+        "x1": 1084,
+        "y1": 71
+      }
+    }
+  },
+  {
+    "code": "ARRIVAL_NOTICE_REPORT_FORMAT_1_CARGO_ARRIVAL_NOTICE_JASPER",
+    "page": {
+      "ref": [
+        595,
+        842,
+        1
+      ],
+      "gen": [
+        595,
+        842,
+        1
+      ]
+    },
+    "geometry": {
+      "refLines": 328,
+      "genLines": 329,
+      "matchedLines": 328,
+      "refRects": 162,
+      "genRects": 23,
+      "matchedRects": 23
+    },
+    "images": {
+      "ref": [
+        {
+          "x": 21,
+          "y": 742.7,
+          "width": 552,
+          "height": 77.3,
+          "class": "letterhead",
+          "barcode": null
+        },
+        {
+          "x": 350,
+          "y": 211,
+          "width": 220,
+          "height": 35,
+          "class": "barcode",
+          "barcode": {
+            "symbology": "CODE_128",
+            "payload": "PLJEAMAA00001 / 16-JAN-19",
+            "moduleWidth": 0.48,
+            "quietZone": 6.72,
+            "decoded": true
+          }
+        }
+      ],
+      "gen": [
+        {
+          "x": 430,
+          "y": 800,
+          "width": 61,
+          "height": 24,
+          "class": "logo",
+          "barcode": null
+        }
+      ]
+    },
+    "fonts": {
+      "ref": {
+        "Helvetica-Bold": 34,
+        "NODUGB+ArialUnicodeMS": 66,
+        "Helvetica": 26
+      },
+      "gen": {
+        "Helvetica-Bold": 2,
+        "Helvetica": 91
+      }
+    },
+    "sharedLabels": 65,
+    "shiftedLabels": [
+      {
+        "text": "1. Kindly contact our Imports Department/Customer Service fo",
+        "dx": 8.9,
+        "dy": 0,
+        "ref": [
+          23,
+          308.7
+        ],
+        "gen": [
+          31.9,
+          308.7
+        ],
+        "size": [
+          8,
+          8
+        ]
+      },
+      {
+        "text": "4. Partial Payments are not acceptable.",
+        "dx": 8.9,
+        "dy": 0,
+        "ref": [
+          23,
+          276.6
+        ],
+        "gen": [
+          31.9,
+          276.6
+        ],
+        "size": [
+          8,
+          8
+        ]
+      },
+      {
+        "text": "6. After Free days storage charges applicable",
+        "dx": 8.9,
+        "dy": 0,
+        "ref": [
+          23,
+          255.1
+        ],
+        "gen": [
+          31.9,
+          255.1
+        ],
+        "size": [
+          8,
+          8
+        ]
+      },
+      {
+        "text": "of 1",
+        "dx": 1.9,
+        "dy": 0,
+        "ref": [
+          538,
+          23.2
+        ],
+        "gen": [
+          539.9,
+          23.2
+        ],
+        "size": [
+          7,
+          7
+        ]
+      }
+    ],
+    "shiftedCount": 4,
+    "probes": {
+      "Northwind Freight LLC": true,
+      "Harbor Steel Co": true,
+      "Gulf Metals Trading": true,
+      "INV-2026-0142": false,
+      "JOB-FE-11-26-0142": false,
+      "SHP-88421": true,
+      "HBL-HOU-4421": true,
+      "MBL-MAEU-9981": true,
+      "MAERSK DENVER": true,
+      "Houston": true,
+      "Jebel Ali": true,
+      "MSCU1234567": true,
+      "Steel valves": true,
+      "8400 KGS": true,
+      "18.4 CBM": true,
+      "1850.00": true,
+      "Ocean freight": true,
+      "First Harbor Bank": false,
+      "FRESA": false,
+      "fresa": false,
+      "Powered": false,
+      "TAX INVOICE": false,
+      "BILL OF LADING": false,
+      "ARRIVAL NOTICE": true
+    },
+    "fresaInGenerated": false,
+    "fresaInReference": true,
+    "raster": {
+      "refPx": [
+        1240,
+        1755
+      ],
+      "genPx": [
+        1240,
+        1755
+      ],
+      "compared": [
+        1240,
+        1755
+      ],
+      "mismatches": 65483,
+      "ratio": 0.0301,
+      "mask": {
+        "x0": 895,
+        "y0": 37,
+        "x1": 1084,
+        "y1": 88
+      }
+    }
+  }
+]

@@ -11,6 +11,7 @@ interface TenantActionMenuProps {
   onDeactivate: (t: Tenant) => void;
   onDelete: (t: Tenant) => void;
   onRestore: (t: Tenant) => void;
+  onPermanentDelete?: (t: Tenant) => void;
 }
 
 export function TenantActionMenu({
@@ -22,6 +23,7 @@ export function TenantActionMenu({
   onDeactivate,
   onDelete,
   onRestore,
+  onPermanentDelete,
 }: TenantActionMenuProps) {
   const isDeleted = !!tenant.deleted_at;
 
@@ -68,14 +70,27 @@ export function TenantActionMenu({
               />
             ))}
           {isDeleted ? (
-            <MenuItem
-              label="Restore"
-              icon={<RotateCcw className="h-3.5 w-3.5" />}
-              onClick={() => {
-                close();
-                onRestore(tenant);
-              }}
-            />
+            <>
+              <MenuItem
+                label="Restore"
+                icon={<RotateCcw className="h-3.5 w-3.5" />}
+                onClick={() => {
+                  close();
+                  onRestore(tenant);
+                }}
+              />
+              {onPermanentDelete ? (
+                <MenuItem
+                  label="Delete permanently"
+                  icon={<Trash2 className="h-3.5 w-3.5" />}
+                  danger
+                  onClick={() => {
+                    close();
+                    onPermanentDelete(tenant);
+                  }}
+                />
+              ) : null}
+            </>
           ) : (
             <MenuItem
               label="Delete"

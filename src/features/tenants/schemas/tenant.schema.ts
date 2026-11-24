@@ -21,6 +21,7 @@ import {
 
 export const SUBSCRIPTION_PLANS = [
   'TRIAL',
+  'DEVELOPER',
   'BASIC',
   'STANDARD',
   'PROFESSIONAL',

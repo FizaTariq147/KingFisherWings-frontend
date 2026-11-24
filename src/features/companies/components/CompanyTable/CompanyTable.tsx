@@ -25,6 +25,8 @@ interface CompanyTableProps {
   onDelete: (c: CompanyListItem) => void;
   onActivate?: (c: CompanyListItem) => void;
   onDeactivate?: (c: CompanyListItem) => void;
+  onRestore?: (c: CompanyListItem) => void;
+  onPermanentDelete?: (c: CompanyListItem) => void;
   onContinueSetup?: (c: CompanyListItem) => void;
   detailPath: (id: string) => string;
 }
@@ -41,6 +43,8 @@ export function CompanyTable({
   onDelete,
   onActivate,
   onDeactivate,
+  onRestore,
+  onPermanentDelete,
   onContinueSetup,
   detailPath,
 }: CompanyTableProps) {
@@ -113,6 +117,8 @@ export function CompanyTable({
                       onDelete={onDelete}
                       onActivate={onActivate}
                       onDeactivate={onDeactivate}
+                      onRestore={onRestore}
+                      onPermanentDelete={onPermanentDelete}
                     />
                   </div>
                 ) : (
@@ -124,6 +130,8 @@ export function CompanyTable({
                     onDelete={onDelete}
                     onActivate={onActivate}
                     onDeactivate={onDeactivate}
+                    onRestore={onRestore}
+                    onPermanentDelete={onPermanentDelete}
                   />
                 )}
               </TableCell>

@@ -18,6 +18,7 @@ import {
   useDeactivateTenant,
   useDeleteTenant,
   useRestoreTenant,
+  usePermanentDeleteTenant,
   useSyncTenantPermissions,
 } from '../hooks/useTenants';
 import { formatTenantLabel, formatTenantSlug } from '../utils/formatTenantSlug';
@@ -47,6 +48,7 @@ export default function TenantDetailPage() {
   const deactivate = useDeactivateTenant();
   const del = useDeleteTenant();
   const restore = useRestoreTenant();
+  const permanentDelete = usePermanentDeleteTenant();
   const syncPermissions = useSyncTenantPermissions();
   const { confirm, requestConfirm, closeConfirm } = useTenantConfirmState();
   const [actionError, setActionError] = useState<string | null>(null);
@@ -146,6 +148,11 @@ export default function TenantDetailPage() {
             onClick: () => runAction(() => activate.mutateAsync(id!)),
             variant: 'primary' as const,
           },
+    isDeleted && {
+      label: 'Delete permanently',
+      onClick: () => requestConfirm('permanent', tenant),
+      variant: 'danger' as const,
+    },
     !isDeleted && {
       label: 'Delete',
       onClick: () => requestConfirm('delete', tenant),
@@ -167,10 +174,15 @@ export default function TenantDetailPage() {
           }
         : confirm.action === 'deactivate'
           ? () => deactivate.mutateAsync(id)
-          : async () => {
-              await restore.mutateAsync(id);
-              navigate('/superadmin/tenants');
-            };
+          : confirm.action === 'permanent'
+            ? async () => {
+                await permanentDelete.mutateAsync(id);
+                navigate('/superadmin/tenants');
+              }
+            : async () => {
+                await restore.mutateAsync(id);
+                navigate('/superadmin/tenants');
+              };
     runAction(mutation);
   };
 

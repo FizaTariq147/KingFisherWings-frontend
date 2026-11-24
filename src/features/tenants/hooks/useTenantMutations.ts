@@ -46,6 +46,11 @@ export function useTenantMutations() {
     onSuccess: (_, id) => invalidate(id),
   });
 
+  const permanentDeleteTenant = useMutation({
+    mutationFn: (id: string) => tenantService.permanentDelete(id),
+    onSuccess: (_, id) => invalidate(id),
+  });
+
   const activateTenant = useMutation({
     mutationFn: (id: string) => tenantService.activate(id),
     onSuccess: (_, id) => invalidate(id),
@@ -61,6 +66,7 @@ export function useTenantMutations() {
     updateTenant,
     deleteTenant,
     restoreTenant,
+    permanentDeleteTenant,
     activateTenant,
     deactivateTenant,
   };
@@ -100,6 +106,11 @@ export function useDeleteTenant() {
 export function useRestoreTenant() {
   const { restoreTenant } = useTenantMutations();
   return restoreTenant;
+}
+
+export function usePermanentDeleteTenant() {
+  const { permanentDeleteTenant } = useTenantMutations();
+  return permanentDeleteTenant;
 }
 
 export function useSyncTenantPermissions() {

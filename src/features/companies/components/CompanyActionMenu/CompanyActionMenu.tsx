@@ -1,4 +1,4 @@
-import { Eye, Pencil, Power, PowerOff, Trash2 } from 'lucide-react';
+import { Eye, Pencil, Power, PowerOff, RotateCcw, Trash2 } from 'lucide-react';
 import { KebabMenu, MenuItem } from '@/components/ui/KebabMenu';
 import type { CompanyListItem } from '../../utils/mergeDraftCompanies';
 
@@ -10,6 +10,8 @@ interface CompanyActionMenuProps {
   onDelete: (c: CompanyListItem) => void;
   onActivate?: (c: CompanyListItem) => void;
   onDeactivate?: (c: CompanyListItem) => void;
+  onRestore?: (c: CompanyListItem) => void;
+  onPermanentDelete?: (c: CompanyListItem) => void;
 }
 
 export function CompanyActionMenu({
@@ -20,12 +22,14 @@ export function CompanyActionMenu({
   onDelete,
   onActivate,
   onDeactivate,
+  onRestore,
+  onPermanentDelete,
 }: CompanyActionMenuProps) {
   const isDeleted = !!company.deleted_at;
   const isActive = company.is_active !== false;
 
   return (
-    <KebabMenu disabled={disabled} menuClassName="w-44" aria-label="Company actions">
+    <KebabMenu disabled={disabled} menuClassName="w-48" aria-label="Company actions">
       {(close) => (
         <>
           <MenuItem
@@ -66,6 +70,27 @@ export function CompanyActionMenu({
               }}
             />
           )}
+          {isDeleted && onRestore ? (
+            <MenuItem
+              label="Restore"
+              icon={<RotateCcw className="h-3.5 w-3.5" />}
+              onClick={() => {
+                close();
+                onRestore(company);
+              }}
+            />
+          ) : null}
+          {isDeleted && onPermanentDelete ? (
+            <MenuItem
+              label="Delete permanently"
+              icon={<Trash2 className="h-3.5 w-3.5" />}
+              danger
+              onClick={() => {
+                close();
+                onPermanentDelete(company);
+              }}
+            />
+          ) : null}
           {!isDeleted && (
             <MenuItem
               label="Delete"
