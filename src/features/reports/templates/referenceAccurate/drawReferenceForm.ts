@@ -2,6 +2,7 @@ import { PDFDocument, StandardFonts, rgb, type PDFFont, type PDFPage } from 'pdf
 import { isFresaIdentityText } from '../official/officialBranding';
 import type { OfficialMeasuredFace } from '../official/officialFace.types';
 import type { InvoiceFormatPdfData } from '../../utils/invoiceFormatToInvoicePdfModel';
+import { code128BitString } from './code128Vector';
 
 export type PlacedText = {
   text: string;
@@ -9,6 +10,16 @@ export type PlacedText = {
   y: number;
   size: number;
   bold?: boolean;
+  /** Numeric columns. Uses Courier so the digits stay monospaced. */
+  mono?: boolean;
+};
+
+export type ReferenceBarcodeBox = {
+  value: string;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 };
 
 function ink(r = 20, g = 20, b = 24) {
@@ -52,6 +63,7 @@ function drawPlaced(
   item: PlacedText,
   font: PDFFont,
   fontBold: PDFFont,
+  fontMono: PDFFont,
 ): void {
   const text = pdfSafe(item.text).slice(0, 180);
   if (!text || isFresaIdentityText(text)) return;
@@ -59,7 +71,7 @@ function drawPlaced(
     x: item.x,
     y: item.y,
     size: item.size,
-    font: item.bold ? fontBold : font,
+    font: item.mono ? fontMono : item.bold ? fontBold : font,
     color: rgb(0.05, 0.05, 0.08),
   });
 }
@@ -76,11 +88,19 @@ export async function drawReferenceFormPdf(options: {
   letterhead?: PlacedText[];
   logoUrl?: string;
   logoBox?: { x: number; y: number; maxWidth: number; maxHeight: number };
+  /** Per-template title weight. Does not change faces that omit it. */
+  headingBold?: (text: string, size: number) => boolean;
+  /** Per-template label x correction. Does not rewrite the measured face. */
+  labelX?: (text: string, x: number) => number;
+  /** Live CODE_128. Drawn as black vectors, never from a sample image. */
+  barcode?: ReferenceBarcodeBox;
 }): Promise<Uint8Array> {
-  const { face, keepLabel, fields, letterhead, logoUrl, logoBox } = options;
+  const { face, keepLabel, fields, letterhead, logoUrl, logoBox, headingBold, labelX, barcode } = options;
   const pdf = await PDFDocument.create();
   const font = await pdf.embedFont(StandardFonts.Helvetica);
   const fontBold = await pdf.embedFont(StandardFonts.HelveticaBold);
+  const needsMono = [...(letterhead || []), ...fields].some((item) => item.mono);
+  const fontMono = needsMono ? await pdf.embedFont(StandardFonts.Courier) : font;
   const page = pdf.addPage([face.widthPt, face.heightPt]);
   const facePage = face.pages[0];
   const pageArea = face.widthPt * face.heightPt;
@@ -91,6 +111,9 @@ export async function drawReferenceFormPdf(options: {
       if (w < 0.4 || h < 0.4) continue;
       if (w * h > pageArea * 0.9) continue;
       if (kind === 1) {
+        // Black face fills stay omitted. On these samples they are fragments of
+        // the pinned barcode, not the table. Near-white header bands are RGB 245
+        // and stay, because only values above 245 are treated as blank paper.
         if (r < 40 && g < 40 && b < 40) continue;
         if (r > 245 && g > 245 && b > 245) continue;
         page.drawRectangle({ x, y, width: w, height: h, color: ink(r, g, b) });
@@ -122,26 +145,56 @@ export async function drawReferenceFormPdf(options: {
     for (const run of facePage.texts) {
       const text = plainLabel(run[0] || '').replace(/[\u2013\u2014]/g, '-');
       if (!text || isFresaIdentityText(text) || !keepLabel(text)) continue;
+      const size = Math.max(6, Math.min(run[3] || 8, 16));
       drawPlaced(
         page,
         {
           text,
-          x: run[1],
+          x: labelX ? labelX(text, run[1]) : run[1],
           y: run[2],
-          size: Math.max(6, Math.min(run[3] || 8, 16)),
-          bold: Boolean(run[4]),
+          size,
+          bold: Boolean(run[4]) || Boolean(headingBold?.(text, size)),
         },
         font,
         fontBold,
+        fontMono,
       );
     }
   }
 
-  for (const item of letterhead || []) drawPlaced(page, item, font, fontBold);
+  for (const item of letterhead || []) drawPlaced(page, item, font, fontBold, fontMono);
   await drawLogo(pdf, page, logoUrl, logoBox);
-  for (const item of fields) drawPlaced(page, item, font, fontBold);
+  drawCode128(page, barcode);
+  for (const item of fields) drawPlaced(page, item, font, fontBold, fontMono);
 
   return pdf.save();
+}
+
+/** Quiet zone stays inside the target box so the bars do not grow past it. */
+const BARCODE_QUIET_MODULES = 10;
+
+function drawCode128(page: PDFPage, box: ReferenceBarcodeBox | undefined): void {
+  if (!box || box.width < 1 || box.height < 1 || /fresa/i.test(box.value)) return;
+  const bits = code128BitString(box.value);
+  if (!bits) return;
+  const padded = `${'0'.repeat(BARCODE_QUIET_MODULES)}${bits}${'0'.repeat(BARCODE_QUIET_MODULES)}`;
+  const moduleWidth = box.width / padded.length;
+  let index = 0;
+  while (index < padded.length) {
+    if (padded[index] !== '1') {
+      index += 1;
+      continue;
+    }
+    const start = index;
+    while (index < padded.length && padded[index] === '1') index += 1;
+    page.drawRectangle({
+      x: box.x + start * moduleWidth,
+      y: box.y,
+      width: (index - start) * moduleWidth,
+      height: box.height,
+      color: rgb(0, 0, 0),
+    });
+  }
 }
 
 async function drawLogo(

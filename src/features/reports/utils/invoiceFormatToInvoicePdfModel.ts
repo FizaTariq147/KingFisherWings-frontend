@@ -12,6 +12,15 @@ export type InvoiceFormatPdfLine = {
   currency?: string;
   /** Present only when the charge or invoice line carries a tax amount. */
   taxAmount?: string;
+  /** India tax-invoice columns. Omitted when the charge has no value. */
+  sac?: string;
+  taxable?: string;
+  sgstRate?: string;
+  sgstAmount?: string;
+  cgstRate?: string;
+  cgstAmount?: string;
+  igstRate?: string;
+  igstAmount?: string;
 };
 
 export type InvoiceFormatPdfData = {

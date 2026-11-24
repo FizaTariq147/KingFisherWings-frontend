@@ -79,6 +79,21 @@ export function keepInvoiceIndiaLabel(text: string): boolean {
   return LABELS.has(text);
 }
 
+/** Sample title is Arial Bold. The measured face stores bold as 0. */
+export function invoiceHeadingBold(text: string): boolean {
+  return text === 'TAX INVOICE';
+}
+
+function numeric(text: string, x: number, y: number, size = 7.9): PlacedText {
+  return { text, x, y, size, mono: Boolean(text.trim()) };
+}
+
+/** Courier is 0.6 em wide. Right edge keeps a value inside its column. */
+function numericEnd(text: string, right: number, y: number, size = 7.9): PlacedText {
+  const width = text.trim().length * size * 0.6;
+  return numeric(text, text.trim() ? right - width : right, y, size);
+}
+
 export function invoiceIndiaFields(data: InvoiceFormatPdfData): PlacedText[] {
   const bill = data.billToName
     ? [data.billToName, ...(data.consigneeLines || []).filter((line) => line !== data.billToName)]
@@ -92,10 +107,18 @@ export function invoiceIndiaFields(data: InvoiceFormatPdfData): PlacedText[] {
     const y = 487.8 - index * 16;
     chargeFields.push(
       { text: line.description || '', x: 18.9, y, size: 7.9 },
-      { text: line.qty || '', x: 125.3, y, size: 7.9 },
-      { text: line.rate || '', x: 145.6, y, size: 7.9 },
+      numeric(line.sac || '', 89.4, y),
+      numeric(line.qty || '', 125.3, y),
+      numeric(line.rate || '', 145.6, y),
       { text: data.currencyCode || '', x: 184.1, y, size: 7.9 },
-      { text: line.amount || '', x: 520, y, size: 7.9 },
+      numeric(line.taxable || '', 291.3, y),
+      numeric(line.sgstRate || '', 363.4, y),
+      numericEnd(line.sgstAmount || '', 417, y),
+      numeric(line.cgstRate || '', 419.7, y),
+      numericEnd(line.cgstAmount || '', 474, y),
+      numeric(line.igstRate || '', 476.3, y),
+      numericEnd(line.igstAmount || '', 536, y),
+      numeric(line.amount || '', 542.4, y),
     );
   });
   return [
@@ -124,14 +147,14 @@ export function invoiceIndiaFields(data: InvoiceFormatPdfData): PlacedText[] {
     { text: data.grossWeight || cargo[3] || '', x: 381.4, y: 541, size: 7.9 },
     { text: data.measurement || cargo[4] || '', x: 455.1, y: 541, size: 7.9 },
     ...chargeFields,
-    { text: data.total || '', x: 520, y: 348.8, size: 8.5 },
-    { text: data.tax || '', x: 552.6, y: 372.5, size: 7.9 },
+    numeric(data.total || '', 542.4, 348.8, 8.5),
+    numeric(data.tax || '', 552.6, 372.5),
     { text: 'Beneficiary Name:', x: 16.6, y: 269.1, size: 7.9 },
     { text: data.bankAccountName || '', x: 110, y: 269.1, size: 7.9 },
     { text: data.bankName || '', x: 90, y: 259.4, size: 7.9 },
-    { text: data.bankAccountNumber || '', x: 90, y: 249.8, size: 7.9 },
-    { text: data.bankIban || '', x: 90, y: 240.2, size: 7.9 },
-    { text: data.bankSwift || '', x: 90, y: 230.6, size: 7.9 },
+    numeric(data.bankAccountNumber || '', 90, 249.8),
+    numeric(data.bankIban || '', 90, 240.2),
+    numeric(data.bankSwift || '', 90, 230.6),
     { text: pdfSafe(TERMS[0]), x: 16.6, y: 319.9, size: 7.9 },
     { text: pdfSafe(TERMS[1]), x: 16.6, y: 303, size: 7.9 },
   ];

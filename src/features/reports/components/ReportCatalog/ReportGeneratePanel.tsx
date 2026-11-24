@@ -67,6 +67,9 @@ import { reportsCatalogueGate, reportsEngine } from '../../engine/reportsEngine'
 import { FORMAT_NOT_AVAILABLE_YET, reportsCodeGenerateBlocked, shouldUseInvoiceV2 } from '../../engine/invoiceV2Gate';
 import { reportConformanceStatus } from '../../utils/reportConformanceStatus';
 import { invoiceV2SpecCodes } from '../../engine/invoiceV2Codes';
+import { isClientFlowInvoiceCode } from '../../flow/invoiceFlowOptions';
+import { loadInvoiceFlowRecord } from '../../flow/loadInvoiceFlowRecord';
+import { renderInvoiceFlowPdf } from '../../flow/renderInvoiceFlowPdf';
 import { InvoiceV2Preview } from './InvoiceV2Preview';
 
 type ReportGeneratePanelProps = {
@@ -284,6 +287,30 @@ export function ReportGeneratePanel({
     const contextIds = mergeReportContextIds(context, params);
     const entityBound = hasReportEntityContext(contextIds);
     const packReady = isReportPackReady(resolved);
+
+    if (format === 'PDF' && isClientFlowInvoiceCode(resolved.code)) {
+      setClientGenerating(true);
+      try {
+        const record = await loadInvoiceFlowRecord(contextIds);
+        const blob = await renderInvoiceFlowPdf(record);
+        const fileName = formatPdfFilename(resolved.code, 'report-format');
+        setPdfReadyName(fileName);
+        setPdfReadyBlob(blob);
+        setPdfReadyUrl(null);
+        setPdfReadyOpen(true);
+        setJobId(null);
+        setMessage(
+          entityBound
+            ? 'PDF ready from this job or invoice. Empty fields were left blank.'
+            : 'PDF ready from the organization profile. No job or invoice was selected, so those fields are blank.',
+        );
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Could not build the flow PDF.');
+      } finally {
+        setClientGenerating(false);
+      }
+      return;
+    }
 
     if (format === 'XLSX' && resolved.code === ACTIVITY_COMPLETED_JOBS_CODE) {
       setClientGenerating(true);
@@ -647,17 +674,20 @@ export function ReportGeneratePanel({
       entityBound: entityBoundForUi,
       hasOfficialSample: officialSampleForUi,
     });
-  const v2HardBlocked = reportsCodeGenerateBlocked({
-    gate: reportsCatalogueGate(),
-    engine: reportsEngine(),
-    code: resolved.code,
-    status: reportConformanceStatus(resolved.code),
-  });
+  const flowClientPdf = format === 'PDF' && isClientFlowInvoiceCode(resolved.code);
+  const v2HardBlocked =
+    !flowClientPdf &&
+    reportsCodeGenerateBlocked({
+      gate: reportsCatalogueGate(),
+      engine: reportsEngine(),
+      code: resolved.code,
+      status: reportConformanceStatus(resolved.code),
+    });
   const generateBlocked =
     busy ||
     detail.isLoading ||
     v2HardBlocked ||
-    (!packReadyForGenerate && !canClientLayoutPdf);
+    (!flowClientPdf && !packReadyForGenerate && !canClientLayoutPdf);
 
   const rendererStatus = reportRendererStatus(resolved);
   const activateLikely = canActivateReportTemplate(resolved);
@@ -712,6 +742,13 @@ export function ReportGeneratePanel({
         <p className="text-xs font-semibold text-amber-800">{FORMAT_NOT_AVAILABLE_YET}</p>
       ) : null}
 
+      {flowClientPdf ? (
+        <p className="text-xs text-[var(--color-neutral-600)]">
+          Generate builds this PDF in the browser from the open job or invoice. A missing backend
+          template does not block it.
+        </p>
+      ) : null}
+
       {isInvoiceFormat &&
       invoiceV2SpecCodes.has(resolved.code) &&
       !v2HardBlocked &&
@@ -748,7 +785,7 @@ export function ReportGeneratePanel({
         <p className="text-xs text-[var(--color-neutral-500)]">Loading parameter schema…</p>
       ) : null}
 
-      {detailFailed ? (
+      {detailFailed && !flowClientPdf ? (
         <div
           role="status"
           className="rounded-md border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900"

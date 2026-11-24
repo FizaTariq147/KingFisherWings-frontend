@@ -48,6 +48,11 @@ export function keepHblJasperLabel(text: string): boolean {
   return LABELS.has(text);
 }
 
+/** The sample title is Helvetica Bold. The measured face stores bold as 0. */
+export function hblHeadingBold(text: string, size: number): boolean {
+  return text === 'BILL OF LADING' && size >= 10;
+}
+
 /** Carrier clauses copied from the reference text layer, including its original spelling. */
 const HBL_LEGAL: Array<{ text: string; y: number }> = [
   { y: 110.8, text: 'RECEIVED by the Carrier the Goods as specified above in appearent good order and' },

@@ -118,6 +118,12 @@ export function flowInvoiceOptions(code: string): FlowInvoiceOptions | null {
   return FLOW_INVOICE_OPTIONS[key] || null;
 }
 
+/** Catalogue PDF can be built in the browser. Staging-only codes stay out. */
+export function isClientFlowInvoiceCode(code: string): boolean {
+  const options = flowInvoiceOptions(code);
+  return Boolean(options && !options.stagingOnly);
+}
+
 export function resolveChargeColumns(options: FlowInvoiceOptions | null | undefined): string[] {
   const columns = options?.columns;
   if (Array.isArray(columns)) return columns;

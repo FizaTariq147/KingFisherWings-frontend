@@ -792,3 +792,7 @@ No threshold/mask/status/signoff changes. Classic generators untouched. No new t
 - `build-status` now includes flow option codes (remain `reference_only` until a real sign-off). Committed `status.json` has 0 accepted.
 - Kill switch: `VITE_REPORTS_ENGINE` unset/legacy. Fallback notice tested. Docs: `STAGING_TEST.md`, `ROLLBACK.md`, RELEASE_NOTES kill switch section.
 - Quotation screen vs flow: 0 shown-but-blank after binding commodity/department/status/shipment/job. Client pack under `reports/client-pack/`.
+
+## Catalogue spec draw
+
+Generate on the catalogue now asks the dev spec renderer (`/__reports/invoice-v2` → `renderSpec`) for any code that is not already a dedicated measured face, before the shared JSON shell. The spec file supplies page size, lines, and labels. The open record supplies values. FRESA demo identity stays blank. A missing spec falls through. This is not a sign-off. Raster match is still not exact: substitute fonts, empty logo slots, and unbound spans. 545 catalogue codes have no pinned file. Nothing is accepted.
