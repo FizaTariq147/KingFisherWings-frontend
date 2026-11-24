@@ -18,12 +18,15 @@ export const purchaseInvoiceKeys = {
   paymentProofs: (id: string) => [...purchaseInvoiceKeys.all, 'payment-proofs', id] as const,
 };
 
-export function usePurchaseInvoices(params: PurchaseInvoiceListParams) {
+export function usePurchaseInvoices(
+  params: PurchaseInvoiceListParams,
+  options?: { enabled?: boolean },
+) {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: purchaseInvoiceKeys.list(params),
     queryFn: () => purchaseInvoiceService.list(params),
-    enabled: Boolean(accessToken),
+    enabled: Boolean(accessToken) && options?.enabled !== false,
     placeholderData: keepPreviousData,
     staleTime: 30_000,
   });

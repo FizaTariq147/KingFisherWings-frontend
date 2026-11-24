@@ -333,13 +333,14 @@ function SidebarBrand({
   collapsed: boolean;
   product?: string;
 }) {
+  // Org profile logo_url → same asset invoices embed via fetchOrganizationLogoBytes.
   const logoSrc = useBrandLogoUrl();
   if (collapsed) {
     return (
       <div className="flex justify-center border-b border-white/8 px-2 py-3">
         <BrandLogo
           logoUrl={logoSrc}
-          alt="KingFisher Wings"
+          alt="Company logo"
           className="h-9 w-9 rounded-lg object-contain"
         />
       </div>
@@ -351,7 +352,7 @@ function SidebarBrand({
       <div className="flex items-start gap-3">
         <BrandLogo
           logoUrl={logoSrc}
-          alt="KingFisher Wings"
+          alt="Company logo"
           className="h-10 w-10 shrink-0 rounded-xl bg-white object-contain p-1"
         />
         <div className="min-w-0 flex-1">

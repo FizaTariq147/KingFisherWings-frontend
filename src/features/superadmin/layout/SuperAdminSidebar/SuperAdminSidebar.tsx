@@ -13,6 +13,7 @@ import {
   Settings,
   ScrollText,
 } from 'lucide-react';
+import { BrandLogo } from '@/features/branding/components/BrandLogo';
 
 const NAV_ITEMS = [
   { to: '/superadmin/dashboard', label: 'Dashboard', icon: LayoutDashboard, enabled: true },
@@ -29,9 +30,16 @@ const NAV_ITEMS = [
 export function SuperAdminSidebar() {
   return (
     <aside className="w-60 bg-slate-900 text-slate-100 flex flex-col shrink-0">
-      <div className="px-5 py-5 border-b border-slate-800">
-        <p className="text-xs uppercase tracking-widest text-slate-500">KINGFISHER WINGS LOGISTIC</p>
-        <p className="text-sm font-semibold text-amber-400">Platform Admin</p>
+      <div className="px-5 py-5 border-b border-slate-800 space-y-3">
+        <BrandLogo
+          systemOnly
+          alt="King Fisher Technologies"
+          className="h-10 w-auto max-w-full object-contain"
+        />
+        <div>
+          <p className="text-xs uppercase tracking-widest text-slate-500">KINGFISHER WINGS LOGISTIC</p>
+          <p className="text-sm font-semibold text-amber-400">Platform Admin</p>
+        </div>
       </div>
       <nav className="flex-1 px-3 py-4 space-y-1">
         {NAV_ITEMS.map((item) => (

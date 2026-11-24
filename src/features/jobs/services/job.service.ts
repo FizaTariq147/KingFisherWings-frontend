@@ -9,6 +9,8 @@ import { JOB_API } from '../api/job.api';
 import {
   normalizeAirUldRequest,
   normalizeDeliveryAcknowledgement,
+  normalizeJobAcknowledgementView,
+  pickAcknowledgementFromView,
   normalizeJob,
   normalizeJobCharges,
   normalizeJobPnl,
@@ -58,7 +60,13 @@ import {
   isOpsUnrestrictedRole,
   resolveAuthRoleSlug,
 } from '@/features/users/constants/userPermissions';
-import { resolveJobDocumentFileUrl } from '../utils/resolveJobDocumentFileUrl';
+import { filesService } from '@/features/files/services/files.service';
+import { parseFilesApiUrl } from '@/features/files/utils/parseFilesApiUrl';
+import { isApiOriginUrl, isSafeHttpUrl } from '@/lib/safeHttpUrl';
+import {
+  resolveJobDocumentFileUrl,
+  resolveJobDocumentFileUrlCandidates,
+} from '../utils/resolveJobDocumentFileUrl';
 import { sanitizeModeBookingFormPut } from '../utils/sanitizeModeBookingFormPut';
 import {
   emptyJobTrackingProfile,
@@ -117,6 +125,7 @@ import type {
   CreatePaymentRequestFromJobDto,
   CreateProofOfDeliveryDto,
   DeliveryAcknowledgement,
+  JobAcknowledgementView,
   SendDeliveryAcknowledgementDto,
   CreateStuffingRecordDto,
   CreateSubJobDto,
@@ -261,6 +270,112 @@ function formatAxiosError(error: unknown): Error {
 
 function assertId(id: string): void {
   if (!id || !isUuid(id)) throw new Error('Invalid job id.');
+}
+
+async function readBlobErrorMessage(data: unknown): Promise<string | null> {
+  if (!(data instanceof Blob) || data.size === 0 || data.size > 8192) return null;
+  try {
+    const text = (await data.text()).trim();
+    if (!text) return null;
+    if (text.startsWith('{') || text.startsWith('[')) {
+      const parsed = JSON.parse(text) as {
+        message?: string | string[];
+        error?: string;
+        detail?: string;
+      };
+      if (Array.isArray(parsed.message)) {
+        return parsed.message.map(String).filter(Boolean).join('; ') || null;
+      }
+      const msg =
+        (typeof parsed.message === 'string' && parsed.message) ||
+        (typeof parsed.error === 'string' && parsed.error) ||
+        (typeof parsed.detail === 'string' && parsed.detail) ||
+        '';
+      return msg.trim() || null;
+    }
+    return text.length < 300 ? text : null;
+  } catch {
+    return null;
+  }
+}
+
+async function assertUsableFileBlob(blob: Blob): Promise<Blob> {
+  if (!(blob instanceof Blob) || blob.size < 24) {
+    throw new Error('Download returned an empty file.');
+  }
+  const type = (blob.type || '').toLowerCase();
+  if (/json|text\/html|text\/plain/.test(type) && blob.size < 8192) {
+    const msg = await readBlobErrorMessage(blob);
+    throw new Error(msg || 'Download failed.');
+  }
+  // Some gateways return JSON errors as application/octet-stream.
+  if (blob.size < 8192) {
+    const head = (await blob.slice(0, 1).text()).trim();
+    if (head.startsWith('{') || head.startsWith('<')) {
+      const msg = await readBlobErrorMessage(blob);
+      if (msg) throw new Error(msg);
+    }
+  }
+  return blob;
+}
+
+/**
+ * Ack multipart: Swagger accepts `file` (single) or `files` (multi).
+ * Never append both — Multer File(s)Interceptor rejects the other as Unexpected field.
+ */
+function appendAcknowledgementMultipartFiles(form: FormData, files: File[]): void {
+  if (files.length === 1) {
+    form.append('file', files[0], files[0].name);
+    return;
+  }
+  for (const f of files) {
+    form.append('files', f, f.name);
+  }
+}
+
+async function getAcknowledgementBinaryBlob(path: string): Promise<Blob> {
+  try {
+    const res = await withGatewayRetry(() =>
+      axiosInstance.get<Blob>(path, {
+        responseType: 'blob',
+        skipErrorToast: true,
+      } as Parameters<typeof axiosInstance.get>[1]),
+    );
+    const blob =
+      res.data instanceof Blob ? res.data : new Blob([res.data as BlobPart]);
+    return assertUsableFileBlob(blob);
+  } catch (error) {
+    const axiosErr = error as { response?: { data?: unknown; status?: number } };
+    const fromBlob = await readBlobErrorMessage(axiosErr.response?.data);
+    if (fromBlob) throw new Error(fromBlob);
+    throw formatAxiosError(error);
+  }
+}
+
+async function fetchAcknowledgementUrlBlob(url: string): Promise<Blob | null> {
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+
+  const parsed = parseFilesApiUrl(trimmed);
+  if (parsed) {
+    const blob = await filesService.downloadBlob({
+      tenantId: parsed.tenantId,
+      filename: parsed.filename,
+    });
+    return assertUsableFileBlob(blob);
+  }
+
+  // Relative job/API download paths (Bearer via axios).
+  if (trimmed.startsWith('/') && !trimmed.startsWith('//')) {
+    return getAcknowledgementBinaryBlob(trimmed);
+  }
+
+  if (isSafeHttpUrl(trimmed) && isApiOriginUrl(trimmed)) {
+    return getAcknowledgementBinaryBlob(trimmed);
+  }
+
+  // Expired / private R2 URLs are not usable from the browser without CORS.
+  return null;
 }
 
 /** Backend-allowed by-category keys (must match API enum). */
@@ -2331,23 +2446,49 @@ export const jobService = {
     }
   },
 
-  /** GET /jobs/:id/detail/acknowledgement */
-  async getAcknowledgement(id: string): Promise<DeliveryAcknowledgement> {
+  /**
+   * GET /jobs/:id/detail/acknowledgement — full envelope
+   * (`containers[]` with nested acknowledgement, or job-level when no containers).
+   * Pass `container_id` when BE should return a single scoped row.
+   */
+  async getAcknowledgementView(
+    id: string,
+    opts?: { container_id?: string | null },
+  ): Promise<JobAcknowledgementView> {
     assertId(id);
+    const containerId = String(opts?.container_id ?? '').trim();
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.get(JOB_API.acknowledgement(id)),
+        axiosInstance.get(JOB_API.acknowledgement(id), {
+          params:
+            containerId && isUuid(containerId)
+              ? { container_id: containerId }
+              : undefined,
+        }),
       );
-      return normalizeDeliveryAcknowledgement(res.data);
+      return normalizeJobAcknowledgementView(res.data);
     } catch (error) {
       throw formatAxiosError(error);
     }
   },
 
   /**
+   * GET /jobs/:id/detail/acknowledgement — acknowledgement for one container
+   * (or job-level when the job has no containers).
+   */
+  async getAcknowledgement(
+    id: string,
+    opts?: { container_id?: string | null },
+  ): Promise<DeliveryAcknowledgement> {
+    const view = await this.getAcknowledgementView(id, opts);
+    return pickAcknowledgementFromView(view, opts?.container_id);
+  },
+
+  /**
    * POST /jobs/:id/acknowledgement/send —
-   * first send: message (+ optional file);
-   * later: file-only resend when fields are locked (proof_only).
+   * first send: message (+ optional file/files);
+   * later: file(s) only to resend after fields are locked (do NOT send proof_only — BE rejects it).
+   * Multipart: `file` when one, `files` when 2+ — never both (Multer Unexpected field).
    */
   async sendAcknowledgement(
     id: string,
@@ -2355,27 +2496,34 @@ export const jobService = {
   ): Promise<DeliveryAcknowledgement> {
     assertId(id);
     const message = (body.message ?? body.remarks ?? '').trim();
-    const proofOnly = body.proof_only === true || (!message && Boolean(body.file));
+    const files = [
+      ...(Array.isArray(body.files) ? body.files.filter(Boolean) : []),
+      ...(body.file ? [body.file] : []),
+    ];
+    const uniqueFiles = Array.from(
+      new Map(files.map((f) => [`${f.name}:${f.size}`, f])).values(),
+    );
+    // FE-only: resend path after first send (API has no proof_only field).
+    const proofOnly =
+      body.proof_only === true || (!message && uniqueFiles.length > 0);
     if (!proofOnly && !message) {
       throw new Error('Enter a written acknowledgement message for the customer.');
     }
-    if (proofOnly && !body.file) {
+    if (proofOnly && uniqueFiles.length === 0) {
       throw new Error('Attach a proof file to resend acknowledgement.');
     }
     try {
       let res;
-      if (body.file) {
+      if (uniqueFiles.length > 0) {
         const form = new FormData();
-        if (proofOnly) {
-          form.append('proof_only', 'true');
-        } else if (message) {
+        if (!proofOnly && message) {
           form.append('message', message);
           form.append('remarks', message);
-          if (body.container_id?.trim()) {
-            form.append('container_id', body.container_id.trim());
-          }
         }
-        form.append('file', body.file, body.file.name);
+        if (body.container_id?.trim()) {
+          form.append('container_id', body.container_id.trim());
+        }
+        appendAcknowledgementMultipartFiles(form, uniqueFiles);
         res = await withGatewayRetry(() =>
           axiosInstance.post(JOB_API.acknowledgementSend(id), form),
         );
@@ -2395,13 +2543,19 @@ export const jobService = {
   /** POST /jobs/:id/acknowledgement/receive — mark RECEIVED_BY_ADMIN. */
   async receiveAcknowledgement(
     id: string,
-    body: { notes?: string } | Record<string, unknown> = {},
+    body: { notes?: string; container_id?: string } | Record<string, unknown> = {},
   ): Promise<DeliveryAcknowledgement> {
     assertId(id);
     try {
       const payload: Record<string, unknown> = {};
       if (typeof body.notes === 'string' && body.notes.trim()) {
         payload.notes = body.notes.trim();
+      }
+      const containerId = String(
+        (body as { container_id?: string }).container_id ?? '',
+      ).trim();
+      if (containerId && isUuid(containerId)) {
+        payload.container_id = containerId;
       }
       const res = await withGatewayRetry(() =>
         axiosInstance.post(JOB_API.acknowledgementReceive(id), payload),
@@ -2413,11 +2567,18 @@ export const jobService = {
   },
 
   /** Optional formal PDF → JobDocument PROOF_OF_DELIVERY (visible_to_customer). */
-  async generateAcknowledgementPdf(id: string): Promise<unknown> {
+  async generateAcknowledgementPdf(
+    id: string,
+    opts?: { container_id?: string | null },
+  ): Promise<unknown> {
     assertId(id);
+    const containerId = String(opts?.container_id ?? '').trim();
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(JOB_API.acknowledgementGeneratePdf(id)),
+        axiosInstance.post(
+          JOB_API.acknowledgementGeneratePdf(id),
+          containerId && isUuid(containerId) ? { container_id: containerId } : {},
+        ),
       );
       return unwrapEntity(res.data) ?? res.data;
     } catch (error) {
@@ -2425,12 +2586,21 @@ export const jobService = {
     }
   },
 
-  /** GET /jobs/:id/acknowledgement/attachments */
-  async listAcknowledgementAttachments(id: string): Promise<unknown[]> {
+  /** GET /jobs/:id/acknowledgement/attachments — optional `container_id` scopes the ack row. */
+  async listAcknowledgementAttachments(
+    id: string,
+    opts?: { container_id?: string | null },
+  ): Promise<unknown[]> {
     assertId(id);
+    const containerId = String(opts?.container_id ?? '').trim();
     try {
       const res = await withGatewayRetry(() =>
-        axiosInstance.get(JOB_API.acknowledgementAttachments(id)),
+        axiosInstance.get(JOB_API.acknowledgementAttachments(id), {
+          params:
+            containerId && isUuid(containerId)
+              ? { container_id: containerId }
+              : undefined,
+        }),
       );
       if (Array.isArray(res.data)) return res.data;
       const unwrapped = unwrapEntity(res.data);
@@ -2441,20 +2611,59 @@ export const jobService = {
     }
   },
 
-  /** POST /jobs/:id/acknowledgement/attachments — proof after first send. */
-  async uploadAcknowledgementAttachment(id: string, file: File): Promise<unknown> {
+  /** Attach proof after first send (single file). */
+  async uploadAcknowledgementAttachment(
+    id: string,
+    file: File,
+    opts?: { container_id?: string | null },
+  ): Promise<unknown> {
+    return this.uploadAcknowledgementAttachments(id, [file], opts);
+  },
+
+  /**
+   * Attach proof file(s) after first send.
+   *
+   * Prefer POST …/acknowledgement/attachments. On live Nest, that path is often
+   * captured by POST …/:section/attachments with section="acknowledgement"
+   * ("Unknown section …"). Fall back to POST …/acknowledgement/send with file(s)
+   * only — the documented post-send attach/resend path (no proof_only field).
+   */
+  async uploadAcknowledgementAttachments(
+    id: string,
+    files: File[],
+    opts?: { container_id?: string | null },
+  ): Promise<{ attachments?: unknown[] } | unknown> {
     assertId(id);
+    const list = (files ?? []).filter(Boolean);
+    if (!list.length) throw new Error('Select at least one proof file.');
+    if (list.length > 10) throw new Error('Select at most 10 files.');
+    const containerId = String(opts?.container_id ?? '').trim();
+
+    const isUnknownSectionError = (err: unknown): boolean => {
+      const formatted = formatAxiosError(err).message;
+      return /unknown section[\s\S]*acknowledgement/i.test(formatted);
+    };
+
     try {
       const form = new FormData();
-      form.append('file', file, file.name);
+      if (containerId && isUuid(containerId)) {
+        form.append('container_id', containerId);
+      }
+      appendAcknowledgementMultipartFiles(form, list);
       const res = await withGatewayRetry(() =>
-        axiosInstance.post(JOB_API.acknowledgementAttachments(id), form, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        }),
+        axiosInstance.post(JOB_API.acknowledgementAttachments(id), form),
       );
       return unwrapEntity(res.data) ?? res.data;
     } catch (error) {
-      throw formatAxiosError(error);
+      if (!isUnknownSectionError(error)) {
+        throw formatAxiosError(error);
+      }
+      // Route conflict with JobOps `{section}/attachments` — use send + files.
+      return this.sendAcknowledgement(id, {
+        proof_only: true,
+        files: list,
+        ...(containerId && isUuid(containerId) ? { container_id: containerId } : {}),
+      });
     }
   },
 
@@ -2464,18 +2673,83 @@ export const jobService = {
     attachmentId: string,
   ): Promise<Blob> {
     assertId(id);
-    assertId(attachmentId);
-    try {
-      const res = await withGatewayRetry(() =>
-        axiosInstance.get(
-          JOB_API.acknowledgementAttachmentDownload(id, attachmentId),
-          { responseType: 'blob' },
-        ),
-      );
-      return res.data instanceof Blob ? res.data : new Blob([res.data as BlobPart]);
-    } catch (error) {
-      throw formatAxiosError(error);
+    const attId = String(attachmentId ?? '').trim();
+    if (!attId) throw new Error('Invalid attachment id.');
+    return this.fetchAcknowledgementProofBlob(id, { id: attId });
+  },
+
+  /**
+   * Load acknowledgement proof bytes for Open / Download.
+   * Prefer stable `/files/…` (from file_url / s3_key); fall back to attachment download routes.
+   */
+  async fetchAcknowledgementProofBlob(
+    jobId: string,
+    attachment: {
+      id?: string;
+      file_name?: string;
+      file_url?: string;
+      fileUrl?: string;
+      s3_key?: string;
+      s3Key?: string;
+      download_url?: string;
+      download_path?: string;
+      url?: string;
+    },
+    tenantId?: string | null,
+  ): Promise<Blob> {
+    assertId(jobId);
+    const errors: string[] = [];
+
+    const pushErr = (err: unknown) => {
+      const msg =
+        err instanceof Error && err.message.trim()
+          ? err.message.trim()
+          : 'Request failed';
+      if (msg && !errors.includes(msg)) errors.push(msg);
+    };
+
+    const candidates = resolveJobDocumentFileUrlCandidates(
+      {
+        file_url: attachment.file_url || attachment.fileUrl || attachment.url,
+        fileUrl: attachment.fileUrl,
+        s3_key: attachment.s3_key || attachment.s3Key,
+        s3Key: attachment.s3Key,
+        file_name: attachment.file_name,
+        download_url: attachment.download_url,
+        download_path: attachment.download_path,
+      },
+      tenantId,
+    );
+
+    for (const url of candidates) {
+      try {
+        const blob = await fetchAcknowledgementUrlBlob(url);
+        if (blob) return blob;
+      } catch (err) {
+        pushErr(err);
+      }
     }
+
+    const attId = String(attachment.id ?? '').trim();
+    if (attId) {
+      const paths = [
+        JOB_API.acknowledgementAttachmentDownload(jobId, attId),
+        `/jobs/${jobId}/acknowledgement/attachments/${encodeURIComponent(attId)}`,
+      ];
+      for (const path of paths) {
+        try {
+          const blob = await getAcknowledgementBinaryBlob(path);
+          if (blob) return blob;
+        } catch (err) {
+          pushErr(err);
+        }
+      }
+    }
+
+    throw new Error(
+      errors[0] ||
+        'Could not download acknowledgement proof. The file may be missing or the download API rejected the request.',
+    );
   },
 
   /** GET /jobs/:id/ledger — invoices + credit/debit notes for the job. */

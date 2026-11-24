@@ -3,11 +3,13 @@ import { Link } from 'react-router-dom';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
+import { useAuth } from '@/hooks/useAuth';
 import { INVOICE_ROUTE_PREFIX } from '@/features/invoices/api/invoice.api';
 import { useInvoices } from '@/features/invoices/hooks/useInvoices';
 import { InvoiceStatusBadge } from '@/features/invoices/components/InvoiceStatusBadge';
 import { invoiceService } from '@/features/invoices/services/invoice.service';
 import { invoiceDisplayNumber } from '@/features/invoices/utils/normalizeInvoice';
+import { resolveInvoiceListVisibility } from '@/features/invoices/utils/invoiceListVisibility';
 import type { Invoice } from '@/features/invoices/types/invoice.types';
 import { PURCHASE_INVOICE_ROUTE_PREFIX } from '@/features/purchaseInvoices/api/purchaseInvoice.api';
 import { usePurchaseInvoices } from '@/features/purchaseInvoices/hooks/usePurchaseInvoices';
@@ -43,12 +45,17 @@ export function JobInvoicesPanel({
   job,
   highlightInvoiceId,
 }: JobInvoicesPanelProps) {
+  const { user } = useAuth();
+  const invoiceVis = resolveInvoiceListVisibility(user);
   const enabled = isUuid(jobId);
-  const { data, isLoading, isFetching, isError, error, refetch } = useInvoices({
-    job_id: enabled ? jobId : undefined,
-    page: 1,
-    limit: 20,
-  });
+  const { data, isLoading, isFetching, isError, error, refetch } = useInvoices(
+    {
+      job_id: enabled ? jobId : undefined,
+      page: 1,
+      limit: 20,
+    },
+    { enabled: enabled && invoiceVis.canSeeSaleInvoices },
+  );
   const {
     data: purchaseData,
     isLoading: purchaseLoading,
@@ -56,11 +63,14 @@ export function JobInvoicesPanel({
     isError: purchaseError,
     error: purchaseErr,
     refetch: refetchPurchase,
-  } = usePurchaseInvoices({
-    job_id: enabled ? jobId : undefined,
-    page: 1,
-    limit: 20,
-  });
+  } = usePurchaseInvoices(
+    {
+      job_id: enabled ? jobId : undefined,
+      page: 1,
+      limit: 20,
+    },
+    { enabled: enabled && invoiceVis.canSeePurchaseInvoices },
+  );
   const [extraInvoices, setExtraInvoices] = useState<Invoice[]>([]);
   const [busy, setBusy] = useState(false);
   const [actionMsg, setActionMsg] = useState<string | null>(null);
@@ -83,30 +93,39 @@ export function JobInvoicesPanel({
   }, [invoicesFromJob, extraInvoices]);
 
   const rows: JobInvoiceRow[] = useMemo(() => {
-    const saleRows: JobInvoiceRow[] = salesMerged.map((inv) => ({
-      kind: 'sale',
-      id: inv.id,
-      label: invoiceDisplayNumber(inv),
-      status: String(inv.status ?? ''),
-      currency_code: inv.currency_code,
-      total_amount: inv.total_amount,
-      linesCount: inv.lines?.length,
-      job_id: inv.job_id,
-    }));
-    const purchaseRows: JobInvoiceRow[] = purchaseFromJob
-      .filter((inv) => isUuid(inv.id))
-      .map((inv) => ({
-        kind: 'purchase' as const,
-        id: inv.id,
-        label: purchaseInvoiceDisplayNumber(inv),
-        status: String(inv.status ?? ''),
-        currency_code: inv.currency_code,
-        total_amount: inv.total_amount,
-        linesCount: inv.lines?.length,
-        job_id: inv.job_id,
-      }));
+    const saleRows: JobInvoiceRow[] = invoiceVis.canSeeSaleInvoices
+      ? salesMerged.map((inv) => ({
+          kind: 'sale' as const,
+          id: inv.id,
+          label: invoiceDisplayNumber(inv),
+          status: String(inv.status ?? ''),
+          currency_code: inv.currency_code,
+          total_amount: inv.total_amount,
+          linesCount: inv.lines?.length,
+          job_id: inv.job_id,
+        }))
+      : [];
+    const purchaseRows: JobInvoiceRow[] = invoiceVis.canSeePurchaseInvoices
+      ? purchaseFromJob
+          .filter((inv) => isUuid(inv.id))
+          .map((inv) => ({
+            kind: 'purchase' as const,
+            id: inv.id,
+            label: purchaseInvoiceDisplayNumber(inv),
+            status: String(inv.status ?? ''),
+            currency_code: inv.currency_code,
+            total_amount: inv.total_amount,
+            linesCount: inv.lines?.length,
+            job_id: inv.job_id,
+          }))
+      : [];
     return [...saleRows, ...purchaseRows];
-  }, [salesMerged, purchaseFromJob]);
+  }, [
+    salesMerged,
+    purchaseFromJob,
+    invoiceVis.canSeeSaleInvoices,
+    invoiceVis.canSeePurchaseInvoices,
+  ]);
 
   const linkInvoice = useCallback(
     async (invoiceId: string) => {
@@ -165,13 +184,13 @@ export function JobInvoicesPanel({
   }, [enabled, shipperId, jobId, linkInvoice, refetch]);
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !invoiceVis.canSeeSaleInvoices) return;
     if (invoicesFromJob.length > 0) return;
     void recoverOrphanInvoices();
-  }, [enabled, invoicesFromJob.length, recoverOrphanInvoices]);
+  }, [enabled, invoiceVis.canSeeSaleInvoices, invoicesFromJob.length, recoverOrphanInvoices]);
 
   const openSaleForm = (source: JobInvoiceFormSource) => {
-    if (!enabled) return;
+    if (!enabled || !invoiceVis.canSeeSaleInvoices) return;
     setActionError(null);
     setActionMsg(null);
     setSaleFormSource(source);
@@ -192,26 +211,30 @@ export function JobInvoicesPanel({
       <CardHeader className="flex flex-row items-center justify-between gap-2">
         <CardTitle>Invoices</CardTitle>
         <div className="flex flex-wrap items-center gap-2">
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            disabled={!enabled || busy || Boolean(saleFormSource)}
-            title="GET /invoices/sale/form?source=quotation → POST with source=quotation"
-            onClick={() => openSaleForm('quotation')}
-          >
-            Generate from quotation
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            disabled={!enabled || busy || Boolean(saleFormSource)}
-            title="GET /invoices/sale/form?source=job → POST with source=job (costing sale amounts; no quotation fallback)"
-            onClick={() => openSaleForm('job')}
-          >
-            Generate from job
-          </Button>
+          {invoiceVis.canSeeSaleInvoices ? (
+            <>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={!enabled || busy || Boolean(saleFormSource)}
+                title="GET /invoices/sale/form?source=quotation → POST with source=quotation"
+                onClick={() => openSaleForm('quotation')}
+              >
+                Generate from quotation
+              </Button>
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={!enabled || busy || Boolean(saleFormSource)}
+                title="GET /invoices/sale/form?source=job → POST with source=job (costing sale amounts; no quotation fallback)"
+                onClick={() => openSaleForm('job')}
+              >
+                Generate from job
+              </Button>
+            </>
+          ) : null}
           <Button
             type="button"
             variant="secondary"
@@ -246,28 +269,34 @@ export function JobInvoicesPanel({
               (purchaseErr instanceof Error ? purchaseErr.message : null) ||
               'Could not load invoices.'}
           </p>
+        ) : !invoiceVis.canSeeAnyInvoices ? (
+          <p className="text-sm text-[var(--color-neutral-400)]">
+            Invoice access is not enabled for your account (sale / purchase invoice flags).
+          </p>
         ) : rows.length === 0 ? (
           <div className="space-y-2">
             <p className="text-sm text-[var(--color-neutral-400)]">
               No invoices for this job yet.
             </p>
-            <div className="flex flex-wrap gap-2">
-              <Button
-                type="button"
-                disabled={busy || Boolean(saleFormSource)}
-                onClick={() => openSaleForm('quotation')}
-              >
-                Generate from quotation
-              </Button>
-              <Button
-                type="button"
-                variant="secondary"
-                disabled={busy || Boolean(saleFormSource)}
-                onClick={() => openSaleForm('job')}
-              >
-                Generate from job
-              </Button>
-            </div>
+            {invoiceVis.canSeeSaleInvoices ? (
+              <div className="flex flex-wrap gap-2">
+                <Button
+                  type="button"
+                  disabled={busy || Boolean(saleFormSource)}
+                  onClick={() => openSaleForm('quotation')}
+                >
+                  Generate from quotation
+                </Button>
+                <Button
+                  type="button"
+                  variant="secondary"
+                  disabled={busy || Boolean(saleFormSource)}
+                  onClick={() => openSaleForm('job')}
+                >
+                  Generate from job
+                </Button>
+              </div>
+            ) : null}
           </div>
         ) : (
           <ul className="divide-y divide-[var(--color-neutral-100)] rounded-md border border-[var(--color-neutral-200)]">

@@ -58,6 +58,8 @@ export interface TechActivityRow {
   path?: string;
   status_code?: number;
   message?: string;
+  /** e.g. PASSWORD_CHANGED from TechLogsService.recordActivity */
+  action?: string;
   principal?: TechLogPrincipal;
   user_id?: string;
   user_name?: string;
@@ -65,6 +67,8 @@ export interface TechActivityRow {
   tenant_id?: string;
   tenant_name?: string;
   duration_ms?: number;
+  /** PASSWORD_CHANGED metadata may include password_plain (Super Admin only). */
+  metadata?: Record<string, unknown>;
   raw: Record<string, unknown>;
 }
 

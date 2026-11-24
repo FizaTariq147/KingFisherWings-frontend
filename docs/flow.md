@@ -53,3 +53,61 @@ Ops / admin still passes with required **user** (branch + assignee). That sets `
 ### Tenant Admin / Branch Manager
 
 Sees-all roles keep the **full** job UI even when a job is in Transport. They are not put into handoff-limited mode.
+
+---
+
+## Staff invoice sale / purchase flags + acknowledgement multi-file
+
+### User form flags (admin-managed)
+
+Independent of costing `can_see_sales` / `can_see_cost`. Legacy `can_see_invoices` is kept on the form but is **not** the gate.
+
+| Flag | Opens |
+|------|--------|
+| `can_see_sale_invoices` | Customer invoices + debit notes (list / get / edit / post / create) |
+| `can_see_purchase_invoices` | Purchase invoices + credit notes (same) |
+
+Neither flag (and not Tenant Admin / sees-all) → no invoice access on those routes. Costing tab visibility stays on `can_see_sales` / `can_see_cost`.
+
+### Finance UI
+
+- Finance hub tiles filter by the two flags (sale tiles vs purchase / credit).
+- List pages short-circuit with an empty state when the side flag is off.
+- Job invoices panel lists/generates sale only when sale flag; purchase rows when purchase flag.
+- Costing “Generate Sales/Purchase Invoice” requires the matching invoice flag **and** costing side visibility.
+
+### Acknowledgement multi-file
+
+Staff `POST …/acknowledgement/attachments` and send, and portal attachment upload:
+
+- Multipart: **`file`** when one file; **`files`** when 2+ — never both (Multer Unexpected field).
+- Do **not** send `proof_only` on send — BE rejects it; resend = multipart files only (no message).
+- Cap: **10 files × 25MB** each (`ACKNOWLEDGEMENT_UPLOAD_OPTIONS`).
+- Live Nest may route `POST …/acknowledgement/attachments` into ops
+  `POST …/:section/attachments` → `Unknown section "acknowledgement"`. FE retries
+  via `POST …/acknowledgement/send` with files only.
+
+### Acknowledgement per container
+
+BE stores **one acknowledgement row per container** (partial unique on
+`tenant_id + job_id + container_id`). Jobs with no containers keep a single job-level
+row (`container_id` null).
+
+Staff FE:
+
+- `GET …/detail/acknowledgement` → envelope `containers: [{ id, container_number, acknowledgement }]`
+  (or job-level ack when empty). Panel picks the selected container’s nested row.
+- Send / attachments / receive / PDF pass `container_id` when containers exist.
+- Each container keeps its own message lock after first send; other containers stay sendable.
+- Multi-file attach unchanged (`file` XOR `files`).
+
+Portal: same `container_id` on get / submit / signature / attachments.
+
+### Tenant Admin password + Super Admin plaintext
+
+- `POST /auth/tenant/change-password` must clear owner `User.must_change_password`, sync
+  owner hash to the new tenant password, and set `password_plain` on Tenant + owner User.
+- Staff `POST /auth/change-password` clears the flag and sets `User.password_plain` as today.
+- Super Admin platform: tenant detail shows `password_plain`; tech activity
+  `PASSWORD_CHANGED` metadata may include `password_plain` (product request — high risk).
+- Tenant JWT user responses must **not** include plaintext.

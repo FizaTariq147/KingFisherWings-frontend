@@ -227,12 +227,20 @@ export function useDownloadPortalShipmentDocument() {
   });
 }
 
-export function usePortalShipmentAcknowledgement(id: string, enabled = true) {
+export function usePortalShipmentAcknowledgement(
+  id: string,
+  enabled = true,
+  containerId?: string | null,
+) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
+  const cid = String(containerId ?? '').trim() || 'none';
   return useQuery({
-    queryKey: portalShipmentKeys.acknowledgement(scope, id),
-    queryFn: () => portalShipmentsService.getAcknowledgement(id),
+    queryKey: [...portalShipmentKeys.acknowledgement(scope, id), cid] as const,
+    queryFn: () =>
+      portalShipmentsService.getAcknowledgement(id, {
+        ...(cid !== 'none' ? { container_id: cid } : {}),
+      }),
     enabled: Boolean(accessToken) && Boolean(id) && enabled && scope !== 'anon',
     retry: false,
   });
@@ -245,8 +253,10 @@ export function useSubmitPortalShipmentAcknowledgement(shipmentId: string) {
     mutationFn: (
       dto: import('@/features/jobs/types/job.types').SubmitDeliveryAcknowledgementDto,
     ) => portalShipmentsService.submitAcknowledgement(shipmentId, dto),
-    onSuccess: (data) => {
-      queryClient.setQueryData(portalShipmentKeys.acknowledgement(scope, shipmentId), data);
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: portalShipmentKeys.acknowledgement(scope, shipmentId),
+      });
       void queryClient.invalidateQueries({
         queryKey: portalShipmentKeys.detail(scope, shipmentId),
       });
@@ -256,34 +266,62 @@ export function useSubmitPortalShipmentAcknowledgement(shipmentId: string) {
 
 export function useUploadPortalAcknowledgementSignature(shipmentId: string) {
   return useMutation({
-    mutationFn: (file: File) =>
-      portalShipmentsService.uploadAcknowledgementSignature(shipmentId, file),
+    mutationFn: ({
+      file,
+      container_id,
+    }: {
+      file: File;
+      container_id?: string;
+    }) =>
+      portalShipmentsService.uploadAcknowledgementSignature(shipmentId, file, {
+        ...(container_id ? { container_id } : {}),
+      }),
   });
 }
 
-export function usePortalAcknowledgementAttachments(shipmentId: string, enabled = true) {
+export function usePortalAcknowledgementAttachments(
+  shipmentId: string,
+  enabled = true,
+  containerId?: string | null,
+) {
   const accessToken = usePortalAuthStore((s) => s.accessToken);
   const scope = usePortalQueryScope();
+  const cid = String(containerId ?? '').trim() || 'none';
   return useQuery({
-    queryKey: [...portalShipmentKeys.acknowledgement(scope, shipmentId), 'attachments'] as const,
-    queryFn: () => portalShipmentsService.listAcknowledgementAttachments(shipmentId),
+    queryKey: [
+      ...portalShipmentKeys.acknowledgement(scope, shipmentId),
+      cid,
+      'attachments',
+    ] as const,
+    queryFn: () =>
+      portalShipmentsService.listAcknowledgementAttachments(shipmentId, {
+        ...(cid !== 'none' ? { container_id: cid } : {}),
+      }),
     enabled: Boolean(accessToken) && Boolean(shipmentId) && enabled && scope !== 'anon',
     retry: false,
   });
 }
 
-export function usePortalAcknowledgementAttachmentMutations(shipmentId: string) {
+export function usePortalAcknowledgementAttachmentMutations(
+  shipmentId: string,
+  containerId?: string | null,
+) {
   const queryClient = useQueryClient();
   const scope = usePortalQueryScope();
+  const cid = String(containerId ?? '').trim();
   const invalidate = () => {
     void queryClient.invalidateQueries({
-      queryKey: [...portalShipmentKeys.acknowledgement(scope, shipmentId), 'attachments'],
+      queryKey: portalShipmentKeys.acknowledgement(scope, shipmentId),
     });
   };
   return {
     upload: useMutation({
-      mutationFn: (file: File) =>
-        portalShipmentsService.uploadAcknowledgementAttachment(shipmentId, file),
+      mutationFn: (files: File | File[]) =>
+        portalShipmentsService.uploadAcknowledgementAttachments(
+          shipmentId,
+          Array.isArray(files) ? files : [files],
+          cid ? { container_id: cid } : undefined,
+        ),
       onSuccess: () => invalidate(),
     }),
     download: useMutation({

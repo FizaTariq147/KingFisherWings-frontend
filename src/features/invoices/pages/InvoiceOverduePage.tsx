@@ -3,14 +3,40 @@ import { appType } from '@/lib/erpTypography';
 import { AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { EmptyState } from '@/components/erp';
+import { useAuth } from '@/hooks/useAuth';
 import { INVOICE_ROUTE_PREFIX } from '../api/invoice.api';
 import { InvoiceTable } from '../components/InvoiceTable';
 import { useOverdueInvoices } from '../hooks/useInvoices';
+import { canAccessInvoiceSide } from '../utils/invoiceListVisibility';
 import { getErrorMessage } from '../utils/getErrorMessage';
 
 export default function InvoiceOverduePage() {
   const navigate = useNavigate();
-  const { data = [], isLoading, isFetching, isError, error, refetch } = useOverdueInvoices();
+  const { user } = useAuth();
+  const allowed = canAccessInvoiceSide(user, 'sale');
+  const { data = [], isLoading, isFetching, isError, error, refetch } = useOverdueInvoices({
+    enabled: allowed,
+  });
+
+  if (!allowed) {
+    return (
+      <div className="space-y-4">
+        <button
+          type="button"
+          className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] mb-1"
+          onClick={() => navigate('/finance')}
+        >
+          ← Finance
+        </button>
+        <h2 className={appType.pageTitle}>Overdue invoices</h2>
+        <EmptyState
+          title="Sale invoices are not enabled for your account."
+          description="Ask a Tenant Admin to enable “Can see sale invoices” on your user profile."
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

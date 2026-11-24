@@ -3,6 +3,10 @@ import { Download, Paperclip, Upload } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import {
+  ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
+  pickValidatedUploadFiles,
+} from '@/lib/fileUploadValidation';
 import { PortalApiError } from '@/lib/portalApiClient';
 import { PortalPanel } from '@/features/portal-auth/components/portal-ui';
 import {
@@ -109,6 +113,8 @@ interface PortalAcknowledgementPanelProps {
   statusHint?: string;
   /** Containers on the shipment/job — required when more than one. */
   containers?: Array<{ id: string; label: string }>;
+  /** Air jobs: show MAWB instead of Container (API still uses container_id). */
+  unitLabel?: 'Container' | 'MAWB';
 }
 
 /** Customer delivery acknowledgement — load template fields, signature, submit. */
@@ -116,12 +122,9 @@ export function PortalAcknowledgementPanel({
   shipmentId,
   statusHint,
   containers = [],
+  unitLabel = 'Container',
 }: PortalAcknowledgementPanelProps) {
-  const query = usePortalShipmentAcknowledgement(shipmentId);
-  const submit = useSubmitPortalShipmentAcknowledgement(shipmentId);
-  const uploadSig = useUploadPortalAcknowledgementSignature(shipmentId);
-  const attachmentsQuery = usePortalAcknowledgementAttachments(shipmentId);
-  const attachmentMutations = usePortalAcknowledgementAttachmentMutations(shipmentId);
+  const unitLabelLower = unitLabel === 'MAWB' ? 'MAWB' : 'container';
   const attachmentInputRef = useRef<HTMLInputElement>(null);
 
   const [receiverName, setReceiverName] = useState('');
@@ -133,6 +136,23 @@ export function PortalAcknowledgementPanel({
   const [hydrated, setHydrated] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
+
+  const query = usePortalShipmentAcknowledgement(
+    shipmentId,
+    true,
+    containerId.trim() || null,
+  );
+  const submit = useSubmitPortalShipmentAcknowledgement(shipmentId);
+  const uploadSig = useUploadPortalAcknowledgementSignature(shipmentId);
+  const attachmentsQuery = usePortalAcknowledgementAttachments(
+    shipmentId,
+    true,
+    containerId.trim() || null,
+  );
+  const attachmentMutations = usePortalAcknowledgementAttachmentMutations(
+    shipmentId,
+    containerId.trim() || null,
+  );
 
   const ack = query.data;
   const status = (ack?.status || statusHint || 'DRAFT').toUpperCase();
@@ -177,14 +197,24 @@ export function PortalAcknowledgementPanel({
   );
 
   useEffect(() => {
+    if (containerOptions.length === 1 && !containerId) {
+      setContainerId(containerOptions[0].value);
+    }
+  }, [containerOptions, containerId]);
+
+  useEffect(() => {
+    setHydrated(false);
+  }, [containerId]);
+
+  useEffect(() => {
     if (!ack || hydrated) return;
     if (ack.receiver_name) setReceiverName(ack.receiver_name);
     if (ack.receiver_title) setReceiverTitle(ack.receiver_title);
     if (ack.goods_condition) setGoodsCondition(ack.goods_condition);
     if (ack.remarks) setRemarks(ack.remarks);
-    if (ack.container_id) setContainerId(ack.container_id);
+    if (ack.container_id && !containerId) setContainerId(ack.container_id);
     setHydrated(true);
-  }, [ack, hydrated]);
+  }, [ack, hydrated, containerId]);
 
   const onSubmit = async () => {
     setError(null);
@@ -194,7 +224,7 @@ export function PortalAcknowledgementPanel({
       return;
     }
     if (containerOptions.length > 1 && !containerId.trim()) {
-      setError('Select the container you are acknowledging.');
+      setError(`Select the ${unitLabelLower} you are acknowledging.`);
       return;
     }
     try {
@@ -336,7 +366,7 @@ export function PortalAcknowledgementPanel({
               {containerOptions.length > 1 ? (
                 <label className="block text-sm sm:col-span-2">
                   <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-                    Container *
+                    {unitLabel} *
                   </span>
                   <select
                     className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
@@ -344,7 +374,7 @@ export function PortalAcknowledgementPanel({
                     value={containerId}
                     onChange={(e) => setContainerId(e.target.value)}
                   >
-                    <option value="">Select container…</option>
+                    <option value="">Select {unitLabelLower}…</option>
                     {containerOptions.map((opt) => (
                       <option key={opt.value} value={opt.value}>
                         {opt.label}
@@ -406,7 +436,12 @@ export function PortalAcknowledgementPanel({
                     if (!file) return;
                     setError(null);
                     void uploadSig
-                      .mutateAsync(file)
+                      .mutateAsync({
+                        file,
+                        ...(containerId.trim()
+                          ? { container_id: containerId.trim() }
+                          : {}),
+                      })
                       .then(() => setMsg('Signature uploaded.'))
                       .catch((err) =>
                         setError(
@@ -467,9 +502,25 @@ export function PortalAcknowledgementPanel({
                   multiple
                   className="hidden"
                   onChange={(e) => {
-                    const files = Array.from(e.target.files ?? []);
+                    const { files, error: pickError } = pickValidatedUploadFiles(
+                      e.target.files,
+                      ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
+                    );
+                    if (pickError) {
+                      setError(pickError);
+                      if (attachmentInputRef.current) attachmentInputRef.current.value = '';
+                      return;
+                    }
                     if (!files.length) return;
-                    setPendingFiles((prev) => [...prev, ...files]);
+                    setPendingFiles((prev) => {
+                      const next = [...prev, ...files];
+                      if (next.length > 10) {
+                        setError('Select at most 10 files.');
+                        return prev;
+                      }
+                      setError(null);
+                      return next;
+                    });
                     if (attachmentInputRef.current) attachmentInputRef.current.value = '';
                   }}
                 />
@@ -494,9 +545,7 @@ export function PortalAcknowledgementPanel({
                     setError(null);
                     void (async () => {
                       try {
-                        for (const file of pendingFiles) {
-                          await attachmentMutations.upload.mutateAsync(file);
-                        }
+                        await attachmentMutations.upload.mutateAsync(pendingFiles);
                         setPendingFiles([]);
                         setMsg('Attachments uploaded.');
                         await attachmentsQuery.refetch();

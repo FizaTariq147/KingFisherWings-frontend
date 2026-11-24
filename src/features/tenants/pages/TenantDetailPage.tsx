@@ -10,6 +10,7 @@ import { TenantDetailSkeleton } from '../components/TenantDetailSkeleton';
 import { TenantFeaturesPanel } from '../components/TenantFeaturesPanel';
 import { TenantOverviewPanel } from '../components/TenantOverviewPanel';
 import { TenantStatusBadge } from '../components/TenantStatusBadge';
+import { TenantUsersPanel } from '../components/TenantUsersPanel';
 import { useTenantConfirmState } from '../hooks/useTenantConfirmState';
 import {
   useTenant,
@@ -185,7 +186,7 @@ export default function TenantDetailPage() {
                 Tenant Admin login credentials
               </h3>
               <p className="text-xs text-[var(--color-neutral-500)] mt-1">
-                Tenant Admin uses <strong className="font-semibold text-[var(--color-neutral-700)]">slug + password only</strong> (no email) on ERP Login → Tenant Admin. Save the password now — it is not shown again.
+                Tenant Admin uses <strong className="font-semibold text-[var(--color-neutral-700)]">slug + password only</strong> (no email) on ERP Login → Tenant Admin. Current plaintext is also kept on this tenant detail for Super Admin (product request).
               </p>
             </div>
             <Button
@@ -279,32 +280,27 @@ export default function TenantDetailPage() {
         backLabel="Back to tenants"
         actions={actions}
         actionsDisabled={pendingAction}
-        sidebar={
-          <Card>
-            <CardHeader className="mb-0 pb-3">
-              <CardTitle>Quick summary</CardTitle>
-            </CardHeader>
-            <dl className="space-y-3 text-sm">
-              <SummaryItem label="Status">
-                <TenantStatusBadge tenant={tenant} />
-              </SummaryItem>
-              <SummaryItem label="Company" value={tenant.company_name || '—'} />
-              <SummaryItem label="Plan" value={String(tenant.subscription_plan)} />
-              <SummaryItem
-                label="Users"
-                value={`${typeof tenant.total_users === 'number' ? tenant.total_users : '—'} / ${tenant.max_users}`}
-              />
-              <SummaryItem label="Branches" value={String(tenant.max_branches)} />
-              <SummaryItem label="Storage" value={formatStorageUsage(tenant)} />
-              <SummaryItem label="Country" value={tenant.country_code} />
-            </dl>
-          </Card>
-        }
+        sidebar={<TenantQuickSummaryCard tenant={tenant} />}
+        hideSidebarOnTabs={['users']}
         tabs={[
           {
             key: 'overview',
             label: 'Overview',
             content: <TenantOverviewPanel tenant={tenant} />,
+          },
+          {
+            key: 'users',
+            label: 'Created users',
+            content: isDeleted ? (
+              <p className="text-sm text-[var(--color-neutral-500)]">
+                Restore this tenant to view its users.
+              </p>
+            ) : (
+              <div className="space-y-4">
+                <TenantUsersPanel tenant={tenant} />
+                <TenantQuickSummaryCard tenant={tenant} />
+              </div>
+            ),
           },
           {
             key: 'features',
@@ -341,6 +337,30 @@ export default function TenantDetailPage() {
         />
       )}
     </>
+  );
+}
+
+function TenantQuickSummaryCard({ tenant }: { tenant: Tenant }) {
+  return (
+    <Card>
+      <CardHeader className="mb-0 pb-3">
+        <CardTitle>Quick summary</CardTitle>
+      </CardHeader>
+      <dl className="space-y-3 text-sm">
+        <SummaryItem label="Status">
+          <TenantStatusBadge tenant={tenant} />
+        </SummaryItem>
+        <SummaryItem label="Company" value={tenant.company_name || '—'} />
+        <SummaryItem label="Plan" value={String(tenant.subscription_plan)} />
+        <SummaryItem
+          label="Users"
+          value={`${typeof tenant.total_users === 'number' ? tenant.total_users : '—'} / ${tenant.max_users}`}
+        />
+        <SummaryItem label="Branches" value={String(tenant.max_branches)} />
+        <SummaryItem label="Storage" value={formatStorageUsage(tenant)} />
+        <SummaryItem label="Country" value={tenant.country_code} />
+      </dl>
+    </Card>
   );
 }
 

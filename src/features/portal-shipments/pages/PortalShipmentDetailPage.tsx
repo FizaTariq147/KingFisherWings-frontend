@@ -767,6 +767,9 @@ export default function PortalShipmentDetailPage() {
       <PortalAcknowledgementPanel
         shipmentId={id}
         statusHint={data.acknowledgementStatus}
+        unitLabel={
+          data.jobType === 'AIR_EXPORT' || data.jobType === 'AIR_IMPORT' ? 'MAWB' : 'Container'
+        }
         containers={containerRequests
           .filter((r) => Boolean(r.id))
           .map((r) => ({

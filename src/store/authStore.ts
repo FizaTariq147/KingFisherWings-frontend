@@ -18,6 +18,12 @@ import {
 } from '@/lib/tenantFromAuth'
 import { withGatewayRetry } from '@/lib/wakeApi'
 import { AUTH_THROTTLE_USER_MESSAGE } from '@/features/auth/utils/authThrottleMessage'
+import {
+  armMustChangePasswordSkip,
+  hasMustChangePasswordCleared,
+  markMustChangePasswordCleared,
+  shouldSkipMustChangePasswordRedirect,
+} from '@/features/auth/utils/mustChangePasswordGate'
 import { useSuperAdminAuthStore } from '@/features/superadmin/store/superAdminAuthStore'
 import { usePortalAuthStore } from '@/features/portal-auth/store/portalAuthStore'
 import { clearPortalQueryCache } from '@/features/portal-shared/clearPortalQueryCache'
@@ -170,6 +176,13 @@ interface AuthState {
   /** Protected ERP APIs returned REQUIRES_2FA_SETUP after login. */
   erpAccessBlocked: boolean
   erpAccessMessage: string | null
+  /**
+   * Set after a successful forced password change in this session.
+   * Prevents GET /auth/me from re-forcing the Set password screen when the API
+   * still returns must_change_password (common for Tenant Admin after
+   * POST /auth/tenant/change-password).
+   */
+  mustChangePasswordSatisfied: boolean
 }
 
 interface AuthActions {
@@ -184,6 +197,8 @@ interface AuthActions {
   patchSessionUser: (partial: Partial<AuthUser>) => void
   setIdleTimeoutMinutes: (minutes: number) => void
   clearMustChangePassword: () => void
+  /** True when this session already completed forced password change. */
+  isMustChangePasswordSatisfied: () => boolean
   touchSessionActivity: () => void
   /** Idle expiry — flush draft (if any), soft-clear session, navigate to login. */
   markSessionExpired: () => void
@@ -306,8 +321,14 @@ async function applyLoginSuccess(
     undefined
   const sessionId =
     result.sessionId || sessionIdFromAccessToken(result.accessToken) || null
+  const clearedLocally =
+    shouldSkipMustChangePasswordRedirect() ||
+    hasMustChangePasswordCleared(result.user.id, tenantId)
+  const mustChangePassword = clearedLocally
+    ? false
+    : Boolean(result.user.mustChangePassword)
   set({
-    user: toStoreUser({ ...result.user, tenantId }),
+    user: toStoreUser({ ...result.user, tenantId, mustChangePassword }),
     accessToken: result.accessToken,
     refreshToken: result.refreshToken || null,
     sessionId,
@@ -321,6 +342,9 @@ async function applyLoginSuccess(
     subscriptionMessage: null,
     erpAccessBlocked: false,
     erpAccessMessage: null,
+    // Fresh login — but keep satisfied if this principal already completed Set password
+    // (API often still returns must_change_password=true after tenant change-password).
+    mustChangePasswordSatisfied: clearedLocally || !mustChangePassword,
   })
   try {
     sessionStorage.removeItem(ERP_AUTH_SIGNOUT_FLAG)
@@ -350,6 +374,7 @@ function clearAuthState(): Partial<AuthState> {
     subscriptionMessage: null,
     erpAccessBlocked: false,
     erpAccessMessage: null,
+    mustChangePasswordSatisfied: false,
   }
 }
 
@@ -456,6 +481,7 @@ export const useAuthStore = create<AuthStore>()(
       subscriptionMessage: null,
       erpAccessBlocked: false,
       erpAccessMessage: null,
+      mustChangePasswordSatisfied: false,
 
       loginTenant: async (dto) => {
         set({
@@ -661,9 +687,17 @@ export const useAuthStore = create<AuthStore>()(
 
       clearMustChangePassword: () => {
         const current = get().user
-        if (!current?.mustChangePassword) return
-        set({ user: { ...current, mustChangePassword: false } })
+        armMustChangePasswordSkip()
+        markMustChangePasswordCleared(current?.id, current?.tenantId)
+        set({
+          mustChangePasswordSatisfied: true,
+          ...(current
+            ? { user: { ...current, mustChangePassword: false } }
+            : {}),
+        })
       },
+
+      isMustChangePasswordSatisfied: () => Boolean(get().mustChangePasswordSatisfied),
 
       touchSessionActivity: () => {
         if (!get().isAuthenticated) return
@@ -721,6 +755,7 @@ export const useAuthStore = create<AuthStore>()(
         lastActiveAt: state.lastActiveAt,
         idleTimeoutMinutes: state.idleTimeoutMinutes,
         sessionExpired: state.sessionExpired,
+        mustChangePasswordSatisfied: state.mustChangePasswordSatisfied,
       }),
       // If Revoke/logout set the sign-out flag, ignore any late-written persist blob.
       merge: (persisted, current) => {

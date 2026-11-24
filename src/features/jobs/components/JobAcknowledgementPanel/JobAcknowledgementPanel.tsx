@@ -6,16 +6,24 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
 import {
-  ATTACHMENT_UPLOAD_OPTIONS,
-  handleValidatedFileInput,
+  ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
+  handleValidatedMultiFileInput,
 } from '@/lib/fileUploadValidation';
 import { isUuid } from '@/lib/isUuid';
 import { useAuthStore } from '@/store/authStore';
-import { triggerBlobDownload } from '@/features/files/utils/triggerBlobDownload';
+import { openPdfBlobInNewTab } from '@/features/files/utils/pdfBranding';
+import { blobLooksLikePdf } from '@/features/files/utils/blobLooksLikePdf';
+import {
+  openBlankPreviewTab,
+  openBlobInNewTab,
+  triggerBlobDownload,
+} from '@/features/files/utils/triggerBlobDownload';
 import { ApiDataView } from '../ApiDataView';
 import { jobService } from '../../services/job.service';
-import { jobKeys, useJobContainers } from '../../hooks/useJobs';
+import { jobKeys, useJob, useJobContainers } from '../../hooks/useJobs';
+import { isAirwayBillJobType } from '../../utils/jobDetailTabs';
 import { getErrorMessage } from '../../utils/getErrorMessage';
+import { pickAcknowledgementFromView } from '../../utils/normalizeJob';
 import type { DeliveryAcknowledgement } from '../../types/job.types';
 
 function statusVariant(
@@ -36,37 +44,61 @@ interface JobAcknowledgementPanelProps {
 /** Admin delivery acknowledgement — send → proof attach / resend → customer → receive. */
 export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps) {
   const accessToken = useAuthStore((s) => s.accessToken);
+  const tenantId = useAuthStore((s) => s.user?.tenantId);
   const qc = useQueryClient();
   const fileRef = useRef<HTMLInputElement>(null);
   const proofRef = useRef<HTMLInputElement>(null);
   const [error, setError] = useState<string | null>(null);
   const [msg, setMsg] = useState<string | null>(null);
 
-  const query = useQuery({
-    queryKey: [...jobKeys.all, 'acknowledgement', jobId] as const,
-    queryFn: () => jobService.getAcknowledgement(jobId),
-    enabled: Boolean(accessToken) && isUuid(jobId),
-  });
-  const { data: containers = [] } = useJobContainers(jobId);
+  const { data: job } = useJob(jobId);
+  const { data: containers = [], isLoading: containersLoading } = useJobContainers(jobId);
+  const isAir = isAirwayBillJobType(job?.job_type);
+  /** Air jobs use the containers API as MAWB rows — label only; wire still uses container_id. */
+  const unitLabel = isAir ? 'MAWB' : 'Container';
+  const unitLabelLower = isAir ? 'MAWB' : 'container';
 
   const [containerId, setContainerId] = useState('');
   const [message, setMessage] = useState('');
-  const [file, setFile] = useState<File | null>(null);
-  const [proofFile, setProofFile] = useState<File | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
+  const [proofFiles, setProofFiles] = useState<File[]>([]);
   const [receiveNotes, setReceiveNotes] = useState('');
 
-  const containerOptions = useMemo(
-    () =>
-      containers
-        .filter((c) => isUuid(c.id))
-        .map((c) => ({
-          value: c.id,
-          label: c.container_number?.trim() || c.id.slice(0, 8).toUpperCase(),
-        })),
-    [containers],
-  );
+  // Full envelope once — BE returns containers[] each with nested acknowledgement.
+  const viewQuery = useQuery({
+    queryKey: [...jobKeys.all, 'acknowledgement', jobId, 'view'] as const,
+    queryFn: () => jobService.getAcknowledgementView(jobId),
+    enabled: Boolean(accessToken) && isUuid(jobId) && !containersLoading,
+  });
 
-  const ack: DeliveryAcknowledgement | undefined = query.data;
+  const containerOptions = useMemo(() => {
+    const fromView = (viewQuery.data?.containers ?? [])
+      .filter((c) => isUuid(c.id))
+      .map((c) => ({
+        value: c.id,
+        label: c.container_number?.trim() || c.id.slice(0, 8).toUpperCase(),
+      }));
+    if (fromView.length) return fromView;
+    return containers
+      .filter((c) => isUuid(c.id))
+      .map((c) => ({
+        value: c.id,
+        label: c.container_number?.trim() || c.id.slice(0, 8).toUpperCase(),
+      }));
+  }, [viewQuery.data?.containers, containers]);
+  const hasContainers = containerOptions.length > 0;
+  const containerRequired = hasContainers;
+  const containerReady = !containerRequired || isUuid(containerId);
+
+  const ack: DeliveryAcknowledgement | undefined = useMemo(() => {
+    if (!viewQuery.data) return undefined;
+    if (hasContainers && !isUuid(containerId)) return undefined;
+    return pickAcknowledgementFromView(
+      viewQuery.data,
+      hasContainers ? containerId : null,
+    );
+  }, [viewQuery.data, hasContainers, containerId]);
+
   const status = (ack?.status || 'DRAFT').toUpperCase();
   const customerMarked =
     ack?.customer_marked_received === true ||
@@ -97,34 +129,59 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
   const adminText = ack?.admin_message || ack?.template_message || ack?.remarks;
 
   const attachmentsQuery = useQuery({
-    queryKey: [...jobKeys.all, 'acknowledgement', jobId, 'attachments'] as const,
-    queryFn: () => jobService.listAcknowledgementAttachments(jobId),
-    enabled: Boolean(accessToken) && isUuid(jobId) && (canAttachProof || hasProof || fieldsLocked),
+    queryKey: [
+      ...jobKeys.all,
+      'acknowledgement',
+      jobId,
+      containerId || 'none',
+      'attachments',
+    ] as const,
+    queryFn: () =>
+      jobService.listAcknowledgementAttachments(jobId, {
+        ...(isUuid(containerId) ? { container_id: containerId } : {}),
+      }),
+    enabled:
+      Boolean(accessToken) &&
+      isUuid(jobId) &&
+      containerReady &&
+      (canAttachProof || hasProof || fieldsLocked),
   });
-
+  const query = viewQuery;
   const send = useMutation({
-    mutationFn: (opts?: { proofOnly?: boolean; proof?: File | null }) =>
-      jobService.sendAcknowledgement(jobId, {
+    mutationFn: (opts?: { proofOnly?: boolean; proof?: File[] }) => {
+      if (containerRequired && !isUuid(containerId)) {
+        throw new Error(`Select a ${unitLabelLower} before sending acknowledgement.`);
+      }
+      return jobService.sendAcknowledgement(jobId, {
         ...(opts?.proofOnly
-          ? { proof_only: true, file: opts.proof ?? undefined }
+          ? {
+              proof_only: true,
+              files: opts.proof?.length ? opts.proof : undefined,
+              ...(isUuid(containerId) ? { container_id: containerId } : {}),
+            }
           : {
               message: message.trim(),
-              ...(containerId.trim() ? { container_id: containerId.trim() } : {}),
-              ...(file ? { file } : {}),
+              ...(isUuid(containerId) ? { container_id: containerId } : {}),
+              ...(files.length ? { files } : {}),
             }),
-      }),
-    onSuccess: (data) => {
-      qc.setQueryData([...jobKeys.all, 'acknowledgement', jobId], data);
-      void qc.invalidateQueries({ queryKey: [...jobKeys.all, 'acknowledgement', jobId] });
-      setFile(null);
-      setProofFile(null);
+      });
+    },
+    onSuccess: () => {
+      void qc.invalidateQueries({
+        queryKey: [...jobKeys.all, 'acknowledgement', jobId],
+      });
+      setFiles([]);
+      setProofFiles([]);
       if (fileRef.current) fileRef.current.value = '';
       if (proofRef.current) proofRef.current.value = '';
     },
   });
 
   const uploadProof = useMutation({
-    mutationFn: (f: File) => jobService.uploadAcknowledgementAttachment(jobId, f),
+    mutationFn: (picked: File[]) =>
+      jobService.uploadAcknowledgementAttachments(jobId, picked, {
+        ...(isUuid(containerId) ? { container_id: containerId } : {}),
+      }),
     onSuccess: () => {
       void attachmentsQuery.refetch();
       void qc.invalidateQueries({ queryKey: [...jobKeys.all, 'acknowledgement', jobId] });
@@ -133,17 +190,54 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
 
   const downloadProof = useMutation({
     mutationFn: async ({
-      attachmentId,
-      fileName,
+      attachment,
+      open,
+      previewWindow,
     }: {
-      attachmentId: string;
-      fileName?: string;
+      attachment: {
+        id?: string;
+        file_name?: string;
+        file_url?: string;
+        s3_key?: string;
+        download_url?: string;
+        download_path?: string;
+        url?: string;
+      };
+      /** Open in a new tab (PDF/image) instead of forcing a download. */
+      open?: boolean;
+      /** Sync-opened tab from click — required on live so Open is not left on about:blank. */
+      previewWindow?: Window | null;
     }) => {
-      const blob = await jobService.downloadAcknowledgementAttachment(
-        jobId,
-        attachmentId,
-      );
-      triggerBlobDownload(blob, fileName || 'acknowledgement-proof');
+      const name = attachment.file_name || 'acknowledgement-proof';
+      try {
+        const blob = await jobService.fetchAcknowledgementProofBlob(
+          jobId,
+          attachment,
+          tenantId,
+        );
+        if (open) {
+          if (blob.size < 64) {
+            throw new Error('Downloaded file is empty or not a viewable document.');
+          }
+          // Proof files: open as-is (no invoice PDF branding stamp).
+          if (await blobLooksLikePdf(blob)) {
+            openPdfBlobInNewTab(blob, previewWindow ?? undefined, name);
+            return;
+          }
+          await openBlobInNewTab(blob, previewWindow ?? null, { filename: name });
+          return;
+        }
+        triggerBlobDownload(blob, name);
+      } catch (err) {
+        if (previewWindow && !previewWindow.closed) {
+          try {
+            previewWindow.close();
+          } catch {
+            /* ignore */
+          }
+        }
+        throw err;
+      }
     },
   });
 
@@ -151,16 +245,37 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
     mutationFn: () =>
       jobService.receiveAcknowledgement(jobId, {
         ...(receiveNotes.trim() ? { notes: receiveNotes.trim() } : {}),
+        ...(isUuid(containerId) ? { container_id: containerId } : {}),
       }),
-    onSuccess: (data) => {
-      qc.setQueryData([...jobKeys.all, 'acknowledgement', jobId], data);
-      void qc.invalidateQueries({ queryKey: [...jobKeys.all, 'acknowledgement', jobId] });
+    onSuccess: () => {
+      void qc.invalidateQueries({
+        queryKey: [...jobKeys.all, 'acknowledgement', jobId],
+      });
     },
   });
 
   const generatePdf = useMutation({
-    mutationFn: () => jobService.generateAcknowledgementPdf(jobId),
+    mutationFn: () =>
+      jobService.generateAcknowledgementPdf(jobId, {
+        ...(isUuid(containerId) ? { container_id: containerId } : {}),
+      }),
   });
+
+  // Auto-select single container; keep multi selection valid.
+  useEffect(() => {
+    if (!hasContainers) {
+      if (containerId) setContainerId('');
+      return;
+    }
+    if (containerOptions.length === 1) {
+      const only = containerOptions[0].value;
+      if (containerId !== only) setContainerId(only);
+      return;
+    }
+    if (containerId && !containerOptions.some((o) => o.value === containerId)) {
+      setContainerId('');
+    }
+  }, [hasContainers, containerOptions, containerId]);
 
   useEffect(() => {
     if (!canFirstSend || message.trim()) return;
@@ -168,15 +283,10 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
     if (seed) setMessage(seed);
   }, [canFirstSend, ack?.template_message, ack?.admin_message, message]);
 
-  useEffect(() => {
-    if (!ack?.container_id || containerId) return;
-    setContainerId(ack.container_id);
-  }, [ack?.container_id, containerId]);
-
   const firstSendDisabled =
     send.isPending ||
     !message.trim() ||
-    (containerOptions.length > 1 && !containerId.trim());
+    (containerRequired && !isUuid(containerId));
 
   const proofRows = useMemo(() => {
     const fromApi = attachmentsQuery.data ?? [];
@@ -218,12 +328,18 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
           <p className="text-[var(--color-neutral-400)]">Loading acknowledgement…</p>
         ) : null}
 
+        {hasContainers && !isUuid(containerId) && containerOptions.length > 1 ? (
+          <p className="text-[13px] text-[var(--color-neutral-500)]">
+            Select a {unitLabelLower} to load or send its acknowledgement.
+          </p>
+        ) : null}
+
         {waitingOnCustomer ? (
           <p className="rounded-sm border border-[var(--color-warning-200,#FDE68A)] bg-[var(--color-warning-50,#FFFBEB)] px-3 py-2 text-[13px] text-[var(--color-neutral-700)]">
             Sent to customer — waiting for them to mark received in the portal.
             {ack?.sent_at ? ` Sent at ${ack.sent_at}.` : ''}
             {fieldsLocked
-              ? ' Message and container are locked; you can still attach proof or resend with a file.'
+              ? ` Message and ${unitLabelLower} are locked; you can still attach proof or resend with a file.`
               : ''}
           </p>
         ) : null}
@@ -243,7 +359,7 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
             <p className="mt-1 whitespace-pre-wrap text-[13px] text-[#0f172a]">{adminText}</p>
             {ack?.container_id ? (
               <p className="mt-1 text-[12px] text-[#64748b]">
-                Container:{' '}
+                {unitLabel}:{' '}
                 {containerOptions.find((o) => o.value === ack.container_id)?.label ||
                   ack.container_id.slice(0, 8)}
               </p>
@@ -292,31 +408,46 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
           </div>
         ) : null}
 
+        {hasContainers ? (
+          <label className="block text-sm">
+            <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
+              {unitLabel}
+              {containerRequired ? ' *' : ''}
+            </span>
+            <select
+              className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
+              value={containerId}
+              onChange={(e) => {
+                setContainerId(e.target.value);
+                setMessage('');
+                setError(null);
+                setMsg(null);
+              }}
+              disabled={containersLoading}
+            >
+              {containerOptions.length > 1 ? (
+                <option value="">Select {unitLabelLower}…</option>
+              ) : null}
+              {containerOptions.map((opt) => (
+                <option key={opt.value} value={opt.value}>
+                  {opt.label}
+                </option>
+              ))}
+            </select>
+            <p className="mt-1 text-[11px] text-[var(--color-neutral-400)]">
+              Acknowledgement is sent per {unitLabelLower}. Switch {unitLabelLower} to view or send
+              another.
+            </p>
+          </label>
+        ) : null}
+
         {canFirstSend ? (
           <div className="grid gap-3 rounded-sm border border-[var(--fresa-border,#C9D3DF)] bg-[var(--fresa-page-bg,#F4F6F9)] p-3 sm:grid-cols-2">
             <p className="sm:col-span-2 text-[12px] text-[#64748b]">
-              Compose a written acknowledgement for the customer. After the first send, message and
-              container lock; proof can still be attached later.
+              Compose a written acknowledgement for the customer
+              {hasContainers ? ` for the selected ${unitLabelLower}` : ''}. After the first send,
+              message and {unitLabelLower} lock; proof can still be attached later.
             </p>
-            {containerOptions.length > 1 ? (
-              <label className="block text-sm sm:col-span-2">
-                <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
-                  Container
-                </span>
-                <select
-                  className="h-9 w-full rounded-md border border-[var(--color-neutral-200)] bg-white px-3 text-sm"
-                  value={containerId}
-                  onChange={(e) => setContainerId(e.target.value)}
-                >
-                  <option value="">Select container…</option>
-                  {containerOptions.map((opt) => (
-                    <option key={opt.value} value={opt.value}>
-                      {opt.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-            ) : null}
             <label className="block text-sm sm:col-span-2">
               <span className="mb-1 block text-[11px] font-semibold uppercase text-[var(--color-neutral-500)]">
                 Message to customer *
@@ -332,13 +463,14 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
               <input
                 ref={fileRef}
                 type="file"
+                multiple
                 className="hidden"
                 onChange={(e) =>
-                  handleValidatedFileInput(
+                  handleValidatedMultiFileInput(
                     e.target.files,
-                    setFile,
-                    undefined,
-                    ATTACHMENT_UPLOAD_OPTIONS,
+                    setFiles,
+                    (msg) => setError(msg),
+                    ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
                   )
                 }
               />
@@ -349,7 +481,9 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                 leftIcon={<Paperclip className="h-3.5 w-3.5" />}
                 onClick={() => fileRef.current?.click()}
               >
-                {file ? file.name : 'Optional attachment with send'}
+                {files.length
+                  ? `${files.length} file${files.length === 1 ? '' : 's'} selected`
+                  : 'Optional attachments with send'}
               </Button>
               <Button
                 type="button"
@@ -386,11 +520,50 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
               <ul className="space-y-1.5">
                 {proofRows.map((row) => {
                   const rec = row as Record<string, unknown>;
-                  const id = String(rec.id ?? '');
+                  const id = String(rec.id ?? rec.attachment_id ?? '');
                   const name = String(
-                    rec.file_name ?? rec.fileName ?? rec.name ?? id.slice(0, 8),
+                    (rec.file_name ??
+                      rec.fileName ??
+                      rec.filename ??
+                      rec.name ??
+                      id.slice(0, 8)) ||
+                      'proof',
                   );
-                  const url = typeof rec.file_url === 'string' ? rec.file_url : undefined;
+                  const attachment = {
+                    id: id || undefined,
+                    file_name: name,
+                    file_url:
+                      (typeof rec.file_url === 'string' && rec.file_url) ||
+                      (typeof rec.fileUrl === 'string' && rec.fileUrl) ||
+                      undefined,
+                    url: typeof rec.url === 'string' ? rec.url : undefined,
+                    s3_key:
+                      (typeof rec.s3_key === 'string' && rec.s3_key) ||
+                      (typeof rec.s3Key === 'string' && rec.s3Key) ||
+                      undefined,
+                    download_url:
+                      typeof rec.download_url === 'string'
+                        ? rec.download_url
+                        : typeof rec.downloadUrl === 'string'
+                          ? rec.downloadUrl
+                          : undefined,
+                    download_path:
+                      typeof rec.download_path === 'string'
+                        ? rec.download_path
+                        : typeof rec.downloadPath === 'string'
+                          ? rec.downloadPath
+                          : undefined,
+                  };
+                  const canFetch = Boolean(
+                    attachment.id ||
+                      attachment.file_url ||
+                      attachment.url ||
+                      attachment.s3_key ||
+                      attachment.download_url ||
+                      attachment.download_path,
+                  );
+                  const busy = downloadProof.isPending;
+                  // Never use raw file_url as <a href> — /files/… paths hit SPA 404.
                   return (
                     <li
                       key={id || name}
@@ -398,27 +571,47 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                     >
                       <span className="truncate font-medium text-[#0f172a]">{name}</span>
                       <div className="flex gap-1">
-                        {url ? (
-                          <a
-                            className="text-[var(--color-primary)] underline"
-                            href={url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            Open
-                          </a>
-                        ) : id ? (
+                        {canFetch ? (
                           <Button
                             type="button"
                             size="sm"
                             variant="secondary"
-                            disabled={downloadProof.isPending}
-                            onClick={() =>
-                              void downloadProof.mutateAsync({
-                                attachmentId: id,
-                                fileName: name,
-                              })
-                            }
+                            disabled={busy}
+                            onClick={() => {
+                              setError(null);
+                              let preview: Window | null = null;
+                              try {
+                                // Must open synchronously on click — after await, live browsers
+                                // leave about:blank / block the popup.
+                                preview = openBlankPreviewTab({ filename: name });
+                              } catch (err) {
+                                setError(getErrorMessage(err));
+                                return;
+                              }
+                              void downloadProof
+                                .mutateAsync({
+                                  attachment,
+                                  open: true,
+                                  previewWindow: preview,
+                                })
+                                .catch((err) => setError(getErrorMessage(err)));
+                            }}
+                          >
+                            Open
+                          </Button>
+                        ) : null}
+                        {canFetch ? (
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="secondary"
+                            disabled={busy}
+                            onClick={() => {
+                              setError(null);
+                              void downloadProof
+                                .mutateAsync({ attachment, open: false })
+                                .catch((err) => setError(getErrorMessage(err)));
+                            }}
                           >
                             Download
                           </Button>
@@ -435,13 +628,14 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                 <input
                   ref={proofRef}
                   type="file"
+                  multiple
                   className="hidden"
                   onChange={(e) =>
-                    handleValidatedFileInput(
+                    handleValidatedMultiFileInput(
                       e.target.files,
-                      setProofFile,
-                      undefined,
-                      ATTACHMENT_UPLOAD_OPTIONS,
+                      setProofFiles,
+                      (msg) => setError(msg),
+                      ACKNOWLEDGEMENT_UPLOAD_OPTIONS,
                     )
                   }
                 />
@@ -453,18 +647,20 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                   disabled={uploadProof.isPending}
                   onClick={() => proofRef.current?.click()}
                 >
-                  {proofFile ? proofFile.name : 'Choose proof file'}
+                  {proofFiles.length
+                    ? `${proofFiles.length} file${proofFiles.length === 1 ? '' : 's'} selected`
+                    : 'Choose proof files'}
                 </Button>
                 <Button
                   type="button"
                   size="sm"
                   variant="create"
-                  disabled={!proofFile || uploadProof.isPending}
+                  disabled={!proofFiles.length || uploadProof.isPending}
                   onClick={() =>
                     void run(async () => {
-                      if (!proofFile) return;
-                      await uploadProof.mutateAsync(proofFile);
-                      setProofFile(null);
+                      if (!proofFiles.length) return;
+                      await uploadProof.mutateAsync(proofFiles);
+                      setProofFiles([]);
                       if (proofRef.current) proofRef.current.value = '';
                     }, 'Proof attached.')
                   }
@@ -476,10 +672,14 @@ export function JobAcknowledgementPanel({ jobId }: JobAcknowledgementPanelProps)
                     type="button"
                     size="sm"
                     leftIcon={<Send className="h-3.5 w-3.5" />}
-                    disabled={!proofFile || send.isPending}
+                    disabled={!proofFiles.length || send.isPending}
                     onClick={() =>
                       void run(
-                        () => send.mutateAsync({ proofOnly: true, proof: proofFile }),
+                        () =>
+                          send.mutateAsync({
+                            proofOnly: true,
+                            proof: proofFiles,
+                          }),
                         'Proof resent to customer.',
                       )
                     }

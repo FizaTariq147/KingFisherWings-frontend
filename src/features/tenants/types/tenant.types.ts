@@ -22,6 +22,11 @@ export interface Tenant extends CreateTenantFormValues {
   available_modules?: string[];
   /** Feature flag: quote requests bridge (PATCH /tenants/:id/features). */
   quote_requests_bridge?: boolean;
+  /**
+   * Super Admin only — current Tenant Admin login plaintext (product request).
+   * Auth still uses Argon2 hashes; never shown on tenant JWT responses.
+   */
+  password_plain?: string | null;
 }
 
 /** PATCH /tenants/:id/features */

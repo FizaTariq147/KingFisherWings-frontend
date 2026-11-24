@@ -4,7 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { AlertCircle, Plus, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card } from '@/components/ui/Card';
+import { EmptyState } from '@/components/erp';
+import { useAuth } from '@/hooks/useAuth';
 import type { InvoiceStatus, InvoiceType } from '@/features/invoices/constants/invoice.constants';
+import { canAccessInvoiceSide } from '@/features/invoices/utils/invoiceListVisibility';
 import { CREDIT_NOTE_ROUTE_PREFIX } from '../api/creditNote.api';
 import { CreditNoteFilters } from '../components/CreditNoteFilters';
 import { CreditNoteTable } from '../components/CreditNoteTable';
@@ -24,6 +27,8 @@ function useDebouncedValue<T>(value: T, delayMs: number): T {
 
 export default function CreditNoteListPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  const allowed = canAccessInvoiceSide(user, 'purchase');
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState<InvoiceStatus | 'all'>('all');
   const [invoiceType, setInvoiceType] = useState<InvoiceType | 'all'>('all');
@@ -46,9 +51,31 @@ export default function CreditNoteListPage() {
     to_date: toDate || undefined,
   };
 
-  const { data, isLoading, isFetching, isError, error, refetch } = useCreditNotes(listParams);
+  const { data, isLoading, isFetching, isError, error, refetch } = useCreditNotes(
+    listParams,
+    { enabled: allowed },
+  );
   const creditNotes = data?.creditNotes ?? [];
   const meta = data?.meta;
+
+  if (!allowed) {
+    return (
+      <div className="space-y-4">
+        <button
+          type="button"
+          className="text-xs font-medium text-[var(--color-neutral-400)] hover:text-[var(--color-neutral-600)] mb-1"
+          onClick={() => navigate('/finance')}
+        >
+          ← Finance
+        </button>
+        <h2 className={appType.pageTitle}>Credit notes</h2>
+        <EmptyState
+          title="Purchase invoices are not enabled for your account."
+          description="Credit notes require “Can see purchase invoices”. Ask a Tenant Admin to enable it."
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">

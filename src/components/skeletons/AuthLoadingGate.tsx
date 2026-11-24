@@ -73,8 +73,10 @@ export function AuthLoadingGate({ children }: AuthLoadingGateProps) {
     return <>{children}</>
   }
 
-  const waitingForMe =
-    Boolean(accessToken) && (!authCtx?.user || Boolean(authCtx?.isLoading))
+  // Block only until the first user is known. Never unmount the router for a
+  // background /auth/me after silent JWT refresh (that wiped form input).
+  // Idle timeout still soft-navigates to /login via SessionExpiryWatcher.
+  const waitingForMe = Boolean(accessToken) && !authCtx?.user
   const waitingForStoreSession = storeAuthenticated && !accessToken
 
   if (restoring || waitingForMe || waitingForStoreSession) {

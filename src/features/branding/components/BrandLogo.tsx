@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { isApiOriginUrl } from '@/lib/safeHttpUrl';
+import { useAuthStore } from '@/store/authStore';
 import {
   isStoredFileUrl,
   toDurableFilesApiPath,
@@ -17,6 +18,11 @@ type Props = {
   authLogoUrl?: string | null;
   alt?: string;
   className?: string;
+  /**
+   * Skip authenticated org/files logo fetch — use the bundled system mark only.
+   * Use on login / Super Admin chrome (no tenant org branding).
+   */
+  systemOnly?: boolean;
 };
 
 /**
@@ -33,8 +39,10 @@ function needsAuthFetch(url: string): boolean {
 }
 
 /**
- * Brand mark with dynamic URL + hard fallback to assets/logo.png.
- * Always prefers authenticated byte fetch so sidebar matches PDFs on every device.
+ * Brand mark with dynamic URL + hard fallback to the bundled King Fisher system logo.
+ *
+ * - Login / Super Admin (`systemOnly`): always system mark — never call /organization/logo.
+ * - Authenticated staff: org logo_url + GET /organization/logo bytes (same source as invoices).
  */
 export function BrandLogo({
   logoUrl,
@@ -43,13 +51,17 @@ export function BrandLogo({
   authLogoUrl,
   alt = 'Company logo',
   className,
+  systemOnly = false,
 }: Props) {
-  const resolved = resolveBrandLogoUrl({
-    logoUrl,
-    organizationLogoUrl,
-    tenantLogoUrl,
-    authLogoUrl,
-  });
+  const accessToken = useAuthStore((s) => s.accessToken);
+  const resolved = systemOnly
+    ? DEFAULT_BRAND_LOGO_URL
+    : resolveBrandLogoUrl({
+        logoUrl,
+        organizationLogoUrl,
+        tenantLogoUrl,
+        authLogoUrl,
+      });
   const [src, setSrc] = useState(resolved || DEFAULT_BRAND_LOGO_URL);
 
   useEffect(() => {
@@ -57,11 +69,24 @@ export function BrandLogo({
     let objectUrl: string | null = null;
 
     const run = async () => {
+      if (systemOnly) {
+        setSrc(DEFAULT_BRAND_LOGO_URL);
+        return;
+      }
+
       const preferred =
         resolved && resolved !== DEFAULT_BRAND_LOGO_URL ? resolved : null;
+      const hasStaffSession = Boolean(accessToken);
 
-      // Network-first (profile → /files → /organization/logo) so all sessions stay in sync.
-      // Do not rely on this browser’s localStorage as the source of truth.
+      // Unauthenticated pages with no tenant logo: system mark only.
+      // Do not probe /organization/logo (401 without staff JWT).
+      if (!preferred && !hasStaffSession) {
+        setSrc(DEFAULT_BRAND_LOGO_URL);
+        return;
+      }
+
+      // Staff session: network-first (profile URL → /files → /organization/logo)
+      // so Tenant Admin uploads appear in sidebar for every staff user/device.
       try {
         const bytes = await fetchOrganizationLogoBytes(preferred);
         if (cancelled) return;
@@ -92,7 +117,7 @@ export function BrandLogo({
       cancelled = true;
       if (objectUrl) URL.revokeObjectURL(objectUrl);
     };
-  }, [resolved]);
+  }, [resolved, systemOnly, accessToken]);
 
   return (
     <img

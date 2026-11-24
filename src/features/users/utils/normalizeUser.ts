@@ -10,6 +10,8 @@ const BOOLEAN_DEFAULTS: Pick<
   | 'can_see_cost'
   | 'can_see_gp'
   | 'can_see_invoices'
+  | 'can_see_sale_invoices'
+  | 'can_see_purchase_invoices'
   | 'can_see_payments'
   | 'can_see_bank_balances'
   | 'can_see_ar_ap'
@@ -24,6 +26,8 @@ const BOOLEAN_DEFAULTS: Pick<
   can_see_cost: false,
   can_see_gp: false,
   can_see_invoices: false,
+  can_see_sale_invoices: false,
+  can_see_purchase_invoices: false,
   can_see_payments: false,
   can_see_bank_balances: false,
   can_see_ar_ap: false,
@@ -120,6 +124,11 @@ export function normalizeUser(raw: Record<string, unknown>): User {
         : undefined),
     ...(visibleJobTypes !== undefined ? { visible_job_types: visibleJobTypes } : {}),
     ...(unrestrictedOps !== undefined ? { unrestricted_ops: unrestrictedOps } : {}),
+    password_plain: (() => {
+      const v = raw.password_plain ?? raw.passwordPlain;
+      if (typeof v === 'string' && v.trim()) return v.trim();
+      return null;
+    })(),
   };
 }
 

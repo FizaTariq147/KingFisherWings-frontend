@@ -24,6 +24,8 @@ export function userToFormValues(user: User): CreateUserFormValues & UpdateUserF
     can_see_cost: user.can_see_cost,
     can_see_gp: user.can_see_gp,
     can_see_invoices: user.can_see_invoices,
+    can_see_sale_invoices: user.can_see_sale_invoices,
+    can_see_purchase_invoices: user.can_see_purchase_invoices,
     can_see_payments: user.can_see_payments,
     can_see_bank_balances: user.can_see_bank_balances,
     can_see_ar_ap: user.can_see_ar_ap,

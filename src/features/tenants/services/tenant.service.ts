@@ -116,7 +116,7 @@ export const tenantService = {
     };
   },
 
-  /** GET /tenants/statistics — Trial includes subscription_plan TRIAL tenants */
+  /** GET /tenants/statistics — Total matches Tenants → All list count. */
   async getStatistics(): Promise<TenantStatistics> {
     const [statsRes, listRes] = await Promise.all([
       superAdminApiClient.get<ApiEnvelope<TenantStatistics>>(TENANT_API.statistics),
@@ -124,7 +124,10 @@ export const tenantService = {
     ]);
 
     const apiStats = normalizeTenantStatistics(statsRes.data?.data);
-    const tenants = normalizeTenants(listRes.data?.data);
+    // Same filter as list() All tab — exclude soft-deleted / locally remembered deletes.
+    const tenants = normalizeTenants(listRes.data?.data).filter(
+      (tenant) => !isDeletedTenant(tenant) && !isRememberedDeletedTenant(tenant.id),
+    );
 
     return deriveTenantStatisticsFromList(tenants, apiStats);
   },

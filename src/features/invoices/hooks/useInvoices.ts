@@ -17,12 +17,15 @@ export const invoiceKeys = {
   pdf: (id: string) => [...invoiceKeys.all, 'pdf', id] as const,
 };
 
-export function useInvoices(params: InvoiceListParams) {
+export function useInvoices(
+  params: InvoiceListParams,
+  options?: { enabled?: boolean },
+) {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: invoiceKeys.list(params),
     queryFn: () => invoiceService.list(params),
-    enabled: Boolean(accessToken),
+    enabled: Boolean(accessToken) && options?.enabled !== false,
     placeholderData: keepPreviousData,
     staleTime: 30_000,
   });
@@ -53,12 +56,12 @@ export function useInvoiceHistory(id: string, enabled = true) {
   });
 }
 
-export function useOverdueInvoices() {
+export function useOverdueInvoices(options?: { enabled?: boolean }) {
   const accessToken = useAuthStore((s) => s.accessToken);
   return useQuery({
     queryKey: invoiceKeys.overdue(),
     queryFn: () => invoiceService.listOverdue(),
-    enabled: Boolean(accessToken),
+    enabled: Boolean(accessToken) && options?.enabled !== false,
     staleTime: 30_000,
   });
 }

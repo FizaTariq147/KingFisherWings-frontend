@@ -42,7 +42,9 @@ export async function triggerBrandedPdfDownload(
 }
 
 export function openBlankPreviewTab(_options?: BlobOpenOptions): Window {
-  const opened = window.open('about:blank', '_blank', 'noopener,noreferrer');
+  // No noopener — we must keep a live Window handle to navigate to a blob: URL after fetch.
+  // noopener + blob often leaves the tab stuck on about:blank (esp. production / Chrome).
+  const opened = window.open('about:blank', '_blank');
   if (!opened) {
     throw new Error('Pop-up blocked. Allow pop-ups to preview this file.');
   }

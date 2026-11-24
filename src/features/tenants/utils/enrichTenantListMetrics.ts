@@ -1,6 +1,6 @@
 import { superAdminApiClient, type ApiEnvelope } from '@/lib/superAdminApiClient';
-import { USER_API } from '@/features/users/api/user.api';
 import { TENANT_API } from '../api/tenant.api';
+import { countUsersForTenant } from '../services/tenantUsers.service';
 import type { Tenant } from '../types/tenant.types';
 import { normalizeTenant } from './normalizeTenant';
 
@@ -8,18 +8,6 @@ function asRecord(value: unknown): Record<string, unknown> | null {
   return value && typeof value === 'object' && !Array.isArray(value)
     ? (value as Record<string, unknown>)
     : null;
-}
-
-function unwrapList(data: unknown): unknown[] {
-  if (Array.isArray(data)) return data;
-  const record = asRecord(data);
-  if (!record) return [];
-  if (Array.isArray(record.data)) return record.data;
-  if (Array.isArray(record.items)) return record.items;
-  if (Array.isArray(record.results)) return record.results;
-  if (Array.isArray(record.users)) return record.users;
-  if (Array.isArray(record.tenants)) return record.tenants;
-  return [];
 }
 
 function pickString(...values: unknown[]): string {
@@ -36,20 +24,6 @@ function coerceOptionalNumber(value: unknown): number | undefined {
     if (Number.isFinite(n)) return n;
   }
   return undefined;
-}
-
-function pickMetaTotal(payload: unknown): number | undefined {
-  const record = asRecord(payload);
-  if (!record) return undefined;
-
-  const meta =
-    asRecord(record.meta) ||
-    asRecord(asRecord(record.data)?.meta) ||
-    null;
-
-  return coerceOptionalNumber(
-    meta?.total ?? meta?.totalCount ?? meta?.count ?? record.total,
-  );
 }
 
 function pickNestedCompany(raw: Record<string, unknown>): Record<string, unknown> | null {
@@ -164,68 +138,6 @@ export function pickTenantUserCountFromPayload(tenant: Tenant): number | undefin
   return deepFindUserCount(raw);
 }
 
-function pickUserTenantId(user: Record<string, unknown>): string {
-  return pickString(user.tenant_id, user.tenantId, asRecord(user.tenant)?.id);
-}
-
-/**
- * Super Admin JWT has no tenant scope, and X-Tenant-Id is ignored by /users.
- * If the platform token can list users globally, group counts by tenant_id.
- * Returns null when the call fails or the list is empty / unusable.
- */
-async function fetchGlobalUserCountsByTenant(): Promise<Map<string, number> | null> {
-  const pageSize = 100;
-  let page = 1;
-  let totalPages = 1;
-  const counts = new Map<string, number>();
-  const seenIds = new Set<string>();
-
-  try {
-    while (page <= totalPages && page <= 100) {
-      const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(USER_API.list, {
-        params: { page, limit: pageSize },
-      });
-
-      const envelope = res.data ?? res;
-      const list = unwrapList(asRecord(envelope)?.data ?? envelope)
-        .map((item) => asRecord(item))
-        .filter(Boolean) as Record<string, unknown>[];
-
-      if (page === 1 && list.length === 0) {
-        const metaTotal = pickMetaTotal(envelope);
-        // Empty first page → Super Admin cannot read tenant users this way.
-        if (metaTotal == null || metaTotal === 0) return null;
-      }
-
-      for (const user of list) {
-        if (user.deleted_at || user.deletedAt) continue;
-        const id = pickString(user.id);
-        if (id) {
-          if (seenIds.has(id)) continue;
-          seenIds.add(id);
-        }
-        const tenantId = pickUserTenantId(user);
-        if (!tenantId) continue;
-        counts.set(tenantId, (counts.get(tenantId) ?? 0) + 1);
-      }
-
-      const metaTotal = pickMetaTotal(envelope);
-      if (metaTotal != null && metaTotal >= 0) {
-        totalPages = Math.max(1, Math.ceil(metaTotal / pageSize));
-      } else {
-        totalPages = list.length < pageSize ? page : page + 1;
-      }
-
-      if (list.length === 0) break;
-      page += 1;
-    }
-  } catch {
-    return null;
-  }
-
-  return counts.size > 0 ? counts : null;
-}
-
 async function fetchTenantDetailCount(tenantId: string): Promise<number | undefined> {
   try {
     const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(TENANT_API.byId(tenantId));
@@ -240,23 +152,19 @@ async function fetchTenantDetailCount(tenantId: string): Promise<number | undefi
 /**
  * Fill each tenant row with company name + user count for that tenant.
  *
- * Maps only to documented Super Admin APIs:
- * - GET /tenants and GET /tenants/{id} payload fields
- * - GET /users (paginated) grouped by tenant_id when the platform token can list users
+ * Platform Super Admin must not call tenant ERP /users (403).
+ * Sources: GET /tenants payload → GET /tenants/{id}/users → GET /tenants/{id} embed.
  */
 export async function enrichTenantListMetrics(tenants: Tenant[]): Promise<Tenant[]> {
   if (!tenants.length) return tenants;
-
-  const needsCounts = tenants.some((t) => pickTenantUserCountFromPayload(t) == null);
-  const globalCounts = needsCounts ? await fetchGlobalUserCountsByTenant() : null;
 
   return Promise.all(
     tenants.map(async (tenant) => {
       const company = resolveOwnCompany(tenant);
       let total_users = pickTenantUserCountFromPayload(tenant);
 
-      if (total_users == null && globalCounts) {
-        total_users = globalCounts.get(tenant.id) ?? 0;
+      if (total_users == null) {
+        total_users = await countUsersForTenant(tenant.id);
       }
 
       if (total_users == null) {
@@ -267,7 +175,7 @@ export async function enrichTenantListMetrics(tenants: Tenant[]): Promise<Tenant
         ...tenant,
         company_name: company.name || tenant.company_name || '',
         company_code: company.code || tenant.company_code || '',
-        total_users: total_users ?? (globalCounts ? 0 : tenant.total_users),
+        total_users,
       };
     }),
   );

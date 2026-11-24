@@ -23,7 +23,7 @@ import { jobService } from '@/features/jobs/services/job.service';
 import type { Job } from '@/features/jobs/types/job.types';
 import { isAirwayBillJobType } from '@/features/jobs/utils/jobDetailTabs';
 import { jobDetailPath, jobDisplayNumber } from '@/features/jobs/utils/jobRoute';
-import { pickJobContainerDisplay } from '@/features/jobs/utils/normalizeJobContainers';
+import { listJobContainerDisplays } from '@/features/jobs/utils/normalizeJobContainers';
 import {
   pickOrgByType,
   resolveOrgPartyDisplay,
@@ -229,9 +229,12 @@ export function ActiveShipmentsPanel({
       if (!matchesChip(job, chip)) return false;
       if (!q) return true;
       const awb = jobMawbHawb(job);
-      const containerNo =
-        job.primary_container_number ||
-        job.containers?.find((c) => c.container_number)?.container_number;
+      const containerNos = [
+        job.primary_container_number,
+        ...(job.containers ?? []).map((c) => c.container_number),
+      ]
+        .map((v) => v?.trim())
+        .filter(Boolean);
       const hay = [
         jobDisplayNumber(job),
         jobClient(job, clientNameByJobId.get(job.id)),
@@ -240,7 +243,7 @@ export function ActiveShipmentsPanel({
         job.status,
         awb.mawb,
         awb.hawb,
-        containerNo,
+        ...containerNos,
         job.primary_container_status,
       ]
         .filter(Boolean)
@@ -330,16 +333,24 @@ export function ActiveShipmentsPanel({
     return set;
   }, [airJobsNeedingDetail, airDetailQueries]);
 
-  /** Jobs missing container on list — hydrate from GET /jobs/:id/containers. */
+  /**
+   * Hydrate containers for visible rows so multi-container jobs show every number.
+   * Skip when the list payload already looks complete (matches container_count, or
+   * has 2+ numbers when count is unknown).
+   */
   const jobsNeedingContainers = useMemo(
     () =>
       visibleRows
         .filter((job) => {
           if (!isUuid(job.id)) return false;
-          const has =
-            Boolean(job.primary_container_number?.trim()) ||
-            Boolean(job.containers?.some((c) => c.container_number?.trim()));
-          return !has;
+          const numbered =
+            job.containers?.filter((c) => Boolean(c.container_number?.trim())) ?? [];
+          const count = Number(job.container_count);
+          if (Number.isFinite(count) && count > 0) {
+            return numbered.length < count;
+          }
+          // No count: list often only has primary — fetch unless we already have 2+.
+          return numbered.length <= 1;
         })
         .slice(0, 40),
     [visibleRows],
@@ -554,25 +565,38 @@ export function ActiveShipmentsPanel({
                   job.commodity?.trim() ||
                   job.commodity_description?.trim() ||
                   '—';
+                const listContainers = job.containers?.length
+                  ? job.containers
+                  : undefined;
+                const fetchedContainers = containersByJobId.get(job.id);
+                // Prefer the larger set so multi-container jobs are never truncated to primary.
                 const hydratedContainers =
-                  job.containers?.length
-                    ? job.containers
-                    : containersByJobId.get(job.id);
+                  (fetchedContainers?.length ?? 0) > (listContainers?.length ?? 0)
+                    ? fetchedContainers
+                    : listContainers ?? fetchedContainers;
                 const jobContainerStatus =
                   job.primary_container_status ||
                   job.primary_container_status_code ||
                   '';
-                const container = pickJobContainerDisplay(hydratedContainers, {
+                const containerRows = listJobContainerDisplays(hydratedContainers, {
                   number: job.primary_container_number,
                   status: jobContainerStatus,
                 });
-                const containerNumber = container?.number || '';
-                // Prefer job show-all / primary status so custom catalog codes win over enum defaults.
-                const containerStatus =
-                  jobContainerStatus || container?.status || '';
+                const containerNumbers = containerRows
+                  .map((row) => row.number)
+                  .filter(Boolean);
+                const containerStatuses = containerRows.map((row, i) => {
+                  // Prefer job-level primary status only for the first row when row status empty.
+                  const status =
+                    row.status ||
+                    (i === 0 ? jobContainerStatus : '') ||
+                    '';
+                  return status;
+                });
+                const hasContainerStatus = containerStatuses.some(Boolean);
                 const containerPending =
-                  !containerNumber &&
-                  !containerStatus &&
+                  containerNumbers.length === 0 &&
+                  !hasContainerStatus &&
                   containerLoadingIds.has(job.id);
                 const hydrated = airDetailById.get(job.id);
                 const awb = jobMawbHawb(hydrated ?? job);
@@ -696,11 +720,16 @@ export function ActiveShipmentsPanel({
                       )}
                     </td>
                     <td className="px-3 py-3 align-top">
-                      {containerNumber ? (
-                        <div className="min-w-[100px]">
-                          <p className="text-[11px] font-semibold text-[var(--color-neutral-800)]">
-                            {containerNumber}
-                          </p>
+                      {containerNumbers.length > 0 ? (
+                        <div className="min-w-[100px] space-y-0.5">
+                          {containerNumbers.map((number) => (
+                            <p
+                              key={number}
+                              className="text-[11px] font-semibold text-[var(--color-neutral-800)]"
+                            >
+                              {number}
+                            </p>
+                          ))}
                         </div>
                       ) : containerPending ? (
                         <span className="text-[11px] text-[var(--color-neutral-400)]">…</span>
@@ -709,10 +738,26 @@ export function ActiveShipmentsPanel({
                       )}
                     </td>
                     <td className="px-3 py-3 align-top">
-                      {containerStatus ? (
-                        <span className="inline-flex rounded-full bg-[#EEF2F5] px-2.5 py-1 text-[11px] font-semibold capitalize text-[var(--color-neutral-700)]">
-                          {String(containerStatus).replace(/_/g, ' ').toLowerCase()}
-                        </span>
+                      {hasContainerStatus ? (
+                        <div className="flex min-w-[100px] flex-col items-start gap-1">
+                          {containerStatuses.map((status, i) =>
+                            status ? (
+                              <span
+                                key={`${containerNumbers[i] || i}-${status}`}
+                                className="inline-flex rounded-full bg-[#EEF2F5] px-2.5 py-1 text-[11px] font-semibold capitalize text-[var(--color-neutral-700)]"
+                              >
+                                {String(status).replace(/_/g, ' ').toLowerCase()}
+                              </span>
+                            ) : (
+                              <span
+                                key={`${containerNumbers[i] || i}-empty`}
+                                className="text-[11px] text-[var(--color-neutral-400)]"
+                              >
+                                —
+                              </span>
+                            ),
+                          )}
+                        </div>
                       ) : containerPending ? (
                         <span className="text-[11px] text-[var(--color-neutral-400)]">…</span>
                       ) : (

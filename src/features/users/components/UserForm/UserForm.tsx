@@ -60,6 +60,10 @@ interface UserFormProps {
 function formatFlagLabel(key: string) {
   if (key === 'can_see_sales') return 'Can see sales (job costing sale side)';
   if (key === 'can_see_cost') return 'Can see cost (job costing cost side)';
+  if (key === 'can_see_sale_invoices') return 'Can see sale invoices (customer invoices + debit notes)';
+  if (key === 'can_see_purchase_invoices')
+    return 'Can see purchase invoices (purchase invoices + credit notes)';
+  if (key === 'can_see_invoices') return 'Can see invoices (legacy — prefer sale/purchase flags)';
   return key
     .replace(/^can_see_/, 'Can see ')
     .replace(/^is_/, '')
@@ -91,6 +95,8 @@ const FORM_DEFAULTS: Partial<CreateUserFormValues> = {
   can_see_cost: false,
   can_see_gp: false,
   can_see_invoices: false,
+  can_see_sale_invoices: false,
+  can_see_purchase_invoices: false,
   can_see_payments: false,
   can_see_bank_balances: false,
   can_see_ar_ap: false,

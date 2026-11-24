@@ -9,10 +9,15 @@ import { Button } from '@/components/ui/Button'
 import { authService } from '@/features/auth/services/auth.service'
 import { withAuthThrottleMessage } from '@/features/auth/utils/authThrottleMessage'
 import {
+  armMustChangePasswordSkip,
+  markMustChangePasswordCleared,
+} from '@/features/auth/utils/mustChangePasswordGate'
+import {
   getErpHomePath,
   isTenantUserManagerRole,
   resolveAuthRoleSlug,
 } from '@/features/users/constants/userPermissions'
+import { tenantSlugFromAccessToken } from '@/lib/tenantFromAuth'
 import { useAuthStore } from '@/store/authStore'
 
 const NAVY = '#0A2942'
@@ -59,7 +64,9 @@ export default function ChangePasswordPage() {
   const user = useAuthStore((s) => s.user)
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated)
   const clearMustChangePassword = useAuthStore((s) => s.clearMustChangePassword)
-  const forced = Boolean(user?.mustChangePassword)
+  const accessToken = useAuthStore((s) => s.accessToken)
+  const mustChangeSatisfied = useAuthStore((s) => s.mustChangePasswordSatisfied)
+  const forced = Boolean(user?.mustChangePassword) && !mustChangeSatisfied
   const isTenantAdmin = isTenantUserManagerRole(resolveAuthRoleSlug(user?.role))
 
   const [showCurrent, setShowCurrent] = useState(false)
@@ -102,11 +109,46 @@ export default function ChangePasswordPage() {
     }
     try {
       if (isTenantAdmin) {
+        // Workspace slug+password — BE clears owner User.must_change_password + syncs hash.
         await authService.changeTenantPassword(dto)
       } else {
         await authService.changePassword(dto)
       }
+
+      // Arm skip FIRST (sync) so ProtectedRoute cannot bounce back if /me is briefly stale.
+      armMustChangePasswordSkip()
+      markMustChangePasswordCleared(
+        user?.id,
+        user?.tenantId,
+        tenantSlugFromAccessToken(accessToken),
+      )
       clearMustChangePassword()
+      useAuthStore.setState((state) => ({
+        mustChangePasswordSatisfied: true,
+        user: state.user
+          ? { ...state.user, mustChangePassword: false }
+          : state.user,
+      }))
+
+      // Prefer server truth after BE clears the flag on tenant/staff change-password.
+      try {
+        const me = await authService.me()
+        const stillForced =
+          (me as { must_change_password?: boolean; mustChangePassword?: boolean })
+            .must_change_password === true ||
+          (me as { mustChangePassword?: boolean }).mustChangePassword === true
+        if (!stillForced) {
+          useAuthStore.setState((state) => ({
+            mustChangePasswordSatisfied: true,
+            user: state.user
+              ? { ...state.user, mustChangePassword: false }
+              : state.user,
+          }))
+        }
+      } catch {
+        /* local clear already applied */
+      }
+
       navigate(getErpHomePath(resolveAuthRoleSlug(user?.role)), { replace: true })
     } catch (err) {
       setApiError(extractErrorMessage(err))

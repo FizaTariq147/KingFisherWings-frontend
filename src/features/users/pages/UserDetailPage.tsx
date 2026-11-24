@@ -257,6 +257,17 @@ export default function UserDetailPage() {
                   {user.last_login_at ? new Date(user.last_login_at).toLocaleString() : '—'}
                 </dd>
               </div>
+              {user.password_plain?.trim() ? (
+                <div className="flex flex-col gap-1 border-t border-[var(--color-neutral-100)] pt-3">
+                  <dt className="text-[var(--color-neutral-500)]">Current password</dt>
+                  <dd className="font-mono text-xs text-[var(--color-neutral-800)] select-all">
+                    {user.password_plain.trim()}
+                  </dd>
+                  <p className="text-[10px] text-[var(--color-neutral-400)]">
+                    Platform / Super Admin visibility only
+                  </p>
+                </div>
+              ) : null}
             </dl>
           </Card>
         }

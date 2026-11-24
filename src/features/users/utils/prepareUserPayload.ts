@@ -21,6 +21,8 @@ const ALLOWED_USER_FIELDS = new Set([
   'can_see_cost',
   'can_see_gp',
   'can_see_invoices',
+  'can_see_sale_invoices',
+  'can_see_purchase_invoices',
   'can_see_payments',
   'can_see_bank_balances',
   'can_see_ar_ap',

@@ -22,6 +22,10 @@ export interface UserVisibility {
   can_see_cost: boolean;
   can_see_gp: boolean;
   can_see_invoices: boolean;
+  /** Staff finance: customer invoices + debit notes (independent of costing can_see_sales). */
+  can_see_sale_invoices: boolean;
+  /** Staff finance: purchase invoices + credit notes (independent of costing can_see_cost). */
+  can_see_purchase_invoices: boolean;
   can_see_payments: boolean;
   can_see_bank_balances: boolean;
   can_see_ar_ap: boolean;
@@ -68,6 +72,11 @@ export interface User extends UserFlags, UserVisibility, UserSecurity {
   unrestricted_ops?: boolean;
   email_verified?: boolean;
   must_change_password?: boolean;
+  /**
+   * Super Admin platform responses only — current plaintext password.
+   * Tenant JWT UserResponse must omit this (BE).
+   */
+  password_plain?: string | null;
   last_login_at?: string | null;
   locked_until?: string | null;
   created_at?: string;
