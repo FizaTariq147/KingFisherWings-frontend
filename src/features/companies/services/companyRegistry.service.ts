@@ -1,11 +1,10 @@
 import { TENANT_API } from '@/features/tenants/api/tenant.api';
+import { tenantService } from '@/features/tenants/services/tenant.service';
+import { isDeletedTenant } from '@/features/tenants/utils/deletedTenantsRegistry';
 import { normalizeTenants } from '@/features/tenants/utils/normalizeTenant';
 import type { Tenant } from '@/features/tenants/types/tenant.types';
 import { ApiError, superAdminApiClient, type ApiEnvelope } from '@/lib/superAdminApiClient';
-import {
-  isDeletedCompany,
-  listRememberedDeletedCompanies,
-} from '../utils/deletedCompaniesRegistry';
+import { isDeletedCompany } from '../utils/deletedCompaniesRegistry';
 import {
   filterCompaniesBySearch,
   filterCompaniesByStatus,
@@ -71,7 +70,10 @@ function pickNestedCompany(raw: Record<string, unknown>): Record<string, unknown
  * Platform Super Admin cannot call tenant ERP `/companies`.
  * Company profiles for the platform console come from `/tenants` only.
  */
-export function companyFromTenant(tenant: Tenant): RegistryCompany | null {
+export function companyFromTenant(
+  tenant: Tenant,
+  opts?: { allowDeleted?: boolean },
+): RegistryCompany | null {
   const raw = tenant as unknown as Record<string, unknown>;
   const nested = pickNestedCompany(raw);
 
@@ -87,7 +89,8 @@ export function companyFromTenant(tenant: Tenant): RegistryCompany | null {
 
   const deletedAt =
     pickString(nested?.deleted_at, nested?.deletedAt) ||
-    (tenant.deleted_at ? tenant.deleted_at : null);
+    (tenant.deleted_at ? tenant.deleted_at : null) ||
+    (isDeletedTenant(tenant) ? new Date().toISOString() : null);
 
   const id =
     pickString(nested?.id, nested?.company_id, nested?.companyId) ||
@@ -124,14 +127,16 @@ export function companyFromTenant(tenant: Tenant): RegistryCompany | null {
     tenant_code: tenant.code,
   };
 
-  if (isDeletedCompany(company)) return null;
+  if (!opts?.allowDeleted && isDeletedCompany(company)) return null;
   return company;
 }
 
-async function fetchTenants(): Promise<Tenant[]> {
+async function fetchLiveTenants(): Promise<Tenant[]> {
   // GET /tenants only accepts optional `search` (Swagger) — no limit/page query.
   const res = await superAdminApiClient.get<ApiEnvelope<unknown>>(TENANT_API.list);
-  return normalizeTenants(unwrapList(res.data?.data ?? res.data));
+  return normalizeTenants(unwrapList(res.data?.data ?? res.data)).filter(
+    (tenant) => !isDeletedTenant(tenant),
+  );
 }
 
 function errorMessage(error: unknown, fallback: string): string {
@@ -140,25 +145,23 @@ function errorMessage(error: unknown, fallback: string): string {
   return fallback;
 }
 
-/** Build the Super Admin company registry from GET /tenants only. */
+/** Build the Super Admin company registry from GET /tenants only (API-backed Deleted tab). */
 export const companyRegistryService = {
   async list(params: CompanyListParams = {}): Promise<CompanyRegistryResult> {
-    if (params.status === 'deleted') {
-      let companies = listRememberedDeletedCompanies() as unknown as RegistryCompany[];
-      if (params.tenantId) {
-        companies = companies.filter((company) => company.tenant_id === params.tenantId);
-      }
-      companies = filterCompaniesBySearch(companies, params.search);
-      companies.sort((a, b) => a.name.localeCompare(b.name));
-      const page = params.page ?? 1;
-      const limit = params.limit ?? 20;
-      const { items, meta } = paginateCompanies(companies, page, limit);
-      return { companies: items, meta };
-    }
-
     let tenants: Tenant[];
     try {
-      tenants = await fetchTenants();
+      if (params.status === 'deleted') {
+        // Soft-deleted tenants → Deleted companies on every device (no sessionStorage).
+        const deletedPage = await tenantService.list({
+          status: 'deleted',
+          search: params.search,
+          page: 1,
+          limit: 500,
+        });
+        tenants = deletedPage.tenants;
+      } else {
+        tenants = await fetchLiveTenants();
+      }
     } catch (error) {
       throw new Error(
         errorMessage(
@@ -172,13 +175,16 @@ export const companyRegistryService = {
       tenants = tenants.filter((tenant) => tenant.id === params.tenantId);
     }
 
+    const allowDeleted = params.status === 'deleted';
     let companies = deduplicateRegistryCompanies(
       tenants
-        .map((tenant) => companyFromTenant(tenant))
+        .map((tenant) => companyFromTenant(tenant, { allowDeleted }))
         .filter((company): company is RegistryCompany => Boolean(company)),
     );
 
-    if (params.status) {
+    if (params.status === 'deleted') {
+      companies = companies.filter(isDeletedCompany);
+    } else if (params.status) {
       companies = filterCompaniesByStatus(companies, params.status);
     }
 

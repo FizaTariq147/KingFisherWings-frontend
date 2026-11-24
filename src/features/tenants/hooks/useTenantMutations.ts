@@ -6,7 +6,6 @@ import type {
   UpdateTenantDto,
   UpdateTenantFeaturesDto,
 } from '../types/tenant.types';
-import { rememberDeletedTenant } from '../utils/deletedTenantsRegistry';
 import { tenantKeys } from './useTenants';
 
 function useInvalidateTenants() {
@@ -37,13 +36,7 @@ export function useTenantMutations() {
   const deleteTenant = useMutation({
     mutationFn: ({ id, tenant }: { id: string; tenant?: Tenant }) =>
       tenantService.softDelete(id, tenant),
-    onSuccess: (_, { id, tenant }) => {
-      if (tenant) {
-        rememberDeletedTenant({
-          ...tenant,
-          deleted_at: tenant.deleted_at || new Date().toISOString(),
-        });
-      }
+    onSuccess: (_, { id }) => {
       invalidate(id);
     },
   });

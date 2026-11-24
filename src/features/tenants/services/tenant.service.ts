@@ -1,13 +1,7 @@
 import { isUuid } from '@/lib/isUuid';
 import { superAdminApiClient, type ApiEnvelope } from '@/lib/superAdminApiClient';
 import { TENANT_API } from '../api/tenant.api';
-import {
-  forgetDeletedTenant,
-  isDeletedTenant,
-  isRememberedDeletedTenant,
-  listRememberedDeletedTenants,
-  rememberDeletedTenant,
-} from '../utils/deletedTenantsRegistry';
+import { isDeletedTenant } from '../utils/deletedTenantsRegistry';
 import { enrichTenantListMetrics } from '../utils/enrichTenantListMetrics';
 import { filterTenantsByStatus, paginateTenants } from '../utils/filterTenants';
 import { normalizeTenant, normalizeTenants } from '../utils/normalizeTenant';
@@ -32,11 +26,67 @@ export interface TenantListResult {
   meta: PaginationMeta;
 }
 
-/** Swagger documents only `search` for GET /tenants — other list params are client-side. */
-function buildListQueryParams(params: TenantListParams): Record<string, string> {
-  const query: Record<string, string> = {};
+/** Swagger lists `search`; status / include_deleted are used for Deleted tab (cross-device). */
+function buildListQueryParams(
+  params: TenantListParams,
+  extras?: Record<string, string>,
+): Record<string, string> {
+  const query: Record<string, string> = { ...(extras ?? {}) };
   if (params.search?.trim()) query.search = params.search.trim();
+  if (params.status && params.status !== 'deleted') {
+    query.status = params.status;
+  }
   return query;
+}
+
+async function fetchTenantsFromApi(
+  query: Record<string, string>,
+): Promise<{ tenants: Tenant[]; meta?: PaginationMeta }> {
+  const res = await superAdminApiClient.get<ApiEnvelope<Tenant[], PaginationMeta>>(
+    TENANT_API.list,
+    { params: query },
+  );
+  return {
+    tenants: normalizeTenants(res.data?.data ?? res.data),
+    meta: res.data?.meta,
+  };
+}
+
+/**
+ * Soft-deleted tenants for Deleted tab — server-backed (all devices).
+ * Tries status=deleted, then include_deleted / with_deleted, then filters deleted_at.
+ */
+async function fetchDeletedTenantsFromApi(
+  params: TenantListParams,
+): Promise<Tenant[]> {
+  const search = params.search?.trim() ? { search: params.search.trim() } : {};
+
+  try {
+    const { tenants } = await fetchTenantsFromApi({ ...search, status: 'deleted' });
+    const marked = tenants.filter(isDeletedTenant);
+    if (marked.length > 0) return marked;
+    // Some BEs return only deleted rows without deleted_at when status=deleted.
+    if (tenants.length > 0) {
+      return tenants.map((tenant) =>
+        isDeletedTenant(tenant)
+          ? tenant
+          : { ...tenant, deleted_at: tenant.deleted_at || new Date().toISOString(), is_active: false },
+      );
+    }
+  } catch {
+    /* try include_deleted */
+  }
+
+  try {
+    const { tenants } = await fetchTenantsFromApi({
+      ...search,
+      include_deleted: 'true',
+      with_deleted: 'true',
+    });
+    return tenants.filter(isDeletedTenant);
+  } catch {
+    return [];
+  }
 }
 
 function applyClientListParams(tenants: Tenant[], params: TenantListParams): TenantListResult {
@@ -65,40 +115,22 @@ export const tenantService = {
     return normalizeTenant(res.data.data as unknown as Record<string, unknown>);
   },
 
-  /** GET /tenants — query: search (Swagger); status/page/sort applied client-side */
+  /** GET /tenants — live + Deleted from API (no browser storage). */
   async list(params: TenantListParams): Promise<TenantListResult> {
-    // Soft-deleted tenants are omitted from GET /tenants — Deleted tab uses the local registry
-    // filled when Super Admin soft-deletes a tenant (so Restore remains available).
     if (params.status === 'deleted') {
-      let deleted = listRememberedDeletedTenants();
-      const search = params.search?.trim().toLowerCase();
-      if (search) {
-        deleted = deleted.filter((tenant) => {
-          const haystack = [
-            tenant.code,
-            tenant.name,
-            tenant.display_name,
-            tenant.slug,
-            tenant.company_name,
-          ]
-            .filter(Boolean)
-            .join(' ')
-            .toLowerCase();
-          return haystack.includes(search);
-        });
-      }
-      return applyClientListParams(deleted, { ...params, status: 'deleted' });
+      const deleted = await fetchDeletedTenantsFromApi(params);
+      const pageResult = applyClientListParams(deleted, { ...params, status: 'deleted' });
+      return {
+        ...pageResult,
+        tenants: await enrichTenantListMetrics(pageResult.tenants),
+      };
     }
 
-    const res = await superAdminApiClient.get<ApiEnvelope<Tenant[], PaginationMeta>>(
-      TENANT_API.list,
-      { params: buildListQueryParams(params) },
+    const { tenants: raw, meta: apiMeta } = await fetchTenantsFromApi(
+      buildListQueryParams(params),
     );
 
-    const tenants = normalizeTenants(res.data.data).filter(
-      (tenant) => !isDeletedTenant(tenant) && !isRememberedDeletedTenant(tenant.id),
-    );
-    const apiMeta = res.data.meta;
+    const tenants = raw.filter((tenant) => !isDeletedTenant(tenant));
 
     // Server-side pagination when meta indicates more records than returned.
     const pageResult =
@@ -109,7 +141,6 @@ export const tenantService = {
           }
         : applyClientListParams(tenants, params);
 
-    // Fill Company Name + Total Users for the visible page when list payload omits them.
     return {
       ...pageResult,
       tenants: await enrichTenantListMetrics(pageResult.tenants),
@@ -120,33 +151,24 @@ export const tenantService = {
   async getStatistics(): Promise<TenantStatistics> {
     const [statsRes, listRes] = await Promise.all([
       superAdminApiClient.get<ApiEnvelope<TenantStatistics>>(TENANT_API.statistics),
-      superAdminApiClient.get<ApiEnvelope<Tenant[]>>(TENANT_API.list),
+      fetchTenantsFromApi({}),
     ]);
 
     const apiStats = normalizeTenantStatistics(statsRes.data?.data);
-    // Same filter as list() All tab — exclude soft-deleted / locally remembered deletes.
-    const tenants = normalizeTenants(listRes.data?.data).filter(
-      (tenant) => !isDeletedTenant(tenant) && !isRememberedDeletedTenant(tenant.id),
-    );
+    const tenants = listRes.tenants.filter((tenant) => !isDeletedTenant(tenant));
 
     return deriveTenantStatisticsFromList(tenants, apiStats);
   },
 
-  /** GET /tenants/{id} */
+  /** GET /tenants/{id} — works for live and soft-deleted (restore) when BE returns them. */
   async getById(id: string): Promise<Tenant> {
     if (!isUuid(id)) {
       throw new Error('Invalid tenant id.');
     }
-    try {
-      const res = await superAdminApiClient.get<ApiEnvelope<Tenant>>(TENANT_API.byId(id));
-      const tenant = normalizeTenant(res.data.data as unknown as Record<string, unknown>);
-      const [enriched] = await enrichTenantListMetrics([tenant]);
-      return enriched;
-    } catch (error) {
-      const remembered = listRememberedDeletedTenants().find((tenant) => tenant.id === id);
-      if (remembered) return remembered;
-      throw error;
-    }
+    const res = await superAdminApiClient.get<ApiEnvelope<Tenant>>(TENANT_API.byId(id));
+    const tenant = normalizeTenant(res.data.data as unknown as Record<string, unknown>);
+    const [enriched] = await enrichTenantListMetrics([tenant]);
+    return enriched;
   },
 
   /** PATCH /tenants/{id} */
@@ -217,19 +239,12 @@ export const tenantService = {
     return { ...tenant, id: tenant.id || id };
   },
 
-  /** DELETE /tenants/{id} — Soft delete tenant. */
-  async softDelete(id: string, snapshot?: Tenant): Promise<void> {
+  /** DELETE /tenants/{id} — Soft delete tenant (appears on Deleted tab via API). */
+  async softDelete(id: string, _snapshot?: Tenant): Promise<void> {
     if (!isUuid(id)) {
       throw new Error('Invalid tenant id.');
     }
     await superAdminApiClient.delete<ApiEnvelope<null>>(TENANT_API.byId(id));
-    if (snapshot) {
-      rememberDeletedTenant({
-        ...snapshot,
-        id,
-        deleted_at: snapshot.deleted_at || new Date().toISOString(),
-      });
-    }
   },
 
   /** PATCH /tenants/{id}/restore — Restore a soft-deleted tenant. */
@@ -238,7 +253,6 @@ export const tenantService = {
       throw new Error('Invalid tenant id.');
     }
     const res = await superAdminApiClient.patch<ApiEnvelope<Tenant>>(TENANT_API.restore(id));
-    forgetDeletedTenant(id);
     const tenant = normalizeTenant((res.data?.data ?? { id }) as unknown as Record<string, unknown>);
     return {
       ...tenant,
