@@ -44,6 +44,7 @@ import {
   isReferenceAccuratePdfCode,
 } from '../templates/referenceAccurate';
 import { fetchHawbDraft2PlaywrightPdf } from '../engines/pdf/playwrightHtml/hawbDraft2PrintClient';
+import { tryHtmlCssPilotPdf } from '../engines/pdf/reportRendererAdapter';
 
 /**
  * Client layout PDF for catalogue codes when backend pack is unavailable.
@@ -147,6 +148,19 @@ export async function generateCatalogLayoutPdf(
       purpose: options.purpose,
     });
   const allowSample = allowsFresaSamplePdf(workflow);
+
+  // Hybrid HTML pilots stay off the measured FRESA reference forms.
+  // Those codes already draw from the pinned sample geometry; the HTML faces
+  // are a simplified fallback only when no reference-accurate builder exists.
+  if (!allowSample && !isReferenceAccuratePdfCode(code)) {
+    const htmlPilot = await tryHtmlCssPilotPdf(code, {
+      ...data,
+      logoUrl: options.logoUrl || data.logoUrl,
+    });
+    if (htmlPilot) {
+      return { blob: htmlPilot, preview: enrichmentPreviewMeta(code) };
+    }
+  }
 
   // Four independent reference forms. Other measured codes stay on the shared face drawer.
   if (!allowSample && isReferenceAccuratePdfCode(code)) {

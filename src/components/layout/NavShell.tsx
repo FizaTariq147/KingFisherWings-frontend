@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { ReactNode } from 'react'
-import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom'
 import {
   LayoutDashboard,
   Briefcase,
@@ -64,7 +64,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: 'Accounts',    to: '/accounts',    Icon: DollarSign,      permission: 'menu_accounts' },
   { label: 'Sales',       to: '/sales',       Icon: TrendingUp,      permission: 'menu_sales' },
   { label: 'HR',          to: '/hr',          Icon: Users,           permission: 'menu_hr' },
-  { label: 'Reports',     to: '/reports',     Icon: BarChart2,       permission: 'menu_reports' },
+  { label: 'Reports',     to: '/reports/dashboard', Icon: BarChart2, permission: 'menu_reports' },
   { label: 'Settings',    to: '/settings',    Icon: Settings,        permission: 'menu_settings' },
 ]
 
@@ -108,6 +108,7 @@ export default function NavShell() {
   const { user, logout }          = useAuthStore()
   const theme                     = useThemeStore((s) => s.theme)
   const navigate                  = useNavigate()
+  const location                  = useLocation()
   const { isFullscreen, toggle }  = useFullscreen()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [profileOpen, setProfileOpen] = useState(false)
@@ -165,8 +166,21 @@ export default function NavShell() {
           <NavLink
             key={to}
             to={to}
-            className={navLinkClass}
-            style={navLinkStyle}
+            end={to !== '/reports/dashboard'}
+            className={({ isActive }) =>
+              navLinkClass({
+                isActive:
+                  isActive ||
+                  (to === '/reports/dashboard' && location.pathname.startsWith('/reports')),
+              })
+            }
+            style={({ isActive }) =>
+              navLinkStyle({
+                isActive:
+                  isActive ||
+                  (to === '/reports/dashboard' && location.pathname.startsWith('/reports')),
+              })
+            }
             onClick={() => setSidebarOpen(false)}
           >
             <Icon size={16} className="flex-shrink-0" />

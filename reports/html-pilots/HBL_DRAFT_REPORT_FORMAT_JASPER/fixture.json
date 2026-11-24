@@ -1,0 +1,61 @@
+{
+  "code": "HBL_DRAFT_REPORT_FORMAT_JASPER",
+  "entityBound": true,
+  "companyName": "KingFisher Wings Logistics",
+  "companyAddress": "Dubai, UAE",
+  "companyPhone": "+971-4-000-0000",
+  "companyEmail": "ops@kingfisher.example",
+  "shipperLines": [
+    "ACME EXPORTERS",
+    "CHENNAI, INDIA"
+  ],
+  "consigneeLines": [
+    "BETA IMPORTS LLC",
+    "SHARJAH, UAE"
+  ],
+  "notifyLines": [],
+  "invoiceNumber": "INV/26/QA-001",
+  "invoiceDate": "2026-02-18",
+  "jobNumber": "JOB-QA-001",
+  "hblNo": "HBL-QA-001",
+  "pol": "INMAA",
+  "pod": "AEDXB",
+  "currencyCode": "AED",
+  "lines": [
+    {
+      "description": "Ocean freight",
+      "qty": "1",
+      "rate": "1000.00",
+      "amount": "1000.00"
+    }
+  ],
+  "subtotal": "1000.00",
+  "tax": "",
+  "total": "1000.00",
+  "tableHeaders": [
+    "Job",
+    "Customer",
+    "POL",
+    "POD",
+    "ETD",
+    "Status"
+  ],
+  "tableRows": [
+    [
+      "JOB-QA-001",
+      "Acme",
+      "INMAA",
+      "AEDXB",
+      "2026-02-20",
+      "Open"
+    ],
+    [
+      "JOB-QA-002",
+      "Beta",
+      "INMAA",
+      "AESHJ",
+      "",
+      ""
+    ]
+  ]
+}

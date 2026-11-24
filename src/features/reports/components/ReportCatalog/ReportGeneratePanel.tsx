@@ -27,11 +27,13 @@ import {
   invoiceRecordToFormatPdfData,
 } from '../../utils/generateInvoiceFormatLayoutPdf';
 import { resolveCatalogContextPdfData } from '../../utils/resolveCatalogContextPdfData';
+import { overlayHtmlPilotPayload } from '../../utils/htmlPilotPayload';
 import {
   generateCatalogLayoutPdf,
   hasCatalogLayoutPdf,
 } from '../../utils/generateCatalogLayoutPdf';
 import { isReferenceAccuratePdfCode } from '../../templates/referenceAccurate';
+import { isHtmlCssPilotCode } from '../../engines/pdf/playwrightHtml/playwrightHtmlCodes';
 import {
   ACTIVITY_COMPLETED_JOBS_CODE,
   ACTIVITY_COMPLETED_JOBS_HEADERS,
@@ -367,12 +369,21 @@ export function ReportGeneratePanel({
     const runClientSamplePdf = async () => {
       setClientGenerating(true);
       try {
-        // Empty / partial data keeps layout JSON `demo` (Fresa sample dummy fields).
-        // Entity-bound overlays live values via mergeInvoiceFormatDemo.
+        // Open job / invoice / quotation fills the document. A backend preview
+        // payload may add fields, and it does not wipe values already on the record.
+        const orgChrome = await resolveReportOrgChrome();
         let data = await resolveCatalogContextPdfData(contextIds, {
           formatCode: resolved.code,
         });
-        const orgChrome = await resolveReportOrgChrome();
+        if (isHtmlCssPilotCode(resolved.code)) {
+          const preview = await reportCatalogService.previewHtmlPilot(resolved.code, {
+            context: entityBound ? contextIds : undefined,
+            parameters: !coerceError ? parameters : undefined,
+          });
+          if (preview.available) {
+            data = entityBound ? overlayHtmlPilotPayload(data, preview.data) : preview.data;
+          }
+        }
         data = {
           ...data,
           companyName: data.companyName || orgChrome.company,

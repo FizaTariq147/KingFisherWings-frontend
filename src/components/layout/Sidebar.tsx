@@ -613,9 +613,10 @@ const BUSINESS_NAV_ITEMS: NavItem[] = [
   },
   {
     label: 'Reports',
-    path: '/reports',
+    path: '/reports/dashboard',
     Icon: BarChart3,
     permission: 'menu_reports',
+    activePrefix: '/reports',
   },
   {
     label: 'Sales',
