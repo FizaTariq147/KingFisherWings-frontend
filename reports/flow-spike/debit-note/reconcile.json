@@ -1,0 +1,145 @@
+{
+  "code": "DEBIT_NOTE_FLOW_1",
+  "results": [
+    {
+      "id": "debit-syn-01",
+      "number": "DN/26/0001",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "amount": 50,
+          "inPdf": true
+        },
+        {
+          "key": "discount",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "tax",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "rounding",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "total",
+          "amount": 50,
+          "inPdf": true
+        }
+      ],
+      "blanks": [],
+      "leak": false
+    },
+    {
+      "id": "debit-syn-02",
+      "number": "DN/26/0002",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "amount": 120,
+          "inPdf": true
+        },
+        {
+          "key": "discount",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "tax",
+          "amount": 6,
+          "inPdf": true
+        },
+        {
+          "key": "rounding",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "total",
+          "amount": 126,
+          "inPdf": true
+        }
+      ],
+      "blanks": [],
+      "leak": false
+    },
+    {
+      "id": "debit-syn-03",
+      "number": "DN/26/0003",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "amount": 105,
+          "inPdf": true
+        },
+        {
+          "key": "discount",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "tax",
+          "amount": 6.5,
+          "inPdf": true
+        },
+        {
+          "key": "rounding",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "total",
+          "amount": 111.5,
+          "inPdf": true
+        }
+      ],
+      "blanks": [],
+      "leak": false
+    },
+    {
+      "id": "debit-syn-long",
+      "number": "DN/26/LONG",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "amount": 756,
+          "inPdf": true
+        },
+        {
+          "key": "discount",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "tax",
+          "amount": 37.8,
+          "inPdf": true
+        },
+        {
+          "key": "rounding",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "total",
+          "amount": 793.8,
+          "inPdf": true
+        }
+      ],
+      "blanks": [],
+      "leak": false
+    }
+  ]
+}

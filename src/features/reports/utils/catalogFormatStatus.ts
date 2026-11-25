@@ -12,6 +12,7 @@ import {
   isOfficialHawbFormatCode,
 } from './officialFormatGovernance';
 import { hasOfficialSamplePdf } from './preferOfficialSamplePdf';
+import { isClientFlowInvoiceCode } from '../flow/invoiceFlowOptions';
 
 /** User-facing catalogue status labels (Phase 0). */
 export type CatalogFormatStatusId =
@@ -44,6 +45,14 @@ const LABEL: Record<CatalogFormatStatusId, string> = {
  */
 export function resolveCatalogFormatStatus(code: string): CatalogFormatStatus {
   const needle = (code || '').trim();
+  if (isClientFlowInvoiceCode(needle)) {
+    return {
+      id: 'native_layout',
+      label: LABEL.native_layout,
+      detail:
+        'Printed by the flow renderer from the open job or invoice. Not a signed-off FRESA sample match.',
+    };
+  }
   if (!needle) {
     return {
       id: 'historical_unverified',

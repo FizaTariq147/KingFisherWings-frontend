@@ -1,0 +1,29 @@
+{
+  "demoMissingExpected": [],
+  "demoLayers": {
+    "page": true,
+    "geometry": true,
+    "staticText": true,
+    "dynamicText": true,
+    "raster": true,
+    "pagination": "single-page",
+    "rasterRatio": 0.0201,
+    "rasterMismatches": 43580,
+    "pixelmatchMismatches": 30815
+  },
+  "coverageRows": 56,
+  "unbound": [],
+  "gst": 2,
+  "sheets": [
+    {
+      "invoice": "INV/26/00102",
+      "blanks": 20,
+      "file": "live-vs-reference-INV-26-00102.png"
+    },
+    {
+      "invoice": "INV/26/00094",
+      "blanks": 35,
+      "file": "live-vs-reference-INV-26-00094.png"
+    }
+  ]
+}

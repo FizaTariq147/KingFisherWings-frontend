@@ -29,14 +29,19 @@ describe('report registry v2 enrichment', () => {
     expect(e?.renderer).toBeUndefined();
   });
 
-  it('assigns playwright_html only to HAWB Draft-2', () => {
+  it('assigns playwright_html to HAWB Draft-2 and Hybrid Option C pilots only', () => {
     expect(getReportEnrichment('HAWB_DRAFT_REPORT_FORMAT_2')?.renderer).toBe('playwright_html');
+    expect(getReportEnrichment('HBL_DRAFT_REPORT_FORMAT_JASPER')?.renderer).toBe('playwright_html');
+    expect(getReportEnrichment('INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA')?.renderer).toBe(
+      'playwright_html',
+    );
+    expect(getReportEnrichment('JOB_LIST_SUMMARY_REPORT_FORMAT')?.renderer).toBe('playwright_html');
     for (const code of [
       'HAWB_DRAFT_REPORT_FORMAT',
       'HAWB_DRAFT_REPORT_FORMAT_1',
       'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_1',
       'HAWB_ORIGINAL_PRE_PRINTED_REPORT_FORMAT_2',
-      'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA',
+      'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE',
     ]) {
       expect(getReportEnrichment(code)?.renderer).toBeUndefined();
     }

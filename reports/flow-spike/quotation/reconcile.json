@@ -1,0 +1,145 @@
+{
+  "code": "QUOTATION_FLOW_1",
+  "results": [
+    {
+      "id": "q-syn-01",
+      "number": "QT/26/0001",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "amount": 155,
+          "inPdf": true
+        },
+        {
+          "key": "discount",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "tax",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "rounding",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "total",
+          "amount": 155,
+          "inPdf": true
+        }
+      ],
+      "blanks": [],
+      "leak": false
+    },
+    {
+      "id": "q-syn-02",
+      "number": "QT/26/0002",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "amount": 300,
+          "inPdf": true
+        },
+        {
+          "key": "discount",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "tax",
+          "amount": 15,
+          "inPdf": true
+        },
+        {
+          "key": "rounding",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "total",
+          "amount": 315,
+          "inPdf": true
+        }
+      ],
+      "blanks": [],
+      "leak": false
+    },
+    {
+      "id": "q-syn-03",
+      "number": "QT/26/0003",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "amount": 162,
+          "inPdf": true
+        },
+        {
+          "key": "discount",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "tax",
+          "amount": 16.2,
+          "inPdf": true
+        },
+        {
+          "key": "rounding",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "total",
+          "amount": 178.2,
+          "inPdf": true
+        }
+      ],
+      "blanks": [],
+      "leak": false
+    },
+    {
+      "id": "q-syn-long",
+      "number": "QT/26/LONG",
+      "synthetic": true,
+      "recordOk": true,
+      "vsRecord": [
+        {
+          "key": "subtotal",
+          "amount": 4060,
+          "inPdf": true
+        },
+        {
+          "key": "discount",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "tax",
+          "amount": 203,
+          "inPdf": true
+        },
+        {
+          "key": "rounding",
+          "amount": 0,
+          "inPdf": true
+        },
+        {
+          "key": "total",
+          "amount": 4263,
+          "inPdf": true
+        }
+      ],
+      "blanks": [],
+      "leak": false
+    }
+  ]
+}

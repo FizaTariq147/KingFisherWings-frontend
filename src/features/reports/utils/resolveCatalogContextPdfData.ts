@@ -33,6 +33,37 @@ function money(n: number | null | undefined): string | undefined {
   });
 }
 
+function chargeText(source: object, keys: string[], asMoney = false): string | undefined {
+  const record = source as Record<string, unknown>;
+  for (const key of keys) {
+    const value = record[key];
+    if (typeof value === 'number' && Number.isFinite(value)) return asMoney ? money(value) : String(value);
+    if (typeof value === 'string' && value.trim()) return value.trim();
+  }
+  return undefined;
+}
+
+function chargeTaxFields(charge: JobCharge & { tax_amount?: number | null }): Partial<InvoiceFormatPdfLine> {
+  const bags = [charge, charge.sale].filter((item): item is object => Boolean(item));
+  const pick = (keys: string[], asMoney = false) => {
+    for (const bag of bags) {
+      const found = chargeText(bag, keys, asMoney);
+      if (found) return found;
+    }
+    return undefined;
+  };
+  return {
+    sac: pick(['sac', 'sac_code', 'sacCode']),
+    taxable: pick(['taxable_amount', 'taxableAmount'], true),
+    sgstRate: pick(['sgst_rate', 'sgstRate']),
+    sgstAmount: pick(['sgst_amount', 'sgstAmount'], true),
+    cgstRate: pick(['cgst_rate', 'cgstRate']),
+    cgstAmount: pick(['cgst_amount', 'cgstAmount'], true),
+    igstRate: pick(['igst_rate', 'igstRate', 'ugst_rate', 'ugstRate']),
+    igstAmount: pick(['igst_amount', 'igstAmount', 'ugst_amount', 'ugstAmount'], true),
+  };
+}
+
 function chargeLinesFromJobCharges(
   charges: Array<JobCharge & { tax_amount?: number | null }>,
 ): InvoiceFormatPdfLine[] {
@@ -45,6 +76,7 @@ function chargeLinesFromJobCharges(
       amount: money(c.sale_amount ?? c.line_total ?? c.unit_price),
       currency: c.currency_code || undefined,
       taxAmount: money(c.tax_amount),
+      ...chargeTaxFields(c),
     }));
 }
 
@@ -429,6 +461,7 @@ export async function resolveCatalogContextPdfData(
               qty: c.quantity != null ? String(c.quantity) : undefined,
               rate: money(c.unit_price),
               amount: money(c.line_total ?? c.unit_price),
+              ...chargeTaxFields(c as JobCharge),
             }));
           if (saleLines.length) data = mergePdfData(data, { lines: saleLines });
         } catch {

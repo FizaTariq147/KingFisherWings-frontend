@@ -44,6 +44,7 @@ const {
 const CODE128AUTO = require('jsbarcode/bin/barcodes/CODE128/CODE128_AUTO.js').default;
 const QRCode = require('qrcode');
 import { fontFile, mapFont } from './font-map.mjs';
+import { isAllowlisted, isBareSample } from './allowlist.mjs';
 
 const CHAR_FALLBACK = JSON.parse(fs.readFileSync(path.join(path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..'), 'reports/char-fallback.json'), 'utf8'));
 
@@ -105,7 +106,21 @@ function fresaFragment(text) {
   return /fresa|echnolog|powered by/i.test(String(text || ''));
 }
 
-function organizationText(span, organization) {
+function addressLineFor(span, organization, siblings = []) {
+  const address = String(organization.address || '').trim();
+  if (!address) return '';
+  if (/^[A-Za-z]$/.test(String(span.text || '').trim())) return '';
+  const lines = address.split(/\s*,\s*/).filter(Boolean);
+  const peers = siblings
+    .filter((other) => other.role === 'branding' && other.brandingKind === 'address' && !/^[A-Za-z]$/.test(String(other.text || '').trim()))
+    .sort((a, b) => b.y - a.y);
+  const index = peers.findIndex((peer) => peer.id === span.id);
+  if (index < 0) return address;
+  if (lines.length > 1 && peers.length > 1) return lines[index] || '';
+  return index === 0 ? address : '';
+}
+
+function organizationText(span, organization, siblings = []) {
   if (!organization) return '';
   const raw = String(span.text || '');
   if (/powered by/i.test(raw) || fresaFragment(raw) && span.brandingKind !== 'name' && span.brandingKind !== 'address' && span.brandingKind !== 'phone') {
@@ -113,8 +128,17 @@ function organizationText(span, organization) {
     if (/https?:|www\.|\.com/i.test(raw)) return organization.website || '';
     if (/powered by|echnolog/i.test(raw)) return '';
   }
-  if (span.brandingKind === 'address') return organization.address || '';
-  if (span.brandingKind === 'phone') return organization.phone || '';
+  if (span.brandingKind === 'address') {
+    return addressLineFor(span, organization, siblings);
+  }
+  if (span.brandingKind === 'phone') {
+    const phone = String(organization.phone || '').trim();
+    if (!phone) return '';
+    if (/^\s*(tel|phone|fax|mobile)\b/i.test(raw) && !phone.toLowerCase().startsWith('phone')) {
+      return `Phone : ${phone}`;
+    }
+    return phone;
+  }
   if (span.brandingKind === 'url') return organization.website || '';
   if (span.brandingKind === 'email') return organization.email || '';
   if (span.brandingKind === 'name') {
@@ -497,7 +521,7 @@ function drawQr(page, image) {
 }
 
 export async function renderSpec(code, options = {}) {
-  const spec = JSON.parse(fs.readFileSync(path.join(root, 'reports/specs', `${code}.json`), 'utf8'));
+  const spec = options.spec || JSON.parse(fs.readFileSync(path.join(root, 'reports/specs', `${code}.json`), 'utf8'));
   const doc = await PDFDocument.create();
   doc.registerFontkit(fontkit);
   let pages = spec.pages?.length ? spec.pages : [spec];
@@ -564,15 +588,32 @@ export async function renderSpec(code, options = {}) {
       if (rect.dash?.length) page.pushOperators(restoreDashPattern());
     }
     for (const image of source.images || []) {
+      if (options.values && (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded)) continue;
       if (image.proposedClass === 'barcode' || image.proposedClass === 'qr' || image.barcode?.decoded) drawBarcode(page, image);
-      if (options.logoPng && image.proposedClass === 'logo' && fs.existsSync(options.logoPng)) {
-        const png = await doc.embedPng(fs.readFileSync(options.logoPng));
-        page.drawImage(png, {
-          x: image.x,
-          y: image.y,
-          width: image.width || png.width,
-          height: image.height || png.height,
-        });
+      const logoSlot = image.proposedClass === 'logo' || (image.proposedClass === 'letterhead' && options.values);
+      if (logoSlot && (options.logoBytes || (options.logoPng && fs.existsSync(options.logoPng)))) {
+        const bytes = options.logoBytes || fs.readFileSync(options.logoPng);
+        try {
+          const embedded = bytes[0] === 0xff && bytes[1] === 0xd8 ? await doc.embedJpg(bytes) : await doc.embedPng(bytes);
+          let x = image.x;
+          let y = image.y;
+          let width = image.width || embedded.width;
+          let height = image.height || embedded.height;
+          if ((image.proposedClass === 'logo' || image.proposedClass === 'letterhead') && embedded.width && embedded.height) {
+            const boxW = image.width || embedded.width;
+            const boxH = image.height || embedded.height;
+            const fit = image.proposedClass === 'letterhead'
+              ? Math.min(boxH / embedded.height, (boxH * 2.6) / embedded.width)
+              : Math.min(boxW / embedded.width, boxH / embedded.height);
+            width = embedded.width * fit;
+            height = embedded.height * fit;
+            x = image.x + Math.max(0, (boxW - width) / 2);
+            y = image.y + Math.max(0, (boxH - height) / 2);
+          }
+          page.drawImage(embedded, { x, y, width, height });
+        } catch {
+          // An unreadable logo leaves the slot empty.
+        }
       }
     }
     const paintSpans = [
@@ -583,11 +624,17 @@ export async function renderSpec(code, options = {}) {
       const demo = span.text;
       let text = options.overflow && span.role === 'dynamic' ? replacement(span, spec) : demo;
       let mode = options.overflow ? overflowMode(span, spec) : 'none';
+      if (options.values && Object.prototype.hasOwnProperty.call(options.values, span.id) && options.values[span.id] === '') {
+        continue;
+      }
       if ((options.organization || options.values) && span.role === 'static' && fresaFragment(demo) && !options.values?.[span.id]) {
         continue;
       }
+      if (options.values && span.role === 'static' && !options.values[span.id] && (!isAllowlisted(demo) || isBareSample(demo))) {
+        continue;
+      }
       if (options.organization && span.role === 'branding') {
-        text = organizationText(span, options.organization);
+        text = organizationText(span, options.organization, paintSpans);
         mode = text ? 'wrap-shrink-clip' : 'none';
       } else if (span.role === 'branding') {
         continue;
@@ -599,6 +646,7 @@ export async function renderSpec(code, options = {}) {
         mode = 'wrap-shrink-clip';
       }
       if (!text) continue;
+      if (Array.isArray(options.painted)) options.painted.push(String(text).replace(/\s+/g, ' ').trim());
       const color = parseColor(span.color);
       const box = Math.max(span.width, 1);
       let size = span.size || 8;
@@ -680,9 +728,11 @@ export async function renderSpec(code, options = {}) {
   const suffix = options.overflow ? '.overflow' : '';
   const outPath = options.outputPath || path.join(outDir, `${code}${suffix}.pdf`);
   fs.writeFileSync(outPath, bytes);
-  fs.writeFileSync(path.join(outDir, `${code}.advances.json`), `${JSON.stringify({ code, patchedAdvances }, null, 2)}\n`);
+  if (!options.quietArtifacts) {
+    fs.writeFileSync(path.join(outDir, `${code}.advances.json`), `${JSON.stringify({ code, patchedAdvances }, null, 2)}\n`);
+  }
   const warnings = overflowLog.filter((entry) => entry.warning);
-  if (options.overflow || warnings.length) {
+  if (!options.quietArtifacts && (options.overflow || warnings.length)) {
     fs.writeFileSync(path.join(outDir, `${code}.overflow.json`), `${JSON.stringify({ code, maxLines: spec.overflowRules?.maxLines, spans: overflowLog, warnings }, null, 2)}\n`);
   }
   return { outPath, overflowLog, warnings };

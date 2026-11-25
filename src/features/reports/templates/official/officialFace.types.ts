@@ -27,6 +27,36 @@ export type OfficialBrandingSlot = {
   size: number;
 };
 
+/** Exact header/footer geometry taken from reports/specs/<code>.json. */
+export type ReportBrandingBox = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  size?: number;
+  color?: string;
+  /** Fresa Tax Invoice style: company/address sit on the right edge. */
+  align?: 'left' | 'right';
+};
+
+export type ReportBrandingSlots = {
+  code: string;
+  logo: ReportBrandingBox | null;
+  company: ReportBrandingBox | null;
+  addressLines: ReportBrandingBox[];
+  /** Sample branding name/phone/address spans to wipe before drawing org chrome. */
+  companyWipes: ReportBrandingBox[];
+  headerBand: ReportBrandingBox | null;
+  footer: {
+    printedByLabel: ReportBrandingBox | null;
+    printedByValue: ReportBrandingBox | null;
+    printedDateLabel: ReportBrandingBox | null;
+    printedDateValue: ReportBrandingBox | null;
+    pageLabel: ReportBrandingBox | null;
+    poweredByWipe: ReportBrandingBox | null;
+  };
+};
+
 export type OfficialMeasuredFace = {
   code: string;
   name: string;
@@ -36,6 +66,11 @@ export type OfficialMeasuredFace = {
   pageCount: number;
   widthPt: number;
   heightPt: number;
+  /**
+   * PDF /Rotate degrees (0/90/180/270). Geometry is stored in mediaBox
+   * (unrotated) space; the drawer applies this so viewers match Fresa.
+   */
+  rotateDeg?: number;
   branding: OfficialBrandingSlot;
   /** Label text -> field key filled from live data when present. */
   fieldSlots: Array<{ key: string; x: number; y: number; size: number }>;
@@ -51,7 +86,11 @@ export type OfficialFaceData = {
   companyAddress?: string;
   companyPhone?: string;
   companyEmail?: string;
+  companyWeb?: string;
   logoUrl?: string;
+  printedBy?: string;
+  printedDate?: string;
+  pageLabel?: string;
   entityBound?: boolean;
   shipperLines?: string[];
   consigneeLines?: string[];

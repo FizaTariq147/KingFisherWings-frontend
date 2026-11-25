@@ -5,11 +5,13 @@ import { isFresaIdentityText } from '@/features/reports/templates/official/offic
 import { HawbDraft2Document } from '@/features/reports/templates/hawb/official/documents/HawbDraft2Document';
 import { mapToHawbOfficialModel } from '@/features/reports/templates/hawb/official/mapToHawbOfficialModel';
 import { PAGE_HAWB_NEAR_A4 } from '@/features/reports/engines/pdf/pageGeometry';
+import {
+  isPlaywrightHtmlCode,
+  PLAYWRIGHT_HTML_ALLOWLIST,
+  PLAYWRIGHT_HTML_PILOT_CODE,
+} from './playwrightHtmlCodes';
 
-/** The only code this Node renderer may print. */
-export const PLAYWRIGHT_HTML_ALLOWLIST = ['HAWB_DRAFT_REPORT_FORMAT_2'] as const;
-
-export const PLAYWRIGHT_HTML_PILOT_CODE = PLAYWRIGHT_HTML_ALLOWLIST[0];
+export { PLAYWRIGHT_HTML_ALLOWLIST, PLAYWRIGHT_HTML_PILOT_CODE };
 
 /**
  * Phase 2 bound HAWB fixture already used by official HAWB tests.
@@ -52,7 +54,7 @@ export function assertPlaywrightHtmlAllowlist(input: PlaywrightHtmlRenderInput):
     throw new Error('Playwright HTML renderer rejects caller-supplied HTML');
   }
   const code = String(input.code || '').trim().toUpperCase();
-  if (!(PLAYWRIGHT_HTML_ALLOWLIST as readonly string[]).includes(code)) {
+  if (!isPlaywrightHtmlCode(code)) {
     throw new Error(`Playwright HTML renderer allowlist does not include ${code || '(empty)'}`);
   }
 }

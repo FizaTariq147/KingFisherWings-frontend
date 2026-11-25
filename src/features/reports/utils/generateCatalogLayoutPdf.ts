@@ -44,6 +44,8 @@ import {
   isReferenceAccuratePdfCode,
 } from '../templates/referenceAccurate';
 import { fetchHawbDraft2PlaywrightPdf } from '../engines/pdf/playwrightHtml/hawbDraft2PrintClient';
+import { tryHtmlCssPilotPdf } from '../engines/pdf/reportRendererAdapter';
+import { renderInvoiceV2InBrowser } from '../engine/invoiceV2Gate';
 
 /**
  * Client layout PDF for catalogue codes when backend pack is unavailable.
@@ -117,6 +119,82 @@ function enrichmentPreviewMeta(code: string): InvoiceFormatPreview {
   };
 }
 
+/**
+ * Dev spec drawer. Geometry comes from reports/specs/<code>.json.
+ * Live fields replace demo text. A missing spec or a stopped dev server falls through.
+ */
+async function tryMeasuredSpecPdf(
+  code: string,
+  data: InvoiceFormatPdfData,
+): Promise<Blob | null> {
+  if (!import.meta.env.DEV) return null;
+  const lines = (data.lines || []).map((line) => ({
+    description: line.description,
+    quantity: line.qty,
+    unit_price: line.rate,
+    line_total: line.amount,
+    tax_amount: line.taxAmount,
+    currency_code: line.currency || data.currencyCode,
+  }));
+  try {
+    const blob = await renderInvoiceV2InBrowser({
+      code,
+      organization: {
+        display_name: data.companyName,
+        name: data.companyName,
+        address: data.companyAddress,
+        phone: data.companyPhone,
+        email: data.companyEmail,
+        website: data.companyWeb,
+      },
+      invoice: {
+        invoice_number: data.invoiceNumber,
+        invoice_date: data.invoiceDate,
+        due_date: data.dueDate,
+        currency_code: data.currencyCode,
+        subtotal: data.subtotal,
+        tax_total: data.tax,
+        total_amount: data.total,
+        party_name: data.billToName,
+        remarks: data.referenceNo,
+        lines,
+      },
+      job: {
+        job_number: data.jobNumber,
+        shipment_number: data.shipmentNumber,
+        client_reference_no: data.referenceNo,
+        origin_port_code: data.pol,
+        dest_port_code: data.pod,
+        vessel_name: data.vesselFlight,
+        shipper_name: data.shipperLines?.[0],
+        consignee_name: data.consigneeLines?.[0],
+        etd: data.etd,
+        eta: data.eta,
+        hbl_number: data.hblNo,
+        sea_fcl_details: data.hblNo ? { hbl_number: data.hblNo } : undefined,
+        air_details:
+          data.hawbNo || data.mawbNo
+            ? { hawb_number: data.hawbNo, mawb_number: data.mawbNo }
+            : undefined,
+        pieces: data.pieces,
+        gross_weight: data.grossWeight,
+        volume_cbm: data.measurement,
+        primary_container_number: data.containerNo,
+      },
+      party: {
+        name: data.billToName,
+        address: data.billToAddress,
+        phone: data.billToPhone,
+        email: data.billToEmail,
+      },
+    });
+    if (!blob || blob.size < 400) return null;
+    return blob;
+  } catch {
+    return null;
+  }
+}
+
 async function tryTemplateV2(
   code: string,
   data: InvoiceFormatPdfData,
@@ -148,19 +226,50 @@ export async function generateCatalogLayoutPdf(
     });
   const allowSample = allowsFresaSamplePdf(workflow);
 
-  // Four independent reference forms. Other measured codes stay on the shared face drawer.
-  if (!allowSample && isReferenceAccuratePdfCode(code)) {
-    return generateReferenceAccuratePdf(code, data);
+  // Pinned spec geometry for every code that has reports/specs/<code>.json.
+  // Dedicated faces keep their own measured drawers.
+  const dedicatedFace =
+    isReferenceAccuratePdfCode(code) ||
+    isOfficialMeasuredNativeCode(code) ||
+    isHblJasperPilotCode(code) ||
+    isHawbOfficialNativeCode(code);
+  if (!allowSample && !dedicatedFace) {
+    const measured = await tryMeasuredSpecPdf(code, data);
+    if (measured) return { blob: measured, preview: enrichmentPreviewMeta(code) };
   }
 
-  // Measured native faces. Browse may still open the unmodified Fresa sample.
-  if (!allowSample && isOfficialMeasuredNativeCode(code) && !isHblJasperPilotCode(code)) {
+  // Hybrid HTML pilots stay off the measured FRESA reference forms.
+  // Those codes already draw from the pinned sample geometry; the HTML faces
+  // are a simplified fallback only when no reference-accurate builder exists.
+  if (!allowSample && !isReferenceAccuratePdfCode(code)) {
+    const htmlPilot = await tryHtmlCssPilotPdf(code, {
+      ...data,
+      logoUrl: options.logoUrl || data.logoUrl,
+    });
+    if (htmlPilot) {
+      return { blob: htmlPilot, preview: enrichmentPreviewMeta(code) };
+    }
+  }
+
+  // Measured Fresa faces first: exact header/footer slots (logo left, company right).
+  // Prefer this for Freightnest generate even when a browse sample exists.
+  if (
+    isOfficialMeasuredNativeCode(code) &&
+    !isHblJasperPilotCode(code) &&
+    (!allowSample ||
+      workflow === REPORT_PDF_WORKFLOW.FREIGHTNEST_GENERATE ||
+      options.purpose === 'generate' ||
+      data.entityBound)
+  ) {
     const { blob } = await generateOfficialMeasuredPdf(code, {
       companyName: data.companyName,
       companyAddress: data.companyAddress,
       companyPhone: data.companyPhone,
       companyEmail: data.companyEmail,
+      companyWeb: data.companyWeb,
       logoUrl: options.logoUrl || data.logoUrl,
+      printedBy: data.printedBy || data.companyEmail || data.companyName,
+      printedDate: data.printedDate,
       entityBound: data.entityBound,
       shipperLines: data.shipperLines,
       consigneeLines: data.consigneeLines,
@@ -168,8 +277,16 @@ export async function generateCatalogLayoutPdf(
       jobNumber: data.jobNumber,
       referenceNo: data.referenceNo,
       invoiceNumber: data.invoiceNumber,
+      hawbNo: data.hawbNo,
+      hblNo: data.hblNo,
+      mawbNo: data.mawbNo,
     });
     return { blob, preview: enrichmentPreviewMeta(code) };
+  }
+
+  // Four independent reference forms (field-mapped) when no measured face exists.
+  if (!allowSample && isReferenceAccuratePdfCode(code)) {
+    return generateReferenceAccuratePdf(code, data);
   }
 
   // HBL Jasper pilot — Freightnest native only (no Fresa sample fallback on generate).

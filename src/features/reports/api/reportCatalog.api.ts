@@ -12,6 +12,8 @@ export const REPORT_CATALOG_API = {
     `/reports/templates/${encodeURIComponent(code)}/bind-renderer`,
   deactivate: (code: string) => `/reports/templates/${encodeURIComponent(code)}/deactivate`,
   generate: '/reports/generate',
+  /** POST — display-ready payload for the three HTML pilots. No company id in the body. */
+  htmlPilotPreview: (code: string) => `/reports/${encodeURIComponent(code)}/preview`,
   job: (jobId: string) => `/reports/jobs/${encodeURIComponent(jobId)}`,
   download: (jobId: string) => `/reports/jobs/${encodeURIComponent(jobId)}/download`,
   /** GET — Sea KPI weekly summary (Reports — Sea KPI). Requires branch_id. */

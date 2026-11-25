@@ -1,0 +1,3248 @@
+{
+  "quotationResults": [
+    {
+      "id": "3a66be78-c5c0-4fc1-8020-ee06b46b9692",
+      "number": "QT/FE/26/00119",
+      "synthetic": false,
+      "bucket": "fcl",
+      "compare": "reports/flow-spike/real/quotation/3a66be78-c5c0-4fc1-8020-ee06b46b9692-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 1,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 1,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Bill To name",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Bill To address",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Incoterms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Carrier",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    },
+    {
+      "id": "8b79e809-0a7e-42e4-810c-49c7b25d0892",
+      "number": "QT/FE/26/00118",
+      "synthetic": false,
+      "bucket": "fcl",
+      "compare": "reports/flow-spike/real/quotation/8b79e809-0a7e-42e4-810c-49c7b25d0892-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 1150,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 1150,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1150,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Incoterms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Carrier",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    },
+    {
+      "id": "6f2e73be-202f-4648-a5f3-4842bd62d9a4",
+      "number": "QT/FE/26/00117",
+      "synthetic": false,
+      "bucket": "fcl",
+      "compare": "reports/flow-spike/real/quotation/6f2e73be-202f-4648-a5f3-4842bd62d9a4-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 12000,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 12000,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 12000,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Incoterms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Carrier",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    },
+    {
+      "id": "86f8e73d-2f23-4da9-b020-34de44cff7f6",
+      "number": "QT/FE/26/00116",
+      "synthetic": false,
+      "bucket": "fcl",
+      "compare": "reports/flow-spike/real/quotation/86f8e73d-2f23-4da9-b020-34de44cff7f6-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Incoterms (flow)",
+          "reason": "record has incoterm; flow looks for incoterms — no source for flow cell"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Lines",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    },
+    {
+      "id": "bba3d296-270b-427b-92c2-a42a86f849b8",
+      "number": "QT/AE/26/00105",
+      "synthetic": false,
+      "bucket": "air",
+      "compare": "reports/flow-spike/real/quotation/bba3d296-270b-427b-92c2-a42a86f849b8-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 2140,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 2140,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 2140,
+            "description": "OCEAN-FRT",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Incoterms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Carrier",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    },
+    {
+      "id": "3695fb32-c43b-4724-a22c-3f974cbf115e",
+      "number": "QT/AE/26/00089",
+      "synthetic": false,
+      "bucket": "air",
+      "compare": "reports/flow-spike/real/quotation/3695fb32-c43b-4724-a22c-3f974cbf115e-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 1831,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 1831,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1560,
+            "description": "Air freight chargeable",
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:1",
+            "record": 216,
+            "description": "Fuel surcharge",
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:2",
+            "record": 55,
+            "description": "AWB fee",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Incoterms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Carrier",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    },
+    {
+      "id": "a78a69a5-44fa-4783-87ef-26098774fc40",
+      "number": "QT/AE/26/00073",
+      "synthetic": false,
+      "bucket": "air",
+      "compare": "reports/flow-spike/real/quotation/a78a69a5-44fa-4783-87ef-26098774fc40-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 250,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 250,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 250,
+            "description": "DEMO Freight / service charge",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Incoterms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Carrier",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    },
+    {
+      "id": "7ca53052-0cf3-47c4-8c21-6037dbaea8dd",
+      "number": "QT/LE/26/00063",
+      "synthetic": false,
+      "bucket": "lcl",
+      "compare": "reports/flow-spike/real/quotation/7ca53052-0cf3-47c4-8c21-6037dbaea8dd-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 250,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 250,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 250,
+            "description": "DEMO Freight / service charge",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Incoterms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Carrier",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    },
+    {
+      "id": "f01855ec-db1a-4c35-858a-ac79b984360a",
+      "number": "QT/LE/26/00014",
+      "synthetic": false,
+      "bucket": "lcl",
+      "compare": "reports/flow-spike/real/quotation/f01855ec-db1a-4c35-858a-ac79b984360a-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 100,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 100,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 100,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Valid Until",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Incoterms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "POL",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "POD",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Carrier",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    },
+    {
+      "id": "41838462-d764-4a8d-a5eb-ba68b3088c16",
+      "number": "QT/LE/26/00003",
+      "synthetic": false,
+      "bucket": "lcl",
+      "compare": "reports/flow-spike/real/quotation/41838462-d764-4a8d-a5eb-ba68b3088c16-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 2170,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 2170,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1850,
+            "description": "Ocean freight — 40HC FCL AEJEA to NLRTM",
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:1",
+            "record": 320,
+            "description": "Terminal handling — origin",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Incoterms (flow)",
+          "reason": "record has incoterm; flow looks for incoterms — no source for flow cell"
+        },
+        {
+          "box": "POL",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "POD",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Transit time (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Weight / volume (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Containers (flow)",
+          "reason": "held on record; no source binding in flow template"
+        },
+        {
+          "box": "Terms (flow)",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job context",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": null,
+      "leak": false
+    }
+  ],
+  "creditResults": [
+    {
+      "id": "syn-credit-1",
+      "number": "CN/SYN/26/00001",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-1-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 120,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 120,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 120,
+            "description": "Sale invoice",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "120",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00102",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-credit-2",
+      "number": "CN/SYN/26/00002",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-2-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 900,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 45,
+            "classicRecord": 45,
+            "note": null,
+            "inClassic": false,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 945,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 945,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": [
+          {
+            "key": "tax",
+            "amount": 45,
+            "cause": "amount on record not found in classic PDF text extract"
+          }
+        ]
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "945",
+        "tax_amount": "45",
+        "originalInvoice": "INV/26/00093",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-credit-3",
+      "number": "CN/SYN/26/00003",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-3-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 1831,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 1831,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1560,
+            "description": "Air freight chargeable",
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:1",
+            "record": 55,
+            "description": "AWB fee",
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:2",
+            "record": 216,
+            "description": "Fuel surcharge",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "1831",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00101",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-credit-4",
+      "number": "CN/SYN/26/00004",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-4-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 1200,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 1200,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1200,
+            "description": "Opening balance (AR) — CSF",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Bill To address",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "1200",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00100",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-credit-5",
+      "number": "CN/SYN/26/00005",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-5-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 22,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 22,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 20,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:1",
+            "record": 2,
+            "description": "Ocean Freight — Addl. 10%",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "22",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00099",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-credit-6",
+      "number": "CN/SYN/26/00006",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-6-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Lines",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "0",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00088",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-credit-7",
+      "number": "CN/SYN/26/00007",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-7-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 90,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 4.5,
+            "classicRecord": 4.5,
+            "note": null,
+            "inClassic": false,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 94.5,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 94.5,
+            "description": "Large carton",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": [
+          {
+            "key": "tax",
+            "amount": 4.5,
+            "cause": "amount on record not found in classic PDF text extract"
+          }
+        ]
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "94.5",
+        "tax_amount": "4.5",
+        "originalInvoice": "INV/26/00089",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-credit-8",
+      "number": "CN/SYN/26/00008",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-8-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Lines",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "0",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00091",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-credit-9",
+      "number": "CN/SYN/26/00009",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-9-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 56789,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 2839.45,
+            "classicRecord": 2839.45,
+            "note": null,
+            "inClassic": false,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 59628.45,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 59628.45,
+            "description": "OCEAN-FRT",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": [
+          {
+            "key": "tax",
+            "amount": 2839.45,
+            "cause": "amount on record not found in classic PDF text extract"
+          }
+        ]
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "59628.45",
+        "tax_amount": "2839.45",
+        "originalInvoice": "INV/26/00095",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-credit-10",
+      "number": "CN/SYN/26/00010",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/credit-note/syn-credit-10-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 1520000,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 76000,
+            "classicRecord": 76000,
+            "note": null,
+            "inClassic": false,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 1596000,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1596000,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": [
+          {
+            "key": "tax",
+            "amount": 76000,
+            "cause": "amount on record not found in classic PDF text extract"
+          }
+        ]
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "1596000",
+        "tax_amount": "76000",
+        "originalInvoice": "INV/26/00098",
+        "classicWording": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    }
+  ],
+  "debitResults": [
+    {
+      "id": "syn-debit-1",
+      "number": "DN/SYN/26/00001",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-1-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 120,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 120,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 120,
+            "description": "Sale invoice",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "120",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00102",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-debit-2",
+      "number": "DN/SYN/26/00002",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-2-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 900,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 45,
+            "classicRecord": 45,
+            "note": null,
+            "inClassic": false,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 945,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 945,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": [
+          {
+            "key": "tax",
+            "amount": 45,
+            "cause": "amount on record not found in classic PDF text extract"
+          }
+        ]
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "945",
+        "tax_amount": "45",
+        "originalInvoice": "INV/26/00093",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-debit-3",
+      "number": "DN/SYN/26/00003",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-3-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 1831,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 1831,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1560,
+            "description": "Air freight chargeable",
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:1",
+            "record": 55,
+            "description": "AWB fee",
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:2",
+            "record": 216,
+            "description": "Fuel surcharge",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "1831",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00101",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-debit-4",
+      "number": "DN/SYN/26/00004",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-4-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 1200,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 1200,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1200,
+            "description": "Opening balance (AR) — CSF",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Bill To address",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "1200",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00100",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-debit-5",
+      "number": "DN/SYN/26/00005",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-5-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 22,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 22,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 20,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:1",
+            "record": 2,
+            "description": "Ocean Freight — Addl. 10%",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "22",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00099",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-debit-6",
+      "number": "DN/SYN/26/00006",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-6-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Lines",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "0",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00088",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-debit-7",
+      "number": "DN/SYN/26/00007",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-7-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 90,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 4.5,
+            "classicRecord": 4.5,
+            "note": null,
+            "inClassic": false,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 94.5,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 94.5,
+            "description": "Large carton",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": [
+          {
+            "key": "tax",
+            "amount": 4.5,
+            "cause": "amount on record not found in classic PDF text extract"
+          }
+        ]
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "94.5",
+        "tax_amount": "4.5",
+        "originalInvoice": "INV/26/00089",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-debit-8",
+      "number": "DN/SYN/26/00008",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-8-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 0,
+            "classicRecord": 0,
+            "note": null,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": []
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        },
+        {
+          "box": "Lines",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "0",
+        "tax_amount": "0",
+        "originalInvoice": "INV/26/00091",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-debit-9",
+      "number": "DN/SYN/26/00009",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-9-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 56789,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 2839.45,
+            "classicRecord": 2839.45,
+            "note": null,
+            "inClassic": false,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 59628.45,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 59628.45,
+            "description": "OCEAN-FRT",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": [
+          {
+            "key": "tax",
+            "amount": 2839.45,
+            "cause": "amount on record not found in classic PDF text extract"
+          }
+        ]
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "59628.45",
+        "tax_amount": "2839.45",
+        "originalInvoice": "INV/26/00095",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    },
+    {
+      "id": "syn-debit-10",
+      "number": "DN/SYN/26/00010",
+      "synthetic": true,
+      "bucket": null,
+      "compare": "reports/flow-spike/real/debit-note/syn-debit-10-compare.png",
+      "money": {
+        "checks": [
+          {
+            "key": "subtotal",
+            "record": 1520000,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "discount",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "tax",
+            "record": 76000,
+            "classicRecord": 76000,
+            "note": null,
+            "inClassic": false,
+            "inFlow": true
+          },
+          {
+            "key": "rounding",
+            "record": 0,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "total",
+            "record": 1596000,
+            "inClassic": true,
+            "inFlow": true
+          },
+          {
+            "key": "line:0",
+            "record": 1596000,
+            "description": "Ocean Freight",
+            "inClassic": true,
+            "inFlow": true
+          }
+        ],
+        "differences": [
+          {
+            "key": "tax",
+            "amount": 76000,
+            "cause": "amount on record not found in classic PDF text extract"
+          }
+        ]
+      },
+      "blanks": [
+        {
+          "box": "Job",
+          "reason": "empty in the record"
+        }
+      ],
+      "sign": {
+        "amountsPositive": true,
+        "total_amount": "1596000",
+        "tax_amount": "76000",
+        "originalInvoice": "INV/26/00098",
+        "classicWording": {
+          "documentTitle": "DEBIT NOTE",
+          "documentSubtitle": "DEBIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flowWording": {
+          "title": "DEBIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This debit note adjusts the original invoice. Payment is due as per the terms of the original invoice.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        }
+      },
+      "leak": false
+    }
+  ],
+  "summary": {
+    "endpoints": {
+      "quotations": "GET /quotations?limit=&page=&job_type= + GET /quotations/:id",
+      "creditNotes": "GET /credit-notes?limit=10&page=1 + GET /credit-notes/:id",
+      "debitNotes": "GET /debit-notes?limit=10&page=1 + GET /debit-notes/:id",
+      "invoiceSeedForSyntheticNotes": "GET /invoices?limit=20&page=1 + GET /invoices/:id"
+    },
+    "notes": {
+      "creditNotes": {
+        "endpoint": "/credit-notes",
+        "realCount": 0,
+        "belowFive": true
+      },
+      "debitNotes": {
+        "endpoint": "/debit-notes",
+        "realCount": 0,
+        "belowFive": true
+      }
+    },
+    "quotation": {
+      "count": 10,
+      "buckets": {
+        "air": 3,
+        "fcl": 4,
+        "lcl": 3
+      },
+      "differences": [],
+      "fieldMatrix": {
+        "fields": [
+          {
+            "key": "valid_until",
+            "aliases": [
+              "valid_until"
+            ],
+            "classic": "dueDate / Valid Until label",
+            "flow": "Valid Until"
+          },
+          {
+            "key": "transit_time_days",
+            "aliases": [
+              "transit_time_days"
+            ],
+            "classic": "shipment.etdEta (Transit N day(s))",
+            "flow": "not printed"
+          },
+          {
+            "key": "incoterm",
+            "aliases": [
+              "incoterm",
+              "incoterms"
+            ],
+            "classic": "remarks (Incoterm: …)",
+            "flow": "Incoterms grid (reads quotation.incoterms)"
+          },
+          {
+            "key": "airline / carrier",
+            "aliases": [
+              "carrier_name",
+              "carrier_preference",
+              "carrier_id"
+            ],
+            "classic": "shipment.vesselFlight",
+            "flow": "Carrier grid"
+          },
+          {
+            "key": "flight / voyage",
+            "aliases": [
+              "voyage_number",
+              "vessel_name"
+            ],
+            "classic": "not printed",
+            "flow": "not printed"
+          },
+          {
+            "key": "gross_weight",
+            "aliases": [
+              "gross_weight"
+            ],
+            "classic": "shipment.grossWtCbm",
+            "flow": "not printed"
+          },
+          {
+            "key": "volume_cbm",
+            "aliases": [
+              "volume_cbm"
+            ],
+            "classic": "shipment.grossWtCbm",
+            "flow": "not printed"
+          },
+          {
+            "key": "container_count / type",
+            "aliases": [
+              "container_count",
+              "container_type_id"
+            ],
+            "classic": "shipment.containerNo",
+            "flow": "not printed"
+          },
+          {
+            "key": "terms",
+            "aliases": [
+              "terms_and_conditions",
+              "terms"
+            ],
+            "classic": "not as dedicated terms block",
+            "flow": "termsLines from quotation.terms"
+          },
+          {
+            "key": "remarks",
+            "aliases": [
+              "remarks",
+              "special_requirements"
+            ],
+            "classic": "remarks block",
+            "flow": "Remarks grid + terms"
+          }
+        ],
+        "byBucket": {
+          "air": [
+            {
+              "id": "bba3d296-270b-427b-92c2-a42a86f849b8",
+              "number": "QT/AE/26/00105",
+              "job_type": "AIR_EXPORT",
+              "held": {
+                "valid_until": true,
+                "transit_time_days": false,
+                "incoterm": false,
+                "airline / carrier": false,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": false,
+                "container_count / type": false,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": "2026-11-07T00:00:00.000Z",
+                "transit_time_days": null,
+                "incoterm": null,
+                "incoterms": null,
+                "carrier_name": null,
+                "carrier_preference": null,
+                "carrier_id": null,
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "320",
+                "volume_cbm": null,
+                "container_count": null,
+                "container_type_id": null,
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Submitted via customer portal.",
+                "special_requirements": "Customer route: AAN — Al Ain International Airport → AAR — Aarhus Airport"
+              }
+            },
+            {
+              "id": "3695fb32-c43b-4724-a22c-3f974cbf115e",
+              "number": "QT/AE/26/00089",
+              "job_type": "AIR_EXPORT",
+              "held": {
+                "valid_until": true,
+                "transit_time_days": false,
+                "incoterm": false,
+                "airline / carrier": false,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": false,
+                "container_count / type": false,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": "2026-10-01T00:00:00.000Z",
+                "transit_time_days": null,
+                "incoterm": null,
+                "incoterms": null,
+                "carrier_name": null,
+                "carrier_preference": null,
+                "carrier_id": null,
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "420",
+                "volume_cbm": null,
+                "container_count": null,
+                "container_type_id": null,
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Submitted via customer portal.",
+                "special_requirements": "Customer route: DXB — Dubai International Airport → FRA — Frankfurt Main Airport\n\nCool chain preferred · MAWB + HAWB"
+              }
+            },
+            {
+              "id": "a78a69a5-44fa-4783-87ef-26098774fc40",
+              "number": "QT/AE/26/00073",
+              "job_type": "AIR_EXPORT",
+              "held": {
+                "valid_until": true,
+                "transit_time_days": false,
+                "incoterm": false,
+                "airline / carrier": false,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": true,
+                "container_count / type": false,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": "2026-10-26T00:00:00.000Z",
+                "transit_time_days": null,
+                "incoterm": null,
+                "incoterms": null,
+                "carrier_name": null,
+                "carrier_preference": null,
+                "carrier_id": null,
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "120",
+                "volume_cbm": "1.2",
+                "container_count": null,
+                "container_type_id": null,
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Submitted via customer portal.",
+                "special_requirements": "DEMO lifecycle — air export [air-export-form-MUHY2DFN]"
+              }
+            }
+          ],
+          "fcl": [
+            {
+              "id": "3a66be78-c5c0-4fc1-8020-ee06b46b9692",
+              "number": "QT/FE/26/00119",
+              "job_type": "SEA_FCL_EXPORT",
+              "held": {
+                "valid_until": true,
+                "transit_time_days": false,
+                "incoterm": false,
+                "airline / carrier": false,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": false,
+                "container_count / type": true,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": "2026-10-31T00:00:00.000Z",
+                "transit_time_days": null,
+                "incoterm": null,
+                "incoterms": null,
+                "carrier_name": null,
+                "carrier_preference": null,
+                "carrier_id": null,
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "700",
+                "volume_cbm": null,
+                "container_count": null,
+                "container_type_id": "199b000b-65f0-4da6-a75e-19e77ca20b12",
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Submitted via online quote widget.",
+                "special_requirements": null
+              }
+            },
+            {
+              "id": "8b79e809-0a7e-42e4-810c-49c7b25d0892",
+              "number": "QT/FE/26/00118",
+              "job_type": "SEA_FCL_EXPORT",
+              "held": {
+                "valid_until": true,
+                "transit_time_days": false,
+                "incoterm": false,
+                "airline / carrier": false,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": false,
+                "container_count / type": false,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": "2026-10-30T00:00:00.000Z",
+                "transit_time_days": null,
+                "incoterm": null,
+                "incoterms": null,
+                "carrier_name": null,
+                "carrier_preference": null,
+                "carrier_id": null,
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "670",
+                "volume_cbm": null,
+                "container_count": null,
+                "container_type_id": null,
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Submitted via customer portal.",
+                "special_requirements": "Customer route: AEAUH — Abu Dhabi → AEAMU — Abu Musa"
+              }
+            },
+            {
+              "id": "6f2e73be-202f-4648-a5f3-4842bd62d9a4",
+              "number": "QT/FE/26/00117",
+              "job_type": "SEA_FCL_EXPORT",
+              "held": {
+                "valid_until": true,
+                "transit_time_days": false,
+                "incoterm": false,
+                "airline / carrier": false,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": false,
+                "container_count / type": false,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": "2026-10-31T00:00:00.000Z",
+                "transit_time_days": null,
+                "incoterm": null,
+                "incoterms": null,
+                "carrier_name": null,
+                "carrier_preference": null,
+                "carrier_id": null,
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "280",
+                "volume_cbm": null,
+                "container_count": null,
+                "container_type_id": null,
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Submitted via customer portal.",
+                "special_requirements": "Customer route: AEAMU — Abu Musa → ATFG7 — Achau"
+              }
+            },
+            {
+              "id": "86f8e73d-2f23-4da9-b020-34de44cff7f6",
+              "number": "QT/FE/26/00116",
+              "job_type": "SEA_FCL_EXPORT",
+              "held": {
+                "valid_until": true,
+                "transit_time_days": true,
+                "incoterm": true,
+                "airline / carrier": true,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": true,
+                "container_count / type": true,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": "2026-11-04T00:00:00.000Z",
+                "transit_time_days": 30,
+                "incoterm": "FOB",
+                "incoterms": null,
+                "carrier_name": "Maersk Line",
+                "carrier_preference": null,
+                "carrier_id": "cb62a9bd-5e05-420a-8cae-747081aeae5c",
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "120",
+                "volume_cbm": "0.6",
+                "container_count": 1,
+                "container_type_id": "f4cebe03-3cf4-43ce-adbe-fc6eb991cd47",
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Submitted via customer portal.",
+                "special_requirements": "Customer route: AEAUH — Abu Dhabi → ATFG7 — Achau"
+              }
+            }
+          ],
+          "lcl": [
+            {
+              "id": "7ca53052-0cf3-47c4-8c21-6037dbaea8dd",
+              "number": "QT/LE/26/00063",
+              "job_type": "SEA_LCL_EXPORT",
+              "held": {
+                "valid_until": true,
+                "transit_time_days": false,
+                "incoterm": false,
+                "airline / carrier": false,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": true,
+                "container_count / type": false,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": "2026-10-26T00:00:00.000Z",
+                "transit_time_days": null,
+                "incoterm": null,
+                "incoterms": null,
+                "carrier_name": null,
+                "carrier_preference": null,
+                "carrier_id": null,
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "2400",
+                "volume_cbm": "6.5",
+                "container_count": null,
+                "container_type_id": null,
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Submitted via customer portal.",
+                "special_requirements": "DEMO lifecycle — sea LCL export [full-sea-lcl-export-MUHXWFEI]"
+              }
+            },
+            {
+              "id": "f01855ec-db1a-4c35-858a-ac79b984360a",
+              "number": "QT/LE/26/00014",
+              "job_type": "SEA_LCL_EXPORT",
+              "held": {
+                "valid_until": false,
+                "transit_time_days": false,
+                "incoterm": false,
+                "airline / carrier": false,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": false,
+                "container_count / type": false,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": null,
+                "transit_time_days": null,
+                "incoterm": null,
+                "incoterms": null,
+                "carrier_name": null,
+                "carrier_preference": null,
+                "carrier_id": null,
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "0",
+                "volume_cbm": null,
+                "container_count": null,
+                "container_type_id": null,
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Submitted via customer portal by user 7f1386b0-cd3f-4a28-8cc6-51aa7f2a7a3d.",
+                "special_requirements": "Origin port: London; Destination port: Lahore"
+              }
+            },
+            {
+              "id": "41838462-d764-4a8d-a5eb-ba68b3088c16",
+              "number": "QT/LE/26/00003",
+              "job_type": "SEA_LCL_EXPORT",
+              "held": {
+                "valid_until": true,
+                "transit_time_days": true,
+                "incoterm": true,
+                "airline / carrier": true,
+                "flight / voyage": false,
+                "gross_weight": true,
+                "volume_cbm": true,
+                "container_count / type": true,
+                "terms": false,
+                "remarks": true
+              },
+              "values": {
+                "valid_until": "2026-07-29T00:00:00.000Z",
+                "transit_time_days": 18,
+                "incoterm": "FOB",
+                "incoterms": null,
+                "carrier_name": "Emirates SkyCargo",
+                "carrier_preference": "Preferred carrier: MSC / Hapag",
+                "carrier_id": "d4d24735-cdd3-4781-b763-7592ae0193ea",
+                "voyage_number": null,
+                "vessel_name": null,
+                "gross_weight": "12500",
+                "volume_cbm": "28.5",
+                "container_count": 1,
+                "container_type_id": "f4cebe03-3cf4-43ce-adbe-fc6eb991cd47",
+                "terms_and_conditions": null,
+                "terms": null,
+                "remarks": "Rate validity 14 days. Subject to space and equipment.",
+                "special_requirements": "MSDS and DG declaration required before booking."
+              }
+            }
+          ],
+          "other": []
+        },
+        "bindExistingNotPrinted": [
+          {
+            "source": "quotation.transit_time_days",
+            "classic": "printed via shipment.etdEta",
+            "flow": "held on record, not bound in QUOTATION_FLOW_1",
+            "action": "bind into flow field grid"
+          },
+          {
+            "source": "quotation.gross_weight / volume_cbm",
+            "classic": "printed via shipment.grossWtCbm",
+            "flow": "held on record, not bound in QUOTATION_FLOW_1",
+            "action": "bind into flow field grid"
+          },
+          {
+            "source": "quotation.container_count / container_type_id",
+            "classic": "printed via shipment.containerNo (+ optional label)",
+            "flow": "held on record, not bound in QUOTATION_FLOW_1",
+            "action": "bind into flow field grid"
+          },
+          {
+            "source": "quotation.incoterm (singular)",
+            "classic": "printed in remarks",
+            "flow": "reads quotation.incoterms (plural) — mapping miss when only incoterm is set",
+            "action": "bind quotation.incoterm as fallback in flow Incoterms cell"
+          },
+          {
+            "source": "quotation.terms_and_conditions",
+            "classic": "not a dedicated print slot",
+            "flow": "reads quotation.terms only",
+            "action": "bind terms_and_conditions as fallback"
+          },
+          {
+            "source": "quotation.voyage_number / vessel_name",
+            "classic": "not printed",
+            "flow": "not printed",
+            "action": "backend/UI already store; print decision needed"
+          }
+        ],
+        "backendRequirements": [
+          "airline name as a dedicated field when carrier_name is empty for air jobs",
+          "flight number distinct from voyage_number for air jobs",
+          "resolved container type label (container_type_id alone is an id)",
+          "structured validity / transit display units if free-text is insufficient"
+        ]
+      }
+    },
+    "creditNote": {
+      "realCount": 0,
+      "endpoint": "GET /credit-notes?limit=10&page=1 + GET /credit-notes/:id",
+      "syntheticUsed": 10,
+      "signConvention": [
+        {
+          "id": "syn-credit-1",
+          "number": "CN/SYN/26/00001",
+          "amountsPositive": true,
+          "total_amount": "120",
+          "tax_amount": "0",
+          "originalInvoice": "INV/26/00102"
+        },
+        {
+          "id": "syn-credit-2",
+          "number": "CN/SYN/26/00002",
+          "amountsPositive": true,
+          "total_amount": "945",
+          "tax_amount": "45",
+          "originalInvoice": "INV/26/00093"
+        },
+        {
+          "id": "syn-credit-3",
+          "number": "CN/SYN/26/00003",
+          "amountsPositive": true,
+          "total_amount": "1831",
+          "tax_amount": "0",
+          "originalInvoice": "INV/26/00101"
+        },
+        {
+          "id": "syn-credit-4",
+          "number": "CN/SYN/26/00004",
+          "amountsPositive": true,
+          "total_amount": "1200",
+          "tax_amount": "0",
+          "originalInvoice": "INV/26/00100"
+        },
+        {
+          "id": "syn-credit-5",
+          "number": "CN/SYN/26/00005",
+          "amountsPositive": true,
+          "total_amount": "22",
+          "tax_amount": "0",
+          "originalInvoice": "INV/26/00099"
+        },
+        {
+          "id": "syn-credit-6",
+          "number": "CN/SYN/26/00006",
+          "amountsPositive": true,
+          "total_amount": "0",
+          "tax_amount": "0",
+          "originalInvoice": "INV/26/00088"
+        },
+        {
+          "id": "syn-credit-7",
+          "number": "CN/SYN/26/00007",
+          "amountsPositive": true,
+          "total_amount": "94.5",
+          "tax_amount": "4.5",
+          "originalInvoice": "INV/26/00089"
+        },
+        {
+          "id": "syn-credit-8",
+          "number": "CN/SYN/26/00008",
+          "amountsPositive": true,
+          "total_amount": "0",
+          "tax_amount": "0",
+          "originalInvoice": "INV/26/00091"
+        },
+        {
+          "id": "syn-credit-9",
+          "number": "CN/SYN/26/00009",
+          "amountsPositive": true,
+          "total_amount": "59628.45",
+          "tax_amount": "2839.45",
+          "originalInvoice": "INV/26/00095"
+        },
+        {
+          "id": "syn-credit-10",
+          "number": "CN/SYN/26/00010",
+          "amountsPositive": true,
+          "total_amount": "1596000",
+          "tax_amount": "76000",
+          "originalInvoice": "INV/26/00098"
+        }
+      ],
+      "classicPrintsAmountsAsStored": true,
+      "classicTaxField": "tax_total (commercialNoteToPdfModel vatAmount = note.tax_total)",
+      "flowTaxField": "tax_amount ?? tax_total (flow-doc noteTotals)",
+      "wording": {
+        "classic": {
+          "documentTitle": "CREDIT NOTE",
+          "documentSubtitle": "CREDIT NOTE / STATEMENT OF CHARGES",
+          "relatedInvoiceLabel": "Related Invoice",
+          "source": "src/features/invoices/utils/commercialNoteToPdfModel.ts labelsFor()"
+        },
+        "flow": {
+          "title": "CREDIT NOTE",
+          "originalInvoiceLabel": "Original Invoice:",
+          "termsLine": "This credit note adjusts the original invoice. Please apply it against the outstanding balance.",
+          "source": "tools/reports/flow-doc.mjs buildCreditOrDebit()"
+        },
+        "jurisdictionDecision": "not decided — listed wording only"
+      },
+      "differences": [
+        {
+          "id": "syn-credit-2",
+          "key": "tax",
+          "amount": 45,
+          "cause": "amount on record not found in classic PDF text extract"
+        },
+        {
+          "id": "syn-credit-7",
+          "key": "tax",
+          "amount": 4.5,
+          "cause": "amount on record not found in classic PDF text extract"
+        },
+        {
+          "id": "syn-credit-9",
+          "key": "tax",
+          "amount": 2839.45,
+          "cause": "amount on record not found in classic PDF text extract"
+        },
+        {
+          "id": "syn-credit-10",
+          "key": "tax",
+          "amount": 76000,
+          "cause": "amount on record not found in classic PDF text extract"
+        }
+      ]
+    },
+    "debitNote": {
+      "realCount": 0,
+      "endpoint": "GET /debit-notes?limit=10&page=1 + GET /debit-notes/:id",
+      "syntheticUsed": 10,
+      "differences": [
+        {
+          "id": "syn-debit-2",
+          "number": "DN/SYN/26/00002",
+          "key": "tax",
+          "amount": 45,
+          "cause": "amount on record not found in classic PDF text extract"
+        },
+        {
+          "id": "syn-debit-7",
+          "number": "DN/SYN/26/00007",
+          "key": "tax",
+          "amount": 4.5,
+          "cause": "amount on record not found in classic PDF text extract"
+        },
+        {
+          "id": "syn-debit-9",
+          "number": "DN/SYN/26/00009",
+          "key": "tax",
+          "amount": 2839.45,
+          "cause": "amount on record not found in classic PDF text extract"
+        },
+        {
+          "id": "syn-debit-10",
+          "number": "DN/SYN/26/00010",
+          "key": "tax",
+          "amount": 76000,
+          "cause": "amount on record not found in classic PDF text extract"
+        }
+      ]
+    },
+    "stress": [
+      {
+        "case": "quotation-40-lines",
+        "pages": 2,
+        "lastLineInText": true,
+        "silentlyClipped": false
+      },
+      {
+        "case": "credit-note-long-name",
+        "namePresent": true,
+        "silentlyClipped": false
+      },
+      {
+        "case": "debit-note-multi-currency",
+        "currencyInPdf": true,
+        "totalInPdf": true
+      },
+      {
+        "case": "quotation-missing-party-job",
+        "rendered": true,
+        "leak": false
+      },
+      {
+        "case": "fallback-on-flow-failure",
+        "notice": "Showing the classic invoice. The selected format could not be built.",
+        "noticeMatches": true,
+        "classicReturned": true
+      }
+    ],
+    "compares": {
+      "quotation": [
+        "reports/flow-spike/real/quotation/3a66be78-c5c0-4fc1-8020-ee06b46b9692-compare.png",
+        "reports/flow-spike/real/quotation/8b79e809-0a7e-42e4-810c-49c7b25d0892-compare.png",
+        "reports/flow-spike/real/quotation/6f2e73be-202f-4648-a5f3-4842bd62d9a4-compare.png",
+        "reports/flow-spike/real/quotation/86f8e73d-2f23-4da9-b020-34de44cff7f6-compare.png",
+        "reports/flow-spike/real/quotation/bba3d296-270b-427b-92c2-a42a86f849b8-compare.png",
+        "reports/flow-spike/real/quotation/3695fb32-c43b-4724-a22c-3f974cbf115e-compare.png",
+        "reports/flow-spike/real/quotation/a78a69a5-44fa-4783-87ef-26098774fc40-compare.png",
+        "reports/flow-spike/real/quotation/7ca53052-0cf3-47c4-8c21-6037dbaea8dd-compare.png",
+        "reports/flow-spike/real/quotation/f01855ec-db1a-4c35-858a-ac79b984360a-compare.png",
+        "reports/flow-spike/real/quotation/41838462-d764-4a8d-a5eb-ba68b3088c16-compare.png"
+      ],
+      "creditNote": [
+        "reports/flow-spike/real/credit-note/syn-credit-1-compare.png",
+        "reports/flow-spike/real/credit-note/syn-credit-2-compare.png",
+        "reports/flow-spike/real/credit-note/syn-credit-3-compare.png",
+        "reports/flow-spike/real/credit-note/syn-credit-4-compare.png",
+        "reports/flow-spike/real/credit-note/syn-credit-5-compare.png",
+        "reports/flow-spike/real/credit-note/syn-credit-6-compare.png",
+        "reports/flow-spike/real/credit-note/syn-credit-7-compare.png",
+        "reports/flow-spike/real/credit-note/syn-credit-8-compare.png",
+        "reports/flow-spike/real/credit-note/syn-credit-9-compare.png",
+        "reports/flow-spike/real/credit-note/syn-credit-10-compare.png"
+      ],
+      "debitNote": [
+        "reports/flow-spike/real/debit-note/syn-debit-1-compare.png",
+        "reports/flow-spike/real/debit-note/syn-debit-2-compare.png",
+        "reports/flow-spike/real/debit-note/syn-debit-3-compare.png",
+        "reports/flow-spike/real/debit-note/syn-debit-4-compare.png",
+        "reports/flow-spike/real/debit-note/syn-debit-5-compare.png",
+        "reports/flow-spike/real/debit-note/syn-debit-6-compare.png",
+        "reports/flow-spike/real/debit-note/syn-debit-7-compare.png",
+        "reports/flow-spike/real/debit-note/syn-debit-8-compare.png",
+        "reports/flow-spike/real/debit-note/syn-debit-9-compare.png",
+        "reports/flow-spike/real/debit-note/syn-debit-10-compare.png"
+      ]
+    }
+  }
+}

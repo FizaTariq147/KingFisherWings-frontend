@@ -1,5 +1,12 @@
 import { describe, expect, it } from 'vitest';
-import { generateWithFallback, shouldUseInvoiceV2 } from './invoiceV2Gate';
+import {
+  generateInvoicePdfChoice,
+  generateWithFallback,
+  invoiceV2HardBlocked,
+  INVOICE_V2_FALLBACK_NOTICE,
+  reportsCatalogCodeVisible,
+  shouldUseInvoiceV2,
+} from './invoiceV2Gate';
 import { readDefaultPdfStyle } from './reportsEngine';
 import type { Invoice } from '@/features/invoices/types/invoice.types';
 import { valueForInvoiceBinding } from './invoiceReportContract';
@@ -26,6 +33,79 @@ describe('invoice v2 gate', () => {
     })).toBe(false);
   });
 
+  it('soft gate still offers an unaccepted v2 invoice code', () => {
+    const code = 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE';
+    expect(invoiceV2HardBlocked({ gate: 'soft', code, status: 'in_progress' })).toBe(false);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'formats',
+      document: 'invoice',
+      style: 'classic',
+      code,
+      gate: 'soft',
+      status: 'reference_only',
+    })).toBe(true);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'generate',
+      document: 'invoice',
+      style: code,
+      gate: 'soft',
+      status: 'in_progress',
+    })).toBe(true);
+  });
+
+  it('hard gate offers a v2 invoice code only when it is accepted', () => {
+    const code = 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE';
+    expect(invoiceV2HardBlocked({ gate: 'hard', code, status: 'in_progress' })).toBe(true);
+    expect(invoiceV2HardBlocked({ gate: 'hard', code, status: 'reference_only' })).toBe(true);
+    expect(invoiceV2HardBlocked({ gate: 'hard', code, status: 'accepted' })).toBe(false);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'formats',
+      document: 'invoice',
+      style: 'classic',
+      code,
+      gate: 'hard',
+      status: 'reference_only',
+    })).toBe(false);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'generate',
+      document: 'invoice',
+      style: code,
+      gate: 'hard',
+      status: 'in_progress',
+    })).toBe(false);
+    expect(shouldUseInvoiceV2({
+      engine: 'v2',
+      entry: 'generate',
+      document: 'invoice',
+      style: code,
+      gate: 'hard',
+      status: 'accepted',
+    })).toBe(true);
+  });
+
+  it('hard gate treats flow release codes the same as v2 specs', () => {
+    expect(invoiceV2HardBlocked({ gate: 'hard', code: 'INVOICE_FLOW_TAX_INVOICE_1', status: 'reference_only' })).toBe(true);
+    expect(invoiceV2HardBlocked({ gate: 'hard', code: 'QUOTATION_FLOW_1', status: 'accepted' })).toBe(false);
+    expect(invoiceV2HardBlocked({ gate: 'hard', code: 'CREDIT_NOTE_FLOW_1', status: 'reference_only' })).toBe(true);
+  });
+
+  it('hides v2/flow from the catalogue when the engine is legacy', () => {
+    expect(reportsCatalogCodeVisible({ code: 'INVOICE_FLOW_TAX_INVOICE_1', engine: 'legacy', gate: 'soft', status: 'accepted' })).toBe(false);
+    expect(reportsCatalogCodeVisible({ code: 'QUOTATION_FLOW_1', engine: 'legacy', gate: 'soft', status: 'accepted' })).toBe(false);
+    expect(reportsCatalogCodeVisible({ code: 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE', engine: 'legacy', gate: 'soft', status: 'accepted' })).toBe(false);
+  });
+
+  it('hard gate catalogue lists only accepted gated codes', () => {
+    expect(reportsCatalogCodeVisible({ code: 'INVOICE_FLOW_TAX_INVOICE_1', engine: 'v2', gate: 'hard', status: 'accepted' })).toBe(true);
+    expect(reportsCatalogCodeVisible({ code: 'QUOTATION_FLOW_1', engine: 'v2', gate: 'hard', status: 'accepted' })).toBe(true);
+    expect(reportsCatalogCodeVisible({ code: 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE', engine: 'v2', gate: 'hard', status: 'reference_only' })).toBe(false);
+    expect(reportsCatalogCodeVisible({ code: 'CREDIT_NOTE_FLOW_1', engine: 'v2', gate: 'hard', status: 'reference_only' })).toBe(false);
+  });
+
   it('does not route credit notes, debit notes, or quotations to v2', () => {
     for (const document of ['credit_note', 'debit_note', 'quotation'] as const) {
       expect(shouldUseInvoiceV2({
@@ -35,6 +115,35 @@ describe('invoice v2 gate', () => {
         style: 'INVOICE_REPORT_FORMAT_1_TAX_INVOICE_INDIA',
       })).toBe(false);
     }
+  });
+
+  it('Generate PDF falls back to classic and shows a notice when the selected style throws', async () => {
+    const style = 'INVOICE_REPORT_FORMAT_10_STANDARD_INVOICE';
+    let classicCalls = 0;
+    const result = await generateInvoicePdfChoice({
+      engine: 'v2',
+      style,
+      renderV2: async () => {
+        throw new Error('forced v2 failure');
+      },
+      renderClassic: async () => {
+        classicCalls += 1;
+        return new Blob(['classic-pdf']);
+      },
+    });
+    expect(classicCalls).toBe(1);
+    expect(result.notice).toBe(INVOICE_V2_FALLBACK_NOTICE);
+    expect(await result.blob.text()).toBe('classic-pdf');
+    const skipped = await generateInvoicePdfChoice({
+      engine: 'v2',
+      style: 'classic',
+      renderV2: async () => {
+        throw new Error('must not run');
+      },
+      renderClassic: async () => new Blob(['still-classic']),
+    });
+    expect(skipped.notice).toBeNull();
+    expect(await skipped.blob.text()).toBe('still-classic');
   });
 
   it('falls back to classic and returns a notice when v2 throws', async () => {

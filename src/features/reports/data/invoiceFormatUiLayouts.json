@@ -1970,12 +1970,12 @@
     "formatNumber": 8,
     "name": "Invoice Report Format-8 Standard Invoice Arabic",
     "paper": "A4",
-    "rtl": true,
+    "rtl": false,
     "theme": {
-      "primary": "#0F4D96",
-      "accent": "#1B8B95",
-      "fill": "#EBF7FF",
-      "panel": "#D8F0FD",
+      "primary": "#000000",
+      "accent": "#0F4D96",
+      "fill": "#EBEFF0",
+      "panel": "#F5F5F5",
       "orange": "#F7A21C",
       "red": "#DE1F26",
       "cyan": "#9AD7FF",
@@ -1992,131 +1992,209 @@
       "logo": "kingfisher"
     },
     "demo": {
-      "invoiceNo": "BOMINV230500382",
-      "invoiceDate": "17/05/2023",
-      "currency": "INR",
-      "subtotal": "4,200.00 INR",
-      "tax": "0.00 INR",
-      "total": "4,200.00",
-      "words": "Total Amount Due",
-      "ksaMetaRows": [
-        {
-          "k": "Invoice Issue Date / تاريخ إصدار الفاتورة",
-          "v": "17/05/2023"
-        },
-        {
-          "k": "Date of Supply / تاريخ التوريد",
-          "v": "17/05/2023"
-        },
-        {
-          "k": "Invoice Number / رقم الفاتورة",
-          "v": "BOMINV230500382"
-        },
-        {
-          "k": "Shipment No.",
-          "v": "BOM/EXP/23/05/B/0709"
-        },
-        {
-          "k": "House / Master No.",
-          "v": "NSAJED85630124277"
-        },
-        {
-          "k": "Place of Origin / Final destination",
-          "v": "NHAVA SHEVA, INDIA → JEDDAH, SAUDI ARABIA"
-        },
-        {
-          "k": "ETD / ETA",
-          "v": "01-MAR-23 / 20-MAR-23"
-        },
-        {
-          "k": "Consignment",
-          "v": "Pcs 3.00 · G.Weight 22,700.00"
-        }
+      "invoiceNo": "INV1800564",
+      "invoiceDate": "27-NOV-18",
+      "dueDate": "27-NOV-18",
+      "creditTerm": "CASH",
+      "billToLabel": "Customer",
+      "billToName": "DEMO CUSTOMER LLC",
+      "billToAddress": "AL NABHA, DUBAI",
+      "billToPhone": "04-233456",
+      "billToGstin": "29760737473",
+      "vatNo": "100234567890003",
+      "currency": "AED",
+      "words": "Dirham Seven Hundred Fifty-Six and Sixteen Fils Only",
+      "subtotal": "721.10",
+      "tax": "35.06",
+      "total": "756.16",
+      "totalLabel": "Total AED",
+      "tableHeaders": [
+        "Charge Description / وصف الرسوم",
+        ".Curr",
+        "Rate Per Unit",
+        "Unit",
+        "Curr. Amount",
+        "/ROE",
+        "Total Price excl. VAT",
+        "VAT%",
+        "VAT Amount",
+        "Total AED"
       ],
-      "sellerLines": [
-        "KingFisher Logistic",
-        "Dubai, United Arab Emirates",
-        "VAT Number: 324324324",
-        "WEB : www.kingfisherwingsgroup.com"
+      "tableRows": [
+        [
+          "DELIVERY ORDER CHARGES",
+          "AED",
+          "150.00",
+          "1",
+          "150.00",
+          "1.00000",
+          "150.00",
+          "5",
+          "7.50",
+          "157.50"
+        ],
+        [
+          "THC CHARGES",
+          "AED",
+          "250.00",
+          "1",
+          "250.00",
+          "1.00000",
+          "250.00",
+          "5",
+          "12.50",
+          "262.50"
+        ],
+        [
+          "DOCUMENTATION CHARGES",
+          "AED",
+          "100.00",
+          "1",
+          "100.00",
+          "1.00000",
+          "100.00",
+          "5",
+          "5.00",
+          "105.00"
+        ],
+        [
+          "HANDLING CHARGES",
+          "AED",
+          "221.10",
+          "1",
+          "221.10",
+          "1.00000",
+          "221.10",
+          "5",
+          "11.06",
+          "232.16"
+        ]
       ],
-      "buyerLines": [
-        "DEMO LOGISTICS INDIA PVT LTD",
-        "21, PORT BLAIR KRISHNA ST, MANNARGUDI",
-        "TAMIL NADU, INDIA 676876",
-        "VAT Number: 68768978898098"
+      "containerHeaders": [
+        "Container No.",
+        "Type",
+        "No. of Pcs",
+        "Pack Type",
+        "G.Weight",
+        "Unit",
+        "Volume",
+        "V.Weight",
+        "C.Weight"
+      ],
+      "containerRow": [
+        "TCNU1234567",
+        "40' HC",
+        "10",
+        "CARTONS",
+        "12,500.000",
+        "KGS",
+        "45.000",
+        "",
+        ""
       ],
       "fieldGrid": [
         {
           "k": "Shipper",
-          "v": "DEMO-SHIPPER ENGG COMPANY"
+          "v": "DEMO SHIPPER LLC"
+        },
+        {
+          "k": "Job Number",
+          "v": "JOB1800456"
         },
         {
           "k": "Consignee",
-          "v": "DEMO STEEL FACTORY CO. LTD."
+          "v": "DEMO CONSIGNEE LLC"
+        },
+        {
+          "k": "Job Date",
+          "v": "20-NOV-18"
+        },
+        {
+          "k": "Notify Name",
+          "v": "DEMO NOTIFY LLC"
+        },
+        {
+          "k": "Master Number",
+          "v": "MBL123456"
+        },
+        {
+          "k": "Place of Origin",
+          "v": "JEBEL ALI, UAE"
+        },
+        {
+          "k": "House Number",
+          "v": "HBL987654"
+        },
+        {
+          "k": "Final destination",
+          "v": "AL NABHA, DUBAI"
+        },
+        {
+          "k": "Number of Packs",
+          "v": "10"
+        },
+        {
+          "k": "Vessel / Flight",
+          "v": "DEMO VESSEL"
+        },
+        {
+          "k": "Weight in Kgs",
+          "v": "12,500.000"
+        },
+        {
+          "k": "Voyage / Flight No.",
+          "v": "001W"
+        },
+        {
+          "k": "Volume in CBM",
+          "v": "45.000"
+        },
+        {
+          "k": "Shipper Ref No.",
+          "v": ""
+        },
+        {
+          "k": "ETD",
+          "v": "22-NOV-18"
+        },
+        {
+          "k": "Customer P/O No.",
+          "v": ""
+        },
+        {
+          "k": "ETA",
+          "v": "25-NOV-18"
+        },
+        {
+          "k": "Customer VAT No.",
+          "v": "100234567890003"
+        },
+        {
+          "k": "Invoice No. / Date",
+          "v": "INV1800564 / 27-NOV-18"
         }
       ],
-      "tableHeaders": [
-        "Nature of goods or services",
-        "Unit price",
-        "Quantity",
-        "Taxable",
-        "Discount",
-        "Tax Rate",
-        "Tax Amount",
-        "Item Subtotal (Including VAT)"
-      ],
-      "tableRows": [
-        [
-          "FREIGHT CHARGE",
-          "1,500.00",
-          "1",
-          "1,500.00",
-          "0.00",
-          "18 %",
-          "",
-          "1,500.00 INR"
-        ],
-        [
-          "LOCAL CHARGES",
-          "800.00",
-          "1",
-          "800.00",
-          "0.00",
-          "18 %",
-          "",
-          "800.00 INR"
-        ],
-        [
-          "SEA FREIGHT CHARGE",
-          "900.00",
-          "1",
-          "900.00",
-          "0.00",
-          "18 %",
-          "",
-          "900.00 INR"
-        ],
-        [
-          "CONTAINER CLEANING FEE",
-          "1,000.00",
-          "1",
-          "1,000.00",
-          "0.00",
-          "15 %",
-          "",
-          "1,000.00 INR"
-        ]
+      "metaRows": [
+        {
+          "k": "Payment Due Date",
+          "v": "27-NOV-18"
+        },
+        {
+          "k": "Credit Term",
+          "v": "CASH"
+        }
       ],
       "termsLines": [
-        "1. Payment to be made by cash. The company is not responsible for any cash settlement without an official receipt."
+        "Payment shall be made for full amount on or prior to due date, free of charges, without any deductions",
+        "All bank charges are for the account of the paying remitter",
+        "Payment before Delivery of Bill of Lading (Export) or containers (Import)"
       ],
       "bankLines": [
-        "Beneficiary Name: KingFisher Logistic",
-        "Bank : HDFC",
-        "A/c No : XXXXXXXXXXX",
-        "IBAN Code : ABA:XXXXXX",
-        "Swift Code : XXXXXX",
-        "Address : Dubai, United Arab Emirates"
+        "ELECTRONIC AND WIRE TRANSFER INFORMATION",
+        "Bank Name: DEMO BANK",
+        "Account Number: XXXXXXXXXXX",
+        "SWIFT: XXXXXXXX",
+        "IBAN: AE000000000000000000000"
       ]
     },
     "blocks": [
@@ -2124,10 +2202,11 @@
         "type": "companyHeader"
       },
       {
-        "type": "arabicHeader"
-      },
-      {
-        "type": "ksaBilingualHeader"
+        "type": "docTitle",
+        "text": "TAX INVOICE / فاتورة ضريبية",
+        "align": "center",
+        "band": true,
+        "bandStyle": "rules"
       },
       {
         "type": "fieldGrid",
@@ -2135,16 +2214,19 @@
       },
       {
         "type": "chargeTable",
-        "headerColor": "fill"
+        "headerColor": "fill",
+        "chrome": "grid"
       },
       {
-        "type": "ksaTotals"
+        "type": "wordsAndTotal"
+      },
+      {
+        "type": "containerStrip",
+        "headerColor": "fill",
+        "chrome": "grid"
       },
       {
         "type": "termsBank"
-      },
-      {
-        "type": "colorfulFooter"
       }
     ]
   },

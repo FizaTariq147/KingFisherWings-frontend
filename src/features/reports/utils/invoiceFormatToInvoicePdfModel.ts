@@ -12,6 +12,15 @@ export type InvoiceFormatPdfLine = {
   currency?: string;
   /** Present only when the charge or invoice line carries a tax amount. */
   taxAmount?: string;
+  /** India tax-invoice columns. Omitted when the charge has no value. */
+  sac?: string;
+  taxable?: string;
+  sgstRate?: string;
+  sgstAmount?: string;
+  cgstRate?: string;
+  cgstAmount?: string;
+  igstRate?: string;
+  igstAmount?: string;
 };
 
 export type InvoiceFormatPdfData = {
@@ -28,6 +37,10 @@ export type InvoiceFormatPdfData = {
   companyEmail?: string;
   /** Registered organization logo URL from org profile (never invent a placeholder). */
   logoUrl?: string;
+  /** Footer "Printed By" value from session user or org. */
+  printedBy?: string;
+  /** Footer "Printed Date" value. Defaults to now when omitted. */
+  printedDate?: string;
   invoiceNumber?: string;
   quotationNumber?: string;
   jobNumber?: string;

@@ -66,6 +66,22 @@ export function keepArrivalJasperLabel(text: string): boolean {
   return LABELS.has(text);
 }
 
+/**
+ * The measured face stores these notice lines at x=31.9 and "of 1" at x=539.9.
+ * The pinned sample text is at x=23 and x=538. The face file is left unchanged.
+ */
+export function arrivalLabelX(text: string, x: number): number {
+  if (
+    text.startsWith('1. Kindly contact our Imports Department') ||
+    text.startsWith('4. Partial Payments are not acceptable') ||
+    text.startsWith('6. After Free days storage charges applicable')
+  ) {
+    return 23;
+  }
+  if (text === 'of 1') return 538;
+  return x;
+}
+
 export function arrivalJasperFields(data: InvoiceFormatPdfData): PlacedText[] {
   const cargo = data.tableRows?.[0] || [];
   const etdEta = [data.etd, data.eta].filter(Boolean).join(' / ');

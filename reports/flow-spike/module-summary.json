@@ -1,0 +1,72 @@
+{
+  "quotation": {
+    "code": "QUOTATION_FLOW_1",
+    "pass": 4,
+    "total": 4,
+    "blanks": [
+      {
+        "number": "QT/26/0001",
+        "blanks": []
+      },
+      {
+        "number": "QT/26/0002",
+        "blanks": []
+      },
+      {
+        "number": "QT/26/0003",
+        "blanks": []
+      },
+      {
+        "number": "QT/26/LONG",
+        "blanks": []
+      }
+    ]
+  },
+  "creditNote": {
+    "code": "CREDIT_NOTE_FLOW_1",
+    "pass": 4,
+    "total": 4,
+    "blanks": [
+      {
+        "number": "CN/26/0001",
+        "blanks": []
+      },
+      {
+        "number": "CN/26/0002",
+        "blanks": []
+      },
+      {
+        "number": "CN/26/0003",
+        "blanks": []
+      },
+      {
+        "number": "CN/26/LONG",
+        "blanks": []
+      }
+    ]
+  },
+  "debitNote": {
+    "code": "DEBIT_NOTE_FLOW_1",
+    "pass": 4,
+    "total": 4,
+    "blanks": [
+      {
+        "number": "DN/26/0001",
+        "blanks": []
+      },
+      {
+        "number": "DN/26/0002",
+        "blanks": []
+      },
+      {
+        "number": "DN/26/0003",
+        "blanks": []
+      },
+      {
+        "number": "DN/26/LONG",
+        "blanks": []
+      }
+    ]
+  },
+  "templateHash": "67de030bb783cba033d36a40d7b4bf06d89507b826ed996e14bd03cebc51b2de"
+}

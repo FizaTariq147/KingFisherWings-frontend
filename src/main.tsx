@@ -10,6 +10,7 @@ import { ToastHost } from './components/toast'
 import { queryClient } from './lib/queryClient'
 import { installAlertToastBridge } from './lib/toastNotify'
 import { installClientErrorReporter } from './features/tech-logs/utils/reportClientError'
+import { loadReportsRuntimeConfig } from './features/reports/engine/reportsRuntimeConfig'
 import { router } from './router'
 import { store } from './store'
 import { AuthProvider } from './context/AuthContext'
@@ -20,21 +21,29 @@ import './index.css'
 installAlertToastBridge()
 installClientErrorReporter()
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Provider store={store}>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          {/* Always mounted — must not sit behind AuthLoadingGate spinner. */}
-          <ToastHost />
-          <AuthLoadingGate>
-            <SessionExpiryWatcher />
-            <SubscriptionExpiredModal />
-            <ErpAccessBlockedModal />
-            <RouterProvider router={router} />
-          </AuthLoadingGate>
-        </AuthProvider>
-      </QueryClientProvider>
-    </Provider>
-  </StrictMode>
-)
+async function boot() {
+  // Runtime kill switch: fetch /reports-config.json before first paint.
+  // Fetch failure defaults engine to legacy (see reportsRuntimeConfig).
+  await loadReportsRuntimeConfig()
+
+  createRoot(document.getElementById('root')!).render(
+    <StrictMode>
+      <Provider store={store}>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>
+            {/* Always mounted — must not sit behind AuthLoadingGate spinner. */}
+            <ToastHost />
+            <AuthLoadingGate>
+              <SessionExpiryWatcher />
+              <SubscriptionExpiredModal />
+              <ErpAccessBlockedModal />
+              <RouterProvider router={router} />
+            </AuthLoadingGate>
+          </AuthProvider>
+        </QueryClientProvider>
+      </Provider>
+    </StrictMode>,
+  )
+}
+
+void boot()

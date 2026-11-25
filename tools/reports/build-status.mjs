@@ -8,6 +8,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
+import { FLOW_INVOICE_OPTIONS } from './invoice-flow-options.mjs';
+
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const registryFile = path.join(root, 'src/features/reports/data/fresaReportRegistry.generated.ts');
 const signoffFile = path.join(root, 'reports/signoff.csv');
@@ -46,7 +48,9 @@ function parseCsv(text) {
   return body.map((values) => Object.fromEntries(header.map((key, index) => [key, values[index] ?? ''])));
 }
 
-const codes = [...fs.readFileSync(registryFile, 'utf8').matchAll(/"code": "([^"]+)"/g)].map((match) => match[1]);
+const registryCodes = [...fs.readFileSync(registryFile, 'utf8').matchAll(/"code": "([^"]+)"/g)].map((match) => match[1]);
+const flowCodes = Object.keys(FLOW_INVOICE_OPTIONS);
+const codes = [...new Set([...registryCodes, ...flowCodes])];
 const status = Object.fromEntries(codes.map((code) => [code, 'reference_only']));
 const signoff = fs.existsSync(signoffFile) ? parseCsv(fs.readFileSync(signoffFile, 'utf8')) : [];
 let accepted = 0;

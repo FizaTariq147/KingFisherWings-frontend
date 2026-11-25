@@ -15,7 +15,8 @@ describe('classic invoices for v2 comparison', () => {
   it('writes one classic PDF per live invoice', async () => {
     const dir = process.env.LIVE_INVOICE_DIR;
     if (!dir) return;
-    const live = JSON.parse(fs.readFileSync(path.join(dir, 'live.json'), 'utf8')) as {
+    const fileName = fs.existsSync(path.join(dir, 'batch-live.json')) ? 'batch-live.json' : 'live.json';
+    const live = JSON.parse(fs.readFileSync(path.join(dir, fileName), 'utf8')) as {
       organization?: { display_name?: string; name?: string; phone?: string; email?: string; website?: string; logo_url?: string };
       invoices: Array<{ id: string; invoice: Invoice; job?: Job | null; party?: Party | null }>;
     };
@@ -35,5 +36,5 @@ describe('classic invoices for v2 comparison', () => {
       fs.writeFileSync(path.join(dir, 'classic', `${row.id}.pdf`), Buffer.from(await blob.arrayBuffer()));
     }
     expect(live.invoices.length).toBeGreaterThan(0);
-  }, 30000);
+  }, 120000);
 });

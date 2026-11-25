@@ -5,7 +5,9 @@ import {
   type FresaPageColumnId,
 } from '../../constants/fresaPageColumns';
 import { parseInvoiceFormatNumber } from '../../constants/invoiceFormatCatalogNames';
-import { invoiceV2Rank } from '../../engine/invoiceV2Codes';
+import { invoiceV2ListRank, invoiceV2ApplicabilityHint, type InvoiceFitInput } from '../../engine/invoiceV2Applicability';
+import { FORMAT_NOT_AVAILABLE_YET, reportsCodeGenerateBlocked } from '../../engine/invoiceV2Gate';
+import { reportsCatalogueGate, reportsEngine } from '../../engine/reportsEngine';
 import { catalogSharedLayoutHint } from '../../utils/catalogSharedLayoutHint';
 import { resolveCatalogFormatStatus } from '../../utils/catalogFormatStatus';
 import { FormatStatusBadge } from './FormatStatusBadge';
@@ -14,8 +16,8 @@ import {
   reportConformanceStatus,
 } from '../../utils/reportConformanceStatus';
 
-function compareByName(a: ReportTemplate, b: ReportTemplate): number {
-  const rank = invoiceV2Rank(a.code) - invoiceV2Rank(b.code);
+function compareByName(a: ReportTemplate, b: ReportTemplate, currency?: InvoiceFitInput): number {
+  const rank = invoiceV2ListRank(a.code, currency) - invoiceV2ListRank(b.code, currency);
   if (rank !== 0) return rank;
   const na = parseInvoiceFormatNumber(a.code);
   const nb = parseInvoiceFormatNumber(b.code);
@@ -27,6 +29,7 @@ function compareByName(a: ReportTemplate, b: ReportTemplate): number {
 
 function groupByFresaColumn(
   items: ReportTemplate[],
+  currency?: InvoiceFitInput,
 ): Record<FresaPageColumnId, ReportTemplate[]> {
   const map: Record<FresaPageColumnId, ReportTemplate[]> = {
     sea: [],
@@ -38,7 +41,7 @@ function groupByFresaColumn(
     map[fresaColumnForFamily(t.family)].push(t);
   }
   for (const col of FRESA_PAGE_COLUMNS) {
-    map[col.id].sort(compareByName);
+    map[col.id].sort((a, b) => compareByName(a, b, currency));
   }
   return map;
 }
@@ -51,6 +54,9 @@ type FresaSamplePageTableProps = {
   emptyHint?: string;
   /** Highlight a single Fresa column (from family filter). */
   focusColumn?: FresaPageColumnId | null;
+  invoiceCurrency?: InvoiceFitInput;
+  /** `index` is the sample-page list: name only. Catalogue keeps status badges. */
+  appearance?: 'catalogue' | 'index';
 };
 
 /**
@@ -63,8 +69,10 @@ export function FresaSamplePageTable({
   loading,
   emptyHint,
   focusColumn = null,
+  invoiceCurrency = null,
+  appearance = 'catalogue',
 }: FresaSamplePageTableProps) {
-  const columns = groupByFresaColumn(items);
+  const columns = groupByFresaColumn(items, invoiceCurrency);
   const visibleCols = focusColumn
     ? FRESA_PAGE_COLUMNS.filter((c) => c.id === focusColumn)
     : FRESA_PAGE_COLUMNS;
@@ -89,6 +97,7 @@ export function FresaSamplePageTable({
 
   return (
     <div className="overflow-hidden rounded-lg border border-[var(--color-neutral-200)] bg-white shadow-sm">
+      {appearance === 'catalogue' ? (
       <div className="border-b border-[var(--color-neutral-200)] bg-[var(--color-neutral-50)] px-3 py-2.5 sm:px-4">
         <h3 className="text-xs font-semibold uppercase tracking-[0.08em] text-[var(--color-neutral-800)]">
           Format catalogue
@@ -97,6 +106,7 @@ export function FresaSamplePageTable({
           Click a format to preview or generate. Status badges reflect implementation evidence.
         </p>
       </div>
+      ) : null}
 
       {/* Mobile: stacked columns */}
       <div className="grid gap-0 md:hidden">
@@ -114,6 +124,8 @@ export function FresaSamplePageTable({
                     index={index}
                     active={selectedCode === t.code}
                     onSelect={onSelect}
+                    invoiceCurrency={invoiceCurrency}
+                    appearance={appearance}
                   />
                 </li>
               ))}
@@ -127,7 +139,7 @@ export function FresaSamplePageTable({
 
       {/* Desktop: 4-column table */}
       <div className="hidden overflow-x-auto md:block">
-        <table className="w-full min-w-[720px] border-collapse text-left text-[12px]">
+        <table className="w-full table-fixed border-collapse text-left text-[12px]">
           <thead>
             <tr className="bg-[var(--color-neutral-800)]">
               <th className="w-10 px-2 py-2.5 text-center text-[10px] font-semibold uppercase tracking-wide text-white/90">
@@ -162,7 +174,7 @@ export function FresaSamplePageTable({
                   return (
                     <td
                       key={col.id}
-                      className="border-t border-[var(--color-neutral-100)] px-2 py-1 align-top"
+                      className="border-t border-[var(--color-neutral-100)] px-2 py-1 align-top break-words"
                     >
                       {t ? (
                         <FormatLink
@@ -170,7 +182,9 @@ export function FresaSamplePageTable({
                           index={rowIndex}
                           active={selectedCode === t.code}
                           onSelect={onSelect}
+                          invoiceCurrency={invoiceCurrency}
                           compact
+                          appearance={appearance}
                         />
                       ) : (
                         <span className="text-[var(--color-neutral-200)]">—</span>
@@ -192,16 +206,27 @@ function FormatLink({
   index,
   active,
   onSelect,
+  invoiceCurrency = null,
   compact = false,
+  appearance = 'catalogue',
 }: {
   template: ReportTemplate;
   index: number;
   active: boolean;
   onSelect: (template: ReportTemplate) => void;
+  invoiceCurrency?: InvoiceFitInput;
   compact?: boolean;
+  appearance?: 'catalogue' | 'index';
 }) {
   const formatNo = parseInvoiceFormatNumber(template.code);
   const sharedHint = catalogSharedLayoutHint(template.code);
+  const applicability = invoiceV2ApplicabilityHint(template.code, invoiceCurrency);
+  const hardBlocked = reportsCodeGenerateBlocked({
+    gate: reportsCatalogueGate(),
+    engine: reportsEngine(),
+    code: template.code,
+    status: reportConformanceStatus(template.code),
+  });
   const status = resolveCatalogFormatStatus(template.code);
   return (
     <button
@@ -216,6 +241,12 @@ function FormatLink({
           : 'text-[var(--color-neutral-800)] hover:bg-[var(--color-neutral-50)]',
       ].join(' ')}
     >
+      {appearance === 'index' ? (
+        <span className="block whitespace-normal break-words leading-snug text-[var(--color-primary-800)] underline-offset-2 hover:underline">
+          {template.name}
+        </span>
+      ) : (
+        <>
       <span className="flex flex-wrap items-center gap-1">
         {formatNo != null ? (
           <span className="text-[10px] font-bold text-[var(--color-primary-700)]">#{formatNo}</span>
@@ -229,9 +260,17 @@ function FormatLink({
         {reportConformanceLabel(reportConformanceStatus(template.code))}
         {reportConformanceStatus(template.code) === 'accepted' ? '' : ' · approximate, not final'}
       </span>
+      {hardBlocked ? (
+        <span className="mt-0.5 block text-[9px] font-semibold text-amber-800">{FORMAT_NOT_AVAILABLE_YET}</span>
+      ) : null}
+      {applicability ? (
+        <span className="mt-0.5 block text-[9px] font-semibold text-amber-800">{applicability}</span>
+      ) : null}
       {sharedHint ? (
         <span className="mt-0.5 block text-[9px] font-medium text-amber-800">{sharedHint}</span>
       ) : null}
+        </>
+      )}
     </button>
   );
 }

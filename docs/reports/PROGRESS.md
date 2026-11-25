@@ -32,6 +32,11 @@ This workspace is the React frontend. There is no NestJS app and no PostgreSQL s
 
 ## Decisions
 
+- Plan map: `docs/reports/IMPLEMENTATION_PLAN_MAP.md` compares `Implemntation for report.md` to this frontend. Formats with a client layout/flow path are listed by default and auto-open PDF on `/reports/formats/:code` without Import / Bind / Activate.
+- Format 8 Standard Invoice Arabic (`INVOICE_REPORT_FORMAT_8_STANDARD_INVOICE_ARABIC`): Generate/auto-open now use the measured Fresa face (not the teal KSA JSON shell). JSON fallback theme/blocks were rewritten to black bilingual TAX INVOICE. Measured drawer embeds Arimo + Noto Naskh Arabic so bilingual labels survive.
+- Full Fresa↔system map: `docs/reports/FRESA_SYSTEM_FORMAT_MAP.md` + `reports/references/fresa-system-format-map.csv` (`npm run report:format-map`). Measured faces (416) generate with Fresa colours/layout; org logo + company + footer use exact slots from `brandingSlots.generated.ts` (392 specs via `node scripts/enrich-measured-branding.mjs`). Header matches Fresa Tax Invoice pattern: **logo left, company/address right-aligned**. Remaining pinned specs were promoted with `node scripts/promote-specs-to-measured.mjs` (HAWB five stay hand-built). Generate prefers measured faces over referenceAccurate/JSON when available.
+- Rotated PDFs (Format 2 Tax Invoice India and 17 others): geometry is mediaBox-space; faces store `rotateDeg` and the drawer calls `page.setRotation`. Content text/logo also draw with `rotate: 90°` so glyphs advance along +Y like the Fresa samples (fixes the sideways/scrambled Tax Invoice). Branding enrich treats high-X footers and tall letterhead strips for these faces. Invoice detail **Formats** / **Reports catalog** open `layouts=all` without a pinned code and list every commercial invoice strip in Recommended.
+- Branding wipe fix (all measured faces): `wipeTextSlot` uses advance-along-Y for rotate-90 slots so white wipes no longer erase Client/IGM/table cells; org company is **not** stamped into body `companyWipes` (that caused “Zoyan Logistics” over party fields). Sample footer values are skipped before redraw; `YOUR COMPANY NAME` / Fresa demo placeholders swap to org company. Verified Format 2 extract: company only in letterhead + beneficiary, footer has single Printed By/Date/Page.
 - Conformance status is read from `reports/status.json`. That file is generated from `reports/signoff.csv`. A row with reviewer, date, and reference hash is `accepted`. A code with no reviewer is `in_progress`. Every other catalogue code is `reference_only`. Nothing is accepted.
 - The catalogue still shows Generate. Non-accepted rows say "approximate, not final".
 - A scanned PDF (fewer than 8 extracted text items) is `needs_manual` in the manifest. That overrides the default status.
@@ -110,7 +115,7 @@ Status: 0 accepted, 6 in progress, 846 reference only.
 - 376 of 402 PDFs are their own layout at a 1 pt geometry rounding. Eighteen clusters have more than one member, and some of those mix families (a MAWB draft sits with several HBL files; an arrival confirmation sits with delivery confirmations). Phase 1 should review those clusters before treating one cluster as one spec. I did not loosen the match to force a smaller number.
 - 545 registered codes had no phase-0 filename match. 135 pinned files had no registered code. The code map and the triage CSVs below are that split. `ADVANCE_SHIPPING_NOTE_LOCATION_WISE_1` is a proposed code for the Location Wise- 1 file. It is not in the 852-code registry.
 - The 402 PDFs and 49 Excel files were committed in `ce4a25f0` as normal git objects, not Git LFS. This phase removes the Fresa Gold brochure from that pin. PNGs stay gitignored.
-- Catalogue gating stays soft. Hard gating is Phase 7 and was not implemented.
+- Catalogue gating defaults to soft (`VITE_REPORTS_GATE` unset). Hard gating is implemented for v2 invoice codes: they are previewed and generated only when status is `accepted`. Nothing is accepted, so hard mode withholds all 26. Browse still opens the entry and shows "format not available yet".
 - `defaultPdfStyle` is not a field on `OrganizationProfile` or `Company`, and `reports.engine` is not a stored setting. The four Generate PDF screens call `generateInvoicePdf` (quotation and credit/debit notes through their mappers). Treating a missing value as classic matches current behavior. A stored per-company style needs a backend column that this repo cannot name. Do not invent the column.
 
 ## Verification log
@@ -769,3 +774,30 @@ Full verify, 399 documents, cache hits on every spec and golden render. Counts s
 ```
 
 
+
+## Flow real-record compare (quotations / CN / DN)
+
+No threshold/mask/status/signoff changes. Classic generators untouched. No new templates.
+
+- Endpoints: `GET /quotations` (10 real: 4 FCL, 3 air, 3 LCL), `GET /credit-notes` (0 real), `GET /debit-notes` (0 real). CN/DN used anonymized synthetic copies from real invoices (marked synthetic).
+- Artifacts: `reports/flow-spike/real/<type>/<id>-compare.png`, `blanks.md`, `summary.json`, `quotation-fields.md`, `credit-note-sign.md`, `decisions-needed.md`.
+- Money: quotation diffs 0. CN/DN tax diffs where `tax_total` null and `tax_amount` set (classic reads `tax_total` only; flow reads `tax_amount`).
+- Stress: 40-line quote paginated (2 pages, last line present); long name not clipped; multi-currency EUR printed; missing party/job renders; flow failure falls back with classic notice.
+
+## Flow decisions (staging CN/DN, tax_amount, quotation binds)
+
+- CREDIT_NOTE_FLOW_1 / DEBIT_NOTE_FLOW_1 catalogue only when soft gate AND `VITE_REPORTS_FLOW_STAGING=1`, labelled `staging only: no real records tested`. Synthetic notes do not count toward release.
+- Flow tax: `tax_amount` only; `assertFlowTaxIntegrity` on every record. Classic `tax_total` difference listed in `docs/reports/RELEASE_NOTES_PHASE1.md` for INV/26/00089, 00093, 00094, 00095, 00097, 00098.
+- Quotation flow binds transit, weight, volume, containers, incoterm|incoterms, terms_and_conditions, carrier/airline, flight/voyage, remarks. Fill share after: air 33.3%, FCL 45.0%, LCL 46.7%.
+- CN/DN wording: Related Invoice; invented terms sentences removed.
+
+## Flow release pack (status path, staging docs, client pack)
+
+- Temporary signoff proof (not committed): `reports/flow-spike/status-path-proof.json` � both flow release codes `accepted` under temp status; hard gate lists exactly those two; legacy engine lists none.
+- `build-status` now includes flow option codes (remain `reference_only` until a real sign-off). Committed `status.json` has 0 accepted.
+- Kill switch: `VITE_REPORTS_ENGINE` unset/legacy. Fallback notice tested. Docs: `STAGING_TEST.md`, `ROLLBACK.md`, RELEASE_NOTES kill switch section.
+- Quotation screen vs flow: 0 shown-but-blank after binding commodity/department/status/shipment/job. Client pack under `reports/client-pack/`.
+
+## Catalogue spec draw
+
+Generate on the catalogue now asks the dev spec renderer (`/__reports/invoice-v2` → `renderSpec`) for any code that is not already a dedicated measured face, before the shared JSON shell. The spec file supplies page size, lines, and labels. The open record supplies values. FRESA demo identity stays blank. A missing spec falls through. This is not a sign-off. Raster match is still not exact: substitute fonts, empty logo slots, and unbound spans. 545 catalogue codes have no pinned file. Nothing is accepted.

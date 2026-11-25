@@ -28,6 +28,8 @@ import NotFound from '../pages/errors/NotFound'
 import { DashboardPage } from '../features/auth/dashboard/pages/DashboardPage'
 import ReportsMenuPage from '../pages/reports/ReportsMenuPage'
 import ReportCatalogPage from '../features/reports/pages/ReportCatalogPage'
+import ReportingDashboardPage from '../features/reports/pages/ReportingDashboardPage'
+import ReportFormatPage from '../features/reports/pages/ReportFormatPage'
 import SpecReviewPage from '../features/reports/pages/SpecReviewPage'
 
 import CustomerServiceMenuPage from '../pages/customers/CustomerServiceMenuPage'
@@ -813,6 +815,8 @@ export const router = createBrowserRouter([
             element: <ProtectedRoute requirePermissions={['menu_reports']} />,
             children: [
               { path: '/reports', element: <ReportsMenuPage /> },
+              { path: '/reports/dashboard', element: <ReportingDashboardPage /> },
+              { path: '/reports/formats/:code', element: <ReportFormatPage /> },
               { path: '/reports/catalog', element: <ReportCatalogPage /> },
               ...(import.meta.env.DEV
                 ? [{ path: '/reports/spec-review', element: <SpecReviewPage /> }]

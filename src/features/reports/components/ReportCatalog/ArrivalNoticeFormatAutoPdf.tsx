@@ -72,7 +72,7 @@ export function ArrivalNoticeFormatAutoPdf({ code, context, autoOpen = true }: P
             },
             {
               logoUrl: orgChrome.logoUrl,
-              preferTemplateV2: true,
+              preferTemplateV2: false,
               // Arrival notices use Freightnest template-v2 / shared shells — never Fresa samples as Generate output.
               purpose: 'generate',
               workflow: 'freightnest_generate',
